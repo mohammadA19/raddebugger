@@ -194,7 +194,7 @@ typedef enum
 typedef struct LNK_CmdSwitch
 {
   LNK_CmdSwitchType type;
-  B32               is_legal_directive;
+  b32               is_legal_directive;
   char             *name;
   char             *args;
   char             *desc;
@@ -220,7 +220,7 @@ enum
   LNK_ConfigFlag_WriteImageChecksum      = (1 << 8),
   LNK_ConfigFlag_ManifestEmbed           = (1 << 9),
 };
-typedef U64 LNK_ConfigFlags;
+typedef u64 LNK_ConfigFlags;
 
 typedef enum
 {
@@ -239,7 +239,7 @@ enum
   LNK_Guard_EhCont  = (1 << 2),
   LNK_Guard_All     = LNK_Guard_Cf | LNK_Guard_LongJmp | LNK_Guard_EhCont
 };
-typedef U32 LNK_GuardFlags;
+typedef u32 LNK_GuardFlags;
 
 typedef enum
 {
@@ -263,7 +263,7 @@ typedef struct LNK_AltNameNode
 
 typedef struct LNK_AltNameList
 {
-  U64              count;
+  u64              count;
   LNK_AltNameNode *first;
   LNK_AltNameNode *last;
 } LNK_AltNameList;
@@ -282,7 +282,7 @@ typedef struct LNK_MergeDirectiveNode
 
 typedef struct LNK_MergeDirectiveList
 {
-  U64                     count;
+  u64                     count;
   LNK_MergeDirectiveNode *first;
   LNK_MergeDirectiveNode *last;
 } LNK_MergeDirectiveList;
@@ -308,32 +308,32 @@ typedef struct LNK_Config
   LNK_SwitchState             opt_ref;
   LNK_SwitchState             opt_icf;
   LNK_SwitchState             opt_lbr;
-  U64                         opt_iter_count;
+  u64                         opt_iter_count;
   LNK_SwitchState             import_table_emit_biat;
   LNK_SwitchState             import_table_emit_uiat;
   LNK_GuardFlags              guard_flags;
   LNK_DebugInfoGuidType       guid_type;
   Guid                        guid;
   COFF_TimeStamp              time_stamp;
-  U32                         age;
-  U64                         file_align;
-  U64                         sect_align;
-  U64                         stack_reserve;
-  U64                         stack_commit;
-  U64                         heap_reserve;
-  U64                         heap_commit;
-  U64                         user_base_addr;
-  U64                         max_image_size;
-  U64                         machine_page_size;
-  U64                         pdb_page_size;
-  U64                         worker_count;
-  U64                         max_worker_count;
+  u32                         age;
+  u64                         file_align;
+  u64                         sect_align;
+  u64                         stack_reserve;
+  u64                         stack_commit;
+  u64                         heap_reserve;
+  u64                         heap_commit;
+  u64                         user_base_addr;
+  u64                         max_image_size;
+  u64                         machine_page_size;
+  u64                         pdb_page_size;
+  u64                         worker_count;
+  u64                         max_worker_count;
   String8                     shared_thread_pool_name;
   LNK_SwitchState             do_function_pad_min;
-  B32                         infer_function_pad_min;
-  U64                         function_pad_min;
-  U64                        *manifest_resource_id;
-  B32                         no_default_libs;
+  b32                         infer_function_pad_min;
+  u64                         function_pad_min;
+  u64                        *manifest_resource_id;
+  b32                         no_default_libs;
   Version                     link_ver;
   Version                     os_ver;
   Version                     image_ver;
@@ -356,7 +356,7 @@ typedef struct LNK_Config
   String8                     mt_path;
   LNK_TypeNameHashMode        pdb_hash_type_names;
   String8                     pdb_hash_type_name_map;
-  U64                         pdb_hash_type_name_length;
+  u64                         pdb_hash_type_name_length;
   PE_ExportParseList          export_symbol_list;
   String8List                 input_list[LNK_Input_Count];
   String8List                 input_default_lib_list;
@@ -364,7 +364,7 @@ typedef struct LNK_Config
   String8List                 delay_load_dll_list;
   String8List                 natvis_list;
   String8                     manifest_name;
-  B32                         manifest_uac;
+  b32                         manifest_uac;
   String8                     manifest_level;
   String8                     manifest_ui_access;
   String8List                 manifest_dependency_list;
@@ -376,13 +376,13 @@ typedef struct LNK_Config
   String8List                 include_symbol_list;
   LNK_AltNameList             alt_name_list;
   LNK_MergeDirectiveList      merge_list;
-  U64                         symbol_table_cap_defined;
-  U64                         symbol_table_cap_internal;
-  U64                         symbol_table_cap_weak;
-  U64                         symbol_table_cap_lib;
-  U64                         data_dir_count;
-  B32                         build_imp_lib;
-  B32                         build_exp;
+  u64                         symbol_table_cap_defined;
+  u64                         symbol_table_cap_internal;
+  u64                         symbol_table_cap_weak;
+  u64                         symbol_table_cap_lib;
+  u64                         data_dir_count;
+  b32                         build_imp_lib;
+  b32                         build_exp;
   LNK_SwitchState             write_temp_files;
   String8                     temp_image_name;
   String8                     temp_pdb_name;

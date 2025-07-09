@@ -6,15 +6,15 @@
 
 typedef struct DW_UnwindResult
 {
-  B32 is_invalid;
-  B32 missed_read;
-  U64 missed_read_addr;
-  U64 stack_pointer;
+  b32 is_invalid;
+  b32 missed_read;
+  u64 missed_read_addr;
+  u64 stack_pointer;
 } DW_UnwindResult;
 
 // EH: Exception Frames
 
-enum DW_EhPtrEnc : U8
+enum DW_EhPtrEnc : u8
 {
   DW_EhPtrEnc_TypeMask = 0x0F,
   DW_EhPtrEnc_Ptr       = 0x00, // Pointer sized unsigned value
@@ -47,28 +47,28 @@ enum
 
 typedef struct DW_EhPtrCtx
 {
-  U64 raw_base_vaddr; // address where pointer is being read
-  U64 text_vaddr;     // base address of section with instructions (used for encoding pointer on SH and IA64)
-  U64 data_vaddr;     // base address of data section (used for encoding pointer on x86-64)
-  U64 func_vaddr;     // base address of function where IP is located
+  u64 raw_base_vaddr; // address where pointer is being read
+  u64 text_vaddr;     // base address of section with instructions (used for encoding pointer on SH and IA64)
+  u64 data_vaddr;     // base address of data section (used for encoding pointer on x86-64)
+  u64 func_vaddr;     // base address of function where IP is located
 } DW_EhPtrCtx;
 
 // CIE: Common Information Entry
 typedef struct DW_CIEUnpacked
 {
-  U8          version;
+  u8          version;
   DW_EhPtrEnc lsda_encoding;
   DW_EhPtrEnc addr_encoding;
   
-  B32     has_augmentation_size;
-  U64     augmentation_size;
+  b32     has_augmentation_size;
+  u64     augmentation_size;
   String8 augmentation;
   
-  U64 code_align_factor;
-  S64 data_align_factor;
-  U64 ret_addr_reg;
+  u64 code_align_factor;
+  i64 data_align_factor;
+  u64 ret_addr_reg;
   
-  U64 handler_ip;
+  u64 handler_ip;
   
   Rng1U64 cfi_range;
 } DW_CIEUnpacked;
@@ -77,21 +77,21 @@ typedef struct DW_CIEUnpackedNode
 {
   struct DW_CIEUnpackedNode *next;
   DW_CIEUnpacked             cie;
-  U64                        offset;
+  u64                        offset;
 } DW_CIEUnpackedNode;
 
 // FDE: Frame Description Entry
 typedef struct DW_FDEUnpacked
 {
   Rng1U64 ip_voff_range;
-  U64     lsda_ip;
+  u64     lsda_ip;
   Rng1U64 cfi_range;
 } DW_FDEUnpacked;
 
 // CFI: Call Frame Information
 typedef struct DW_CFIRecords
 {
-  B32            valid;
+  b32            valid;
   DW_CIEUnpacked cie;
   DW_FDEUnpacked fde;
 } DW_CFIRecords;
@@ -106,8 +106,8 @@ typedef struct DW_CFICFACell
   DW_CFICFARule rule;
   union {
     struct {
-      U64 reg_idx;
-      S64 offset;
+      u64 reg_idx;
+      i64 offset;
     };
     Rng1U64 expr;
   };
@@ -128,7 +128,7 @@ typedef struct DW_CFICell
 {
   DW_CFIRegisterRule rule;
   union {
-    S64 n;
+    i64 n;
     Rng1U64 expr;
   };
 } DW_CFICell;
@@ -142,14 +142,14 @@ typedef struct DW_CFIRow
 
 typedef struct DW_CFIMachine
 {
-  U64             cells_per_row;
+  u64             cells_per_row;
   DW_CIEUnpacked *cie;
   DW_EhPtrCtx    *ptr_ctx;
   DW_CFIRow      *initial_row;
-  U64             fde_ip;
+  u64             fde_ip;
 } DW_CFIMachine;
 
-enum DW_CFADecode : U8
+enum DW_CFADecode : u8
 {
   DW_CFADecode_Nop     = 0x0,
   // 1,2,4,8 reserved for literal byte sizes
@@ -158,7 +158,7 @@ enum DW_CFADecode : U8
   DW_CFADecode_SLEB128 = 0xB,
 };
 
-enum DW_CFAControlBits : U16
+enum DW_CFAControlBits : u16
 {
   DW_CFAControlBits_Dec1Mask = 0x00F,
   DW_CFAControlBits_Dec2Mask = 0x0F0,
@@ -184,9 +184,9 @@ dw_unwind_x64(String8           raw_text,
               Rng1U64           text_vrange,
               Rng1U64           eh_frame_vrange,
               Rng1U64           eh_frame_header_vrange,
-              U64               default_image_base,
-              U64               image_base,
-              U64               stack_pointer,
+              u64               default_image_base,
+              u64               image_base,
+              u64               stack_pointer,
               DW_RegsX64       *regs,
               DW_ReadMemorySig *read_memory,
               void             *read_memory_ud);

@@ -17,7 +17,7 @@ typedef String8List LNK_InputLibList;
 typedef struct LNK_InputImport
 {
   String8         coff_import;
-  U64             input_idx;
+  u64             input_idx;
   struct LNK_Lib *lib;
 } LNK_InputImport;
 
@@ -29,7 +29,7 @@ typedef struct LNK_InputImportNode
 
 typedef struct LNK_InputImportList
 {
-  U64                  count;
+  u64                  count;
   LNK_InputImportNode *first;
   LNK_InputImportNode *last;
 } LNK_InputImportList;
@@ -37,18 +37,18 @@ typedef struct LNK_InputImportList
 typedef struct LNK_InputObj
 {
   struct LNK_InputObj *next;
-  B32                  is_thin;
-  B32                  has_disk_read_failed;
+  b32                  is_thin;
+  b32                  has_disk_read_failed;
   String8              dedup_id;
   String8              path;
   String8              data;
   String8              lib_path;
-  U64                  input_idx;
+  u64                  input_idx;
 } LNK_InputObj;
 
 typedef struct LNK_InputObjList
 {
-  U64           count;
+  u64           count;
   LNK_InputObj *first;
   LNK_InputObj *last;
 } LNK_InputObjList;

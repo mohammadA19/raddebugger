@@ -28,7 +28,7 @@ E_IdentifierResolutionPath;
 struct E_IdentifierResolutionRule
 {
   E_IdentifierResolutionPath *paths;
-  U64 count;
+  u64 count;
 };
 
 ////////////////////////////////
@@ -57,7 +57,7 @@ struct E_IRCacheSlot
 struct E_IRState
 {
   Arena *arena;
-  U64 arena_eval_start_pos;
+  u64 arena_eval_start_pos;
   
   // rjf: ir context
   E_IRCtx *ctx;
@@ -67,15 +67,15 @@ struct E_IRState
   
   // rjf: overridden irtree
   E_IRTreeAndType *overridden_irtree;
-  B32 disallow_autohooks;
-  B32 disallow_chained_fastpaths;
+  b32 disallow_autohooks;
+  b32 disallow_chained_fastpaths;
   
   // rjf: caches
   E_UsedExprMap *used_expr_map;
   E_TypeAutoHookCacheMap *type_auto_hook_cache_map;
-  U64 string_id_gen;
+  u64 string_id_gen;
   E_StringIDMap *string_id_map;
-  U64 ir_cache_slots_count;
+  u64 ir_cache_slots_count;
   E_IRCacheSlot *ir_cache_slots;
 };
 

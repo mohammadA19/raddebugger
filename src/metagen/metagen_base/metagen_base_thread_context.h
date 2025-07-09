@@ -13,11 +13,11 @@ struct TCTX
 {
   Arena *arenas[2];
   
-  U8 thread_name[32];
-  U64 thread_name_size;
+  u8 thread_name[32];
+  u64 thread_name_size;
   
   char *file_name;
-  U64 line_number;
+  u64 line_number;
 };
 
 ////////////////////////////////

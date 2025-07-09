@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Code View Types
 
-typedef U32 RD_CodeViewBuildFlags;
+typedef u32 RD_CodeViewBuildFlags;
 enum
 {
   RD_CodeViewBuildFlag_Margins     = (1<<0),
@@ -19,17 +19,17 @@ enum
 struct RD_CodeViewState
 {
   // rjf: stable state
-  B32 initialized;
-  S64 preferred_column;
-  B32 drifted_for_search;
-  U128 last_hash;
+  b32 initialized;
+  i64 preferred_column;
+  b32 drifted_for_search;
+  u128 last_hash;
   
   // rjf: per-frame command info
-  S64 goto_line_num;
-  B32 center_cursor;
-  B32 contain_cursor;
-  B32 force_contain_only;
-  B32 watch_expr_at_mouse;
+  i64 goto_line_num;
+  b32 center_cursor;
+  b32 contain_cursor;
+  b32 force_contain_only;
+  b32 watch_expr_at_mouse;
   Arena *find_text_arena;
   String8 find_text_fwd;
   String8 find_text_bwd;
@@ -53,7 +53,7 @@ typedef enum RD_WatchCellKind
 }
 RD_WatchCellKind;
 
-typedef U32 RD_WatchCellFlags;
+typedef u32 RD_WatchCellFlags;
 enum
 {
   RD_WatchCellFlag_Expr                    = (1<<0),
@@ -74,11 +74,11 @@ struct RD_WatchCell
   RD_WatchCell *next;
   RD_WatchCellKind kind;
   RD_WatchCellFlags flags;
-  U64 index;
+  u64 index;
   E_Eval eval;
-  F32 default_pct;
-  F32 pct;
-  F32 px;
+  f32 default_pct;
+  f32 pct;
+  f32 px;
 };
 
 
@@ -87,7 +87,7 @@ struct RD_WatchCellList
 {
   RD_WatchCell *first;
   RD_WatchCell *last;
-  U64 count;
+  u64 count;
 };
 
 
@@ -95,16 +95,16 @@ struct RD_WatchCellList
 struct RD_WatchRowInfo
 {
   CTRL_Entity *module;
-  B32 can_expand;
-  B32 expr_is_editable;
+  b32 can_expand;
+  b32 expr_is_editable;
   String8 group_cfg_name;
   RD_Cfg *group_cfg_parent;
   RD_Cfg *group_cfg_child;
   CTRL_Entity *group_entity;
   CTRL_Entity *callstack_thread;
-  U64 callstack_unwind_index;
-  U64 callstack_inline_depth;
-  U64 callstack_vaddr;
+  u64 callstack_unwind_index;
+  u64 callstack_inline_depth;
+  u64 callstack_vaddr;
   String8 cell_style_key;
   RD_WatchCellList cells;
   RD_ViewUIRule *view_ui_rule;
@@ -133,7 +133,7 @@ struct RD_WatchPt
 {
   EV_Key parent_key;
   EV_Key key;
-  U64 cell_id;
+  u64 cell_id;
 };
 
 
@@ -144,17 +144,17 @@ struct RD_WatchViewTextEditState
   RD_WatchPt pt;
   TxtPt cursor;
   TxtPt mark;
-  U8 input_buffer[1024];
-  U64 input_size;
-  U8 initial_buffer[1024];
-  U64 initial_size;
+  u8 input_buffer[1024];
+  u64 input_size;
+  u8 initial_buffer[1024];
+  u64 initial_size;
 };
 
 
 
 struct RD_WatchViewState
 {
-  B32 initialized;
+  b32 initialized;
   
   // rjf: filter history
   Arena *filter_arena;
@@ -168,10 +168,10 @@ struct RD_WatchViewState
   
   // rjf: text input state
   Arena *text_edit_arena;
-  U64 text_edit_state_slots_count;
+  u64 text_edit_state_slots_count;
   RD_WatchViewTextEditState dummy_text_edit_state;
   RD_WatchViewTextEditState **text_edit_state_slots;
-  B32 text_editing;
+  b32 text_editing;
 };
 
 ////////////////////////////////

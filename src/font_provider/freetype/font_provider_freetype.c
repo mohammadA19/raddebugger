@@ -14,7 +14,7 @@ fp_ft_font_from_handle(FP_Handle handle)
 internal FP_Handle
 fp_ft_handle_from_font(FP_FT_Font font)
 {
-  FP_Handle result = {(U64)font.face};
+  FP_Handle result = {(u64)font.face};
   return result;
 }
 
@@ -68,17 +68,17 @@ fp_metrics_from_font(FP_Handle handle)
   FP_Metrics result = {0};
   if(font.face != 0)
   {
-    result.design_units_per_em = (F32)(font.face->units_per_EM * 72.f/96.f);
-    result.ascent              = (F32)font.face->ascender;
-    result.descent             = (F32)font.face->descender;
-    result.line_gap            = (F32)(font.face->height - font.face->ascender + font.face->descender);
-    result.capital_height      = (F32)(font.face->ascender);
+    result.design_units_per_em = (f32)(font.face->units_per_EM * 72.f/96.f);
+    result.ascent              = (f32)font.face->ascender;
+    result.descent             = (f32)font.face->descender;
+    result.line_gap            = (f32)(font.face->height - font.face->ascender + font.face->descender);
+    result.capital_height      = (f32)(font.face->ascender);
   }
   return result;
 }
 
 fp_hook FP_RasterResult
-fp_raster(Arena *arena, FP_Handle handle, F32 size, FP_RasterFlags flags, String8 string)
+fp_raster(Arena *arena, FP_Handle handle, f32 size, FP_RasterFlags flags, String8 string)
 {
   ProfBeginFunction();
   FP_FT_Font font = fp_ft_font_from_handle(handle);
@@ -90,15 +90,15 @@ fp_raster(Arena *arena, FP_Handle handle, F32 size, FP_RasterFlags flags, String
     //- rjf: unpack font
     FT_Face face = font.face;
     FT_Set_Pixel_Sizes(face, 0, (FT_UInt)((96.f/72.f) * size));
-    S64 ascent  = face->size->metrics.ascender >> 6;
-    S64 descent = abs_s64(face->size->metrics.descender >> 6);
-    S64 height  = face->size->metrics.height >> 6;
+    i64 ascent  = face->size->metrics.ascender >> 6;
+    i64 descent = abs_s64(face->size->metrics.descender >> 6);
+    i64 height  = face->size->metrics.height >> 6;
     
     //- rjf: unpack string
     String32 string32 = str32_from_8(scratch.arena, string);
     
     //- rjf: measure
-    S32 total_width = 0;
+    i32 total_width = 0;
     for idx in 0..<string32.size
     {
       FT_Load_Char(face, string32.str[idx], FT_LOAD_RENDER);
@@ -106,24 +106,24 @@ fp_raster(Arena *arena, FP_Handle handle, F32 size, FP_RasterFlags flags, String
     }
     
     //- rjf: allocate & fill atlas w/ rasterization
-    Vec2S16 dim = {(S16)total_width+1, height+1};
-    U64 atlas_size = dim.x * dim.y * 4;
-    U8 *atlas = push_array(arena, U8, atlas_size);
-    S32 baseline = ascent;
-    S32 atlas_write_x = 0;
+    Vec2S16 dim = {(i16)total_width+1, height+1};
+    u64 atlas_size = dim.x * dim.y * 4;
+    u8 *atlas = push_array(arena, u8, atlas_size);
+    i32 baseline = ascent;
+    i32 atlas_write_x = 0;
     for idx in 0..<string32.size
     {
       FT_Load_Char(face, string32.str[idx], FT_LOAD_RENDER);
       FT_Bitmap *bmp = &face->glyph->bitmap;
-      S32 top = face->glyph->bitmap_top;
-      S32 left = face->glyph->bitmap_left;
-      for(S32 row = 0; row < (S32)bmp->rows; row += 1)
+      i32 top = face->glyph->bitmap_top;
+      i32 left = face->glyph->bitmap_left;
+      for(i32 row = 0; row < (i32)bmp->rows; row += 1)
       {
-        S32 y = baseline - top + row;
-        for(S32 col = 0; col < (S32)bmp->width; col += 1)
+        i32 y = baseline - top + row;
+        for(i32 col = 0; col < (i32)bmp->width; col += 1)
         {
-          S32 x = atlas_write_x + left + col;
-          U64 off = (y*dim.x + x)*4;
+          i32 x = atlas_write_x + left + col;
+          u64 off = (y*dim.x + x)*4;
           if(off+4 <= atlas_size)
           {
             atlas[off+0] = 255;
@@ -138,7 +138,7 @@ fp_raster(Arena *arena, FP_Handle handle, F32 size, FP_RasterFlags flags, String
     
     //- rjf: fill result
     result.atlas_dim = dim;
-    result.advance   = (F32)total_width;
+    result.advance   = (f32)total_width;
     result.atlas     = atlas;
     scratch_end(scratch);
   }

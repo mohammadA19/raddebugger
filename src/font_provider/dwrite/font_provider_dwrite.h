@@ -258,7 +258,7 @@ struct FP_DWrite_FontFileStreamNode
 struct FP_DWrite_State
 {
   Arena *arena;
-  B32 dwrite2_is_supported;
+  b32 dwrite2_is_supported;
   IDWriteFactory *factory;
   IDWriteRenderingParams *base_rendering_params;
   IDWriteRenderingParams *rendering_params_sharp_hinted;

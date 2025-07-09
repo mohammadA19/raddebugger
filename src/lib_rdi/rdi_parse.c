@@ -19,7 +19,7 @@ To encode :
 
 	rr_lzb_simple_context c;
 	c.m_tableSizeBits = 14;
-	c.m_hashTable = OODLE_MALLOC_ARRAY(U16,RR_ONE_SA<<c.m_tableSizeBits);
+	c.m_hashTable = OODLE_MALLOC_ARRAY(u16,RR_ONE_SA<<c.m_tableSizeBits);
 	
 	then call _encode
 
@@ -47,20 +47,20 @@ To decode :
 #define __RAD64REGS__
 
 #include <stdint.h>
-typedef uint8_t  U8;
-typedef uint16_t U16;
-typedef uint32_t U32;
-typedef uint64_t U64;
-typedef int8_t   S8;
-typedef int16_t  S16;
-typedef int32_t  S32;
-typedef int64_t  S64;
+typedef uint8_t  u8;
+typedef uint16_t u16;
+typedef uint32_t u32;
+typedef uint64_t u64;
+typedef int8_t   i8;
+typedef int16_t  i16;
+typedef int32_t  i32;
+typedef int64_t  i64;
 
-typedef S64 SINTa;
-typedef U64 RAD_U64;
-typedef S64 RAD_S64;
-typedef U32 RAD_U32;
-typedef S32 RAD_S32;
+typedef i64 SINTa;
+typedef u64 RAD_U64;
+typedef i64 RAD_S64;
+typedef u32 RAD_U32;
+typedef i32 RAD_S32;
 
 #define RADINLINE __inline
 
@@ -102,11 +102,11 @@ typedef S32 RAD_S32;
 #define RR_ASSERT_ALWAYS(c) do{if(!(c)) {RADLZB_TRAP();}}while(0)
 #define RR_ASSERT(c) RR_ASSERT_ALWAYS(c)
 
-#define RR_PUT16_LE(ptr,val)       *((U16 *)(ptr)) = (U16)(val)
-#define RR_GET16_LE_UNALIGNED(ptr) *((const U16 *)(ptr))
+#define RR_PUT16_LE(ptr,val)       *((u16 *)(ptr)) = (u16)(val)
+#define RR_GET16_LE_UNALIGNED(ptr) *((const u16 *)(ptr))
 
-static RADINLINE U32
-rrCtzBytes32(U32 val)
+static RADINLINE u32
+rrCtzBytes32(u32 val)
 {
   // Don't get fancy here. Assumes val != 0.
   if (val & 0x000000ffu) return 0;
@@ -115,11 +115,11 @@ rrCtzBytes32(U32 val)
   return 3;
 }
 
-static RADINLINE U32
-rrCtzBytes64(U64 val)
+static RADINLINE u32
+rrCtzBytes64(u64 val)
 {
-  U32 lo = (U32) val;
-  return lo ? rrCtzBytes32(lo) : 4 + rrCtzBytes32((U32) (val >> 32));
+  u32 lo = (u32) val;
+  return lo ? rrCtzBytes32(lo) : 4 + rrCtzBytes32((u32) (val >> 32));
 }
 
 //~
@@ -129,8 +129,8 @@ rrCtzBytes64(U64 val)
 typedef struct rr_lzb_simple_context rr_lzb_simple_context;
 struct rr_lzb_simple_context
 {
-	U16	*	m_hashTable;	// must be allocated to sizeof(U16)*(1<<m_tableSizeBits)
-	S32		m_tableSizeBits;
+	u16	*	m_hashTable;	// must be allocated to sizeof(u16)*(1<<m_tableSizeBits)
+	i32		m_tableSizeBits;
 };
 
 SINTa rr_lzb_simple_encode_fast(rr_lzb_simple_context * ctx,
@@ -302,7 +302,7 @@ rdi_decompressed_size_from_parsed(RDI_Parsed *rdi)
 //- decompression
 
 internal void
-rdi_decompress_parsed(U8 *decompressed_data, U64 decompressed_size, RDI_Parsed *og_rdi)
+rdi_decompress_parsed(u8 *decompressed_data, u64 decompressed_size, RDI_Parsed *og_rdi)
 {
   // rjf: copy header
   RDI_Header *src_header = (RDI_Header *)og_rdi->raw_data;
@@ -315,11 +315,11 @@ rdi_decompress_parsed(U8 *decompressed_data, U64 decompressed_size, RDI_Parsed *
   if(og_rdi->sections_count != 0)
   {
     RDI_Section *dsec_base = (RDI_Section *)(decompressed_data + dst_header->data_section_off);
-    MemoryCopy(dsec_base, (U8 *)og_rdi->raw_data + src_header->data_section_off, sizeof(RDI_Section) * og_rdi->sections_count);
-    U64 off = dst_header->data_section_off + sizeof(RDI_Section) * og_rdi->sections_count;
+    MemoryCopy(dsec_base, (u8 *)og_rdi->raw_data + src_header->data_section_off, sizeof(RDI_Section) * og_rdi->sections_count);
+    u64 off = dst_header->data_section_off + sizeof(RDI_Section) * og_rdi->sections_count;
     off += 7;
     off -= off%8;
-    for(U64 idx = 0; idx < og_rdi->sections_count; idx += 1)
+    for(u64 idx = 0; idx < og_rdi->sections_count; idx += 1)
     {
       dsec_base[idx].encoding = RDI_SectionEncoding_Unpacked;
       dsec_base[idx].off = off;
@@ -341,7 +341,7 @@ rdi_decompress_parsed(U8 *decompressed_data, U64 decompressed_size, RDI_Parsed *
         src < src_opl && dst < dst_opl;
         src += 1, dst += 1)
     {
-      rr_lzb_simple_decode((U8*)og_rdi->raw_data + src->off, src->encoded_size,
+      rr_lzb_simple_decode((u8*)og_rdi->raw_data + src->off, src->encoded_size,
                            decompressed_data     + dst->off, dst->unpacked_size);
     }
   }
@@ -1106,31 +1106,31 @@ typedef RAD_UINTr UINTr;
 // they do support this:
 typedef union
 {
-	U16 u16;
-	U32 u32; 
-	U64 u64; 
+	u16 u16;
+	u32 u32; 
+	u64 u64; 
 } __attribute__((packed)) unaligned_type;
 
-static inline U16 read16(const void *ptr) 		{ return ((const unaligned_type *)ptr)->u16; }
-static inline void write16(void *ptr, U16 x) 	{ ((unaligned_type *)ptr)->u16 = x; }
+static inline u16 read16(const void *ptr) 		{ return ((const unaligned_type *)ptr)->u16; }
+static inline void write16(void *ptr, u16 x) 	{ ((unaligned_type *)ptr)->u16 = x; }
 
-static inline U32 read32(const void *ptr) 		{ return ((const unaligned_type *)ptr)->u32; }
-static inline void write32(void *ptr, U32 x) 	{ ((unaligned_type *)ptr)->u32 = x; }
+static inline u32 read32(const void *ptr) 		{ return ((const unaligned_type *)ptr)->u32; }
+static inline void write32(void *ptr, u32 x) 	{ ((unaligned_type *)ptr)->u32 = x; }
 
-static inline U64 read64(const void *ptr) 		{ return ((const unaligned_type *)ptr)->u64; }
-static inline void write64(void *ptr, U64 x) 	{ ((unaligned_type *)ptr)->u64 = x; }
+static inline u64 read64(const void *ptr) 		{ return ((const unaligned_type *)ptr)->u64; }
+static inline void write64(void *ptr, u64 x) 	{ ((unaligned_type *)ptr)->u64 = x; }
 
 #else
 
 // most C compilers we target are smart enough to turn this into single loads/stores
-static inline U16 read16(const void *ptr) 		{ U16 x; memcpy(&x, ptr, sizeof(x)); return x; }
-static inline void write16(void *ptr, U16 x) 	{ memcpy(ptr, &x, sizeof(x)); }
+static inline u16 read16(const void *ptr) 		{ u16 x; memcpy(&x, ptr, sizeof(x)); return x; }
+static inline void write16(void *ptr, u16 x) 	{ memcpy(ptr, &x, sizeof(x)); }
 
-static inline U32 read32(const void *ptr) 		{ U32 x; memcpy(&x, ptr, sizeof(x)); return x; }
-static inline void write32(void *ptr, U32 x) 	{ memcpy(ptr, &x, sizeof(x)); }
+static inline u32 read32(const void *ptr) 		{ u32 x; memcpy(&x, ptr, sizeof(x)); return x; }
+static inline void write32(void *ptr, u32 x) 	{ memcpy(ptr, &x, sizeof(x)); }
 
-static inline U64 read64(const void *ptr) 		{ U64 x; memcpy(&x, ptr, sizeof(x)); return x; }
-static inline void write64(void *ptr, U64 x) 	{ memcpy(ptr, &x, sizeof(x)); }
+static inline u64 read64(const void *ptr) 		{ u64 x; memcpy(&x, ptr, sizeof(x)); return x; }
+static inline void write64(void *ptr, u64 x) 	{ memcpy(ptr, &x, sizeof(x)); }
 
 #endif
 
@@ -1143,7 +1143,7 @@ static RADINLINE SINTa rrPtrDiffV(void * end, void *start) { return (SINTa)( ((c
 
 // helper function to show I really am intending to put a pointer difference in an int :
 static RADINLINE SINTa rrPtrDiff(SINTa val) { return val; }
-static RADINLINE S32 rrPtrDiff32(SINTa val) { S32 ret = (S32) val; RR_ASSERT( (SINTa)ret == val ); return ret; }
+static RADINLINE i32 rrPtrDiff32(SINTa val) { i32 ret = (i32) val; RR_ASSERT( (SINTa)ret == val ); return ret; }
 static RADINLINE SINTr rrPtrDiffR(SINTa val) { SINTr ret = (SINTr) val; RR_ASSERT( (SINTa)ret == val ); return ret; }
 
 //=================================================================
@@ -1197,23 +1197,23 @@ The constraint due to matches is actually weaker
 
 // lz_copysteptoend_overrunok
 // NOTE : unlike memcpy, adjusts dest pointer to end !
-#define lz_copysteptoend_overrunok(d,s,l)	do { U8 * e=(d)+(l); lz_copywordsteptoend(d,s,e); d=e; } while(0)
+#define lz_copysteptoend_overrunok(d,s,l)	do { u8 * e=(d)+(l); lz_copywordsteptoend(d,s,e); d=e; } while(0)
 
 //=======================================
 
 #define LZB_PutExcessBW(cp,val)	do { \
-if ( val < 192 ) *cp++ = (U8) val; \
-else { val -= 192; *cp++ = 192 + (U8) ( val&0x3F); val >>= 6; \
-if ( val < 128 ) *cp++ = (U8) val; \
-else { val -= 128; *cp++ = 128 + (U8) ( val&0x7F); val >>= 7; \
-if ( val < 128 ) *cp++ = (U8) val; \
-else { val -= 128; *cp++ = 128 + (U8) ( val&0x7F); val >>= 7; \
-if ( val < 128 ) *cp++ = (U8) val; \
-else { val -= 128; *cp++ = 128 + (U8) ( val&0x7F); val >>= 7; *cp++ = (U8) val; } } } } \
+if ( val < 192 ) *cp++ = (u8) val; \
+else { val -= 192; *cp++ = 192 + (u8) ( val&0x3F); val >>= 6; \
+if ( val < 128 ) *cp++ = (u8) val; \
+else { val -= 128; *cp++ = 128 + (u8) ( val&0x7F); val >>= 7; \
+if ( val < 128 ) *cp++ = (u8) val; \
+else { val -= 128; *cp++ = 128 + (u8) ( val&0x7F); val >>= 7; \
+if ( val < 128 ) *cp++ = (u8) val; \
+else { val -= 128; *cp++ = 128 + (u8) ( val&0x7F); val >>= 7; *cp++ = (u8) val; } } } } \
 } while(0)
 
 // max bytes consumed: 5
-#define LZB_AddExcessBW(cp,val)	do { U32 b = *cp++; \
+#define LZB_AddExcessBW(cp,val)	do { u32 b = *cp++; \
 if ( b < 192 ) val += b; \
 else { val += 192; val += (b-192); b = *cp++; \
 val += (b<<6); if ( b >= 128 ) { b = *cp++; \
@@ -1232,13 +1232,13 @@ val += (b<<27); } } } } \
 // match copies :
 
 // used for LRL :
-static OOINLINE void copy_no_overlap_long(U8 * to, const U8 * from, SINTr length)
+static OOINLINE void copy_no_overlap_long(u8 * to, const u8 * from, SINTr length)
 {
 	for(int i=0;i<length;i+=8)
 		write64(to+i, read64(from+i));
 }
 
-static OOINLINE void copy_no_overlap_nooverrun(U8 * to, const U8 * from, SINTr length)
+static OOINLINE void copy_no_overlap_nooverrun(u8 * to, const u8 * from, SINTr length)
 {
 	// used for final LRL of every block
 	//  must not overrun
@@ -1248,7 +1248,7 @@ static OOINLINE void copy_no_overlap_nooverrun(U8 * to, const U8 * from, SINTr l
 RR_COMPILER_ASSERT( LZB_MLCONTROL_ESCAPE == 15 );
 RR_COMPILER_ASSERT( LZB_MATCHLEN_ESCAPE == 19 );
 
-static OOINLINE void copy_match_short_overlap(U8 * to, const U8 * from, SINTr ml)
+static OOINLINE void copy_match_short_overlap(u8 * to, const u8 * from, SINTr ml)
 {
 	RR_ASSERT( ml >= LZB_MML && ml < LZB_MATCHLEN_ESCAPE );
   
@@ -1273,11 +1273,11 @@ static OOINLINE void copy_match_short_overlap(U8 * to, const U8 * from, SINTr ml
 	}
 }
 
-static OOINLINE void copy_match_memset(U8 * to, int c, SINTr ml)
+static OOINLINE void copy_match_memset(u8 * to, int c, SINTr ml)
 {
 	RR_ASSERT( ml >= 4 );
-	U32 four = c * 0x01010101;
-	U8 * end = to + ml;
+	u32 four = c * 0x01010101;
+	u8 * end = to + ml;
 	write32(to, four); to += 4;
 	while(to<end)
 	{
@@ -1289,10 +1289,10 @@ static OOINLINE void copy_match_memset(U8 * to, int c, SINTr ml)
 
 static SINTa rr_lzb_simple_decode_notexpanded(const void * comp, void * raw, SINTa rawLen)
 {
-	U8 * rp = (U8 *)raw;
-	U8 * rpEnd = rp+rawLen;
+	u8 * rp = (u8 *)raw;
+	u8 * rpEnd = rp+rawLen;
   
-	const U8 *	cp = (const U8 *)comp;
+	const u8 *	cp = (const u8 *)comp;
 	
 	for(;;)
 	{
@@ -1392,7 +1392,7 @@ static SINTa rr_lzb_simple_decode_notexpanded(const void * comp, void * raw, SIN
 		if ( ml_control <= 8 )
 		{
 			cp += 2; // consume offset
-			const U8 * match = rp - off;
+			const u8 * match = rp - off;
       
 			RR_ASSERT( ml <= 12 );
       
@@ -1408,7 +1408,7 @@ static SINTa rr_lzb_simple_decode_notexpanded(const void * comp, void * raw, SIN
 			if_likely( ml_control < LZB_MLCONTROL_ESCAPE ) // short match
 			{
 				cp += 2; // consume offset
-				const U8 * match = rp - off;
+				const u8 * match = rp - off;
         
 				RR_ASSERT( off >= 8 || ml <= off );
         
@@ -1457,7 +1457,7 @@ static SINTa rr_lzb_simple_decode_notexpanded(const void * comp, void * raw, SIN
 				else
 				{
 					UINTr myoff = RR_GET16_LE_UNALIGNED(cp); cp += 2;
-					const U8 * match = rp - myoff;
+					const u8 * match = rp - myoff;
           
 					ml += excesslow;
           
@@ -1478,7 +1478,7 @@ static SINTa rr_lzb_simple_decode_notexpanded(const void * comp, void * raw, SIN
   
 	RR_ASSERT( rp == rpEnd );
   
-	SINTa used = rrPtrDiff( cp - (const U8 *)comp );
+	SINTa used = rrPtrDiff( cp - (const u8 *)comp );
 	
 	RR_ASSERT( used < rawLen );
 	
@@ -1499,9 +1499,9 @@ SINTa rr_lzb_simple_decode(const void * comp, SINTa compLen, void * raw, SINTa r
 //=====================================================
 
 
-static RADINLINE U32 hmf_hash4_32(U32 ptr32)
+static RADINLINE u32 hmf_hash4_32(u32 ptr32)
 {
-  U32 h = ( ptr32 * 2654435761u );
+  u32 h = ( ptr32 * 2654435761u );
   h ^= (h>>13);
   return h;
 }
@@ -1512,11 +1512,11 @@ static RADINLINE U32 hmf_hash4_32(U32 ptr32)
 
 #define LZB_Hash4	hmf_hash4_32
 
-static RADINLINE U32 LZB_SecondHash4(U32 be4)
+static RADINLINE u32 LZB_SecondHash4(u32 be4)
 {
-	const U32 m = 0x5bd1e995;
+	const u32 m = 0x5bd1e995;
   
-	U32 h = be4 * m;
+	u32 h = be4 * m;
 	h += (h>>11);
 	
 	return h;
@@ -1544,7 +1544,7 @@ static int RADFORCEINLINE GetNumBytesZeroNeverAllR(UINTr x)
 
 //===============================
 
-static RADFORCEINLINE U8 * LZB_Output(U8 * cp, S32 lrl, const U8 * literals,  S32 matchlen ,  S32 mo )
+static RADFORCEINLINE u8 * LZB_Output(u8 * cp, i32 lrl, const u8 * literals,  i32 matchlen ,  i32 mo )
 {
 	RR_ASSERT( lrl >= 0 );
 	RR_ASSERT( matchlen >= LZB_MML );
@@ -1552,17 +1552,17 @@ static RADFORCEINLINE U8 * LZB_Output(U8 * cp, S32 lrl, const U8 * literals,  S3
 	
 	//rrprintf("[%3d][%3d][%7d]\n",lrl,ml,mo);
   
-	S32 sendml = matchlen - LZB_MML;
+	i32 sendml = matchlen - LZB_MML;
 	
-	U32 ml_in_control  = RR_MIN(sendml,LZB_MLCONTROL_ESCAPE);
+	u32 ml_in_control  = RR_MIN(sendml,LZB_MLCONTROL_ESCAPE);
 	
 	if ( mo >= 8 ) // no overlap	
 	{
 		if ( lrl < LZB_LRL_ESCAPE )
 		{
-			U32 control = lrl | (ml_in_control<<4);
+			u32 control = lrl | (ml_in_control<<4);
       
-			*cp++ = (U8) control;
+			*cp++ = (u8) control;
 			
 			write64(cp, read64(literals));
 			if ( lrl > 8 )
@@ -1573,11 +1573,11 @@ static RADFORCEINLINE U8 * LZB_Output(U8 * cp, S32 lrl, const U8 * literals,  S3
 		}
 		else
 		{
-			U32 control = LZB_LRL_ESCAPE | (ml_in_control<<4);
+			u32 control = LZB_LRL_ESCAPE | (ml_in_control<<4);
       
-			*cp++ = (U8) control;
+			*cp++ = (u8) control;
 			
-			U32 lrl_excess = lrl - LZB_LRL_ESCAPE;
+			u32 lrl_excess = lrl - LZB_LRL_ESCAPE;
 			LZB_PutExcessLRL(cp,lrl_excess);
       
 			// @@ ? is this okay for overrun ?
@@ -1586,29 +1586,29 @@ static RADFORCEINLINE U8 * LZB_Output(U8 * cp, S32 lrl, const U8 * literals,  S3
 		
 		if ( ml_in_control < LZB_MLCONTROL_ESCAPE )
 		{
-			RR_ASSERT( (U16)(mo) == mo );
-			RR_PUT16_LE_UNALIGNED(cp,(U16)(mo));
+			RR_ASSERT( (u16)(mo) == mo );
+			RR_PUT16_LE_UNALIGNED(cp,(u16)(mo));
 			cp += 2;
 		}
 		else
 		{
-			U32 ml_excess = sendml - LZB_MLCONTROL_ESCAPE;
+			u32 ml_excess = sendml - LZB_MLCONTROL_ESCAPE;
 			
 			// put special first byte, then offset, then remainder
 			if ( ml_excess < 127 )
 			{
-				*cp++ = (U8)ml_excess;
+				*cp++ = (u8)ml_excess;
         
-				RR_ASSERT( (U16)(mo) == mo );
-				RR_PUT16_LE_UNALIGNED(cp,(U16)(mo));
+				RR_ASSERT( (u16)(mo) == mo );
+				RR_PUT16_LE_UNALIGNED(cp,(u16)(mo));
 				cp += 2;
 			}
 			else
 			{
-				*cp++ = (U8)127;
+				*cp++ = (u8)127;
         
-				RR_ASSERT( (U16)(mo) == mo );
-				RR_PUT16_LE_UNALIGNED(cp,(U16)(mo));
+				RR_ASSERT( (u16)(mo) == mo );
+				RR_PUT16_LE_UNALIGNED(cp,(u16)(mo));
 				cp += 2;
         
 				ml_excess -= 127;
@@ -1618,16 +1618,16 @@ static RADFORCEINLINE U8 * LZB_Output(U8 * cp, S32 lrl, const U8 * literals,  S3
 	}
 	else
 	{
-		U32 lrl_in_control = RR_MIN(lrl,LZB_LRL_ESCAPE);
+		u32 lrl_in_control = RR_MIN(lrl,LZB_LRL_ESCAPE);
     
     // overlap case
-		U32 control = (lrl_in_control) | (LZB_MLCONTROL_ESCAPE<<4);
+		u32 control = (lrl_in_control) | (LZB_MLCONTROL_ESCAPE<<4);
 		
-		*cp++ = (U8) control;
+		*cp++ = (u8) control;
 		
 		if ( lrl_in_control == LZB_LRL_ESCAPE )
 		{
-			U32 lrl_excess = lrl - LZB_LRL_ESCAPE;
+			u32 lrl_excess = lrl - LZB_LRL_ESCAPE;
 			LZB_PutExcessLRL(cp,lrl_excess);
 		}
 		
@@ -1638,11 +1638,11 @@ static RADFORCEINLINE U8 * LZB_Output(U8 * cp, S32 lrl, const U8 * literals,  S3
 		UINTr excess1 = 128 + (ml_in_control<<3) + mo;
 		RR_ASSERT( excess1 < 256 );
 		
-		*cp++ = (U8)excess1;
+		*cp++ = (u8)excess1;
 		
 		if ( ml_in_control == LZB_MLCONTROL_ESCAPE )
 		{
-			U32 ml_excess = sendml - LZB_MLCONTROL_ESCAPE;
+			u32 ml_excess = sendml - LZB_MLCONTROL_ESCAPE;
 			LZB_PutExcessML(cp,ml_excess);
 		}		
 	}
@@ -1652,27 +1652,27 @@ static RADFORCEINLINE U8 * LZB_Output(U8 * cp, S32 lrl, const U8 * literals,  S3
 
 #if LZB_FORCELASTLRL9
 
-static RADINLINE U8 * LZB_OutputLast(U8 * cp, S32 lrl, const U8 * literals )
+static RADINLINE u8 * LZB_OutputLast(u8 * cp, i32 lrl, const u8 * literals )
 {
 	RR_ASSERT( lrl >= 0 );
 	
-	//U32 ml = 0;
-	//U32 mo = 0;
+	//u32 ml = 0;
+	//u32 mo = 0;
   
-	U32 lrl_in_control = RR_MIN(lrl,LZB_LRL_ESCAPE);
+	u32 lrl_in_control = RR_MIN(lrl,LZB_LRL_ESCAPE);
 	
 #if LZB_END_WITH_LITERALS
 	// lrl_in_control must be at least 9
 	lrl_in_control = RR_MAX(lrl_in_control,9);
 #endif
 	
-	U32 control = lrl_in_control;
+	u32 control = lrl_in_control;
   
-	*cp++ = (U8) control;
+	*cp++ = (u8) control;
 	
 	if ( lrl_in_control == LZB_LRL_ESCAPE )
 	{
-		U32 lrl_excess = lrl - LZB_LRL_ESCAPE;
+		u32 lrl_excess = lrl - LZB_LRL_ESCAPE;
 		LZB_PutExcessLRL(cp,lrl_excess);
 	}
 	
@@ -1684,7 +1684,7 @@ static RADINLINE U8 * LZB_OutputLast(U8 * cp, S32 lrl, const U8 * literals )
 
 #else
 
-static RADINLINE U8 * LZB_OutputLast(U8 * cp, S32 lrl, const U8 * literals )
+static RADINLINE u8 * LZB_OutputLast(u8 * cp, i32 lrl, const u8 * literals )
 {
 	cp = LZB_Output(cp,lrl,literals,LZB_MML,1);
 	
@@ -1701,7 +1701,7 @@ static RADINLINE U8 * LZB_OutputLast(U8 * cp, S32 lrl, const U8 * literals )
 static void rr_lzb_simple_context_init(rr_lzb_simple_context * ctx) //, const void * base)
 {
 	RR_ASSERT( ctx->m_tableSizeBits >= 12 && ctx->m_tableSizeBits <= 24 );
-	memset(ctx->m_hashTable,0,sizeof(U16)*((SINTa)1<<ctx->m_tableSizeBits));
+	memset(ctx->m_hashTable,0,sizeof(u16)*((SINTa)1<<ctx->m_tableSizeBits));
 }
 
 //===============================================================
@@ -1766,51 +1766,51 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 	//SIMPLEPROFILE_SCOPE_N(lzbfast_sub,rawLen);
 	//THREADPROFILEFUNC();
 	
-	U8 * cp = (U8 *)comp;
-	U8 * compExpandedPtr = cp + rawLen - 8;
+	u8 * cp = (u8 *)comp;
+	u8 * compExpandedPtr = cp + rawLen - 8;
   
-	const U8 * rp = (const U8 *)raw;
-	const U8 * rpEnd = rp+rawLen;
+	const u8 * rp = (const u8 *)raw;
+	const u8 * rpEnd = rp+rawLen;
   
-	const U8 * rpMatchEnd = rpEnd - LZB_END_OF_BLOCK_NO_MATCH_ZONE;
+	const u8 * rpMatchEnd = rpEnd - LZB_END_OF_BLOCK_NO_MATCH_ZONE;
 	
-	const U8 * rpEndSafe = rpMatchEnd - LZB_MML;
+	const u8 * rpEndSafe = rpMatchEnd - LZB_MML;
 	
-	if ( rpEndSafe <= (U8 *)raw )
+	if ( rpEndSafe <= (u8 *)raw )
 	{
 		// can't compress
 		return rawLen+1;
 	}
 	
-	const U8 * literals_start = rp;
+	const u8 * literals_start = rp;
   
 #if FAST_HASH_DEPTH > 1
 	int hashCycle = 0;
 #endif
   
-	U16 * hashTable16 = fh->m_hashTable;
+	u16 * hashTable16 = fh->m_hashTable;
 	
 	int hashTableSizeBits = fh->m_tableSizeBits;
-	U32 hash_table_mask = (U32)((1UL<<(hashTableSizeBits - FAST_HASH_DEPTH_SHIFT)) - 1);
+	u32 hash_table_mask = (u32)((1UL<<(hashTableSizeBits - FAST_HASH_DEPTH_SHIFT)) - 1);
 	
-	const U8 * zeroPosPtr = (const U8 *)raw;
+	const u8 * zeroPosPtr = (const u8 *)raw;
   
 	// first byte is always a literal
 	rp++;
 	
 	for(;;)
 	{	
-		S32 matchOff;
+		i32 matchOff;
     
 		UINTr failedMatches = (1<<FAST_MULTISTEP_LITERALS_SHIFT) + 3;
 		
-		U32 rp32 = read32(rp);
-		U32 hash = FAST_HASH_FUNC(rp, rp32 );
+		u32 rp32 = read32(rp);
+		u32 hash = FAST_HASH_FUNC(rp, rp32 );
 		SINTa curpos;
-		const U8 * hashrp;
+		const u8 * hashrp;
     
 #ifdef DO_FAST_2ND_HASH
-		U32 hash2;
+		u32 hash2;
 #endif
     
 		// literals :
@@ -1827,9 +1827,9 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 			for(int d=0;d<FAST_HASH_DEPTH;d++)
 #endif
 			{
-				U16 hashpos16 = hashTable16[ FAST_HASH_INDEX(hash,d) ];
+				u16 hashpos16 = hashTable16[ FAST_HASH_INDEX(hash,d) ];
 				
-				matchOff = (U16)(curpos - hashpos16);
+				matchOff = (u16)(curpos - hashpos16);
 				RR_ASSERT( matchOff >= 0 );
 				
 				hashrp = rp - matchOff;
@@ -1837,7 +1837,7 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 				//if ( matchOff <= LZB_MAX_OFFSET )
 				RR_ASSERT( matchOff <= LZB_MAX_OFFSET );
 				{							
-					const U32 hashrp32 = read32(hashrp);
+					const u32 hashrp32 = read32(hashrp);
           
 					if ( rp32 == hashrp32 && matchOff != 0 )
 					{
@@ -1852,16 +1852,16 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 			for(int d=0;d<FAST_HASH_DEPTH;d++)
 #endif
 			{
-				U16 hashpos16 = hashTable16[ FAST_HASH_INDEX(hash2,d) ];
+				u16 hashpos16 = hashTable16[ FAST_HASH_INDEX(hash2,d) ];
 				
-				matchOff = (U16)(curpos - hashpos16);
+				matchOff = (u16)(curpos - hashpos16);
 				RR_ASSERT( matchOff >= 0 );
 				
 				hashrp = rp - matchOff;
         
 				RR_ASSERT( matchOff <= LZB_MAX_OFFSET );
 				{							
-					const U32 hashrp32 = read32(hashrp);
+					const u32 hashrp32 = read32(hashrp);
           
 					if ( rp32 == hashrp32 && matchOff != 0 )
 					{
@@ -1875,12 +1875,12 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 			//---------------------------
 			// update hash :
       
-			hashTable16[ FAST_HASH_INDEX(hash,hashCycle) ] = (U16) curpos;
+			hashTable16[ FAST_HASH_INDEX(hash,hashCycle) ] = (u16) curpos;
       
 #ifdef DO_FAST_2ND_HASH
 			// do NOT step hashCycle !
 			//hashCycle = (hashCycle+1)&FAST_HASH_CYCLE_MASK;
-			hashTable16[ FAST_HASH_INDEX(hash2,hashCycle) ] = (U16) curpos;
+			hashTable16[ FAST_HASH_INDEX(hash2,hashCycle) ] = (u16) curpos;
 #endif
 			
 #if FAST_HASH_DEPTH > 1
@@ -1911,12 +1911,12 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
     // update hash now so lazy can see it :
     
 #if 1 // pretty important to compression
-		hashTable16[ FAST_HASH_INDEX(hash,hashCycle) ] = (U16) curpos;
+		hashTable16[ FAST_HASH_INDEX(hash,hashCycle) ] = (u16) curpos;
     
 #ifdef DO_FAST_2ND_HASH
 		// do NOT step hashCycle !
 		//hashCycle = (hashCycle+1)&FAST_HASH_CYCLE_MASK;
-		hashTable16[ FAST_HASH_INDEX(hash2,hashCycle) ] = (U16) curpos;
+		hashTable16[ FAST_HASH_INDEX(hash2,hashCycle) ] = (u16) curpos;
 #endif
 		
 #if FAST_HASH_DEPTH > 1
@@ -1926,7 +1926,7 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 		
 		//-----------------------------------
 		
-		const U8 * match_start = rp;
+		const u8 * match_start = rp;
 		rp += 4;
     
 		while( rp < rpEndSafe )
@@ -1956,36 +1956,36 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 #ifdef DO_FAST_LAZY_MATCH
 		if (rp< rpEndSafe)
 		{
-			const U8 * lazyrp = match_start + 1;
+			const u8 * lazyrp = match_start + 1;
 			//SINTa lazypos = rrPtrDiff(lazyrp - zeroPosPtr);
 			SINTa lazypos = curpos + 1;
 			RR_ASSERT( lazypos == rrPtrDiff(lazyrp - zeroPosPtr) );
       
-			U32 lazyrp32 = read32(lazyrp);
+			u32 lazyrp32 = read32(lazyrp);
       
-			const U8 * lazyhashrp;	
+			const u8 * lazyhashrp;	
 			SINTa lazymatchOff;					
 			
-			U32 lazyHash = FAST_HASH_FUNC(lazyrp, lazyrp32 );
+			u32 lazyHash = FAST_HASH_FUNC(lazyrp, lazyrp32 );
 			
 #ifdef DO_FAST_2ND_HASH
-			U32 lazyhash2 = LZB_SecondHash4(lazyrp32) & hash_table_mask;
+			u32 lazyhash2 = LZB_SecondHash4(lazyrp32) & hash_table_mask;
 #endif
 			
 #if FAST_HASH_DEPTH > 1
 			for(int d=0;d<FAST_HASH_DEPTH;d++)
 #endif
 			{			
-				U16 hashpos16 = hashTable16[ FAST_HASH_INDEX(lazyHash,d) ];
+				u16 hashpos16 = hashTable16[ FAST_HASH_INDEX(lazyHash,d) ];
 				
-				lazymatchOff = (U16)(lazypos - hashpos16);
+				lazymatchOff = (u16)(lazypos - hashpos16);
 				RR_ASSERT( lazymatchOff >= 0 );
 				
 				RR_ASSERT( lazymatchOff <= LZB_MAX_OFFSET );
 				{
 					lazyhashrp = lazyrp - lazymatchOff;
           
-					const U32 hashrp32 = read32(lazyhashrp);
+					const u32 hashrp32 = read32(lazyhashrp);
           
 					if ( lazyrp32 == hashrp32 && lazymatchOff != 0 )
 					{
@@ -1999,16 +1999,16 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 			for(int d=0;d<FAST_HASH_DEPTH;d++)
 #endif
 			{
-				U16 hashpos16 = hashTable16[ FAST_HASH_INDEX(lazyhash2,d) ];
+				u16 hashpos16 = hashTable16[ FAST_HASH_INDEX(lazyhash2,d) ];
 				
-				lazymatchOff = (U16)(lazypos - hashpos16);
+				lazymatchOff = (u16)(lazypos - hashpos16);
 				RR_ASSERT( lazymatchOff >= 0 );
 				
 				RR_ASSERT( lazymatchOff <= LZB_MAX_OFFSET );
 				{
 					lazyhashrp = lazyrp - lazymatchOff;
           
-					const U32 hashrp32 = read32(lazyhashrp);
+					const u32 hashrp32 = read32(lazyhashrp);
           
 					if ( lazyrp32 == hashrp32 && lazymatchOff != 0 )
 					{
@@ -2042,7 +2042,7 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 				}
 				lazyrp = RR_MIN(lazyrp,rpMatchEnd);
 				
-				//S32 lazymatchLen = rrPtrDiff32( lazyrp - (match_start+1) );
+				//i32 lazymatchLen = rrPtrDiff32( lazyrp - (match_start+1) );
 				//RR_ASSERT( lazymatchLen >= 4 );
         
 				if ( lazyrp >= rp+3 )
@@ -2062,11 +2062,11 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 					// because I do an update of hash at all positions in the match including first!
 #if 1	 // with update disabled - 233690274			    
           
-					hashTable16[ FAST_HASH_INDEX(lazyHash,hashCycle) ] = (U16) lazypos;
+					hashTable16[ FAST_HASH_INDEX(lazyHash,hashCycle) ] = (u16) lazypos;
           
 #ifdef DO_FAST_2ND_HASH
 					// do NOT step hashCycle !
-					hashTable16[ FAST_HASH_INDEX(lazyhash2,hashCycle) ] = (U16) lazypos;
+					hashTable16[ FAST_HASH_INDEX(lazyhash2,hashCycle) ] = (u16) lazypos;
 #endif
 					
 #if FAST_HASH_DEPTH > 1
@@ -2077,7 +2077,7 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 					
 					// and then drop out and do the lazy match :
 					//matchLen = lazymatchLen;
-					matchOff = (S32)lazymatchOff;
+					matchOff = (i32)lazymatchOff;
 					rp = lazyrp;
 					hashrp = lazyhashrp;
 				}	
@@ -2104,7 +2104,7 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 			// back up start of match that we missed
 			// make sure we don't read off the start of the array
 			
-			const U8 * rpm1 = match_start-1;
+			const u8 * rpm1 = match_start-1;
 			if ( rpm1 >= literals_start && hashrp > zeroPosPtr && rpm1[0] == hashrp[-1] )
 			{
 				rpm1--; hashrp-= 2;
@@ -2122,14 +2122,14 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 		}
 #endif
 		
-		S32 matchLen = rrPtrDiff32( rp - match_start );
+		i32 matchLen = rrPtrDiff32( rp - match_start );
 		RR_ASSERT( matchLen >= 4 );
     
 		//===============================================
 		// chose a match
 		//	output LRL (if any) and match
 		
-		S32 cur_lrl = rrPtrDiff32(match_start - literals_start);
+		i32 cur_lrl = rrPtrDiff32(match_start - literals_start);
     
 		// catch expansion while writing :
 		if_unlikely ( cp+cur_lrl >= compExpandedPtr )
@@ -2150,11 +2150,11 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 #ifdef DO_FAST_UPDATE_MATCH_HASHES
 		// don't bother if it takes us to the end :      
 		//	(this check is not for speed it's to avoid the access violation)          
-		const U8 * ptr = match_start+1;
-		U16 pos16 = (U16) rrPtrDiff( ptr - zeroPosPtr );
+		const u8 * ptr = match_start+1;
+		u16 pos16 = (u16) rrPtrDiff( ptr - zeroPosPtr );
 		for(;ptr<rp;ptr++)
 		{
-			U32 hash_result = FAST_HASH_FUNC( ptr, read32(ptr) );
+			u32 hash_result = FAST_HASH_FUNC( ptr, read32(ptr) );
 			hashTable16[ FAST_HASH_INDEX(hash_result,hashCycle) ] = pos16; pos16++;
 			//hashCycle = (hashCycle+1)&FAST_HASH_CYCLE_MASK;
 			// helps a bit to NOT step cycle here
@@ -2181,7 +2181,7 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 		cp = LZB_OutputLast(cp,cur_lrl,literals_start);
 	}
   
-	SINTa compLen = rrPtrDiff( cp - (U8 *)comp );
+	SINTa compLen = rrPtrDiff( cp - (u8 *)comp );
   
 	return compLen;
 }
@@ -2236,41 +2236,41 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 	//SIMPLEPROFILE_SCOPE_N(lzbfast_sub,rawLen);
 	//THREADPROFILEFUNC();
 	
-	U8 * cp = (U8 *)comp;
-	U8 * compExpandedPtr = cp + rawLen - 8;
+	u8 * cp = (u8 *)comp;
+	u8 * compExpandedPtr = cp + rawLen - 8;
   
-	const U8 * rp = (const U8 *)raw;
-	const U8 * rpEnd = rp+rawLen;
+	const u8 * rp = (const u8 *)raw;
+	const u8 * rpEnd = rp+rawLen;
   
 	// we can match up to rpEnd
 	//	but matches can't start past rpEndSafe
-	const U8 * rpMatchEnd = rpEnd - LZB_END_OF_BLOCK_NO_MATCH_ZONE;
+	const u8 * rpMatchEnd = rpEnd - LZB_END_OF_BLOCK_NO_MATCH_ZONE;
 	
-	const U8 * rpEndSafe = rpMatchEnd - LZB_MML;
+	const u8 * rpEndSafe = rpMatchEnd - LZB_MML;
 	
-	if ( rpEndSafe <= (U8 *)raw )
+	if ( rpEndSafe <= (u8 *)raw )
 	{
 		// can't compress
 		return rawLen+1;
 	}
 	
-	const U8 * literals_start = rp;
+	const u8 * literals_start = rp;
   
-	U16 * hashTable16 = fh->m_hashTable;
+	u16 * hashTable16 = fh->m_hashTable;
 	int hashTableSizeBits = fh->m_tableSizeBits;
-	U32 hash_table_mask = (U32)((1UL<<(hashTableSizeBits)) - 1);
+	u32 hash_table_mask = (u32)((1UL<<(hashTableSizeBits)) - 1);
   
-	const U8 * zeroPosPtr = (const U8 *)raw;
+	const u8 * zeroPosPtr = (const u8 *)raw;
   
 	// first byte is always a literal
 	rp++;
 	
 	for(;;)
 	{   		
-		U32 rp32 = read32(rp);
-		U32 hash = FAST_HASH_FUNC(rp, rp32 );
-		const U8 * hashrp;
-		S32 matchOff;
+		u32 rp32 = read32(rp);
+		u32 hash = FAST_HASH_FUNC(rp, rp32 );
+		const u8 * hashrp;
+		i32 matchOff;
 		UINTr failedMatches;
     
 		// loop while no match found :
@@ -2284,14 +2284,14 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 			SINTa curpos = rrPtrDiff(rp - zeroPosPtr);	
 			RR_ASSERT( curpos >= 0 );
 			
-			U16 hashpos16 = hashTable16[hash];
-			hashTable16[ hash ] = (U16) curpos;
+			u16 hashpos16 = hashTable16[hash];
+			hashTable16[ hash ] = (u16) curpos;
 			
-			matchOff = (U16)(curpos - hashpos16);
+			matchOff = (u16)(curpos - hashpos16);
 			RR_ASSERT( matchOff >= 0 && matchOff <= LZB_MAX_OFFSET );
 			hashrp = rp - matchOff;
       
-			const U32 hashrp32 = read32(hashrp);
+			const u32 hashrp32 = read32(hashrp);
 			if ( rp32 == hashrp32 && matchOff != 0 )
 			{
 				goto found_match;
@@ -2312,14 +2312,14 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 			SINTa curpos = rrPtrDiff(rp - zeroPosPtr);	
 			RR_ASSERT( curpos >= 0 );
 			
-			U16 hashpos16 = hashTable16[hash];
-			hashTable16[ hash ] = (U16) curpos;
+			u16 hashpos16 = hashTable16[hash];
+			hashTable16[ hash ] = (u16) curpos;
       
-			matchOff = (U16)(curpos - hashpos16);
+			matchOff = (u16)(curpos - hashpos16);
 			RR_ASSERT( matchOff >= 0 && matchOff <= LZB_MAX_OFFSET );
 			hashrp = rp - matchOff;
       
-			const U32 hashrp32 = read32(hashrp);
+			const u32 hashrp32 = read32(hashrp);
       
 			if ( rp32 == hashrp32 && matchOff != 0 )
 			{
@@ -2348,7 +2348,7 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 #if LZBVF_DO_BACKUP
 		
 		// alternative backup using counter :
-		S32 cur_lrl = rrPtrDiff32(rp - literals_start);
+		i32 cur_lrl = rrPtrDiff32(rp - literals_start);
 		int neg_max_backup = - RR_MIN(cur_lrl , rrPtrDiff32(hashrp - zeroPosPtr) );
 		int neg_backup = -1;
 		if( neg_backup >= neg_max_backup && rp[neg_backup] == hashrp[neg_backup] )
@@ -2367,7 +2367,7 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 		
 #else
 		
-		S32 cur_lrl = rrPtrDiff32(rp - literals_start);
+		i32 cur_lrl = rrPtrDiff32(rp - literals_start);
 		
 #endif
     
@@ -2383,7 +2383,7 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 		// find rest of match len
 		// save pointer to start of match
 		// walk rp ahead to end of match
-		const U8 * match_start = rp;
+		const u8 * match_start = rp;
 		rp += 4;
     
 		while( rp < rpEndSafe )
@@ -2403,7 +2403,7 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 			}
 		}
 		rp = RR_MIN(rp,rpMatchEnd);
-		S32 matchLen = rrPtrDiff32( rp - match_start );
+		i32 matchLen = rrPtrDiff32( rp - match_start );
 		
 		//===============================================
 		// chose a match
@@ -2436,7 +2436,7 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 		cp = LZB_OutputLast(cp,cur_lrl,literals_start);
 	}
   
-	SINTa compLen = rrPtrDiff( cp - (U8 *)comp );
+	SINTa compLen = rrPtrDiff( cp - (u8 *)comp );
   
 	return compLen;
 }

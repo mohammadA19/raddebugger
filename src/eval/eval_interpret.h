@@ -17,10 +17,10 @@ struct E_InterpretCtx
   E_Space primary_space;
   Arch reg_arch;
   E_Space reg_space;
-  U64 reg_unwind_count;
-  U64 *module_base;
-  U64 *frame_base;
-  U64 *tls_base;
+  u64 reg_unwind_count;
+  u64 *module_base;
+  u64 *frame_base;
+  u64 *tls_base;
 };
 
 ////////////////////////////////

@@ -107,31 +107,31 @@ struct DMN_W32_Entity
   DMN_W32_Entity *prev;
   DMN_W32_Entity *parent;
   DMN_W32_EntityKind kind;
-  U32 gen;
-  U64 id;
+  u32 gen;
+  u64 id;
   HANDLE handle;
   Arch arch;
   union
   {
     struct
     {
-      U64 injection_address;
-      B32 did_first_bp;
+      u64 injection_address;
+      b32 did_first_bp;
     }
     proc;
     struct
     {
-      U64 thread_local_base;
-      U64 last_name_hash;
-      U64 name_gather_time_us;
+      u64 thread_local_base;
+      u64 last_name_hash;
+      u64 name_gather_time_us;
     }
     thread;
     struct
     {
       Rng1U64 vaddr_range;
-      U64 address_of_name_pointer;
-      B32 is_main;
-      B32 name_is_unicode;
+      u64 address_of_name_pointer;
+      b32 is_main;
+      b32 name_is_unicode;
     }
     module;
   };
@@ -151,7 +151,7 @@ struct DMN_W32_EntityIDHashNode
 {
   DMN_W32_EntityIDHashNode *next;
   DMN_W32_EntityIDHashNode *prev;
-  U64 id;
+  u64 id;
   DMN_W32_Entity *entity;
 };
 
@@ -170,8 +170,8 @@ struct DMN_W32_EntityIDHashSlot
 
 struct DMN_W32_InjectedBreak
 {
-  U64 code;
-  U64 user_data;
+  u64 code;
+  u64 user_data;
 };
 
 #define DMN_W32_INJECTED_CODE_SIZE 32
@@ -184,7 +184,7 @@ struct DMN_W32_InjectedBreak
 struct DMN_W32_ImageInfo
 {
   Arch arch;
-  U32 size;
+  u32 size;
 };
 
 ////////////////////////////////
@@ -205,7 +205,7 @@ struct DMN_W32_Shared
   
   // rjf: access locking mechanism
   OS_Handle access_mutex;
-  B32 access_run_state;
+  b32 access_run_state;
   
   // rjf: detaching info
   Arena *detach_arena;
@@ -215,23 +215,23 @@ struct DMN_W32_Shared
   Arena *entities_arena;
   DMN_W32_Entity *entities_base;
   DMN_W32_Entity *entities_first_free;
-  U64 entities_count;
+  u64 entities_count;
   DMN_W32_EntityIDHashSlot *entities_id_hash_slots;
-  U64 entities_id_hash_slots_count;
+  u64 entities_id_hash_slots_count;
   DMN_W32_EntityIDHashNode *entities_id_hash_node_free;
   
   // rjf: launch state
-  B32 new_process_pending;
+  b32 new_process_pending;
   
   // rjf: run results
-  B32 resume_needed;
-  U32 resume_pid;
-  U32 resume_tid;
-  B32 exception_not_handled;
+  b32 resume_needed;
+  u32 resume_pid;
+  u32 resume_tid;
+  b32 exception_not_handled;
   
   // rjf: halting info
   DMN_Handle halter_process;
-  U32 halter_tid;
+  u32 halter_tid;
 };
 
 ////////////////////////////////
@@ -240,7 +240,7 @@ struct DMN_W32_Shared
 global DMN_W32_Shared *dmn_w32_shared = 0;
 global DMN_W32_Entity dmn_w32_entity_nil = {&dmn_w32_entity_nil, &dmn_w32_entity_nil, &dmn_w32_entity_nil, &dmn_w32_entity_nil, &dmn_w32_entity_nil};
 global DMN_W32_GetThreadDescriptionFunctionType *dmn_w32_GetThreadDescription = 0;
-@(thread_local) B32 dmn_w32_ctrl_thread = 0;
+@(thread_local) b32 dmn_w32_ctrl_thread = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers

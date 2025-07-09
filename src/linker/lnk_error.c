@@ -3,7 +3,7 @@
 
 static LNK_ErrorMode g_error_mode_arr[LNK_Error_Count];
 static LNK_ErrorCodeStatus g_error_code_status_arr[LNK_Error_Count];
-static B32 g_log_status[LNK_Log_Count];
+static b32 g_log_status[LNK_Log_Count];
 
 internal void
 lnk_exit(int code)

@@ -36,7 +36,7 @@ str8_lit_comp("Breakpoint"),
 str8_lit_comp("AddressRangeAnnotation"),
 };
 
-U32 ctrl_exception_code_kind_code_table[38] =
+u32 ctrl_exception_code_kind_code_table[38] =
 {
 0,
 0x40010005,
@@ -162,7 +162,7 @@ str8_lit_comp("win32_sanitizer_raw_access_violation"),
 str8_lit_comp("win32_directx_debug_layer"),
 };
 
-B8 ctrl_exception_code_kind_default_enable_table[38] =
+b8 ctrl_exception_code_kind_default_enable_table[38] =
 {
 0,
 1,

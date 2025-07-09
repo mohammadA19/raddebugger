@@ -35,11 +35,11 @@ global R_Handle r_window = {0};
 ////////////////////////////////
 //~ rjf: Entry Points
 
-internal B32
+internal b32
 frame(void)
 {
   ProfBeginFunction();
-  B32 quit = 0;
+  b32 quit = 0;
   Temp scratch = scratch_begin(0, 0);
   OS_EventList events = os_get_events(scratch.arena, 0);
   for(OS_Event *evt = events.first; evt != 0; evt = evt->next)
@@ -58,9 +58,9 @@ frame(void)
   {
     Vec2F32 mouse = os_mouse_from_window(os_window);
     FNT_Tag font = fnt_tag_from_path(str8_lit("C:/devel/raddebugger/data/Inconsolata-Regular.ttf"));
-    for(F32 x = 0; x < 500; x += 5.f)
+    for(f32 x = 0; x < 500; x += 5.f)
     {
-      for(F32 y = 0; y < 500; y += 5.f)
+      for(f32 y = 0; y < 500; y += 5.f)
       {
         dr_text(font, 16.f, 0, 0, FNT_RasterFlag_Smooth|FNT_RasterFlag_Hinted, v2f32(30 + x + mouse.x, 30 + y + mouse.y), v4f32(1, 1, 1, 1), str8_lit("This is a test."));
       }

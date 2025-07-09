@@ -8,7 +8,7 @@
 //~ rjf: Lookup Helpers
 
 internal String8
-str8_from_rdi_string_idx(RDI_Parsed *rdi, U32 idx)
+str8_from_rdi_string_idx(RDI_Parsed *rdi, u32 idx)
 {
   String8 result = {0};
   result.str = rdi_string_from_idx(rdi, idx, &result.size);
@@ -119,7 +119,7 @@ rdi_string_from_name_map_kind(RDI_NameMapKind kind)
 }
 
 internal String8
-rdi_string_from_reg_code_x86(U64 reg_code)
+rdi_string_from_reg_code_x86(u64 reg_code)
 {
   String8 result = {0};
   switch(reg_code)
@@ -133,7 +133,7 @@ rdi_string_from_reg_code_x86(U64 reg_code)
 }
 
 internal String8
-rdi_string_from_reg_code_x64(U64 reg_code)
+rdi_string_from_reg_code_x64(u64 reg_code)
 {
   String8 result = {0};
   switch(reg_code)
@@ -147,7 +147,7 @@ rdi_string_from_reg_code_x64(U64 reg_code)
 }
 
 internal String8
-rdi_string_from_reg_code(Arena *arena, RDI_Arch arch, U64 reg_code)
+rdi_string_from_reg_code(Arena *arena, RDI_Arch arch, u64 reg_code)
 {
   String8 result = {0};
   switch(arch)
@@ -253,13 +253,13 @@ rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, String8 bc)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List fmt = {0};
-  for(U64 cursor = 0; cursor < bc.size; )
+  for(u64 cursor = 0; cursor < bc.size; )
   {
     RDI_EvalOp op = RDI_EvalOp_Stop;
     cursor += str8_deserial_read_struct(bc, cursor, &op);
     
-    U16 ctrlbits = rdi_eval_op_ctrlbits_table[op];
-    U32 imm_size = RDI_DECODEN_FROM_CTRLBITS(ctrlbits);
+    u16 ctrlbits = rdi_eval_op_ctrlbits_table[op];
+    u32 imm_size = RDI_DECODEN_FROM_CTRLBITS(ctrlbits);
     
     String8 imm = {0};
     cursor += str8_deserial_read_block(bc, cursor, imm_size, &imm);
@@ -274,46 +274,46 @@ rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, String8 bc)
       case RDI_EvalOp_Noop: break;
       case RDI_EvalOp_Cond: break;
       case RDI_EvalOp_Skip:  {
-        imm_fmt = push_str8f(scratch.arena, "%u", *(U16 *)imm.str);
+        imm_fmt = push_str8f(scratch.arena, "%u", *(u16 *)imm.str);
       } break;
       case RDI_EvalOp_MemRead: {
-        imm_fmt = push_str8f(scratch.arena, "%u", *(U8 *)imm.str);
+        imm_fmt = push_str8f(scratch.arena, "%u", *(u8 *)imm.str);
       } break;
       case RDI_EvalOp_RegRead: {
-        U32         regread   = *(U32 *)imm.str;
+        u32         regread   = *(u32 *)imm.str;
         RDI_RegCode reg_code  = Extract8(regread, 0);
-        U8          byte_size = Extract8(regread, 1);
-        U8          byte_off  = Extract8(regread, 2);
+        u8          byte_size = Extract8(regread, 1);
+        u8          byte_off  = Extract8(regread, 2);
         String8     reg_str   = rdi_string_from_reg_code(scratch.arena, arch, reg_code);
         imm_fmt = push_str8f(scratch.arena, "%S+%I64u, Size: %u", reg_str, byte_off, byte_size);
       } break;
       case RDI_EvalOp_RegReadDyn: break;
       case RDI_EvalOp_FrameOff: {
-        imm_fmt = push_str8f(scratch.arena, "%+lld", *(S64 *)imm.str);
+        imm_fmt = push_str8f(scratch.arena, "%+lld", *(i64 *)imm.str);
       } break;
       case RDI_EvalOp_ModuleOff: {
-        imm_fmt = push_str8f(scratch.arena, "%u", *(U32 *)imm.str);
+        imm_fmt = push_str8f(scratch.arena, "%u", *(u32 *)imm.str);
       } break;
       case RDI_EvalOp_TLSOff: {
-        imm_fmt = push_str8f(scratch.arena, "%u", *(U32 *)imm.str);
+        imm_fmt = push_str8f(scratch.arena, "%u", *(u32 *)imm.str);
       } break;
       case RDI_EvalOp_ConstU8: {
-        imm_fmt = push_str8f(scratch.arena, "%u", *(U8 *)imm.str);
+        imm_fmt = push_str8f(scratch.arena, "%u", *(u8 *)imm.str);
       } break;
       case RDI_EvalOp_ConstU16: {
-        imm_fmt = push_str8f(scratch.arena, "%u", *(U16 *)imm.str);
+        imm_fmt = push_str8f(scratch.arena, "%u", *(u16 *)imm.str);
       } break;
       case RDI_EvalOp_ConstU32: {
-        imm_fmt = push_str8f(scratch.arena, "%u", *(U32 *)imm.str);
+        imm_fmt = push_str8f(scratch.arena, "%u", *(u32 *)imm.str);
       } break;
       case RDI_EvalOp_ConstU64: {
-        imm_fmt = push_str8f(scratch.arena, "%llu", *(U64 *)imm.str);
+        imm_fmt = push_str8f(scratch.arena, "%llu", *(u64 *)imm.str);
       } break;
       case RDI_EvalOp_ConstU128: {
-        imm_fmt = push_str8f(scratch.arena, "Lo: %llu, Hi: %llu", *(U64 *)imm.str, *((U64 *)imm.str + 1));
+        imm_fmt = push_str8f(scratch.arena, "Lo: %llu, Hi: %llu", *(u64 *)imm.str, *((u64 *)imm.str + 1));
       } break;
       case RDI_EvalOp_ConstString: {
-        U8      size   = *(U8 *)imm.str;
+        u8      size   = *(u8 *)imm.str;
         String8 string = {0};
         cursor += str8_deserial_read_block(bc, cursor, size, &string);
         
@@ -341,41 +341,41 @@ rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, String8 bc)
       case RDI_EvalOp_GrEq:
       case RDI_EvalOp_Less:
       case RDI_EvalOp_Grtr: {
-        U8 eval_type_group = *(U8 *)imm.str;
+        u8 eval_type_group = *(u8 *)imm.str;
         imm_fmt = rdi_string_from_eval_type_group(scratch.arena, eval_type_group);
       } break;
       case RDI_EvalOp_Trunc:
       case RDI_EvalOp_TruncSigned: {
-        U8 trunc = *(U8 *)imm.str;
+        u8 trunc = *(u8 *)imm.str;
         imm_fmt = push_str8f(scratch.arena, "%u", trunc);
       } break;
       case RDI_EvalOp_Convert: {
-        U16 convert = *(U16 *)imm.str;
-        U8 in  = Extract8(convert, 0);
-        U8 out = Extract8(convert, 1);
+        u16 convert = *(u16 *)imm.str;
+        u8 in  = Extract8(convert, 0);
+        u8 out = Extract8(convert, 1);
         String8 in_str  = rdi_string_from_eval_type_group(scratch.arena, in);
         String8 out_str = rdi_string_from_eval_type_group(scratch.arena, out);
         imm_fmt = push_str8f(scratch.arena, "in: %S out: %S", in_str, out_str);
       } break;
       case RDI_EvalOp_Pick: {
-        U8 pick = *(U8 *)imm.str;
+        u8 pick = *(u8 *)imm.str;
         imm_fmt = push_str8f(scratch.arena, "%u", pick);
       } break;
       case RDI_EvalOp_Pop: break;
       case RDI_EvalOp_Insert: {
-        U8 insert = *(U8 *)imm.str;
+        u8 insert = *(u8 *)imm.str;
         imm_fmt = push_str8f(scratch.arena, "%u", insert);
       } break;
       case RDI_EvalOp_ValueRead: {
-        U8 bytes_to_read = *(U8 *)imm.str;
+        u8 bytes_to_read = *(u8 *)imm.str;
         imm_fmt = push_str8f(scratch.arena, "%u", bytes_to_read);
       } break;
       case RDI_EvalOp_ByteSwap: {
-        U8 byte_size = *(U8 *)imm.str;
+        u8 byte_size = *(u8 *)imm.str;
         imm_fmt = push_str8f(scratch.arena, "%u", byte_size);
       } break;
       case RDI_EvalOp_CallSiteValue: {
-        U32     call_site_bc_size = *(U32 *)imm.str;
+        u32     call_site_bc_size = *(u32 *)imm.str;
         String8 call_site_bc      = {0};
         cursor += str8_deserial_read_block(bc, cursor, call_site_bc_size, &call_site_bc);
         
@@ -383,13 +383,13 @@ rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, String8 bc)
         imm_fmt = push_str8f(scratch.arena, "%S", call_site_str);
       } break;
       case RDI_EvalOp_PartialValue: {
-        U32 partial_value_size = *(U32 *)imm.str;
+        u32 partial_value_size = *(u32 *)imm.str;
         imm_fmt = push_str8f(scratch.arena, "%u", partial_value_size);
       } break;
       case RDI_EvalOp_PartialValueBit: {
-        U64 partial_value = *(U64 *)imm.str;
-        U32 bit_size = Extract32(partial_value, 0);
-        U32 bit_off  = Extract32(partial_value, 1);
+        u64 partial_value = *(u64 *)imm.str;
+        u32 bit_size = Extract32(partial_value, 0);
+        u32 bit_off  = Extract32(partial_value, 1);
         imm_fmt = push_str8f(scratch.arena, "Off: %u, Size: %u", bit_size, bit_off);
       } break;
     }
@@ -414,13 +414,13 @@ rdi_strings_from_locations(Arena *arena, RDI_Parsed *rdi, RDI_Arch arch, Rng1U64
 {
   String8List strings = {0};
   Temp scratch = scratch_begin(&arena, 1);
-  U64 location_block_count = 0;
-  U64 location_data_size   = 0;
+  u64 location_block_count = 0;
+  u64 location_data_size   = 0;
   RDI_LocationBlock *location_block_array = rdi_table_from_name(rdi, LocationBlocks, &location_block_count);
   RDI_U8 *location_data        = rdi_table_from_name(rdi, LocationData,   &location_data_size);
   Rng1U64 location_block_range_clamped = r1u64(ClampTop(location_block_range.min, location_block_count),
                                                ClampTop(location_block_range.max, location_block_count));
-  for(U64 block_idx = location_block_range_clamped.min;
+  for(u64 block_idx = location_block_range_clamped.min;
       block_idx < location_block_range_clamped.max;
       block_idx +=1)
   {
@@ -441,8 +441,8 @@ rdi_strings_from_locations(Arena *arena, RDI_Parsed *rdi, RDI_Arch arch, Rng1U64
     }
     else
     {
-      U8               *loc_data_opl = location_data + location_data_size;
-      U8               *loc_base_ptr = location_data + block_ptr->location_data_off;
+      u8               *loc_data_opl = location_data + location_data_size;
+      u8               *loc_base_ptr = location_data + block_ptr->location_data_off;
       RDI_LocationKind  kind         = *(RDI_LocationKind *)loc_base_ptr;
       switch(kind)
       {
@@ -554,7 +554,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   //
   DumpSubset(BinarySections)
   {
-    U64 count = 0;
+    u64 count = 0;
     RDI_BinarySection *v = rdi_table_from_name(rdi, BinarySections, &count);
     dumpf("\n  // %-16s %-16s %-12s %-12s %-12s %s\n", "name", "flags", "voff_first", "voff_opl", "foff_first", "foff_opl");
     for idx in 0..<count {
@@ -580,13 +580,13 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   DumpSubset(FilePaths)
   {
     dumpf("\n");
-    U64 count = 0;
+    u64 count = 0;
     RDI_FilePathNode *v = rdi_table_from_name(rdi, FilePathNodes, &count);
     RDI_FilePathNode *nil = &v[0];
     for idx in 0..<count {
       RDI_FilePathNode *root = &v[idx];
       if(root->parent_path_node != 0) { continue; }
-      S64 depth = 1;
+      i64 depth = 1;
       for(RDI_FilePathNode *n = root, *rec_next = nil; n != nil; n = rec_next)
       {
         // rjf: dump
@@ -596,11 +596,11 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
                 depth*2, indent.str,
                 str8_from_rdi_string_idx(rdi, n->name_string_idx),
                 n->first_child ? ":" : "",
-                (U64)(n - v));
+                (u64)(n - v));
         }
         else
         {
-          dumpf("%.*s'%S': source_file: %u // file_path_node[%I64u]\n", depth*2, indent.str, str8_from_rdi_string_idx(rdi, n->name_string_idx), n->source_file_idx, (U64)(n - v));
+          dumpf("%.*s'%S': source_file: %u // file_path_node[%I64u]\n", depth*2, indent.str, str8_from_rdi_string_idx(rdi, n->name_string_idx), n->source_file_idx, (u64)(n - v));
         }
         
         // rjf: find next node
@@ -631,7 +631,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   //
   DumpSubset(SourceFiles)
   {
-    U64 count = 0;
+    u64 count = 0;
     RDI_SourceFile *v = rdi_table_from_name(rdi, SourceFiles, &count);
     for idx in 0..<count {
       RDI_SourceFile *source_file = &v[idx];
@@ -649,7 +649,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   //
   DumpSubset(Units)
   {
-    U64 count = 0;
+    u64 count = 0;
     RDI_Unit *v = rdi_table_from_name(rdi, Units, &count);
     for idx in 0..<count {
       RDI_Unit *unit = &v[idx];
@@ -673,7 +673,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   //
   DumpSubset(UnitVMap)
   {
-    U64 count = 0;
+    u64 count = 0;
     RDI_VMapEntry *v = rdi_table_from_name(rdi, UnitVMap, &count);
     dumpf("\n");
     for idx in 0..<count {
@@ -686,7 +686,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   //
   DumpSubset(LineTables)
   {
-    U64 count = 0;
+    u64 count = 0;
     RDI_LineTable *v = rdi_table_from_name(rdi, LineTables, &count);
     for idx in 0..<count {
       RDI_LineTable *line_table = &v[idx];
@@ -694,8 +694,8 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
       rdi_parsed_from_line_table(rdi, line_table, &parsed_line_table);
       dumpf("\n  // line_table[%I64u]\n  {\n", idx);
       for line_idx in 0..<parsed_line_table.count {
-        U64         first = parsed_line_table.voffs[line_idx];
-        U64         opl   = parsed_line_table.voffs[line_idx + 1];
+        u64         first = parsed_line_table.voffs[line_idx];
+        u64         opl   = parsed_line_table.voffs[line_idx + 1];
         RDI_Line   *line  = parsed_line_table.lines + line_idx;
         RDI_Column *col   = 0;
         if(line_idx < parsed_line_table.col_count)
@@ -720,7 +720,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   //
   DumpSubset(SourceLineMaps)
   {
-    U64 count = 0;
+    u64 count = 0;
     RDI_SourceLineMap *v = rdi_table_from_name(rdi, SourceLineMaps, &count);
     for idx in 0..<count {
       Temp scratch = scratch_begin(&arena, 1);
@@ -730,9 +730,9 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
       for line_num_idx in 0..<line_map.count {
         Temp temp = temp_begin(scratch.arena);
         String8List list = {0};
-        U32 voff_lo = line_map.ranges[line_num_idx];
-        U32 voff_hi = ClampTop(line_map.ranges[line_num_idx + 1], line_map.voff_count);
-        for(U64 voff_idx = voff_lo; voff_idx < voff_hi; voff_idx += 1)
+        u32 voff_lo = line_map.ranges[line_num_idx];
+        u32 voff_hi = ClampTop(line_map.ranges[line_num_idx + 1], line_map.voff_count);
+        for(u64 voff_idx = voff_lo; voff_idx < voff_hi; voff_idx += 1)
         {
           str8_list_pushf(temp.arena, &list, "%#llx", line_map.voffs[voff_idx]);
         }
@@ -750,7 +750,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   //
   DumpSubset(TypeNodes)
   {
-    U64 count = 0;
+    u64 count = 0;
     RDI_TypeNode *v = rdi_table_from_name(rdi, TypeNodes, &count);
     for idx in 0..<count {
       Temp scratch = scratch_begin(&arena, 1);
@@ -779,10 +779,10 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
       }
       else if(type->kind == RDI_TypeKind_Function)
       {
-        U32  param_idx_count = 0;
-        U32 *param_idx_array = rdi_idx_run_from_first_count(rdi, type->constructed.param_idx_run_first, type->constructed.count, &param_idx_count);
+        u32  param_idx_count = 0;
+        u32 *param_idx_array = rdi_idx_run_from_first_count(rdi, type->constructed.param_idx_run_first, type->constructed.count, &param_idx_count);
         String8List param_idx_strings = {0};
-        for(U32 param_idx = 0; param_idx < param_idx_count; param_idx += 1)
+        for(u32 param_idx = 0; param_idx < param_idx_count; param_idx += 1)
         {
           str8_list_pushf(scratch.arena, &param_idx_strings, "%u", param_idx_array[param_idx]);
         }
@@ -792,8 +792,8 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
       }
       else if(type->kind == RDI_TypeKind_Method)
       {
-        U32  param_idx_count = 0;
-        U32 *param_idx_array = rdi_idx_run_from_first_count(rdi, type->constructed.param_idx_run_first, type->constructed.count, &param_idx_count);
+        u32  param_idx_count = 0;
+        u32 *param_idx_array = rdi_idx_run_from_first_count(rdi, type->constructed.param_idx_run_first, type->constructed.count, &param_idx_count);
         String8 this_type_str = str8_lit("\?\?\?");
         if(param_idx_count > 0)
         {
@@ -802,7 +802,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
           param_idx_array += 1;
         }
         String8List param_idx_strings = {0};
-        for(U32 param_idx = 0; param_idx < param_idx_count; param_idx += 1)
+        for(u32 param_idx = 0; param_idx < param_idx_count; param_idx += 1)
         {
           str8_list_pushf(scratch.arena, &param_idx_strings, "%u", param_idx_array[param_idx]);
         }
@@ -836,11 +836,11 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   //
   DumpSubset(UserDefinedTypes)
   {
-    U64 count = 0;
+    u64 count = 0;
     RDI_UDT *v = rdi_table_from_name(rdi, UDTs, &count);
-    U64 all_members_count = 0;
+    u64 all_members_count = 0;
     RDI_Member *all_members = rdi_table_from_name(rdi, Members, &all_members_count);
-    U64 all_enum_members_count = 0;
+    u64 all_enum_members_count = 0;
     RDI_EnumMember *all_enum_members = rdi_table_from_name(rdi, EnumMembers, &all_enum_members_count);
     for idx in 0..<count {
       RDI_UDT *udt = &v[idx];
@@ -854,13 +854,13 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
       }
       if(udt->flags & RDI_UDTFlag_EnumMembers)
       {
-        U32 member_hi = ClampTop(udt->member_first + udt->member_count, all_enum_members_count);
-        U32 member_lo = ClampTop(udt->member_first, member_hi);
+        u32 member_hi = ClampTop(udt->member_first + udt->member_count, all_enum_members_count);
+        u32 member_lo = ClampTop(udt->member_first, member_hi);
         if(member_lo < member_hi)
         {
           dumpf("    enum_members:\n");
           dumpf("    {\n");
-          for(U32 enum_member_idx = member_lo; enum_member_idx < member_hi; enum_member_idx += 1)
+          for(u32 enum_member_idx = member_lo; enum_member_idx < member_hi; enum_member_idx += 1)
           {
             RDI_EnumMember *enum_member = &all_enum_members[enum_member_idx];
             dumpf("      '%S': %I64u\n", str8_from_rdi_string_idx(rdi, enum_member->name_string_idx), enum_member->val);
@@ -870,13 +870,13 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
       }
       else
       {
-        U32 member_hi = ClampTop(udt->member_first + udt->member_count, all_members_count);
-        U32 member_lo = ClampTop(udt->member_first, member_hi);
+        u32 member_hi = ClampTop(udt->member_first + udt->member_count, all_members_count);
+        u32 member_lo = ClampTop(udt->member_first, member_hi);
         if(member_lo < member_hi)
         {
           dumpf("    members:\n");
           dumpf("    {\n");
-          for(U32 member_idx = member_lo; member_idx < member_hi; member_idx += 1)
+          for(u32 member_idx = member_lo; member_idx < member_hi; member_idx += 1)
           {
             RDI_Member *member = &all_members[member_idx];
             String8 kind_str = rdi_string_from_member_kind(scratch.arena, member->kind);
@@ -896,7 +896,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   //
   DumpSubset(GlobalVariables)
   {
-    U64 count = 0;
+    u64 count = 0;
     RDI_GlobalVariable *v = rdi_table_from_name(rdi, GlobalVariables, &count);
     for idx in 0..<count {
       RDI_GlobalVariable *gvar = &v[idx];
@@ -916,7 +916,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   //
   DumpSubset(GlobalVariablesVMap)
   {
-    U64 count = 0;
+    u64 count = 0;
     RDI_VMapEntry *v = rdi_table_from_name(rdi, GlobalVMap, &count);
     dumpf("\n");
     for idx in 0..<count {
@@ -929,7 +929,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   //
   DumpSubset(ThreadVariables)
   {
-    U64 count = 0;
+    u64 count = 0;
     RDI_ThreadVariable *v = rdi_table_from_name(rdi, ThreadVariables, &count);
     for idx in 0..<count {
       RDI_ThreadVariable *tvar = &v[idx];
@@ -949,7 +949,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   //
   DumpSubset(Constants)
   {
-    U64 count = 0;
+    u64 count = 0;
     RDI_Constant *v = rdi_table_from_name(rdi, Constants, &count);
     for idx in 0..<count {
       RDI_Constant *cnst = &v[idx];
@@ -965,7 +965,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   DumpSubset(Procedures)
   {
     RDI_TopLevelInfo *tli = rdi_element_from_name_idx(rdi, TopLevelInfo, 0);
-    U64 count = 0;
+    u64 count = 0;
     RDI_Procedure *v = rdi_table_from_name(rdi, Procedures, &count);
     for idx in 0..<count {
       RDI_Procedure *proc = &v[idx];
@@ -996,29 +996,29 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   {
     dumpf("\n");
     RDI_TopLevelInfo *tli = rdi_element_from_name_idx(rdi, TopLevelInfo, 0);
-    U64 scope_voffs_count = 0;
-    U64 *scope_voffs = rdi_table_from_name(rdi, ScopeVOffData,  &scope_voffs_count);
-    U64 locals_count = 0;
+    u64 scope_voffs_count = 0;
+    u64 *scope_voffs = rdi_table_from_name(rdi, ScopeVOffData,  &scope_voffs_count);
+    u64 locals_count = 0;
     RDI_Local *locals = rdi_table_from_name(rdi, Locals, &locals_count);
-    U64 count = 0;
+    u64 count = 0;
     RDI_Scope *v = rdi_table_from_name(rdi, Scopes, &count);
     RDI_Scope *nil = &v[0];
     for idx in 0..<count {
       if(v[idx].parent_scope_idx != 0) { continue; }
       RDI_Scope *root = &v[idx];
-      S64 depth = 1;
+      i64 depth = 1;
       for(RDI_Scope *scope = root, *rec_next = nil; scope != nil; scope = rec_next)
       {
         // rjf: scope list(voff_range) => string
         String8 voff_range_list_string = {0};
         {
-          U32 voff_range_lo    = ClampTop(scope->voff_range_first, scope_voffs_count);
-          U32 voff_range_hi    = ClampTop(scope->voff_range_opl,   scope_voffs_count);
-          U32 voff_range_count = (voff_range_hi - voff_range_lo);
-          U64 *voff_ptr         = scope_voffs + voff_range_lo;
+          u32 voff_range_lo    = ClampTop(scope->voff_range_first, scope_voffs_count);
+          u32 voff_range_hi    = ClampTop(scope->voff_range_opl,   scope_voffs_count);
+          u32 voff_range_count = (voff_range_hi - voff_range_lo);
+          u64 *voff_ptr         = scope_voffs + voff_range_lo;
           Temp scratch = scratch_begin(&arena, 1);
           String8List list = {0};
-          for(U64 i = 0; i+2 <= voff_range_count; i += 2)
+          for(u64 i = 0; i+2 <= voff_range_count; i += 2)
           {
             str8_list_pushf(scratch.arena, &list, "[%#llx, %#llx)", voff_ptr[i+0], voff_ptr[i+1]);
           }
@@ -1041,7 +1041,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
         }
         
         // rjf: dump
-        dumpf("%.*s// scope[%I64u]\n", depth*2, indent.str, (U64)(scope - v));
+        dumpf("%.*s// scope[%I64u]\n", depth*2, indent.str, (u64)(scope - v));
         dumpf("%.*s{\n", depth*2, indent.str);
         dumpf("%.*s  proc_idx: %u // %S\n", depth*2, indent.str, scope->proc_idx, procedure_name);
         dumpf("%.*s  first_child_scope_idx: %u\n", depth*2, indent.str, scope->first_child_scope_idx);
@@ -1054,11 +1054,11 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
         dumpf("%.*s  locals:\n", depth*2, indent.str);
         dumpf("%.*s  {\n", depth*2, indent.str);
         {
-          U32 local_lo = ClampTop(scope->local_first, locals_count);
-          U32 local_hi = ClampTop(local_lo + scope->local_count, locals_count);
+          u32 local_lo = ClampTop(scope->local_first, locals_count);
+          u32 local_hi = ClampTop(local_lo + scope->local_count, locals_count);
           if(local_lo < local_hi)
           {
-            for(U32 local_idx = local_lo; local_idx < local_hi; local_idx += 1)
+            for(u32 local_idx = local_lo; local_idx < local_hi; local_idx += 1)
             {
               Temp scratch = scratch_begin(&arena, 1);
               RDI_Local *local_ptr = &locals[local_idx];
@@ -1095,7 +1095,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
                  p != nil;
                  p = rdi_element_from_name_idx(rdi, Scopes, p->parent_scope_idx), depth -= 1)
         {
-          dumpf("%.*s} // scope[/%I64u] \n", depth*2, indent.str, (U64)(p-v));
+          dumpf("%.*s} // scope[/%I64u] \n", depth*2, indent.str, (u64)(p-v));
           if(p->next_sibling_scope_idx != 0)
           {
             rec_next = rdi_element_from_name_idx(rdi, Scopes, p->next_sibling_scope_idx);
@@ -1111,7 +1111,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   //
   DumpSubset(ScopeVMap)
   {
-    U64 count = 0;
+    u64 count = 0;
     RDI_VMapEntry *v = rdi_table_from_name(rdi, ScopeVMap, &count);
     dumpf("\n");
     for idx in 0..<count {
@@ -1124,7 +1124,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   //
   DumpSubset(InlineSites)
   {
-    U64 count = 0;
+    u64 count = 0;
     RDI_InlineSite *v = rdi_table_from_name(rdi, InlineSites, &count);
     for idx in 0..<count {
       RDI_InlineSite *inline_site = &v[idx];
@@ -1151,7 +1151,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   DumpSubset(NameMaps)
   {
     Temp scratch = scratch_begin(&arena, 1);
-    U64 count = 0;
+    u64 count = 0;
     RDI_NameMap *v = rdi_table_from_name(rdi, NameMaps, &count);
     for idx in 0..<count {
       RDI_ParsedNameMap name_map = {0};
@@ -1173,12 +1173,12 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
           }
           else
           {
-            U32  idx_count = 0;
-            U32 *idx_array = rdi_idx_run_from_first_count(rdi, node_ptr->match_idx_or_idx_run_first, node_ptr->match_count, &idx_count);
+            u32  idx_count = 0;
+            u32 *idx_array = rdi_idx_run_from_first_count(rdi, node_ptr->match_idx_or_idx_run_first, node_ptr->match_count, &idx_count);
             String8List idx_strings = {0};
-            for(U32 idx_i = 0; idx_i < idx_count; idx_i += 1)
+            for(u32 idx_i = 0; idx_i < idx_count; idx_i += 1)
             {
-              U32 idx = idx_array[idx_i];
+              u32 idx = idx_array[idx_i];
               str8_list_pushf(temp.arena, &idx_strings, "%u");
             }
             indices = str8_list_join(scratch.arena, &idx_strings, &(StringJoin){.sep = str8_lit(", ")});
@@ -1198,8 +1198,8 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
   //
   DumpSubset(Strings)
   {
-    U64 count = 0;
-    U32 *v = rdi_table_from_name(rdi, StringTable, &count);
+    u64 count = 0;
+    u32 *v = rdi_table_from_name(rdi, StringTable, &count);
     for idx in 0..<count {
       dumpf("\n  \"%S\" // string[%I64u]", str8_from_rdi_string_idx(rdi, idx), idx);
     }

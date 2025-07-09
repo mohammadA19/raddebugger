@@ -11,36 +11,36 @@ typedef struct DW_RegsX64
 {
   union {
     struct {
-      U64 rax;
-      U64 rdx;
-      U64 rcx;
-      U64 rbx;
-      U64 rsi;
-      U64 rdi;
-      U64 rbp;
-      U64 rsp;
-      U64 r8;
-      U64 r9;
-      U64 r10;
-      U64 r11;
-      U64 r12;
-      U64 r13;
-      U64 r14;
-      U64 r15;
-      U64 rip;
+      u64 rax;
+      u64 rdx;
+      u64 rcx;
+      u64 rbx;
+      u64 rsi;
+      u64 rdi;
+      u64 rbp;
+      u64 rsp;
+      u64 r8;
+      u64 r9;
+      u64 r10;
+      u64 r11;
+      u64 r12;
+      u64 r13;
+      u64 r14;
+      u64 r15;
+      u64 rip;
     };
-    U64 r[17];
+    u64 r[17];
   };
 } DW_RegsX64;
 
 ////////////////////////////////
 //~ Dwarf Expression Eval Types
 
-#define DW_READ_MEMORY_SIG(name) U64 name(U64 addr, U64 size, void *out, void *ud)
+#define DW_READ_MEMORY_SIG(name) u64 name(u64 addr, u64 size, void *out, void *ud)
 typedef DW_READ_MEMORY_SIG(DW_ReadMemorySig);
 
 //- machine configuration types
-typedef String8 DW_ExprResolveCallFunc(void *call_user_ptr, U64 p);
+typedef String8 DW_ExprResolveCallFunc(void *call_user_ptr, u64 p);
 
 typedef struct DW_ExprMachineCallConfig
 {
@@ -50,20 +50,20 @@ typedef struct DW_ExprMachineCallConfig
 
 typedef struct DW_ExprMachineConfig
 {
-  U64                       max_step_count; // (read only in the eval functions)
+  u64                       max_step_count; // (read only in the eval functions)
   DW_ReadMemorySig         *read_memory;
   void                     *read_memory_ud;
   DW_RegsX64               *regs;
-  U64                      *text_section_base;
-  U64                      *frame_base;
-  U64                      *object_address;
-  U64                      *tls_address;
-  U64                      *cfa;
+  u64                      *text_section_base;
+  u64                      *frame_base;
+  u64                      *object_address;
+  u64                      *tls_address;
+  u64                      *cfa;
   DW_ExprMachineCallConfig  call;
 } DW_ExprMachineConfig;
 
 //- detail analysis types
-enum DW_ExprFlags : U32
+enum DW_ExprFlags : u32
 {
   DW_ExprFlag_UsesTextBase       = (1 << 0),
   DW_ExprFlag_UsesMemory         = (1 << 1),
@@ -88,7 +88,7 @@ typedef struct DW_ExprAnalysis
 typedef struct DW_ExprAnalysisTask
 {
   struct DW_ExprAnalysisTask *next;
-  U64                         p;
+  u64                         p;
   String8                     data;
 } DW_ExprAnalysisTask;
 
@@ -132,13 +132,13 @@ typedef struct DW_SimpleLoc
 {
   DW_SimpleLocKind kind;
   union {
-    U64     addr;
-    U64     reg_idx;
-    U64     val;
+    u64     addr;
+    u64     reg_idx;
+    u64     val;
     String8 val_long;
     struct {
       DW_LocFailKind fail_kind;
-      U64 fail_data;
+      u64 fail_data;
     };
   };
 } DW_SimpleLoc;
@@ -153,9 +153,9 @@ typedef struct DW_Piece
   
   struct DW_Piece *next;
   DW_SimpleLoc     loc;
-  U64              bit_size;
-  U64              bit_off;
-  B32              is_bit_loc;
+  u64              bit_size;
+  u64              bit_off;
+  b32              is_bit_loc;
 } DW_Piece;
 
 typedef struct DW_Location
@@ -185,7 +185,7 @@ typedef struct DW_Location
   
   DW_Piece *first_piece;
   DW_Piece *last_piece;
-  U64       count;
+  u64       count;
   
   DW_SimpleLoc non_piece_loc;
 } DW_Location;
@@ -194,29 +194,29 @@ typedef struct DW_Location
 typedef struct DW_ExprStackNode
 {
   struct DW_ExprStackNode *next;
-  U64                      val;
+  u64                      val;
 } DW_ExprStackNode;
 
 typedef struct DW_ExprStack
 {
   DW_ExprStackNode *stack;
   DW_ExprStackNode *free_nodes;
-  U64               count;
+  u64               count;
 } DW_ExprStack;
 
 typedef struct DW_ExprCall
 {
   struct DW_ExprCall *next;
   void               *ptr;
-  U64                 size;
-  U64                 cursor;
+  u64                 size;
+  u64                 cursor;
 } DW_ExprCall;
 
 typedef struct DW_ExprCallStack
 {
   DW_ExprCall *stack;
   DW_ExprCall *free_calls;
-  U64          depth;
+  u64          depth;
 } DW_ExprCallStack;
 
 ////////////////////////////////

@@ -33,14 +33,14 @@ struct MD_MsgList
 {
   MD_Msg *first;
   MD_Msg *last;
-  U64 count;
+  u64 count;
   MD_MsgKind worst_message_kind;
 };
 
 ////////////////////////////////
 //~ rjf: Token Types
 
-typedef U32 MD_TokenFlags;
+typedef u32 MD_TokenFlags;
 enum
 {
   // rjf: base kind info
@@ -65,7 +65,7 @@ enum
   MD_TokenFlag_BadCharacter        = (1<<14),
 };
 
-typedef U32 MD_TokenGroups;
+typedef u32 MD_TokenGroups;
 enum
 {
   MD_TokenGroup_Comment    = MD_TokenFlag_Comment,
@@ -97,8 +97,8 @@ struct MD_TokenChunkNode
 {
   MD_TokenChunkNode *next;
   MD_Token *v;
-  U64 count;
-  U64 cap;
+  u64 count;
+  u64 cap;
 };
 
 
@@ -107,8 +107,8 @@ struct MD_TokenChunkList
 {
   MD_TokenChunkNode *first;
   MD_TokenChunkNode *last;
-  U64 chunk_count;
-  U64 total_token_count;
+  u64 chunk_count;
+  u64 total_token_count;
 };
 
 
@@ -116,7 +116,7 @@ struct MD_TokenChunkList
 struct MD_TokenArray
 {
   MD_Token *v;
-  U64 count;
+  u64 count;
 };
 
 ////////////////////////////////
@@ -135,7 +135,7 @@ typedef enum MD_NodeKind
 }
 MD_NodeKind;
 
-typedef U32 MD_NodeFlags;
+typedef u32 MD_NodeFlags;
 enum
 {
   MD_NodeFlag_MaskSetDelimiters          = (0x3F<<0),
@@ -188,17 +188,17 @@ struct MD_Node
   String8 raw_string;
   
   // rjf: source code info
-  U64 src_offset;
+  u64 src_offset;
   
   // rjf: user-controlled generation number
   //
   // (unused by mdesk layer, but can be used by usage code to use MD_Node trees
   // in a "retained mode" way, where stable generational handles can be formed
   // to nodes)
-  U64 user_gen;
+  u64 user_gen;
   
   // rjf: extra padding to 128 bytes
-  U64 _unused_[2];
+  u64 _unused_[2];
 };
 
 
@@ -206,8 +206,8 @@ struct MD_Node
 struct MD_NodeRec
 {
   MD_Node *next;
-  S32 push_count;
-  S32 pop_count;
+  i32 push_count;
+  i32 pop_count;
 };
 
 
@@ -224,7 +224,7 @@ struct MD_NodePtrList
 {
   MD_NodePtrNode *first;
   MD_NodePtrNode *last;
-  U64 count;
+  u64 count;
 };
 
 ////////////////////////////////

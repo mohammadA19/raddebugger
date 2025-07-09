@@ -45,7 +45,7 @@ enum LNX_EntityKind{
 struct LNX_Entity{
   LNX_Entity *next;
   LNX_EntityKind kind;
-  volatile U32 reference_mask;
+  volatile u32 reference_mask;
   union{
     struct{
       OS_ThreadFunctionType *func;

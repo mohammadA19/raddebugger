@@ -13,7 +13,7 @@ struct FS_RangeNode
 {
   FS_RangeNode *next;
   HS_ID id;
-  U64 working_count;
+  u64 working_count;
 };
 
 
@@ -38,7 +38,7 @@ struct FS_Node
   HS_Root root;
   
   // rjf: sub-table of per-requested-file-range info
-  U64 slots_count;
+  u64 slots_count;
   FS_RangeSlot *slots;
 };
 
@@ -67,19 +67,19 @@ struct FS_Stripe
 struct FS_Shared
 {
   Arena *arena;
-  U64 change_gen;
+  u64 change_gen;
   
   // rjf: path info cache
-  U64 slots_count;
-  U64 stripes_count;
+  u64 slots_count;
+  u64 stripes_count;
   FS_Slot *slots;
   FS_Stripe *stripes;
   
   // rjf: user -> streamer ring buffer
-  U64 u2s_ring_size;
-  U8 *u2s_ring_base;
-  U64 u2s_ring_write_pos;
-  U64 u2s_ring_read_pos;
+  u64 u2s_ring_size;
+  u8 *u2s_ring_base;
+  u64 u2s_ring_write_pos;
+  u64 u2s_ring_read_pos;
   OS_Handle u2s_ring_cv;
   OS_Handle u2s_ring_mutex;
   

@@ -10,8 +10,8 @@ internal Arena *
 arena_alloc_(ArenaParams *params)
 {
   // rjf: round up reserve/commit sizes
-  U64 reserve_size = params->reserve_size;
-  U64 commit_size = params->commit_size;
+  u64 reserve_size = params->reserve_size;
+  u64 commit_size = params->commit_size;
   if(params->flags & ArenaFlag_LargePages)
   {
     reserve_size = AlignPow2(reserve_size, os_get_system_info()->large_page_size);
@@ -80,11 +80,11 @@ arena_release(Arena *arena)
 //- rjf: arena push/pop core functions
 
 internal void *
-arena_push(Arena *arena, U64 size, U64 align)
+arena_push(Arena *arena, u64 size, u64 align)
 {
   Arena *current = arena->current;
-  U64 pos_pre = AlignPow2(current->pos, align);
-  U64 pos_pst = pos_pre + size;
+  u64 pos_pre = AlignPow2(current->pos, align);
+  u64 pos_pst = pos_pre + size;
   
   // rjf: chain, if needed
   if(current->res < pos_pst && !(arena->flags & ArenaFlag_NoChain))
@@ -106,7 +106,7 @@ arena_push(Arena *arena, U64 size, U64 align)
           arena->free_last = new_block->prev;
         }
         arena->free_size -= new_block->res_size;
-        address_unpoison((U8*)new_block + ARENA_HEADER_SIZE, new_block->res_size - ARENA_HEADER_SIZE);
+        address_unpoison((u8*)new_block + ARENA_HEADER_SIZE, new_block->res_size - ARENA_HEADER_SIZE);
         break;
       }
     }
@@ -114,8 +114,8 @@ arena_push(Arena *arena, U64 size, U64 align)
     
     if(new_block == 0)
     {
-      U64 res_size = current->res_size;
-      U64 cmt_size = current->cmt_size;
+      u64 res_size = current->res_size;
+      u64 cmt_size = current->cmt_size;
       if(size + ARENA_HEADER_SIZE > res_size)
       {
         res_size = AlignPow2(size + ARENA_HEADER_SIZE, align);
@@ -137,11 +137,11 @@ arena_push(Arena *arena, U64 size, U64 align)
   // rjf: commit new pages, if needed
   if(current->cmt < pos_pst)
   {
-    U64 cmt_pst_aligned = pos_pst + current->cmt_size-1;
+    u64 cmt_pst_aligned = pos_pst + current->cmt_size-1;
     cmt_pst_aligned -= cmt_pst_aligned%current->cmt_size;
-    U64 cmt_pst_clamped = ClampTop(cmt_pst_aligned, current->res);
-    U64 cmt_size = cmt_pst_clamped - current->cmt;
-    U8 *cmt_ptr = (U8 *)current + current->cmt;
+    u64 cmt_pst_clamped = ClampTop(cmt_pst_aligned, current->res);
+    u64 cmt_size = cmt_pst_clamped - current->cmt;
+    u8 *cmt_ptr = (u8 *)current + current->cmt;
     if(current->flags & ArenaFlag_LargePages)
     {
       os_commit_large(cmt_ptr, cmt_size);
@@ -157,7 +157,7 @@ arena_push(Arena *arena, U64 size, U64 align)
   void *result = 0;
   if(current->cmt >= pos_pst)
   {
-    result = (U8 *)current+pos_pre;
+    result = (u8 *)current+pos_pre;
     current->pos = pos_pst;
     address_unpoison(result, size);
   }
@@ -174,18 +174,18 @@ arena_push(Arena *arena, U64 size, U64 align)
   return result;
 }
 
-internal U64
+internal u64
 arena_pos(Arena *arena)
 {
   Arena *current = arena->current;
-  U64 pos = current->base_pos + current->pos;
+  u64 pos = current->base_pos + current->pos;
   return pos;
 }
 
 internal void
-arena_pop_to(Arena *arena, U64 pos)
+arena_pop_to(Arena *arena, u64 pos)
 {
-  U64 big_pos = ClampBot(ARENA_HEADER_SIZE, pos);
+  u64 big_pos = ClampBot(ARENA_HEADER_SIZE, pos);
   Arena *current = arena->current;
   
 #if ARENA_FREE_LIST
@@ -195,7 +195,7 @@ arena_pop_to(Arena *arena, U64 pos)
     current->pos = ARENA_HEADER_SIZE;
     arena->free_size += current->res_size;
     SLLStackPush_N(arena->free_last, current, prev);
-    address_poison((U8*)current + ARENA_HEADER_SIZE, current->res_size - ARENA_HEADER_SIZE);
+    address_poison((u8*)current + ARENA_HEADER_SIZE, current->res_size - ARENA_HEADER_SIZE);
   }
 #else
   for(Arena *prev = 0; current->base_pos >= big_pos; current = prev)
@@ -205,9 +205,9 @@ arena_pop_to(Arena *arena, U64 pos)
   }
 #endif
   arena->current = current;
-  U64 new_pos = big_pos - current->base_pos;
+  u64 new_pos = big_pos - current->base_pos;
   AssertAlways(new_pos <= current->pos);
-  address_poison((U8*)current + new_pos, (current->pos - new_pos));
+  address_poison((u8*)current + new_pos, (current->pos - new_pos));
   current->pos = new_pos;
 }
 
@@ -220,10 +220,10 @@ arena_clear(Arena *arena)
 }
 
 internal void
-arena_pop(Arena *arena, U64 amt)
+arena_pop(Arena *arena, u64 amt)
 {
-  U64 pos_old = arena_pos(arena);
-  U64 pos_new = pos_old;
+  u64 pos_old = arena_pos(arena);
+  u64 pos_new = pos_old;
   if(amt < pos_old)
   {
     pos_new = pos_old - amt;
@@ -236,7 +236,7 @@ arena_pop(Arena *arena, U64 amt)
 internal Temp
 temp_begin(Arena *arena)
 {
-  U64 pos = arena_pos(arena);
+  u64 pos = arena_pos(arena);
   Temp temp = {arena, pos};
   return temp;
 }

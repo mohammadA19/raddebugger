@@ -585,10 +585,10 @@ case CV_LeafKind_STRUCT2:{result = str8_lit("STRUCT2");}break;
 return result;
 }
 
-internal U64
+internal u64
 cv_header_struct_size_from_sym_kind(CV_SymKind v)
 {
-U64 result = 0;
+u64 result = 0;
 switch(v)
 {
 default:{}break;
@@ -664,10 +664,10 @@ case CV_SymKind_INLINEES:{result = sizeof(CV_SymInlinees);}break;
 }
 return result;
 }
-internal U64
+internal u64
 cv_header_struct_size_from_leaf_kind(CV_LeafKind v)
 {
-U64 result = 0;
+u64 result = 0;
 switch(v)
 {
 default:{}break;

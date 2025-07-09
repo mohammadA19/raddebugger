@@ -17,20 +17,20 @@ global String8 lnx_initial_path = {0};
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal B32
+internal b32
 lnx_write_list_to_file_descriptor(int fd, String8List list){
-  B32 success = true;
+  b32 success = true;
   
   String8Node *node = list.first;
   if (node != 0){
-    U8 *ptr = node->string.str;;
-    U8 *opl = ptr + node->string.size;
+    u8 *ptr = node->string.str;;
+    u8 *opl = ptr + node->string.size;
     
-    U64 p = 0;
+    u64 p = 0;
     for (;p < list.total_size;){
-      U64 amt64 = (U64)(opl - ptr);
-      U32 amt = u32_from_u64_saturate(amt64);
-      S64 written_amt = write(fd, ptr, amt);
+      u64 amt64 = (u64)(opl - ptr);
+      u32 amt = u32_from_u64_saturate(amt64);
+      i64 written_amt = write(fd, ptr, amt);
       if (written_amt < 0){
         break;
       }
@@ -56,7 +56,7 @@ lnx_write_list_to_file_descriptor(int fd, String8List list){
 }
 
 internal void
-lnx_date_time_from_tm(DateTime *out, struct tm *in, U32 msec){
+lnx_date_time_from_tm(DateTime *out, struct tm *in, u32 msec){
   out->msec = msec;
   out->sec  = in->tm_sec;
   out->min  = in->tm_min;
@@ -792,7 +792,7 @@ lnx_thread_base(void *ptr){
   tctx_release();
   
   // remove my bit
-  U32 result = __sync_fetch_and_and(&entity->reference_mask, ~0x2);
+  u32 result = __sync_fetch_and_and(&entity->reference_mask, ~0x2);
   // if the other bit is also gone, free entity
   if ((result & 0x1) == 0){
     lnx_free_entity(entity);
@@ -829,7 +829,7 @@ os_init(void)
   MemoryZeroArray(lnx_entity_buffer);
   {
     LNX_Entity *ptr = lnx_entity_free = lnx_entity_buffer;
-    for (U64 i = 1; i < len(lnx_entity_buffer); i += 1, ptr += 1){
+    for (u64 i = 1; i < len(lnx_entity_buffer); i += 1, ptr += 1){
       ptr->next = ptr + 1;
     }
     ptr->next = 0;
@@ -850,55 +850,55 @@ os_init(void)
 //~ rjf: @os_hooks Memory Allocation (Implemented Per-OS)
 
 internal void*
-os_reserve(U64 size){
+os_reserve(u64 size){
   void *result = mmap(0, size, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
   return(result);
 }
 
-internal B32
-os_commit(void *ptr, U64 size){
+internal b32
+os_commit(void *ptr, u64 size){
   mprotect(ptr, size, PROT_READ|PROT_WRITE);
   // TODO(allen): can we test this?
   return(true);
 }
 
 internal void*
-os_reserve_large(U64 size){
+os_reserve_large(u64 size){
   NotImplemented;
   return 0;
 }
 
-internal B32
-os_commit_large(void *ptr, U64 size){
+internal b32
+os_commit_large(void *ptr, u64 size){
   NotImplemented;
   return 0;
 }
 
 internal void
-os_decommit(void *ptr, U64 size){
+os_decommit(void *ptr, u64 size){
   madvise(ptr, size, MADV_DONTNEED);
   mprotect(ptr, size, PROT_NONE);
 }
 
 internal void
-os_release(void *ptr, U64 size){
+os_release(void *ptr, u64 size){
   munmap(ptr, size);
 }
 
 internal void
-os_set_large_pages_enabled(B32 flag)
+os_set_large_pages_enabled(b32 flag)
 {
   NotImplemented;
 }
 
-internal B32
+internal b32
 os_large_pages_enabled(void)
 {
   NotImplemented;
   return 0;
 }
 
-internal U64
+internal u64
 os_large_page_size(void)
 {
   NotImplemented;
@@ -910,7 +910,7 @@ os_large_page_size(void)
 
 internal String8
 os_machine_name(void){
-  local_persist B32 first = true;
+  local_persist b32 first = true;
   local_persist String8 name = {0};
   
   // TODO(allen): let's just pre-compute this at init and skip the complexity
@@ -920,14 +920,14 @@ os_machine_name(void){
     first = false;
     
     // get name
-    B32 got_final_result = false;
-    U8 *buffer = 0;
+    b32 got_final_result = false;
+    u8 *buffer = 0;
     int size = 0;
-    for (S64 cap = 4096, r = 0;
+    for (i64 cap = 4096, r = 0;
          r < 4;
          cap *= 2, r += 1){
       scratch.restore();
-      buffer = push_array_no_zero(scratch.arena, U8, cap);
+      buffer = push_array_no_zero(scratch.arena, u8, cap);
       size = gethostname((char*)buffer, cap);
       if (size < cap){
         got_final_result = true;
@@ -938,7 +938,7 @@ os_machine_name(void){
     // save string
     if (got_final_result && size > 0){
       name.size = size;
-      name.str = push_array_no_zero(lnx_perm_arena, U8, name.size + 1);
+      name.str = push_array_no_zero(lnx_perm_arena, u8, name.size + 1);
       MemoryCopy(name.str, buffer, name.size);
       name.str[name.size] = 0;
     }
@@ -950,20 +950,20 @@ os_machine_name(void){
   return(name);
 }
 
-internal U64
+internal u64
 os_page_size(void){
   int size = getpagesize();
-  return((U64)size);
+  return((u64)size);
 }
 
-internal U64
+internal u64
 os_allocation_granularity(void)
 {
   // On linux there is no equivalent of "dwAllocationGranularity"
   os_page_size();
 }
 
-internal U64
+internal u64
 os_logical_core_count(void)
 {
   // TODO(rjf): check this
@@ -979,15 +979,15 @@ os_get_command_line_arguments(void)
   return lnx_cmd_line_args;
 }
 
-internal S32
+internal i32
 os_pid(void){
-  S32 result = getpid();
+  i32 result = getpid();
   return(result);
 }
 
-internal S32
+internal i32
 os_tid(void){
-  S32 result = 0;
+  i32 result = 0;
 #ifdef SYS_gettid
   result = syscall(SYS_gettid);
 #else
@@ -1004,14 +1004,14 @@ os_environment(void)
   return result;
 }
 
-internal U64
+internal u64
 os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *out){
-  U64 result = 0;
+  u64 result = 0;
   
   switch (path){
     case OS_SystemPath_Binary:
     {
-      local_persist B32 first = true;
+      local_persist b32 first = true;
       local_persist String8 name = {0};
       
       // TODO(allen): let's just pre-compute this at init and skip the complexity
@@ -1021,14 +1021,14 @@ os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *o
         first = false;
         
         // get self string
-        B32 got_final_result = false;
-        U8 *buffer = 0;
+        b32 got_final_result = false;
+        u8 *buffer = 0;
         int size = 0;
-        for (S64 cap = PATH_MAX, r = 0;
+        for (i64 cap = PATH_MAX, r = 0;
              r < 4;
              cap *= 2, r += 1){
           scratch.restore();
-          buffer = push_array_no_zero(scratch.arena, U8, cap);
+          buffer = push_array_no_zero(scratch.arena, u8, cap);
           size = readlink("/proc/self/exe", (char*)buffer, cap);
           if (size < cap){
             got_final_result = true;
@@ -1090,7 +1090,7 @@ os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *o
 //~ rjf: @os_hooks Process Control (Implemented Per-OS)
 
 internal void
-os_abort(S32 exit_code){
+os_abort(i32 exit_code){
   exit(exit_code);
 }
 
@@ -1113,20 +1113,20 @@ os_file_close(OS_Handle file)
   NotImplemented;
 }
 
-internal U64
+internal u64
 os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
 {
   NotImplemented;
   return 0;
 }
 
-internal U64
+internal u64
 os_file_write(OS_Handle file, Rng1U64 rng, void *data)
 {
   NotImplemented;
 }
 
-internal B32
+internal b32
 os_file_set_times(OS_Handle file, DateTime time)
 {
   NotImplemented;
@@ -1149,11 +1149,11 @@ os_id_from_file(OS_Handle file)
   return id;
 }
 
-internal B32
+internal b32
 os_delete_file_at_path(String8 path)
 {
   Temp scratch = scratch_begin(0, 0);
-  B32 result = false;
+  b32 result = false;
   String8 name_copy = push_str8_copy(scratch.arena, name);
   if (remove((char*)name_copy.str) != -1){
     result = true;
@@ -1162,7 +1162,7 @@ os_delete_file_at_path(String8 path)
   return(result);
 }
 
-internal B32
+internal b32
 os_copy_file_path(String8 dst, String8 src)
 {
   NotImplemented;
@@ -1178,7 +1178,7 @@ os_full_path_from_path(Arena *arena, String8 path)
   return result;
 }
 
-internal B32
+internal b32
 os_file_path_exists(String8 path)
 {
   NotImplemented;
@@ -1231,7 +1231,7 @@ os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags)
   return 0;
 }
 
-internal B32
+internal b32
 os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
 {
   NotImplemented;
@@ -1246,11 +1246,11 @@ os_file_iter_end(OS_FileIter *iter)
 
 //- rjf: directory creation
 
-internal B32
+internal b32
 os_make_directory(String8 path)
 {
   Temp scratch = scratch_begin(0, 0);
-  B32 result = false;
+  b32 result = false;
   String8 name_copy = push_str8_copy(scratch.arena, name);
   if (mkdir((char*)name_copy.str, 0777) != -1){
     result = true;
@@ -1263,7 +1263,7 @@ os_make_directory(String8 path)
 //~ rjf: @os_hooks Shared Memory (Implemented Per-OS)
 
 internal OS_Handle
-os_shared_memory_alloc(U64 size, String8 name)
+os_shared_memory_alloc(u64 size, String8 name)
 {
   OS_Handle result = {0};
   NotImplemented;
@@ -1300,11 +1300,11 @@ os_shared_memory_view_close(OS_Handle handle, void *ptr, Rng1U64 range)
 ////////////////////////////////
 //~ rjf: @os_hooks Time (Implemented Per-OS)
 
-internal U32
+internal u32
 os_now_unix(void)
 {
   time_t t = time(0);
-  return (U32)t;
+  return (u32)t;
 }
 
 internal DateTime
@@ -1350,23 +1350,23 @@ os_local_time_from_universal(DateTime *universal_time){
   return(result);
 }
 
-internal U64
+internal u64
 os_now_microseconds(void){
   struct timespec t;
   clock_gettime(CLOCK_MONOTONIC, &t);
-  U64 result = t.tv_sec*Million(1) + (t.tv_nsec/Thousand(1));
+  u64 result = t.tv_sec*Million(1) + (t.tv_nsec/Thousand(1));
   return(result);
 }
 
 internal void
-os_sleep_milliseconds(U32 msec){
+os_sleep_milliseconds(u32 msec){
   usleep(msec*Thousand(1));
 }
 
 ////////////////////////////////
 //~ rjf: @os_hooks Child Processes (Implemented Per-OS)
 
-internal B32
+internal b32
 os_launch_process(OS_LaunchOptions *options){
   // TODO(allen): I want to redo this API before I bother implementing it here
   NotImplemented;
@@ -1403,7 +1403,7 @@ internal void
 os_release_thread_handle(OS_Handle thread){
   LNX_Entity *entity = (LNX_Entity*)PtrFromInt(thread.id);
   // remove my bit
-  U32 result = __sync_fetch_and_and(&entity->reference_mask, ~0x1);
+  u32 result = __sync_fetch_and_and(&entity->reference_mask, ~0x1);
   // if the other bit is also gone, free entity
   if ((result & 0x2) == 0){
     lnx_free_entity(entity);
@@ -1527,9 +1527,9 @@ os_condition_variable_release(OS_Handle cv){
   lnx_free_entity(entity);
 }
 
-internal B32
-os_condition_variable_wait_(OS_Handle cv, OS_Handle mutex, U64 endt_us){
-  B32 result = false;
+internal b32
+os_condition_variable_wait_(OS_Handle cv, OS_Handle mutex, u64 endt_us){
+  b32 result = false;
   LNX_Entity *entity_cond = (LNX_Entity*)PtrFromInt(cv.id);
   LNX_Entity *entity_mutex = (LNX_Entity*)PtrFromInt(mutex.id);
   // TODO(allen): implement the time control
@@ -1537,15 +1537,15 @@ os_condition_variable_wait_(OS_Handle cv, OS_Handle mutex, U64 endt_us){
   return(result);
 }
 
-internal B32
-os_condition_variable_wait_rw_r_(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
+internal b32
+os_condition_variable_wait_rw_r_(OS_Handle cv, OS_Handle mutex_rw, u64 endt_us)
 {
   NotImplemented;
   return 0;
 }
 
-internal B32
-os_condition_variable_wait_rw_w_(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
+internal b32
+os_condition_variable_wait_rw_w_(OS_Handle cv, OS_Handle mutex_rw, u64 endt_us)
 {
   NotImplemented;
   return 0;
@@ -1566,7 +1566,7 @@ os_condition_variable_broadcast_(OS_Handle cv){
 //- rjf: cross-process semaphores
 
 internal OS_Handle
-os_semaphore_alloc(U32 initial_count, U32 max_count, String8 name)
+os_semaphore_alloc(u32 initial_count, u32 max_count, String8 name)
 {
   OS_Handle result = {0};
   NotImplemented;
@@ -1593,8 +1593,8 @@ os_semaphore_close(OS_Handle semaphore)
   NotImplemented;
 }
 
-internal B32
-os_semaphore_take(OS_Handle semaphore, U64 endt_us)
+internal b32
+os_semaphore_take(OS_Handle semaphore, u64 endt_us)
 {
   NotImplemented;
   return 0;
@@ -1615,7 +1615,7 @@ os_library_open(String8 path)
   Temp scratch = scratch_begin(0, 0);
   char *path_cstr = (char *)push_str8_copy(scratch.arena, path).str;
   void *so = dlopen(path_cstr, RTLD_LAZY);
-  OS_Handle lib = { (U64)so };
+  OS_Handle lib = { (u64)so };
   scratch_end(scratch);
   return lib;
 }
@@ -1656,13 +1656,13 @@ os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, v
   };
   struct sigaction og_act[len(signals_to_handle)] = {0};
   
-  for (U32 i = 0; i < len(signals_to_handle); i += 1){
+  for (u32 i = 0; i < len(signals_to_handle); i += 1){
     sigaction(signals_to_handle[i], &new_act, &og_act[i]);
   }
   
   func(ptr);
   
-  for (U32 i = 0; i < len(signals_to_handle); i += 1){
+  for (u32 i = 0; i < len(signals_to_handle); i += 1){
     sigaction(signals_to_handle[i], &og_act[i], 0);
   }
 }

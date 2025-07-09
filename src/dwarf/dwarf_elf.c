@@ -1,16 +1,16 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal B32
+internal b32
 dw_is_dwarf_present_elf_section_table(String8 raw_image, ELF_BinInfo *bin)
 {
   Temp scratch = scratch_begin(0,0);
   
-  B32 is_dwarf_present = 0;
+  b32 is_dwarf_present = 0;
   
   ELF_Shdr64Array sections = elf_shdr64_array_from_bin(scratch.arena, raw_image, &bin->hdr);
   
-  for (U64 i = 0; i < sections.count; ++i) {
+  for (u64 i = 0; i < sections.count; ++i) {
     ELF_Shdr64 *shdr = &sections.v[i];
     String8     name = elf_name_from_shdr64(raw_image, &bin->hdr, bin->sh_name_range, shdr);
     
@@ -42,11 +42,11 @@ dw_input_from_elf_section_table(Arena *arena, String8 raw_image, ELF_BinInfo *bi
   Temp scratch = scratch_begin(&arena, 1);
   
   DW_Input result                              = {0};
-  B32      sect_status[len(result.sec)] = {0};
+  b32      sect_status[len(result.sec)] = {0};
   
   ELF_Shdr64Array sections = elf_shdr64_array_from_bin(scratch.arena, raw_image, &bin->hdr);
   
-  for (U64 sect_idx = 1; sect_idx < sections.count; ++sect_idx) {
+  for (u64 sect_idx = 1; sect_idx < sections.count; ++sect_idx) {
     ELF_Shdr64 *shdr = &sections.v[sect_idx];
     
     // skip BSS sections
@@ -57,7 +57,7 @@ dw_input_from_elf_section_table(Arena *arena, String8 raw_image, ELF_BinInfo *bi
     String8 name = elf_name_from_shdr64(raw_image, &bin->hdr, bin->sh_name_range, shdr);
     
     DW_SectionKind s      = dw_section_kind_from_string(name);
-    B32            is_dwo = 0;
+    b32            is_dwo = 0;
     if (s == DW_Section_Null) {
       s      = dw_section_dwo_kind_from_string(name);
       is_dwo = 1;
@@ -76,7 +76,7 @@ dw_input_from_elf_section_table(Arena *arena, String8 raw_image, ELF_BinInfo *bi
           
           // read header
           ELF_Chdr64 chdr64    = {0};
-          U64        chdr_size = 0;
+          u64        chdr_size = 0;
           if (ELF_HdrIs64Bit(bin->hdr.e_ident)) {
             chdr_size = str8_deserial_read_struct(comp_data_with_header, 0, &chdr64);
             if (chdr_size != sizeof(chdr64)) {
@@ -96,8 +96,8 @@ dw_input_from_elf_section_table(Arena *arena, String8 raw_image, ELF_BinInfo *bi
           String8 comp_data = str8_skip(comp_data_with_header, chdr_size);
           
           // push buffer for the decompressor
-          U8  *decomp_buffer      = push_array_no_zero_aligned(arena, U8, chdr64.ch_size, chdr64.ch_addr_align);
-          U64  actual_decomp_size = 0;
+          u8  *decomp_buffer      = push_array_no_zero_aligned(arena, u8, chdr64.ch_size, chdr64.ch_addr_align);
+          u64  actual_decomp_size = 0;
           
           // decompress
           switch (chdr64.ch_type) {

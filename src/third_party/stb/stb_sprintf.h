@@ -61,7 +61,7 @@ the header file function definitions. To get the code, you include
 it from a C or C++ file and define STB_SPRINTF_IMPLEMENTATION first.
 
 It only uses va_args macros from the C runtime to do it's work. It
-does cast doubles to S64s and shifts and divides U64s, which does
+does cast doubles to i64s and shifts and divides u64s, which does
 drag in CRT code on most platforms.
 
 It compiles to roughly 8K with float support, and 4K without.
@@ -624,7 +624,7 @@ cl = lg;                                 \
       {
         String8 string = va_arg(va, String8);
         s = (char *)string.str;
-        l = (U32)string.size;
+        l = (u32)string.size;
         lead[0] = 0;
         tail[0] = 0;
         pr = 0;
@@ -635,23 +635,23 @@ cl = lg;                                 \
       case 'm':
       case 'M':
       {
-        static const U64 one_kib = 1ull * 1024;
-        static const U64 one_mib = 1ull * 1024 * 1024;
-        static const U64 one_gib = 1ull * 1024 * 1024 * 1024;
-        static const U64 one_tib = 1ull * 1024 * 1024 * 1024 * 1024;
+        static const u64 one_kib = 1ull * 1024;
+        static const u64 one_mib = 1ull * 1024 * 1024;
+        static const u64 one_gib = 1ull * 1024 * 1024 * 1024;
+        static const u64 one_tib = 1ull * 1024 * 1024 * 1024 * 1024;
 
-        U64 size;
+        u64 size;
         if(f[0] == 'M')
         {
-          size = va_arg(va, U64);
+          size = va_arg(va, u64);
         }
         else
         {
-          size = va_arg(va, U32);
+          size = va_arg(va, u32);
         }
 
-        U64 lo = 0;
-        U64 hi = 0;
+        u64 lo = 0;
+        u64 hi = 0;
         char *units = "";
 
         if(size < one_kib)
@@ -689,12 +689,12 @@ cl = lg;                                 \
         if(hi > 0)
         {
           s = num;
-          for(U64 n = hi; n > 0; n /= 10ull)
+          for(u64 n = hi; n > 0; n /= 10ull)
           {
             *s = (char)(n % 10ull) + '0';
             ++s;
           }
-          for(S64 i = (S64)(s-num)-1; i >= 0; --i)
+          for(i64 i = (i64)(s-num)-1; i >= 0; --i)
           {
             *bf = num[i];
             ++bf;
@@ -713,20 +713,20 @@ cl = lg;                                 \
           ++bf;
 
           s = num;
-          for(U64 n = lo; n > 0; n /= 10ull)
+          for(u64 n = lo; n > 0; n /= 10ull)
           {
             *s = (char)(n % 10ull) + '0';
             ++s;
           }
 
-          U64 lead_zero_count = 3 - (U64)(s-num);
-          for(U64 i = 1; i < lead_zero_count; ++i)
+          u64 lead_zero_count = 3 - (u64)(s-num);
+          for(u64 i = 1; i < lead_zero_count; ++i)
           {
             *bf = '0';
             ++bf;
           }
 
-          for(S64 i = (S64)(s-num)-1; i >= 0; --i)
+          for(i64 i = (i64)(s-num)-1; i >= 0; --i)
           {
             *bf = num[i];
             ++bf;
@@ -737,7 +737,7 @@ cl = lg;                                 \
         ++bf;
 
         // copy units
-        for(U64 i = 0; units[i] != 0; ++i)
+        for(u64 i = 0; units[i] != 0; ++i)
         {
           *bf = units[i];
           ++bf;
@@ -1960,7 +1960,7 @@ static stbsp__int32 stbsp__real_to_str(char const **start, stbsp__uint32 *len, c
   for (;;) {
     stbsp__uint32 n;
     char *o = out - 8;
-    // do the conversion in chunks of U32s (avoid most 64-bit divides, worth it, constant denomiators be damned)
+    // do the conversion in chunks of u32s (avoid most 64-bit divides, worth it, constant denomiators be damned)
     if (bits >= 100000000) {
       n = (stbsp__uint32)(bits % 100000000);
       bits /= 100000000;

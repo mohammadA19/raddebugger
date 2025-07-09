@@ -24,14 +24,14 @@ struct TEX_Node
 {
   TEX_Node *next;
   TEX_Node *prev;
-  U128 hash;
+  u128 hash;
   TEX_Topology topology;
   R_Handle texture;
-  B32 is_working;
-  U64 scope_ref_count;
-  U64 last_time_touched_us;
-  U64 last_user_clock_idx_touched;
-  U64 load_count;
+  b32 is_working;
+  u64 scope_ref_count;
+  u64 last_time_touched_us;
+  u64 last_user_clock_idx_touched;
+  u64 load_count;
 };
 
 
@@ -59,7 +59,7 @@ struct TEX_Stripe
 struct TEX_Touch
 {
   TEX_Touch *next;
-  U128 hash;
+  u128 hash;
   TEX_Topology topology;
 };
 
@@ -93,17 +93,17 @@ struct TEX_Shared
   Arena *arena;
   
   // rjf: cache
-  U64 slots_count;
-  U64 stripes_count;
+  u64 slots_count;
+  u64 stripes_count;
   TEX_Slot *slots;
   TEX_Stripe *stripes;
   TEX_Node **stripes_free_nodes;
   
   // rjf: user -> xfer thread
-  U64 u2x_ring_size;
-  U8 *u2x_ring_base;
-  U64 u2x_ring_write_pos;
-  U64 u2x_ring_read_pos;
+  u64 u2x_ring_size;
+  u8 *u2x_ring_base;
+  u64 u2x_ring_write_pos;
+  u64 u2x_ring_read_pos;
   OS_Handle u2x_ring_cv;
   OS_Handle u2x_ring_mutex;
   

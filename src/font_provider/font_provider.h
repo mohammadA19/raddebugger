@@ -6,7 +6,7 @@
 ////////////////////////////////
 //~ rjf: Types
 
-typedef U32 FP_RasterFlags;
+typedef u32 FP_RasterFlags;
 enum
 {
   FP_RasterFlag_Smooth = (1<<0),
@@ -17,18 +17,18 @@ enum
 
 struct FP_Handle
 {
-  U64 u64[2];
+  u64 u64[2];
 };
 
 
 
 struct FP_Metrics
 {
-  F32 design_units_per_em;
-  F32 ascent;
-  F32 descent;
-  F32 line_gap;
-  F32 capital_height;
+  f32 design_units_per_em;
+  f32 ascent;
+  f32 descent;
+  f32 line_gap;
+  f32 capital_height;
 };
 
 
@@ -37,6 +37,6 @@ struct FP_RasterResult
 {
   Vec2S16 atlas_dim;
   void *atlas;
-  F32 advance;
+  f32 advance;
 };
 

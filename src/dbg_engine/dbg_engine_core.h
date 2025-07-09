@@ -18,7 +18,7 @@ struct D_Target
   String8 stdout_path;
   String8 stderr_path;
   String8 stdin_path;
-  B32 debug_subprocesses;
+  b32 debug_subprocesses;
   String8List env;
 };
 
@@ -27,10 +27,10 @@ struct D_Target
 struct D_TargetArray
 {
   D_Target *v;
-  U64 count;
+  u64 count;
 };
 
-typedef U32 D_BreakpointFlags;
+typedef u32 D_BreakpointFlags;
 enum
 {
   D_BreakpointFlag_BreakOnWrite   = (1<<0),
@@ -43,12 +43,12 @@ enum
 struct D_Breakpoint
 {
   D_BreakpointFlags flags;
-  U64 id;
+  u64 id;
   String8 file_path;
   TxtPt pt;
   String8 vaddr_expr;
   String8 condition;
-  U64 size;
+  u64 size;
 };
 
 
@@ -56,7 +56,7 @@ struct D_Breakpoint
 struct D_BreakpointArray
 {
   D_Breakpoint *v;
-  U64 count;
+  u64 count;
 };
 
 
@@ -72,7 +72,7 @@ struct D_PathMap
 struct D_PathMapArray
 {
   D_PathMap *v;
-  U64 count;
+  u64 count;
 };
 
 ////////////////////////////////
@@ -104,9 +104,9 @@ struct D_Event
   D_EventKind kind;
   D_EventCause cause;
   CTRL_Handle thread;
-  U64 vaddr;
-  U64 code;
-  U64 id;
+  u64 vaddr;
+  u64 code;
+  u64 id;
 };
 
 
@@ -123,7 +123,7 @@ struct D_EventList
 {
   D_EventNode *first;
   D_EventNode *last;
-  U64 count;
+  u64 count;
 };
 
 ////////////////////////////////
@@ -153,7 +153,7 @@ struct D_LineList
 {
   D_LineNode *first;
   D_LineNode *last;
-  U64 count;
+  u64 count;
 };
 
 
@@ -161,7 +161,7 @@ struct D_LineList
 struct D_LineListArray
 {
   D_LineList *v;
-  U64 count;
+  u64 count;
   DI_KeyList dbgi_keys;
 };
 
@@ -196,10 +196,10 @@ struct D_CmdParams
   String8 string;
   String8 file_path;
   TxtPt cursor;
-  U64 vaddr;
-  B32 prefer_disasm;
-  U32 pid;
-  U32 rgba;
+  u64 vaddr;
+  b32 prefer_disasm;
+  u32 pid;
+  u32 rgba;
   D_TargetArray targets;
 };
 
@@ -226,7 +226,7 @@ struct D_CmdList
 {
   D_CmdNode *first;
   D_CmdNode *last;
-  U64 count;
+  u64 count;
 };
 
 ////////////////////////////////
@@ -240,9 +240,9 @@ struct D_RunTLSBaseCacheNode
 {
   D_RunTLSBaseCacheNode *hash_next;
   CTRL_Handle process;
-  U64 root_vaddr;
-  U64 rip_vaddr;
-  U64 tls_base_vaddr;
+  u64 root_vaddr;
+  u64 rip_vaddr;
+  u64 tls_base_vaddr;
 };
 
 
@@ -258,7 +258,7 @@ struct D_RunTLSBaseCacheSlot
 struct D_RunTLSBaseCache
 {
   Arena *arena;
-  U64 slots_count;
+  u64 slots_count;
   D_RunTLSBaseCacheSlot *slots;
 };
 
@@ -270,7 +270,7 @@ struct D_RunLocalsCacheNode
 {
   D_RunLocalsCacheNode *hash_next;
   DI_Key dbgi_key;
-  U64 voff;
+  u64 voff;
   E_String2NumMap *locals_map;
 };
 
@@ -287,7 +287,7 @@ struct D_RunLocalsCacheSlot
 struct D_RunLocalsCache
 {
   Arena *arena;
-  U64 table_size;
+  u64 table_size;
   D_RunLocalsCacheSlot *table;
 };
 
@@ -300,7 +300,7 @@ struct D_State
 {
   // rjf: top-level state
   Arena *arena;
-  U64 frame_index;
+  u64 frame_index;
   
   // rjf: commands
   Arena *cmds_arena;
@@ -310,29 +310,29 @@ struct D_State
   HS_Key output_log_key;
   
   // rjf: per-run caches
-  U64 tls_base_cache_reggen_idx;
-  U64 tls_base_cache_memgen_idx;
+  u64 tls_base_cache_reggen_idx;
+  u64 tls_base_cache_memgen_idx;
   D_RunTLSBaseCache tls_base_caches[2];
-  U64 tls_base_cache_gen;
-  U64 locals_cache_reggen_idx;
+  u64 tls_base_cache_gen;
+  u64 locals_cache_reggen_idx;
   D_RunLocalsCache locals_caches[2];
-  U64 locals_cache_gen;
-  U64 member_cache_reggen_idx;
+  u64 locals_cache_gen;
+  u64 member_cache_reggen_idx;
   D_RunLocalsCache member_caches[2];
-  U64 member_cache_gen;
+  u64 member_cache_gen;
   
   // rjf: user -> ctrl driving state
   Arena *ctrl_last_run_arena;
   D_RunKind ctrl_last_run_kind;
-  U64 ctrl_last_run_frame_idx;
+  u64 ctrl_last_run_frame_idx;
   CTRL_Handle ctrl_last_run_thread_handle;
   CTRL_RunFlags ctrl_last_run_flags;
   CTRL_TrapList ctrl_last_run_traps;
   D_BreakpointArray ctrl_last_run_extra_bps;
-  U128 ctrl_last_run_param_state_hash;
-  B32 ctrl_is_running;
-  B32 ctrl_thread_run_state;
-  B32 ctrl_soft_halt_issued;
+  u128 ctrl_last_run_param_state_hash;
+  b32 ctrl_is_running;
+  b32 ctrl_thread_run_state;
+  b32 ctrl_soft_halt_issued;
   Arena *ctrl_msg_arena;
   CTRL_MsgList ctrl_msgs;
   

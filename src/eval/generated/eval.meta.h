@@ -95,7 +95,7 @@ E_TypeKind_FirstMeta       = E_TypeKind_MetaExpr,
 E_TypeKind_LastMeta        = E_TypeKind_MetaDescription,
 } E_TypeKind;
 
-typedef U32 E_ExprKind;
+typedef u32 E_ExprKind;
 typedef enum E_ExprKindEnum
 {
 E_ExprKind_Nil,
@@ -169,7 +169,7 @@ E_InterpretationCode_COUNT,
 C_LINKAGE_BEGIN
 extern String8 e_token_kind_strings[6];
 extern String8 e_type_kind_basic_string_table[61];
-extern U8 e_type_kind_basic_byte_size_table[61];
+extern u8 e_type_kind_basic_byte_size_table[61];
 extern String8 e_expr_kind_strings[49];
 extern E_OpInfo e_expr_kind_op_info_table[49];
 extern String8 e_interpretation_code_display_strings[11];

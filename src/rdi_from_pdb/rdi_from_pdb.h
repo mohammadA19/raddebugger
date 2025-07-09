@@ -16,7 +16,7 @@ struct P2R_ConvertParams
   String8 input_exe_name;
   String8 input_exe_data;
   RDIM_SubsetFlags subset_flags;
-  B32 deterministic;
+  b32 deterministic;
 };
 
 ////////////////////////////////
@@ -98,7 +98,7 @@ struct P2R_CompUnitContributionsParseIn
 
 struct P2R_CompUnitContributionsBucketIn
 {
-  U64 comp_unit_count;
+  u64 comp_unit_count;
   PDB_CompUnitContributionArray contributions;
 };
 
@@ -119,7 +119,7 @@ struct P2R_CompUnitContributionsBucketOut
 struct P2R_LinkNameNode
 {
   P2R_LinkNameNode *next;
-  U64 voff;
+  u64 voff;
   String8 name;
 };
 
@@ -128,9 +128,9 @@ struct P2R_LinkNameNode
 struct P2R_LinkNameMap
 {
   P2R_LinkNameNode **buckets;
-  U64 buckets_count;
-  U64 bucket_collision_count;
-  U64 link_name_count;
+  u64 buckets_count;
+  u64 bucket_collision_count;
+  u64 link_name_count;
 };
 
 //- rjf: normalized file path -> source file map
@@ -148,7 +148,7 @@ struct P2R_SrcFileNode
 struct P2R_SrcFileMap
 {
   P2R_SrcFileNode **slots;
-  U64 slots_count;
+  u64 slots_count;
 };
 
 //- rjf: per-unit source files conversion tasks
@@ -177,7 +177,7 @@ struct P2R_GatherUnitSrcFilesOut
 
 struct P2R_UnitConvertIn
 {
-  U64 comp_unit_idx;
+  u64 comp_unit_idx;
   PDB_Strtbl *pdb_strtbl;
   COFF_SectionHeaderArray coff_sections;
   PDB_CompUnit *comp_unit;
@@ -270,15 +270,15 @@ struct P2R_UDTConvertIn
 
 struct P2R_SymbolStreamConvertIn
 {
-  B32 parsing_global_stream;
+  b32 parsing_global_stream;
   RDI_Arch arch;
   COFF_SectionHeaderArray coff_sections;
   PDB_TpiHashParsed *tpi_hash;
   CV_LeafParsed *tpi_leaf;
   CV_LeafParsed *ipi_leaf;
   CV_SymParsed *sym;
-  U64 sym_ranges_first;
-  U64 sym_ranges_opl;
+  u64 sym_ranges_first;
+  u64 sym_ranges_opl;
   CV_TypeId *itype_fwd_map;
   RDIM_Type **itype_type_ptrs;
   P2R_LinkNameMap *link_name_map;

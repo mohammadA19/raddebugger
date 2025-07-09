@@ -3,18 +3,18 @@
 
 #pragma once
 
-typedef struct U64Node
+typedef struct u64Node
 {
-  struct U64Node *next;
-  U64             data;
-} U64Node;
+  struct u64Node *next;
+  u64             data;
+} u64Node;
 
-typedef struct U64List
+typedef struct u64List
 {
-  U64      count;
-  U64Node *first;
-  U64Node *last;
-} U64List;
+  u64      count;
+  u64Node *first;
+  u64Node *last;
+} u64List;
 
 typedef struct VoidNode
 {

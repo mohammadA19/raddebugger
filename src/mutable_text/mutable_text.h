@@ -13,7 +13,7 @@ struct MTX_Node
 {
   MTX_Node *next;
   MTX_Node *prev;
-  U128 key;
+  u128 key;
 };
 
 
@@ -48,10 +48,10 @@ struct MTX_Op
 
 struct MTX_MutThread
 {
-  U64 ring_size;
-  U8 *ring_base;
-  U64 ring_read_pos;
-  U64 ring_write_pos;
+  u64 ring_size;
+  u8 *ring_base;
+  u64 ring_read_pos;
+  u64 ring_write_pos;
   OS_Handle cv;
   OS_Handle mutex;
   OS_Handle thread;
@@ -67,13 +67,13 @@ struct MTX_Shared
   Arena *arena;
   
   // rjf: buffer cache
-  U64 slots_count;
-  U64 stripes_count;
+  u64 slots_count;
+  u64 stripes_count;
   MTX_Slot *slots;
   MTX_Stripe *stripes;
   
   // rjf: mut threads
-  U64 mut_threads_count;
+  u64 mut_threads_count;
   MTX_MutThread *mut_threads;
 };
 

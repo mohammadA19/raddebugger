@@ -17,7 +17,7 @@ async_init(CmdLine *cmdline)
   {
     ASYNC_Ring *ring = &async_shared->rings[p];
     ring->ring_size  = MB(8);
-    ring->ring_base  = push_array_no_zero(arena, U8, ring->ring_size);
+    ring->ring_base  = push_array_no_zero(arena, u8, ring->ring_size);
     ring->ring_mutex = os_mutex_alloc();
     ring->ring_cv    = os_condition_variable_alloc();
   }
@@ -39,7 +39,7 @@ async_init(CmdLine *cmdline)
 ////////////////////////////////
 //~ rjf: Top-Level Accessors
 
-internal U64
+internal u64
 async_thread_count(void)
 {
   return async_shared->work_threads_count;
@@ -48,7 +48,7 @@ async_thread_count(void)
 ////////////////////////////////
 //~ rjf: Work Kickoffs
 
-internal B32
+internal b32
 async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params)
 {
   // rjf: choose ring
@@ -66,18 +66,18 @@ async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params
   // rjf: loop; try to write into user -> writer ring buffer. if we're on a
   // worker thread, determine if we need to execute this task locally on this
   // thread, and skip ring buffer if so.
-  B32 queued_in_ring_buffer = 0;
-  B32 need_to_execute_on_this_thread = 0;
+  b32 queued_in_ring_buffer = 0;
+  b32 need_to_execute_on_this_thread = 0;
   OS_MutexScope(ring->ring_mutex) for(;;)
   {
-    U64 num_available_work_threads = (async_shared->work_threads_count - atomic_load(&async_shared->work_threads_live_count));
+    u64 num_available_work_threads = (async_shared->work_threads_count - atomic_load(&async_shared->work_threads_live_count));
     if(num_available_work_threads == 0 && async_work_thread_depth > 0)
     {
       need_to_execute_on_this_thread = 1;
       break;
     }
-    U64 unconsumed_size = ring->ring_write_pos - ring->ring_read_pos;
-    U64 available_size = ring->ring_size - unconsumed_size;
+    u64 unconsumed_size = ring->ring_write_pos - ring->ring_read_pos;
+    u64 available_size = ring->ring_size - unconsumed_size;
     if(available_size >= sizeof(work))
     {
       queued_in_ring_buffer = 1;
@@ -111,7 +111,7 @@ async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params
   }
   
   // rjf: return success signal
-  B32 result = (queued_in_ring_buffer || need_to_execute_on_this_thread);
+  b32 result = (queued_in_ring_buffer || need_to_execute_on_this_thread);
   return result;
 }
 
@@ -165,7 +165,7 @@ internal ASYNC_Work
 async_pop_work(void)
 {
   ASYNC_Work work = {0};
-  B32 done = 0;
+  b32 done = 0;
   ASYNC_Priority taken_priority = ASYNC_Priority_Low;
   OS_MutexScope(async_shared->ring_mutex) for(;!done;)
   {
@@ -174,7 +174,7 @@ async_pop_work(void)
       ASYNC_Ring *ring = &async_shared->rings[priority];
       OS_MutexScope(ring->ring_mutex)
       {
-        U64 unconsumed_size = ring->ring_write_pos - ring->ring_read_pos;
+        u64 unconsumed_size = ring->ring_write_pos - ring->ring_read_pos;
         if(unconsumed_size >= sizeof(work))
         {
           ring->ring_read_pos += ring_read_struct(ring->ring_base, ring->ring_size, ring->ring_read_pos, &work);
@@ -212,7 +212,7 @@ async_execute_work(ASYNC_Work work)
   //- rjf: store output
   if(work.output != 0)
   {
-    atomic_exchange((U64 *)work.output, (U64)work_out);
+    atomic_exchange((u64 *)work.output, (u64)work_out);
   }
   
   //- rjf: release semaphore
@@ -244,7 +244,7 @@ async_root_alloc(void)
   ASYNC_Root *root = push_array(arena, ASYNC_Root, 1);
   root->arenas = push_array(arena, Arena *, async_thread_count());
   root->arenas[0] = arena;
-  for(U64 idx = 1; idx < async_thread_count(); idx += 1)
+  for(u64 idx = 1; idx < async_thread_count(); idx += 1)
   {
     root->arenas[idx] = arena_alloc();
   }
@@ -254,7 +254,7 @@ async_root_alloc(void)
 internal void
 async_root_release(ASYNC_Root *root)
 {
-  for(U64 idx = 1; idx < async_thread_count(); idx += 1)
+  for(u64 idx = 1; idx < async_thread_count(); idx += 1)
   {
     arena_release(root->arenas[idx]);
   }
@@ -273,7 +273,7 @@ async_root_thread_arena(ASYNC_Root *root)
 internal void
 async_work_thread__entry_point(void *p)
 {
-  U64 thread_idx = (U64)p;
+  u64 thread_idx = (u64)p;
   ThreadNameF("[async] work thread #%I64u", thread_idx);
   async_work_thread_idx = thread_idx;
   for(;;)

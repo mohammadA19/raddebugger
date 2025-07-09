@@ -14,7 +14,7 @@
 
 typedef struct MSF_PageNumberArray
 {
-  U64             count;
+  u64             count;
   MSF_PageNumber *v;
 } MSF_PageNumberArray;
 
@@ -59,7 +59,7 @@ typedef struct MSF_PageDataNode
 {
   struct MSF_PageDataNode *next;
   struct MSF_PageDataNode *prev;
-  U8                      *data;
+  u8                      *data;
 } MSF_PageDataNode;
 
 typedef struct MSF_PageDataList

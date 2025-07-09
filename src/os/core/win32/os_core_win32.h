@@ -31,9 +31,9 @@ struct OS_W32_FileIter
 {
   HANDLE handle;
   WIN32_FIND_DATAW find_data;
-  B32 is_volume_iter;
+  b32 is_volume_iter;
   String8Array drive_strings;
-  U64 drive_strings_iter_idx;
+  u64 drive_strings_iter_idx;
 };
 StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(OS_W32_FileIter), file_iter_memory_size);
 
@@ -83,7 +83,7 @@ struct OS_W32_State
   // rjf: info
   OS_SystemInfo system_info;
   OS_ProcessInfo process_info;
-  U64 microsecond_resolution;
+  u64 microsecond_resolution;
   
   // rjf: entity storage
   CRITICAL_SECTION entity_mutex;

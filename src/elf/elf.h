@@ -4,7 +4,7 @@
 
 
 
-enum ELF_Class : U8
+enum ELF_Class : u8
 {
   ELF_Class_None  = 0,
   ELF_Class_32    = 1,
@@ -12,7 +12,7 @@ enum ELF_Class : U8
   ELF_Class_Count = 3
 };
 
-enum ELF_OsAbi : U8
+enum ELF_OsAbi : u8
 {
   ELF_OsAbi_None,
   ELF_OsAbi_SYSV,
@@ -28,13 +28,13 @@ enum ELF_OsAbi : U8
   ELF_OsAbi_STANDALONE = 255,
 };
 
-enum ELF_Version : U8
+enum ELF_Version : u8
 {
   ELF_Version_None,
   ELF_Version_Current,
 };
 
-enum ELF_MachineKind : U16
+enum ELF_MachineKind : u16
 {
   ELF_MachineKind_None        = 0,
   ELF_MachineKind_M32         = 1,
@@ -94,14 +94,14 @@ enum ELF_MachineKind : U16
   ELF_MachineKind_S390_OLD    = 0xA390,
 };
 
-enum ELF_Data : U8
+enum ELF_Data : u8
 {
   ELF_Data_None = 0,
   ELF_Data_2LSB = 1,
   ELF_Data_2MSB = 2,
 };
 
-enum ELF_PType : U32
+enum ELF_PType : u32
 {
   ELF_PType_Null        = 0,
   ELF_PType_Load        = 1,
@@ -128,14 +128,14 @@ enum ELF_PType : U32
   ELF_PType_SunEHFrame  = ELF_PType_GnuEHFrame,
 };
 
-enum ELF_PFlag : U32
+enum ELF_PFlag : u32
 {
   ELF_PFlag_Exec  = (1 << 0),
   ELF_PFlag_Write = (1 << 1),
   ELF_PFlag_Read  = (1 << 2),
 };
 
-enum ELF_SectionCode : U32
+enum ELF_SectionCode : u32
 {
   ELF_SectionCode_Null                   = 0,
   ELF_SectionCode_ProgBits               = 1,
@@ -170,7 +170,7 @@ enum ELF_SectionCode : U32
   ELF_SectionCode_User,
 };
 
-enum ELF_SectionIndex : U32
+enum ELF_SectionIndex : u32
 {
   
   ELF_SectionIndex_Undef             = 0,      // Symbol with section index is undefined and must be resolved by the link editor
@@ -196,7 +196,7 @@ enum ELF_SectionIndex : U32
   ELF_SectionIndex_MIPS_SUndefined   = 0xff04,
 };
 
-enum ELF_SectionFlag : U32
+enum ELF_SectionFlag : u32
 {
   ELF_Shf_Write            = (1 << 0),
   ELF_Shf_Alloc            = (1 << 1),
@@ -216,9 +216,9 @@ enum ELF_SectionFlag : U32
   ELF_Shf_MaskProc_Shift   = 28, ELF_Shf_MaskProc_Mask = 0xf,
 };
 
-#define ELF_SectionFlag_Extract_MaskOs(f)   (U8)(((f) >> ELF_SectionFlag_MaskOs_Shift)   & ELF_SectionFlag_MaskOs_Mask)
-#define ELF_SectionFlag_Extract_MaskProc(f) (U8)(((f) >> ELF_SectionFlag_MaskProc_shift) & ELF_SectionFlag_MaskProc_Mask)
-enum ELF_AuxType : U32
+#define ELF_SectionFlag_Extract_MaskOs(f)   (u8)(((f) >> ELF_SectionFlag_MaskOs_Shift)   & ELF_SectionFlag_MaskOs_Mask)
+#define ELF_SectionFlag_Extract_MaskProc(f) (u8)(((f) >> ELF_SectionFlag_MaskProc_shift) & ELF_SectionFlag_MaskProc_Mask)
+enum ELF_AuxType : u32
 {
   ELF_AuxType_Null              = 0,
   ELF_AuxType_Phdr              = 3, // program headers
@@ -256,7 +256,7 @@ enum ELF_AuxType : U32
   ELF_AuxType_L3_CacheGeometry  = 47,
 };
 
-enum ELF_DynTag : U32
+enum ELF_DynTag : u32
 {
   ELF_DynTag_Null            = 0,
 
@@ -337,7 +337,7 @@ enum ELF_DynTag : U32
   ELF_DynTag_HiProc          = 0x7fffffff,
 };
 
-enum ELF_DynFlag : U32
+enum ELF_DynFlag : u32
 {
   ELF_DynFlag_Origin    = (1 << 0),
   ELF_DynFlag_Symbolic  = (1 << 1),
@@ -346,13 +346,13 @@ enum ELF_DynFlag : U32
   ELF_DynFlag_StaticTls = (1 << 4),
 };
 
-enum ELF_DynFeatureFlag : U32
+enum ELF_DynFeatureFlag : u32
 {
   ELF_DynFeatureFlag_ParInit = (1 << 0),
   ELF_DynFeatureFlag_ConfExp = (1 << 1),
 };
 
-enum ELF_SymBind : U8
+enum ELF_SymBind : u8
 {
   //  the same name may exists in multiple files without interfering with each other. 
   ELF_SymBind_Local  = 0,
@@ -364,7 +364,7 @@ enum ELF_SymBind : U8
   ELF_SymBind_HiProc = 15,
 };
 
-enum ELF_SymType : U8
+enum ELF_SymType : u8
 {
   ELF_SymType_NoType  = 0,
   //  Type is not specified.
@@ -382,7 +382,7 @@ enum ELF_SymType : U8
   ELF_SymType_HiProc  = 15,
 };
 
-enum ELF_SymVisibility : U8
+enum ELF_SymVisibility : u8
 {
   ELF_SymVisibility_Default   = 0,
   ELF_SymVisibility_Internal  = 1,
@@ -390,7 +390,7 @@ enum ELF_SymVisibility : U8
   ELF_SymVisibility_Protected = 3,
 };
 
-enum ELF_RelocI386 : U32
+enum ELF_RelocI386 : u32
 {
   ELF_RelocI386_None           = 0,
   ELF_RelocI386_32             = 1,
@@ -439,7 +439,7 @@ enum ELF_RelocI386 : U32
   ELF_RelocI386_GNU_VTEntry    = 251,
 };
 
-enum ELF_RelocX8664 : U32
+enum ELF_RelocX8664 : u32
 {
   ELF_RelocX8664_None           = 0,
   ELF_RelocX8664_64             = 1,
@@ -488,14 +488,14 @@ enum ELF_RelocX8664 : U32
   ELF_RelocX8664_GNU_VTEntry    = 251,
 };
 
-enum ELF_ExternalVerFlag : U32
+enum ELF_ExternalVerFlag : u32
 {
   ELF_ExternalVerFlag_Base = (1 << 0),
   ELF_ExternalVerFlag_Weak = (1 << 1),
   ELF_ExternalVerFlag_Info = (1 << 2),
 };
 
-enum ELF_NoteType : U32
+enum ELF_NoteType : u32
 {
   ELF_NoteType_GNU_Abi           = 1,
   ELF_NoteType_GNU_HwCap         = 2,
@@ -504,7 +504,7 @@ enum ELF_NoteType : U32
   ELF_NoteType_GNU_PropertyType0 = 5,
 };
 
-enum ELF_GnuABITag : U32
+enum ELF_GnuABITag : u32
 {
   ELF_GnuABITag_Linux    = 0,
   ELF_GnuABITag_Hurd     = 1,
@@ -515,7 +515,7 @@ enum ELF_GnuABITag : U32
   ELF_GnuABITag_Nacl     = 6,
 };
 
-enum ELF_GnuProperty : S32
+enum ELF_GnuProperty : i32
 {
   ELF_GnuProperty_LoProc            = 0xc0000000,
   //  processor-specific range
@@ -527,7 +527,7 @@ enum ELF_GnuProperty : S32
   ELF_GnuProperty_NoCopyOnProtected = 2,
 };
 
-enum ELF_GnuPropertyX86Isa1 : U32
+enum ELF_GnuPropertyX86Isa1 : u32
 {
   ELF_GnuPropertyX86Isa1_BaseLine = (1 << 0),
   ELF_GnuPropertyX86Isa1_V2       = (1 << 1),
@@ -535,7 +535,7 @@ enum ELF_GnuPropertyX86Isa1 : U32
   ELF_GnuPropertyX86Isa1_V4       = (1 << 3),
 };
 
-enum ELF_GnuPropertyX86Compat1Isa1 : U32
+enum ELF_GnuPropertyX86Compat1Isa1 : u32
 {
   ELF_GnuPropertyX86Compat1Isa1_486      = (1 << 0),
   ELF_GnuPropertyX86Compat1Isa1_586      = (1 << 1),
@@ -556,7 +556,7 @@ enum ELF_GnuPropertyX86Compat1Isa1 : U32
   ELF_GnuPropertyX86Compat1Isa1_AVX512BW = (1 << 16),
 };
 
-enum ELF_GnuPropertyX86Compat2Isa1 : U32
+enum ELF_GnuPropertyX86Compat2Isa1 : u32
 {
   ELF_GnuPropertyX86Compat2Isa1_CMOVE         = (1 << 0),
   ELF_GnuPropertyX86Compat2Isa1_SSE           = (1 << 1),
@@ -584,7 +584,7 @@ enum ELF_GnuPropertyX86Compat2Isa1 : U32
   ELF_GnuPropertyX86Compat2Isa1_AVX512_BF16   = (1 << 23),
 };
 
-enum ELF_GnuPropertyX86 : S32
+enum ELF_GnuPropertyX86 : i32
 {
   ELF_GnuPropertyX86_Feature1And         = 0xc0000002,
   ELF_GnuPropertyX86_Feature2Used        = 0xc0010001,
@@ -601,7 +601,7 @@ enum ELF_GnuPropertyX86 : S32
   ELF_GnuPropertyX86_UInt32OrAndHi       = 0xc0017fff,
 };
 
-enum ELF_GnuPropertyX86Feature1 : U32
+enum ELF_GnuPropertyX86Feature1 : u32
 {
   ELF_GnuPropertyX86Feature1_Ibt    = (1 << 0),
   ELF_GnuPropertyX86Feature1_Shstk  = (1 << 1),
@@ -609,7 +609,7 @@ enum ELF_GnuPropertyX86Feature1 : U32
   ELF_GnuPropertyX86Feature1_LamU57 = (1 << 3),
 };
 
-enum ELF_GnuPropertyX86Feature2 : U32
+enum ELF_GnuPropertyX86Feature2 : u32
 {
   ELF_GnuPropertyX86Feature2_X86      = (1 << 0),
   ELF_GnuPropertyX86Feature2_X87      = (1 << 1),
@@ -642,7 +642,7 @@ typedef enum ELF_Identifier
   ELF_Identifier_Max        = 16,
 } ELF_Identifier;
 
-typedef U16 ELF_Type;
+typedef u16 ELF_Type;
 typedef enum ELF_TypeEnum
 {
   ELF_Type_None   = 0,
@@ -658,90 +658,90 @@ typedef enum ELF_TypeEnum
 
 typedef struct ELF_Hdr64
 {
-  U8              e_ident[ELF_Identifier_Max];
+  u8              e_ident[ELF_Identifier_Max];
   ELF_Type        e_type;
   ELF_MachineKind e_machine;
-  U32             e_version;
-  U64             e_entry;
-  U64             e_phoff;
-  U64             e_shoff;
-  U32             e_flags;
-  U16             e_ehsize;
-  U16             e_phentsize;
-  U16             e_phnum;
-  U16             e_shentsize;
-  U16             e_shnum;
-  U16             e_shstrndx;
+  u32             e_version;
+  u64             e_entry;
+  u64             e_phoff;
+  u64             e_shoff;
+  u32             e_flags;
+  u16             e_ehsize;
+  u16             e_phentsize;
+  u16             e_phnum;
+  u16             e_shentsize;
+  u16             e_shnum;
+  u16             e_shstrndx;
 } ELF_Hdr64;
 
 typedef struct ELF_Hdr32
 {
-  U8              e_ident[ELF_Identifier_Max];
+  u8              e_ident[ELF_Identifier_Max];
   ELF_Type        e_type;
   ELF_MachineKind e_machine;
-  U32             e_version;
-  U32             e_entry;
-  U32             e_phoff;
-  U32             e_shoff;
-  U32             e_flags;
-  U16             e_ehsize;
-  U16             e_phentsize;
-  U16             e_phnum;
-  U16             e_shentsize;
-  U16             e_shnum;
-  U16             e_shstrndx;
+  u32             e_version;
+  u32             e_entry;
+  u32             e_phoff;
+  u32             e_shoff;
+  u32             e_flags;
+  u16             e_ehsize;
+  u16             e_phentsize;
+  u16             e_phnum;
+  u16             e_shentsize;
+  u16             e_shnum;
+  u16             e_shstrndx;
 } ELF_Hdr32;
 
 typedef struct ELF_Shdr64
 {
-  U32 sh_name;
-  U32 sh_type;
-  U64 sh_flags;
-  U64 sh_addr;
-  U64 sh_offset;
-  U64 sh_size;
-  U32 sh_link;
-  U32 sh_info;
-  U64 sh_addralign;
-  U64 sh_entsize;
+  u32 sh_name;
+  u32 sh_type;
+  u64 sh_flags;
+  u64 sh_addr;
+  u64 sh_offset;
+  u64 sh_size;
+  u32 sh_link;
+  u32 sh_info;
+  u64 sh_addralign;
+  u64 sh_entsize;
 } ELF_Shdr64;
 
 typedef struct ELF_Shdr32
 {
-  U32 sh_name;
-  U32 sh_type;
-  U32 sh_flags;
-  U32 sh_addr;
-  U32 sh_offset;
-  U32 sh_size;
-  U32 sh_link;
-  U32 sh_info;
-  U32 sh_addralign;
-  U32 sh_entsize;
+  u32 sh_name;
+  u32 sh_type;
+  u32 sh_flags;
+  u32 sh_addr;
+  u32 sh_offset;
+  u32 sh_size;
+  u32 sh_link;
+  u32 sh_info;
+  u32 sh_addralign;
+  u32 sh_entsize;
 } ELF_Shdr32;
 
 typedef struct ELF_Phdr64
 {
-  U32 p_type;
-  U32 p_flags;
-  U64 p_offset;
-  U64 p_vaddr;
-  U64 p_paddr;
-  U64 p_filesz;
-  U64 p_memsz;
-  U64 p_align;
+  u32 p_type;
+  u32 p_flags;
+  u64 p_offset;
+  u64 p_vaddr;
+  u64 p_paddr;
+  u64 p_filesz;
+  u64 p_memsz;
+  u64 p_align;
 } ELF_Phdr64;
 
 typedef struct ELF_Phdr32
 {
-  U32 p_type;
-  U32 p_offset;
-  U32 p_vaddr;
-  U32 p_paddr;
-  U32 p_filesz;
-  U32 p_memsz;
-  U32 p_flags;
-  U32 p_align;
+  u32 p_type;
+  u32 p_offset;
+  u32 p_vaddr;
+  u32 p_paddr;
+  u32 p_filesz;
+  u32 p_memsz;
+  u32 p_flags;
+  u32 p_align;
 } ELF_Phdr32;
 
 ////////////////////////////////
@@ -751,14 +751,14 @@ typedef struct ELF_Phdr32
 
 typedef struct ELF_Auxv32
 {
-  U32 a_type;
-  U32 a_val;
+  u32 a_type;
+  u32 a_val;
 } ELF_Auxv32;
 
 typedef struct ELF_Auxv64
 {
-  U64 a_type;
-  U64 a_val;
+  u64 a_type;
+  u64 a_val;
 } ELF_Auxv64;
 
 ////////////////////////////////
@@ -768,30 +768,30 @@ typedef struct ELF_Auxv64
 
 typedef struct ELF_Dyn32
 {
-  U32 tag;
-  U32 val;
+  u32 tag;
+  u32 val;
 } ELF_Dyn32;
 
 typedef struct ELF_Dyn64
 {
-  U64 tag;
-  U64 val;
+  u64 tag;
+  u64 val;
 } ELF_Dyn64;
 
 typedef struct ELF_LinkMap32
 {
-  U32 base;
-  U32 name;
-  U32 ld;
-  U32 next;
+  u32 base;
+  u32 name;
+  u32 ld;
+  u32 next;
 } ELF_LinkMap32;
 
 typedef struct ELF_LinkMap64
 {
-  U64 base;
-  U64 name;
-  U64 ld;
-  U64 next;
+  u64 base;
+  u64 name;
+  u64 ld;
+  u64 next;
 } ELF_LinkMap64;
 
 ////////////////////////////////
@@ -799,22 +799,22 @@ typedef struct ELF_LinkMap64
 
 typedef struct 
 {
-  U32 st_name;  // Holds index into files string table.
-  U32 st_value; // Depending on the context, this may be address, size, etc.
-  U32 st_size;  // Data size in bytes. Zero when size is unknown.
-  U8  st_info;  // Contains symbols type and binding.
-  U8  st_other; // Reserved for future use, currenly zero.
-  U16 st_shndx; // Section index to which symbol is relevant.
+  u32 st_name;  // Holds index into files string table.
+  u32 st_value; // Depending on the context, this may be address, size, etc.
+  u32 st_size;  // Data size in bytes. Zero when size is unknown.
+  u8  st_info;  // Contains symbols type and binding.
+  u8  st_other; // Reserved for future use, currenly zero.
+  u16 st_shndx; // Section index to which symbol is relevant.
 } ELF_Sym32;
 
 typedef struct 
 {
-  U32 st_name;
-  U8  st_info;
-  U8  st_other;
-  U16 st_shndx;
-  U64 st_value;
-  U64 st_size;
+  u32 st_name;
+  u8  st_info;
+  u8  st_other;
+  u16 st_shndx;
+  u64 st_value;
+  u64 st_size;
 } ELF_Sym64;
 
 #define ELF_ST_INFO(b,t)     (((b) << 4) + ((t) & 0xF))
@@ -824,34 +824,34 @@ typedef struct
 
 typedef struct
 {
-  U32 r_offset;
-  U32 r_info;
+  u32 r_offset;
+  u32 r_info;
 } ELF_Rel32;
 
 typedef struct
 {
-  U32 r_offset;
-  U32 r_info;
-  S32 r_addend;
+  u32 r_offset;
+  u32 r_info;
+  i32 r_addend;
 } ELF_Rela32;
 
 typedef struct
 {
-  U64 r_offset;
-  U64 r_info;
+  u64 r_offset;
+  u64 r_info;
 } ELF_Rel64;
 
 typedef struct
 {
-  U64 r_offset;
-  U64 r_info;
-  S64 r_addend;
+  u64 r_offset;
+  u64 r_info;
+  i64 r_addend;
 } ELF_Rela64;
 
 #define ELF32_R_SYM(x)  ((x) >> 8)
 #define ELF32_R_TYPE(x) ((x) & 0xFF)
 
-#define ELF64_R_INFO(s,t) (((U64)(s) << 32) | (U64)t)
+#define ELF64_R_INFO(s,t) (((u64)(s) << 32) | (u64)t)
 #define ELF64_R_SYM(x)    ((x) >> 32)
 #define ELF64_R_TYPE(x)   ((x) & 0xffffffff)
 
@@ -862,61 +862,61 @@ typedef struct
 // Appears in .gnu.verdef (SHT_GNU_verdef)
 typedef struct
 {
-  U16 vd_version;
-  U16 vd_flags;
-  U16 vd_ndx;
-  U16 vd_cnt;
-  U32 vd_hash;
-  U32 vd_aux;
-  U32 vd_next;
+  u16 vd_version;
+  u16 vd_flags;
+  u16 vd_ndx;
+  u16 vd_cnt;
+  u32 vd_hash;
+  u32 vd_aux;
+  u32 vd_next;
 } ELF_ExternalVerdef;
 
 // Appears in .gnu.verdef (SHT_GNU_verdef)
 typedef struct
 {
-  U32 vda_name;
-  U32 vda_next;
+  u32 vda_name;
+  u32 vda_next;
 } ELF_ExternalVerdaux;
 
 // Appears in .gnu.verneed (SHT_GNU_verneed)
 typedef struct
 {
-  U16 vn_version;
-  U16 vn_cnt;
-  U32 vn_file;
-  U32 vn_aux;
-  U32 vn_next;
+  u16 vn_version;
+  u16 vn_cnt;
+  u32 vn_file;
+  u32 vn_aux;
+  u32 vn_next;
 } ELF_ExternalVerneed;
 
 // Appears in .gnu.verneed (SHT_GNU_verneed)
 typedef struct
 {
-  U32 vna_hash;
-  U16 vna_flags;
-  U16 vna_other;
-  U32 vna_name;
-  U32 vna_next;
+  u32 vna_hash;
+  u16 vna_flags;
+  u16 vna_other;
+  u32 vna_name;
+  u32 vna_next;
 } ELF_ExternalVernaux;
 
 // Appears in .gnu.version (SHT_GNU_versym)
 typedef struct
 {
-  U16 vs_vers;
+  u16 vs_vers;
 } ELF_ExternalVersym;
 
 typedef struct
 {
-  U32 name_size;
-  U32 desc_size;
-  U32 type;
+  u32 name_size;
+  u32 desc_size;
+  u32 type;
   // name + desc
-  // U8  data[1];
+  // u8  data[1];
 } ELF_Note;
 
 ////////////////////////////////
 // Extensions
 
-enum ELF_CompressType : U8 ELF_CompressTypeEnum
+enum ELF_CompressType : u8 ELF_CompressTypeEnum
 {
   ELF_CompressType_None = 0,
   ELF_CompressType_ZLib = 1,
@@ -931,16 +931,16 @@ enum ELF_CompressType : U8 ELF_CompressTypeEnum
 
 typedef struct ELF_Chdr32
 {
-  U32 ch_type;
-  U32 ch_size;
-  U32 ch_addr_align;
+  u32 ch_type;
+  u32 ch_size;
+  u32 ch_addr_align;
 } ELF_Chdr32;
 
 typedef struct ELF_Chdr64
 {
-  U64 ch_type;
-  U64 ch_size;
-  U64 ch_addr_align;
+  u64 ch_type;
+  u64 ch_size;
+  u64 ch_addr_align;
 } ELF_Chdr64;
 
 ////////////////////////////////

@@ -10,8 +10,8 @@
 //~ PDB String Table Types
 
 #define PDB_INVALID_STRING_INDEX max_U32
-typedef U32 PDB_StringIndex;
-typedef U32 PDB_StringOffset;
+typedef u32 PDB_StringIndex;
+typedef u32 PDB_StringOffset;
 
 enum
 {
@@ -26,8 +26,8 @@ enum
 
 typedef struct PDB_StringTableHeader
 {
-  U32 magic;
-  U32 version;
+  u32 magic;
+  u32 version;
 } PDB_StringTableHeader;
 
 ////////////////////////////////
@@ -43,7 +43,7 @@ typedef enum PDB_FixedStream
 ////////////////////////////////
 //~ PDB Info Types
 
-typedef U32 PDB_InfoVersion;
+typedef u32 PDB_InfoVersion;
 enum{
   PDB_InfoVersion_VC2      = 19941610,
   PDB_InfoVersion_VC4      = 19950623,
@@ -66,7 +66,7 @@ enum
   PDB_FeatureSig_NO_TYPE_MERGE      = 0x4D544F4E,
   PDB_FeatureSig_MINIMAL_DEBUG_INFO = 0x494E494D,
 };
-typedef U32 PDB_FeatureSig;
+typedef u32 PDB_FeatureSig;
 
 enum
 {
@@ -74,14 +74,14 @@ enum
   PDB_FeatureFlag_NO_TYPE_MERGE    = (1 << 1),
   PDB_FeatureFlag_MINIMAL_DBG_INFO = (1 << 2),
 };
-typedef U32 PDB_FeatureFlags;
+typedef u32 PDB_FeatureFlags;
 
 #pragma pack(push,1)
 typedef struct PDB_InfoHeaderV70
 {
   PDB_InfoVersion    version;
   COFF_TimeStamp     time_stamp;
-  U32                age;
+  u32                age;
   Guid               guid;
   // PDB_HashTable   named_stream_hash_table
   // PDB_FeatureFlag features[*]
@@ -101,11 +101,11 @@ StaticAssert(sizeof(PDB_InfoHeaderV70) == 28, pdb_info_header_v70_size_check);
 
 typedef struct PDB_SrcHeaderBlockHeader
 {
-  U32 version;
-  U32 stream_size;
-  U64 file_time;
-  U32 age;
-  U8  pad[44];
+  u32 version;
+  u32 stream_size;
+  u64 file_time;
+  u32 age;
+  u8  pad[44];
 } PDB_SrcHeaderBlockHeader;
 
 enum
@@ -116,34 +116,34 @@ enum
   PDB_SrcComp_LZ,
   PDB_SrcComp_DOTNET
 };
-typedef U8 PDB_SrcCompType;
+typedef u8 PDB_SrcCompType;
 
 enum
 {
   PDB_SrcHeaderBlockEntryFlag_IS_VIRTUAL = (1 << 0)
 };
-typedef U8 PDB_SrcHeaderFlags;
+typedef u8 PDB_SrcHeaderFlags;
 
 // (PDB/include/pdb.h: SrcHeaderOut)
 typedef struct PDB_SrcHeaderBlockEntry
 {
-  U32                size;
-  U32                version;
-  U32                file_crc;
-  U32                file_size;
+  u32                size;
+  u32                version;
+  u32                file_crc;
+  u32                file_size;
   PDB_StringOffset   file_path;
   PDB_StringOffset   obj;
   PDB_StringOffset   virt_path;
   PDB_SrcCompType    comp;
   PDB_SrcHeaderFlags flags;
-  U8                 pad[2];
-  U8                 reserved[8];
+  u8                 pad[2];
+  u8                 reserved[8];
 } PDB_SrcHeaderBlockEntry;
 
 ////////////////////////////////
 //~ PDB Format DBI Types
 
-typedef U32 PDB_DbiStream;
+typedef u32 PDB_DbiStream;
 enum
 {
   PDB_DbiStream_FPO,
@@ -160,13 +160,13 @@ enum
   PDB_DbiStream_COUNT
 };
 
-typedef U32 PDB_DbiHeaderSignature;
+typedef u32 PDB_DbiHeaderSignature;
 enum
 {
   PDB_DbiHeaderSignature_V1 = 0xFFFFFFFF
 };
 
-typedef U32 PDB_DbiVersion;
+typedef u32 PDB_DbiVersion;
 enum
 {
   PDB_DbiVersion_41  =   930803,
@@ -176,14 +176,14 @@ enum
   PDB_DbiVersion_110 = 20091201,
 };
 
-typedef U16 PDB_DbiBuildNumber;
+typedef u16 PDB_DbiBuildNumber;
 #define PDB_DbiBuildNumberNewFormatFlag 0x8000
 #define PDB_DbiBuildNumberMinor(bn)     ((bn)&0xFF)
 #define PDB_DbiBuildNumberMajor(bn)     (((bn) >> 8)&0x7F)
 #define PDB_DbiBuildNumberNewFormat(bn) (!!((bn)&PDB_DbiBuildNumberNewFormatFlag))
 #define PDB_DbiMakeBuildNumber(maj, min) (PDB_DbiBuildNumber)(PDB_DbiBuildNumberNewFormatFlag | ((min)&0xFF) | (((maj)&0x7F) << 16))
 
-typedef U16 PDB_DbiHeaderFlags;
+typedef u16 PDB_DbiHeaderFlags;
 enum
 {
   PDB_DbiHeaderFlag_Incremental = 0x1,
@@ -195,84 +195,84 @@ typedef struct PDB_DbiHeader
 {
   PDB_DbiHeaderSignature sig;
   PDB_DbiVersion version;
-  U32 age;
+  u32 age;
   MSF_StreamNumber gsi_sn;
   PDB_DbiBuildNumber build_number;
   
   MSF_StreamNumber psi_sn;
-  U16 pdb_version;
+  u16 pdb_version;
   
   MSF_StreamNumber sym_sn;
-  U16 pdb_version2;
+  u16 pdb_version2;
   
-  U32 module_info_size;
-  U32 sec_con_size;
-  U32 sec_map_size;
-  U32 file_info_size;
+  u32 module_info_size;
+  u32 sec_con_size;
+  u32 sec_map_size;
+  u32 file_info_size;
   
-  U32 tsm_size;
-  U32 mfc_index;
-  U32 dbg_header_size;
-  U32 ec_info_size;
+  u32 tsm_size;
+  u32 mfc_index;
+  u32 dbg_header_size;
+  u32 ec_info_size;
   
   PDB_DbiHeaderFlags flags;
   COFF_MachineType machine;
   
-  U32 reserved;
+  u32 reserved;
 } PDB_DbiHeader;
 
 // "ModuleInfo" DBI range
 
-typedef U32 PDB_DbiSectionContribVersion;
+typedef u32 PDB_DbiSectionContribVersion;
 #define PDB_DbiSectionContribVersion_1 (0xeffe0000u + 19970605u)
 #define PDB_DbiSectionContribVersion_2 (0xeffe0000u + 20140516u)
 
 typedef struct PDB_DbiSectionContrib40
 {
   CV_SectionIndex sec;
-  U16 pad0;
-  U32 sec_off;
-  U32 size;
-  U32 flags;
+  u16 pad0;
+  u32 sec_off;
+  u32 size;
+  u32 flags;
   CV_ModIndex mod;
-  U16 pad1;
+  u16 pad1;
 } PDB_DbiSectionContrib40;
 
 typedef struct PDB_DbiSectionContrib
 {
   PDB_DbiSectionContrib40 base;
-  U32 data_crc;
-  U32 reloc_crc;
+  u32 data_crc;
+  u32 reloc_crc;
 } PDB_DbiSectionContrib;
 
 typedef struct PDB_DbiSectionContrib2
 {
   PDB_DbiSectionContrib40 base;
-  U32 data_crc;
-  U32 reloc_crc;
-  U32 sec_coff;
+  u32 data_crc;
+  u32 reloc_crc;
+  u32 sec_coff;
 } PDB_DbiSectionContrib2;
 
 typedef struct PDB_DbiCompUnitHeader
 {
-  U32 unused;
+  u32 unused;
   PDB_DbiSectionContrib contribution;
-  U16 flags; // unknown
+  u16 flags; // unknown
   
   MSF_StreamNumber sn;
-  U32 symbols_size;
-  U32 c11_lines_size;
-  U32 c13_lines_size;
+  u32 symbols_size;
+  u32 c11_lines_size;
+  u32 c13_lines_size;
   
-  U16 num_contrib_files;
-  U16 unused2;
-  U32 file_names_offset;
+  u16 num_contrib_files;
+  u16 unused2;
+  u32 file_names_offset;
   
   PDB_StringIndex src_file;
   PDB_StringIndex pdb_file;
   
-  // U8[] module_name (null terminated)
-  // U8[] obj_name (null terminated)
+  // u8[] module_name (null terminated)
+  // u8[] obj_name (null terminated)
 } PDB_DbiCompUnitHeader;
 
 ////////////////////////////////
@@ -288,30 +288,30 @@ enum
   PDB_DbiOMF_IS_ABS_ADDR   = (1 << 9), // Frame is absolute address
   PDB_DbiOMF_IS_GROUP      = (1 << 10) // Descriptor is a group
 };
-typedef U16 PDB_DbiOMF;
+typedef u16 PDB_DbiOMF;
 
 typedef struct PDB_DbiSecMapEntry
 {
   PDB_DbiOMF flags;
-  U16        ovl;
-  U16        group;
-  U16        frame;
-  U16        sec_name;
-  U16        class_name;
-  U32        offset;
-  U32        sec_size;
+  u16        ovl;
+  u16        group;
+  u16        frame;
+  u16        sec_name;
+  u16        class_name;
+  u32        offset;
+  u32        sec_size;
 } PDB_DbiSecMapEntry;
 
 typedef struct PDB_DbiSecMapHeader
 {
-  U16 section_count;
-  U16 segment_count;
+  u16 section_count;
+  u16 segment_count;
 } PDB_DbiSecMapHeader;
 
 ////////////////////////////////
 //~ PDB Format TPI/IPI Types
 
-typedef U32 PDB_TpiVersion;
+typedef u32 PDB_TpiVersion;
 enum
 {
   PDB_TpiVersion_INTV_VC2       = 920924,
@@ -334,7 +334,7 @@ enum
 };
 
 #define PDB_TYPE_OFFSET_MAX  max_U32
-typedef U32 PDB_TypeOffset;
+typedef u32 PDB_TypeOffset;
 
 typedef struct PDB_TpiOffHint
 {
@@ -344,24 +344,24 @@ typedef struct PDB_TpiOffHint
 
 typedef struct PDB_OffsetSize
 {
-  U32 off;
-  U32 size;
+  u32 off;
+  u32 size;
 } PDB_OffsetSize;
 
 typedef struct PDB_TpiHeader
 {
   //   (HDR)
   PDB_TpiVersion version;
-  U32 header_size;
-  U32 ti_lo;
-  U32 ti_hi;
-  U32 leaf_data_size;
+  u32 header_size;
+  u32 ti_lo;
+  u32 ti_hi;
+  u32 leaf_data_size;
   
   //   (PdbTpiHash)
   MSF_StreamNumber hash_sn;
   MSF_StreamNumber hash_sn_aux;
-  U32 hash_key_size;
-  U32 hash_bucket_count;
+  u32 hash_key_size;
+  u32 hash_bucket_count;
   PDB_OffsetSize hash_vals;
   PDB_OffsetSize itype_offs;
   PDB_OffsetSize hash_adj;
@@ -371,13 +371,13 @@ typedef struct PDB_TpiHeader
 ////////////////////////////////
 //~ PDB Format GSI Types
 
-typedef U32 PDB_GsiSignature;
+typedef u32 PDB_GsiSignature;
 enum
 {
   PDB_GsiSignature_Basic = 0xffffffff,
 };
 
-typedef U32 PDB_GsiVersion;
+typedef u32 PDB_GsiVersion;
 enum
 {
   PDB_GsiVersion_V70 = 0xeffe0000 + 19990810,
@@ -387,33 +387,33 @@ typedef struct PDB_GsiHeader
 {
   PDB_GsiSignature signature;
   PDB_GsiVersion version;
-  U32 hash_record_arr_size;
-  U32 bucket_data_size;
+  u32 hash_record_arr_size;
+  u32 bucket_data_size;
 } PDB_GsiHeader;
 
 typedef struct PDB_GsiHashRecord
 {
-  U32 symbol_off;
-  U32 cref;
+  u32 symbol_off;
+  u32 cref;
 } PDB_GsiHashRecord;
 
 typedef struct PDB_GsiHashRecordOffsetCalc
 {
-  U32 next;
-  U32 off;
-  U32 cref;
+  u32 next;
+  u32 off;
+  u32 cref;
 } PDB_GsiHashRecordOffsetCalc;
 
 typedef struct PDB_PsiHeader
 {
-  U32 sym_hash_size;
-  U32 addr_map_size;
-  U32 thunk_count;
-  U32 thunk_size;
+  u32 sym_hash_size;
+  u32 addr_map_size;
+  u32 thunk_count;
+  u32 thunk_size;
   CV_SectionIndex isec_thunk_table;
-  U16 padding;
-  U32 sec_thunk_table_off;
-  U32 sec_count;
+  u16 padding;
+  u32 sec_thunk_table_off;
+  u32 sec_count;
 } PDB_PsiHeader;
 
 ////////////////////////////////

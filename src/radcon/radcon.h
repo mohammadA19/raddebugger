@@ -4,7 +4,7 @@
 
 
 
-enum RC_Flags : U32
+enum RC_Flags : u32
 {
   RC_Flag_Strings                 = (1 <<  0),
   RC_Flag_IndexRuns               = (1 <<  1),

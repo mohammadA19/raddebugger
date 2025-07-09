@@ -198,7 +198,7 @@ struct RDIM_JoinBakeStringMapSlotsIn
 {
   RDIM_BakeStringMapTopology *top;
   RDIM_BakeStringMapLoose **src_maps;
-  U64 src_maps_count;
+  u64 src_maps_count;
   RDIM_BakeStringMapLoose *dst_map;
   Rng1U64 slot_idx_range;
 };
@@ -212,8 +212,8 @@ struct RDIM_SortBakeStringMapSlotsIn
   RDIM_BakeStringMapTopology *top;
   RDIM_BakeStringMapLoose *src_map;
   RDIM_BakeStringMapLoose *dst_map;
-  U64 slot_idx;
-  U64 slot_count;
+  u64 slot_idx;
+  u64 slot_count;
 };
 
 //- rjf: debug info baking task types

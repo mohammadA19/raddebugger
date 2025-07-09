@@ -43,7 +43,7 @@ global @(rodata) R_OGL_Attribute r_ogl_single_color_output_attributes[] =
 internal R_Handle
 r_ogl_handle_from_tex2d(R_OGL_Tex2D *t)
 {
-  R_Handle h = {(U64)t};
+  R_Handle h = {(u64)t};
   return h;
 }
 
@@ -66,13 +66,13 @@ r_ogl_format_info_from_tex2dformat(R_Tex2DFormat fmt)
 }
 
 internal GLuint
-r_ogl_instance_buffer_from_size(U64 size)
+r_ogl_instance_buffer_from_size(u64 size)
 {
   GLuint buffer = r_ogl_state->scratch_buffer_64kb;
   if(size > KB(64))
   {
     // rjf: build buffer
-    U64 flushed_buffer_size = size;
+    u64 flushed_buffer_size = size;
     flushed_buffer_size += MB(1)-1;
     flushed_buffer_size -= flushed_buffer_size%MB(1);
     glGenBuffers(1, &buffer);
@@ -137,7 +137,7 @@ r_init(CmdLine *cmdln)
       glGetShaderiv(stages[idx].out, GL_INFO_LOG_LENGTH, &info_log_length);
       if(info_log_length != 0)
       {
-        stages[idx].errors.str = push_array(r_ogl_state->arena, U8, info_log_length+1);
+        stages[idx].errors.str = push_array(r_ogl_state->arena, u8, info_log_length+1);
         stages[idx].errors.size = info_log_length;
         glGetShaderInfoLog(stages[idx].out, info_log_length, 0, (char *)stages[idx].errors.str);
       }
@@ -177,7 +177,7 @@ r_init(CmdLine *cmdln)
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glGenTextures(1, &r_ogl_state->white_texture);
   glBindTexture(GL_TEXTURE_2D, r_ogl_state->white_texture);
-  U32 white_pixel = 0xffffffff;
+  u32 white_pixel = 0xffffffff;
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &white_pixel);
   glEnable(GL_FRAMEBUFFER_SRGB);
   
@@ -185,7 +185,7 @@ r_init(CmdLine *cmdln)
   r_ogl_state->buffer_flush_arena = arena_alloc();
   
   //- rjf: set up debug callback
-  B32 debug_mode = cmd_line_has_flag(cmdln, str8_lit("opengl_debug"));
+  b32 debug_mode = cmd_line_has_flag(cmdln, str8_lit("opengl_debug"));
 #if BUILD_DEBUG
   debug_mode = 1;
 #endif
@@ -312,7 +312,7 @@ r_fill_tex2d_region(R_Handle texture, Rng2S32 subrect, void *data)
 //- rjf: buffers
 
 r_hook R_Handle
-r_buffer_alloc(R_ResourceKind kind, U64 size, void *data)
+r_buffer_alloc(R_ResourceKind kind, u64 size, void *data)
 {
   R_Handle result = {0};
   return result;
@@ -350,7 +350,7 @@ r_window_begin_frame(OS_Handle os, R_Handle r)
   //- rjf: clear and reset state
   glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glViewport(0, 0, (S32)client_rect_dim.x, (S32)client_rect_dim.y);
+  glViewport(0, 0, (i32)client_rect_dim.x, (i32)client_rect_dim.y);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
@@ -415,7 +415,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
             GLuint buffer = r_ogl_instance_buffer_from_size(batches->byte_count);
             {
               glBindBuffer(GL_ARRAY_BUFFER, buffer);
-              U64 off = 0;
+              u64 off = 0;
               for(R_BatchNode *batch_n = batches->first; batch_n != 0; batch_n = batch_n->next)
               {
                 glBufferSubData(GL_ARRAY_BUFFER, off, batch_n->v.byte_count, batch_n->v.v);
@@ -426,13 +426,13 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
             //- rjf: bind input attributes
             {
               R_OGL_AttributeArray inputs = r_ogl_shader_kind_input_attributes_table[R_OGL_ShaderKind_Rect];
-              U64 off = 0;
+              u64 off = 0;
               for idx in 0..<inputs.count {
                 glEnableVertexAttribArray(inputs.v[idx].index);
                 glVertexAttribDivisor(inputs.v[idx].index, 1);
                 glVertexAttribPointer(inputs.v[idx].index, inputs.v[idx].count, inputs.v[idx].type, GL_FALSE, sizeof(R_Rect2DInst), (void *)(off));
                 // TODO(rjf): this is not correct if type != GL_FLOAT
-                off += inputs.v[idx].count*sizeof(F32);
+                off += inputs.v[idx].count*sizeof(f32);
               }
             }
             

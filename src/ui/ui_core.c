@@ -22,7 +22,7 @@ ui_hash_part_from_key_string(String8 string)
   
   // rjf: look for ### patterns, which can replace the entirety of the part of
   // the string that is hashed.
-  U64 hash_replace_signifier_pos = str8_find_needle(string, 0, str8_lit("###"), 0);
+  u64 hash_replace_signifier_pos = str8_find_needle(string, 0, str8_lit("###"), 0);
   if(hash_replace_signifier_pos < string.size)
   {
     result = str8_skip(string, hash_replace_signifier_pos);
@@ -34,7 +34,7 @@ ui_hash_part_from_key_string(String8 string)
 internal String8
 ui_display_part_from_key_string(String8 string)
 {
-  U64 hash_pos = str8_find_needle(string, 0, str8_lit("##"), 0);
+  u64 hash_pos = str8_find_needle(string, 0, str8_lit("##"), 0);
   string.size = hash_pos;
   return string;
 }
@@ -47,7 +47,7 @@ ui_key_zero(void)
 }
 
 internal UI_Key
-ui_key_make(U64 v)
+ui_key_make(u64 v)
 {
   UI_Key result = {v};
   return result;
@@ -80,7 +80,7 @@ ui_key_from_stringf(UI_Key seed_key, char *fmt, ...)
   return key;
 }
 
-internal B32
+internal b32
 ui_key_match(UI_Key a, UI_Key b)
 {
   return a.u64[0] == b.u64[0];
@@ -110,25 +110,25 @@ ui_eat_event_node(UI_EventList *list, UI_EventNode *node)
 ////////////////////////////////
 //~ rjf: Text Operation Functions
 
-internal B32
-ui_char_is_scan_boundary(U8 c)
+internal b32
+ui_char_is_scan_boundary(u8 c)
 {
   return (char_is_alpha(c) || char_is_digit(c, 10) || c == '_');
 }
 
-internal S64
-ui_scanned_column_from_column(String8 string, S64 start_column, Side side)
+internal i64
+ui_scanned_column_from_column(String8 string, i64 start_column, Side side)
 {
-  S64 new_column = start_column;
-  S64 delta = (!!side)*2 - 1;
-  B32 found_text = 0;
-  B32 found_non_space = 0;
-  S64 start_off = delta < 0 ? delta : 0;
-  for(S64 col = start_column+start_off; 1 <= col && col <= string.size+1; col += delta)
+  i64 new_column = start_column;
+  i64 delta = (!!side)*2 - 1;
+  b32 found_text = 0;
+  b32 found_non_space = 0;
+  i64 start_off = delta < 0 ? delta : 0;
+  for(i64 col = start_column+start_off; 1 <= col && col <= string.size+1; col += delta)
   {
-    U8 byte = (col <= string.size) ? string.str[col-1] : 0;
-    B32 is_non_space = !char_is_space(byte);
-    B32 is_name = ui_char_is_scan_boundary(byte);
+    u8 byte = (col <= string.size) ? string.str[col-1] : 0;
+    b32 is_non_space = !char_is_space(byte);
+    b32 is_name = ui_char_is_scan_boundary(byte);
     if(((side == Side_Min) && (col == 1)) || 
        ((side == Side_Max) && (col == string.size+1)) ||
        (found_non_space && !is_non_space) || 
@@ -172,23 +172,23 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
     }break;
     case UI_EventDeltaUnit_Word:
     {
-      delta.x = (S32)ui_scanned_column_from_column(string, cursor.column, delta.x > 0 ? Side_Max : Side_Min) - cursor.column;
+      delta.x = (i32)ui_scanned_column_from_column(string, cursor.column, delta.x > 0 ? Side_Max : Side_Min) - cursor.column;
     }break;
     case UI_EventDeltaUnit_Line:
     case UI_EventDeltaUnit_Whole:
     case UI_EventDeltaUnit_Page:
     {
-      S64 first_nonwhitespace_column = 1;
-      for(U64 idx = 0; idx < string.size; idx += 1)
+      i64 first_nonwhitespace_column = 1;
+      for(u64 idx = 0; idx < string.size; idx += 1)
       {
         if(!char_is_space(string.str[idx]))
         {
-          first_nonwhitespace_column = (S64)idx + 1;
+          first_nonwhitespace_column = (i64)idx + 1;
           break;
         }
       }
-      S64 home_dest_column = (cursor.column == first_nonwhitespace_column) ? 1 : first_nonwhitespace_column;
-      delta.x = (delta.x > 0) ? ((S64)string.size+1 - cursor.column) : (home_dest_column - cursor.column);
+      i64 home_dest_column = (cursor.column == first_nonwhitespace_column) ? 1 : first_nonwhitespace_column;
+      delta.x = (delta.x > 0) ? ((i64)string.size+1 - cursor.column) : (home_dest_column - cursor.column);
     }break;
   }
   
@@ -207,7 +207,7 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   //- rjf: cap at line
   if(event->flags & UI_EventFlag_CapAtLine)
   {
-    next_cursor.column = clamp(1, next_cursor.column, (S64)(string.size+1));
+    next_cursor.column = clamp(1, next_cursor.column, (i64)(string.size+1));
   }
   
   //- rjf: in some cases, we want to pick a selection side based on the delta
@@ -297,8 +297,8 @@ ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 col_range, St
   //- rjf: convert to offset range
   Rng1U64 range =
   {
-    (U64)(col_range.min-1),
-    (U64)(col_range.max-1),
+    (u64)(col_range.min-1),
+    (u64)(col_range.max-1),
   };
   
   //- rjf: clamp range
@@ -312,11 +312,11 @@ ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 col_range, St
   }
   
   //- rjf: calculate new size
-  U64 old_size = string.size;
-  U64 new_size = old_size - (range.max - range.min) + replace.size;
+  u64 old_size = string.size;
+  u64 new_size = old_size - (range.max - range.min) + replace.size;
   
   //- rjf: push+fill new string storage
-  U8 *push_base = push_array(arena, U8, new_size);
+  u8 *push_base = push_array(arena, u8, new_size);
   {
     MemoryCopy(push_base+0, string.str, range.min);
     MemoryCopy(push_base+range.min+replace.size, string.str+range.max, string.size-range.max);
@@ -334,7 +334,7 @@ ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 col_range, St
 //~ rjf: Sizes
 
 internal UI_Size
-ui_size(UI_SizeKind kind, F32 value, F32 strictness)
+ui_size(UI_SizeKind kind, f32 value, f32 strictness)
 {
   UI_Size size = {kind, value, strictness};
   return size;
@@ -344,16 +344,16 @@ ui_size(UI_SizeKind kind, F32 value, F32 strictness)
 //~ rjf: Scroll Point Type Functions
 
 internal UI_ScrollPt
-ui_scroll_pt(S64 idx, F32 off)
+ui_scroll_pt(i64 idx, f32 off)
 {
   UI_ScrollPt pt = {idx, off};
   return pt;
 }
 
 internal void
-ui_scroll_pt_target_idx(UI_ScrollPt *v, S64 idx)
+ui_scroll_pt_target_idx(UI_ScrollPt *v, i64 idx)
 {
-  v->off = mod_f32(v->off, 1.f) + (F32)(v->idx+(S64)v->off - idx);
+  v->off = mod_f32(v->off, 1.f) + (f32)(v->idx+(i64)v->off - idx);
   v->idx = idx;
 }
 
@@ -362,7 +362,7 @@ ui_scroll_pt_clamp_idx(UI_ScrollPt *v, Rng1S64 range)
 {
   if(v->idx < range.min || range.max < v->idx)
   {
-    S64 clamped = range.min;
+    i64 clamped = range.min;
     ui_scroll_pt_target_idx(v, clamped);
   }
 }
@@ -370,14 +370,14 @@ ui_scroll_pt_clamp_idx(UI_ScrollPt *v, Rng1S64 range)
 ////////////////////////////////
 //~ rjf: Boxes
 
-internal B32
+internal b32
 ui_box_is_nil(UI_Box *box)
 {
   return box == 0 || box == &ui_nil_box;
 }
 
 internal UI_BoxRec
-ui_box_rec_df(UI_Box *box, UI_Box *root, U64 sib_member_off, U64 child_member_off)
+ui_box_rec_df(UI_Box *box, UI_Box *root, u64 sib_member_off, u64 child_member_off)
 {
   UI_BoxRec result = {0};
   result.next = &ui_nil_box;
@@ -449,7 +449,7 @@ ui_root_from_state(UI_State *state)
   return state->root;
 }
 
-internal B32
+internal b32
 ui_animating_from_state(UI_State *state)
 {
   return state->is_animating;
@@ -503,7 +503,7 @@ ui_icon_string_from_kind(UI_IconKind icon_kind)
   return ui_state->icon_info.icon_kind_text_map[icon_kind];
 }
 
-internal F32
+internal f32
 ui_dt(void)
 {
   return ui_state->animation_dt;
@@ -511,7 +511,7 @@ ui_dt(void)
 
 //- rjf: event pumping
 
-internal B32
+internal b32
 ui_next_event(UI_Event **ev)
 {
   UI_EventList *events = ui_state->events;
@@ -527,7 +527,7 @@ ui_next_event(UI_Event **ev)
     UI_PermissionFlags perms = ui_top_permission_flags();
     for(UI_EventNode *n = start_node; n != 0; n = n->next)
     {
-      B32 good = 1;
+      b32 good = 1;
       if(!(perms & UI_PermissionFlag_ClicksLeft) &&
          (n->v.kind == UI_EventKind_Press ||
           n->v.kind == UI_EventKind_Release) &&
@@ -585,7 +585,7 @@ ui_next_event(UI_Event **ev)
       }
     }
   }
-  B32 result = !!ev[0];
+  b32 result = !!ev[0];
   return result;
 }
 
@@ -601,10 +601,10 @@ ui_eat_event(UI_Event *ev)
 
 //- rjf: event consumption helpers
 
-internal B32
+internal b32
 ui_key_press(OS_Modifiers mods, OS_Key key)
 {
-  B32 result = 0;
+  b32 result = 0;
   for(UI_Event *evt = 0; ui_next_event(&evt);)
   {
     if(evt->kind == UI_EventKind_Press && evt->key == key && evt->modifiers == mods)
@@ -617,10 +617,10 @@ ui_key_press(OS_Modifiers mods, OS_Key key)
   return result;
 }
 
-internal B32
+internal b32
 ui_key_release(OS_Modifiers mods, OS_Key key)
 {
-  B32 result = 0;
+  b32 result = 0;
   for(UI_Event *evt = 0; ui_next_event(&evt);)
   {
     if(evt->kind == UI_EventKind_Release && evt->key == key && evt->modifiers == mods)
@@ -633,10 +633,10 @@ ui_key_release(OS_Modifiers mods, OS_Key key)
   return result;
 }
 
-internal B32
-ui_text(U32 character)
+internal b32
+ui_text(u32 character)
 {
-  B32 result = 0;
+  b32 result = 0;
   Temp scratch = scratch_begin(0, 0);
   String8 character_text = str8_from_32(scratch.arena, str32(&character, 1));
   for(UI_Event *evt = 0; ui_next_event(&evt);)
@@ -652,10 +652,10 @@ ui_text(U32 character)
   return result;
 }
 
-internal B32
+internal b32
 ui_slot_press(UI_EventActionSlot slot)
 {
-  B32 result = 0;
+  b32 result = 0;
   for(UI_Event *evt = 0; ui_next_event(&evt);)
   {
     if(evt->kind == UI_EventKind_Press && evt->slot == slot)
@@ -712,12 +712,12 @@ ui_store_drag_data(String8 string)
 }
 
 internal String8
-ui_get_drag_data(U64 min_required_size)
+ui_get_drag_data(u64 min_required_size)
 {
   if(ui_state->drag_state_data.size < min_required_size)
   {
     Temp scratch = scratch_begin(0, 0);
-    String8 str = {push_array(scratch.arena, U8, min_required_size), min_required_size};
+    String8 str = {push_array(scratch.arena, u8, min_required_size), min_required_size};
     ui_store_drag_data(str);
     scratch_end(scratch);
   }
@@ -726,14 +726,14 @@ ui_get_drag_data(U64 min_required_size)
 
 //- rjf: hovered string info
 
-internal B32
+internal b32
 ui_string_hover_active(void)
 {
   return (ui_state->build_index > 0 && ui_state->string_hover_build_index >= ui_state->build_index-1 &&
           os_now_microseconds() >= ui_state->string_hover_begin_us + 500000);
 }
 
-internal U64
+internal u64
 ui_string_hover_begin_time_us(void)
 {
   return ui_state->string_hover_begin_us;
@@ -786,7 +786,7 @@ ui_box_from_key(UI_Key key)
   UI_Box *result = &ui_nil_box;
   if(!ui_key_match(key, ui_key_zero()))
   {
-    U64 slot = key.u64[0] % ui_state->box_table_size;
+    u64 slot = key.u64[0] % ui_state->box_table_size;
     for(UI_Box *b = ui_state->box_table[slot].hash_first; !ui_box_is_nil(b); b = b->hash_next)
     {
       if(ui_key_match(b->key, key))
@@ -804,7 +804,7 @@ ui_box_from_key(UI_Key key)
 //~ rjf: Top-Level Building API
 
 internal void
-ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, UI_Theme *theme, UI_AnimationInfo *animation_info, F32 real_dt, F32 animation_dt)
+ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, UI_Theme *theme, UI_AnimationInfo *animation_info, f32 real_dt, f32 animation_dt)
 {
   //- rjf: reset per-build ui state
   {
@@ -834,7 +834,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
       next = n->lru_next;
       if(n->last_touched_build_index+2 < ui_state->build_index)
       {
-        U64 slot_idx = n->key.u64[0]%ui_state->anim_slots_count;
+        u64 slot_idx = n->key.u64[0]%ui_state->anim_slots_count;
         UI_AnimSlot *slot = &ui_state->anim_slots[slot_idx];
         DLLRemove_NPZ(&ui_nil_anim_node, slot->first, slot->last, n, slot_next, slot_prev);;
         DLLRemove_NPZ(&ui_nil_anim_node, ui_state->lru_anim_node, ui_state->mru_anim_node, n, lru_next, lru_prev);
@@ -855,7 +855,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
       next = n->lru_next;
       if(n->last_build_index_accessed+2 < ui_state->build_index)
       {
-        U64 slot_idx = n->key.u64[0]%ui_state->theme_pattern_cache_slots_count;
+        u64 slot_idx = n->key.u64[0]%ui_state->theme_pattern_cache_slots_count;
         UI_ThemePatternCacheSlot *slot = &ui_state->theme_pattern_cache_slots[slot_idx];
         DLLRemove_NP(slot->first, slot->last, n, slot_next, slot_prev);
         DLLRemove_NP(ui_state->lru_theme_pattern_cache_node, ui_state->mru_theme_pattern_cache_node, n, lru_next, lru_prev);
@@ -921,13 +921,13 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
         {
           for(;;)
           {
-            B32 moved = 0;
+            b32 moved = 0;
             UI_Box *focus_box = ui_box_from_key(nav_root->default_nav_focus_next_hot_key);
             UI_BoxList next_focus_box_candidates = {0};
             
             // rjf: gather & consume events & nav actions
-            B32 nav_next = 0;
-            B32 nav_prev = 0;
+            b32 nav_next = 0;
+            b32 nav_prev = 0;
             Axis2 axis_lock = Axis2_Invalid;
             if(ui_key_press(0, OS_Key_Tab))
             {
@@ -940,7 +940,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
             for(UI_EventNode *node = events->first, *next = 0; node != 0; node = next)
             {
               next = node->next;
-              B32 taken = 0;
+              b32 taken = 0;
               if(node->v.delta_2s32.x == 0 && node->v.delta_2s32.y == 0)
               {
                 continue;
@@ -971,7 +971,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
             if(nav_next)
             {
               UI_Box *search_start = ui_box_is_nil(focus_box) ? nav_root : focus_box;
-              U64 moved_in_axis[Axis2_COUNT] = {0};
+              u64 moved_in_axis[Axis2_COUNT] = {0};
               moved = 1;
               for(UI_Box *box = search_start;;)
               {
@@ -1010,7 +1010,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
             if(nav_prev)
             {
               UI_Box *search_start = ui_box_is_nil(focus_box) ? nav_root : focus_box;
-              U64 moved_in_axis[Axis2_COUNT] = {0};
+              u64 moved_in_axis[Axis2_COUNT] = {0};
               moved = 1;
               for(UI_Box *box = search_start;;)
               {
@@ -1061,11 +1061,11 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
             
             // rjf: scan candidates and grab next focus box
             UI_Box *next_focus_box = focus_box;
-            F32 best_distance_from_start = 1000000;
+            f32 best_distance_from_start = 1000000;
             for(UI_BoxNode *n = next_focus_box_candidates.first; n != 0; n = n->next)
             {
               UI_Box *box = n->box;
-              F32 distance_from_start = 0;
+              f32 distance_from_start = 0;
               if(axis_lock != Axis2_Invalid)
               {
                 distance_from_start = abs_f32(center_2f32(box->rect).v[axis2_flip(axis_lock)] - center_2f32(focus_box->rect).v[axis2_flip(axis_lock)]);
@@ -1118,7 +1118,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
   }
   
   //- rjf: next-default-nav-focus keys -> current-default-nav-focus-keys
-  for(U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
+  for(u64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
   {
     for(UI_Box *box = ui_state->box_table[slot_idx].hash_first;
         !ui_box_is_nil(box);
@@ -1174,7 +1174,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
   
   //- rjf: reset hot if we don't have an active widget
   {
-    B32 has_active = 0;
+    b32 has_active = 0;
     for EachEnumVal(UI_MouseButtonKind, k)
     {
       if(!ui_key_match(ui_state->active_box_key[k], ui_key_zero()))
@@ -1231,7 +1231,7 @@ ui_end_build(void)
   //- rjf: prune untouched or transient boxes in the cache
   ProfScope("ui prune unused boxes")
   {
-    for(U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
+    for(u64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
     {
       for(UI_Box *box = ui_state->box_table[slot_idx].hash_first, *next = 0;
           !ui_box_is_nil(box);
@@ -1304,12 +1304,12 @@ ui_end_build(void)
   
   //- rjf: ensure special floating roots are within screen bounds
   UI_Box *floating_roots[] = {ui_state->tooltip_root, ui_state->ctx_menu_root};
-  B32 force_contain[] =
+  b32 force_contain[] =
   {
     !ui_state->tooltip_can_overflow_window,
     1,
   };
-  for(U64 idx = 0; idx < len(floating_roots); idx += 1)
+  for(u64 idx = 0; idx < len(floating_roots); idx += 1)
   {
     UI_Box *root = floating_roots[idx];
     if(!ui_box_is_nil(root))
@@ -1345,7 +1345,7 @@ ui_end_build(void)
   
   //- rjf: enforce child-rounding
   {
-    for(U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
+    for(u64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
     {
       for(UI_Box *box = ui_state->box_table[slot_idx].hash_first;
           !ui_box_is_nil(box);
@@ -1388,7 +1388,7 @@ ui_end_build(void)
   //- rjf: animate
   ProfScope("animate")
   {
-    for(U64 slot_idx = 0; slot_idx < ui_state->anim_slots_count; slot_idx += 1)
+    for(u64 slot_idx = 0; slot_idx < ui_state->anim_slots_count; slot_idx += 1)
     {
       for(UI_AnimNode *n = ui_state->anim_slots[slot_idx].first;
           n != &ui_nil_anim_node && n != 0;
@@ -1398,9 +1398,9 @@ ui_end_build(void)
         ui_state->is_animating = (ui_state->is_animating || abs_f32(n->params.target - n->current) > n->params.epsilon);
       }
     }
-    F32 fast_rate = ui_state->default_animation_rate;
-    F32 slow_rate = 1 - pow_f32(2, (-30.f * ui_state->animation_dt));
-    for(U64 slot_idx = 0; slot_idx < ui_state->theme_pattern_cache_slots_count; slot_idx += 1)
+    f32 fast_rate = ui_state->default_animation_rate;
+    f32 slow_rate = 1 - pow_f32(2, (-30.f * ui_state->animation_dt));
+    for(u64 slot_idx = 0; slot_idx < ui_state->theme_pattern_cache_slots_count; slot_idx += 1)
     {
       for(UI_ThemePatternCacheNode *n = ui_state->theme_pattern_cache_slots[slot_idx].first;
           n != 0;
@@ -1413,48 +1413,48 @@ ui_end_build(void)
         }
       }
     }
-    ui_state->ctx_menu_open_t += ((F32)!!ui_state->ctx_menu_open - ui_state->ctx_menu_open_t) * ui_state->animation_info.menu_animation_rate;
-    ui_state->is_animating = (ui_state->is_animating || abs_f32((F32)!!ui_state->ctx_menu_open - ui_state->ctx_menu_open_t) > 0.01f);
+    ui_state->ctx_menu_open_t += ((f32)!!ui_state->ctx_menu_open - ui_state->ctx_menu_open_t) * ui_state->animation_info.menu_animation_rate;
+    ui_state->is_animating = (ui_state->is_animating || abs_f32((f32)!!ui_state->ctx_menu_open - ui_state->ctx_menu_open_t) > 0.01f);
     if(ui_state->ctx_menu_open_t >= 0.99f && ui_state->ctx_menu_open)
     {
       ui_state->ctx_menu_open_t = 1.f;
     }
-    ui_state->tooltip_open_t += ((F32)!!ui_state->tooltip_open - ui_state->tooltip_open_t) * ui_state->animation_info.tooltip_animation_rate;
-    ui_state->is_animating = (ui_state->is_animating || abs_f32((F32)!!ui_state->tooltip_open - ui_state->tooltip_open_t) > 0.01f);
+    ui_state->tooltip_open_t += ((f32)!!ui_state->tooltip_open - ui_state->tooltip_open_t) * ui_state->animation_info.tooltip_animation_rate;
+    ui_state->is_animating = (ui_state->is_animating || abs_f32((f32)!!ui_state->tooltip_open - ui_state->tooltip_open_t) > 0.01f);
     if(ui_state->tooltip_open_t >= 0.99f && ui_state->tooltip_open)
     {
       ui_state->tooltip_open_t = 1.f;
     }
-    for(U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
+    for(u64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
     {
       for(UI_Box *box = ui_state->box_table[slot_idx].hash_first;
           !ui_box_is_nil(box);
           box = box->hash_next)
       {
         // rjf: grab states informing animation
-        B32 is_hot            = (ui_key_match(box->key, ui_state->hot_box_key) ||
+        b32 is_hot            = (ui_key_match(box->key, ui_state->hot_box_key) ||
                                  ui_key_match(box->key, ui_state->drop_hot_box_key));
-        B32 is_active         = ui_key_match(box->key, ui_state->active_box_key[UI_MouseButtonKind_Left]);
-        B32 is_disabled       = !!(box->flags & UI_BoxFlag_Disabled) && (box->first_disabled_build_index+2 < ui_state->build_index ||
+        b32 is_active         = ui_key_match(box->key, ui_state->active_box_key[UI_MouseButtonKind_Left]);
+        b32 is_disabled       = !!(box->flags & UI_BoxFlag_Disabled) && (box->first_disabled_build_index+2 < ui_state->build_index ||
                                                                          box->first_touched_build_index == box->first_disabled_build_index);
-        B32 is_focus_hot      = !!(box->flags & UI_BoxFlag_FocusHot) && !(box->flags & UI_BoxFlag_FocusHotDisabled);
-        B32 is_focus_active   = !!(box->flags & UI_BoxFlag_FocusActive) && !(box->flags & UI_BoxFlag_FocusActiveDisabled);
-        B32 is_focus_active_disabled = !!(box->flags & UI_BoxFlag_FocusActiveDisabled);
+        b32 is_focus_hot      = !!(box->flags & UI_BoxFlag_FocusHot) && !(box->flags & UI_BoxFlag_FocusHotDisabled);
+        b32 is_focus_active   = !!(box->flags & UI_BoxFlag_FocusActive) && !(box->flags & UI_BoxFlag_FocusActiveDisabled);
+        b32 is_focus_active_disabled = !!(box->flags & UI_BoxFlag_FocusActiveDisabled);
         
         // rjf: determine rates
-        F32 hot_rate      = ui_state->animation_info.hot_animation_rate;
-        F32 active_rate   = ui_state->animation_info.active_animation_rate;
-        F32 disabled_rate = slow_rate;
-        F32 focus_rate    = ui_state->animation_info.focus_animation_rate;
+        f32 hot_rate      = ui_state->animation_info.hot_animation_rate;
+        f32 active_rate   = ui_state->animation_info.active_animation_rate;
+        f32 disabled_rate = slow_rate;
+        f32 focus_rate    = ui_state->animation_info.focus_animation_rate;
         
         // rjf: determine animating status
-        B32 box_is_animating = 0;
-        box_is_animating = (box_is_animating || abs_f32((F32)is_hot          - box->hot_t) > 0.01f);
-        box_is_animating = (box_is_animating || abs_f32((F32)is_active       - box->active_t) > 0.01f);
-        box_is_animating = (box_is_animating || abs_f32((F32)is_disabled     - box->disabled_t) > 0.01f);
-        box_is_animating = (box_is_animating || abs_f32((F32)is_focus_hot    - box->focus_hot_t) > 0.01f);
-        box_is_animating = (box_is_animating || abs_f32((F32)is_focus_active - box->focus_active_t) > 0.01f);
-        box_is_animating = (box_is_animating || abs_f32((F32)is_focus_active_disabled - box->focus_active_disabled_t) > 0.01f);
+        b32 box_is_animating = 0;
+        box_is_animating = (box_is_animating || abs_f32((f32)is_hot          - box->hot_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((f32)is_active       - box->active_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((f32)is_disabled     - box->disabled_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((f32)is_focus_hot    - box->focus_hot_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((f32)is_focus_active - box->focus_active_t) > 0.01f);
+        box_is_animating = (box_is_animating || abs_f32((f32)is_focus_active_disabled - box->focus_active_disabled_t) > 0.01f);
         box_is_animating = (box_is_animating || abs_f32(box->view_off_target.x - box->view_off.x) > 0.5f);
         box_is_animating = (box_is_animating || abs_f32(box->view_off_target.y - box->view_off.y) > 0.5f);
         if(box->flags & UI_BoxFlag_AnimatePosX)
@@ -1475,12 +1475,12 @@ ui_end_build(void)
 #endif
         
         // rjf: animate interaction transition states
-        box->hot_t                   += hot_rate      * ((F32)is_hot - box->hot_t);
-        box->active_t                = is_active ? 1.f : box->active_t + (active_rate   * ((F32)is_active - box->active_t));
-        box->disabled_t              += disabled_rate * ((F32)is_disabled - box->disabled_t);
-        box->focus_hot_t             += focus_rate    * ((F32)is_focus_hot - box->focus_hot_t);
-        box->focus_active_t          += focus_rate    * ((F32)is_focus_active - box->focus_active_t);
-        box->focus_active_disabled_t += focus_rate    * ((F32)is_focus_active_disabled - box->focus_active_disabled_t);
+        box->hot_t                   += hot_rate      * ((f32)is_hot - box->hot_t);
+        box->active_t                = is_active ? 1.f : box->active_t + (active_rate   * ((f32)is_active - box->active_t));
+        box->disabled_t              += disabled_rate * ((f32)is_disabled - box->disabled_t);
+        box->focus_hot_t             += focus_rate    * ((f32)is_focus_hot - box->focus_hot_t);
+        box->focus_active_t          += focus_rate    * ((f32)is_focus_active - box->focus_active_t);
+        box->focus_active_disabled_t += focus_rate    * ((f32)is_focus_active_disabled - box->focus_active_disabled_t);
         
         // rjf: animate positions
         {
@@ -1599,7 +1599,7 @@ ui_end_build(void)
   
   //- rjf: hovering possibly-truncated drawn text -> store text
   {
-    B32 inactive = 1;
+    b32 inactive = 1;
     for EachEnumVal(UI_MouseButtonKind, k)
     {
       if(!ui_key_match(ui_key_zero(), ui_state->active_box_key[k]))
@@ -1610,12 +1610,12 @@ ui_end_build(void)
     }
     if(inactive)
     {
-      B32 found = 0;
+      b32 found = 0;
       for(UI_Box *box = ui_state->root, *next = 0; !ui_box_is_nil(box); box = next)
       {
         UI_BoxRec rec = ui_box_rec_df_pre(box, ui_state->root);
         next = rec.next;
-        S32 pop_idx = 0;
+        i32 pop_idx = 0;
         for(UI_Box *b = box; !ui_box_is_nil(b) && pop_idx <= rec.pop_count; b = b->parent, pop_idx += 1)
         {
           if(b->flags & UI_BoxFlag_DrawText && !(b->flags & UI_BoxFlag_DisableTextTrunc))
@@ -1637,8 +1637,8 @@ ui_end_build(void)
               drawn_text_dim = fruns.dim;
               scratch_end(scratch);
             }
-            B32 text_is_truncated = (drawn_text_dim.x + text_pos.x > rect.x1);
-            B32 mouse_is_hovering = contains_2f32(r2f32p(text_pos.x,
+            b32 text_is_truncated = (drawn_text_dim.x + text_pos.x > rect.x1);
+            b32 mouse_is_hovering = contains_2f32(r2f32p(text_pos.x,
                                                          rect.y0,
                                                          min(text_pos.x+drawn_text_dim.x, rect.x1),
                                                          rect.y1),
@@ -1702,8 +1702,8 @@ ui_calc_sizes_standalone__in_place(UI_Box *root, Axis2 axis)
       }break;
       case UI_SizeKind_TextContent:
       {
-        F32 padding = b->pref_size[axis].value;
-        F32 text_size = b->display_fruns.dim.x;
+        f32 padding = b->pref_size[axis].value;
+        f32 text_size = b->display_fruns.dim.x;
         b->fixed_size.v[axis] = padding + text_size + b->text_padding*2;
       }break;
     }
@@ -1737,7 +1737,7 @@ ui_calc_sizes_upwards_dependent__in_place(UI_Box *root, Axis2 axis)
         }
         
         // rjf: figure out box's size on this axis
-        F32 size = fixed_parent->fixed_size.v[axis] * b->pref_size[axis].value;
+        f32 size = fixed_parent->fixed_size.v[axis] * b->pref_size[axis].value;
         
         // rjf: mutate box to have this size
         b->fixed_size.v[axis] = size;
@@ -1755,14 +1755,14 @@ ui_calc_sizes_downwards_dependent__in_place(UI_Box *root, Axis2 axis)
   for(UI_Box *box = root; !ui_box_is_nil(box); box = rec.next)
   {
     rec = ui_box_rec_df_pre(box, root);
-    S32 pop_idx = 0;
+    i32 pop_idx = 0;
     for(UI_Box *b = box;
         !ui_box_is_nil(b) && pop_idx <= rec.pop_count;
         b = b->parent, pop_idx += 1)
     {
       if(b->pref_size[axis].kind == UI_SizeKind_ChildrenSum)
       {
-        F32 sum = 0;
+        f32 sum = 0;
         for(UI_Box *child = b->first; !ui_box_is_nil(child); child = child->next)
         {
           if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
@@ -1794,15 +1794,15 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
     //- rjf: fixup children sizes (if we're solving along the *non-layout* axis)
     if(axis != box->child_layout_axis && !(box->flags & (UI_BoxFlag_AllowOverflowX << axis)))
     {
-      F32 allowed_size = box->fixed_size.v[axis];
+      f32 allowed_size = box->fixed_size.v[axis];
       for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next)
       {
         if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
         {
-          F32 child_size = child->fixed_size.v[axis];
-          F32 violation = child_size - allowed_size;
-          F32 max_fixup = child_size;
-          F32 fixup = clamp(0, violation, max_fixup);
+          f32 child_size = child->fixed_size.v[axis];
+          f32 violation = child_size - allowed_size;
+          f32 max_fixup = child_size;
+          f32 fixup = clamp(0, violation, max_fixup);
           if(fixup > 0)
           {
             child->fixed_size.v[axis] -= fixup;
@@ -1815,9 +1815,9 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
     if(axis == box->child_layout_axis && !(box->flags & (UI_BoxFlag_AllowOverflowX << axis)))
     {
       // rjf: figure out total allowed size & total size
-      F32 total_allowed_size = box->fixed_size.v[axis];
-      F32 total_size = 0;
-      F32 total_weighted_size = 0;
+      f32 total_allowed_size = box->fixed_size.v[axis];
+      f32 total_size = 0;
+      f32 total_weighted_size = 0;
       for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next)
       {
         if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
@@ -1828,21 +1828,21 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
       }
       
       // rjf: if we have a violation, we need to subtract some amount from all children
-      F32 violation = total_size - total_allowed_size;
+      f32 violation = total_size - total_allowed_size;
       if(violation > 0 && total_weighted_size > 0)
       {
         Temp temp = temp_begin(scratch.arena);
         
         // rjf: figure out how much we can take in totality
-        F32 child_fixup_sum = 0;
-        F32 *child_fixups = push_array(temp.arena, F32, box->child_count);
+        f32 child_fixup_sum = 0;
+        f32 *child_fixups = push_array(temp.arena, f32, box->child_count);
         {
-          U64 child_idx = 0;
+          u64 child_idx = 0;
           for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next, child_idx += 1)
           {
             if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
             {
-              F32 fixup_size_this_child = child->fixed_size.v[axis] * (1-child->pref_size[axis].strictness);
+              f32 fixup_size_this_child = child->fixed_size.v[axis] * (1-child->pref_size[axis].strictness);
               fixup_size_this_child = ClampBot(0, fixup_size_this_child);
               child_fixups[child_idx] = fixup_size_this_child;
               child_fixup_sum += fixup_size_this_child;
@@ -1852,12 +1852,12 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
         
         // rjf: fixup child sizes
         {
-          U64 child_idx = 0;
+          u64 child_idx = 0;
           for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next, child_idx += 1)
           {
             if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
             {
-              F32 fixup_pct = (violation / total_weighted_size);
+              f32 fixup_pct = (violation / total_weighted_size);
               fixup_pct = clamp(0, fixup_pct, 1);
               child->fixed_size.v[axis] -= child_fixups[child_idx] * fixup_pct;
             }
@@ -1896,14 +1896,14 @@ ui_layout_position__in_place(UI_Box *root, Axis2 axis)
   ProfBeginFunction();
   for(UI_Box *box = root; !ui_box_is_nil(box); box = ui_box_rec_df_pre(box, root).next)
   {
-    F32 layout_position = 0;
+    f32 layout_position = 0;
     
     //- rjf: lay out children
-    F32 bounds = 0;
+    f32 bounds = 0;
     for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next)
     {
       // rjf: grab original position
-      F32 original_position = min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
+      f32 original_position = min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
       
       // rjf: calculate fixed position & size
       if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
@@ -1940,7 +1940,7 @@ ui_layout_position__in_place(UI_Box *root, Axis2 axis)
       child->rect.p1.y = floor_f32(child->rect.p1.y);
       
       // rjf: grab new position
-      F32 new_position = min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
+      f32 new_position = min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
       
       // rjf: store position delta
       child->position_delta.v[axis] = new_position - original_position;
@@ -2051,8 +2051,8 @@ ui_tooltip_end(void)
 internal void
 ui_ctx_menu_open(UI_Key key, UI_Key anchor_box_key, Vec2F32 anchor_off)
 {
-  anchor_off.x = (F32)(int)anchor_off.x;
-  anchor_off.y = (F32)(int)anchor_off.y;
+  anchor_off.x = (f32)(int)anchor_off.x;
+  anchor_off.y = (f32)(int)anchor_off.y;
   ui_state->next_ctx_menu_open = 1;
   ui_state->ctx_menu_changed = 1;
   ui_state->ctx_menu_open_t = 0;
@@ -2071,7 +2071,7 @@ ui_ctx_menu_close(void)
   ui_state->next_ctx_menu_open = 0;
 }
 
-internal B32
+internal b32
 ui_begin_ctx_menu(UI_Key key)
 {
   ui_push_parent(ui_root_from_state(ui_state));
@@ -2081,7 +2081,7 @@ ui_begin_ctx_menu(UI_Key key)
   ui_push_focus_hot(UI_FocusKind_Root);
   ui_push_focus_active(UI_FocusKind_Root);
   ui_push_tag(str8_lit("."));
-  B32 is_open = ui_key_match(key, ui_state->ctx_menu_key) && ui_state->ctx_menu_open;
+  b32 is_open = ui_key_match(key, ui_state->ctx_menu_key) && ui_state->ctx_menu_open;
   if(is_open != 0) UI_TagF("floating")
   {
     ui_state->ctx_menu_touched_this_frame = 1;
@@ -2120,13 +2120,13 @@ ui_end_ctx_menu(void)
   ui_pop_parent();
 }
 
-internal B32
+internal b32
 ui_ctx_menu_is_open(UI_Key key)
 {
   return (ui_state->ctx_menu_open && ui_key_match(key, ui_state->ctx_menu_key));
 }
 
-internal B32
+internal b32
 ui_any_ctx_menu_is_open(void)
 {
   return ui_state->ctx_menu_open;
@@ -2134,10 +2134,10 @@ ui_any_ctx_menu_is_open(void)
 
 //- rjf: focus tree coloring
 
-internal B32
+internal b32
 ui_is_focus_hot(void)
 {
-  B32 result = (ui_state->focus_hot_stack.top->v == UI_FocusKind_On);
+  b32 result = (ui_state->focus_hot_stack.top->v == UI_FocusKind_On);
   if(result)
   {
     for(UI_FocusHotNode *n = ui_state->focus_hot_stack.top; n != 0; n = n->next)
@@ -2156,10 +2156,10 @@ ui_is_focus_hot(void)
   return result;
 }
 
-internal B32
+internal b32
 ui_is_focus_active(void)
 {
-  B32 result = (ui_state->focus_active_stack.top->v == UI_FocusKind_On);
+  b32 result = (ui_state->focus_active_stack.top->v == UI_FocusKind_On);
   if(result)
   {
     for(UI_FocusActiveNode *n = ui_state->focus_active_stack.top; n != 0; n = n->next)
@@ -2180,10 +2180,10 @@ ui_is_focus_active(void)
 
 //- rjf: implicit auto-managed tree-based focus state
 
-internal B32
+internal b32
 ui_is_key_auto_focus_active(UI_Key key)
 {
-  B32 result = 0;
+  b32 result = 0;
   if(!ui_key_match(ui_key_zero(), key))
   {
     for(UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
@@ -2198,10 +2198,10 @@ ui_is_key_auto_focus_active(UI_Key key)
   return result;
 }
 
-internal B32
+internal b32
 ui_is_key_auto_focus_hot(UI_Key key)
 {
-  B32 result = 0;
+  b32 result = 0;
   if(!ui_key_match(ui_key_zero(), key))
   {
     for(UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
@@ -2281,7 +2281,7 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
     }
     
     //- rjf: map to existing node
-    U64 slot_idx = final_key.u64[0]%ui_state->theme_pattern_cache_slots_count;
+    u64 slot_idx = final_key.u64[0]%ui_state->theme_pattern_cache_slots_count;
     UI_ThemePatternCacheSlot *slot = &ui_state->theme_pattern_cache_slots[slot_idx];
     UI_ThemePatternCacheNode *node = 0;
     for(UI_ThemePatternCacheNode *n = slot->first;
@@ -2300,7 +2300,7 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
       // rjf: map tags_key (without name) -> full list of tags
       String8Array tags = {0};
       {
-        U64 tags_cache_slot_idx = key.u64[0]%ui_state->tags_cache_slots_count;
+        u64 tags_cache_slot_idx = key.u64[0]%ui_state->tags_cache_slots_count;
         UI_TagsCacheSlot *tags_cache_slot = &ui_state->tags_cache_slots[tags_cache_slot_idx];
         for(UI_TagsCacheNode *n = tags_cache_slot->first; n != 0; n = n->next)
         {
@@ -2315,16 +2315,16 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
       // rjf: map tags to theme pattern
       UI_Theme *theme = ui_state->theme;
       UI_ThemePattern *pattern = 0;
-      U64 best_match_count = 0;
-      for(U64 idx = 0; idx < theme->patterns_count; idx += 1)
+      u64 best_match_count = 0;
+      for(u64 idx = 0; idx < theme->patterns_count; idx += 1)
       {
         UI_ThemePattern *p = &theme->patterns[idx];
-        U64 match_count = 0;
-        B32 name_matches = 0;
-        B32 all_p_tags_in_key = 1;
+        u64 match_count = 0;
+        b32 name_matches = 0;
+        b32 all_p_tags_in_key = 1;
         for p_tags_idx in 0..<p->tags.count
         {
-          B32 p_tag_in_key = 0;
+          b32 p_tag_in_key = 0;
           for key_tags_idx in 0..<tags.count + extras.count
           {
             String8 key_string = key_tags_idx < tags.count ? tags.v[key_tags_idx] : extras.v[key_tags_idx - tags.count];
@@ -2357,7 +2357,7 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
       }
       
       // rjf: store in (key, name) -> (pattern) cache
-      B32 node_is_new = 0;
+      b32 node_is_new = 0;
       if(node == 0)
       {
         node_is_new = 1;
@@ -2425,7 +2425,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
   //- rjf: try to get box
   UI_BoxFlags last_flags = 0;
   UI_Box *box = ui_box_from_key(key);
-  B32 box_first_frame = ui_box_is_nil(box);
+  b32 box_first_frame = ui_box_is_nil(box);
   last_flags = box->flags;
   
   //- rjf: zero key on duplicate
@@ -2437,7 +2437,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
   }
   
   //- rjf: gather info from box
-  B32 box_is_transient = ui_key_match(key, ui_key_zero());
+  b32 box_is_transient = ui_key_match(key, ui_key_zero());
   
   //- rjf: allocate box if it doesn't yet exist
   if(box_first_frame)
@@ -2468,7 +2468,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
   //- rjf: hook into persistent state table
   if(box_first_frame && !box_is_transient)
   {
-    U64 slot = key.u64[0] % ui_state->box_table_size;
+    u64 slot = key.u64[0] % ui_state->box_table_size;
     DLLInsert_NPZ(&ui_nil_box, ui_state->box_table[slot].hash_first, ui_state->box_table[slot].hash_last, ui_state->box_table[slot].hash_last, box, hash_next, hash_prev);
   }
   
@@ -2495,7 +2495,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     if(box_first_frame)
     {
       box->first_touched_build_index = ui_state->build_index;
-      box->disabled_t = (F32)!!(box->flags & UI_BoxFlag_Disabled);
+      box->disabled_t = (f32)!!(box->flags & UI_BoxFlag_Disabled);
     }
     box->last_touched_build_index = ui_state->build_index;
     
@@ -2535,8 +2535,8 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     box->min_size.v[Axis2_X] = ui_state->min_width_stack.top->v;
     box->min_size.v[Axis2_Y] = ui_state->min_height_stack.top->v;
     
-    B32 is_auto_focus_active = ui_is_key_auto_focus_active(key);
-    B32 is_auto_focus_hot    = ui_is_key_auto_focus_hot(key);
+    b32 is_auto_focus_active = ui_is_key_auto_focus_active(key);
+    b32 is_auto_focus_hot    = ui_is_key_auto_focus_hot(key);
     if(is_auto_focus_active)
     {
       ui_set_next_focus_active(UI_FocusKind_On);
@@ -2702,7 +2702,7 @@ ui_box_equip_display_string(UI_Box *box, String8 string)
     String8 display_string = ui_box_display_string(box);
     String32 fpcp32 = str32(&box->fastpath_codepoint, 1);
     String8 fpcp = str8_from_32(scratch.arena, fpcp32);
-    U64 fpcp_pos = str8_find_needle(display_string, 0, fpcp, StringMatchFlag_CaseInsensitive);
+    u64 fpcp_pos = str8_find_needle(display_string, 0, fpcp, StringMatchFlag_CaseInsensitive);
     if(fpcp_pos < display_string.size)
     {
       DR_FStrNode pst_fstr_n = {0,                   {str8_skip(display_string, fpcp_pos+fpcp.size), {box->font, box->text_raster_flags, text_color, box->font_size, 0, 0}}};
@@ -2779,7 +2779,7 @@ ui_box_text_position(UI_Box *box)
 {
   Vec2F32 result = {0};
   FNT_Tag font = box->font;
-  F32 font_size = box->font_size;
+  f32 font_size = box->font_size;
   FNT_Metrics font_metrics = fnt_metrics_from_tag_size(font, font_size);
   result.y = floor_f32((box->rect.p0.y + box->rect.p1.y)/2.f + font_metrics.ascent/2.f - font_metrics.descent/2.f);
   switch(box->text_align)
@@ -2806,13 +2806,13 @@ ui_box_text_position(UI_Box *box)
   return result;
 }
 
-internal U64
+internal u64
 ui_box_char_pos_from_xy(UI_Box *box, Vec2F32 xy)
 {
   FNT_Tag font = box->font;
-  F32 font_size = box->font_size;
+  f32 font_size = box->font_size;
   String8 line = ui_box_display_string(box);
-  U64 result = fnt_char_pos_from_tag_size_string_p(font, font_size, 0, box->tab_size, line, xy.x - ui_box_text_position(box).x);
+  u64 result = fnt_char_pos_from_tag_size_string_p(font, font_size, 0, box->tab_size, line, xy.x - ui_box_text_position(box).x);
   return result;
 }
 
@@ -2823,7 +2823,7 @@ internal UI_Signal
 ui_signal_from_box(UI_Box *box)
 {
   ProfBeginFunction();
-  B32 is_focus_hot = box->flags & UI_BoxFlag_FocusHot && !(box->flags & UI_BoxFlag_FocusHotDisabled);
+  b32 is_focus_hot = box->flags & UI_BoxFlag_FocusHot && !(box->flags & UI_BoxFlag_FocusHotDisabled);
   UI_Signal sig = {box};
   sig.event_flags |= os_get_modifiers();
   
@@ -2842,7 +2842,7 @@ ui_signal_from_box(UI_Box *box)
   //////////////////////////////
   //- rjf: determine if we're under the context menu or not
   //
-  B32 ctx_menu_is_ancestor = 0;
+  b32 ctx_menu_is_ancestor = 0;
   ProfScope("check context menu ancestor")
   {
     for(UI_Box *parent = box; !ui_box_is_nil(parent); parent = parent->parent)
@@ -2867,19 +2867,19 @@ ui_signal_from_box(UI_Box *box)
   //////////////////////////////
   //- rjf: process events related to this box
   //
-  B32 view_scrolled = 0;
+  b32 view_scrolled = 0;
   for(UI_Event *evt = 0; ui_next_event(&evt);)
   {
-    B32 taken = 0;
+    b32 taken = 0;
     
     //- rjf: unpack event
     Vec2F32 evt_mouse = evt->pos;
-    B32 evt_mouse_in_bounds = !contains_2f32(blacklist_rect, evt_mouse) && contains_2f32(rect, evt_mouse);
+    b32 evt_mouse_in_bounds = !contains_2f32(blacklist_rect, evt_mouse) && contains_2f32(rect, evt_mouse);
     UI_MouseButtonKind evt_mouse_button_kind = (evt->key == OS_Key_LeftMouseButton   ? UI_MouseButtonKind_Left :
                                                 evt->key == OS_Key_MiddleMouseButton ? UI_MouseButtonKind_Middle :
                                                 evt->key == OS_Key_RightMouseButton  ? UI_MouseButtonKind_Right :
                                                 UI_MouseButtonKind_Left);
-    B32 evt_key_is_mouse = (evt->key == OS_Key_LeftMouseButton ||
+    b32 evt_key_is_mouse = (evt->key == OS_Key_LeftMouseButton ||
                             evt->key == OS_Key_MiddleMouseButton ||
                             evt->key == OS_Key_RightMouseButton);
     sig.event_flags |= evt->modifiers;
@@ -2967,7 +2967,7 @@ ui_signal_from_box(UI_Box *box)
     //- rjf: ancestor is focused & fastpath codepoint pressed -> press
     if(box->flags & UI_BoxFlag_Clickable && box->fastpath_codepoint != 0 && evt->string.size != 0)
     {
-      B32 ancestor_is_focused = 0;
+      b32 ancestor_is_focused = 0;
       for(UI_Box *parent = box->parent; !ui_box_is_nil(parent); parent = parent->parent)
       {
         if(parent->flags & UI_BoxFlag_FocusActive)
@@ -3003,9 +3003,9 @@ ui_signal_from_box(UI_Box *box)
       Vec2F32 delta = evt->delta_2f32;
       if(evt->modifiers & OS_Modifier_Shift)
       {
-        Swap(F32, delta.x, delta.y);
+        Swap(f32, delta.x, delta.y);
       }
-      Vec2S16 delta16 = v2s16((S16)(delta.x/30.f), (S16)(delta.y/30.f));
+      Vec2S16 delta16 = v2s16((i16)(delta.x/30.f), (i16)(delta.y/30.f));
       if(delta.x > 0 && delta16.x == 0) { delta16.x = +1; }
       if(delta.x < 0 && delta16.x == 0) { delta16.x = -1; }
       if(delta.y > 0 && delta16.y == 0) { delta16.y = +1; }
@@ -3024,7 +3024,7 @@ ui_signal_from_box(UI_Box *box)
       Vec2F32 delta = evt->delta_2f32;
       if(evt->modifiers & OS_Modifier_Shift)
       {
-        Swap(F32, delta.x, delta.y);
+        Swap(f32, delta.x, delta.y);
       }
       if(!(box->flags & UI_BoxFlag_ViewScrollX))
       {
@@ -3237,14 +3237,14 @@ ui_signal_from_box(UI_Box *box)
 ////////////////////////////////
 //~ rjf: Animation Cache Interaction API
 
-internal F32
+internal f32
 ui_anim_(UI_Key key, UI_AnimParams *params)
 {
   // rjf: get animation cache node
   UI_AnimNode *node = &ui_nil_anim_node;
   if(ui_state != 0)
   {
-    U64 slot_idx = key.u64[0]%ui_state->anim_slots_count;
+    u64 slot_idx = key.u64[0]%ui_state->anim_slots_count;
     UI_AnimSlot *slot = &ui_state->anim_slots[slot_idx];
     for(UI_AnimNode *n = slot->first; n != &ui_nil_anim_node && n != 0; n = n->slot_next)
     {
@@ -3348,7 +3348,7 @@ return old_value;
 internal void
 ui__push_tags_key_from_appended_string(String8 string)
 {
-  B32 is_new_root = str8_match(str8_lit("."), string, 0);
+  b32 is_new_root = str8_match(str8_lit("."), string, 0);
   
   // rjf: generate new key, by combining hash of this new string with the top
   // of the tags key stack
@@ -3381,7 +3381,7 @@ ui__push_tags_key_from_appended_string(String8 string)
   // rjf: store in tags cache
   if(!is_new_root)
   {
-    U64 slot_idx = key.u64[0] % ui_state->tags_cache_slots_count;
+    u64 slot_idx = key.u64[0] % ui_state->tags_cache_slots_count;
     UI_TagsCacheSlot *slot = &ui_state->tags_cache_slots[slot_idx];
     UI_TagsCacheNode *node = 0;
     for(UI_TagsCacheNode *n = slot->first; n != 0; n = n->next)
@@ -3534,7 +3534,7 @@ ui_set_next_pref_size(Axis2 axis, UI_Size v)
 }
 
 internal void
-ui_push_corner_radius(F32 v)
+ui_push_corner_radius(f32 v)
 {
   ui_push_corner_radius_00(v);
   ui_push_corner_radius_01(v);
@@ -3563,10 +3563,10 @@ ui_push_tagf(char *fmt, ...)
   scratch_end(scratch);
 }
 
-internal F32
+internal f32
 ui_top_px_height(void)
 {
-  F32 result = ui_top_font_size();
+  f32 result = ui_top_font_size();
   for(UI_PrefHeightNode *n = ui_state->pref_height_stack.top; n != 0; n = n->next)
   {
     if(n->v.kind == UI_SizeKind_Pixels)

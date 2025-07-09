@@ -14,9 +14,9 @@ struct DR_FStrParams
   FNT_Tag font;
   FNT_RasterFlags raster_flags;
   Vec4F32 color;
-  F32 size;
-  F32 underline_thickness;
-  F32 strikethrough_thickness;
+  f32 size;
+  f32 underline_thickness;
+  f32 strikethrough_thickness;
 };
 
 
@@ -41,8 +41,8 @@ struct DR_FStrList
 {
   DR_FStrNode *first;
   DR_FStrNode *last;
-  U64 node_count;
-  U64 total_size;
+  u64 node_count;
+  u64 total_size;
 };
 
 
@@ -51,9 +51,9 @@ struct DR_FRun
 {
   FNT_Run run;
   Vec4F32 color;
-  F32 underline_thickness;
-  F32 strikethrough_thickness;
-  B32 icon;
+  f32 underline_thickness;
+  f32 strikethrough_thickness;
+  b32 icon;
 };
 
 
@@ -70,7 +70,7 @@ struct DR_FRunList
 {
   DR_FRunNode *first;
   DR_FRunNode *last;
-  U64 node_count;
+  u64 node_count;
   Vec2F32 dim;
 };
 
@@ -87,8 +87,8 @@ struct DR_FRunList
 struct DR_Bucket
 {
   R_PassList passes;
-  U64 stack_gen;
-  U64 last_cmd_stack_gen;
+  u64 stack_gen;
+  u64 last_cmd_stack_gen;
   DR_BucketStackDecls;
 };
 
@@ -108,7 +108,7 @@ struct DR_BucketSelectionNode
 struct DR_ThreadCtx
 {
   Arena *arena;
-  U64 arena_frame_start_pos;
+  u64 arena_frame_start_pos;
   FNT_Tag icon_font;
   DR_BucketSelectionNode *top_bucket;
   DR_BucketSelectionNode *free_bucket_selection;

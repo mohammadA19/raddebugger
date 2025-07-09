@@ -19,8 +19,8 @@
 struct TweakB32Info
 {
   String8 name;
-  B32 default_value;
-  B32 *value_ptr;
+  b32 default_value;
+  b32 *value_ptr;
 };
 
 
@@ -28,9 +28,9 @@ struct TweakB32Info
 struct TweakF32Info
 {
   String8 name;
-  F32 default_value;
+  f32 default_value;
   Rng1F32 value_range;
-  F32 *value_ptr;
+  f32 *value_ptr;
 };
 
 
@@ -38,7 +38,7 @@ struct TweakF32Info
 struct TweakB32InfoTable
 {
   TweakB32Info *v;
-  U64 count;
+  u64 count;
 };
 
 
@@ -46,7 +46,7 @@ struct TweakB32InfoTable
 struct TweakF32InfoTable
 {
   TweakF32Info *v;
-  U64 count;
+  u64 count;
 };
 
 
@@ -55,7 +55,7 @@ struct EmbedInfo
 {
   String8 name;
   String8 *data;
-  U128 *hash;
+  u128 *hash;
 };
 
 
@@ -63,7 +63,7 @@ struct EmbedInfo
 struct EmbedInfoTable
 {
   EmbedInfo *v;
-  U64 count;
+  u64 count;
 };
 
 ////////////////////////////////
@@ -103,7 +103,7 @@ typedef enum TypeKind
 }
 TypeKind;
 
-typedef U32 TypeFlags;
+typedef u32 TypeFlags;
 enum
 {
   TypeFlag_IsExternal  = (1<<0),
@@ -112,7 +112,7 @@ enum
   TypeFlag_IsPathText  = (1<<3),
 };
 
-typedef U32 MemberFlags;
+typedef u32 MemberFlags;
 enum
 {
   MemberFlag_DoNotSerialize  = (1<<0),
@@ -127,7 +127,7 @@ struct Member
   String8 name;
   String8 pretty_name;
   Type *type;
-  U64 value;
+  u64 value;
   MemberFlags flags;
 };
 
@@ -137,11 +137,11 @@ struct Type
 {
   TypeKind kind;
   TypeFlags flags;
-  U64 size;
+  u64 size;
   Type *direct;
   String8 name;
   String8 count_delimiter_name; // gathered from surrounding members, turns *->[1] into *->[N]
-  U64 count;
+  u64 count;
   Member *members;
 };
 
@@ -162,9 +162,9 @@ struct TypeSerializePtrRefInfo
 
 struct TypeSerializeParams
 {
-  U64 *advance_out;
+  u64 *advance_out;
   TypeSerializePtrRefInfo *ptr_ref_infos;
-  U64 ptr_ref_infos_count;
+  u64 ptr_ref_infos_count;
 };
 
 ////////////////////////////////
@@ -192,38 +192,38 @@ struct TypeSerializeParams
 
 //- rjf: leaves
 @(rodata) global Type void__type = {TypeKind_Void, 0, 0,           &type_nil, str8_lit_comp("void")};
-@(rodata) global Type U8__type   = {TypeKind_U8,   0, sizeof(U8),  &type_nil, str8_lit_comp("U8")};
-@(rodata) global Type U16__type  = {TypeKind_U16,  0, sizeof(U16), &type_nil, str8_lit_comp("U16")};
-@(rodata) global Type U32__type  = {TypeKind_U32,  0, sizeof(U32), &type_nil, str8_lit_comp("U32")};
-@(rodata) global Type U64__type  = {TypeKind_U64,  0, sizeof(U64), &type_nil, str8_lit_comp("U64")};
-@(rodata) global Type S8__type   = {TypeKind_S8,   0, sizeof(S8),  &type_nil, str8_lit_comp("S8")};
-@(rodata) global Type S16__type  = {TypeKind_S16,  0, sizeof(S16), &type_nil, str8_lit_comp("S16")};
-@(rodata) global Type S32__type  = {TypeKind_S32,  0, sizeof(S32), &type_nil, str8_lit_comp("S32")};
-@(rodata) global Type S64__type  = {TypeKind_S64,  0, sizeof(S64), &type_nil, str8_lit_comp("S64")};
-@(rodata) global Type B8__type   = {TypeKind_B8,   0, sizeof(B8),  &type_nil, str8_lit_comp("B8")};
-@(rodata) global Type B16__type  = {TypeKind_B16,  0, sizeof(B16), &type_nil, str8_lit_comp("B16")};
-@(rodata) global Type B32__type  = {TypeKind_B32,  0, sizeof(B32), &type_nil, str8_lit_comp("B32")};
-@(rodata) global Type B64__type  = {TypeKind_B64,  0, sizeof(B64), &type_nil, str8_lit_comp("B64")};
-@(rodata) global Type F32__type  = {TypeKind_F32,  0, sizeof(F32), &type_nil, str8_lit_comp("F32")};
-@(rodata) global Type F64__type  = {TypeKind_F64,  0, sizeof(F64), &type_nil, str8_lit_comp("F64")};
+@(rodata) global Type u8__type   = {TypeKind_U8,   0, sizeof(u8),  &type_nil, str8_lit_comp("u8")};
+@(rodata) global Type u16__type  = {TypeKind_U16,  0, sizeof(u16), &type_nil, str8_lit_comp("u16")};
+@(rodata) global Type u32__type  = {TypeKind_U32,  0, sizeof(u32), &type_nil, str8_lit_comp("u32")};
+@(rodata) global Type u64__type  = {TypeKind_U64,  0, sizeof(u64), &type_nil, str8_lit_comp("u64")};
+@(rodata) global Type i8__type   = {TypeKind_S8,   0, sizeof(i8),  &type_nil, str8_lit_comp("i8")};
+@(rodata) global Type i16__type  = {TypeKind_S16,  0, sizeof(i16), &type_nil, str8_lit_comp("i16")};
+@(rodata) global Type i32__type  = {TypeKind_S32,  0, sizeof(i32), &type_nil, str8_lit_comp("i32")};
+@(rodata) global Type i64__type  = {TypeKind_S64,  0, sizeof(i64), &type_nil, str8_lit_comp("i64")};
+@(rodata) global Type b8__type   = {TypeKind_B8,   0, sizeof(b8),  &type_nil, str8_lit_comp("b8")};
+@(rodata) global Type b16__type  = {TypeKind_B16,  0, sizeof(b16), &type_nil, str8_lit_comp("b16")};
+@(rodata) global Type b32__type  = {TypeKind_B32,  0, sizeof(b32), &type_nil, str8_lit_comp("b32")};
+@(rodata) global Type b64__type  = {TypeKind_B64,  0, sizeof(b64), &type_nil, str8_lit_comp("b64")};
+@(rodata) global Type f32__type  = {TypeKind_F32,  0, sizeof(f32), &type_nil, str8_lit_comp("f32")};
+@(rodata) global Type f64__type  = {TypeKind_F64,  0, sizeof(f64), &type_nil, str8_lit_comp("f64")};
 @(rodata) global Type *type_kind_type_table[] =
 {
   &type_nil,
   type(void),
-  type(U8),
-  type(U16),
-  type(U32),
-  type(U64),
-  type(S8),
-  type(S16),
-  type(S32),
-  type(S64),
-  type(B8),
-  type(B16),
-  type(B32),
-  type(B64),
-  type(F32),
-  type(F64),
+  type(u8),
+  type(u16),
+  type(u32),
+  type(u64),
+  type(i8),
+  type(i16),
+  type(i32),
+  type(i64),
+  type(b8),
+  type(b16),
+  type(b32),
+  type(b64),
+  type(f32),
+  type(f64),
   &type_nil,
   &type_nil,
   &type_nil,
@@ -234,17 +234,17 @@ struct TypeSerializeParams
 //- rjf: Rng1U64
 struct_members(Rng1U64)
 {
-  member_lit_comp(Rng1U64, type(U64), min),
-  member_lit_comp(Rng1U64, type(U64), max),
+  member_lit_comp(Rng1U64, type(u64), min),
+  member_lit_comp(Rng1U64, type(u64), max),
 };
 struct_type(Rng1U64);
 
 //- rjf: String8
-ptr_type(String8__str_ptr_type, type(U8), str8_lit_comp("size"));
+ptr_type(String8__str_ptr_type, type(u8), str8_lit_comp("size"));
 struct_members(String8)
 {
   member_lit_comp(String8, &String8__str_ptr_type, str),
-  member_lit_comp(String8, type(U64),              size),
+  member_lit_comp(String8, type(u64),              size),
 };
 struct_type(String8);
 
@@ -273,8 +273,8 @@ Member String8List__members[] =
 {
   {str8_lit_comp("first"),      {0}, &String8Node__ptr_type,     OffsetOf(String8List, first)},
   {str8_lit_comp("last"),       {0}, &String8Node__ptr_type,     OffsetOf(String8List, last), MemberFlag_DoNotSerialize},
-  {str8_lit_comp("node_count"), {0}, type(U64), OffsetOf(String8List, node_count)},
-  {str8_lit_comp("total_size"), {0}, type(U64), OffsetOf(String8List, total_size)},
+  {str8_lit_comp("node_count"), {0}, type(u64), OffsetOf(String8List, node_count)},
+  {str8_lit_comp("total_size"), {0}, type(u64), OffsetOf(String8List, total_size)},
 };
 Type String8List__type =
 {

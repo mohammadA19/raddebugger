@@ -8,7 +8,7 @@
 // [ ] Error handling
 
 internal RDI_RegCode
-d2r_rdi_reg_from_dw_reg_code_x64(U64 reg_code)
+d2r_rdi_reg_from_dw_reg_code_x64(u64 reg_code)
 {
   switch (reg_code) {
 #define X(reg_name_dw, reg_code_dw, reg_name_rdi, reg_pos, reg_size) case DW_RegX64_##reg_name_dw: return RDI_RegCodeX64_##reg_name_rdi;
@@ -20,7 +20,7 @@ d2r_rdi_reg_from_dw_reg_code_x64(U64 reg_code)
 }
 
 internal RDI_RegCode
-d2r_rdi_reg_from_dw_reg_code_x86(U64 reg_code)
+d2r_rdi_reg_from_dw_reg_code_x86(u64 reg_code)
 {
   switch (reg_code) {
 #define X(reg_name_dw, reg_code_dw, reg_name_rdi, reg_pos, reg_size) case DW_RegX86_##reg_name_dw: return RDI_RegCodeX86_##reg_name_rdi;
@@ -32,7 +32,7 @@ d2r_rdi_reg_from_dw_reg_code_x86(U64 reg_code)
 }
 
 internal RDI_RegCode
-d2r_rdi_reg_from_dw_reg_code(Arch arch, U64 reg_code)
+d2r_rdi_reg_from_dw_reg_code(Arch arch, u64 reg_code)
 {
   switch (arch) {
     case Arch_Null: return 0;
@@ -51,7 +51,7 @@ d2r_create_type(Arena *arena, D2R_TypeTable *type_table)
 }
 
 internal RDIM_Type *
-d2r_find_or_create_type_from_offset(Arena *arena, D2R_TypeTable *type_table, U64 info_off)
+d2r_find_or_create_type_from_offset(Arena *arena, D2R_TypeTable *type_table, u64 info_off)
 {
   RDIM_Type *type = 0;
   KeyValuePair *is_type_present = hash_table_search_u64(type_table->ht, info_off);
@@ -96,7 +96,7 @@ d2r_type_from_attrib(Arena *arena, D2R_TypeTable *type_table, DW_Input *input, D
 }
 
 internal Rng1U64List
-d2r_range_list_from_tag(Arena *arena, DW_Input *input, DW_CompUnit *cu, U64 image_base, DW_Tag tag)
+d2r_range_list_from_tag(Arena *arena, DW_Input *input, DW_CompUnit *cu, u64 image_base, DW_Tag tag)
 {
   // collect non-contiguous range
   Rng1U64List ranges = dw_rnglist_from_tag_attrib_kind(arena, input, cu, tag, DW_AttribKind_Ranges);
@@ -114,9 +114,9 @@ d2r_range_list_from_tag(Arena *arena, DW_Input *input, DW_CompUnit *cu, U64 imag
   DW_Attrib *lo_pc_attrib = dw_attrib_from_tag(input, cu, tag, DW_AttribKind_LowPc);
   DW_Attrib *hi_pc_attrib = dw_attrib_from_tag(input, cu, tag, DW_AttribKind_HighPc);
   if (lo_pc_attrib->attrib_kind != DW_AttribKind_Null && hi_pc_attrib->attrib_kind != DW_AttribKind_Null) {
-    U64 lo_pc = dw_address_from_attrib(input, cu, lo_pc_attrib);
+    u64 lo_pc = dw_address_from_attrib(input, cu, lo_pc_attrib);
     
-    U64 hi_pc;
+    u64 hi_pc;
     DW_AttribClass hi_pc_class = dw_value_class_from_attrib(cu, hi_pc_attrib);
     if (hi_pc_class == DW_AttribClass_Address) {
       hi_pc = dw_address_from_attrib(input, cu, hi_pc_attrib);
@@ -132,8 +132,8 @@ d2r_range_list_from_tag(Arena *arena, DW_Input *input, DW_CompUnit *cu, U64 imag
     ensure(hi_pc >= image_base);
     ensure(lo_pc <= hi_pc);
     
-    U64 lo_voff = lo_pc - image_base;
-    U64 hi_voff = hi_pc - image_base;
+    u64 lo_voff = lo_pc - image_base;
+    u64 hi_voff = hi_pc - image_base;
     rng1u64_list_push(arena, &ranges, rng_1u64(lo_voff, hi_voff));
   }
   
@@ -141,12 +141,12 @@ d2r_range_list_from_tag(Arena *arena, DW_Input *input, DW_CompUnit *cu, U64 imag
 }
 
 internal RDIM_Type **
-d2r_collect_proc_params(Arena *arena, D2R_TypeTable *type_table, DW_Input *input, DW_CompUnit *cu, DW_TagNode *cur_node, U64 *param_count_out)
+d2r_collect_proc_params(Arena *arena, D2R_TypeTable *type_table, DW_Input *input, DW_CompUnit *cu, DW_TagNode *cur_node, u64 *param_count_out)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
   RDIM_TypeList list = {0};
-  B32 has_vargs = 0;
+  b32 has_vargs = 0;
   for (DW_TagNode *i = cur_node->first_child; i != 0; i = i->sibling) {
     if (i->tag.kind == DW_TagKind_FormalParameter) {
       RDIM_TypeNode *n = push_array(scratch.arena, RDIM_TypeNode, 1);
@@ -174,7 +174,7 @@ d2r_collect_proc_params(Arena *arena, D2R_TypeTable *type_table, DW_Input *input
 }
 
 internal RDI_TypeKind
-d2r_unsigned_type_kind_from_size(U64 byte_size)
+d2r_unsigned_type_kind_from_size(u64 byte_size)
 {
   RDI_TypeKind result = RDI_TypeKind_NULL;
   switch (byte_size) {
@@ -187,7 +187,7 @@ d2r_unsigned_type_kind_from_size(U64 byte_size)
 }
 
 internal RDI_TypeKind
-d2r_signed_type_kind_from_size(U64 byte_size)
+d2r_signed_type_kind_from_size(u64 byte_size)
 {
   RDI_TypeKind result = RDI_TypeKind_NULL;
   switch (byte_size) {
@@ -241,13 +241,13 @@ d2r_type_group_from_type_kind(RDI_TypeKind x)
 internal RDIM_EvalBytecode
 d2r_bytecode_from_expression(Arena       *arena,
                              DW_Input    *input,
-                             U64          image_base,
-                             U64          address_size,
+                             u64          image_base,
+                             u64          address_size,
                              Arch         arch,
                              DW_ListUnit *addr_lu,
                              String8      expr,
                              DW_CompUnit *cu,
-                             B32         *is_addr_out)
+                             b32         *is_addr_out)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -277,11 +277,11 @@ SLLStackPush(stack, f);                                       \
   }
   
   
-  for (U64 cursor = 0; cursor < expr.size; ) {
-    U8 op = 0;
+  for (u64 cursor = 0; cursor < expr.size; ) {
+    u8 op = 0;
     cursor += str8_deserial_read_struct(expr, cursor, &op);
     
-    U64 size_param;
+    u64 size_param;
     switch (op) {
       case DW_ExprOp_Lit0:  case DW_ExprOp_Lit1:  case DW_ExprOp_Lit2:
       case DW_ExprOp_Lit3:  case DW_ExprOp_Lit4:  case DW_ExprOp_Lit5:
@@ -294,35 +294,35 @@ SLLStackPush(stack, f);                                       \
       case DW_ExprOp_Lit24: case DW_ExprOp_Lit25: case DW_ExprOp_Lit26:
       case DW_ExprOp_Lit27: case DW_ExprOp_Lit28: case DW_ExprOp_Lit29:
       case DW_ExprOp_Lit30: case DW_ExprOp_Lit31: {
-        U64 lit = op - DW_ExprOp_Lit0;
+        u64 lit = op - DW_ExprOp_Lit0;
         
         rdim_bytecode_push_uconst(arena, &bc, lit);
         push_of_type(RDI_TypeKind_U64);
       } break;
       
       case DW_ExprOp_Const1U: {
-        U8 val = 0;
+        u8 val = 0;
         cursor += str8_deserial_read_struct(expr, cursor, &val);
         
         rdim_bytecode_push_uconst(arena, &bc, val);
         push_of_type(RDI_TypeKind_U8);
       } break;
       case DW_ExprOp_Const2U: {
-        U16 val = 0;
+        u16 val = 0;
         cursor += str8_deserial_read_struct(expr, cursor, &val);
         
         rdim_bytecode_push_uconst(arena, &bc, val);
         push_of_type(RDI_TypeKind_U16);
       } break;
       case DW_ExprOp_Const4U: {
-        U32 val = 0;
+        u32 val = 0;
         cursor += str8_deserial_read_struct(expr, cursor, &val);
         
         rdim_bytecode_push_uconst(arena, &bc, val);
         push_of_type(RDI_TypeKind_U32);
       } break;
       case DW_ExprOp_Const8U: {
-        U64 val = 0;
+        u64 val = 0;
         cursor += str8_deserial_read_struct(expr, cursor, &val);
         
         rdim_bytecode_push_uconst(arena, &bc, val);
@@ -330,28 +330,28 @@ SLLStackPush(stack, f);                                       \
       } break;
       
       case DW_ExprOp_Const1S: {
-        S8 val = 0;
+        i8 val = 0;
         cursor += str8_deserial_read_struct(expr, cursor, &val);
         
         rdim_bytecode_push_sconst(arena, &bc, val);
         push_of_type(RDI_TypeKind_S8);
       } break;
       case DW_ExprOp_Const2S: {
-        S16 val = 0;
+        i16 val = 0;
         cursor += str8_deserial_read_struct(expr, cursor, &val);
         
         rdim_bytecode_push_sconst(arena, &bc, val);
         push_of_type(RDI_TypeKind_S16);
       } break;
       case DW_ExprOp_Const4S: {
-        S32 val = 0;
+        i32 val = 0;
         cursor += str8_deserial_read_struct(expr, cursor, &val);
         
         rdim_bytecode_push_sconst(arena, &bc, val);
         push_of_type(RDI_TypeKind_S32);
       } break;
       case DW_ExprOp_Const8S: {
-        S64 val = 0;
+        i64 val = 0;
         cursor += str8_deserial_read_struct(expr, cursor, &val);
         
         rdim_bytecode_push_sconst(arena, &bc, val);
@@ -359,7 +359,7 @@ SLLStackPush(stack, f);                                       \
       } break;
       
       case DW_ExprOp_ConstU: {
-        U64 val = 0;
+        u64 val = 0;
         cursor += str8_deserial_read_uleb128(expr, cursor, &val);
         
         rdim_bytecode_push_uconst(arena, &bc, val);
@@ -367,7 +367,7 @@ SLLStackPush(stack, f);                                       \
       } break;
       
       case DW_ExprOp_ConstS: {
-        S64 val = 0;
+        i64 val = 0;
         cursor += str8_deserial_read_sleb128(expr, cursor, &val);
         
         rdim_bytecode_push_sconst(arena, &bc, val);
@@ -375,10 +375,10 @@ SLLStackPush(stack, f);                                       \
       } break;
       
       case DW_ExprOp_Addr: {
-        U64 addr = 0;
+        u64 addr = 0;
         cursor += str8_deserial_read(expr, cursor, &addr, address_size, address_size);
         if (addr >= image_base) {
-          U64 voff = addr - image_base;
+          u64 voff = addr - image_base;
           rdim_bytecode_push_op(arena, &bc, RDI_EvalOp_ModuleOff, voff);
           push_of_type(addr_type_kind);
         } else {
@@ -400,25 +400,25 @@ SLLStackPush(stack, f);                                       \
       case DW_ExprOp_Reg24: case DW_ExprOp_Reg25: case DW_ExprOp_Reg26:
       case DW_ExprOp_Reg27: case DW_ExprOp_Reg28: case DW_ExprOp_Reg29:
       case DW_ExprOp_Reg30: case DW_ExprOp_Reg31: {
-        U64 reg_code_dw  = op - DW_ExprOp_Reg0;
-        U64 reg_size     = dw_reg_size_from_code(arch, reg_code_dw);
-        U64 reg_pos      = dw_reg_pos_from_code(arch, reg_code_dw);
+        u64 reg_code_dw  = op - DW_ExprOp_Reg0;
+        u64 reg_size     = dw_reg_size_from_code(arch, reg_code_dw);
+        u64 reg_pos      = dw_reg_pos_from_code(arch, reg_code_dw);
         
         RDI_RegCode reg_code_rdi  = d2r_rdi_reg_from_dw_reg_code(arch, reg_code_dw);
-        U32         regread_param = RDI_EncodeRegReadParam(reg_code_rdi, reg_size, reg_pos);
+        u32         regread_param = RDI_EncodeRegReadParam(reg_code_rdi, reg_size, reg_pos);
         rdim_bytecode_push_op(arena, &bc, RDI_EvalOp_RegRead, regread_param);
         push_of_type(d2r_unsigned_type_kind_from_size(reg_size));
       } break;
       
       case DW_ExprOp_RegX: {
-        U64 reg_code_dw = 0;
+        u64 reg_code_dw = 0;
         cursor += str8_deserial_read_uleb128(expr, cursor, &reg_code_dw);
         
-        U64 reg_size = dw_reg_size_from_code(arch, reg_code_dw);
-        U64 reg_pos  = dw_reg_pos_from_code(arch, reg_code_dw);
+        u64 reg_size = dw_reg_size_from_code(arch, reg_code_dw);
+        u64 reg_pos  = dw_reg_pos_from_code(arch, reg_code_dw);
         
         RDI_RegCode reg_code_rdi  = d2r_rdi_reg_from_dw_reg_code(arch, reg_code_dw);
-        U32         regread_param = RDI_EncodeRegReadParam(reg_code_rdi, reg_size, reg_pos);
+        u32         regread_param = RDI_EncodeRegReadParam(reg_code_rdi, reg_size, reg_pos);
         rdim_bytecode_push_op(arena, &bc, RDI_EvalOp_RegRead, regread_param);
         push_of_type(d2r_unsigned_type_kind_from_size(reg_size));
         
@@ -426,12 +426,12 @@ SLLStackPush(stack, f);                                       \
       } break;
       
       case DW_ExprOp_ImplicitValue: {
-        U64     val_size = 0;
+        u64     val_size = 0;
         String8 val      = {0};
         cursor += str8_deserial_read_uleb128(expr, cursor, &val_size);
         cursor += str8_deserial_read_block(expr, cursor, val_size, &val);
-        if (val.size <= sizeof(U64)) {
-          U64 val64 = 0;
+        if (val.size <= sizeof(u64)) {
+          u64 val64 = 0;
           MemoryCopy(&val64, val.str, val.size);
           
           rdim_bytecode_push_uconst(arena, &bc, val64);
@@ -443,41 +443,41 @@ SLLStackPush(stack, f);                                       \
       } break;
       
       case DW_ExprOp_Piece: {
-        U64 piece_byte_size = 0;
+        u64 piece_byte_size = 0;
         cursor += str8_deserial_read_uleb128(expr, cursor, &piece_byte_size);
         
-        U64 partial_value_size32 = safe_cast_u32(piece_byte_size);
+        u64 partial_value_size32 = safe_cast_u32(piece_byte_size);
         rdim_bytecode_push_op(arena, &bc, RDI_EvalOp_PartialValue, partial_value_size32);
       } break;
       
       case DW_ExprOp_BitPiece: {
-        U64 piece_bit_size = 0;
-        U64 piece_bit_off  = 0;
+        u64 piece_bit_size = 0;
+        u64 piece_bit_off  = 0;
         cursor += str8_deserial_read_uleb128(expr, cursor, &piece_bit_size);
         cursor += str8_deserial_read_uleb128(expr, cursor, &piece_bit_off);
         
-        U32 piece_bit_size32 = safe_cast_u32(piece_bit_size);
-        U32 piece_bit_off32  = safe_cast_u32(piece_bit_off);
+        u32 piece_bit_size32 = safe_cast_u32(piece_bit_size);
+        u32 piece_bit_off32  = safe_cast_u32(piece_bit_off);
         
-        U64 partial_value = ((U64)piece_bit_size32 << 32) | (U64)piece_bit_off32;
+        u64 partial_value = ((u64)piece_bit_size32 << 32) | (u64)piece_bit_off32;
         rdim_bytecode_push_op(arena, &bc, RDI_EvalOp_PartialValueBit, partial_value);
       } break;
       
       case DW_ExprOp_Pick: {
-        U8 stack_idx = 0;
+        u8 stack_idx = 0;
         cursor += str8_deserial_read_struct(expr, cursor, &stack_idx);
         rdim_bytecode_push_op(arena, &bc, RDI_EvalOp_Pick, stack_idx);
       } break;
       
       case DW_ExprOp_PlusUConst: {
-        U64 addend = 0;
+        u64 addend = 0;
         cursor += str8_deserial_read_uleb128(expr, cursor, &addend);
         rdim_bytecode_push_uconst(arena, &bc, addend);
         rdim_bytecode_push_op(arena, &bc, RDI_EvalOp_Add, RDI_EvalTypeGroup_U);
       } break;
       
       case DW_ExprOp_Skip: {
-        S16 skip = 0;
+        i16 skip = 0;
         cursor += str8_deserial_read_struct(expr, cursor, &skip);
         rdim_bytecode_push_op(arena, &bc, RDI_EvalOp_Skip, skip);
       } break;
@@ -497,8 +497,8 @@ SLLStackPush(stack, f);                                       \
       case DW_ExprOp_BReg24: case DW_ExprOp_BReg25: case DW_ExprOp_BReg26: 
       case DW_ExprOp_BReg27: case DW_ExprOp_BReg28: case DW_ExprOp_BReg29: 
       case DW_ExprOp_BReg30: case DW_ExprOp_BReg31: {
-        U64 reg_code_dw = op - DW_ExprOp_BReg0;
-        S64 reg_off     = 0;
+        u64 reg_code_dw = op - DW_ExprOp_BReg0;
+        i64 reg_off     = 0;
         cursor += str8_deserial_read_sleb128(expr, cursor, &reg_off);
         
         RDI_RegCode reg_code_rdi = d2r_rdi_reg_from_dw_reg_code(arch, reg_code_dw);
@@ -513,8 +513,8 @@ SLLStackPush(stack, f);                                       \
       } break;
       
       case DW_ExprOp_BRegX: {
-        U64 reg_code_dw = 0;
-        S64 reg_off     = 0;
+        u64 reg_code_dw = 0;
+        i64 reg_off     = 0;
         cursor += str8_deserial_read_uleb128(expr, cursor, &reg_code_dw);
         cursor += str8_deserial_read_sleb128(expr, cursor, &reg_off);
         
@@ -530,7 +530,7 @@ SLLStackPush(stack, f);                                       \
       } break;
       
       case DW_ExprOp_FBReg: {
-        S64 frame_off = 0;
+        i64 frame_off = 0;
         cursor += str8_deserial_read_sleb128(expr, cursor, &frame_off);
         rdim_bytecode_push_op(arena, &bc, RDI_EvalOp_FrameOff, frame_off);
         
@@ -542,7 +542,7 @@ SLLStackPush(stack, f);                                       \
       } break;
       
       case DW_ExprOp_DerefSize: {
-        U8 deref_size_in_bytes = 0;
+        u8 deref_size_in_bytes = 0;
         cursor += str8_deserial_read_struct(expr, cursor, &deref_size_in_bytes);
         if (0 < deref_size_in_bytes && deref_size_in_bytes <= address_size) {
           rdim_bytecode_push_op(arena, &bc, RDI_EvalOp_MemRead, deref_size_in_bytes);
@@ -572,7 +572,7 @@ SLLStackPush(stack, f);                                       \
       
       case DW_ExprOp_Convert:
       case DW_ExprOp_GNU_Convert: {
-        U64 type_info_off = 0;
+        u64 type_info_off = 0;
         cursor += str8_deserial_read_uleb128(expr, cursor, &type_info_off);
         
         RDI_EvalTypeGroup in  = stack ? d2r_type_group_from_type_kind(stack->value_type) : RDI_EvalTypeGroup_Other;
@@ -601,7 +601,7 @@ SLLStackPush(stack, f);                                       \
               case DW_ATE_UnsignedChar:
               case DW_ATE_Unsigned: out = RDI_EvalTypeGroup_U; break;
               case DW_ATE_Float: {
-                U64 byte_size = dw_const_u64_from_tag_attrib_kind(input, cu, tag, DW_AttribKind_ByteSize);
+                u64 byte_size = dw_const_u64_from_tag_attrib_kind(input, cu, tag, DW_AttribKind_ByteSize);
                 switch (byte_size) {
                   case 4: out = RDI_EvalTypeGroup_F32; break;
                   case 8: out = RDI_EvalTypeGroup_F64; break;
@@ -624,7 +624,7 @@ SLLStackPush(stack, f);                                       \
         ensure(in != RDI_EvalTypeGroup_Other);
         ensure(out != RDI_EvalTypeGroup_Other);
         
-        U16 operand = (U16)in | ((U16)out << 8);
+        u16 operand = (u16)in | ((u16)out << 8);
         rdim_bytecode_push_op(arena, &bc, RDI_EvalOp_Convert, operand);
       } break;
       
@@ -652,26 +652,26 @@ SLLStackPush(stack, f);                                       \
       
       case DW_ExprOp_EntryValue:
       case DW_ExprOp_GNU_EntryValue: {
-        U64     entry_value_expr_size = 0;
+        u64     entry_value_expr_size = 0;
         String8 entry_value_expr      = {0};
         cursor += str8_deserial_read_uleb128(expr, cursor, &entry_value_expr_size);
         cursor += str8_deserial_read_block(expr, cursor, entry_value_expr_size, &entry_value_expr);
         
-        B32 dummy = 0;
+        b32 dummy = 0;
         RDIM_EvalBytecode call_site_bc = d2r_bytecode_from_expression(arena, input, image_base, address_size, arch, addr_lu, entry_value_expr, cu, &dummy);
         
-        U32 encoded_size32 = safe_cast_u32(call_site_bc.encoded_size);
+        u32 encoded_size32 = safe_cast_u32(call_site_bc.encoded_size);
         rdim_bytecode_push_op(arena, &bc, RDI_EvalOp_CallSiteValue, encoded_size32);
         rdim_bytecode_concat_in_place(&bc, &call_site_bc);
       } break;
       
       case DW_ExprOp_Addrx: {
-        U64 addr_idx = 0;
+        u64 addr_idx = 0;
         cursor += str8_deserial_read_uleb128(expr, cursor, &addr_idx);
-        U64 addr = dw_addr_from_list_unit(addr_lu, addr_idx);
+        u64 addr = dw_addr_from_list_unit(addr_lu, addr_idx);
         if (addr != max_U64) {
           if (addr >= image_base) {
-            U64 voff = addr - image_base;
+            u64 voff = addr - image_base;
             rdim_bytecode_push_op(arena, &bc, RDI_EvalOp_ModuleOff, voff);
           } else {
             // TODO: error handling
@@ -821,11 +821,11 @@ SLLStackPush(stack, f);                                       \
 }
 
 internal RDIM_Location *
-d2r_transpile_expression(Arena *arena, DW_Input *input, U64 image_base, U64 address_size, Arch arch, DW_ListUnit *addr_lu, DW_CompUnit *cu, String8 expr)
+d2r_transpile_expression(Arena *arena, DW_Input *input, u64 image_base, u64 address_size, Arch arch, DW_ListUnit *addr_lu, DW_CompUnit *cu, String8 expr)
 {
   RDIM_Location *loc = 0;
   if (expr.size) {
-    B32               is_addr  = 0;
+    b32               is_addr  = 0;
     RDIM_EvalBytecode bytecode = d2r_bytecode_from_expression(arena, input, image_base, address_size, arch, addr_lu, expr, cu, &is_addr);
     
     loc           = push_array(arena, RDIM_Location, 1);
@@ -836,7 +836,7 @@ d2r_transpile_expression(Arena *arena, DW_Input *input, U64 image_base, U64 addr
 }
 
 internal RDIM_Location *
-d2r_location_from_attrib(Arena *arena, DW_Input *input, DW_CompUnit *cu, U64 image_base, Arch arch, DW_Tag tag, DW_AttribKind kind)
+d2r_location_from_attrib(Arena *arena, DW_Input *input, DW_CompUnit *cu, u64 image_base, Arch arch, DW_Tag tag, DW_AttribKind kind)
 {
   String8 expr = dw_exprloc_from_tag_attrib_kind(input, cu, tag, kind);
   RDIM_Location *location = d2r_transpile_expression(arena, input, image_base, cu->address_size, arch, cu->addr_lu, cu, expr);
@@ -849,7 +849,7 @@ d2r_locset_from_attrib(Arena               *arena,
                        DW_CompUnit         *cu,
                        RDIM_ScopeChunkList *scopes,
                        RDIM_Scope          *curr_scope,
-                       U64                  image_base,
+                       u64                  image_base,
                        Arch                 arch,
                        DW_Tag               tag,
                        DW_AttribKind        kind)
@@ -896,14 +896,14 @@ d2r_var_locset_from_tag(Arena               *arena,
                         DW_CompUnit         *cu,
                         RDIM_ScopeChunkList *scopes,
                         RDIM_Scope          *curr_scope,
-                        U64                  image_base,
+                        u64                  image_base,
                         Arch                 arch,
                         DW_Tag               tag)
 {
   RDIM_LocationSet locset = {0};
   
-  B32 has_const_value = dw_tag_has_attrib(input, cu, tag, DW_AttribKind_ConstValue);
-  B32 has_location    = dw_tag_has_attrib(input, cu, tag, DW_AttribKind_Location);
+  b32 has_const_value = dw_tag_has_attrib(input, cu, tag, DW_AttribKind_ConstValue);
+  b32 has_location    = dw_tag_has_attrib(input, cu, tag, DW_AttribKind_Location);
   
   if (has_const_value && has_location) {
     // TODO: error handling
@@ -912,7 +912,7 @@ d2r_var_locset_from_tag(Arena               *arena,
   
   if (has_const_value) {
     // extract const value
-    U64 const_value = dw_u64_from_attrib(input, cu, tag, DW_AttribKind_ConstValue);
+    u64 const_value = dw_u64_from_attrib(input, cu, tag, DW_AttribKind_ConstValue);
     
     // make value byte code
     RDIM_EvalBytecode bc = {0};
@@ -935,7 +935,7 @@ d2r_var_locset_from_tag(Arena               *arena,
 }
 
 internal D2R_CompUnitContribMap
-d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, U64 image_base)
+d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, u64 image_base)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -944,22 +944,22 @@ d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, U64 image_base)
   
   D2R_CompUnitContribMap cm = {0};
   cm.count                  = 0;
-  cm.info_off_arr           = push_array(arena, U64,                   unit_range_list.count);
+  cm.info_off_arr           = push_array(arena, u64,                   unit_range_list.count);
   cm.voff_range_arr         = push_array(arena, RDIM_Rng1U64ChunkList, unit_range_list.count);
   
   for (Rng1U64Node *range_n = unit_range_list.first; range_n != 0; range_n = range_n->next) {
     String8 unit_data = str8_substr(aranges_data, range_n->v);
-    U64     unit_cursor    = 0;
+    u64     unit_cursor    = 0;
     
-    U64 unit_length = 0;
-    U64 unit_length_size = str8_deserial_read_dwarf_packed_size(unit_data, unit_cursor, &unit_length);
+    u64 unit_length = 0;
+    u64 unit_length_size = str8_deserial_read_dwarf_packed_size(unit_data, unit_cursor, &unit_length);
     if (unit_length_size == 0) {
       continue;
     }
     unit_cursor += unit_length_size;
     
     DW_Version version = 0;
-    U64 version_size = str8_deserial_read_struct(unit_data, unit_cursor, &version);
+    u64 version_size = str8_deserial_read_struct(unit_data, unit_cursor, &version);
     if (version_size == 0) {
       continue;
     }
@@ -971,29 +971,29 @@ d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, U64 image_base)
     }
     
     DW_Format unit_format      = DW_FormatFromSize(unit_length);
-    U64       cu_info_off      = 0;
-    U64       cu_info_off_size = str8_deserial_read_dwarf_uint(unit_data, unit_cursor, unit_format, &cu_info_off);
+    u64       cu_info_off      = 0;
+    u64       cu_info_off_size = str8_deserial_read_dwarf_uint(unit_data, unit_cursor, unit_format, &cu_info_off);
     if (cu_info_off_size == 0) {
       continue;
     }
     unit_cursor += cu_info_off_size;
     
-    U8 address_size = 0;
-    U64 address_size_size = str8_deserial_read_struct(unit_data, unit_cursor, &address_size);
+    u8 address_size = 0;
+    u64 address_size_size = str8_deserial_read_struct(unit_data, unit_cursor, &address_size);
     if (address_size_size == 0) {
       continue;
     }
     unit_cursor += address_size_size;
     
-    U8 segment_selector_size = 0;
-    U64 segment_selector_size_size = str8_deserial_read_struct(unit_data, unit_cursor, &segment_selector_size);
+    u8 segment_selector_size = 0;
+    u64 segment_selector_size_size = str8_deserial_read_struct(unit_data, unit_cursor, &segment_selector_size);
     if (segment_selector_size_size == 0) {
       continue;
     }
     unit_cursor += segment_selector_size_size;
     
-    U64 tuple_size                  = address_size * 2 + segment_selector_size;
-    U64 bytes_too_far_past_boundary = unit_cursor % tuple_size;
+    u64 tuple_size                  = address_size * 2 + segment_selector_size;
+    u64 bytes_too_far_past_boundary = unit_cursor % tuple_size;
     if (bytes_too_far_past_boundary > 0) {
       unit_cursor += tuple_size - bytes_too_far_past_boundary;
     }
@@ -1001,8 +1001,8 @@ d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, U64 image_base)
     RDIM_Rng1U64ChunkList voff_ranges = {0};
     if (segment_selector_size == 0) {
       while (unit_cursor + address_size * 2 <= unit_data.size) {
-        U64 address = 0;
-        U64 length  = 0;
+        u64 address = 0;
+        u64 length  = 0;
         unit_cursor += str8_deserial_read(unit_data, unit_cursor, &address, address_size, address_size);
         unit_cursor += str8_deserial_read(unit_data, unit_cursor, &length, address_size, address_size);
         
@@ -1013,8 +1013,8 @@ d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, U64 image_base)
         // TODO: error handling
         ensure(address >= image_base);
         
-        U64 min = address - image_base;
-        U64 max = min + length;
+        u64 min = address - image_base;
+        u64 max = min + length;
         rdim_rng1u64_chunk_list_push(arena, &voff_ranges, 256, (RDIM_Rng1U64){.min = min, .max = max});
       }
     } else {
@@ -1022,7 +1022,7 @@ d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, U64 image_base)
       NotImplemented;
     }
     
-    U64 map_idx = cm.count++;
+    u64 map_idx = cm.count++;
     cm.info_off_arr[map_idx]   = cu_info_off;
     cm.voff_range_arr[map_idx] = voff_ranges;
   }
@@ -1032,10 +1032,10 @@ d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, U64 image_base)
 }
 
 internal RDIM_Rng1U64ChunkList
-d2r_voff_ranges_from_cu_info_off(D2R_CompUnitContribMap map, U64 info_off)
+d2r_voff_ranges_from_cu_info_off(D2R_CompUnitContribMap map, u64 info_off)
 {
   RDIM_Rng1U64ChunkList voff_ranges   = {0};
-  U64              voff_list_idx = u64_array_bsearch(map.info_off_arr, map.count, info_off);
+  u64              voff_list_idx = u64_array_bsearch(map.info_off_arr, map.count, info_off);
   if (voff_list_idx < map.count) {
     voff_ranges = map.voff_range_arr[voff_list_idx];
   }
@@ -1043,7 +1043,7 @@ d2r_voff_ranges_from_cu_info_off(D2R_CompUnitContribMap map, U64 info_off)
 }
 
 internal RDIM_Scope *
-d2r_push_scope(Arena *arena, RDIM_ScopeChunkList *scopes, U64 scope_chunk_cap, D2R_TagNode *tag_stack, Rng1U64List ranges)
+d2r_push_scope(Arena *arena, RDIM_ScopeChunkList *scopes, u64 scope_chunk_cap, D2R_TagNode *tag_stack, Rng1U64List ranges)
 {
   // fill out scope
   RDIM_Scope *scope = rdim_scope_chunk_list_push(arena, scopes, scope_chunk_cap);
@@ -1081,13 +1081,13 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
   ////////////////////////////////
   
   ProfBegin("compute exe hash");
-  U64 exe_hash = rdi_hash(params->exe_data.str, params->exe_data.size);
+  u64 exe_hash = rdi_hash(params->exe_data.str, params->exe_data.size);
   ProfEnd();
   
   ////////////////////////////////
   
   Arch                   arch            = Arch_Null;
-  U64                    image_base      = 0;
+  u64                    image_base      = 0;
   RDIM_BinarySectionList binary_sections = {0};
   DW_Input               input           = {0};
   
@@ -1106,7 +1106,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
       
       // get image sections
       String8             raw_sections  = str8_substr(params->exe_data, pe.section_table_range);
-      U64                 section_count = raw_sections.size / sizeof(COFF_SectionHeader);
+      u64                 section_count = raw_sections.size / sizeof(COFF_SectionHeader);
       COFF_SectionHeader *section_table = (COFF_SectionHeader *)raw_sections.str;
       
       // convert sections
@@ -1144,20 +1144,20 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
   
   ////////////////////////////////
   
-  U64 arch_addr_size = rdi_addr_size_from_arch(arch);
+  u64 arch_addr_size = rdi_addr_size_from_arch(arch);
   
   ////////////////////////////////
   
-  static const U64 UNIT_CHUNK_CAP        = 256;
-  static const U64 UDT_CHUNK_CAP         = 256;
-  static const U64 TYPE_CHUNK_CAP        = 256;
-  static const U64 GVAR_CHUNK_CAP        = 256;
-  static const U64 TVAR_CHUNK_CAP        = 256;
-  static const U64 PROC_CHUNK_CAP        = 256;
-  static const U64 SCOPE_CHUNK_CAP       = 256;
-  static const U64 INLINE_SITE_CHUNK_CAP = 256;
-  static const U64 SRC_FILE_CAP          = 256;
-  static const U64 LINE_TABLE_CAP        = 256;
+  static const u64 UNIT_CHUNK_CAP        = 256;
+  static const u64 UDT_CHUNK_CAP         = 256;
+  static const u64 TYPE_CHUNK_CAP        = 256;
+  static const u64 GVAR_CHUNK_CAP        = 256;
+  static const u64 TVAR_CHUNK_CAP        = 256;
+  static const u64 PROC_CHUNK_CAP        = 256;
+  static const u64 SCOPE_CHUNK_CAP       = 256;
+  static const u64 INLINE_SITE_CHUNK_CAP = 256;
+  static const u64 SRC_FILE_CAP          = 256;
+  static const u64 LINE_TABLE_CAP        = 256;
   
   RDIM_UnitChunkList       units        = {0};
   RDIM_UDTChunkList        udts         = {0};
@@ -1198,9 +1198,9 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
   // TODO(rjf): parse should always be relaxed. any verification checks we do
   // should just be logged via log_info(...), and then the caller of this
   // converter can collect those & display as necessary.
-  B32 is_parse_relaxed = 1;
+  b32 is_parse_relaxed = 1;
   DW_CompUnit *cu_arr = push_array(scratch.arena, DW_CompUnit, cu_ranges.count);
-  for (U64 cu_idx = 0; cu_idx < cu_ranges.count; ++cu_idx) {
+  for (u64 cu_idx = 0; cu_idx < cu_ranges.count; ++cu_idx) {
     cu_arr[cu_idx] = dw_cu_from_info_off(scratch.arena, &input, lu_input, cu_ranges.v[cu_idx].min, is_parse_relaxed);
   }
   ProfEnd();
@@ -1209,7 +1209,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
   
   ProfBegin("Parse Line Tables");
   DW_LineTableParseResult *cu_line_tables = push_array(scratch.arena, DW_LineTableParseResult, cu_ranges.count);
-  for (U64 cu_idx = 0; cu_idx < cu_ranges.count; ++cu_idx) {
+  for (u64 cu_idx = 0; cu_idx < cu_ranges.count; ++cu_idx) {
     DW_CompUnit *cu           = &cu_arr[cu_idx];
     String8      cu_stmt_list = dw_line_ptr_from_tag_attrib_kind(&input, cu, cu->tag, DW_AttribKind_StmtList);
     String8      cu_dir       = dw_string_from_tag_attrib_kind(&input, cu, cu->tag, DW_AttribKind_CompDir);
@@ -1225,14 +1225,14 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
   HashTable       *source_file_ht     = hash_table_init(scratch.arena, 0x4000);
   RDIM_LineTable **cu_line_tables_rdi = push_array(scratch.arena, RDIM_LineTable *, cu_ranges.count);
   
-  for (U64 cu_idx = 0; cu_idx < cu_ranges.count; ++cu_idx) {
+  for (u64 cu_idx = 0; cu_idx < cu_ranges.count; ++cu_idx) {
     cu_line_tables_rdi[cu_idx] = rdim_line_table_chunk_list_push(arena, &line_tables, LINE_TABLE_CAP);
     
     DW_LineTableParseResult *line_table   = &cu_line_tables[cu_idx];
     DW_LineVMFileArray      *dir_table    = &line_table->vm_header.dir_table;
     DW_LineVMFileArray      *file_table   = &line_table->vm_header.file_table;
     RDIM_SrcFile           **src_file_map = push_array(scratch.arena, RDIM_SrcFile *, file_table->count);
-    for (U64 file_idx = 0; file_idx < file_table->count; ++file_idx) {
+    for (u64 file_idx = 0; file_idx < file_table->count; ++file_idx) {
       DW_LineFile  *file                 = &file_table->v[file_idx];
       String8       file_path            = dw_path_from_file_idx(scratch.arena, &line_table->vm_header, file_idx);
       String8List   file_path_split      = str8_split_path(scratch.arena, file_path);
@@ -1253,23 +1253,23 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
         continue;
       }
       
-      U64 *voffs     = push_array(arena, U64, line_seq->count);
-      U32 *line_nums = push_array(arena, U32, line_seq->count);
-      U16 *col_nums  = 0;
-      U64  line_idx  = 0;
+      u64 *voffs     = push_array(arena, u64, line_seq->count);
+      u32 *line_nums = push_array(arena, u32, line_seq->count);
+      u16 *col_nums  = 0;
+      u64  line_idx  = 0;
       
       DW_LineNode *file_line_n     = line_seq->first;
-      U64          file_line_count = 0;
+      u64          file_line_count = 0;
       
       for (DW_LineNode *line_n = file_line_n; line_n != 0; line_n = line_n->next) {
         if (file_line_n->v.file_index != line_n->v.file_index || line_n->next == 0) {
-          U64  file_index     = file_line_n->v.file_index;
-          U64 *file_voffs     = &voffs[line_idx];
-          U32 *file_line_nums = &line_nums[line_idx];
-          U16 *file_col_nums  = 0;
+          u64  file_index     = file_line_n->v.file_index;
+          u64 *file_voffs     = &voffs[line_idx];
+          u32 *file_line_nums = &line_nums[line_idx];
+          u16 *file_col_nums  = 0;
           
-          U64          lines_written = 0;
-          U64          prev_ln       = max_U64;
+          u64          lines_written = 0;
+          u64          prev_ln       = max_U64;
           DW_LineNode *sentinel      = line_n->v.file_index != file_line_n->v.file_index ? line_n : 0;
           for (; file_line_n != sentinel; file_line_n = file_line_n->next) {
             if (file_line_n->v.line != prev_ln) {
@@ -1298,10 +1298,10 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
       
       // handle last line
       if (file_line_n) {
-        U64  file_index     = file_line_n->v.file_index;
-        U64 *file_voffs     = &voffs[line_idx];
-        U32 *file_line_nums = &line_nums[line_idx];
-        U16 *file_col_nums  = 0;
+        u64  file_index     = file_line_n->v.file_index;
+        u64 *file_voffs     = &voffs[line_idx];
+        u32 *file_line_nums = &line_nums[line_idx];
+        u16 *file_col_nums  = 0;
         
         for (; file_line_n != 0; file_line_n = file_line_n->next, ++line_idx) {
           // TODO: error handling
@@ -1325,7 +1325,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
   
   ProfBegin("Convert Units");
   
-  for (U64 cu_idx = 0; cu_idx < cu_ranges.count; ++cu_idx) {
+  for (u64 cu_idx = 0; cu_idx < cu_ranges.count; ++cu_idx) {
     Temp comp_temp = temp_begin(scratch.arena);
     
     DW_CompUnit *cu = &cu_arr[cu_idx];
@@ -1377,7 +1377,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
       while (tag_stack->cur_node) {
         DW_TagNode *cur_node       = tag_stack->cur_node;
         DW_Tag      tag            = cur_node->tag;
-        B32         visit_children = 1;
+        b32         visit_children = 1;
         
         switch (tag.kind) {
           case DW_TagKind_Null: {
@@ -1387,7 +1387,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
             RDIM_Type *type = d2r_find_or_create_type_from_offset(arena, type_table, tag.info_off);
             type->name      = dw_string_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_Name);
             
-            B32 is_decl = dw_flag_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_Declaration);
+            b32 is_decl = dw_flag_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_Declaration);
             if (is_decl) {
               type->kind = RDI_TypeKind_IncompleteClass;
               
@@ -1409,7 +1409,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
             RDIM_Type *type = d2r_find_or_create_type_from_offset(arena, type_table, tag.info_off);
             type->name      = dw_string_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_Name);
             
-            B32 is_decl = dw_flag_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_Declaration);
+            b32 is_decl = dw_flag_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_Declaration);
             if (is_decl) {
               type->kind = RDI_TypeKind_IncompleteStruct;
               
@@ -1431,7 +1431,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
             RDIM_Type *type = d2r_find_or_create_type_from_offset(arena, type_table, tag.info_off);
             type->name      = dw_string_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_Name);
             
-            B32 is_decl = dw_flag_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_Declaration);
+            b32 is_decl = dw_flag_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_Declaration);
             if (is_decl) {
               type->kind = RDI_TypeKind_IncompleteUnion;
               
@@ -1453,7 +1453,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
             RDIM_Type *type = d2r_find_or_create_type_from_offset(arena, type_table, tag.info_off);
             type->name      = dw_string_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_Name);
             
-            B32 is_decl = dw_flag_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_Declaration);
+            b32 is_decl = dw_flag_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_Declaration);
             if (is_decl) {
               type->kind = RDI_TypeKind_IncompleteEnum;
               
@@ -1505,7 +1505,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
           } break;
           case DW_TagKind_BaseType: {
             DW_ATE encoding  = dw_const_u64_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_Encoding);
-            U64    byte_size = dw_byte_size_from_tag(&input, cu, tag);
+            u64    byte_size = dw_byte_size_from_tag(&input, cu, tag);
             
             // convert base type encoding to RDI version
             RDI_TypeKind kind = RDI_TypeKind_NULL;
@@ -1624,7 +1624,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
             assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_Name));
             assert(!dw_tag_has_attrib(&input, cu, tag, DW_AttribKind_AddressClass));
             
-            U64 byte_size = arch_addr_size;
+            u64 byte_size = arch_addr_size;
             if (cu->version == DW_Version_5 || cu->relaxed) {
               dw_try_byte_size_from_tag(&input, cu, tag, &byte_size);
             }
@@ -1679,7 +1679,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
             //                          \
             //                           -> (B0) DW_TAG_PointerType -> (A1) DW_TAG_ArrayType -> DW_TAG_Subrange [3] -> DW_TagKind_Subrange [4]
             //                                                      \
-            //                                                       -> (B1) DW_TAG_BaseType (int)
+            //                                                       -> (b1) DW_TAG_BaseType (int)
             // 
             // RDI expects:
             //  
@@ -1694,7 +1694,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
             type->kind        = RDI_TypeKind_Array;
             type->direct_type = 0;
             
-            U64        subrange_count = 0;
+            u64        subrange_count = 0;
             RDIM_Type *t              = type;
             for (DW_TagNode *n = cur_node->first_child; n != 0; n = n->sibling) {
               if (n->tag.kind != DW_TagKind_SubrangeType) {
@@ -1715,7 +1715,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
               }
               
               // resolve array lower bound
-              U64 lower_bound = 0;
+              u64 lower_bound = 0;
               if (dw_tag_has_attrib(&input, cu, n->tag, DW_AttribKind_LowerBound)) {
                 lower_bound = dw_u64_from_attrib(&input, cu, n->tag, DW_AttribKind_LowerBound);
               } else {
@@ -1723,9 +1723,9 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
               }
               
               // resolve array upper bound
-              U64 upper_bound = 0;
+              u64 upper_bound = 0;
               if (dw_tag_has_attrib(&input, cu, n->tag, DW_AttribKind_Count)) {
-                U64 count = dw_u64_from_attrib(&input, cu, n->tag, DW_AttribKind_Count);
+                u64 count = dw_u64_from_attrib(&input, cu, n->tag, DW_AttribKind_Count);
                 upper_bound = lower_bound + count;
               } else if (dw_tag_has_attrib(&input, cu, n->tag, DW_AttribKind_UpperBound)) {
                 upper_bound = dw_u64_from_attrib(&input, cu, n->tag, DW_AttribKind_UpperBound);
@@ -1801,7 +1801,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
             DW_InlKind inl = dw_u64_from_attrib(&input, cu, tag, DW_AttribKind_Inline);
             switch (inl) {
               case DW_Inl_NotInlined: {
-                U64         param_count = 0;
+                u64         param_count = 0;
                 RDIM_Type **params      = d2r_collect_proc_params(arena, type_table, &input, cu, cur_node, &param_count);
                 
                 // get return type
@@ -1874,7 +1874,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
             }
           } break;
           case DW_TagKind_InlinedSubroutine: {
-            U64         param_count = 0;
+            u64         param_count = 0;
             RDIM_Type **params      = d2r_collect_proc_params(arena, type_table, &input, cu, tag_stack->cur_node, &param_count);
             
             // get return type
@@ -2010,7 +2010,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
   
   {
     for (RDIM_TypeChunkNode *chunk_n = types.first; chunk_n != 0; chunk_n = chunk_n->next) {
-      for (U64 i = 0; i < chunk_n->count; ++i) {
+      for (u64 i = 0; i < chunk_n->count; ++i) {
         RDIM_Type *type = &chunk_n->v[i];
         if (type->kind == RDI_TypeKind_Alias) {
           for (RDIM_Type *t = type->direct_type; t != 0; t = t->direct_type) {
@@ -2029,7 +2029,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
     RDIM_TypeNode *free_types = 0;
     
     for (RDIM_TypeChunkNode *chunk_n = types.first; chunk_n != 0; chunk_n = chunk_n->next) {
-      for (U64 i = 0; i < chunk_n->count; ++i) {
+      for (u64 i = 0; i < chunk_n->count; ++i) {
         RDIM_Type *type = &chunk_n->v[i];
         if (type->kind == RDI_TypeKind_Array) {
           if (type->byte_size != 0)
@@ -2047,12 +2047,12 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
             SLLStackPush(type_stack, f);
           }
           
-          U64 base_type_size = 0;
+          u64 base_type_size = 0;
           if (t) {
             base_type_size = t->byte_size;
           }
           
-          U64 array_size = base_type_size;
+          u64 array_size = base_type_size;
           while (type_stack) {
             if (type_stack->v->count) {
               array_size *= type_stack->v->count;
@@ -2132,8 +2132,8 @@ rdi_reg_from_dw_reg_x86(DW_RegX86 v)
   return result;
 }
 
-internal B32
-rdi_reg_from_dw_reg_x64(DW_RegX64 v, RDI_RegCodeX64 *code_out, U64 *off_out, U64 *size_out)
+internal b32
+rdi_reg_from_dw_reg_x64(DW_RegX64 v, RDI_RegCodeX64 *code_out, u64 *off_out, u64 *size_out)
 {
   RDI_RegCodeX64 result = RDI_RegCode_nil;
   switch (v) {
@@ -2145,8 +2145,8 @@ rdi_reg_from_dw_reg_x64(DW_RegX64 v, RDI_RegCodeX64 *code_out, U64 *off_out, U64
   return result;
 }
 
-internal B32
-rdi_reg_from_dw_reg(Arch arch, DW_Reg v, RDI_RegCode *code_out, U64 *off_out, U64 *size_out)
+internal b32
+rdi_reg_from_dw_reg(Arch arch, DW_Reg v, RDI_RegCode *code_out, u64 *off_out, u64 *size_out)
 {
   RDI_RegCode result = RDI_RegCode_nil;
   switch (arch) {

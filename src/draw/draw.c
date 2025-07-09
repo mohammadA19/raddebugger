@@ -30,11 +30,11 @@ return top_val
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64
+internal u64
 dr_hash_from_string(String8 string)
 {
-  U64 result = 5381;
-  for(U64 i = 0; i < string.size; i += 1)
+  u64 result = 5381;
+  for(u64 i = 0; i < string.size; i += 1)
   {
     result = ((result << 5) + result) + string.str[i];
   }
@@ -142,12 +142,12 @@ dr_fuzzy_match_find_from_fstrs(Arena *arena, DR_FStrList *fstrs, String8 needle)
   Temp scratch = scratch_begin(&arena, 1);
   String8 fstrs_string = {0};
   fstrs_string.size = fstrs->total_size;
-  fstrs_string.str = push_array(arena, U8, fstrs_string.size);
+  fstrs_string.str = push_array(arena, u8, fstrs_string.size);
   {
     // TODO(rjf): the fact that we only increment on non-icon portions is super weird?
     // we are only doing that because of the rendering of the fuzzy matches, so maybe
     // once that is straightened out, we can fix the code here too...
-    U64 off = 0;
+    u64 off = 0;
     for(DR_FStrNode *n = fstrs->first; n != 0; n = n->next)
     {
       if(!fnt_tag_match(n->v.params.font, dr_thread_ctx->icon_font))
@@ -163,11 +163,11 @@ dr_fuzzy_match_find_from_fstrs(Arena *arena, DR_FStrList *fstrs, String8 needle)
 }
 
 internal DR_FRunList
-dr_fruns_from_fstrs(Arena *arena, F32 tab_size_px, DR_FStrList *strs)
+dr_fruns_from_fstrs(Arena *arena, f32 tab_size_px, DR_FStrList *strs)
 {
   ProfBeginFunction();
   DR_FRunList run_list = {0};
-  F32 base_align_px = 0;
+  f32 base_align_px = 0;
   for(DR_FStrNode *n = strs->first; n != 0; n = n->next)
   {
     DR_FRunNode *dst_n = push_array(arena, DR_FRunNode, 1);
@@ -187,7 +187,7 @@ dr_fruns_from_fstrs(Arena *arena, F32 tab_size_px, DR_FStrList *strs)
 }
 
 internal Vec2F32
-dr_dim_from_fstrs(F32 tab_size_px, DR_FStrList *fstrs)
+dr_dim_from_fstrs(f32 tab_size_px, DR_FStrList *fstrs)
 {
   Temp scratch = scratch_begin(0, 0);
   DR_FRunList fruns = dr_fruns_from_fstrs(scratch.arena, tab_size_px, fstrs);
@@ -286,7 +286,7 @@ dr_top_bucket(void)
 //- rjf: rectangles
 
 internal inline R_Rect2DInst *
-dr_rect(Rng2F32 dst, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32 edge_softness)
+dr_rect(Rng2F32 dst, Vec4F32 color, f32 corner_radius, f32 border_thickness, f32 edge_softness)
 {
   Arena *arena = dr_thread_ctx->arena;
   DR_Bucket *bucket = dr_top_bucket();
@@ -327,7 +327,7 @@ dr_rect(Rng2F32 dst, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32
 //- rjf: images
 
 internal inline R_Rect2DInst *
-dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32 edge_softness)
+dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, f32 corner_radius, f32 border_thickness, f32 edge_softness)
 {
   Arena *arena = dr_thread_ctx->arena;
   DR_Bucket *bucket = dr_top_bucket();
@@ -372,7 +372,7 @@ dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, F32 corner_rad
 //- rjf: blurs
 
 internal R_PassParams_Blur *
-dr_blur(Rng2F32 rect, F32 blur_size, F32 corner_radius)
+dr_blur(Rng2F32 rect, f32 blur_size, f32 corner_radius)
 {
   Arena *arena = dr_thread_ctx->arena;
   DR_Bucket *bucket = dr_top_bucket();
@@ -421,22 +421,22 @@ dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_ge
   }
   
   // rjf: hash batch group 3d params
-  U64 hash = 0;
-  U64 slot_idx = 0;
+  u64 hash = 0;
+  u64 slot_idx = 0;
   {
-    U64 buffer[] =
+    u64 buffer[] =
     {
       mesh_vertices.u64[0],
       mesh_vertices.u64[1],
       mesh_indices.u64[0],
       mesh_indices.u64[1],
-      (U64)mesh_geo_topology,
-      (U64)mesh_geo_vertex_flags,
+      (u64)mesh_geo_topology,
+      (u64)mesh_geo_vertex_flags,
       albedo_tex.u64[0],
       albedo_tex.u64[1],
-      (U64)dr_top_tex2d_sample_kind(),
+      (u64)dr_top_tex2d_sample_kind(),
     };
-    hash = dr_hash_from_string(str8((U8 *)buffer, sizeof(buffer)));
+    hash = dr_hash_from_string(str8((u8 *)buffer, sizeof(buffer)));
     slot_idx = hash%params->mesh_batches.slots_count;
   }
   
@@ -484,7 +484,7 @@ dr_sub_bucket(DR_Bucket *bucket)
   DR_Bucket *src = bucket;
   DR_Bucket *dst = dr_top_bucket();
   Rng2F32 dst_clip = dr_top_clip();
-  B32 dst_clip_is_set = !(dst_clip.x0 == 0 && dst_clip.x1 == 0 &&
+  b32 dst_clip_is_set = !(dst_clip.x0 == 0 && dst_clip.x1 == 0 &&
                           dst_clip.y0 == 0 && dst_clip.y1 == 0);
   for(R_PassNode *n = src->passes.first; n != 0; n = n->next)
   {
@@ -509,7 +509,7 @@ dr_sub_bucket(DR_Bucket *bucket)
           dst_group_n->params.xform = dr_top_xform2d();
           if(dst_clip_is_set)
           {
-            B32 clip_is_set = !(dst_group_n->params.clip.x0 == 0 &&
+            b32 clip_is_set = !(dst_group_n->params.clip.x0 == 0 &&
                                 dst_group_n->params.clip.y0 == 0 &&
                                 dst_group_n->params.clip.x1 == 0 &&
                                 dst_group_n->params.clip.y1 == 0);
@@ -527,18 +527,18 @@ dr_sub_bucket(DR_Bucket *bucket)
 //- rjf: text
 
 internal void
-dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run trailer_run)
+dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, f32 max_x, FNT_Run trailer_run)
 {
   ProfBeginFunction();
   
   //- rjf: total advance > max? -> enable trailer
-  B32 trailer_enabled = (list->dim.x > max_x && trailer_run.dim.x < max_x);
+  b32 trailer_enabled = (list->dim.x > max_x && trailer_run.dim.x < max_x);
   
   //- rjf: draw runs
-  F32 advance = 0;
-  B32 trailer_found = 0;
+  f32 advance = 0;
+  b32 trailer_found = 0;
   Vec4F32 last_color = {0};
-  U64 byte_off = 0;
+  u64 byte_off = 0;
   for(DR_FRunNode *n = list->first; n != 0; n = n->next)
   {
     DR_FRun *fr = &n->v;
@@ -549,7 +549,7 @@ dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run tra
     }
     FNT_Piece *piece_first = fr->run.pieces.v;
     FNT_Piece *piece_opl = piece_first + fr->run.pieces.count;
-    F32 pre_advance = advance;
+    f32 pre_advance = advance;
     last_color = fr->color;
     for(FNT_Piece *piece = piece_first;
         piece < piece_opl;
@@ -565,7 +565,7 @@ dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run tra
         goto end_draw;
       }
       R_Handle texture = piece->texture;
-      Rng2F32 src = r2f32p((F32)piece->subrect.x0, (F32)piece->subrect.y0, (F32)piece->subrect.x1, (F32)piece->subrect.y1);
+      Rng2F32 src = r2f32p((f32)piece->subrect.x0, (f32)piece->subrect.y0, (f32)piece->subrect.x1, (f32)piece->subrect.y1);
       Vec2F32 size = dim_2f32(src);
       Rng2F32 dst = r2f32p(p.x + piece->offset.x + advance,
                            p.y + piece->offset.y,
@@ -604,14 +604,14 @@ dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run tra
   {
     FNT_Piece *piece_first = trailer_run.pieces.v;
     FNT_Piece *piece_opl = piece_first + trailer_run.pieces.count;
-    F32 pre_advance = advance;
+    f32 pre_advance = advance;
     Vec4F32 trailer_piece_color = last_color;
     for(FNT_Piece *piece = piece_first;
         piece < piece_opl;
         piece += 1)
     {
       R_Handle texture = piece->texture;
-      Rng2F32 src = r2f32p((F32)piece->subrect.x0, (F32)piece->subrect.y0, (F32)piece->subrect.x1, (F32)piece->subrect.y1);
+      Rng2F32 src = r2f32p((f32)piece->subrect.x0, (f32)piece->subrect.y0, (f32)piece->subrect.x1, (f32)piece->subrect.y1);
       Vec2F32 size = dim_2f32(src);
       Rng2F32 dst = r2f32p(p.x + piece->offset.x + advance,
                            p.y + piece->offset.y,
@@ -630,7 +630,7 @@ dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run tra
 }
 
 internal void
-dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FRunList *list, F32 max_x, FuzzyMatchRangeList *ranges, Vec4F32 color)
+dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FRunList *list, f32 max_x, FuzzyMatchRangeList *ranges, Vec4F32 color)
 {
   for(FuzzyMatchRangeNode *match_n = ranges->first; match_n != 0; match_n = match_n->next)
   {
@@ -640,24 +640,24 @@ dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FRunList *list, F32 max_x, Fu
       pixel_range.min = 100000;
       pixel_range.max = 0;
     }
-    F32 last_piece_end_pad = 0;
-    U64 byte_off = 0;
-    F32 advance = 0;
-    F32 ascent = 0;
-    F32 descent = 0;
+    f32 last_piece_end_pad = 0;
+    u64 byte_off = 0;
+    f32 advance = 0;
+    f32 ascent = 0;
+    f32 descent = 0;
     for(DR_FRunNode *fr_n = list->first; fr_n != 0; fr_n = fr_n->next)
     {
       DR_FRun *fr = &fr_n->v;
       FNT_Run *run = &fr->run;
       ascent = run->ascent;
       descent = run->descent;
-      for(U64 piece_idx = 0; piece_idx < run->pieces.count; piece_idx += 1)
+      for(u64 piece_idx = 0; piece_idx < run->pieces.count; piece_idx += 1)
       {
         FNT_Piece *piece = &run->pieces.v[piece_idx];
         if(contains_1u64(byte_range, byte_off))
         {
-          F32 pre_advance  = advance + piece->offset.x;
-          F32 post_advance = advance + piece->advance;
+          f32 pre_advance  = advance + piece->offset.x;
+          f32 post_advance = advance + piece->advance;
           pixel_range.min = min(pre_advance,  pixel_range.min);
           pixel_range.max = max(post_advance, pixel_range.max);
         }
@@ -685,7 +685,7 @@ internal void
 dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run)
 {
   ProfBeginFunction();
-  F32 advance = 0;
+  f32 advance = 0;
   FNT_Piece *piece_first = run.pieces.v;
   FNT_Piece *piece_opl = piece_first + run.pieces.count;
   for(FNT_Piece *piece = piece_first;
@@ -693,7 +693,7 @@ dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run)
       piece += 1)
   {
     R_Handle texture = piece->texture;
-    Rng2F32 src = r2f32p((F32)piece->subrect.x0, (F32)piece->subrect.y0, (F32)piece->subrect.x1, (F32)piece->subrect.y1);
+    Rng2F32 src = r2f32p((f32)piece->subrect.x0, (f32)piece->subrect.y0, (f32)piece->subrect.x1, (f32)piece->subrect.y1);
     Vec2F32 size = dim_2f32(src);
     Rng2F32 dst = r2f32p(p.x + piece->offset.x + advance,
                          p.y + piece->offset.y,
@@ -709,7 +709,7 @@ dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run)
 }
 
 internal void
-dr_text(FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, String8 string)
+dr_text(FNT_Tag font, f32 size, f32 base_align_px, f32 tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, String8 string)
 {
   Temp scratch = scratch_begin(0, 0);
   FNT_Run run = fnt_run_from_string(font, size, base_align_px, tab_size_px, flags, string);

@@ -829,7 +829,7 @@ RDI_PROC RDIM_Type **
 rdim_array_from_type_list(RDIM_Arena *arena, RDIM_TypeList list)
 {
   RDIM_Type **arr = push_array(arena, RDIM_Type *, list.count);
-  U64         i   = 0;
+  u64         i   = 0;
   for(RDIM_TypeNode *n = list.first; n != 0; n = n->next, ++i)
   {
     arr[i] = n->v;
@@ -1592,7 +1592,7 @@ rdim_bake_string_chunk_list_sorted_from_unsorted(RDIM_Arena *arena, RDIM_BakeStr
       RDIM_BakeStringChunkList *buckets = rdim_push_array(scratch.arena, RDIM_BakeStringChunkList, 256);
       for(RDI_U64 idx = 0; idx < t->count; idx += 1)
       {
-        U8 byte = t->string_off < t->v[idx].string.size ? t->v[idx].string.str[t->string_off] : 0;
+        u8 byte = t->string_off < t->v[idx].string.size ? t->v[idx].string.str[t->string_off] : 0;
         RDIM_BakeStringChunkList *bucket = &buckets[byte];
         RDIM_BakeString *bstr = rdim_bake_string_chunk_list_push(scratch.arena, bucket, 8);
         rdim_memcpy_struct(bstr, &t->v[idx]);
@@ -2726,7 +2726,7 @@ rdim_bake_binary_sections(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, R
   RDIM_BinarySectionBakeResult result = {0};
   {
     RDI_BinarySection *dst_base = rdim_push_array(arena, RDI_BinarySection, src->count+1);
-    U64 dst_idx = 1;
+    u64 dst_idx = 1;
     for(RDIM_BinarySectionNode *src_n = src->first; src_n != 0; src_n = src_n->next, dst_idx += 1)
     {
       RDIM_BinarySection *src = &src_n->v;
@@ -3256,7 +3256,7 @@ rdim_bake_types(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_BakeId
     for(RDI_U64 chunk_idx = 0; chunk_idx < n->count; chunk_idx += 1)
     {
       RDIM_Type    *src     = &n->v[chunk_idx];
-      U64           dst_idx = rdim_idx_from_type(src);
+      u64           dst_idx = rdim_idx_from_type(src);
       RDI_TypeNode *dst     = &type_nodes[dst_idx];
       
       //- rjf: fill shared type node info
@@ -3272,7 +3272,7 @@ rdim_bake_types(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_BakeId
       
       else if(dst->kind == RDI_TypeKind_Array)
       {
-        U64 direct_byte_size = 1;
+        u64 direct_byte_size = 1;
         if(src->direct_type && src->direct_type->byte_size > 0)
         {
           direct_byte_size = src->direct_type->byte_size;
@@ -3581,10 +3581,10 @@ rdim_bake_constants(RDIM_Arena *arena, RDIM_BakeStringMapTight *strings, RDIM_Sy
   return result;
 }
 
-RDI_PROC U64
+RDI_PROC u64
 rdim_bake_location(RDIM_Arena *arena, RDIM_String8List *location_data_blobs, RDIM_Location *src_location)
 {
-  U64 location_data_off = location_data_blobs->total_size;
+  u64 location_data_off = location_data_blobs->total_size;
   
   // rjf: nil location
   if(src_location == 0)
@@ -4084,7 +4084,7 @@ rdim_file_blobs_from_section_bundle(RDIM_Arena *arena, RDIM_SerializedSectionBun
     RDI_Section *rdi_sections = rdim_push_array(arena, RDI_Section, RDI_SectionKind_COUNT);
     rdim_str8_list_push(arena, &strings, rdim_str8_struct(rdi_header));
     rdim_str8_list_push_align(arena, &strings, 8);
-    U32 data_section_off = (U32)strings.total_size;
+    u32 data_section_off = (u32)strings.total_size;
     rdim_str8_list_push(arena, &strings, rdim_str8((RDI_U8 *)rdi_sections, sizeof(RDI_Section)*RDI_SectionKind_COUNT));
     
     // rjf: fill baked header
@@ -4099,7 +4099,7 @@ rdim_file_blobs_from_section_bundle(RDIM_Arena *arena, RDIM_SerializedSectionBun
     for(RDI_SectionKind k = RDI_SectionKind_NULL; k < RDI_SectionKind_COUNT; k += 1)
     {
       RDI_Section *dst = rdi_sections+k;
-      U64 data_section_off = 0;
+      u64 data_section_off = 0;
       if(bundle->sections[k].encoded_size != 0)
       {
         rdim_str8_list_push_align(arena, &strings, 8);

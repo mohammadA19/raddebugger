@@ -56,13 +56,13 @@ c2r_rdi_binary_section_flags_from_coff_section_flags(COFF_SectionFlags flags)
 }
 
 internal RDIM_BinarySectionList
-c2r_rdi_binary_sections_from_coff_sections(Arena *arena, String8 image_data, String8 string_table, U64 sectab_count, COFF_SectionHeader *sectab)
+c2r_rdi_binary_sections_from_coff_sections(Arena *arena, String8 image_data, String8 string_table, u64 sectab_count, COFF_SectionHeader *sectab)
 {
   ProfBeginFunction();
   
   RDIM_BinarySectionList binary_sections = {0};
   
-  for (U64 isec = 0; isec < sectab_count; ++isec) {
+  for (u64 isec = 0; isec < sectab_count; ++isec) {
     COFF_SectionHeader *coff_sec = &sectab[isec];
     RDIM_BinarySection *sec      = rdim_binary_section_list_push(arena, &binary_sections);
     

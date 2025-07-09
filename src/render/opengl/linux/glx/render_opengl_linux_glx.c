@@ -4,7 +4,7 @@
 internal VoidProc *
 r_ogl_os_load_procedure(char *name)
 {
-  VoidProc *result = (VoidProc *)glXGetProcAddressARB((U8 *)name);
+  VoidProc *result = (VoidProc *)glXGetProcAddressARB((u8 *)name);
   return result;
 }
 
@@ -59,12 +59,12 @@ r_ogl_os_init(CmdLine *cmdln)
   
   //- rjf: construct context
   {
-    B32 debug_mode = cmd_line_has_flag(cmdln, str8_lit("opengl_debug"));
+    b32 debug_mode = cmd_line_has_flag(cmdln, str8_lit("opengl_debug"));
 #if BUILD_DEBUG
     debug_mode = 1;
 #endif
     glXCreateContextAttribsARBProc glXCreateContextAttribsARB = 0;
-    glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)glXGetProcAddressARB((U8 *)"glXCreateContextAttribsARB");
+    glXCreateContextAttribsARB = (glXCreateContextAttribsARBProc)glXGetProcAddressARB((u8 *)"glXCreateContextAttribsARB");
     int context_options[] =
     {
       GLX_CONTEXT_MAJOR_VERSION_ARB, 3,

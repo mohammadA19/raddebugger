@@ -6,7 +6,7 @@
 
 
 
-typedef U16 CV_NumericKind;
+typedef u16 CV_NumericKind;
 typedef enum CV_NumericKindEnum
 {
 CV_NumericKind_CHAR = 0x8000,
@@ -34,7 +34,7 @@ CV_NumericKind_UTF8STRING = 0x801b,
 CV_NumericKind_FLOAT16 = 0x801c,
 } CV_NumericKindEnum;
 
-typedef U16 CV_Arch;
+typedef u16 CV_Arch;
 typedef enum CV_ArchEnum
 {
 CV_Arch_8080 = 0x00,
@@ -104,7 +104,7 @@ CV_Arch_ALPHA_21064 = CV_Arch_ALPHA,
 CV_Arch_AMD64       = CV_Arch_X64,
 } CV_ArchEnum;
 
-typedef U16 CV_AllReg;
+typedef u16 CV_AllReg;
 typedef enum CV_AllRegEnum
 {
 CV_AllReg_ERR = 30000,
@@ -122,7 +122,7 @@ CV_AllReg_ENV = 30011,
 CV_AllReg_CMDLN = 30012,
 } CV_AllRegEnum;
 
-typedef U16 CV_SymKind;
+typedef u16 CV_SymKind;
 typedef enum CV_SymKindEnum
 {
 CV_SymKind_COMPILE = 0x0001,
@@ -320,7 +320,7 @@ CV_SymKind_FASTLINK = 0x1167,
 CV_SymKind_INLINEES = 0x1168,
 } CV_SymKindEnum;
 
-typedef U8 CV_BasicType;
+typedef u8 CV_BasicType;
 typedef enum CV_BasicTypeEnum
 {
 CV_BasicType_NOTYPE = 0x00,
@@ -378,7 +378,7 @@ CV_BasicType_CHAR8 = 0x7c,
 CV_BasicType_PTR = 0xf0,
 } CV_BasicTypeEnum;
 
-typedef U16 CV_LeafKind;
+typedef u16 CV_LeafKind;
 typedef enum CV_LeafKindEnum
 {
 CV_LeafKind_NOTYPE = 0x0000,

@@ -18,7 +18,7 @@ typedef struct COFF_LibWriterMemberNode
 
 typedef struct COFF_LibWriterMemberList
 {
-  U64                       count;
+  u64                       count;
   COFF_LibWriterMemberNode *first;
   COFF_LibWriterMemberNode *last;
 } COFF_LibWriterMemberList;
@@ -26,7 +26,7 @@ typedef struct COFF_LibWriterMemberList
 typedef struct COFF_LibWriterSymbol
 {
   String8 name;
-  U64     member_idx;
+  u64     member_idx;
 } COFF_LibWriterSymbol;
 
 typedef struct COFF_LibWriterSymbolNode
@@ -37,7 +37,7 @@ typedef struct COFF_LibWriterSymbolNode
 
 typedef struct COFF_LibWriterSymbolList
 {
-  U64                       count;
+  u64                       count;
   COFF_LibWriterSymbolNode *first;
   COFF_LibWriterSymbolNode *last;
 } COFF_LibWriterSymbolList;

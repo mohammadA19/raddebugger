@@ -44,11 +44,11 @@
 internal void
 print_inline_binary_annotations(String8 binary_annots)
 {
-  U32 code_offset = 0;
-  S32 line_offset = 0;
+  u32 code_offset = 0;
+  i32 line_offset = 0;
   
-  for (U64 cursor = 0; cursor < binary_annots.size; ) {
-    U64 op_offset = cursor;
+  for (u64 cursor = 0; cursor < binary_annots.size; ) {
+    u64 op_offset = cursor;
     CV_InlineBinaryAnnotation op = CV_InlineBinaryAnnotation_Null;
     cursor += cv_decode_inline_annot_u32(binary_annots, cursor, &op);
     
@@ -59,42 +59,42 @@ print_inline_binary_annotations(String8 binary_annots)
         cursor = binary_annots.size;
       } break;
       case CV_InlineBinaryAnnotation_CodeOffset: {
-        U32 value = 0;
+        u32 value = 0;
         cursor += cv_decode_inline_annot_u32(binary_annots, cursor, &value);
         code_offset += value;
         fprintf(stdout, "CodeOffset: 0x%X; Code 0x%X", value, code_offset);
       } break;
       case CV_InlineBinaryAnnotation_ChangeCodeOffsetBase: {
-        U32 delta;
+        u32 delta;
         cursor += cv_decode_inline_annot_u32(binary_annots, cursor, &delta);
         code_offset += delta;
         fprintf(stdout, "ChangeCodeOffsetBase: 0x%X; Code 0x%X", delta, code_offset);
       } break;
       case CV_InlineBinaryAnnotation_ChangeCodeOffset: {
-        U32 delta = 0;
+        u32 delta = 0;
         cursor += cv_decode_inline_annot_u32(binary_annots, cursor, &delta);
         code_offset += delta;
         fprintf(stdout, "ChangeCodeOffset: 0x%X; Code 0x%X", delta, code_offset);
       } break;
       case CV_InlineBinaryAnnotation_ChangeCodeLength: {
-        U32 delta = 0;
+        u32 delta = 0;
         cursor += cv_decode_inline_annot_u32(binary_annots, cursor, &delta);
         code_offset += delta;
         fprintf(stdout, "ChangeCodeLength: 0x%X; Code End 0x%X", delta, code_offset);
       } break;
       case CV_InlineBinaryAnnotation_ChangeFile: {
-        U32 file_id = 0;
+        u32 file_id = 0;
         cursor += cv_decode_inline_annot_u32(binary_annots, cursor, &file_id);
         fprintf(stdout, "ChangeFile: 0x%X", file_id);
       } break;
       case CV_InlineBinaryAnnotation_ChangeLineOffset: {
-        S32 delta = 0;
+        i32 delta = 0;
         cursor += cv_decode_inline_annot_s32(binary_annots, cursor, &delta);
         line_offset += delta;
         fprintf(stdout, "ChangeLineOffset: %d; Line %d", delta, line_offset);
       } break;
       case CV_InlineBinaryAnnotation_ChangeLineEndDelta: {
-        S32 end_delta = 0;
+        i32 end_delta = 0;
         cursor += cv_decode_inline_annot_s32(binary_annots, cursor, &end_delta);
         line_offset += end_delta;
         fprintf(stdout, "ChangeLineEndDelta: %d; Line %d", end_delta, line_offset);
@@ -106,22 +106,22 @@ print_inline_binary_annotations(String8 binary_annots)
         fprintf(stdout, "ChangeRangeKind: %.*s (%u)", str8_varg(range_kind_str), range_kind);
       } break;
       case CV_InlineBinaryAnnotation_ChangeColumnStart: {
-        S32 delta = 0;
+        i32 delta = 0;
         cursor += cv_decode_inline_annot_s32(binary_annots, cursor, &delta);
         fprintf(stdout, "ChangeColumnStart: %d", delta);
       } break;
       case CV_InlineBinaryAnnotation_ChangeCodeOffsetAndLineOffset: {
-        U32 code_offset_and_line_offset = 0;
+        u32 code_offset_and_line_offset = 0;
         cursor += cv_decode_inline_annot_u32(binary_annots, cursor, &code_offset_and_line_offset);
-        S32 line_delta = cv_inline_annot_signed_from_unsigned_operand(code_offset_and_line_offset >> 4);
-        U32 code_delta = code_offset_and_line_offset & 0xF; 
+        i32 line_delta = cv_inline_annot_signed_from_unsigned_operand(code_offset_and_line_offset >> 4);
+        u32 code_delta = code_offset_and_line_offset & 0xF; 
         line_offset += line_delta;
         code_offset += code_delta;
         fprintf(stdout, "ChnageCodeOffsetAndLineOffset: 0x%X %d; Code 0x%X Line %d", code_delta, line_delta, code_offset, line_offset);
       } break;
       case CV_InlineBinaryAnnotation_ChangeCodeLengthAndCodeOffset: {
-        U32 code_length_delta = 0;
-        U32 code_offset_delta = 0;
+        u32 code_length_delta = 0;
+        u32 code_offset_delta = 0;
         cursor += cv_decode_inline_annot_u32(binary_annots, cursor, &code_length_delta);
         cursor += cv_decode_inline_annot_u32(binary_annots, cursor, &code_offset_delta);
         code_offset += code_offset_delta;
@@ -129,7 +129,7 @@ print_inline_binary_annotations(String8 binary_annots)
         code_offset += code_length_delta;
       } break;
       case CV_InlineBinaryAnnotation_ChangeColumnEnd: {
-        U32 column_end = 0;
+        u32 column_end = 0;
         cursor += cv_decode_inline_annot_u32(binary_annots, cursor, &column_end);
         fprintf(stdout, "ChangeColumnEnd: %u", column_end);
       } break;
@@ -146,7 +146,7 @@ entry_point(CmdLine *cmdl)
 {
   Arena *arena = arena_alloc();
   
-  B32 do_help = cmd_line_has_flag(cmdl, str8_lit("help")) ||
+  b32 do_help = cmd_line_has_flag(cmdl, str8_lit("help")) ||
     cmd_line_has_flag(cmdl, str8_lit("h")) ||
   (cmdl->inputs.node_count == 0 && cmdl->options.count == 0);
   if (do_help) {
@@ -160,8 +160,8 @@ entry_point(CmdLine *cmdl)
   }
   
   // -comp_unit
-  U64 single_comp_unit_idx = max_U64;
-  B32 single_comp_unit_mode = cmd_line_has_argument(cmdl, str8_lit("comp_unit"));
+  u64 single_comp_unit_idx = max_U64;
+  b32 single_comp_unit_mode = cmd_line_has_argument(cmdl, str8_lit("comp_unit"));
   if (single_comp_unit_mode) {
     String8 comp_unit_str = cmd_line_string(cmdl, str8_lit("comp_unit"));
     if (!try_u64_from_str8_c_rules(comp_unit_str, &single_comp_unit_idx)) {
@@ -171,7 +171,7 @@ entry_point(CmdLine *cmdl)
   }
   
   // -base_addr
-  U64 base_addr = 0;
+  u64 base_addr = 0;
   String8 base_str = cmd_line_string(cmdl, str8_lit("base_addr"));
   try_u64_from_str8_c_rules(base_str, &base_addr);
   
@@ -274,8 +274,8 @@ entry_point(CmdLine *cmdl)
 #endif
   
   // prepare iterator
-  U64 comp_unit_idx;
-  U64 comp_unit_count;
+  u64 comp_unit_idx;
+  u64 comp_unit_count;
   if (single_comp_unit_mode) {
     comp_unit_idx   = single_comp_unit_idx;
     comp_unit_count = single_comp_unit_idx + 1;
@@ -300,7 +300,7 @@ entry_point(CmdLine *cmdl)
     CV_C13InlineeLinesParsedList inlinee_lines_parsed = cv_c13_inlinee_lines_from_sub_sections(arena, ss_inlinee_lines);
     
     // parse $$LINES
-    U64           c13_lines_count = 0;
+    u64           c13_lines_count = 0;
     CV_LineArray *c13_lines       = 0;
     {
       String8List raw_lines_list = cv_sub_section_from_debug_s(debug_s, CV_C13SubSectionKind_Lines);
@@ -314,7 +314,7 @@ entry_point(CmdLine *cmdl)
       
       c13_lines = push_array_no_zero(arena, CV_LineArray, c13_lines_count);
       
-      U64 c13_lines_idx = 0;
+      u64 c13_lines_idx = 0;
       for (String8Node *raw_lines_node = raw_lines_list.first; raw_lines_node != 0; raw_lines_node = raw_lines_node->next) {
         String8               raw_lines   = raw_lines_node->string;
         CV_C13LinesHeaderList parsed_list = cv_c13_lines_from_sub_sections(arena, raw_lines, rng_1u64(0, raw_lines.size));
@@ -322,7 +322,7 @@ entry_point(CmdLine *cmdl)
         for(CV_C13LinesHeaderNode *header_node = parsed_list.first; header_node != 0; header_node = header_node->next) {
           if (0 < header_node->v.sec_idx && header_node->v.sec_idx <= sections.count) {
             assert(c13_lines_idx < c13_lines_count);
-            U64 sec_voff = sections.v[header_node->v.sec_idx - 1].voff;
+            u64 sec_voff = sections.v[header_node->v.sec_idx - 1].voff;
             c13_lines[c13_lines_idx++] = cv_c13_line_array_from_data(arena, raw_lines, sec_voff, header_node->v);
           } else {
             assert(!"error: out of bounds section index"); 
@@ -339,8 +339,8 @@ entry_point(CmdLine *cmdl)
     
     fprintf(stdout, "[%llu] %.*s\n", comp_unit_idx, str8_varg(comp_unit->obj_name));
     
-    U64     scope_level = 0;
-    U64     parent_voff = 0;
+    u64     scope_level = 0;
+    u64     parent_voff = 0;
     String8 parent_name = str8_lit("???");
     
     CV_SymbolList symbol_list = {0};
@@ -411,7 +411,7 @@ entry_point(CmdLine *cmdl)
         fprintf(stdout, "\n");
         
         fprintf(stdout, "\t\tLines:\n");
-        for (U64 lines_idx = 0; lines_idx < binary_annots_parse.lines_count; lines_idx += 1) {
+        for (u64 lines_idx = 0; lines_idx < binary_annots_parse.lines_count; lines_idx += 1) {
           CV_LineArray lines = binary_annots_parse.lines[lines_idx];
           
           CV_C13Checksum checksum = {0};
@@ -420,7 +420,7 @@ entry_point(CmdLine *cmdl)
           String8 file_name = pdb_strtbl_string_from_off(strtbl, checksum.name_off);
           
           fprintf(stdout, "\t\t%.*s\n", str8_varg(file_name));
-          for (U64 line_idx = 0; line_idx < lines.line_count; ++line_idx) {
+          for (u64 line_idx = 0; line_idx < lines.line_count; ++line_idx) {
             char *pre  = (line_idx % 4) == 0 ? "\t\t\t" : "\t";
             char *post = (line_idx % 4) == 3 || ((line_idx + 1) == lines.line_count) ? "\n" : "";
             fprintf(stdout, "%s%08llX %04u%s", pre, base_addr + lines.voffs[line_idx], lines.line_nums[line_idx], post);
@@ -429,7 +429,7 @@ entry_point(CmdLine *cmdl)
         fprintf(stdout, "\n");
         
         fprintf(stdout, "\t\tCode Ranges:\n");
-        U64 range_idx = 0;
+        u64 range_idx = 0;
         for (Rng1U64Node *range_n = binary_annots_parse.code_ranges.first; range_n != 0; range_n = range_n->next, ++range_idx) {
           char *pre  = (range_idx % 4) == 0 ? "\t\t\t" : "\t";
           char *post = (range_idx % 4) == 3 || ((range_idx + 1) == binary_annots_parse.code_ranges.count) ? "\n" : "";

@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Config IDs
 
-typedef U64 RD_CfgID;
+typedef u64 RD_CfgID;
 
 
 
@@ -23,7 +23,7 @@ struct RD_CfgIDList
 {
   RD_CfgIDNode *first;
   RD_CfgIDNode *last;
-  U64 count;
+  u64 count;
 };
 
 ////////////////////////////////
@@ -62,7 +62,7 @@ struct RD_KeyMapNodePtrList
 {
   RD_KeyMapNodePtr *first;
   RD_KeyMapNodePtr *last;
-  U64 count;
+  u64 count;
 };
 
 
@@ -77,16 +77,16 @@ struct RD_KeyMapSlot
 
 struct RD_KeyMap
 {
-  U64 name_slots_count;
+  u64 name_slots_count;
   RD_KeyMapSlot *name_slots;
-  U64 binding_slots_count;
+  u64 binding_slots_count;
   RD_KeyMapSlot *binding_slots;
 };
 
 ////////////////////////////////
 //~ rjf: Evaluation Spaces
 
-typedef U64 RD_EvalSpaceKind;
+typedef u64 RD_EvalSpaceKind;
 enum
 {
   RD_EvalSpaceKind_CtrlEntity = E_SpaceKind_FirstUserDefined,
@@ -135,7 +135,7 @@ struct RD_ViewUIRuleSlot
 struct RD_ViewUIRuleMap
 {
   RD_ViewUIRuleSlot *slots;
-  U64 slots_count;
+  u64 slots_count;
 };
 
 ////////////////////////////////
@@ -153,7 +153,7 @@ RD_DragDropState;
 ////////////////////////////////
 //~ rjf: Command Kind Types
 
-typedef U32 RD_QueryFlags;
+typedef u32 RD_QueryFlags;
 enum
 {
   RD_QueryFlag_AllowFiles       = (1<<0),
@@ -165,7 +165,7 @@ enum
   RD_QueryFlag_Required         = (1<<6),
 };
 
-typedef U32 RD_CmdKindFlags;
+typedef u32 RD_CmdKindFlags;
 enum
 {
   RD_CmdKindFlag_ListInUI      = (1<<0),
@@ -215,14 +215,14 @@ struct RD_ViewState
   RD_CfgID cfg_id;
   
   // rjf: touch info
-  U64 last_frame_index_touched;
-  U64 last_frame_index_built;
+  u64 last_frame_index_touched;
+  u64 last_frame_index_built;
   
   // rjf: loading indicator info
-  F32 loading_t;
-  F32 loading_t_target;
-  U64 loading_progress_v;
-  U64 loading_progress_v_target;
+  f32 loading_t;
+  f32 loading_t_target;
+  u64 loading_progress_v;
+  u64 loading_progress_v_target;
   
   // rjf: scroll position
   UI_ScrollPt2 scroll_pos;
@@ -232,20 +232,20 @@ struct RD_ViewState
   
   // rjf: view-lifetime allocation & user data extensions
   Arena *arena;
-  U64 arena_reset_pos;
+  u64 arena_reset_pos;
   RD_ArenaExt *first_arena_ext;
   RD_ArenaExt *last_arena_ext;
   void *user_data;
   
   // rjf: query state
-  B32 query_is_open;
+  b32 query_is_open;
   TxtPt query_cursor;
   TxtPt query_mark;
-  U8 query_buffer[KB(1)];
-  U64 query_string_size;
+  u8 query_buffer[KB(1)];
+  u64 query_string_size;
   
   // rjf: contents are focused (disables query focus)
-  B32 contents_are_focused;
+  b32 contents_are_focused;
 };
 
 
@@ -280,9 +280,9 @@ struct RD_VocabInfoMapSlot
 
 struct RD_VocabInfoMap
 {
-  U64 single_slots_count;
+  u64 single_slots_count;
   RD_VocabInfoMapSlot *single_slots;
-  U64 plural_slots_count;
+  u64 plural_slots_count;
   RD_VocabInfoMapSlot *plural_slots;
 };
 
@@ -325,7 +325,7 @@ struct RD_CfgList
 {
   RD_CfgNode *first;
   RD_CfgNode *last;
-  U64 count;
+  u64 count;
 };
 
 
@@ -333,7 +333,7 @@ struct RD_CfgList
 struct RD_CfgArray
 {
   RD_Cfg **v;
-  U64 count;
+  u64 count;
 };
 
 
@@ -341,8 +341,8 @@ struct RD_CfgArray
 struct RD_CfgRec
 {
   RD_Cfg *next;
-  S32 push_count;
-  S32 pop_count;
+  i32 push_count;
+  i32 pop_count;
 };
 
 ////////////////////////////////
@@ -370,12 +370,12 @@ struct RD_PanelNode
   RD_PanelNode *next;
   RD_PanelNode *prev;
   RD_PanelNode *parent;
-  U64 child_count;
+  u64 child_count;
   RD_Cfg *cfg;
   
   // rjf: split data
   Axis2 split_axis;
-  F32 pct_of_parent;
+  f32 pct_of_parent;
   
   // rjf: tab params
   Side tab_side;
@@ -398,8 +398,8 @@ struct RD_PanelTree
 struct RD_PanelNodeRec
 {
   RD_PanelNode *next;
-  S32 push_count;
-  S32 pop_count;
+  i32 push_count;
+  i32 pop_count;
 };
 
 ////////////////////////////////
@@ -428,7 +428,7 @@ struct RD_CmdList
 {
   RD_CmdNode *first;
   RD_CmdNode *last;
-  U64 count;
+  u64 count;
 };
 
 ////////////////////////////////
@@ -467,17 +467,17 @@ struct RD_WindowState
   RD_WindowState *hash_next;
   RD_WindowState *hash_prev;
   RD_CfgID cfg_id;
-  U64 frames_alive;
-  U64 last_frame_index_touched;
+  u64 frames_alive;
+  u64 last_frame_index_touched;
   
   // rjf: top-level info & handles
   Arena *arena;
   OS_Handle os;
   R_Handle r;
   UI_State *ui;
-  F32 last_dpi;
-  B32 window_temporarily_focused_ipc;
-  B32 window_layout_reset;
+  f32 last_dpi;
+  b32 window_temporarily_focused_ipc;
+  b32 window_layout_reset;
   Rng2F32 last_window_rect;
   
   // rjf: theme (recomputed each frame)
@@ -488,43 +488,43 @@ struct RD_WindowState
   FNT_RasterFlags font_slot_raster_flags[RD_FontSlot_COUNT];
   
   // rjf: dev interface state
-  B32 dev_menu_is_open;
+  b32 dev_menu_is_open;
   
   // rjf: menu bar state
-  B32 menu_bar_focused;
-  B32 menu_bar_focused_on_press;
-  B32 menu_bar_key_held;
-  B32 menu_bar_focus_press_started;
+  b32 menu_bar_focused;
+  b32 menu_bar_focused_on_press;
+  b32 menu_bar_key_held;
+  b32 menu_bar_focus_press_started;
   
   // rjf: drop-completion state
   Arena *drop_completion_arena;
   String8List drop_completion_paths;
   
   // rjf: query state
-  B32 query_is_active;
+  b32 query_is_active;
   Arena *query_arena;
   RD_Regs *query_regs;
   RD_CfgID query_view_id;
   RD_CfgID query_last_view_id;
   
   // rjf: hover eval state
-  B32 hover_eval_focused;
+  b32 hover_eval_focused;
   Arena *hover_eval_arena;
   Vec2F32 hover_eval_spawn_pos;
   String8 hover_eval_string;
-  U64 hover_eval_firstt_us;
-  U64 hover_eval_lastt_us;
+  u64 hover_eval_firstt_us;
+  u64 hover_eval_lastt_us;
   
   // rjf: autocompletion state
-  U64 autocomp_last_frame_index;
+  u64 autocomp_last_frame_index;
   Arena *autocomp_arena;
   RD_Regs *autocomp_regs;
   RD_AutocompCursorInfo autocomp_cursor_info;
   
   // rjf: error state
-  U8 error_buffer[512];
-  U64 error_string_size;
-  F32 error_t;
+  u8 error_buffer[512];
+  u64 error_string_size;
+  f32 error_t;
   
   // rjf: per-frame ui events state
   UI_EventList ui_events;
@@ -544,7 +544,7 @@ struct RD_WindowStateSlot
 ////////////////////////////////
 //~ rjf: Main Per-Process Graphical State
 
-@(rodata) global U64 rd_name_bucket_chunk_sizes[] =
+@(rodata) global u64 rd_name_bucket_chunk_sizes[] =
 {
   16,
   64,
@@ -561,7 +561,7 @@ struct RD_WindowStateSlot
 struct RD_NameChunkNode
 {
   RD_NameChunkNode *next;
-  U64 size;
+  u64 size;
 };
 
 
@@ -579,10 +579,10 @@ struct RD_State
 {
   // rjf: basics
   Arena *arena;
-  B32 quit;
-  B32 quit_after_success;
-  S32 frame_depth;
-  U64 frame_eval_memread_endt_us;
+  b32 quit;
+  b32 quit_after_success;
+  i32 frame_depth;
+  u64 frame_eval_memread_endt_us;
   
   // rjf: config bucket paths
   Arena *user_path_arena;
@@ -594,18 +594,18 @@ struct RD_State
   
   // rjf: unpacked settings (cached, because they need to be used
   // earlier than setting evaluation is legal in a frame)
-  B32 alt_menu_bar_enabled;
-  B32 use_default_stl_type_views;
-  B32 use_default_ue_type_views;
+  b32 alt_menu_bar_enabled;
+  b32 use_default_stl_type_views;
+  b32 use_default_ue_type_views;
   
   // rjf: animation rates
-  F32 catchall_animation_rate;
-  F32 menu_animation_rate;
-  F32 menu_animation_rate__slow;
-  F32 entity_alive_animation_rate;
-  F32 rich_hover_animation_rate;
-  F32 scrolling_animation_rate;
-  F32 tooltip_animation_rate;
+  f32 catchall_animation_rate;
+  f32 menu_animation_rate;
+  f32 menu_animation_rate__slow;
+  f32 entity_alive_animation_rate;
+  f32 rich_hover_animation_rate;
+  f32 scrolling_animation_rate;
+  f32 tooltip_animation_rate;
   
   // rjf: serialized config debug string keys
   HS_Key user_cfg_string_key;
@@ -627,15 +627,15 @@ struct RD_State
   String8 log_path;
   
   // rjf: frame history info
-  U64 frame_index;
+  u64 frame_index;
   Arena *frame_arenas[2];
-  U64 frame_time_us_history[64];
-  U64 num_frames_requested;
-  F64 time_in_seconds;
-  U64 time_in_us;
+  u64 frame_time_us_history[64];
+  u64 num_frames_requested;
+  f64 time_in_seconds;
+  u64 time_in_us;
   
   // rjf: frame parameters
-  F32 frame_dt;
+  f32 frame_dt;
   DI_Scope *frame_di_scope;
   CTRL_Scope *frame_ctrl_scope;
   
@@ -646,7 +646,7 @@ struct RD_State
   E_Cache *eval_cache;
   
   // rjf: ambiguous path table (constructed from-scratch each frame)
-  U64 ambiguous_path_slots_count;
+  u64 ambiguous_path_slots_count;
   RD_AmbiguousPathNode **ambiguous_path_slots;
   
   // rjf: key map (constructed from-scratch each frame)
@@ -666,26 +666,26 @@ struct RD_State
   RD_RegsNode *top_regs;
   
   // rjf: autosave state
-  F32 seconds_until_autosave;
+  f32 seconds_until_autosave;
   
   // rjf: commands
   Arena *cmds_arenas[2];
   RD_CmdList cmds[2];
-  U64 cmds_gen;
+  u64 cmds_gen;
   Arena *cmd_output_arena;
   String8List cmd_outputs;
   
   // rjf: popup state
   UI_Key popup_key;
-  B32 popup_active;
-  F32 popup_t;
+  b32 popup_active;
+  f32 popup_t;
   Arena *popup_arena;
   RD_CmdList popup_cmds;
   String8 popup_title;
   String8 popup_desc;
   
   // rjf: text editing mode state
-  B32 text_edit_mode;
+  b32 text_edit_mode;
   
   // rjf: contextual hover info
   RD_Regs *hover_regs;
@@ -710,16 +710,16 @@ struct RD_State
   RD_NameChunkNode *free_name_chunks[len(rd_name_bucket_chunk_sizes)];
   RD_Cfg *free_cfg;
   RD_Cfg *root_cfg;
-  U64 cfg_id_slots_count;
+  u64 cfg_id_slots_count;
   RD_CfgSlot *cfg_id_slots;
   RD_CfgNode *free_cfg_id_node;
-  U64 cfg_id_gen;
+  u64 cfg_id_gen;
   RD_CfgID cfg_last_accessed_id;
   RD_Cfg *cfg_last_accessed;
-  U64 cfg_change_gen;
+  u64 cfg_change_gen;
   
   // rjf: window state cache
-  U64 window_state_slots_count;
+  u64 window_state_slots_count;
   RD_WindowStateSlot *window_state_slots;
   RD_WindowState *free_window_state;
   RD_CfgID last_focused_window;
@@ -729,7 +729,7 @@ struct RD_State
   RD_WindowState *window_state_last_accessed;
   
   // rjf: view state cache
-  U64 view_state_slots_count;
+  u64 view_state_slots_count;
   RD_ViewStateSlot *view_state_slots;
   RD_ViewState *free_view_state;
   RD_CfgID view_state_last_accessed_id;
@@ -737,7 +737,7 @@ struct RD_State
   
   // rjf: bind change
   Arena *bind_change_arena;
-  B32 bind_change_active;
+  b32 bind_change_active;
   RD_CfgID bind_change_binding_id;
   String8 bind_change_cmd_name;
 };

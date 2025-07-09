@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Cell Types
 
-typedef U32 RD_CellFlags;
+typedef u32 RD_CellFlags;
 enum
 {
   //- rjf: expander
@@ -48,7 +48,7 @@ struct RD_CellParams
 {
   //- rjf: catchall parameters
   RD_CellFlags flags;
-  S32 depth;
+  i32 depth;
   String8 pre_edit_value;
   DR_FStrList meta_fstrs;
   DR_FStrList value_fstrs;
@@ -56,33 +56,33 @@ struct RD_CellParams
   String8 description;
   
   //- rjf: expander r/w info
-  B32 *expanded_out;
+  b32 *expanded_out;
   
   //- rjf: toggle-switch r/w info
-  B32 *toggled_out;
+  b32 *toggled_out;
   
   //- rjf: slider info r/w info
-  F32 *slider_value_out;
+  f32 *slider_value_out;
   
   //- rjf: bindings name w info
   String8 bindings_name;
   
   //- rjf: revert out
-  B32 *revert_out;
+  b32 *revert_out;
   
   //- rjf: text editing r/w info
   TxtPt *cursor;
   TxtPt *mark;
-  U8 *edit_buffer;
-  U64 edit_buffer_size;
-  U64 *edit_string_size_out;
+  u8 *edit_buffer;
+  u64 edit_buffer_size;
+  u64 *edit_string_size_out;
   UI_Key *line_edit_key_out;
 };
 
 ////////////////////////////////
 //~ rjf: Code Slice Types
 
-typedef U32 RD_CodeSliceFlags;
+typedef u32 RD_CodeSliceFlags;
 enum
 {
   RD_CodeSliceFlag_Clickable         = (1<<0),
@@ -104,21 +104,21 @@ struct RD_CodeSliceParams
   RD_CfgList *line_bps;
   CTRL_EntityList *line_ips;
   RD_CfgList *line_pins;
-  U64 *line_vaddrs;
+  u64 *line_vaddrs;
   D_LineList *line_infos;
   DI_KeyList relevant_dbgi_keys;
   
   // rjf: visual parameters
   FNT_Tag font;
-  F32 font_size;
-  F32 tab_size;
+  f32 font_size;
+  f32 tab_size;
   String8 search_query;
-  F32 line_height_px;
-  F32 priority_margin_width_px;
-  F32 catchall_margin_width_px;
-  F32 line_num_width_px;
-  F32 line_text_max_width_px;
-  F32 margin_float_off_px;
+  f32 line_height_px;
+  f32 priority_margin_width_px;
+  f32 catchall_margin_width_px;
+  f32 line_num_width_px;
+  f32 line_text_max_width_px;
+  f32 margin_float_off_px;
 };
 
 

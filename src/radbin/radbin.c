@@ -40,7 +40,7 @@ rb_entry_point(CmdLine *cmdline)
         //- rjf: PDB magic -> PDB input
         if(file_format == RB_FileFormat_Null)
         {
-          U8 msf20_magic_maybe[sizeof(msf_msf20_magic)] = {0};
+          u8 msf20_magic_maybe[sizeof(msf_msf20_magic)] = {0};
           os_file_read(file, r1u64(0, sizeof(msf20_magic_maybe)), msf20_magic_maybe);
           if(MemoryMatch(msf20_magic_maybe, msf_msf20_magic, sizeof(msf20_magic_maybe)))
           {
@@ -49,7 +49,7 @@ rb_entry_point(CmdLine *cmdline)
         }
         if(file_format == RB_FileFormat_Null)
         {
-          U8 msf70_magic_maybe[sizeof(msf_msf70_magic)] = {0};
+          u8 msf70_magic_maybe[sizeof(msf_msf70_magic)] = {0};
           os_file_read(file, r1u64(0, sizeof(msf70_magic_maybe)), msf70_magic_maybe);
           if(MemoryMatch(msf70_magic_maybe, msf_msf70_magic, sizeof(msf70_magic_maybe)))
           {
@@ -64,7 +64,7 @@ rb_entry_point(CmdLine *cmdline)
           os_file_read_struct(file, 0, &dos_header_maybe);
           if(dos_header_maybe.magic == PE_DOS_MAGIC)
           {
-            U32 pe_magic_maybe = 0;
+            u32 pe_magic_maybe = 0;
             os_file_read_struct(file, dos_header_maybe.coff_file_offset, &pe_magic_maybe);
             if(pe_magic_maybe == PE_MAGIC)
             {
@@ -76,7 +76,7 @@ rb_entry_point(CmdLine *cmdline)
         //- rjf: COFF archive magic -> COFF archive input
         if(file_format == RB_FileFormat_Null)
         {
-          U8 coff_archive_sig_maybe[sizeof(g_coff_archive_sig)] = {0};
+          u8 coff_archive_sig_maybe[sizeof(g_coff_archive_sig)] = {0};
           os_file_read(file, r1u64(0, sizeof(coff_archive_sig_maybe)), coff_archive_sig_maybe);
           if(MemoryMatch(coff_archive_sig_maybe, g_coff_archive_sig, sizeof(g_coff_archive_sig)))
           {
@@ -85,7 +85,7 @@ rb_entry_point(CmdLine *cmdline)
         }
         if(file_format == RB_FileFormat_Null)
         {
-          U8 coff_thin_archive_sig_maybe[sizeof(g_coff_thin_archive_sig)] = {0};
+          u8 coff_thin_archive_sig_maybe[sizeof(g_coff_thin_archive_sig)] = {0};
           os_file_read(file, r1u64(0, sizeof(coff_thin_archive_sig_maybe)), coff_thin_archive_sig_maybe);
           if(MemoryMatch(coff_thin_archive_sig_maybe, g_coff_thin_archive_sig, sizeof(g_coff_thin_archive_sig)))
           {
@@ -111,11 +111,11 @@ rb_entry_point(CmdLine *cmdline)
           Temp scratch = scratch_begin(&arena, 1);
           COFF_FileHeader header_maybe = {0};
           os_file_read_struct(file, 0, &header_maybe);
-          U64 section_count = header_maybe.section_count;
-          U64 section_hdr_opl_off = sizeof(header_maybe) + section_count*sizeof(COFF_SectionHeader);
+          u64 section_count = header_maybe.section_count;
+          u64 section_hdr_opl_off = sizeof(header_maybe) + section_count*sizeof(COFF_SectionHeader);
           
           // rjf: check if machine type is valid
-          B32 machine_type_is_valid = 0;
+          b32 machine_type_is_valid = 0;
           switch(header_maybe.machine)
           {
             case COFF_MachineType_Unknown:
@@ -137,21 +137,21 @@ rb_entry_point(CmdLine *cmdline)
           }
           
           // rjf: check if sections are valid
-          B32 sections_are_valid = 0;
+          b32 sections_are_valid = 0;
           if(machine_type_is_valid)
           {
             if(props.size >= section_hdr_opl_off)
             {
               COFF_SectionHeader *section_hdrs = push_array(scratch.arena, COFF_SectionHeader, section_count);
               os_file_read(file, r1u64(sizeof(header_maybe), sizeof(header_maybe) + section_count*sizeof(COFF_SectionHeader)), section_hdrs);
-              B32 section_ranges_valid = 1;
+              b32 section_ranges_valid = 1;
               for section_hdr_idx in 0..<section_count
               {
                 COFF_SectionHeader *hdr = &section_hdrs[section_hdr_idx];
                 if(!(hdr->flags & COFF_SectionFlag_CntUninitializedData))
                 {
-                  U64 min = hdr->foff;
-                  U64 max = min + hdr->fsize;
+                  u64 min = hdr->foff;
+                  u64 max = min + hdr->fsize;
                   if(hdr->fsize > 0 && !(section_hdr_opl_off <= min && min <= max && max <= props.size))
                   {
                     section_ranges_valid = 0;
@@ -164,12 +164,12 @@ rb_entry_point(CmdLine *cmdline)
           }
           
           // rjf: check if symbol table is valid
-          B32 symbol_table_is_valid = 0;
+          b32 symbol_table_is_valid = 0;
           if(sections_are_valid)
           {
-            U64 symbol_table_off = header_maybe.symbol_table_foff;
-            U64 symbol_table_size = sizeof(COFF_Symbol16)*header_maybe.symbol_count;
-            U64 symbol_table_opl_off = symbol_table_off+symbol_table_size;
+            u64 symbol_table_off = header_maybe.symbol_table_foff;
+            u64 symbol_table_size = sizeof(COFF_Symbol16)*header_maybe.symbol_count;
+            u64 symbol_table_opl_off = symbol_table_off+symbol_table_size;
             if(symbol_table_off == 0 && symbol_table_size == 0)
             {
               symbol_table_off = section_hdr_opl_off;
@@ -192,9 +192,9 @@ rb_entry_point(CmdLine *cmdline)
         //- rjf: ELF magic -> ELF input
         if(file_format == RB_FileFormat_Null)
         {
-          U8 identifier_maybe[ELF_Identifier_Max] = {0};
+          u8 identifier_maybe[ELF_Identifier_Max] = {0};
           os_file_read(file, r1u64(0, sizeof(identifier_maybe)), identifier_maybe);
-          B32 is_elf_magic = (identifier_maybe[ELF_Identifier_Mag0] == 0x7f &&
+          b32 is_elf_magic = (identifier_maybe[ELF_Identifier_Mag0] == 0x7f &&
                               identifier_maybe[ELF_Identifier_Mag1] == 'E'  &&
                               identifier_maybe[ELF_Identifier_Mag2] == 'L'  &&
                               identifier_maybe[ELF_Identifier_Mag3] == 'F');
@@ -282,7 +282,7 @@ rb_entry_point(CmdLine *cmdline)
         PE_BinInfo pe_bin_info = pe_bin_info_from_data(scratch.arena, file_data);
         String8 raw_section_table = str8_substr(file_data, pe_bin_info.section_table_range);
         String8 string_table = str8_substr(file_data, pe_bin_info.string_table_range);
-        U64 section_count = raw_section_table.size / sizeof(COFF_SectionHeader);
+        u64 section_count = raw_section_table.size / sizeof(COFF_SectionHeader);
         COFF_SectionHeader *section_table = (COFF_SectionHeader *)raw_section_table.str;
         if(dw_is_dwarf_present_coff_section_table(file_data, string_table, section_count, section_table))
         {
@@ -545,7 +545,7 @@ rb_entry_point(CmdLine *cmdline)
       }
       
       //- rjf: convert inputs to RDI info
-      B32 convert_done = 0;
+      b32 convert_done = 0;
       RDIM_BakeParams bake_params = {0};
       {
         //- rjf: PE inputs w/ DWARF, or ELF inputs => DWARF -> RDI conversion
@@ -561,8 +561,8 @@ rb_entry_point(CmdLine *cmdline)
           // rjf: convert
           D2R_ConvertParams convert_params = {0};
           {
-            B32 got_exe = 0;
-            B32 got_dbg = 0;
+            b32 got_exe = 0;
+            b32 got_dbg = 0;
             if(!got_exe && !got_dbg)
             {
               for(RB_FileNode *n = input_files_from_format_table[RB_FileFormat_PE].first; n != 0; n = n->next)
@@ -738,13 +738,13 @@ rb_entry_point(CmdLine *cmdline)
           ASYNC_Task *bake_line_tables_task = async_task_launch(arena, p2b_bake_line_table_work, .input = &bake_line_tables_in);
           
           //- rjf: build unit -> line table idx array
-          U64 unit_count = bake_params.units.total_count;
-          U32 *unit_line_table_idxs = push_array(arena, U32, unit_count+1);
+          u64 unit_count = bake_params.units.total_count;
+          u32 *unit_line_table_idxs = push_array(arena, u32, unit_count+1);
           {
-            U64 dst_idx = 1;
+            u64 dst_idx = 1;
             for(RDIM_UnitChunkNode *n = bake_params.units.first; n != 0; n = n->next)
             {
-              for(U64 n_idx = 0; n_idx < n->count; n_idx += 1, dst_idx += 1)
+              for(u64 n_idx = 0; n_idx < n->count; n_idx += 1, dst_idx += 1)
               {
                 unit_line_table_idxs[dst_idx] = rdim_idx_from_line_table(n->v[n_idx].line_table);
               }
@@ -759,9 +759,9 @@ rb_entry_point(CmdLine *cmdline)
           {
             for(RDIM_SrcFileChunkNode *n = bake_params.src_files.first; n != 0; n = n->next)
             {
-              for(U64 idx = 0; idx < n->count; idx += 1)
+              for(u64 idx = 0; idx < n->count; idx += 1)
               {
-                U64 file_idx = rdim_idx_from_src_file(&n->v[idx]);
+                u64 file_idx = rdim_idx_from_src_file(&n->v[idx]);
                 String8 src_path = n->v[idx].normal_full_path;
                 str8_list_pushf(arena, &dump, "FILE %I64u %S\n", file_idx, src_path);
               }
@@ -772,7 +772,7 @@ rb_entry_point(CmdLine *cmdline)
           ProfBegin("join unit vmap");
           RDIM_UnitVMapBakeResult *bake_unit_vmap_out = async_task_join_struct(bake_unit_vmap_task, RDIM_UnitVMapBakeResult);
           RDI_VMapEntry *unit_vmap = bake_unit_vmap_out->vmap.vmap;
-          U32 unit_vmap_count = bake_unit_vmap_out->vmap.count;
+          u32 unit_vmap_count = bake_unit_vmap_out->vmap.count;
           ProfEnd();
           
           //- rjf: join line tables
@@ -785,7 +785,7 @@ rb_entry_point(CmdLine *cmdline)
           ASYNC_Task **dump_proc_chunk_tasks = push_array(arena, ASYNC_Task *, bake_params.procedures.chunk_count);
           ProfScope("kick off FUNC & line record dump tasks")
           {
-            U64 task_idx = 0;
+            u64 task_idx = 0;
             for(RDIM_SymbolChunkNode *n = bake_params.procedures.first; n != 0; n = n->next, task_idx += 1)
             {
               dump_proc_chunk_in[task_idx].unit_vmap            = unit_vmap;
@@ -801,7 +801,7 @@ rb_entry_point(CmdLine *cmdline)
           //- rjf: join FUNC & line record dump tasks
           ProfScope("join FUNC & line record dump tasks")
           {
-            for(U64 idx = 0; idx < bake_params.procedures.chunk_count; idx += 1)
+            for(u64 idx = 0; idx < bake_params.procedures.chunk_count; idx += 1)
             {
               String8List *out = async_task_join_struct(dump_proc_chunk_tasks[idx], String8List);
               str8_list_concat_in_place(&dump, out);
@@ -818,7 +818,7 @@ rb_entry_point(CmdLine *cmdline)
     //
     case OutputKind_Dump:
     {
-      B32 deterministic = cmd_line_has_flag(cmdline, str8_lit("deterministic"));
+      b32 deterministic = cmd_line_has_flag(cmdline, str8_lit("deterministic"));
       
       //- rjf: no inputs => help
       if(cmdline->inputs.node_count == 0)
@@ -917,7 +917,7 @@ rb_entry_point(CmdLine *cmdline)
             if(f->format == RB_FileFormat_PE)
             {
               String8             raw_sections  = str8_substr(f->data, pe.section_table_range);
-              U64                 section_count = raw_sections.size / sizeof(COFF_SectionHeader);
+              u64                 section_count = raw_sections.size / sizeof(COFF_SectionHeader);
               COFF_SectionHeader *section_table = (COFF_SectionHeader *)raw_sections.str;
               String8 string_table = str8_substr(f->data, pe.string_table_range);
               dw = dw_input_from_coff_section_table(arena, f->data, string_table, section_count, section_table);
@@ -1020,9 +1020,9 @@ rb_entry_point(CmdLine *cmdline)
   {
     for(String8Node *n = output_blobs.first; n != 0; n = n->next)
     {
-      for(U64 off = 0; off < n->string.size;)
+      for(u64 off = 0; off < n->string.size;)
       {
-        U64 size_to_write = min(n->string.size - off, GB(2));
+        u64 size_to_write = min(n->string.size - off, GB(2));
         fwrite(n->string.str + off, size_to_write, 1, stdout);
         off += size_to_write;
       }

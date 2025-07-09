@@ -11,10 +11,10 @@
 
 struct OS_SystemInfo
 {
-  U32 logical_processor_count;
-  U64 page_size;
-  U64 large_page_size;
-  U64 allocation_granularity;
+  u32 logical_processor_count;
+  u64 page_size;
+  u64 large_page_size;
+  u64 allocation_granularity;
   String8 machine_name;
 };
 
@@ -25,8 +25,8 @@ struct OS_SystemInfo
 
 struct OS_ProcessInfo
 {
-  U32 pid;
-  B32 large_pages_allowed;
+  u32 pid;
+  b32 large_pages_allowed;
   String8 binary_path;
   String8 initial_path;
   String8 user_program_data_path;
@@ -37,7 +37,7 @@ struct OS_ProcessInfo
 ////////////////////////////////
 //~ rjf: Access Flags
 
-typedef U32 OS_AccessFlags;
+typedef u32 OS_AccessFlags;
 enum
 {
   OS_AccessFlag_Read        = (1<<0),
@@ -52,7 +52,7 @@ enum
 ////////////////////////////////
 //~ rjf: Files
 
-typedef U32 OS_FileIterFlags;
+typedef u32 OS_FileIterFlags;
 enum
 {
   OS_FileIterFlag_SkipFolders     = (1 << 0),
@@ -66,7 +66,7 @@ enum
 struct OS_FileIter
 {
   OS_FileIterFlags flags;
-  U8 memory[800];
+  u8 memory[800];
 };
 
 
@@ -82,7 +82,7 @@ struct OS_FileInfo
 
 struct OS_FileID
 {
-  U64 v[3];
+  u64 v[3];
 };
 
 ////////////////////////////////
@@ -92,7 +92,7 @@ struct OS_FileID
 
 struct OS_Handle
 {
-  U64 u64[1];
+  u64 u64[1];
 };
 
 
@@ -109,7 +109,7 @@ struct OS_HandleList
 {
   OS_HandleNode *first;
   OS_HandleNode *last;
-  U64 count;
+  u64 count;
 };
 
 
@@ -117,7 +117,7 @@ struct OS_HandleList
 struct OS_HandleArray
 {
   OS_Handle *v;
-  U64 count;
+  u64 count;
 };
 
 ////////////////////////////////
@@ -130,9 +130,9 @@ struct OS_ProcessLaunchParams
   String8List cmd_line;
   String8 path;
   String8List env;
-  B32 inherit_env;
-  B32 debug_subprocesses;
-  B32 consoleless;
+  b32 inherit_env;
+  b32 debug_subprocesses;
+  b32 consoleless;
   OS_Handle stdout_file;
   OS_Handle stderr_file;
   OS_Handle stdin_file;

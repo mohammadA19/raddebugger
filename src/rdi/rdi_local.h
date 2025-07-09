@@ -41,7 +41,7 @@ typedef enum RDI_DumpSubset
 }
 RDI_DumpSubset;
 
-enum RDI_DumpSubsetFlags : U32
+enum RDI_DumpSubsetFlags : u32
 {
 #define X(name, name_lower, title) RDI_DumpSubsetFlag_##name = (1<<RDI_DumpSubset_##name),
   RDI_DumpSubset_XList

@@ -11,7 +11,7 @@ os_handle_zero(void)
   return handle;
 }
 
-internal B32
+internal b32
 os_handle_match(OS_Handle a, OS_Handle b)
 {
   return a.u64[0] == b.u64[0];
@@ -32,7 +32,7 @@ os_handle_array_from_list(Arena *arena, OS_HandleList *list)
   OS_HandleArray result = {0};
   result.count = list->count;
   result.v = push_array_no_zero(arena, OS_Handle, result.count);
-  U64 idx = 0;
+  u64 idx = 0;
   for(OS_HandleNode *n = list->first; n != 0; n = n->next, idx += 1)
   {
     result.v[idx] = n->v;
@@ -68,10 +68,10 @@ os_data_from_file_path(Arena *arena, String8 path)
   return data;
 }
 
-internal B32
+internal b32
 os_write_data_to_file_path(String8 path, String8 data)
 {
-  B32 good = 0;
+  b32 good = 0;
   OS_Handle file = os_file_open(OS_AccessFlag_Write, path);
   if(!os_handle_match(file, os_handle_zero()))
   {
@@ -82,15 +82,15 @@ os_write_data_to_file_path(String8 path, String8 data)
   return good;
 }
 
-internal B32
+internal b32
 os_write_data_list_to_file_path(String8 path, String8List list)
 {
-  B32 good = 0;
+  b32 good = 0;
   OS_Handle file = os_file_open(OS_AccessFlag_Write, path);
   if(!os_handle_match(file, os_handle_zero()))
   {
     good = 1;
-    U64 off = 0;
+    u64 off = 0;
     for(String8Node *n = list.first; n != 0; n = n->next)
     {
       os_file_write(file, r1u64(off, off+n->string.size), n->string.str);
@@ -101,17 +101,17 @@ os_write_data_list_to_file_path(String8 path, String8List list)
   return good;
 }
 
-internal B32
+internal b32
 os_append_data_to_file_path(String8 path, String8 data)
 {
-  B32 good = 0;
+  b32 good = 0;
   if(data.size != 0)
   {
     OS_Handle file = os_file_open(OS_AccessFlag_Write|OS_AccessFlag_Append, path);
     if(!os_handle_match(file, os_handle_zero()))
     {
       good = 1;
-      U64 pos = os_properties_from_file(file).size;
+      u64 pos = os_properties_from_file(file).size;
       os_file_write(file, r1u64(pos, pos+data.size), data.str);
       os_file_close(file);
     }
@@ -128,21 +128,21 @@ os_id_from_file_path(String8 path)
   return id;
 }
 
-internal S64
+internal i64
 os_file_id_compare(OS_FileID a, OS_FileID b)
 {
-  S64 cmp = MemoryCompare((void*)&a.v[0], (void*)&b.v[0], sizeof(a.v));
+  i64 cmp = MemoryCompare((void*)&a.v[0], (void*)&b.v[0], sizeof(a.v));
   return cmp;
 }
 
 internal String8
 os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
 {
-  U64 pre_pos = arena_pos(arena);
+  u64 pre_pos = arena_pos(arena);
   String8 result;
   result.size = dim_1u64(range);
-  result.str = push_array_no_zero(arena, U8, result.size);
-  U64 actual_read_size = os_file_read(file, range, result.str);
+  result.str = push_array_no_zero(arena, u8, result.size);
+  u64 actual_read_size = os_file_read(file, range, result.str);
   if(actual_read_size < result.size)
   {
     arena_pop_to(arena, pre_pos + actual_read_size);
@@ -158,7 +158,7 @@ internal OS_Handle
 os_cmd_line_launch(String8 string)
 {
   Temp scratch = scratch_begin(0, 0);
-  U8 split_chars[] = {' '};
+  u8 split_chars[] = {' '};
   String8List parts = str8_split(scratch.arena, string, split_chars, len(split_chars), 0);
   OS_Handle handle = {0};
   if(parts.node_count != 0)

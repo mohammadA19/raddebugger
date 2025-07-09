@@ -26,7 +26,7 @@ struct OS_LNX_Window
   Window window;
   XIC xic;
   XID counter_xid;
-  U64 counter_value;
+  u64 counter_value;
 };
 
 ////////////////////////////////

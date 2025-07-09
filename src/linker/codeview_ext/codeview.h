@@ -25,7 +25,7 @@ typedef struct CV_SymbolHeader
 typedef struct CV_Symbol
 {
   CV_SymKind kind;
-  U64        offset;
+  u64        offset;
   String8    data;
 } CV_Symbol;
 
@@ -44,7 +44,7 @@ typedef struct CV_SymbolPtrNode
 
 typedef struct CV_SymbolList
 {
-  U64            count;
+  u64            count;
   CV_Signature   signature;
   CV_SymbolNode *first;
   CV_SymbolNode *last;
@@ -52,13 +52,13 @@ typedef struct CV_SymbolList
 
 typedef struct CV_SymbolListArray
 {
-  U64            count;
+  u64            count;
   CV_SymbolList *v;
 } CV_SymbolListArray;
 
 typedef struct CV_SymbolPtrArray
 {
-  U64             count;
+  u64             count;
   CV_SymbolNode **v;
 } CV_SymbolPtrArray;
 
@@ -81,9 +81,9 @@ typedef struct CV_ScopeFrame
   struct        CV_ScopeFrame *next;
   CV_ScopeList *list;
   CV_Scope     *curr;
-  U64           symbol_off;
-  U32          *parent_off_ptr;
-  U32          *end_off_ptr;
+  u64           symbol_off;
+  u32          *parent_off_ptr;
+  u32          *end_off_ptr;
 } CV_ScopeFrame;
 
 //- $$FileChksms
@@ -102,7 +102,7 @@ typedef struct CV_ChecksumNode
 
 typedef struct CV_ChecksumList
 {
-  U64 count;
+  u64 count;
   CV_ChecksumNode *first;
   CV_ChecksumNode *last;
 } CV_ChecksumList;
@@ -111,30 +111,30 @@ typedef struct CV_ChecksumList
 
 typedef struct CV_LineArray
 {
-  U32  file_off;
-  U64  line_count;
-  U64  col_count;
-  U64 *voffs;     // [line_count + 1]
-  U32 *line_nums; // [line_count]
-  U16 *col_nums;  // [line_count * 2]
+  u32  file_off;
+  u64  line_count;
+  u64  col_count;
+  u64 *voffs;     // [line_count + 1]
+  u32 *line_nums; // [line_count]
+  u16 *col_nums;  // [line_count * 2]
 } CV_LineArray;
 
 typedef struct CV_File
 {
-  U32          file_off;
+  u32          file_off;
   CV_LineArray lines;
 } CV_File;
 
 typedef struct CV_C13LinesHeader
 {
-  U64 sec_idx;
-  U64 sec_off_lo;
-  U64 sec_off_hi;
-  U64 file_off;
-  U64 line_count;
-  U64 col_count;
-  U64 line_array_off;
-  U64 col_array_off;
+  u64 sec_idx;
+  u64 sec_off_lo;
+  u64 sec_off_hi;
+  u64 file_off;
+  u64 line_count;
+  u64 col_count;
+  u64 line_array_off;
+  u64 col_array_off;
 } CV_C13LinesHeader;
 
 typedef struct CV_C13LinesHeaderNode
@@ -147,7 +147,7 @@ typedef struct CV_C13LinesHeaderList
 {
   CV_C13LinesHeaderNode *first;
   CV_C13LinesHeaderNode *last;
-  U64                    count;
+  u64                    count;
 } CV_C13LinesHeaderList;
 
 ////////////////////////////////
@@ -156,7 +156,7 @@ typedef struct CV_TypeServerInfo
 {
   String8 name;
   Guid    sig;
-  U32     age;
+  u32     age;
 } CV_TypeServerInfo;
 
 typedef struct CV_TypeServerInfoNode
@@ -169,20 +169,20 @@ typedef struct CV_TypeServerInfoList
 {
   CV_TypeServerInfoNode *first;
   CV_TypeServerInfoNode *last;
-  U64                    count;
+  u64                    count;
 } CV_TypeServerInfoList;
 
 typedef struct CV_PrecompInfo
 {
   CV_TypeIndex start_index;
-  U32          sig;
-  U32          leaf_count;
+  u32          sig;
+  u32          leaf_count;
   String8      obj_name;
 } CV_PrecompInfo;
 
 typedef struct CV_ObjInfo
 {
-  U32     sig;
+  u32     sig;
   String8 name;
 } CV_ObjInfo;
 
@@ -191,28 +191,28 @@ typedef struct CV_ObjInfo
 
 typedef struct CV_Line
 {
-  U64 voff;
-  U32 file_off;
-  U32 line_num;
-  U16 col_num;
+  u64 voff;
+  u32 file_off;
+  u32 line_num;
+  u16 col_num;
 } CV_Line;
 
 typedef struct CV_LinesAccel
 {
-  U64      map_count;
+  u64      map_count;
   CV_Line *map;
 } CV_LinesAccel;
 
 typedef struct CV_InlineeLinesAccel
 {
-  U64                        bucket_count;
-  U64                        bucket_max;
+  u64                        bucket_count;
+  u64                        bucket_max;
   CV_C13InlineeLinesParsed **buckets;
 } CV_InlineeLinesAccel;
 
 typedef struct CV_InlineBinaryAnnotsParsed
 {
-  U64           lines_count;
+  u64           lines_count;
   CV_LineArray *lines;
   Rng1U64List   code_ranges;
 } CV_InlineBinaryAnnotsParsed;
@@ -221,12 +221,12 @@ typedef struct CV_C13InlineeLinesParsedList
 {
   CV_C13InlineeLinesParsedNode *first;
   CV_C13InlineeLinesParsedNode *last;
-  U64                           count;
+  u64                           count;
 } CV_C13InlineeLinesParsedList;
 
 ////////////////////////////////
 
-enum CV_C13SubSectionIdxKind : U32
+enum CV_C13SubSectionIdxKind : u32
 {
   CV_C13SubSectionIdxKind_NULL,
 #define X(N,c) CV_C13SubSectionIdxKind_##N,
@@ -239,7 +239,7 @@ typedef struct CV_C13SubSectionList
 {
   CV_C13SubSectionNode *first;
   CV_C13SubSectionNode *last;
-  U64                   count;
+  u64                   count;
 } CV_C13SubSectionList;
 
 ////////////////////////////////
@@ -251,9 +251,9 @@ typedef struct CV_DebugS
 
 typedef struct CV_DebugT
 {
-  U64  size;
-  U64  count;
-  U8 **v;
+  u64  size;
+  u64  count;
+  u8 **v;
 } CV_DebugT;
 
 ////////////////////////////////
@@ -273,7 +273,7 @@ typedef struct CV_LeafNode
 
 typedef struct CV_LeafList
 {
-  U64          count;
+  u64          count;
   CV_LeafNode *first;
   CV_LeafNode *last;
 } CV_LeafList;
@@ -285,7 +285,7 @@ typedef struct CV_StringTableRange
 {
   struct CV_StringTableRange *next;
   Rng1U64                     range;
-  U64                         debug_s_idx;
+  u64                         debug_s_idx;
 } CV_StringTableRange;
 
 typedef struct CV_StringBucket
@@ -293,24 +293,24 @@ typedef struct CV_StringBucket
   String8 string;
   union {
     struct {
-      U32 idx0;
-      U32 idx1;
+      u32 idx0;
+      u32 idx1;
     };
-    U64 offset;
+    u64 offset;
   } u;
 } CV_StringBucket;
 
 typedef struct CV_StringHashTable
 {
-  U64               total_string_size;
-  U64               total_insert_count;
-  U64               bucket_cap;
+  u64               total_string_size;
+  u64               total_insert_count;
+  u64               bucket_cap;
   CV_StringBucket **buckets;
 } CV_StringHashTable;
 
 typedef struct CV_StringHashTableResult
 {
-  U64               string_count;
+  u64               string_count;
   CV_StringBucket **buckets;
 } CV_StringHashTableResult;
 
@@ -319,7 +319,7 @@ typedef struct CV_StringHashTableResult
 
 typedef struct
 {
-  U64              cap;
+  u64              cap;
   union {
     CV_SymbolNode ***buckets;
     CV_SymbolNode  **deref_buckets;
@@ -332,7 +332,7 @@ typedef struct
 {
   CV_SymbolList  *list_arr;
   Rng1U64        *list_range_arr;
-  U64            *symbol_base_arr;
+  u64            *symbol_base_arr;
   CV_SymbolNode **symbol_arr;
 } CV_SymbolListSyncer;
 
@@ -340,16 +340,16 @@ typedef struct
 {
   CV_DebugS            *arr;
   CV_StringTableRange **range_lists;
-  U64                  *string_counts;
-  U64                   bucket_cap;
+  u64                  *string_counts;
+  u64                   bucket_cap;
   CV_StringBucket     **buckets;
-  U64                   total_string_size;
-  U64                   total_insert_count;
+  u64                   total_string_size;
+  u64                   total_insert_count;
 } CV_DedupStringTablesTask;
 
 typedef struct
 {
-  U8               *buffer;
+  u8               *buffer;
   Rng1U64          *ranges;
   CV_StringBucket **buckets;
 } CV_PackStringHashTableTask;
@@ -372,8 +372,8 @@ typedef struct
 
 internal String8       cv_make_comp3(Arena *arena,
                                      CV_Compile3Flags flags, CV_Language lang, CV_Arch arch, 
-                                     U16 ver_fe_major, U16 ver_fe_minor, U16 ver_fe_build, U16 ver_feqfe,
-                                     U16 ver_major, U16 ver_minor, U16 ver_build, U16 ver_qfe,
+                                     u16 ver_fe_major, u16 ver_fe_minor, u16 ver_fe_build, u16 ver_feqfe,
+                                     u16 ver_major, u16 ver_minor, u16 ver_build, u16 ver_qfe,
                                      String8 version_string);
 
 ////////////////////////////////
@@ -388,7 +388,7 @@ internal String8       cv_make_comp3(Arena *arena,
 // $$Symbols
 
 // $$FileChksms
-#define CV_MAP_STRING_TO_OFFSET_FUNC(name) U64 name(void *ud, String8 string)
+#define CV_MAP_STRING_TO_OFFSET_FUNC(name) u64 name(void *ud, String8 string)
 typedef CV_MAP_STRING_TO_OFFSET_FUNC(CV_MapStringToOffsetFunc);
 
 // $$Lines

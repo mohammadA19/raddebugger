@@ -2,22 +2,22 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal void
-lnk_set_log_status(LNK_LogType type, B32 is_enabled)
+lnk_set_log_status(LNK_LogType type, b32 is_enabled)
 {
   g_log_status[type] = is_enabled;
 }
 
-internal B32
+internal b32
 lnk_get_log_status(LNK_LogType type)
 {
-  B32 status = g_log_status[type];
+  b32 status = g_log_status[type];
   return status;
 }
 
 internal void
 lnk_log(LNK_LogType type, char *fmt, ...)
 {
-  B32 is_log_enabled = g_log_status[type];
+  b32 is_log_enabled = g_log_status[type];
   if (is_log_enabled) {
     Temp scratch = scratch_begin(0,0);
     va_list args;
@@ -48,7 +48,7 @@ lnk_log_type_from_string(String8 string)
   };
   assert(len(map) == LNK_Log_Count);
 
-  for (U64 i = 0; i < len(map); ++i) {
+  for (u64 i = 0; i < len(map); ++i) {
     if (str8_match(str8_cstring(map[i].name), string, StringMatchFlag_CaseInsensitive)) {
       return map[i].type;
     }

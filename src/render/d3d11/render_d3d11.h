@@ -28,8 +28,8 @@
 struct R_D3D11_Uniforms_Rect
 {
   Vec2F32 viewport_size;
-  F32 opacity;
-  F32 _padding0_;
+  f32 opacity;
+  f32 _padding0_;
   Mat4x4F32 texture_sample_channel_map;
   Vec2F32 texture_t2d_size;
   Vec2F32 translate;
@@ -45,8 +45,8 @@ struct R_D3D11_Uniforms_BlurPass
   Vec4F32 corner_radii;
   Vec2F32 direction;
   Vec2F32 viewport_size;
-  U32 blur_count;
-  U8 _padding0_[204];
+  u32 blur_count;
+  u8 _padding0_[204];
 };
 StaticAssert(sizeof(R_D3D11_Uniforms_BlurPass) % 256 == 0, NotAligned); // constant count/offset must be aligned to 256 bytes
 
@@ -73,7 +73,7 @@ struct R_D3D11_Uniforms_Mesh
 struct R_D3D11_Tex2D
 {
   R_D3D11_Tex2D *next;
-  U64 generation;
+  u64 generation;
   ID3D11Texture2D *texture;
   ID3D11ShaderResourceView *view;
   R_ResourceKind kind;
@@ -86,10 +86,10 @@ struct R_D3D11_Tex2D
 struct R_D3D11_Buffer
 {
   R_D3D11_Buffer *next;
-  U64 generation;
+  u64 generation;
   ID3D11Buffer *buffer;
   R_ResourceKind kind;
-  U64 size;
+  u64 size;
 };
 
 
@@ -97,7 +97,7 @@ struct R_D3D11_Buffer
 struct R_D3D11_Window
 {
   R_D3D11_Window *next;
-  U64 generation;
+  u64 generation;
   
   // rjf: swapchain/framebuffer
   IDXGISwapChain1        *swapchain;

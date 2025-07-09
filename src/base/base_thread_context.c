@@ -14,7 +14,7 @@ tctx_init_and_equip(TCTX *tctx)
 {
   MemoryZeroStruct(tctx);
   Arena **arena_ptr = tctx->arenas;
-  for(U64 i = 0; i < len(tctx->arenas); i += 1, arena_ptr += 1)
+  for(u64 i = 0; i < len(tctx->arenas); i += 1, arena_ptr += 1)
   {
     *arena_ptr = arena_alloc();
   }
@@ -24,7 +24,7 @@ tctx_init_and_equip(TCTX *tctx)
 internal void
 tctx_release(void)
 {
-  for(U64 i = 0; i < len(tctx_thread_local->arenas); i += 1)
+  for(u64 i = 0; i < len(tctx_thread_local->arenas); i += 1)
   {
     arena_release(tctx_thread_local->arenas[i]);
   }
@@ -37,16 +37,16 @@ tctx_get_equipped(void)
 }
 
 internal Arena *
-tctx_get_scratch(Arena **conflicts, U64 count)
+tctx_get_scratch(Arena **conflicts, u64 count)
 {
   TCTX *tctx = tctx_get_equipped();
   Arena *result = 0;
   Arena **arena_ptr = tctx->arenas;
-  for(U64 i = 0; i < len(tctx->arenas); i += 1, arena_ptr += 1)
+  for(u64 i = 0; i < len(tctx->arenas); i += 1, arena_ptr += 1)
   {
     Arena **conflict_ptr = conflicts;
-    B32 has_conflict = 0;
-    for(U64 j = 0; j < count; j += 1, conflict_ptr += 1)
+    b32 has_conflict = 0;
+    for(u64 j = 0; j < count; j += 1, conflict_ptr += 1)
     {
       if(*arena_ptr == *conflict_ptr)
       {
@@ -67,7 +67,7 @@ internal void
 tctx_set_thread_name(String8 string)
 {
   TCTX *tctx = tctx_get_equipped();
-  U64 size = ClampTop(string.size, sizeof(tctx->thread_name));
+  u64 size = ClampTop(string.size, sizeof(tctx->thread_name));
   MemoryCopy(tctx->thread_name, string.str, size);
   tctx->thread_name_size = size;
 }
@@ -81,7 +81,7 @@ tctx_get_thread_name(void)
 }
 
 internal void
-tctx_write_srcloc(char *file_name, U64 line_number)
+tctx_write_srcloc(char *file_name, u64 line_number)
 {
   TCTX *tctx = tctx_get_equipped();
   tctx->file_name = file_name;
@@ -89,7 +89,7 @@ tctx_write_srcloc(char *file_name, U64 line_number)
 }
 
 internal void
-tctx_read_srcloc(char **file_name, U64 *line_number)
+tctx_read_srcloc(char **file_name, u64 *line_number)
 {
   TCTX *tctx = tctx_get_equipped();
   *file_name = tctx->file_name;

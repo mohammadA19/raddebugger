@@ -1,7 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-global U64 global_update_tick_idx = 0;
+global u64 global_update_tick_idx = 0;
 
 internal void
 main_thread_base_entry_point(int arguments_count, char **arguments)
@@ -22,7 +22,7 @@ main_thread_base_entry_point(int arguments_count, char **arguments)
   CmdLine cmdline = cmd_line_from_string_list(scratch.arena, command_line_argument_strings);
   
   //- rjf: begin captures
-  B32 capture = cmd_line_has_flag(&cmdline, str8_lit("capture"));
+  b32 capture = cmd_line_has_flag(&cmdline, str8_lit("capture"));
   if(capture)
   {
     ProfBeginCapture(arguments[0]);
@@ -109,22 +109,22 @@ supplement_thread_base_entry_point(void (*entry_point)(void *params), void *para
   tctx_release();
 }
 
-internal U64
+internal u64
 update_tick_idx(void)
 {
-  U64 result = atomic_load(&global_update_tick_idx);
+  u64 result = atomic_load(&global_update_tick_idx);
   return result;
 }
 
-internal B32
+internal b32
 update(void)
 {
   ProfTick(0);
   atomic_add(&global_update_tick_idx);
 #if OS_FEATURE_GRAPHICAL
-  B32 result = frame();
+  b32 result = frame();
 #else
-  B32 result = 0;
+  b32 result = 0;
 #endif
   return result;
 }

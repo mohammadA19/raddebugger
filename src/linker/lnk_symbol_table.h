@@ -16,13 +16,13 @@ typedef enum
 typedef struct LNK_SymbolDefined
 {
   struct LNK_Obj *obj;
-  U32             symbol_idx;
+  u32             symbol_idx;
 } LNK_SymbolDefined;
 
 typedef struct LNK_SymbolLib
 {
   struct LNK_Lib *lib;
-  U64             member_offset;
+  u64             member_offset;
 } LNK_SymbolLib;
 
 typedef struct LNK_SymbolUndefined
@@ -56,20 +56,20 @@ typedef struct LNK_SymbolNode
 
 typedef struct LNK_SymbolList
 {
-  U64             count;
+  u64             count;
   LNK_SymbolNode *first;
   LNK_SymbolNode *last;
 } LNK_SymbolList;
 
 typedef struct LNK_SymbolNodeArray
 {
-  U64              count;
+  u64              count;
   LNK_SymbolNode **v;
 } LNK_SymbolNodeArray;
 
 typedef struct LNK_SymbolArray
 {
-  U64         count;
+  u64         count;
   LNK_Symbol *v;
 } LNK_SymbolArray;
 
@@ -85,14 +85,14 @@ typedef struct LNK_SymbolHashTrie
 typedef struct LNK_SymbolHashTrieChunk
 {
   struct LNK_SymbolHashTrieChunk *next;
-  U64                             count;
-  U64                             cap;
+  u64                             count;
+  u64                             cap;
   LNK_SymbolHashTrie             *v;
 } LNK_SymbolHashTrieChunk;
 
 typedef struct LNK_SymbolHashTrieChunkList
 {
-  U64                      count;
+  u64                      count;
   LNK_SymbolHashTrieChunk *first;
   LNK_SymbolHashTrieChunk *last;
 } LNK_SymbolHashTrieChunkList;

@@ -47,14 +47,14 @@
 
 struct HS_Root
 {
-  U64 u64[1];
+  u64 u64[1];
 };
 
 
 
 struct HS_ID
 {
-  U128 u128[1];
+  u128 u128[1];
 };
 
 
@@ -62,7 +62,7 @@ struct HS_ID
 struct HS_Key
 {
   HS_Root root;
-  U64 _padding_;
+  u64 _padding_;
   HS_ID id;
 };
 
@@ -75,8 +75,8 @@ struct HS_RootIDChunkNode
 {
   HS_RootIDChunkNode *next;
   HS_ID *v;
-  U64 count;
-  U64 cap;
+  u64 count;
+  u64 cap;
 };
 
 
@@ -85,8 +85,8 @@ struct HS_RootIDChunkList
 {
   HS_RootIDChunkNode *first;
   HS_RootIDChunkNode *last;
-  U64 chunk_count;
-  U64 total_count;
+  u64 chunk_count;
+  u64 total_count;
 };
 
 
@@ -118,8 +118,8 @@ struct HS_KeyNode
   HS_KeyNode *next;
   HS_KeyNode *prev;
   HS_Key key;
-  U128 hash_history[HS_KEY_HASH_HISTORY_COUNT];
-  U64 hash_history_gen;
+  u128 hash_history[HS_KEY_HASH_HISTORY_COUNT];
+  u64 hash_history_gen;
 };
 
 
@@ -136,12 +136,12 @@ struct HS_Node
 {
   HS_Node *next;
   HS_Node *prev;
-  U128 hash;
+  u128 hash;
   Arena *arena;
   String8 data;
-  U64 scope_ref_count;
-  U64 key_ref_count;
-  U64 downstream_ref_count;
+  u64 scope_ref_count;
+  u64 key_ref_count;
+  u64 downstream_ref_count;
 };
 
 
@@ -169,7 +169,7 @@ struct HS_Stripe
 struct HS_Touch
 {
   HS_Touch *next;
-  U128 hash;
+  u128 hash;
 };
 
 
@@ -202,26 +202,26 @@ struct HS_Shared
   Arena *arena;
   
   // rjf: main data cache
-  U64 slots_count;
-  U64 stripes_count;
+  u64 slots_count;
+  u64 stripes_count;
   HS_Slot *slots;
   HS_Stripe *stripes;
   HS_Node **stripes_free_nodes;
   
   // rjf: key cache
-  U64 key_slots_count;
-  U64 key_stripes_count;
+  u64 key_slots_count;
+  u64 key_stripes_count;
   HS_KeySlot *key_slots;
   HS_Stripe *key_stripes;
   HS_KeyNode **key_stripes_free_nodes;
   
   // rjf: root cache
-  U64 root_slots_count;
-  U64 root_stripes_count;
+  u64 root_slots_count;
+  u64 root_stripes_count;
   HS_RootSlot *root_slots;
   HS_Stripe *root_stripes;
   HS_RootNode **root_stripes_free_nodes;
-  U64 root_id_gen;
+  u64 root_id_gen;
   
   // rjf: evictor thread
   OS_Handle evictor_thread;

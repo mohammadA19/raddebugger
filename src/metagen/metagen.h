@@ -30,7 +30,7 @@ struct MG_MsgList
 {
   MG_MsgNode *first;
   MG_MsgNode *last;
-  U64 count;
+  u64 count;
 };
 
 ////////////////////////////////
@@ -57,7 +57,7 @@ struct MG_FileParseList
 {
   MG_FileParseNode *first;
   MG_FileParseNode *last;
-  U64 count;
+  u64 count;
 };
 
 ////////////////////////////////
@@ -85,7 +85,7 @@ struct MG_MapSlot
 struct MG_Map
 {
   MG_MapSlot *slots;
-  U64 slots_count;
+  u64 slots_count;
 };
 
 ////////////////////////////////
@@ -163,15 +163,15 @@ struct MG_StrExprParseResult
 struct MG_NodeArray
 {
   MD_Node **v;
-  U64 count;
+  u64 count;
 };
 
 
 
 struct MG_NodeGrid
 {
-  U64 x_stride;
-  U64 y_stride;
+  u64 x_stride;
+  u64 y_stride;
   MG_NodeArray cells;
   MG_NodeArray row_parents;
 };
@@ -198,7 +198,7 @@ struct MG_ColumnDesc
 
 struct MG_ColumnDescArray
 {
-  U64 count;
+  u64 count;
   MG_ColumnDesc *v;
 };
 
@@ -210,8 +210,8 @@ struct MG_TableExpandTask
   String8 expansion_label;
   MG_NodeGrid *grid;
   MG_ColumnDescArray column_descs;
-  U64 count;
-  U64 idx;
+  u64 count;
+  u64 idx;
 };
 
 
@@ -230,7 +230,7 @@ struct MG_TableExpandInfo
 struct MG_Layer
 {
   String8 key;
-  B32 is_library;
+  b32 is_library;
   String8 gen_folder_name;
   String8 h_name_override;
   String8 c_name_override;
@@ -268,7 +268,7 @@ struct MG_LayerSlot
 
 struct MG_State
 {
-  U64 slots_count;
+  u64 slots_count;
   MG_LayerSlot *slots;
 };
 

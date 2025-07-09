@@ -2198,8 +2198,8 @@ typedef XXH32_hash_t xxh_u32;
 #ifdef XXH_OLD_NAMES
 #  warning "XXH_OLD_NAMES is planned to be removed starting v0.9. If the program depends on it, consider moving away from it by employing newer type names directly"
 #  define BYTE xxh_u8
-#  define U8   xxh_u8
-#  define U32  xxh_u32
+#  define u8   xxh_u8
+#  define u32  xxh_u32
 #endif
 
 /* ***   Memory access   *** */
@@ -2929,7 +2929,7 @@ XXH_PUBLIC_API XXH32_hash_t XXH32_hashFromCanonical(const XXH32_canonical_t* src
 typedef XXH64_hash_t xxh_u64;
 
 #ifdef XXH_OLD_NAMES
-#  define U64 xxh_u64
+#  define u64 xxh_u64
 #endif
 
 #if (defined(XXH_FORCE_MEMORY_ACCESS) && (XXH_FORCE_MEMORY_ACCESS==3))

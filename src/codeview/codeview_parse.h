@@ -8,9 +8,9 @@
 //~ CodeView Common Parser Types
 
 // CV_Numeric layout
-// x: U16
-// buf: U8[]
-// case (x < 0x8000):  kind=U16 val=x
+// x: u16
+// buf: u8[]
+// case (x < 0x8000):  kind=u16 val=x
 // case (x >= 0x8000): kind=x   val=buf
 
 
@@ -18,15 +18,15 @@
 struct CV_NumericParsed
 {
   CV_NumericKind  kind;
-  U8             *val;
-  U64             encoded_size;
+  u8             *val;
+  u64             encoded_size;
 };
 
 
 
 struct CV_RecRange
 {
-  U32          off;
+  u32          off;
   CV_RecHeader hdr;
 };
 
@@ -46,7 +46,7 @@ struct CV_RecRangeStream
 {
   CV_RecRangeChunk *first_chunk;
   CV_RecRangeChunk *last_chunk;
-  U64               total_count;
+  u64               total_count;
 };
 
 
@@ -54,7 +54,7 @@ struct CV_RecRangeStream
 struct CV_RecRangeArray
 {
   CV_RecRange *ranges;
-  U64          count;
+  u64          count;
 };
 
 ////////////////////////////////
@@ -75,7 +75,7 @@ struct CV_SymParsed
 {
   // source information
   String8 data;
-  U64     sym_align;
+  u64     sym_align;
   
   // sym index derived from source
   CV_RecRangeArray sym_ranges;
@@ -107,28 +107,28 @@ struct CV_LeafParsed
 
 struct CV_C13InlineSiteDecoder
 {
-  U64                cursor;
-  U64                parent_voff;
+  u64                cursor;
+  u64                parent_voff;
   CV_InlineRangeKind range_kind;
-  U32                code_length;
-  U32                code_offset;
-  U32                file_off;
-  S32                ln;
-  S32                cn;
-  U64                code_offset_lo;
-  B32                code_offset_changed;
-  B32                code_offset_lo_changed;
-  B32                code_length_changed;
-  B32                ln_changed;
-  B32                file_off_changed;
+  u32                code_length;
+  u32                code_offset;
+  u32                file_off;
+  i32                ln;
+  i32                cn;
+  u64                code_offset_lo;
+  b32                code_offset_changed;
+  b32                code_offset_lo_changed;
+  b32                code_length_changed;
+  b32                ln_changed;
+  b32                file_off_changed;
   Rng1U64            last_range;
-  U32                file_count;
+  u32                file_count;
   Rng1U64            file_last_range;
-  U64                file_line_count;
-  U64                file_last_ln;
+  u64                file_line_count;
+  u64                file_last_ln;
 };
 
-enum CV_C13InlineSiteDecoderStepFlags : U32
+enum CV_C13InlineSiteDecoderStepFlags : u32
 {
   CV_C13InlineSiteDecoderStepFlag_EmitRange       = (1 << 0),
   CV_C13InlineSiteDecoderStepFlag_ExtendLastRange = (1 << 1),
@@ -142,11 +142,11 @@ struct CV_C13InlineSiteDecoderStep
 {
   CV_C13InlineSiteDecoderStepFlags flags;
   Rng1U64                     range;
-  U64                         line_voff;
-  U64                         line_voff_end;
-  U64                         ln;
-  U64                         cn;
-  U32                         file_off;
+  u64                         line_voff;
+  u64                         line_voff_end;
+  u64                         ln;
+  u64                         cn;
+  u32                         file_off;
 };
 
 
@@ -154,16 +154,16 @@ struct CV_C13InlineSiteDecoderStep
 struct CV_C13LinesParsed
 {
   // raw info
-  U32 sec_idx;
-  U32 file_off;
-  U64 secrel_base_off;
+  u32 sec_idx;
+  u32 file_off;
+  u64 secrel_base_off;
   
   // parsed info
   String8  file_name;
-  U64     *voffs;     // [line_count + 1]
-  U32     *line_nums; // [line_count]
-  U16     *col_nums;  // [2*line_count]
-  U32      line_count;
+  u64     *voffs;     // [line_count + 1]
+  u32     *line_nums; // [line_count]
+  u16     *col_nums;  // [2*line_count]
+  u32      line_count;
 };
 
 
@@ -179,11 +179,11 @@ struct CV_C13LinesParsedNode
 struct CV_C13InlineeLinesParsed
 {
   CV_ItemId  inlinee;
-  U32        file_off;
+  u32        file_off;
   String8    file_name;
-  U32        first_source_ln;
-  U32        extra_file_count;
-  U32       *extra_files;
+  u32        first_source_ln;
+  u32        extra_file_count;
+  u32       *extra_files;
 };
 
 
@@ -201,8 +201,8 @@ struct CV_C13SubSectionNode
 {
   struct CV_C13SubSectionNode  *next;
   CV_C13SubSectionKind          kind;
-  U32                           off;
-  U32                           size;
+  u32                           off;
+  u32                           size;
   CV_C13LinesParsedNode        *lines_first;
   CV_C13LinesParsedNode        *lines_last;
   CV_C13InlineeLinesParsedNode *inlinee_lines_first;
@@ -219,14 +219,14 @@ struct CV_C13Parsed
   // rjf: full sub-section list
   CV_C13SubSectionNode *first_sub_section;
   CV_C13SubSectionNode *last_sub_section;
-  U64                   sub_section_count;
+  u64                   sub_section_count;
   
   // rjf: fastpath to file checksums section
   CV_C13SubSectionNode *file_chksms_sub_section;
   
   // rjf: fastpath to map inlinee CV_ItemId -> CV_InlineeLinesParsed quickly
   CV_C13InlineeLinesParsedNode **inlinee_lines_parsed_slots;
-  U64                            inlinee_lines_parsed_slots_count;
+  u64                            inlinee_lines_parsed_slots_count;
 };
 
 
@@ -246,7 +246,7 @@ struct CV_UDTInfo
 struct CV_TypeIdArray
 {
   CV_TypeId *itypes;
-  U64        count;
+  u64        count;
 };
 
 ////////////////////////////////

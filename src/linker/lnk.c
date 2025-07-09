@@ -272,13 +272,13 @@ THREAD_POOL_TASK_FUNC(lnk_blake3_hasher_task)
   
   blake3_hasher hasher; blake3_hasher_init(&hasher);
   blake3_hasher_update(&hasher, sub_data.str, sub_data.size);
-  blake3_hasher_finalize(&hasher, (U8 *)task->hashes[task_id].u64, sizeof(task->hashes[task_id].u64));
+  blake3_hasher_finalize(&hasher, (u8 *)task->hashes[task_id].u64, sizeof(task->hashes[task_id].u64));
   
   ProfEnd();
 }
 
-internal U128
-lnk_blake3_hash_parallel(TP_Context *tp, U64 chunk_count, String8 data)
+internal u128
+lnk_blake3_hash_parallel(TP_Context *tp, u64 chunk_count, String8 data)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -287,17 +287,17 @@ lnk_blake3_hash_parallel(TP_Context *tp, U64 chunk_count, String8 data)
   LNK_Blake3Hasher task = {0};
   task.data             = data;
   task.ranges           = tp_divide_work(scratch.arena, data.size, chunk_count);
-  task.hashes           = push_array(scratch.arena, U128, chunk_count);
+  task.hashes           = push_array(scratch.arena, u128, chunk_count);
   tp_for_parallel(tp, 0, chunk_count, lnk_blake3_hasher_task, &task);
   ProfEnd();
   
   ProfBegin("Combine Hashes");
   blake3_hasher hasher; blake3_hasher_init(&hasher);
-  for (U64 i = 0; i < chunk_count; ++i) {
-    blake3_hasher_update(&hasher, (U8 *)task.hashes[i].u64, sizeof(task.hashes[i].u64));
+  for (u64 i = 0; i < chunk_count; ++i) {
+    blake3_hasher_update(&hasher, (u8 *)task.hashes[i].u64, sizeof(task.hashes[i].u64));
   }
-  U128 result;
-  blake3_hasher_finalize(&hasher, (U8 *)result.u64, sizeof(result.u64));
+  u128 result;
+  blake3_hasher_finalize(&hasher, (u8 *)result.u64, sizeof(result.u64));
   ProfEnd();
   
   scratch_end(scratch);
@@ -307,7 +307,7 @@ lnk_blake3_hash_parallel(TP_Context *tp, U64 chunk_count, String8 data)
 
 internal String8
 lnk_make_linker_manifest(Arena      *arena,
-                         B32         manifest_uac,
+                         b32         manifest_uac,
                          String8     manifest_level,
                          String8     manifest_ui_access,
                          String8List manifest_dependency_list)
@@ -416,7 +416,7 @@ lnk_manifest_from_inputs(Arena       *arena,
                          LNK_IO_Flags io_flags,
                          String8      mt_path,
                          String8      manifest_name,
-                         B32          manifest_uac,
+                         b32          manifest_uac,
                          String8      manifest_level,
                          String8      manifest_ui_access,
                          String8List  input_manifest_path_list,
@@ -496,8 +496,8 @@ lnk_serialize_pe_resource_tree(COFF_ObjWriter *obj_writer, PE_ResourceDir *root_
   
   struct Stack {
     struct Stack          *next;
-    U64                    arr_idx;
-    U64                    res_idx[2];
+    u64                    arr_idx;
+    u64                    res_idx[2];
     PE_ResourceArray       res_arr[2];
     COFF_ResourceDirEntry *coff_entry_arr[2];
   };
@@ -525,7 +525,7 @@ lnk_serialize_pe_resource_tree(COFF_ObjWriter *obj_writer, PE_ResourceDir *root_
   for (; stack; ) {
     for (; stack->arr_idx < len(stack->res_arr); stack->arr_idx += 1) {
       for (; stack->res_idx[stack->arr_idx] < stack->res_arr[stack->arr_idx].count; ) {
-        U64          res_idx = stack->res_idx[stack->arr_idx]++;
+        u64          res_idx = stack->res_idx[stack->arr_idx]++;
         PE_Resource *res     = &stack->res_arr[stack->arr_idx].v[res_idx];
 
         {
@@ -567,12 +567,12 @@ lnk_serialize_pe_resource_tree(COFF_ObjWriter *obj_writer, PE_ResourceDir *root_
           str8_list_push(obj_writer->arena, &rsrc1->data, str8_array(id_entries, id_array.count));
 
           // fill out named ids
-          for (U64 i = 0; i < named_array.count; i += 1) {
+          for (u64 i = 0; i < named_array.count; i += 1) {
             PE_Resource            src = named_array.v[i];
             COFF_ResourceDirEntry *dst = &named_entries[i];
 
             // append resource name
-            U32     res_name_off = safe_cast_u32(rsrc1->data.total_size);
+            u32     res_name_off = safe_cast_u32(rsrc1->data.total_size);
             String8 res_name     = coff_resource_string_from_str8(obj_writer->arena, res->id.u.string);
             str8_list_push(obj_writer->arena, &rsrc1->data, res_name);
 
@@ -582,7 +582,7 @@ lnk_serialize_pe_resource_tree(COFF_ObjWriter *obj_writer, PE_ResourceDir *root_
           }
 
           // fill out number ids
-          for (U64 i = 0; i < id_array.count; i += 1) {
+          for (u64 i = 0; i < id_array.count; i += 1) {
             PE_Resource            src = id_array.v[i];
             COFF_ResourceDirEntry *dst = &id_entries[i];
             dst->name.id = src.id.u.number;
@@ -605,12 +605,12 @@ lnk_serialize_pe_resource_tree(COFF_ObjWriter *obj_writer, PE_ResourceDir *root_
           coff_res->code_page              = 0; // TODO: whats this for? (lld-link writes zero)
 
           // emit symbol for resource data
-          U32 resdat_off = safe_cast_u32(rsrc2->data.total_size);
+          u32 resdat_off = safe_cast_u32(rsrc2->data.total_size);
           COFF_ObjSymbol *resdat = coff_obj_writer_push_symbol_static(obj_writer, str8_lit("resdat"), resdat_off, rsrc2);
 
           // emit reloc for 'data_voff'
-          U64 apply_off   = rsrc1->data.total_size + OffsetOf(COFF_ResourceDataEntry, data_voff);
-          U32 apply_off32 = safe_cast_u32(apply_off);
+          u64 apply_off   = rsrc1->data.total_size + OffsetOf(COFF_ResourceDataEntry, data_voff);
+          u32 apply_off32 = safe_cast_u32(apply_off);
           coff_obj_writer_section_push_reloc(obj_writer, rsrc1, apply_off32, resdat, COFF_Reloc_X64_Addr32Nb);
 
           // push resource entry & data
@@ -655,7 +655,7 @@ lnk_add_resource_debug_s(COFF_ObjWriter *obj_writer,
   str8_serial_push_u8(scratch.arena, &string_srl, 0);
   
   // build file and string table
-  U64 node_idx = 0;
+  u64 node_idx = 0;
   for (String8Node *n = res_file_list.first; n != NULL; n = n->next, ++node_idx) {
     CV_C13Checksum checksum = {0};
     checksum.name_off = string_srl.total_size;
@@ -740,7 +740,7 @@ lnk_make_res_obj(Arena            *arena,
                  String8List       res_data_list,
                  String8List       res_path_list,
                  COFF_MachineType  machine,
-                 U32               time_stamp,
+                 u32               time_stamp,
                  String8           work_dir,
                  PathStyle         system_path_style,
                  String8           obj_name)
@@ -753,7 +753,7 @@ lnk_make_res_obj(Arena            *arena,
   // load res files
   PE_ResourceDir *root_dir       = push_array(scratch.arena, PE_ResourceDir, 1);
   MD5Hash        *res_hash_array = push_array(scratch.arena, MD5Hash, res_data_list.node_count);
-  U64 node_idx = 0;
+  u64 node_idx = 0;
   for (String8Node *node = res_data_list.first; node != 0; node = node->next, node_idx += 1) {
     res_hash_array[node_idx] = md5_hash_from_string(node->string);
     pe_resource_dir_push_res_file(scratch.arena, root_dir, node->string);
@@ -869,14 +869,14 @@ lnk_get_lib_name(String8 path)
   return name;
 }
 
-internal B32
+internal b32
 lnk_is_lib_disallowed(HashTable *disallow_lib_ht, String8 path)
 {
   String8 lib_name = lnk_get_lib_name(path);
   return hash_table_search_path(disallow_lib_ht, lib_name) != 0;
 }
 
-internal B32
+internal b32
 lnk_is_lib_loaded(HashTable *loaded_lib_ht, String8 path)
 {
   KeyValuePair *is_loaded = hash_table_search_path(loaded_lib_ht, path);
@@ -917,7 +917,7 @@ lnk_push_export(Arena *arena, HashTable *export_ht, PE_ExportParseList *export_l
 
     hash_table_push_string_raw(arena, export_ht, export_name, exp_n);
   } else {
-    B32 is_ambiguous = 1;
+    b32 is_ambiguous = 1;
     PE_ExportParse *extant_export = &exp_n->data;
     
     if (extant_export->alias.size && export_parse.alias.size && !str8_match(extant_export->alias, export_parse.alias, 0)) {
@@ -992,7 +992,7 @@ lnk_queue_lib_member_input(Arena               *arena,
                            LNK_InputObjList    *input_obj_list)
 {
   LNK_Lib *lib = symbol->lib;
-  U64 input_idx = Compose64Bit(lib->input_idx, symbol->member_offset);
+  u64 input_idx = Compose64Bit(lib->input_idx, symbol->member_offset);
 
   // parse member
   COFF_ArchiveMember member_info = coff_archive_member_from_offset(lib->data, symbol->member_offset);
@@ -1018,7 +1018,7 @@ lnk_queue_lib_member_input(Arena               *arena,
     }
 
     // obj path in thin archive is relative to directory with archive
-    B32 is_thin = lib->type == COFF_Archive_Thin;
+    b32 is_thin = lib->type == COFF_Archive_Thin;
     if (is_thin) {
       Temp scratch = scratch_begin(&arena, 1);
       String8List obj_path_list = {0};
@@ -1046,7 +1046,7 @@ THREAD_POOL_TASK_FUNC(lnk_undef_symbol_finder)
   LNK_SymbolFinderResult *result = &task->result_arr[task_id];
   Rng1U64                 range  = task->range_arr[task_id];
   
-  for (U64 symbol_idx = range.min; symbol_idx < range.max; symbol_idx += 1) {
+  for (u64 symbol_idx = range.min; symbol_idx < range.max; symbol_idx += 1) {
     LNK_SymbolNode *symbol_n = task->lookup_node_arr.v[symbol_idx];
     LNK_Symbol     *symbol   = symbol_n->data;
     
@@ -1075,7 +1075,7 @@ THREAD_POOL_TASK_FUNC(lnk_weak_symbol_finder)
   LNK_SymbolFinderResult *result = &task->result_arr[task_id];
   Rng1U64                 range  = task->range_arr[task_id];
   
-  for (U64 symbol_idx = range.min; symbol_idx < range.max; symbol_idx += 1) {
+  for (u64 symbol_idx = range.min; symbol_idx < range.max; symbol_idx += 1) {
     LNK_SymbolNode *symbol_n = task->lookup_node_arr.v[symbol_idx];
     LNK_Symbol     *symbol   = symbol_n->data;
     
@@ -1161,7 +1161,7 @@ lnk_run_symbol_finder(TP_Context      *tp,
   
   ProfBegin("Concat Results");
   LNK_SymbolFinderResult result = {0};
-  for (U64 i = 0; i < tp->worker_count; ++i) {
+  for (u64 i = 0; i < tp->worker_count; ++i) {
     LNK_SymbolFinderResult *src = &task.result_arr[i];
     lnk_symbol_list_concat_in_place(&result.unresolved_symbol_list, &src->unresolved_symbol_list);
     lnk_input_obj_list_concat_in_place(&result.input_obj_list, &src->input_obj_list);
@@ -1212,7 +1212,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
     enum   State      state;
   };
   struct StateList {
-    U64               count;
+    u64               count;
     struct StateNode *first;
     struct StateNode *last;
   };
@@ -1269,9 +1269,9 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
   LNK_SymbolList        lookup_weak_list                 = {0};
   LNK_SymbolList        unresolved_undef_list            = {0};
   LNK_SymbolList        unresolved_weak_list             = {0};
-  U64                   entry_point_lookup_attempts      = 0;
-  B32                   report_unresolved_symbols        = 1;
-  B32                   input_linker_objs                = 1;
+  u64                   entry_point_lookup_attempts      = 0;
+  b32                   report_unresolved_symbols        = 1;
+  b32                   input_linker_objs                = 1;
 
   //
   // Init state machine
@@ -1355,7 +1355,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
           // pick imports hash table
           HashTable *imports_ht;
           {
-            B32 is_delay_load_dll = hash_table_search_path_u64(delay_load_dll_ht, import_header.dll_name, 0);
+            b32 is_delay_load_dll = hash_table_search_path_u64(delay_load_dll_ht, import_header.dll_name, 0);
             if (is_delay_load_dll) {
               imports_ht = delayed_imports;
             } else {
@@ -1409,13 +1409,13 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
         for (LNK_InputObj *input = input_obj_list.first, *next; input != 0; input = next) {
           next = input->next;
           
-          B32 was_obj_loaded = hash_table_search_path_u64(loaded_obj_ht, input->dedup_id, 0);
+          b32 was_obj_loaded = hash_table_search_path_u64(loaded_obj_ht, input->dedup_id, 0);
           if (was_obj_loaded) {
             continue;
           }
           
           String8 full_path          = input->dedup_id.size ? os_full_path_from_path(scratch.arena, input->dedup_id) : str8_zero();
-          B32     was_full_path_used = hash_table_search_path_u64(loaded_obj_ht, full_path, 0);
+          b32     was_full_path_used = hash_table_search_path_u64(loaded_obj_ht, full_path, 0);
           if (was_full_path_used) {
             continue;
           }
@@ -1431,11 +1431,11 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
         ProfEnd();
         
         ProfBegin("Load Objs From Disk"); 
-        U64            thin_inputs_count = 0;
+        u64            thin_inputs_count = 0;
         LNK_InputObj **thin_inputs       = lnk_thin_array_from_input_obj_list(scratch.arena, unique_obj_input_list, &thin_inputs_count);
         String8Array   thin_input_paths  = lnk_path_array_from_input_obj_array(scratch.arena, thin_inputs, thin_inputs_count);
         String8Array   thin_input_datas  = lnk_read_data_from_file_path_parallel(tp, tp_arena->v[0], config->io_flags, thin_input_paths);
-        for (U64 thin_input_idx = 0; thin_input_idx < thin_inputs_count; thin_input_idx += 1) {
+        for (u64 thin_input_idx = 0; thin_input_idx < thin_inputs_count; thin_input_idx += 1) {
           thin_inputs[thin_input_idx]->has_disk_read_failed = thin_input_datas.v[thin_input_idx].size == 0;
           thin_inputs[thin_input_idx]->data                 = thin_input_datas.v[thin_input_idx];
         }
@@ -1443,7 +1443,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
 
         ProfBegin("Disk Read Check");
         LNK_InputObj **input_obj_arr = lnk_array_from_input_obj_list(scratch.arena, unique_obj_input_list);
-        for (U64 input_idx = 0; input_idx < unique_obj_input_list.count; ++input_idx) {
+        for (u64 input_idx = 0; input_idx < unique_obj_input_list.count; ++input_idx) {
           if (input_obj_arr[input_idx]->has_disk_read_failed) {
             lnk_error(LNK_Error_InvalidPath, "unable to find obj \"%S\"", input_obj_arr[input_idx]->path);
           }
@@ -1451,8 +1451,8 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
         ProfEnd();
         
         if (lnk_get_log_status(LNK_Log_InputObj)) {
-          U64 input_size = 0;
-          for (U64 i = 0; i < unique_obj_input_list.count; ++i) { input_size += input_obj_arr[i]->data.size; }
+          u64 input_size = 0;
+          for (u64 i = 0; i < unique_obj_input_list.count; ++i) { input_size += input_obj_arr[i]->data.size; }
           lnk_log(LNK_Log_InputObj, "[ Obj Input Size %M ]", input_size);
         }
         
@@ -1462,7 +1462,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
         // if the machine was omitted on the command line, derive machine from obj
         //
         if (config->machine == COFF_MachineType_Unknown) {
-          for (U64 obj_idx = 0; obj_idx < obj_node_arr.count; obj_idx += 1) {
+          for (u64 obj_idx = 0; obj_idx < obj_node_arr.count; obj_idx += 1) {
             if (obj_node_arr.v[obj_idx].data.header.machine != COFF_MachineType_Unknown) {
               config->machine = obj_node_arr.v[obj_idx].data.header.machine;
 
@@ -1476,7 +1476,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
         }
 
         ProfBegin("Handle Directives");
-        for (U64 obj_idx = 0; obj_idx < obj_node_arr.count; obj_idx += 1) {
+        for (u64 obj_idx = 0; obj_idx < obj_node_arr.count; obj_idx += 1) {
           LNK_Obj *obj = &obj_node_arr.v[obj_idx].data;
 
           LNK_DirectiveInfo directive_info = {0};
@@ -1484,7 +1484,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
             COFF_SectionHeader *section_table = (COFF_SectionHeader *)str8_substr(obj->data, obj->header.section_table_range).str;
 
             String8List drectve_data = {0};
-            for (U64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
+            for (u64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
               COFF_SectionHeader *sect_header = &section_table[sect_idx];
               if (sect_header->flags & COFF_SectionFlag_LnkInfo) {
                 String8 sect_name = str8_cstring_capped(sect_header->name, sect_header->name + sizeof(sect_header->name));
@@ -1607,12 +1607,12 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
         ProfBegin("Input Libs");
 
         // input libs from command line only
-        U64 input_source_opl = len(input_libs);
+        u64 input_source_opl = len(input_libs);
         if (config->no_default_libs) {
           input_source_opl = LNK_InputSource_Default;
         }
         
-        for (U64 input_source = 0; input_source < len(input_libs); ++input_source) {
+        for (u64 input_source = 0; input_source < len(input_libs); ++input_source) {
           ProfBeginV("Input Source %S", lnk_string_from_input_source(input_source));
 
           Temp             temp                  = temp_begin(scratch.arena);
@@ -1686,8 +1686,8 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
           
           if (lnk_get_log_status(LNK_Log_InputLib)) {
             if (libs.count > 0) {
-              U64 input_size = 0;
-              for (U64 i = 0; i < libs.count; ++i) { input_size += libs.v[i].data.data.size; }
+              u64 input_size = 0;
+              for (u64 i = 0; i < libs.count; ++i) { input_size += libs.v[i].data.data.size; }
               lnk_log(LNK_Log_InputObj, "[ Lib Input Size %M ]", input_size);
             }
           }
@@ -1759,15 +1759,15 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
         ProfBegin("Lookup Entry Point");
         LNK_Symbol *entry_point_symbol = 0;
         
-        B32 is_entry_point_unspecified = config->entry_point_name.size == 0;
+        b32 is_entry_point_unspecified = config->entry_point_name.size == 0;
         if (is_entry_point_unspecified) {
           if (config->subsystem == PE_WindowsSubsystem_UNKNOWN) {
             // we don't have a subsystem and entry point name,
             // so we loop over every subsystem and search potential entry
             // points in the symbol table 
-            for (U64 subsys_idx = 0; subsys_idx < PE_WindowsSubsystem_COUNT; subsys_idx += 1) {
+            for (u64 subsys_idx = 0; subsys_idx < PE_WindowsSubsystem_COUNT; subsys_idx += 1) {
               String8Array name_arr  = pe_get_entry_point_names(config->machine, (PE_WindowsSubsystem)subsys_idx, config->file_characteristics);
-              for (U64 entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
+              for (u64 entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
                 entry_point_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScope_Defined, name_arr.v[entry_idx]);
                 if (entry_point_symbol) {
                   config->subsystem = (PE_WindowsSubsystem)subsys_idx;
@@ -1778,9 +1778,9 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
             
             // search for potential entry points in libs
             if (!entry_point_symbol) {
-              for (U64 subsys_idx = 0; subsys_idx < PE_WindowsSubsystem_COUNT; subsys_idx += 1) {
+              for (u64 subsys_idx = 0; subsys_idx < PE_WindowsSubsystem_COUNT; subsys_idx += 1) {
                 String8Array name_arr = pe_get_entry_point_names(config->machine, (PE_WindowsSubsystem)subsys_idx, config->file_characteristics);
-                for (U64 entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
+                for (u64 entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
                   entry_point_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScope_Lib, name_arr.v[entry_idx]);
                   if (entry_point_symbol) {
                     config->subsystem = (PE_WindowsSubsystem)subsys_idx;
@@ -1795,7 +1795,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
             // we have subsystem but no entry point name, get potential entry point names
             // and see which is in the symbol table
             String8Array name_arr = pe_get_entry_point_names(config->machine, config->subsystem, config->file_characteristics);
-            for (U64 entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
+            for (u64 entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
               LNK_Symbol *symbol = lnk_symbol_table_search(symtab, LNK_SymbolScope_Defined, name_arr.v[entry_idx]);
               if (symbol) {
                 if (entry_point_symbol) {
@@ -1811,7 +1811,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
             
             // search for entry point in libs
             if (!entry_point_symbol) {
-              for (U64 entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
+              for (u64 entry_idx = 0; entry_idx < name_arr.count; entry_idx += 1) {
                 entry_point_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScope_Lib, name_arr.v[entry_idx]);
                 if (entry_point_symbol) {
                   break;
@@ -1905,12 +1905,12 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
           ProfBegin("Build Delay Import Table");
 
           COFF_TimeStamp time_stamp = COFF_TimeStamp_Max;
-          B32 emit_biat = config->import_table_emit_biat == LNK_SwitchState_Yes;
-          B32 emit_uiat = config->import_table_emit_uiat == LNK_SwitchState_Yes;
+          b32 emit_biat = config->import_table_emit_biat == LNK_SwitchState_Yes;
+          b32 emit_uiat = config->import_table_emit_uiat == LNK_SwitchState_Yes;
           String8 *dll_names = keys_from_hash_table_string(scratch.arena, delayed_imports);
           String8List **dll_import_headers = values_from_hash_table_raw(scratch.arena, delayed_imports);
 
-          for (U64 dll_idx = 0; dll_idx < delayed_imports->count; dll_idx += 1) {
+          for (u64 dll_idx = 0; dll_idx < delayed_imports->count; dll_idx += 1) {
             String8 import_debug_symbols = lnk_make_dll_import_debug_symbols(scratch.arena, config->machine, dll_names[dll_idx]);
             LNK_InputObj *input = lnk_input_obj_list_push(scratch.arena, &input_obj_list);
             input->input_idx = input_obj_list.count;
@@ -1944,7 +1944,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
           COFF_TimeStamp time_stamp = COFF_TimeStamp_Max;
           String8 *dll_names = keys_from_hash_table_string(scratch.arena, static_imports);
           String8List **dll_import_headers = values_from_hash_table_raw(scratch.arena, static_imports);
-          for (U64 dll_idx = 0; dll_idx < static_imports->count; dll_idx += 1) {
+          for (u64 dll_idx = 0; dll_idx < static_imports->count; dll_idx += 1) {
             String8 import_debug_symbols = lnk_make_dll_import_debug_symbols(scratch.arena, config->machine, dll_names[dll_idx]);
             LNK_InputObj *input = lnk_input_obj_list_push(scratch.arena, &input_obj_list);
             input->input_idx = input_obj_list.count;
@@ -2142,8 +2142,8 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
       continue;
     }
     {
-      B32 have_pending_lib_inputs = 0;
-      for (U64 i = 0; i < len(input_libs); ++i) {
+      b32 have_pending_lib_inputs = 0;
+      for (u64 i = 0; i < len(input_libs); ++i) {
         if (input_libs[i].node_count) {
           have_pending_lib_inputs = 1;
           break;
@@ -2192,13 +2192,13 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
   // log
   {
     if (lnk_get_log_status(LNK_Log_InputObj)) {
-      U64 total_input_size = 0;
+      u64 total_input_size = 0;
       for (LNK_ObjNode *obj_n = obj_list.first; obj_n != 0; obj_n = obj_n->next) { total_input_size += obj_n->data.data.size; }
       lnk_log(LNK_Log_InputObj, "[Total Obj Input Size %M]", total_input_size);
     }
     if (lnk_get_log_status(LNK_Log_InputLib)) {
-      U64 total_input_size = 0;
-      for (U64 i = 0; i < len(lib_index); ++i) {
+      u64 total_input_size = 0;
+      for (u64 i = 0; i < len(lib_index); ++i) {
         LNK_LibList list = lib_index[i];
         for (LNK_LibNode *lib_n = list.first; lib_n != 0; lib_n = lib_n->next) { total_input_size += lib_n->data.data.size; }
       }
@@ -2236,7 +2236,7 @@ internal LNK_SymbolTableFixup *
 lnk_array_from_symbol_table_fixup_list(Arena *arena, LNK_SymbolTableFixupList list)
 {
   LNK_SymbolTableFixup *result = push_array(arena, LNK_SymbolTableFixup, list.count);
-  U64 idx = 0;
+  u64 idx = 0;
   for (LNK_SymbolTableFixupNode *n = list.first; n != 0; n = n->next, idx += 1) {
     result[idx] = n->data;
   }
@@ -2250,7 +2250,7 @@ THREAD_POOL_TASK_FUNC(lnk_gather_symtab_fixups_task)
   Temp scratch = scratch_begin(&arena, 1);
 
   LNK_BuildImageTask *task    = raw_task;
-  U64                 obj_idx = task_id;
+  u64                 obj_idx = task_id;
   LNK_Obj            *obj     = task->objs[task_id];
 
   ProfBeginV("%S", obj->path);
@@ -2259,7 +2259,7 @@ THREAD_POOL_TASK_FUNC(lnk_gather_symtab_fixups_task)
   LNK_Symbol **symlinks = push_array(scratch.arena, LNK_Symbol *, obj->header.section_count_no_null+1);
   {
     COFF_ParsedSymbol symbol;
-    for (U64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
+    for (u64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
       symbol = lnk_parsed_symbol_from_coff_symbol_idx(obj, symbol_idx);
       COFF_SymbolValueInterpType interp = coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class);
       if (interp == COFF_SymbolValueInterp_Regular && symbol.aux_symbol_count == 0 && symbol.storage_class == COFF_SymStorageClass_External) {
@@ -2277,7 +2277,7 @@ THREAD_POOL_TASK_FUNC(lnk_gather_symtab_fixups_task)
   struct LookupLocation {
     struct LookupLocation *next;
     LNK_Obj *obj;
-    U64      symbol_idx;
+    u64      symbol_idx;
   };
   struct LookupLocation *lookup_first     = 0;
   struct LookupLocation *lookup_last      = 0;
@@ -2287,7 +2287,7 @@ THREAD_POOL_TASK_FUNC(lnk_gather_symtab_fixups_task)
   LNK_SymbolTableFixupList fixups = {0};
   {
     COFF_ParsedSymbol symbol;
-    for (U64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
+    for (u64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
       symbol = lnk_parsed_symbol_from_coff_symbol_idx(obj, symbol_idx);
 
       COFF_SymbolValueInterpType interp = coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class);
@@ -2346,7 +2346,7 @@ THREAD_POOL_TASK_FUNC(lnk_gather_symtab_fixups_task)
       } else if (interp == COFF_SymbolValueInterp_Weak) {
         String8  lookup_name       = symbol.name;
         LNK_Obj *lookup_obj        = obj;
-        U64      lookup_symbol_idx = symbol_idx;
+        u64      lookup_symbol_idx = symbol_idx;
         for (;;) {
           LNK_Symbol *defn = lnk_symbol_table_search(task->symtab, LNK_SymbolScope_Defined, lookup_name);
           if (defn == 0) {
@@ -2414,7 +2414,7 @@ THREAD_POOL_TASK_FUNC(lnk_gather_symtab_fixups_task)
 }
 
 internal void
-lnk_gc_sections(U64 objs_count, LNK_Obj **objs, LNK_SymbolTableFixupArray *objs_fixups, PairU32 root)
+lnk_gc_sections(u64 objs_count, LNK_Obj **objs, LNK_SymbolTableFixupArray *objs_fixups, PairU32 root)
 {
   for (;;) {
     LNK_Obj                   *obj            = objs[root.v0];
@@ -2423,12 +2423,12 @@ lnk_gc_sections(U64 objs_count, LNK_Obj **objs, LNK_SymbolTableFixupArray *objs_
     COFF_Reloc                *relocs         = str8_deserial_get_raw_ptr(obj->data, reloc_info.array_off, sizeof(*relocs)*reloc_info.count);
     LNK_SymbolTableFixupArray *fixups         = objs_fixups[root.v0];
 
-    for (U64 reloc_idx = 0; reloc_idx < reloc_info.count; reloc_idx += 1) {
+    for (u64 reloc_idx = 0; reloc_idx < reloc_info.count; reloc_idx += 1) {
       COFF_Reloc           *reloc = &relocs[reloc_idx];
       LNK_SymbolTableFixup *fixup = lnk_bsearch_symbol_table_fixup_array(fixups, reloc->isymbol);
 
       LNK_Obj *symbol_obj;
-      U64      symbol_idx;
+      u64      symbol_idx;
       if (fixup == 0) {
         symbol_obj = obj;
         symbol_idx = reloc->isymbol;
@@ -2452,18 +2452,18 @@ THREAD_POOL_TASK_FUNC(lnk_remove_associative_sections_task)
   LNK_Obj *obj          = task->objs[task_id];
   String8  string_table = str8_substr(obj->data, obj->header.string_table_range);
   String8  symbol_table = str8_substr(obj->data, obj->header.symbol_table_range);
-  for (U64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
+  for (u64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
     // find associate section head section index
-    U32 head_sect_idx = max_U32;
-    for (U64 current_sect_idx = sect_idx;;) {
-      U32 symbol_idx = obj->comdats[current_sect_idx];
+    u32 head_sect_idx = max_U32;
+    for (u64 current_sect_idx = sect_idx;;) {
+      u32 symbol_idx = obj->comdats[current_sect_idx];
       if (symbol_idx == max_U32) {
         break;
       }
 
       COFF_ParsedSymbol symbol = coff_parse_symbol(obj->header, string_table, symbol_table, symbol_idx);
       COFF_ComdatSelectType selection = COFF_ComdatSelect_Null;
-      U32 section_number = 0;
+      u32 section_number = 0;
       coff_parse_secdef(symbol, obj->header.is_big_obj, &selection, &section_number, 0, 0);
       if (selection != COFF_ComdatSelect_Associative) {
         head_sect_idx = current_sect_idx;
@@ -2488,14 +2488,14 @@ THREAD_POOL_TASK_FUNC(lnk_gather_section_definitions_task)
   Temp scratch = scratch_begin(&arena, 1);
 
   LNK_BuildImageTask *task    = raw_task;
-  U64                 obj_idx = task_id;
+  u64                 obj_idx = task_id;
 
   HashTable          *sect_defn_ht  = task->u.gather_sects.defns[worker_id];
   LNK_Obj            *obj           = task->objs[obj_idx];
   COFF_SectionHeader *section_table = (COFF_SectionHeader *)str8_substr(obj->data, obj->header.section_table_range).str;
   String8             string_table  = str8_substr(obj->data, obj->header.string_table_range);
 
-  for (U64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
+  for (u64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
     COFF_SectionHeader *sect_header = &section_table[sect_idx];
 
     if (~sect_header->flags & COFF_SectionFlag_LnkRemove && sect_header->fsize > 0) {
@@ -2535,14 +2535,14 @@ THREAD_POOL_TASK_FUNC(lnk_gather_section_contribs_task)
   Temp scratch = scratch_begin(&arena, 1);
 
   LNK_BuildImageTask *task    = raw_task;
-  U64                 obj_idx = task_id;
+  u64                 obj_idx = task_id;
 
   LNK_Obj            *obj           = task->objs[obj_idx];
   COFF_SectionHeader *section_table = (COFF_SectionHeader *)str8_substr(obj->data, obj->header.section_table_range).str;
   String8             string_table  = str8_substr(obj->data, obj->header.string_table_range);
 
   ProfBeginV("Gather Section Contribs [%S]", obj->path);
-  for (U64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
+  for (u64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
     LNK_SectionContrib *sc          = task->null_sc;
     COFF_SectionHeader *sect_header = &section_table[sect_idx];
     if (~sect_header->flags & COFF_SectionFlag_LnkRemove && sect_header->fsize > 0) {
@@ -2563,7 +2563,7 @@ THREAD_POOL_TASK_FUNC(lnk_gather_section_contribs_task)
           data = str8_substr(obj->data, rng_1u64(sect_header->foff, sect_header->foff + sect_header->fsize));
         }
 
-        U16 sc_align = coff_align_size_from_section_flags(sect_header->flags);
+        u16 sc_align = coff_align_size_from_section_flags(sect_header->flags);
         sc = lnk_section_contrib_chunk_push_atomic(sc_chunk, 1);
         sc->first_data_node.next   = 0;
         sc->first_data_node.string = data;
@@ -2584,11 +2584,11 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_flag_debug_symbols_task)
 {
   LNK_BuildImageTask *task    = raw_task;
-  U64                 obj_idx = task_id;
+  u64                 obj_idx = task_id;
   LNK_Obj            *obj     = task->objs[obj_idx];
 
   COFF_ParsedSymbol symbol;
-  for (U64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
+  for (u64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
     symbol = lnk_parsed_symbol_from_coff_symbol_idx(obj, symbol_idx);
     COFF_SymbolValueInterpType interp = coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class);
     if (interp == COFF_SymbolValueInterp_Regular) {
@@ -2605,7 +2605,7 @@ THREAD_POOL_TASK_FUNC(lnk_patch_comdat_leaders_task)
   Temp scratch = scratch_begin(&arena, 1);
 
   LNK_BuildImageTask *task    = raw_task;
-  U64                 obj_idx = task_id;
+  u64                 obj_idx = task_id;
   LNK_Obj            *obj     = task->objs[obj_idx];
 
   ProfBeginV("%S", obj->path);
@@ -2614,7 +2614,7 @@ THREAD_POOL_TASK_FUNC(lnk_patch_comdat_leaders_task)
   LNK_Symbol **symlinks = push_array(scratch.arena, LNK_Symbol *, obj->header.section_count_no_null+1);
   {
     COFF_ParsedSymbol symbol;
-    for (U64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
+    for (u64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
       symbol = lnk_parsed_symbol_from_coff_symbol_idx(obj, symbol_idx);
       COFF_SymbolValueInterpType interp = coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class);
       if (interp == COFF_SymbolValueInterp_Regular && symbol.aux_symbol_count == 0 && symbol.storage_class == COFF_SymStorageClass_External) {
@@ -2630,7 +2630,7 @@ THREAD_POOL_TASK_FUNC(lnk_patch_comdat_leaders_task)
   ProfEnd();
 
   ProfBeginV("Set COMDAT Section Contribs");
-  for (U64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
+  for (u64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
     COFF_SectionHeader *section_header = lnk_coff_section_header_from_section_number(obj, sect_idx+1);
     if (section_header->flags & COFF_SectionFlag_LnkCOMDAT) {
       LNK_Symbol *sym = symlinks[sect_idx+1];
@@ -2644,15 +2644,15 @@ THREAD_POOL_TASK_FUNC(lnk_patch_comdat_leaders_task)
 
   ProfBegin("Patch COMDAT Offsets");
   COFF_ParsedSymbol symbol;
-  for (U64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
+  for (u64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
     symbol = lnk_parsed_symbol_from_coff_symbol_idx(obj, symbol_idx);
 
     COFF_SymbolValueInterpType interp = coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class);
     if (interp == COFF_SymbolValueInterp_Regular) {
       LNK_Symbol *symlink = symlinks[symbol.section_number];
       if (symlink && symlink->u.defined.obj != obj) {
-        U32 section_number;
-        U32 value;
+        u32 section_number;
+        u32 value;
         if (symbol.storage_class == COFF_SymStorageClass_External) {
           // COMDAT leader may be at a different offset, so update this symbol with leader's offset
           COFF_ParsedSymbol parsed_symlink = lnk_parsed_symbol_from_coff_symbol_idx(symlink->u.defined.obj, symlink->u.defined.symbol_idx);
@@ -2671,7 +2671,7 @@ THREAD_POOL_TASK_FUNC(lnk_patch_comdat_leaders_task)
           symbol32->value          = value;
         } else {
           COFF_Symbol16 *symbol16  = symbol.raw_symbol;
-          symbol16->section_number = (U16)section_number;
+          symbol16->section_number = (u16)section_number;
           symbol16->value          = value;
         }
       }
@@ -2688,8 +2688,8 @@ internal int
 lnk_section_contrib_ptr_is_before(void *raw_a, void *raw_b)
 {
   LNK_SectionContrib **a = raw_a, **b = raw_b;
-  U64 input_idx_a = Compose64Bit((*a)->u.obj_idx, (*a)->u.obj_sect_idx);
-  U64 input_idx_b = Compose64Bit((*b)->u.obj_idx, (*b)->u.obj_sect_idx);
+  u64 input_idx_a = Compose64Bit((*a)->u.obj_idx, (*a)->u.obj_sect_idx);
+  u64 input_idx_b = Compose64Bit((*b)->u.obj_idx, (*b)->u.obj_sect_idx);
   return u64_compar_is_before(&input_idx_a, &input_idx_b);
 }
 
@@ -2733,12 +2733,12 @@ THREAD_POOL_TASK_FUNC(lnk_patch_common_block_leaders_task)
   LNK_BuildImageTask *task          = raw_task;
   Rng1U64             contrib_range = task->u.patch_symtabs.ranges[task_id];
 
-  for (U64 contrib_idx = contrib_range.min; contrib_idx < contrib_range.max; contrib_idx += 1) {
+  for (u64 contrib_idx = contrib_range.min; contrib_idx < contrib_range.max; contrib_idx += 1) {
     LNK_CommonBlockContrib *contrib        = &task->u.patch_symtabs.common_block_contribs[contrib_idx];
     LNK_Symbol             *symbol         = contrib->symbol;
     LNK_Obj                *obj            = symbol->u.defined.obj;
     COFF_ParsedSymbol       parsed_symbol  = lnk_parsed_symbol_from_coff_symbol_idx(obj, symbol->u.defined.symbol_idx);
-    U64                     section_number = task->u.patch_symtabs.common_block_sect->sect_idx + 1;
+    u64                     section_number = task->u.patch_symtabs.common_block_sect->sect_idx + 1;
 
     if (obj->header.is_big_obj) {
       COFF_Symbol32 *symbol32 = parsed_symbol.raw_symbol;
@@ -2760,12 +2760,12 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_patch_common_block_symbols_task)
 {
   LNK_BuildImageTask *task    = raw_task;
-  U64                 obj_idx = task_id;
+  u64                 obj_idx = task_id;
   LNK_Obj            *obj     = task->objs[obj_idx];
 
   ProfBeginV("Patch Common Block Symbols [%S]", obj->path);
   COFF_ParsedSymbol symbol;
-  for (U64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
+  for (u64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
     symbol = lnk_parsed_symbol_from_coff_symbol_idx(obj, symbol_idx);
     COFF_SymbolValueInterpType interp = coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class);
 
@@ -2795,12 +2795,12 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_patch_regular_symbols_task)
 {
   LNK_BuildImageTask *task    = raw_task;
-  U64                 obj_idx = task_id;
+  u64                 obj_idx = task_id;
   LNK_Obj            *obj     = task->objs[obj_idx];
 
   ProfBegin("Patch Regular Symbols [%S]", obj->path);
   COFF_ParsedSymbol symbol;
-  for (U64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
+  for (u64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
     symbol = lnk_parsed_symbol_from_coff_symbol_idx(obj, symbol_idx);
 
     if (task->u.patch_symtabs.was_symbol_patched[obj_idx][symbol_idx]) {
@@ -2812,8 +2812,8 @@ THREAD_POOL_TASK_FUNC(lnk_patch_regular_symbols_task)
       COFF_SectionHeader *sect_header = lnk_coff_section_header_from_section_number(obj, symbol.section_number);
 
       LNK_SectionContrib *sc = task->sect_map[obj_idx][symbol.section_number-1];
-      U16                 section_number;
-      U32                 value;
+      u16                 section_number;
+      u32                 value;
       if (sc == task->null_sc) {
         section_number = LNK_REMOVED_SECTION_NUMBER_16;
         value          = max_U32;
@@ -2840,12 +2840,12 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_patch_abs_symbols_task)
 {
   LNK_BuildImageTask *task    = raw_task;
-  U64                 obj_idx = task_id;
+  u64                 obj_idx = task_id;
   LNK_Obj            *obj     = task->objs[obj_idx];
 
   ProfBeginV("Patch Absolute Symbols [%S]", obj->path);
   COFF_ParsedSymbol symbol;
-  for (U64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
+  for (u64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
     symbol = lnk_parsed_symbol_from_coff_symbol_idx(obj, symbol_idx);
     COFF_SymbolValueInterpType interp = coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class);
 
@@ -2884,7 +2884,7 @@ THREAD_POOL_TASK_FUNC(lnk_patch_abs_symbols_task)
 }
 
 internal void
-lnk_patch_weak_external_symbol(B32 is_big_obj, void *symbol, COFF_ParsedSymbol parsed_symbol)
+lnk_patch_weak_external_symbol(b32 is_big_obj, void *symbol, COFF_ParsedSymbol parsed_symbol)
 {
   COFF_SymbolValueInterpType parsed_symbol_interp = coff_interp_symbol(parsed_symbol.section_number, parsed_symbol.value, parsed_symbol.storage_class);
   switch (parsed_symbol_interp) {
@@ -2934,12 +2934,12 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_patch_undefined_symbols_task)
 {
   LNK_BuildImageTask *task    = raw_task;
-  U64                 obj_idx = task_id;
+  u64                 obj_idx = task_id;
   LNK_Obj            *obj     = task->objs[obj_idx];
 
   ProfBeginV("Patch Undefined Symbols [%S]", obj->path);
   COFF_ParsedSymbol symbol;
-  for (U64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
+  for (u64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
     symbol = lnk_parsed_symbol_from_coff_symbol_idx(obj, symbol_idx);
     COFF_SymbolValueInterpType interp = coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class);
     if (interp == COFF_SymbolValueInterp_Undefined) {
@@ -2966,12 +2966,12 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_patch_weak_symbols_with_strong_definition_task)
 {
   LNK_BuildImageTask *task    = raw_task;
-  U64                 obj_idx = task_id;
+  u64                 obj_idx = task_id;
   LNK_Obj            *obj     = task->objs[obj_idx];
 
   ProfBeginV("Patch Weak Symbols [%S]", obj->path);
   COFF_ParsedSymbol symbol;
-  for (U64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
+  for (u64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
     symbol = lnk_parsed_symbol_from_coff_symbol_idx(obj, symbol_idx);
     COFF_SymbolValueInterpType interp = coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class);
     if (interp == COFF_SymbolValueInterp_Weak) {
@@ -2994,14 +2994,14 @@ THREAD_POOL_TASK_FUNC(lnk_patch_weak_symbols_with_fallback_definition_task)
   Temp scratch = scratch_begin(&arena, 1);
 
   LNK_BuildImageTask *task    = raw_task;
-  U64                 obj_idx = task_id;
+  u64                 obj_idx = task_id;
   LNK_Obj            *obj     = task->objs[obj_idx];
 
   HashTable *visited_symbols_ht = hash_table_init(scratch.arena, 32);
   struct LookupLocation {
     struct LookupLocation *next;
     LNK_Obj *obj;
-    U64      symbol_idx;
+    u64      symbol_idx;
   };
   struct LookupLocation *lookup_first     = 0;
   struct LookupLocation *lookup_last      = 0;
@@ -3009,14 +3009,14 @@ THREAD_POOL_TASK_FUNC(lnk_patch_weak_symbols_with_fallback_definition_task)
 
   ProfBegin("Patch Weak Symbols [%S]", obj->path);
   COFF_ParsedSymbol symbol;
-  for (U64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
+  for (u64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
     symbol = lnk_parsed_symbol_from_coff_symbol_idx(obj, symbol_idx);
 
     COFF_SymbolValueInterpType interp = coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class);
     if (interp == COFF_SymbolValueInterp_Undefined && symbol.storage_class == COFF_SymStorageClass_External) {
       String8  lookup_name       = symbol.name;
       LNK_Obj *lookup_obj        = obj;
-      U64      lookup_symbol_idx = symbol_idx;
+      u64      lookup_symbol_idx = symbol_idx;
       for (;;) {
         // lookup definition
         LNK_Symbol *defn = lnk_symbol_table_search(task->symtab, LNK_SymbolScope_Defined, lookup_name);
@@ -3087,12 +3087,12 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_patch_weak_symbols_with_defined_tags_task)
 {
   LNK_BuildImageTask *task    = raw_task;
-  U64                 obj_idx = task_id;
+  u64                 obj_idx = task_id;
   LNK_Obj            *obj     = task->objs[obj_idx];
 
   ProfBeginV("Patch Weak Symbols [%S]", obj->path);
   COFF_ParsedSymbol symbol;
-  for (U64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
+  for (u64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
     symbol = lnk_parsed_symbol_from_coff_symbol_idx(obj, symbol_idx);
     COFF_SymbolValueInterpType interp = coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class);
     if (interp == COFF_SymbolValueInterp_Weak) {
@@ -3107,12 +3107,12 @@ THREAD_POOL_TASK_FUNC(lnk_patch_weak_symbols_with_defined_tags_task)
   ProfEnd();
 }
 
-internal U64
-lnk_compute_win32_image_header_size(LNK_Config *config, U64 sect_count)
+internal u64
+lnk_compute_win32_image_header_size(LNK_Config *config, u64 sect_count)
 {
-  U64 image_header_size = 0;
+  u64 image_header_size = 0;
   image_header_size += sizeof(PE_DosHeader) + pe_dos_program.size;
-  image_header_size += sizeof(U32); // PE_MAGIC
+  image_header_size += sizeof(u32); // PE_MAGIC
   image_header_size += sizeof(COFF_FileHeader);
   image_header_size += pe_has_plus_header(config->machine) ? sizeof(PE_OptionalHeader32Plus) : sizeof(PE_OptionalHeader32);
   image_header_size += sizeof(PE_DataDirectory) * config->data_dir_count;
@@ -3131,7 +3131,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_reloc_patcher)
   String8              symbol_table  = str8_substr(obj->data, obj_header.symbol_table_range);
   String8              string_table  = str8_substr(obj->data, obj_header.string_table_range);
 
-  for (U64 sect_idx = 0; sect_idx < obj_header.section_count_no_null; sect_idx += 1) {
+  for (u64 sect_idx = 0; sect_idx < obj_header.section_count_no_null; sect_idx += 1) {
     COFF_SectionHeader *section_header = &section_table[sect_idx];
 
     // was section removed?
@@ -3158,7 +3158,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_reloc_patcher)
     COFF_Reloc    *relocs     = (COFF_Reloc *)(obj->data.str + reloc_info.array_off);
 
     // apply relocs
-    for (U64 reloc_idx = 0; reloc_idx < reloc_info.count; reloc_idx += 1) {
+    for (u64 reloc_idx = 0; reloc_idx < reloc_info.count; reloc_idx += 1) {
       COFF_Reloc *reloc = &relocs[reloc_idx];
 
       // error check relocation
@@ -3171,12 +3171,12 @@ THREAD_POOL_TASK_FUNC(lnk_obj_reloc_patcher)
       }
 
       // compute virtual offsets
-      U64 reloc_voff = section_header->voff + reloc->apply_off;
+      u64 reloc_voff = section_header->voff + reloc->apply_off;
 
       // compute symbol location values
-      U32 symbol_secnum = 0;
-      U32 symbol_secoff = 0;
-      S64 symbol_voff   = 0;
+      u32 symbol_secnum = 0;
+      u32 symbol_secoff = 0;
+      i64 symbol_voff   = 0;
       {
         COFF_ParsedSymbol          symbol = lnk_parsed_symbol_from_coff_symbol_idx(obj, reloc->isymbol);
         COFF_SymbolValueInterpType interp = coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class);
@@ -3191,7 +3191,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_reloc_patcher)
 
           symbol_secnum = symbol.section_number;
           symbol_secoff = symbol.value;
-          symbol_voff   = safe_cast_u32((U64)task->image_section_table[symbol.section_number]->voff + (U64)symbol_secoff);
+          symbol_voff   = safe_cast_u32((u64)task->image_section_table[symbol.section_number]->voff + (u64)symbol_secoff);
         } else if (interp == COFF_SymbolValueInterp_Abs) {
           // There aren't enough bits in COFF symbol to store full image base address,
           // so we special case __ImageBase. A better solution would be to add
@@ -3202,7 +3202,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_reloc_patcher)
 
           symbol_secnum = 0;
           symbol_secoff = 0;
-          symbol_voff   = (S64)symbol.value - (S64)task->image_base;
+          symbol_voff   = (i64)symbol.value - (i64)task->image_base;
         } else if (interp == COFF_SymbolValueInterp_Weak) {
           // unresolved weak
         } else if (interp == COFF_SymbolValueInterp_Undefined) {
@@ -3222,12 +3222,12 @@ THREAD_POOL_TASK_FUNC(lnk_obj_reloc_patcher)
 
       // read addend
       assert(reloc_value.size <= section_data.size);
-      U64 raw_addend = 0;
+      u64 raw_addend = 0;
       str8_deserial_read(section_data, reloc->apply_off, &raw_addend, reloc_value.size, 1);
 
       // compute new reloc value
-      S64 addend       = extend_sign64(raw_addend, reloc_value.size);
-      U64 reloc_result = reloc_value.value + addend;
+      i64 addend       = extend_sign64(raw_addend, reloc_value.size);
+      u64 reloc_result = reloc_value.value + addend;
 
       // commit new reloc value
       MemoryCopy(section_data.str + reloc->apply_off, &reloc_result, reloc_value.size);
@@ -3239,8 +3239,8 @@ internal int
 lnk_section_definition_is_before(void *raw_a, void *raw_b)
 {
   LNK_SectionDefinition **a = raw_a, **b = raw_b;
-  U64 input_idx_a = Compose64Bit((*a)->obj->input_idx, (*a)->obj_sect_idx);
-  U64 input_idx_b = Compose64Bit((*b)->obj->input_idx, (*b)->obj_sect_idx);
+  u64 input_idx_a = Compose64Bit((*a)->obj->input_idx, (*a)->obj_sect_idx);
+  u64 input_idx_b = Compose64Bit((*b)->obj->input_idx, (*b)->obj_sect_idx);
   return u64_compar_is_before(&input_idx_a, &input_idx_b);
 }
 
@@ -3251,7 +3251,7 @@ THREAD_POOL_TASK_FUNC(lnk_count_common_block_contribs_task)
   LNK_SymbolTable    *symtab = task->symtab;
 
   for (LNK_SymbolHashTrieChunk *chunk = symtab->chunk_lists[LNK_SymbolScope_Defined][task_id].first; chunk != 0; chunk = chunk->next) {
-    for (U64 i = 0; i < chunk->count; i += 1) {
+    for (u64 i = 0; i < chunk->count; i += 1) {
       LNK_Symbol                 *symbol        = chunk->v[i].symbol;
       COFF_ParsedSymbol           parsed_symbol = lnk_parsed_symbol_from_coff_symbol_idx(symbol->u.defined.obj, symbol->u.defined.symbol_idx);
       COFF_SymbolValueInterpType  parsed_interp = coff_interp_symbol(parsed_symbol.section_number, parsed_symbol.value, parsed_symbol.storage_class);
@@ -3267,10 +3267,10 @@ THREAD_POOL_TASK_FUNC(lnk_fill_out_common_block_contribs_task)
 {
   LNK_BuildImageTask *task   = raw_task;
   LNK_SymbolTable    *symtab = task->symtab;
-  U64                 cursor = task->u.common_block.offsets[task_id];
+  u64                 cursor = task->u.common_block.offsets[task_id];
 
   for (LNK_SymbolHashTrieChunk *chunk = symtab->chunk_lists[LNK_SymbolScope_Defined][task_id].first; chunk != 0; chunk = chunk->next) {
-    for (U64 i = 0; i < chunk->count; i += 1) {
+    for (u64 i = 0; i < chunk->count; i += 1) {
       LNK_Symbol                 *symbol        = chunk->v[i].symbol;
       COFF_ParsedSymbol           parsed_symbol = lnk_parsed_symbol_from_coff_symbol_idx(symbol->u.defined.obj, symbol->u.defined.symbol_idx);
       COFF_SymbolValueInterpType  parsed_interp = coff_interp_symbol(parsed_symbol.section_number, parsed_symbol.value, parsed_symbol.storage_class);
@@ -3287,11 +3287,11 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_flag_hotpatch_contribs_task)
 {
   LNK_BuildImageTask *task    = raw_task;
-  U64                 obj_idx = task_id;
+  u64                 obj_idx = task_id;
   LNK_Obj            *obj     = task->objs[obj_idx];
   
   COFF_ParsedSymbol symbol;
-  for (U64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
+  for (u64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
     symbol = lnk_parsed_symbol_from_coff_symbol_idx(obj, symbol_idx);
     COFF_SymbolValueInterpType interp = coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class);
     if (interp == COFF_SymbolValueInterp_Regular && COFF_SymbolType_IsFunc(symbol.type)) {
@@ -3307,12 +3307,12 @@ THREAD_POOL_TASK_FUNC(lnk_flag_hotpatch_contribs_task)
 internal void
 lnk_push_coff_symbols_from_data(Arena *arena, LNK_SymbolList *symbol_list, String8 data, LNK_SymbolArray obj_symbols)
 {
-  if (data.size % sizeof(U32)) {
+  if (data.size % sizeof(u32)) {
     // TODO: report invalid data size
   }
-  U64 count = data.size / sizeof(U32);
-  for (U32 *ptr = (U32*)data.str, *opl = ptr + count; ptr < opl; ++ptr) {
-    U32 coff_symbol_idx = *ptr;
+  u64 count = data.size / sizeof(u32);
+  for (u32 *ptr = (u32*)data.str, *opl = ptr + count; ptr < opl; ++ptr) {
+    u32 coff_symbol_idx = *ptr;
     if (coff_symbol_idx >= obj_symbols.count) {
       // TODO: report invalid symbol index
       continue;
@@ -3324,21 +3324,21 @@ lnk_push_coff_symbols_from_data(Arena *arena, LNK_SymbolList *symbol_list, Strin
 }
 
 internal String8
-lnk_build_guard_data(Arena *arena, []u64 voff_arr, U64 stride)
+lnk_build_guard_data(Arena *arena, []u64 voff_arr, u64 stride)
 {
-  assert(stride >= sizeof(U32));
+  assert(stride >= sizeof(u32));
   
   // check for duplicates
 #if DEBUG
-  for (U64 i = 1; i < voff_arr.count; ++i) {
+  for (u64 i = 1; i < voff_arr.count; ++i) {
     assert(voff_arr.[i-1] != voff_ptr[i]);
   }
 #endif
   
-  U64 buffer_size = stride * voff_arr.count;
-  U8 *buffer = push_array(arena, U8, buffer_size);
-  for (U64 i = 0; i < voff_arr.count; ++i) {
-    U32 *voff_ptr = (U32*)(buffer + i * stride);
+  u64 buffer_size = stride * voff_arr.count;
+  u8 *buffer = push_array(arena, u8, buffer_size);
+  for (u64 i = 0; i < voff_arr.count; ++i) {
+    u32 *voff_ptr = (u32*)(buffer + i * stride);
     *voff_ptr = voff_arr.v[i];
   }
   
@@ -3350,12 +3350,12 @@ internal String8List
 lnk_build_guard_tables(TP_Context       *tp,
                        LNK_SectionTable *sectab,
                        LNK_SymbolTable  *symtab,
-                       U64               objs_count,
+                       u64               objs_count,
                        LNK_Obj         **objs,
                        COFF_MachineType  machine,
                        String8           entry_point_name,
                        LNK_GuardFlags    guard_flags,
-                       B32               emit_suppress_flag)
+                       b32               emit_suppress_flag)
 {
   NotImplemented;
   String8List result = {0};
@@ -3373,7 +3373,7 @@ lnk_build_guard_tables(TP_Context       *tp,
   for (LNK_ObjNode *obj_node = obj_list.first; obj_node != NULL; obj_node = obj_node->next) {
     LNK_Obj *obj = &obj_node->data;
     MSCRT_FeatFlags feat_flags = lnk_obj_get_features(obj);
-    B32 has_guard_flags = (feat_flags & MSCRT_FeatFlag_GUARD_CF) || (feat_flags & MSCRT_FeatFlag_GUARD_EH_CONT);
+    b32 has_guard_flags = (feat_flags & MSCRT_FeatFlag_GUARD_CF) || (feat_flags & MSCRT_FeatFlag_GUARD_EH_CONT);
     if (has_guard_flags) {
       LNK_SymbolArray symbol_arr = lnk_symbol_array_from_list(scratch.arena, obj->symbol_list);
       if (guard_flags & LNK_Guard_Cf) {
@@ -3403,7 +3403,7 @@ lnk_build_guard_tables(TP_Context       *tp,
       NotImplemented;
 #if 0
       // use relocation data in code sections to get function symbols
-      for (U64 isect = 0; isect < obj->sect_count; ++isect) {
+      for (u64 isect = 0; isect < obj->sect_count; ++isect) {
         LNK_Chunk *chunk = obj->chunk_arr[isect];
         if (!chunk) {
           continue;
@@ -3449,7 +3449,7 @@ lnk_build_guard_tables(TP_Context       *tp,
   {
     Temp temp = temp_begin(scratch.arena);
     KeyValuePair *raw_exports = key_value_pairs_from_hash_table(temp.arena, exptab->name_export_ht);
-    for (U64 i = 0; i < exptab->name_export_ht->count; ++i) {
+    for (u64 i = 0; i < exptab->name_export_ht->count; ++i) {
       LNK_Export *exp = raw_exports[i].value_raw;
       lnk_symbol_list_push(scratch.arena, &guard_symbol_list_table[GUARD_FIDS], exp->symbol);
     }
@@ -3462,9 +3462,9 @@ lnk_build_guard_tables(TP_Context       *tp,
 #if 0
   // push thunks
   LNK_SymbolScope scope_array[] = { LNK_SymbolScope_Defined, LNK_SymbolScope_Internal };
-  for (U64 iscope = 0; iscope < len(scope_array); ++iscope) {
+  for (u64 iscope = 0; iscope < len(scope_array); ++iscope) {
     LNK_SymbolScope scope = scope_array[iscope];
-    for (U64 ibucket = 0; ibucket < symtab->bucket_count[scope]; ++ibucket) {
+    for (u64 ibucket = 0; ibucket < symtab->bucket_count[scope]; ++ibucket) {
       for (LNK_SymbolNode *symbol_node = symtab->buckets[scope][ibucket].first;
            symbol_node != NULL;
            symbol_node = symbol_node->next) {
@@ -3484,8 +3484,8 @@ lnk_build_guard_tables(TP_Context       *tp,
   
   // compute symbols virtual offsets
   []u64 guard_voff_arr_table[GUARD_COUNT];
-  for (U64 i = 0; i < len(guard_symbol_list_table); ++i) {
-    U64List voff_list; MemoryZeroStruct(&voff_list);
+  for (u64 i = 0; i < len(guard_symbol_list_table); ++i) {
+    u64List voff_list; MemoryZeroStruct(&voff_list);
     LNK_SymbolList symbol_list = guard_symbol_list_table[i];
     for (LNK_SymbolNode *symbol_node = symbol_list.first; symbol_node != NULL; symbol_node = symbol_node->next) {
       LNK_Symbol *symbol = lnk_resolve_symbol(symtab, symbol_node->data);
@@ -3500,8 +3500,8 @@ lnk_build_guard_tables(TP_Context       *tp,
       if (lnk_chunk_is_discarded(chunk)) {
         continue;
       }
-      U64 chunk_voff = lnk_virt_off_from_chunk_ref(sect_id_map, chunk->ref);
-      U64 symbol_voff = chunk_voff + defined_symbol->u.chunk_offset;
+      u64 chunk_voff = lnk_virt_off_from_chunk_ref(sect_id_map, chunk->ref);
+      u64 symbol_voff = chunk_voff + defined_symbol->u.chunk_offset;
       assert(symbol_voff != 0);
       u64_list_push(scratch.arena, &voff_list, symbol_voff);
     }
@@ -3521,7 +3521,7 @@ lnk_build_guard_tables(TP_Context       *tp,
     { ".gljmp",   LNK_GLJMP_SYMBOL_NAME,   LNK_GLJMP_SECTION_FLAGS   },
     { ".gehcont", LNK_GEHCONT_SYMBOL_NAME, LNK_GEHCONT_SECTION_FLAGS },
   };
-  for (U64 i = 0; i < len(sect_layout); ++i) {
+  for (u64 i = 0; i < len(sect_layout); ++i) {
     LNK_Section *sect = lnk_section_table_push(sectab, str8_cstring(sect_layout[i].name), sect_layout[i].flags);
   }
   
@@ -3547,7 +3547,7 @@ lnk_build_guard_tables(TP_Context       *tp,
   LNK_Chunk *gehcont_array_chunk = gehcont_sect->root;
   
   // first 4 bytes are call's destination virtual offset
-  U64 entry_stride = sizeof(U32);
+  u64 entry_stride = sizeof(u32);
   if (emit_suppress_flag) {
     // 4th byte tells kernel what to do when destination VA is not in the bitmap. 
     // If byte is 1 exception is suppressed and program keeps running.
@@ -3605,8 +3605,8 @@ lnk_build_guard_tables(TP_Context       *tp,
       gflags_def->u.va |= PE_LoadConfigGuardFlags_DELAYLOAD_IAT_IN_ITS_OWN_SECTION;
     }
   }
-  if (entry_stride > sizeof(U32)) {
-    U64 size_bit = (entry_stride - 5);
+  if (entry_stride > sizeof(u32)) {
+    u64 size_bit = (entry_stride - 5);
     if (emit_suppress_flag) {
       gflags_def->u.va |= PE_LoadConfigGuardFlags_CF_EXPORT_SUPPRESSION_INFO_PRESENT;
     }
@@ -3661,10 +3661,10 @@ THREAD_POOL_TASK_FUNC(lnk_emit_base_relocs_from_objs_task)
   HashTable             *page_ht   = task->page_ht_arr[task_id];
   LNK_BaseRelocPageList *page_list = &task->list_arr[task_id];
 
-  for (U64 obj_idx = range.min; obj_idx < range.max; ++obj_idx) {
+  for (u64 obj_idx = range.min; obj_idx < range.max; ++obj_idx) {
     LNK_Obj            *obj           = task->obj_arr[obj_idx];
     COFF_SectionHeader *section_table = (COFF_SectionHeader *)str8_substr(obj->data, obj->header.section_table_range).str;
-    for (U64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
+    for (u64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
       COFF_SectionHeader *sect_header = &section_table[sect_idx];
 
       if (sect_header->flags & COFF_SectionFlag_LnkRemove) {
@@ -3674,15 +3674,15 @@ THREAD_POOL_TASK_FUNC(lnk_emit_base_relocs_from_objs_task)
       COFF_RelocInfo  reloc_info = coff_reloc_info_from_section_header(obj->data, sect_header);
       COFF_Reloc     *relocs     = (COFF_Reloc *)(obj->data.str + reloc_info.array_off);
 
-      for (U64 reloc_idx = 0; reloc_idx < reloc_info.count; reloc_idx += 1) {
+      for (u64 reloc_idx = 0; reloc_idx < reloc_info.count; reloc_idx += 1) {
         COFF_Reloc *r = &relocs[reloc_idx];
 
         COFF_ParsedSymbol          symbol            = lnk_parsed_symbol_from_coff_symbol_idx(obj, r->isymbol);
         COFF_SymbolValueInterpType symbol_interp     = coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class);
-        B32                        is_symbol_address = symbol_interp != COFF_SymbolValueInterp_Abs;
+        b32                        is_symbol_address = symbol_interp != COFF_SymbolValueInterp_Abs;
 
         if (is_symbol_address) {
-          B32 is_addr32 = 0, is_addr64 = 0;
+          b32 is_addr32 = 0, is_addr64 = 0;
           switch (obj->header.machine) {
           case COFF_MachineType_Unknown: {} break;
           case COFF_MachineType_X64: {
@@ -3693,8 +3693,8 @@ THREAD_POOL_TASK_FUNC(lnk_emit_base_relocs_from_objs_task)
           }
 
           if (is_addr32 || is_addr64) {
-            U64 reloc_voff = sect_header->voff + r->apply_off;
-            U64 page_voff  = AlignDownPow2(reloc_voff, task->page_size);
+            u64 reloc_voff = sect_header->voff + r->apply_off;
+            u64 page_voff  = AlignDownPow2(reloc_voff, task->page_size);
 
             LNK_BaseRelocPageNode *page;
             {
@@ -3738,12 +3738,12 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_patch_virtual_offsets_and_sizes_in_obj_section_headers_task)
 {
   LNK_BuildImageTask *task    = raw_task;
-  U64                 obj_idx = task_id;
+  u64                 obj_idx = task_id;
   LNK_Obj            *obj     = task->objs[obj_idx];
 
   ProfBeginV("Patch Virtual Offset And Size In Section Headers [%S]", obj->path);
   COFF_SectionHeader *section_table = (COFF_SectionHeader *)str8_substr(obj->data, obj->header.section_table_range).str;
-  for (U64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
+  for (u64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
     COFF_SectionHeader *sect_header = &section_table[sect_idx];
     if (~sect_header->flags & COFF_SectionFlag_LnkRemove) {
       LNK_SectionContrib *sc   = task->sect_map[obj_idx][sect_idx];
@@ -3759,14 +3759,14 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_patch_file_offsets_and_sizes_in_obj_section_headers_task)
 {
   LNK_BuildImageTask *task    = raw_task;
-  U64                 obj_idx = task_id;
+  u64                 obj_idx = task_id;
   LNK_Obj            *obj     = task->objs[obj_idx];
 
   ProfBeginV("Patch File Offsets And Sizes In Obj Section Headers [%S]", obj->path);
   COFF_SectionHeader *section_table = (COFF_SectionHeader *)str8_substr(obj->data, obj->header.section_table_range).str;
-  for (U64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
+  for (u64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
     COFF_SectionHeader *sect_header = &section_table[sect_idx];
-    B32 patch_section_header = (~sect_header->flags & COFF_SectionFlag_LnkRemove) &&
+    b32 patch_section_header = (~sect_header->flags & COFF_SectionFlag_LnkRemove) &&
                                 !lnk_is_coff_section_debug(obj, sect_idx);
     if (patch_section_header) {
       LNK_SectionContrib *sc   = task->sect_map[obj_idx][sect_idx];
@@ -3784,12 +3784,12 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_patch_section_symbols_task)
 {
   LNK_BuildImageTask *task    = raw_task;
-  U64                 obj_idx = task_id;
+  u64                 obj_idx = task_id;
   LNK_Obj            *obj     = task->objs[obj_idx];
 
   ProfBegin("Patch Section Symbols [%S]", obj->path);
   COFF_ParsedSymbol symbol;
-  for (U64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
+  for (u64 symbol_idx = 0; symbol_idx < obj->header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
     symbol = lnk_parsed_symbol_from_coff_symbol_idx(obj, symbol_idx);
     COFF_SymbolValueInterpType interp = coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class);
     if (interp == COFF_SymbolValueInterp_Undefined) {
@@ -3837,7 +3837,7 @@ lnk_base_reloc_page_is_before(void *raw_a, void *raw_b)
 }
 
 internal String8List
-lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, U64 objs_count, LNK_Obj **objs)
+lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, u64 objs_count, LNK_Obj **objs)
 {
   ProfBeginFunction();
 
@@ -3850,7 +3850,7 @@ lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, U6
   {
     LNK_BaseRelocPageList  *page_list_arr = push_array(scratch.arena, LNK_BaseRelocPageList, tp->worker_count);
     HashTable             **page_ht_arr   = push_array_no_zero(scratch.arena, HashTable *, tp->worker_count);
-    for (U64 i = 0; i < tp->worker_count; ++i) {
+    for (u64 i = 0; i < tp->worker_count; ++i) {
       page_ht_arr[i] = hash_table_init(scratch.arena, 1024);
     }
 
@@ -3871,7 +3871,7 @@ lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, U6
     {
       ProfBegin("Merge Worker Page Lists");
       HashTable *main_ht = page_ht_arr[0];
-      for (U64 list_idx = 1; list_idx < tp->worker_count; ++list_idx) {
+      for (u64 list_idx = 1; list_idx < tp->worker_count; ++list_idx) {
         LNK_BaseRelocPageList src = page_list_arr[list_idx];
 
         for (LNK_BaseRelocPageNode *src_page = src.first, *src_next; src_page != 0; src_page = src_next) {
@@ -3915,29 +3915,29 @@ lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, U6
   if (page_arr.count) {
     ProfBegin("Serialize Pages");
     HashTable *voff_ht = hash_table_init(scratch.arena, config->machine_page_size);
-    for (U64 page_idx = 0; page_idx < page_arr.count; ++page_idx) {
+    for (u64 page_idx = 0; page_idx < page_arr.count; ++page_idx) {
       LNK_BaseRelocPage *page = &page_arr.v[page_idx];
 
-      U64 total_entry_count = 0;
+      u64 total_entry_count = 0;
       total_entry_count += page->entries_addr32.count;
       total_entry_count += page->entries_addr64.count;
 
-      U32 *page_voff_ptr;
-      U32 *block_size_ptr;
-      U16 *reloc_arr_base;
+      u32 *page_voff_ptr;
+      u32 *block_size_ptr;
+      u16 *reloc_arr_base;
       
       // push buffer
-      U64   buf_size = AlignPow2(sizeof(*page_voff_ptr) + sizeof(*block_size_ptr) + sizeof(*reloc_arr_base)*total_entry_count, sizeof(U32));
-      void *buf      = push_array_no_zero(arena, U8, buf_size);
+      u64   buf_size = AlignPow2(sizeof(*page_voff_ptr) + sizeof(*block_size_ptr) + sizeof(*reloc_arr_base)*total_entry_count, sizeof(u32));
+      void *buf      = push_array_no_zero(arena, u8, buf_size);
       
       // setup pointers into buffer
       page_voff_ptr  = buf;
       block_size_ptr = page_voff_ptr + 1;
-      reloc_arr_base = (U16*)(block_size_ptr + 1);
+      reloc_arr_base = (u16*)(block_size_ptr + 1);
       
       // write 32-bit relocations
-      U16 *reloc_arr_ptr = reloc_arr_base;
-      for (U64Node *i = page->entries_addr32.first; i != 0; i = i->next) {
+      u16 *reloc_arr_ptr = reloc_arr_base;
+      for (u64Node *i = page->entries_addr32.first; i != 0; i = i->next) {
         // was base reloc_entry made?
         if (hash_table_search_u64(voff_ht, i->data)) {
           continue;
@@ -3945,13 +3945,13 @@ lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, U6
         hash_table_push_u64_u64(scratch.arena, voff_ht, i->data, 0);
 
         // write entry
-        U64 rel_off = i->data - page->voff;
+        u64 rel_off = i->data - page->voff;
         assert(rel_off <= config->machine_page_size);
         *reloc_arr_ptr++ = PE_BaseRelocMake(PE_BaseRelocKind_HIGHLOW, rel_off);
       }
       
       // write 64-bit relocations
-      for (U64Node *i = page->entries_addr64.first; i != 0; i = i->next) {
+      for (u64Node *i = page->entries_addr64.first; i != 0; i = i->next) {
         // was base reloc entry made?
         if (hash_table_search_u64(voff_ht, i->data)) {
           continue;
@@ -3959,19 +3959,19 @@ lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, U6
         hash_table_push_u64_u64(scratch.arena, voff_ht, i->data, 0);
         
         // write entry
-        U64 rel_off = i->data - page->voff;
+        u64 rel_off = i->data - page->voff;
         assert(rel_off <= config->machine_page_size);
         *reloc_arr_ptr++ = PE_BaseRelocMake(PE_BaseRelocKind_DIR64, rel_off);
       }
       
       // write pad
-      U64 pad_reloc_count = AlignPadPow2(total_entry_count, sizeof(reloc_arr_ptr[0]));
+      u64 pad_reloc_count = AlignPadPow2(total_entry_count, sizeof(reloc_arr_ptr[0]));
       MemoryZeroTyped(reloc_arr_ptr, pad_reloc_count); // fill pad with PE_BaseRelocKind_ABSOLUTE
       reloc_arr_ptr += pad_reloc_count;
       
       // compute block size
-      U64 reloc_arr_size = (U64)((U8*)reloc_arr_ptr - (U8*)reloc_arr_base);
-      U64 block_size     = sizeof(*page_voff_ptr) + sizeof(*block_size_ptr) + reloc_arr_size;
+      u64 reloc_arr_size = (u64)((u8*)reloc_arr_ptr - (u8*)reloc_arr_base);
+      u64 block_size     = sizeof(*page_voff_ptr) + sizeof(*block_size_ptr) + reloc_arr_size;
       
       // write header
       *page_voff_ptr  = safe_cast_u32(page->voff);
@@ -3995,7 +3995,7 @@ lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, U6
 }
 
 internal String8List
-lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config, LNK_SectionArray sects, U64 expected_image_header_size)
+lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config, LNK_SectionArray sects, u64 expected_image_header_size)
 {
   ProfBeginFunction();
 
@@ -4004,7 +4004,7 @@ lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config
   //
   // DOS header
   //
-  U32 dos_stub_size = sizeof(PE_DosHeader) + pe_dos_program.size;
+  u32 dos_stub_size = sizeof(PE_DosHeader) + pe_dos_program.size;
   {
     PE_DosHeader *dos_header          = push_array(arena, PE_DosHeader, 1);
     dos_header->magic                 = PE_DOS_MAGIC;
@@ -4033,14 +4033,14 @@ lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config
   //
   // PE magic
   //
-  U32 *pe_magic = push_array(arena, U32, 1);
+  u32 *pe_magic = push_array(arena, u32, 1);
   *pe_magic = PE_MAGIC;
   str8_list_push(arena, &result, str8_struct(pe_magic));
 
   //
   // determine PE optional header type
   //
-  B32 has_pe_plus_header = pe_has_plus_header(config->machine);
+  b32 has_pe_plus_header = pe_has_plus_header(config->machine);
 
   //
   // COFF file header
@@ -4060,12 +4060,12 @@ lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config
   //
   // compute code/inited/uninited sizes
   //
-  U64 code_base            = 0;
-  U64 sizeof_code          = 0;
-  U64 sizeof_inited_data   = 0;
-  U64 sizeof_uninited_data = 0;
-  U64 sizeof_image         = 0;
-  for (U64 sect_idx = 0; sect_idx < sects.count; sect_idx += 1) {
+  u64 code_base            = 0;
+  u64 sizeof_code          = 0;
+  u64 sizeof_inited_data   = 0;
+  u64 sizeof_uninited_data = 0;
+  u64 sizeof_image         = 0;
+  for (u64 sect_idx = 0; sect_idx < sects.count; sect_idx += 1) {
     LNK_Section *sect = sects.v[sect_idx];
     if (code_base == 0 && sect->flags & COFF_SectionFlag_CntCode) {
       code_base = sect->voff;
@@ -4089,7 +4089,7 @@ lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config
   //
   // compute image headers size
   //
-  U64 sizeof_image_headers = 0;
+  u64 sizeof_image_headers = 0;
   sizeof_image_headers += dos_stub_size;
   sizeof_image_headers += sizeof(COFF_FileHeader);
   sizeof_image_headers += has_pe_plus_header ? sizeof(PE_OptionalHeader32Plus) : sizeof(PE_OptionalHeader32);
@@ -4100,8 +4100,8 @@ lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config
   //
   // fill out PE optional header
   //
-  U32 *entry_point_va;
-  U32 *check_sum;
+  u32 *entry_point_va;
+  u32 *check_sum;
   if (has_pe_plus_header) {
     PE_OptionalHeader32Plus *opt_header = push_array_no_zero(arena, PE_OptionalHeader32Plus, 1);
     opt_header->magic                   = PE_PE32PLUS_MAGIC;
@@ -4155,9 +4155,9 @@ lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config
   // COFF section table
   //
   COFF_SectionHeader *coff_section_table       = push_array(arena, COFF_SectionHeader, sects.count);
-  U64                 coff_section_table_count = 0;
+  u64                 coff_section_table_count = 0;
   {
-    for (U64 sect_idx = 0; sect_idx < sects.count; sect_idx += 1) {
+    for (u64 sect_idx = 0; sect_idx < sects.count; sect_idx += 1) {
       LNK_Section *sect = sects.v[sect_idx];
 
       COFF_SectionHeader *coff_section = &coff_section_table[sect_idx];
@@ -4189,8 +4189,8 @@ lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config
 
   // align image headers
   {
-    U64 image_headers_align_size = AlignPadPow2(result.total_size, config->file_align);
-    U8 *image_headers_align      = push_array(arena, U8, image_headers_align_size);
+    u64 image_headers_align_size = AlignPadPow2(result.total_size, config->file_align);
+    u8 *image_headers_align      = push_array(arena, u8, image_headers_align_size);
     str8_list_push(arena, &result, str8(image_headers_align, image_headers_align_size));
   }
 
@@ -4201,7 +4201,7 @@ lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config
     Temp scratch = scratch_begin(&arena, 1);
 
     COFF_SectionHeader **section_table = push_array(arena, COFF_SectionHeader *, coff_section_table_count + 1);
-    for (U64 i = 1; i <= coff_section_table_count; i += 1) { section_table[i] = &coff_section_table[i-1]; }
+    for (u64 i = 1; i <= coff_section_table_count; i += 1) { section_table[i] = &coff_section_table[i-1]; }
 
     LNK_Symbol *entry_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScope_Defined, config->entry_point_name);
     if (entry_symbol) {
@@ -4217,7 +4217,7 @@ lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config
 }
 
 internal LNK_ImageContext
-lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolTable *symtab, U64 objs_count, LNK_Obj **objs)
+lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolTable *symtab, u64 objs_count, LNK_Obj **objs)
 {
   ProfBegin("Image");
   lnk_timer_begin(LNK_Timer_Image);
@@ -4259,7 +4259,7 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
 
     ProfBegin("Init Hash Tables For Gathering Section Definitions");
     task.u.gather_sects.defns = push_array(arena->v[0], HashTable *, tp->worker_count);
-    for (U64 worker_idx = 0; worker_idx < tp->worker_count; worker_idx += 1) task.u.gather_sects.defns[worker_idx] = hash_table_init(arena->v[0], 128);
+    for (u64 worker_idx = 0; worker_idx < tp->worker_count; worker_idx += 1) task.u.gather_sects.defns[worker_idx] = hash_table_init(arena->v[0], 128);
     ProfEnd();
 
     ProfBegin("Gather Section Definitions");
@@ -4267,15 +4267,15 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
     ProfEnd();
 
     ProfBegin("Merge Section Definitions Hash Tables");
-    U64                     sect_defns_count;
+    u64                     sect_defns_count;
     LNK_SectionDefinition **sect_defns;
     {
-      for (U64 worker_idx = 1; worker_idx < tp->worker_count; worker_idx += 1) {
-        U64                     sect_defns_count = task.u.gather_sects.defns[worker_idx]->count;
+      for (u64 worker_idx = 1; worker_idx < tp->worker_count; worker_idx += 1) {
+        u64                     sect_defns_count = task.u.gather_sects.defns[worker_idx]->count;
         LNK_SectionDefinition **sect_defns       = values_from_hash_table_raw(arena->v[0], task.u.gather_sects.defns[worker_idx]);
         radsort(sect_defns, sect_defns_count, lnk_section_definition_is_before);
 
-        for (U64 defn_idx = 0; defn_idx < sect_defns_count; defn_idx += 1) {
+        for (u64 defn_idx = 0; defn_idx < sect_defns_count; defn_idx += 1) {
           LNK_SectionDefinition *defn            = sect_defns[defn_idx];
           String8                name_with_flags = lnk_make_name_with_flags(arena->v[0], defn->name, defn->flags);
           LNK_SectionDefinition *main_defn       = 0;
@@ -4303,7 +4303,7 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
 
     ProfBegin("Push Sections And Reserve Section Contrib Memory");
     task.contribs_ht = hash_table_init(sectab->arena, sect_defns_count);
-    for (U64 defn_idx = 0; defn_idx < sect_defns_count; defn_idx += 1) {
+    for (u64 defn_idx = 0; defn_idx < sect_defns_count; defn_idx += 1) {
       LNK_SectionDefinition *sect_defn = sect_defns[defn_idx];
 
       // parse section name
@@ -4317,7 +4317,7 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
       for (LNK_SectionNode *sect_n = sectab->list.first; sect_n != 0; sect_n = sect_n->next) {
         if (str8_match(sect_n->data.name, sect_name, 0) && sect_n->data.flags != sect_defn->flags) {
           LNK_Obj            *obj                = sect_defn->obj;
-          U32                 sect_number        = sect_defn->obj_sect_idx + 1;
+          u32                 sect_number        = sect_defn->obj_sect_idx + 1;
           COFF_SectionHeader *sect_header        = lnk_coff_section_header_from_section_number(obj, sect_number);
           String8             sect_name          = coff_name_from_section_header(str8_substr(obj->data, obj->header.string_table_range), sect_header);
           String8             expected_flags_str = coff_string_from_section_flags(arena->v[0], sect_n->data.flags);
@@ -4351,11 +4351,11 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
     ProfEnd();
   }
 
-  U64 expected_image_header_size;
+  u64 expected_image_header_size;
   {
     ProfBegin("Alloc Section Map");
     task.sect_map = push_array(scratch.arena, LNK_SectionContrib **, objs_count);
-    for (U64 obj_idx = 0; obj_idx < objs_count; obj_idx += 1) task.sect_map[obj_idx] = push_array(scratch.arena, LNK_SectionContrib *, objs[obj_idx]->header.section_count_no_null);
+    for (u64 obj_idx = 0; obj_idx < objs_count; obj_idx += 1) task.sect_map[obj_idx] = push_array(scratch.arena, LNK_SectionContrib *, objs[obj_idx]->header.section_count_no_null);
     ProfEnd();
 
     ProfBegin("Gather Section Contribs");
@@ -4373,13 +4373,13 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
     // ensure determinism by sorting section contribs in chunks by input index
     {
       ProfBegin("Sort Section Contribs");
-      U64                       total_chunk_count = 0;
+      u64                       total_chunk_count = 0;
       LNK_SectionContribChunk **chunks            = 0;
       {
         for (LNK_SectionNode *sect_n = sectab->list.first; sect_n != 0; sect_n = sect_n->next) {
           total_chunk_count += sect_n->data.contribs.chunk_count;
         }
-        U64 cursor = 0;
+        u64 cursor = 0;
         chunks = push_array(scratch.arena, LNK_SectionContribChunk *, total_chunk_count);
         for (LNK_SectionNode *sect_n = sectab->list.first; sect_n != 0; sect_n = sect_n->next) {
           for (LNK_SectionContribChunk *chunk_n = sect_n->data.contribs.first; chunk_n != 0; chunk_n = chunk_n->next) {
@@ -4396,13 +4396,13 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
     // build common block
     //
     // TODO: build common block in .bss and merge with .data
-    U64                     common_block_contribs_count;
+    u64                     common_block_contribs_count;
     LNK_CommonBlockContrib *common_block_contribs;
     {
       ProfBegin("Build Common Block");
 
       ProfBegin("Count Contribs");
-      task.u.common_block.counts = push_array(scratch.arena, U64, tp->worker_count);
+      task.u.common_block.counts = push_array(scratch.arena, u64, tp->worker_count);
       tp_for_parallel(tp, 0, tp->worker_count, lnk_count_common_block_contribs_task, &task);
       ProfEnd();
 
@@ -4425,13 +4425,13 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
 
         // compute .bss virtual size - this marks start of the common block
         lnk_finalize_section_layout(common_block_sect, config->file_align, config->function_pad_min);
-        U64 common_block_cursor = common_block_sect->vsize;
+        u64 common_block_cursor = common_block_sect->vsize;
 
         // compute and assign offsets into the common block
-        for (U64 contrib_idx = 0; contrib_idx < common_block_contribs_count; contrib_idx += 1) {
+        for (u64 contrib_idx = 0; contrib_idx < common_block_contribs_count; contrib_idx += 1) {
           LNK_CommonBlockContrib *contrib = &common_block_contribs[contrib_idx];
-          U32 size  = contrib->u.size;
-          U32 align = min(32, u64_up_to_pow2(size)); // link.exe caps align at 32 bytes
+          u32 size  = contrib->u.size;
+          u32 align = min(32, u64_up_to_pow2(size)); // link.exe caps align at 32 bytes
           common_block_cursor = AlignPow2(common_block_cursor, align);
           contrib->u.offset = common_block_cursor;
           common_block_cursor += size;
@@ -4506,7 +4506,7 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
         LNK_Section        *sect         = &sect_n->data;
         LNK_SectionContrib *first_sc     = lnk_get_first_section_contrib(sect);
         LNK_SectionContrib *last_sc      = lnk_get_last_section_contrib(sect);
-        U64                 last_sc_size = lnk_size_from_section_contrib(last_sc);
+        u64                 last_sc_size = lnk_size_from_section_contrib(last_sc);
         sect->voff  = sect->merge_dst->voff + first_sc->u.off;
         sect->vsize = (last_sc->u.off - first_sc->u.off) + last_sc_size;
         sect->foff  = sect->merge_dst->foff + first_sc->u.off;
@@ -4523,9 +4523,9 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
       Temp temp = temp_begin(scratch.arena);
 
       ProfBegin("Alloc Patch Flags");
-      task.u.patch_symtabs.was_symbol_patched = push_array(scratch.arena, B8 *, objs_count);
-      for (U64 obj_idx = 0; obj_idx < objs_count; obj_idx += 1) {
-        task.u.patch_symtabs.was_symbol_patched[obj_idx] = push_array(temp.arena, B8, objs[obj_idx]->header.symbol_count);
+      task.u.patch_symtabs.was_symbol_patched = push_array(scratch.arena, b8 *, objs_count);
+      for (u64 obj_idx = 0; obj_idx < objs_count; obj_idx += 1) {
+        task.u.patch_symtabs.was_symbol_patched[obj_idx] = push_array(temp.arena, b8, objs[obj_idx]->header.symbol_count);
       }
       task.u.patch_symtabs.common_block_sect     = common_block_sect;
       task.u.patch_symtabs.ranges                = tp_divide_work(scratch.arena, common_block_contribs_count, tp->worker_count);
@@ -4583,8 +4583,8 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
     expected_image_header_size = lnk_compute_win32_image_header_size(config, task.image_sects.count);
 
     // assign virtual space
-    U64 voff_cursor = AlignPow2(expected_image_header_size + sizeof(COFF_SectionHeader), config->sect_align);
-    for (U64 i = 0; i < task.image_sects.count; i += 1) {
+    u64 voff_cursor = AlignPow2(expected_image_header_size + sizeof(COFF_SectionHeader), config->sect_align);
+    for (u64 i = 0; i < task.image_sects.count; i += 1) {
       lnk_assign_section_virtual_space(task.image_sects.v[i], config->sect_align, &voff_cursor);
     }
 
@@ -4614,8 +4614,8 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
     }
 
     // assign file space
-    U64 foff_cursor = AlignPow2(expected_image_header_size, config->file_align);
-    for (U64 i = 0; i < task.image_sects.count; i += 1) {
+    u64 foff_cursor = AlignPow2(expected_image_header_size, config->file_align);
+    for (u64 i = 0; i < task.image_sects.count; i += 1) {
       lnk_assign_section_file_space(task.image_sects.v[i], &foff_cursor);
     }
 
@@ -4649,39 +4649,39 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
 
     LNK_SectionArray sects = lnk_section_array_from_list(scratch.arena, sectab->list);
 
-    U64 image_size = 0;
-    for (U64 sect_idx = 0; sect_idx < sects.count; sect_idx += 1) {
+    u64 image_size = 0;
+    for (u64 sect_idx = 0; sect_idx < sects.count; sect_idx += 1) {
       image_size += sects.v[sect_idx]->fsize;
     }
 
     image_data.size = image_size;
-    image_data.str  = push_array_no_zero(arena->v[0], U8, image_size);
+    image_data.str  = push_array_no_zero(arena->v[0], u8, image_size);
 
-    for (U64 sect_idx = 0; sect_idx < sects.count; sect_idx += 1) {
+    for (u64 sect_idx = 0; sect_idx < sects.count; sect_idx += 1) {
       LNK_Section *sect = sects.v[sect_idx];
 
       if (~sect->flags & COFF_SectionFlag_CntUninitializedData) {
         // pick fill pick
-        U8 fill_byte = 0;
+        u8 fill_byte = 0;
         if (sect->flags & COFF_SectionFlag_CntCode) {
           fill_byte = coff_code_align_byte_from_machine(config->machine);
         }
 
         // copy section contribution
-        U64 prev_sc_opl = 0;
+        u64 prev_sc_opl = 0;
         for (LNK_SectionContribChunk *sc_chunk = sect->contribs.first; sc_chunk != 0; sc_chunk = sc_chunk->next) {
-          for (U64 sc_idx = 0; sc_idx < sc_chunk->count; sc_idx += 1) {
+          for (u64 sc_idx = 0; sc_idx < sc_chunk->count; sc_idx += 1) {
             LNK_SectionContrib *sc = sc_chunk->v[sc_idx];
 
             // fill align bytes
             assert(sc->u.off >= prev_sc_opl);
-            U64 fill_size = sc->u.off - prev_sc_opl;
+            u64 fill_size = sc->u.off - prev_sc_opl;
             MemorySet(image_data.str + sect->foff + prev_sc_opl, fill_byte, fill_size);
             prev_sc_opl = sc->u.off + lnk_size_from_section_contrib(sc);
 
             // copy contrib contents
             {
-              U64 cursor = 0;
+              u64 cursor = 0;
               for (String8Node *data_n = &sc->first_data_node; data_n != 0; data_n = data_n->next) {
                 assert(sc->u.off + data_n->string.size <= sect->vsize);
                 MemoryCopy(image_data.str + sect->foff + sc->u.off + cursor, data_n->string.str, data_n->string.size);
@@ -4693,7 +4693,7 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
 
         // fill section align bytes
         {
-          U64 fill_size = sect->fsize - prev_sc_opl;
+          u64 fill_size = sect->fsize - prev_sc_opl;
           MemorySet(image_data.str + sect->foff + prev_sc_opl, fill_byte, fill_size);
         }
       }
@@ -4724,10 +4724,10 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
     {
       LNK_Symbol *load_config_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScope_Defined, str8_lit(MSCRT_LOAD_CONFIG_SYMBOL_NAME));
       if (load_config_symbol) {
-        U64     load_config_foff   = lnk_file_off_from_symbol(image_section_table, load_config_symbol);
+        u64     load_config_foff   = lnk_file_off_from_symbol(image_section_table, load_config_symbol);
         String8 load_config_data   = str8_skip(image_data, load_config_foff);
 
-        U32 load_config_size = 0;
+        u32 load_config_size = 0;
         if (sizeof(load_config_size) <= load_config_data.size) {
           PE_DataDirectory *load_config_dir = pe_data_directory_from_idx(image_data, pe, PE_DataDirectoryIndex_LOAD_CONFIG);
           load_config_dir->virt_off  = lnk_virt_off_from_symbol(image_section_table, load_config_symbol);
@@ -4786,8 +4786,8 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
         import_dir->virt_size = null_import_desc_parsed.value - idata_first_contrib->u.off;
 
         COFF_ParsedSymbol  null_thunk_data_parsed = lnk_parsed_symbol_from_coff_symbol_idx(null_thunk_data->u.defined.obj, null_thunk_data->u.defined.symbol_idx);
-        U64                null_thunk_data_voff   = image_section_table[null_thunk_data_parsed.section_number]->voff + null_thunk_data_parsed.value;
-        U64                first_import_foff      = image_section_table[idata_first_contrib->u.sect_idx+1]->foff + idata_first_contrib->u.off;
+        u64                null_thunk_data_voff   = image_section_table[null_thunk_data_parsed.section_number]->voff + null_thunk_data_parsed.value;
+        u64                first_import_foff      = image_section_table[idata_first_contrib->u.sect_idx+1]->foff + idata_first_contrib->u.off;
         PE_ImportEntry    *first_import           = str8_deserial_get_raw_ptr(image_data, first_import_foff, sizeof(*first_import));
         PE_DataDirectory  *import_addr_dir        = pe_data_directory_from_idx(image_data, pe, PE_DataDirectoryIndex_IMPORT_ADDR);
         import_addr_dir->virt_off  = lnk_get_first_section_contrib_voff(image_section_table, idata_sect);
@@ -4816,18 +4816,18 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
         ProfBegin("Patch TLS");
 
         // find max align in .tls
-        U64          tls_align = 0;
+        u64          tls_align = 0;
         LNK_Section *tls_sect  = lnk_section_table_search(sectab, str8_lit(".tls"), PE_TLS_SECTION_FLAGS);
         for (LNK_SectionContribChunk *sc_chunk = tls_sect->contribs.first; sc_chunk != 0; sc_chunk = sc_chunk->next) {
-          for (U64 sc_idx = 0; sc_idx < sc_chunk->count; sc_idx += 1) {
+          for (u64 sc_idx = 0; sc_idx < sc_chunk->count; sc_idx += 1) {
             assert(IsPow2(sc_chunk->v[sc_idx]->align));
             tls_align = max(tls_align, sc_chunk->v[sc_idx]->align);
           }
         }
 
         // patch-in align
-        U64 tls_header_foff = lnk_file_off_from_symbol(image_section_table, tls_used_symbol);
-        B32 is_tls_header64 = coff_word_size_from_machine(config->machine) == 8;
+        u64 tls_header_foff = lnk_file_off_from_symbol(image_section_table, tls_used_symbol);
+        b32 is_tls_header64 = coff_word_size_from_machine(config->machine) == 8;
         if (is_tls_header64) {
           PE_TLSHeader64 *tls_header = str8_deserial_get_raw_ptr(image_data, tls_header_foff, sizeof(*tls_header));
           tls_header->characteristics |= coff_section_flag_from_align_size(tls_align);
@@ -4857,13 +4857,13 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
         // find debug directory begin and end pair
         LNK_SectionContrib *first_sc = lnk_get_first_section_contrib(debug_dir_sect);
         LNK_SectionContrib *last_sc  = lnk_get_last_section_contrib(debug_dir_sect);
-        U64 debug_begin_foff = lnk_foff_from_section_contrib(image_section_table, first_sc);
-        U64 debug_end_fopl   = lnk_fopl_from_section_contrib(image_section_table, last_sc);
+        u64 debug_begin_foff = lnk_foff_from_section_contrib(image_section_table, first_sc);
+        u64 debug_end_fopl   = lnk_fopl_from_section_contrib(image_section_table, last_sc);
 
         // patch file offsets to the debug directories
-        for (U64 cursor = debug_begin_foff; cursor + sizeof(PE_DebugDirectory) <= debug_end_fopl; cursor += sizeof(PE_DebugDirectory)) {
+        for (u64 cursor = debug_begin_foff; cursor + sizeof(PE_DebugDirectory) <= debug_end_fopl; cursor += sizeof(PE_DebugDirectory)) {
           PE_DebugDirectory *dir = str8_deserial_get_raw_ptr(image_data, cursor, sizeof(PE_DebugDirectory));
-          for (U64 section_number = 1; section_number < pe.section_count+1; section_number += 1) {
+          for (u64 section_number = 1; section_number < pe.section_count+1; section_number += 1) {
             if (image_section_table[section_number]->voff <= dir->voff && dir->voff < image_section_table[section_number]->voff + image_section_table[section_number]->vsize) {
               dir->foff = image_section_table[section_number]->foff + (dir->voff - image_section_table[section_number]->voff);
             }
@@ -4899,7 +4899,7 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
         case LNK_DebugInfoGuid_Null: break;
         case Lnk_DebugInfoGuid_ImageBlake3: {
           ProfBegin("Hash Image With Blake3");
-          U128 hash = lnk_blake3_hash_parallel(tp, 128, image_data);
+          u128 hash = lnk_blake3_hash_parallel(tp, 128, image_data);
           MemoryCopy(&config->guid, hash.u8, sizeof(hash.u8));
           ProfEnd();
         } break;
@@ -4907,13 +4907,13 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
       }
 
       if (guid_pdb_symbol) {
-        U64   cv_guid_foff = lnk_file_off_from_symbol(image_section_table, guid_pdb_symbol);
+        u64   cv_guid_foff = lnk_file_off_from_symbol(image_section_table, guid_pdb_symbol);
         Guid *cv_guid  = str8_deserial_get_raw_ptr(image_data, cv_guid_foff, sizeof(*cv_guid));
         *cv_guid = config->guid;
       }
 
       if (guid_rdi_symbol) {
-        U64   cv_guid_foff = lnk_file_off_from_symbol(image_section_table, guid_rdi_symbol);
+        u64   cv_guid_foff = lnk_file_off_from_symbol(image_section_table, guid_rdi_symbol);
         Guid *cv_guid  = str8_deserial_get_raw_ptr(image_data, cv_guid_foff, sizeof(*cv_guid));
         *cv_guid = config->guid;
       }
@@ -4933,20 +4933,20 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
 }
 
 internal PairU32 *
-lnk_obj_sect_idx_from_section(Arena *arena, U64 objs_count, LNK_Obj **objs, LNK_Section *sect, LNK_Config *config, U64 *obj_sect_idxs_count_out)
+lnk_obj_sect_idx_from_section(Arena *arena, u64 objs_count, LNK_Obj **objs, LNK_Section *sect, LNK_Config *config, u64 *obj_sect_idxs_count_out)
 {
-  U64 max_contribs = 0;
+  u64 max_contribs = 0;
   for (LNK_SectionContribChunk *chunk = sect->contribs.first; chunk != 0; chunk = chunk->next) {
     max_contribs += chunk->count;
   }
 
-  U64      obj_sect_idxs_count = 0;
+  u64      obj_sect_idxs_count = 0;
   PairU32 *obj_sect_idxs       = push_array(arena, PairU32, max_contribs);
-  for (U64 obj_idx = 0; obj_idx < objs_count; obj_idx += 1) {
+  for (u64 obj_idx = 0; obj_idx < objs_count; obj_idx += 1) {
     LNK_Obj *obj = objs[obj_idx];
     COFF_SectionHeader *section_table = str8_deserial_get_raw_ptr(obj->data, obj->header.section_table_range.min, 0);
     String8             string_table  = str8_substr(obj->data, obj->header.string_table_range);
-    for (U64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
+    for (u64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
       COFF_SectionHeader *section_header    = &section_table[sect_idx];
       String8             full_section_name = coff_name_from_section_header(string_table, section_header);
       String8             section_name, section_postfix;
@@ -4965,7 +4965,7 @@ lnk_obj_sect_idx_from_section(Arena *arena, U64 objs_count, LNK_Obj **objs, LNK_
     }
   }
 
-  U64 pop_size = (max_contribs - obj_sect_idxs_count) * sizeof(obj_sect_idxs[0]);
+  u64 pop_size = (max_contribs - obj_sect_idxs_count) * sizeof(obj_sect_idxs[0]);
   arena_pop(arena, pop_size);
 
   *obj_sect_idxs_count_out = obj_sect_idxs_count;
@@ -4992,10 +4992,10 @@ lnk_obj_sect_idx_is_before(void *raw_a, void *raw_b)
   return section_header_a->voff < section_header_b->voff;
 }
 
-internal U64
-lnk_pair_u32_nearest_section(PairU32 *arr, U64 count, LNK_Obj **objs, U32 voff)
+internal u64
+lnk_pair_u32_nearest_section(PairU32 *arr, u64 count, LNK_Obj **objs, u32 voff)
 {
-  U64 result = max_U64;
+  u64 result = max_U64;
 
   if (count > 0) {
     COFF_SectionHeader *first = lnk_coff_section_header_from_obj_sect_idx_pair(objs, arr[0]);
@@ -5009,10 +5009,10 @@ lnk_pair_u32_nearest_section(PairU32 *arr, U64 count, LNK_Obj **objs, U32 voff)
     }
 
     if (first->voff <= voff && voff < last->voff + last->vsize) {
-      U64 l = 0;
-      U64 r = count - 1;
+      u64 l = 0;
+      u64 r = count - 1;
       for (; l <= r; ) {
-        U64 m = l + (r - l) / 2;
+        u64 m = l + (r - l) / 2;
         COFF_SectionHeader *s = lnk_coff_section_header_from_obj_sect_idx_pair(objs, arr[m]);
         if (s->voff == voff) {
           return m;
@@ -5030,7 +5030,7 @@ lnk_pair_u32_nearest_section(PairU32 *arr, U64 count, LNK_Obj **objs, U32 voff)
 }
 
 internal String8List
-lnk_build_rad_map(Arena *arena, String8 image_data, LNK_Config *config, U64 objs_count, LNK_Obj **objs, LNK_LibList lib_index[LNK_InputSource_Count], LNK_SectionTable *sectab)
+lnk_build_rad_map(Arena *arena, String8 image_data, LNK_Config *config, u64 objs_count, LNK_Obj **objs, LNK_LibList lib_index[LNK_InputSource_Count], LNK_SectionTable *sectab)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -5048,36 +5048,36 @@ lnk_build_rad_map(Arena *arena, String8 image_data, LNK_Config *config, U64 objs
     str8_list_pushf(arena, &map, "%S\n", sect->name);
     str8_list_pushf(arena, &map, "%-4s %-8s %-8s %-8s %-8s %-16s %-4s %s\n", "No.", "VirtOff", "VirtSize", "FileOff", "FileSize", "Blake3", "Algn", "SC");
 
-    U64      obj_sect_idxs_count = 0;
+    u64      obj_sect_idxs_count = 0;
     PairU32 *obj_sect_idxs       = lnk_obj_sect_idx_from_section(scratch.arena, objs_count, objs, sect, config, &obj_sect_idxs_count);
     g_rad_map_objs = objs;
     radsort(obj_sect_idxs, obj_sect_idxs_count, lnk_obj_sect_idx_is_before);
 
-    U64 global_sc_idx = 0;
+    u64 global_sc_idx = 0;
     for (LNK_SectionContribChunk *sc_chunk = sect->contribs.first; sc_chunk != 0; sc_chunk = sc_chunk->next) {
-      for (U64 sc_idx = 0; sc_idx < sc_chunk->count; sc_idx += 1, global_sc_idx += 1) {
+      for (u64 sc_idx = 0; sc_idx < sc_chunk->count; sc_idx += 1, global_sc_idx += 1) {
         Temp temp = temp_begin(scratch.arena);
         LNK_SectionContrib *sc = sc_chunk->v[sc_idx];
 
-        U64        file_off   = image_section_table[sc->u.sect_idx+1]->foff + sc->u.off;
-        U64        virt_off   = image_section_table[sc->u.sect_idx+1]->voff + sc->u.off;
-        U64        virt_size  = lnk_size_from_section_contrib(sc);
-        U64        file_size  = lnk_size_from_section_contrib(sc);
+        u64        file_off   = image_section_table[sc->u.sect_idx+1]->foff + sc->u.off;
+        u64        virt_off   = image_section_table[sc->u.sect_idx+1]->voff + sc->u.off;
+        u64        virt_size  = lnk_size_from_section_contrib(sc);
+        u64        file_size  = lnk_size_from_section_contrib(sc);
         String8    sc_data    = str8_substr(image_data, rng_1u64(file_off, file_off + virt_size));
 
         LNK_Obj *obj      = 0;
-        U32      sect_idx = 0;
-        U64 obj_sect_idx_idx = lnk_pair_u32_nearest_section(obj_sect_idxs, obj_sect_idxs_count, objs, virt_off);
+        u32      sect_idx = 0;
+        u64 obj_sect_idx_idx = lnk_pair_u32_nearest_section(obj_sect_idxs, obj_sect_idxs_count, objs, virt_off);
         if (obj_sect_idx_idx < obj_sect_idxs_count) {
           obj      = objs[obj_sect_idxs[obj_sect_idx_idx].v0];
           sect_idx = obj_sect_idxs[obj_sect_idx_idx].v1;
         }
 
-        U128 sc_hash = {0};
+        u128 sc_hash = {0};
         if (~sect->flags & COFF_SectionFlag_CntUninitializedData) {
           blake3_hasher hasher; blake3_hasher_init(&hasher);
           blake3_hasher_update(&hasher, sc_data.str, sc_data.size);
-          blake3_hasher_finalize(&hasher, (U8 *)&sc_hash, sizeof(sc_hash));
+          blake3_hasher_finalize(&hasher, (u8 *)&sc_hash, sizeof(sc_hash));
         }
 
         String8 sc_idx_str    = push_str8f(temp.arena, "%4llx",      global_sc_idx);
@@ -5117,10 +5117,10 @@ lnk_build_rad_map(Arena *arena, String8 image_data, LNK_Config *config, U64 objs
   ProfEnd();
 
   str8_list_pushf(arena, &map, "# DEBUG\n");
-  for (U64 obj_idx = 0; obj_idx < objs_count; obj_idx += 1) {
+  for (u64 obj_idx = 0; obj_idx < objs_count; obj_idx += 1) {
     LNK_Obj            *obj           = objs[obj_idx];
     COFF_SectionHeader *section_table = str8_deserial_get_raw_ptr(obj->data, obj->header.section_table_range.min, 0);
-    for (U64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
+    for (u64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
       if (lnk_is_coff_section_debug(obj, sect_idx)) {
         COFF_SectionHeader *section_header = &section_table[sect_idx];
         if (~section_header->flags & COFF_SectionFlag_LnkRemove) {
@@ -5138,7 +5138,7 @@ lnk_build_rad_map(Arena *arena, String8 image_data, LNK_Config *config, U64 objs
   str8_list_pushf(arena, &map, "\n");
 
   ProfBegin("LIBS");
-  for (U64 input_source = 0; input_source < LNK_InputSource_Count; ++input_source) {
+  for (u64 input_source = 0; input_source < LNK_InputSource_Count; ++input_source) {
     if (lib_index[input_source].count) {
       str8_list_pushf(arena, &map, "# LIBS (%S)\n", lnk_string_from_input_source(input_source));
       for (LNK_LibNode *lib_n = lib_index[input_source].first; lib_n != 0; lib_n = lib_n->next) {
@@ -5167,15 +5167,15 @@ lnk_log_timers(void)
 {
   Temp scratch = scratch_begin(0, 0);
   
-  U64 total_build_time_micro = 0;
-  for (U64 i = 0; i < LNK_Timer_Count; ++i) {
+  u64 total_build_time_micro = 0;
+  for (u64 i = 0; i < LNK_Timer_Count; ++i) {
     total_build_time_micro += g_timers[i].end - g_timers[i].begin;
   }
   
   String8List output_list = {0};
   str8_list_pushf(scratch.arena, &output_list, "------ Link Times --------------------------------------------------------------");
-  for (U64 i = 0; i < LNK_Timer_Count; ++i) {
-    U64 build_time_micro = g_timers[i].end - g_timers[i].begin;
+  for (u64 i = 0; i < LNK_Timer_Count; ++i) {
+    u64 build_time_micro = g_timers[i].end - g_timers[i].begin;
     if (build_time_micro != 0) {
       String8  timer_name = lnk_string_from_timer_type(i);
       DateTime time       = date_time_from_micro_seconds(build_time_micro);

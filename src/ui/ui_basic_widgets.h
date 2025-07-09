@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Scroll List Types
 
-typedef U32 UI_ScrollListFlags;
+typedef u32 UI_ScrollListFlags;
 enum
 {
   UI_ScrollListFlag_Nav  = (1<<0),
@@ -19,8 +19,8 @@ enum
 
 struct UI_ScrollListRowBlock
 {
-  U64 row_count;
-  U64 item_count;
+  u64 row_count;
+  u64 item_count;
 };
 
 
@@ -29,8 +29,8 @@ struct UI_ScrollListRowBlockChunkNode
 {
   UI_ScrollListRowBlockChunkNode *next;
   UI_ScrollListRowBlock *v;
-  U64 count;
-  U64 cap;
+  u64 count;
+  u64 cap;
 };
 
 
@@ -39,8 +39,8 @@ struct UI_ScrollListRowBlockChunkList
 {
   UI_ScrollListRowBlockChunkNode *first;
   UI_ScrollListRowBlockChunkNode *last;
-  U64 chunk_count;
-  U64 total_count;
+  u64 chunk_count;
+  u64 total_count;
 };
 
 
@@ -48,7 +48,7 @@ struct UI_ScrollListRowBlockChunkList
 struct UI_ScrollListRowBlockArray
 {
   UI_ScrollListRowBlock *v;
-  U64 count;
+  u64 count;
 };
 
 
@@ -57,18 +57,18 @@ struct UI_ScrollListParams
 {
   UI_ScrollListFlags flags;
   Vec2F32 dim_px;
-  F32 row_height_px;
+  f32 row_height_px;
   UI_ScrollListRowBlockArray row_blocks;
   Rng2S64 cursor_range;
   Rng1S64 item_range;
-  B32 cursor_min_is_empty_selection[Axis2_COUNT];
+  b32 cursor_min_is_empty_selection[Axis2_COUNT];
 };
 
 
 
 struct UI_ScrollListSignal
 {
-  B32 cursor_moved;
+  b32 cursor_moved;
 };
 
 ////////////////////////////////

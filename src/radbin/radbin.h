@@ -12,7 +12,7 @@
 ////////////////////////////////
 //~ rjf: File Types
 
-typedef U32 RB_FileFormatFlags;
+typedef u32 RB_FileFormatFlags;
 enum
 {
   RB_FileFormatFlag_HasDWARF = (1<<0),
@@ -42,7 +42,7 @@ struct RB_FileList
 {
   RB_FileNode *first;
   RB_FileNode *last;
-  U64 count;
+  u64 count;
 };
 
 @(rodata) global RB_File rb_file_nil = {0};

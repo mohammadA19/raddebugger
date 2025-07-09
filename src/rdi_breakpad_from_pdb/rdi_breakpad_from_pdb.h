@@ -34,9 +34,9 @@ ASYNC_WORK_DEF(p2b_bake_line_table_work);
 struct P2B_DumpProcChunkIn
 {
   RDI_VMapEntry *unit_vmap;
-  U32 unit_vmap_count;
-  U32 *unit_line_table_idxs;
-  U64 unit_count;
+  u32 unit_vmap_count;
+  u32 *unit_line_table_idxs;
+  u64 unit_count;
   RDIM_LineTableBakeResult *line_tables_bake;
   RDIM_SymbolChunkNode *chunk;
 };

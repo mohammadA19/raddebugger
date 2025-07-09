@@ -1,7 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal U64
+internal u64
 dw_reg_size_from_code_x86(DW_Reg reg_code)
 {
   switch (reg_code) {
@@ -12,7 +12,7 @@ dw_reg_size_from_code_x86(DW_Reg reg_code)
   return 0;
 }
 
-internal U64
+internal u64
 dw_reg_pos_from_code_x86(DW_Reg reg_code)
 {
   switch (reg_code) {
@@ -23,7 +23,7 @@ dw_reg_pos_from_code_x86(DW_Reg reg_code)
   return max_U64;
 }
 
-internal U64
+internal u64
 dw_reg_size_from_code_x64(DW_Reg reg_code)
 {
   switch (reg_code) {
@@ -34,7 +34,7 @@ dw_reg_size_from_code_x64(DW_Reg reg_code)
   return 0;
 }
 
-internal U64
+internal u64
 dw_reg_pos_from_code_x64(DW_Reg reg_code)
 {
   switch (reg_code) {
@@ -45,7 +45,7 @@ dw_reg_pos_from_code_x64(DW_Reg reg_code)
   return max_U64;
 }
 
-internal U64
+internal u64
 dw_reg_size_from_code(Arch arch, DW_Reg reg_code)
 {
   switch (arch) {
@@ -57,7 +57,7 @@ dw_reg_size_from_code(Arch arch, DW_Reg reg_code)
   return 0;
 }
 
-internal U64
+internal u64
 dw_reg_pos_from_code(Arch arch, DW_Reg reg_code)
 {
   switch (arch) {
@@ -163,11 +163,11 @@ dw_attrib_class_from_attrib(DW_Version ver, DW_Ext ext, DW_AttribKind k)
   DW_AttribClass result = DW_AttribClass_Null;
   
   while (ext) {
-    U64 z = 64-clz64(ext);
+    u64 z = 64-clz64(ext);
     if (z == 0) {
       break;
     }
-    U64 flag = 1 << (z-1);
+    u64 flag = 1 << (z-1);
     ext &= ~flag;
     
     switch (flag) {
@@ -238,11 +238,11 @@ dw_attrib_class_from_form_kind(DW_Version ver, DW_FormKind k)
   return DW_AttribClass_Null;
 }
 
-internal B32
+internal b32
 dw_are_attrib_class_and_form_kind_compatible(DW_Version ver, DW_AttribClass attrib_class, DW_FormKind form_kind)
 {
   DW_AttribClass compat_flags = dw_attrib_class_from_form_kind(ver, form_kind);
-  B32            are_compat = (attrib_class & compat_flags) != 0;
+  b32            are_compat = (attrib_class & compat_flags) != 0;
   return are_compat;
 }
 
@@ -279,10 +279,10 @@ dw_dwo_name_string_from_section_kind(DW_SectionKind k)
   return str8_zero();
 }
 
-internal U64
+internal u64
 dw_size_from_format(DW_Format format)
 {
-  U64 result = 0;
+  u64 result = 0;
   switch (format) {
     case DW_Format_Null: break;
     case DW_Format_32Bit: result = 4; break;
@@ -293,7 +293,7 @@ dw_size_from_format(DW_Format format)
 }
 
 internal DW_AttribClass
-dw_pick_attrib_value_class(DW_Version ver, DW_Ext ext, B32 relaxed, DW_AttribKind attrib_kind, DW_FormKind form_kind)
+dw_pick_attrib_value_class(DW_Version ver, DW_Ext ext, b32 relaxed, DW_AttribKind attrib_kind, DW_FormKind form_kind)
 {
   // NOTE(rjf): DWARF's spec specifies two mappings:
   // (DW_AttribKind) => List(DW_AttribClass)
@@ -319,9 +319,9 @@ dw_pick_attrib_value_class(DW_Version ver, DW_Ext ext, B32 relaxed, DW_AttribKin
   {
     result = DW_AttribClass_Undefined;
     
-    for(U32 i = 0; i < 32; ++i)
+    for(u32 i = 0; i < 32; ++i)
     {
-      U32 n = 1u << i;
+      u32 n = 1u << i;
       if((attrib_class & n) != 0 && (form_class & n) != 0)
       {
         result = ((DW_AttribClass) n);
@@ -333,10 +333,10 @@ dw_pick_attrib_value_class(DW_Version ver, DW_Ext ext, B32 relaxed, DW_AttribKin
   return result;
 }
 
-internal U64
+internal u64
 dw_pick_default_lower_bound(DW_Language lang)
 {
-  U64 lower_bound = max_U64;
+  u64 lower_bound = max_U64;
   switch (lang) {
     case DW_Language_Null: break;
     case DW_Language_C89:
@@ -455,12 +455,12 @@ dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKi
   {
     while(ext)
     {
-      U64 z = 64-clz64(ext);
+      u64 z = 64-clz64(ext);
       if(z == 0)
       {
         break;
       }
-      U64 flag = 1 << (z-1);
+      u64 flag = 1 << (z-1);
       ext &= ~flag;
       switch(flag)
       {
@@ -477,7 +477,7 @@ dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKi
   //- rjf: try version
   if(result.size == 0)
   {
-    for(U64 retry = 0; retry < 2; retry += 1)
+    for(u64 retry = 0; retry < 2; retry += 1)
     {
       DW_Version version = retry ? DW_Version_5 : ver;
       switch(version)
@@ -631,7 +631,7 @@ dw_string_from_rng_list_entry_kind(Arena *arena, DW_RLE kind)
 }
 
 internal String8
-dw_string_from_register(Arena *arena, Arch arch, U64 reg_id)
+dw_string_from_register(Arena *arena, Arch arch, u64 reg_id)
 {
   String8 reg_str = str8_zero();
   switch (arch) {

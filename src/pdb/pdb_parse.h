@@ -10,11 +10,11 @@
 typedef struct PDB_Strtbl
 {
   String8 data;
-  U32 bucket_count;
-  U32 strblock_min;
-  U32 strblock_max;
-  U32 buckets_min;
-  U32 buckets_max;
+  u32 bucket_count;
+  u32 strblock_min;
+  u32 strblock_max;
+  u32 buckets_min;
+  u32 buckets_max;
 } PDB_Strtbl;
 
 ////////////////////////////////
@@ -51,8 +51,8 @@ typedef struct PDB_Info
 typedef struct PDB_InfoHeader
 {
   PDB_InfoVersion version;
-  U32 time;
-  U32 age;
+  u32 time;
+  u32 age;
 } PDB_InfoHeader;
 
 ////////////////////////////////
@@ -87,14 +87,14 @@ typedef struct PDB_DbiParsed
   MSF_StreamNumber gsi_sn;
   MSF_StreamNumber psi_sn;
   MSF_StreamNumber sym_sn;
-  U64 range_off[(U64)(PDB_DbiRange_COUNT) + 1];
+  u64 range_off[(u64)(PDB_DbiRange_COUNT) + 1];
   MSF_StreamNumber dbg_streams[PDB_DbiStream_COUNT];
 } PDB_DbiParsed;
 
 typedef struct PDB_CompUnit
 {
   MSF_StreamNumber sn;
-  U32 range_off[(U32)(PDB_DbiCompUnitRange_COUNT) + 1];
+  u32 range_off[(u32)(PDB_DbiCompUnitRange_COUNT) + 1];
   
   String8 obj_name;
   String8 group_name;
@@ -109,20 +109,20 @@ typedef struct PDB_CompUnitNode
 typedef struct PDB_CompUnitArray
 {
   PDB_CompUnit **units;
-  U64 count;
+  u64 count;
 } PDB_CompUnitArray;
 
 typedef struct PDB_CompUnitContribution
 {
-  U32 mod;
-  U64 voff_first;
-  U64 voff_opl;
+  u32 mod;
+  u64 voff_first;
+  u64 voff_opl;
 } PDB_CompUnitContribution;
 
 typedef struct PDB_CompUnitContributionArray
 {
   PDB_CompUnitContribution *contributions;
-  U64 count;
+  u64 count;
 } PDB_CompUnitContributionArray;
 
 ////////////////////////////////
@@ -133,29 +133,29 @@ typedef struct PDB_TpiParsed
   String8 data;
   
   // leaf info
-  U64 leaf_first;
-  U64 leaf_opl;
-  U32 itype_first;
-  U32 itype_opl;
+  u64 leaf_first;
+  u64 leaf_opl;
+  u32 itype_first;
+  u32 itype_opl;
   
   // hash info
   MSF_StreamNumber hash_sn;
   MSF_StreamNumber hash_sn_aux;
-  U32 hash_key_size;
-  U32 hash_bucket_count;
-  U32 hash_vals_off;
-  U32 hash_vals_size;
-  U32 itype_off;
-  U32 itype_size;
-  U32 hash_adj_off;
-  U32 hash_adj_size;
+  u32 hash_key_size;
+  u32 hash_bucket_count;
+  u32 hash_vals_off;
+  u32 hash_vals_size;
+  u32 itype_off;
+  u32 itype_size;
+  u32 hash_adj_off;
+  u32 hash_adj_size;
   
 } PDB_TpiParsed;
 
 typedef struct PDB_TpiHashBlock
 {
   struct PDB_TpiHashBlock *next;
-  U32 local_count;
+  u32 local_count;
   CV_TypeId itypes[13]; // 13 = (64 - 12)/4
 } PDB_TpiHashBlock;
 
@@ -165,8 +165,8 @@ typedef struct PDB_TpiHashParsed
   String8 aux_data;
   
   PDB_TpiHashBlock **buckets;
-  U32 bucket_count;
-  U32 bucket_mask;
+  u32 bucket_count;
+  u32 bucket_mask;
 } PDB_TpiHashParsed;
 
 ////////////////////////////////
@@ -174,8 +174,8 @@ typedef struct PDB_TpiHashParsed
 
 typedef struct PDB_GsiBucket
 {
-  U32 *offs;
-  U64 count;
+  u32 *offs;
+  u64 count;
 } PDB_GsiBucket;
 
 typedef struct PDB_GsiParsed
@@ -212,13 +212,13 @@ internal CV_TypeIdArray       pdb_tpi_itypes_from_name(Arena *arena,
                                                        PDB_TpiHashParsed *tpi_hash,
                                                        CV_LeafParsed *tpi_leaf,
                                                        String8 name,
-                                                       B32 compare_unique_name,
-                                                       U32 output_cap);
+                                                       b32 compare_unique_name,
+                                                       u32 output_cap);
 
 internal CV_TypeId            pdb_tpi_first_itype_from_name(PDB_TpiHashParsed *tpi_hash,
                                                             CV_LeafParsed *tpi_leaf,
                                                             String8 name,
-                                                            B32 compare_unique_name);
+                                                            b32 compare_unique_name);
 
 ////////////////////////////////
 //~ PDB Strtbl Functions

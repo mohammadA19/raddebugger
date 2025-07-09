@@ -123,7 +123,7 @@ entry_point(CmdLine *cmdline)
   //
   MG_Map table_grid_map = mg_push_map(mg_arena, 1024);
   MG_Map table_col_map = mg_push_map(mg_arena, 1024);
-  U64 table_count = 0;
+  u64 table_count = 0;
   DeferLoop(printf("gathering tables..."), printf(" %i tables found\n", (int)table_count))
   {
     for(MG_FileParseNode *n = parses.first; n != 0; n = n->next)
@@ -382,7 +382,7 @@ entry_point(CmdLine *cmdline)
       {
         String8 layer_key = mg_layer_key_from_path(file->string);
         MG_Layer *layer = mg_layer_from_key(layer_key);
-        B32 prefer_c_file = md_node_has_tag(node, str8_lit("c_file"), 0);
+        b32 prefer_c_file = md_node_has_tag(node, str8_lit("c_file"), 0);
         String8List *out = prefer_c_file ? &layer->c_catchall : &layer->h_catchall;
         if(tag->first->string.size == 0){}
         else if(str8_match(tag->first->string, str8_lit("enums"), 0))     { out = &layer->enums; }
@@ -423,7 +423,7 @@ entry_point(CmdLine *cmdline)
         MG_Layer *layer = mg_layer_from_key(layer_key);
         String8 data = os_data_from_file_path(mg_arena, node->first->string);
         String8 embed_string = mg_c_array_literal_contents_from_data(data);
-        str8_list_pushf(mg_arena, &layer->h_tables, "@(rodata) global U8 %S__data[] =\n{\n", node->string);
+        str8_list_pushf(mg_arena, &layer->h_tables, "@(rodata) global u8 %S__data[] =\n{\n", node->string);
         str8_list_push (mg_arena, &layer->h_tables, embed_string);
         str8_list_pushf(mg_arena, &layer->h_tables, "};\n\n");
         str8_list_pushf(mg_arena, &layer->h_tables, "@(rodata) global String8 %S = {%S__data, sizeof(%S__data)};\n",
@@ -500,7 +500,7 @@ entry_point(CmdLine *cmdline)
   //
   DeferLoop(printf("generating layer code..."), printf("\n"))
   {
-    for(U64 slot_idx = 0; slot_idx < mg_state->slots_count; slot_idx += 1)
+    for(u64 slot_idx = 0; slot_idx < mg_state->slots_count; slot_idx += 1)
     {
       MG_LayerSlot *slot = &mg_state->slots[slot_idx];
       for(MG_LayerNode *n = slot->first; n != 0; n = n->next)

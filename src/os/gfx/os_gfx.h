@@ -11,15 +11,15 @@
 
 struct OS_GfxInfo
 {
-  F32 double_click_time;
-  F32 caret_blink_time;
-  F32 default_refresh_rate;
+  f32 double_click_time;
+  f32 caret_blink_time;
+  f32 default_refresh_rate;
 };
 
 ////////////////////////////////
 //~ rjf: Window Types
 
-typedef U32 OS_WindowFlags;
+typedef u32 OS_WindowFlags;
 enum
 {
   OS_WindowFlag_CustomBorder       = (1<<0),
@@ -68,7 +68,7 @@ typedef enum OS_EventKind
 }
 OS_EventKind;
 
-typedef U32 OS_Modifiers;
+typedef u32 OS_Modifiers;
 enum
 {
   OS_Modifier_Ctrl  = (1<<0),
@@ -82,15 +82,15 @@ struct OS_Event
 {
   OS_Event *next;
   OS_Event *prev;
-  U64 timestamp_us;
+  u64 timestamp_us;
   OS_Handle window;
   OS_EventKind kind;
   OS_Modifiers modifiers;
   OS_Key key;
-  B32 is_repeat;
-  B32 right_sided;
-  U32 character;
-  U32 repeat_count;
+  b32 is_repeat;
+  b32 right_sided;
+  u32 character;
+  u32 repeat_count;
   Vec2F32 pos;
   Vec2F32 delta;
   String8List strings;
@@ -100,7 +100,7 @@ struct OS_Event
 
 struct OS_EventList
 {
-  U64 count;
+  u64 count;
   OS_Event *first;
   OS_Event *last;
 };

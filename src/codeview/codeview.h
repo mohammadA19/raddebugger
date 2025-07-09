@@ -12,16 +12,16 @@
 #define CV_MinComplexTypeIndex 0x1000
 
 #define CV_TypeIndex_Max max_U32
-typedef U32          CV_TypeIndex;
+typedef u32          CV_TypeIndex;
 typedef CV_TypeIndex CV_TypeId;
 typedef CV_TypeIndex CV_ItemId;
 
 #define CV_ModIndex_Max     max_U16
 #define CV_ModIndex_Invalid CV_ModIndex_Max
-typedef U16 CV_ModIndex;
+typedef u16 CV_ModIndex;
 
-typedef U16 CV_SectionIndex;
-typedef U16 CV_Reg;
+typedef u16 CV_SectionIndex;
+typedef u16 CV_Reg;
 
 @(rodata) global CV_TypeId cv_type_id_variadic = 0xFFFFFFFF;
 
@@ -287,7 +287,7 @@ X(YMM7D1, 393, ymm7,   8,  8)  \
 X(YMM7D2, 394, ymm7,   16, 8)  \
 X(YMM7D3, 395, ymm7,   24, 8)
 
-typedef U16 CV_Regx86;
+typedef u16 CV_Regx86;
 typedef enum CV_Regx86Enum
 {
 #define X(CVN,C,RDN,BP,BZ) CV_Regx86_##CVN = C,
@@ -1004,7 +1004,7 @@ X(ZMM13H,  779, zmm13,  32, 32) \
 X(ZMM14H,  780, zmm14,  32, 32) \
 X(ZMM15H,  781, zmm15,  32, 32)
 
-typedef U16 CV_Regx64;
+typedef u16 CV_Regx64;
 typedef enum CV_Regx64Enum
 {
 #define X(CVN,C,RDN,BP,BZ) CV_Regx64_##CVN = C,
@@ -1021,7 +1021,7 @@ X(C11,      2)             \
 X(C13,      4)             \
 X(RESERVED, 5)
 
-typedef U32 CV_Signature;
+typedef u32 CV_Signature;
 typedef enum CV_SignatureEnum
 {
 #define X(N,c) CV_Signature_##N = c,
@@ -1050,7 +1050,7 @@ X(JSCRIPT, 0x0E)          \
 X(MSIL,    0x0F)          \
 X(HLSL,    0x10)
 
-typedef U16 CV_Language;
+typedef u16 CV_Language;
 typedef enum CV_LanguageEnum
 {
 #define X(N,c) CV_Language_##N = c,
@@ -1065,17 +1065,17 @@ CV_LanguageEnum;
 //~ rjf: CodeView Format "Sym" and "Leaf" Header Type
 
 #define CV_LeafSize_Max max_U16
-typedef U16 CV_LeafSize;
+typedef u16 CV_LeafSize;
 
 #define CV_SymSize_Max max_U16
-typedef U16 CV_SymSize;
+typedef u16 CV_SymSize;
 
 
 
 struct CV_RecHeader
 {
-  U16 size;
-  U16 kind;
+  u16 size;
+  u16 kind;
 };
 
 ////////////////////////////////
@@ -1084,7 +1084,7 @@ struct CV_RecHeader
 // (per-compilation-unit info, variables, procedures, etc.)
 //
 
-typedef U8 CV_ProcFlags;
+typedef u8 CV_ProcFlags;
 enum
 {
   CV_ProcFlag_NoFPO       = (1 << 0),
@@ -1097,7 +1097,7 @@ enum
   CV_ProcFlag_OptDbgInfo  = (1 << 7),
 };
 
-typedef U16 CV_LocalFlags;
+typedef u16 CV_LocalFlags;
 enum
 {
   CV_LocalFlag_Param           = (1 << 0),
@@ -1117,14 +1117,14 @@ enum
 
 struct CV_LocalVarAttr
 {
-  U32           off;
-  U16           seg;
+  u32           off;
+  u16           seg;
   CV_LocalFlags flags;
 };
 
 //- (SymKind: COMPILE)
 
-typedef U32 CV_CompileFlags;
+typedef u32 CV_CompileFlags;
 #define CV_CompileFlags_Extract_Language(f)    (((f)    )&0xFF)
 #define CV_CompileFlags_Extract_FloatPrec(f)   (((f)>> 8)&0x03)
 #define CV_CompileFlags_Extract_FloatPkg(f)    (((f)>>10)&0x03)
@@ -1136,9 +1136,9 @@ typedef U32 CV_CompileFlags;
 
 struct CV_SymCompile
 {
-  U8              machine;
+  u8              machine;
   CV_CompileFlags flags;
-  // U8[] ver_str (null terminated)
+  // u8[] ver_str (null terminated)
 };
 
 //- (SymKind: SSEARCH)
@@ -1147,15 +1147,15 @@ struct CV_SymCompile
 
 struct CV_SymStartSearch
 {
-  U32 start_symbol;
-  U16 segment;
+  u32 start_symbol;
+  u16 segment;
 };
 
 //- (SymKind: END) (empty)
 
 //- (SymKind: RETURN)
 
-typedef U8 CV_GenericStyle;
+typedef u8 CV_GenericStyle;
 typedef enum CV_GenericStyleEnum
 {
   CV_GenericStyle_VOID,
@@ -1168,7 +1168,7 @@ typedef enum CV_GenericStyleEnum
 }
 CV_GenericStyleEnum;
 
-typedef U16 CV_GenericFlags;
+typedef u16 CV_GenericFlags;
 enum
 {
   CV_GenericFlags_CSTYLE  = (1 << 0),
@@ -1189,9 +1189,9 @@ struct CV_SymReturn
 
 struct CV_SymSLink32
 {
-  U32 frame_size;
-  U32 offset;
-  U16 reg;
+  u32 frame_size;
+  u32 offset;
+  u16 reg;
 };
 
 //- (SymKind: OEM)
@@ -1213,13 +1213,13 @@ struct CV_SymVPath32
 {
   CV_TypeId root;
   CV_TypeId path;
-  U32       off;
-  U16       seg;
+  u32       off;
+  u16       seg;
 };
 
 //- (SymKind: FRAMEPROC)
 
-typedef U8 CV_EncodedFramePtrReg;
+typedef u8 CV_EncodedFramePtrReg;
 typedef enum CV_EncodedFramePtrRegEnum
 {
   CV_EncodedFramePtrReg_None,
@@ -1229,7 +1229,7 @@ typedef enum CV_EncodedFramePtrRegEnum
 }
 CV_EncodedFramePtrRegEnum;
 
-typedef U32 CV_FrameprocFlags;
+typedef u32 CV_FrameprocFlags;
 enum
 {
   CV_FrameprocFlag_UsesAlloca        = (1 << 0),
@@ -1261,11 +1261,11 @@ enum
 
 struct CV_SymFrameproc
 {
-  U32               frame_size;
-  U32               pad_size;
-  U32               pad_off;
-  U32               save_reg_size;
-  U32               eh_off;
+  u32               frame_size;
+  u32               pad_size;
+  u32               pad_off;
+  u32               save_reg_size;
+  u32               eh_off;
   CV_SectionIndex   eh_sec;
   CV_FrameprocFlags flags;
 };
@@ -1276,10 +1276,10 @@ struct CV_SymFrameproc
 
 struct CV_SymAnnotation
 {
-  U32 off;
-  U16 seg;
-  U16 count;
-  // U8[] annotation (null terminated)
+  u32 off;
+  u16 seg;
+  u16 count;
+  // u8[] annotation (null terminated)
 };
 
 //- (SymKind: OBJNAME)
@@ -1288,13 +1288,13 @@ struct CV_SymAnnotation
 
 struct CV_SymObjName
 {
-  U32 sig;
-  // U8[] name (null terminated)
+  u32 sig;
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: THUNK32)
 
-typedef U8 CV_ThunkOrdinal;
+typedef u8 CV_ThunkOrdinal;
 typedef enum CV_ThunkOrdinalEnum
 {
   CV_ThunkOrdinal_NoType,
@@ -1311,15 +1311,15 @@ CV_ThunkOrdinalEnum;
 
 struct CV_SymThunk32
 {
-  U32             parent;
-  U32             end;
-  U32             next;
-  U32             off;
-  U16             sec;
-  U16             len;
+  u32             parent;
+  u32             end;
+  u32             next;
+  u32             off;
+  u16             sec;
+  u16             len;
   CV_ThunkOrdinal ord;
-  // U8[] name (null terminated)
-  // U8[] variant (null terminated)
+  // u8[] name (null terminated)
+  // u8[] variant (null terminated)
 };
 
 //- (SymKind: BLOCK32)
@@ -1328,12 +1328,12 @@ struct CV_SymThunk32
 
 struct CV_SymBlock32
 {
-  U32 parent;
-  U32 end;
-  U32 len;
-  U32 off;
-  U16 sec;
-  // U8[] name (null terminated)
+  u32 parent;
+  u32 end;
+  u32 len;
+  u32 off;
+  u16 sec;
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: LABEL32)
@@ -1342,10 +1342,10 @@ struct CV_SymBlock32
 
 struct CV_SymLabel32
 {
-  U32          off;
-  U16          sec;
+  u32          off;
+  u16          sec;
   CV_ProcFlags flags;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: REGISTER)
@@ -1355,8 +1355,8 @@ struct CV_SymLabel32
 struct CV_SymRegister
 {
   CV_TypeId itype;
-  U16       reg;
-  // U8[] name (null terminated)
+  u16       reg;
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: CONSTANT)
@@ -1367,7 +1367,7 @@ struct CV_SymConstant
 {
   CV_TypeId itype;
   // CV_Numeric num
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: UDT)
@@ -1377,7 +1377,7 @@ struct CV_SymConstant
 struct CV_SymUDT
 {
   CV_TypeId itype;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: MANYREG)
@@ -1387,8 +1387,8 @@ struct CV_SymUDT
 struct CV_SymManyreg
 {
   CV_TypeId itype;
-  U8        count;
-  // U8[count] regs;
+  u8        count;
+  // u8[count] regs;
 };
 
 //- (SymKind: BPREL32)
@@ -1397,9 +1397,9 @@ struct CV_SymManyreg
 
 struct CV_SymBPRel32
 {
-  U32       off;
+  u32       off;
   CV_TypeId itype;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: LDATA32, GDATA32)
@@ -1409,14 +1409,14 @@ struct CV_SymBPRel32
 struct CV_SymData32
 {
   CV_TypeId       itype;
-  U32             off;
+  u32             off;
   CV_SectionIndex sec;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: PUB32)
 
-typedef U32 CV_Pub32Flags;
+typedef u32 CV_Pub32Flags;
 enum
 {
   CV_Pub32Flag_Code        = (1 << 0),
@@ -1430,9 +1430,9 @@ enum
 struct CV_SymPub32
 {
   CV_Pub32Flags   flags;
-  U32             off;
+  u32             off;
   CV_SectionIndex sec;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: LPROC32, GPROC32)
@@ -1441,17 +1441,17 @@ struct CV_SymPub32
 
 struct CV_SymProc32
 {
-  U32          parent;
-  U32          end;
-  U32          next;
-  U32          len;
-  U32          dbg_start;
-  U32          dbg_end;
+  u32          parent;
+  u32          end;
+  u32          next;
+  u32          len;
+  u32          dbg_start;
+  u32          dbg_end;
   CV_TypeId    itype;
-  U32          off;
-  U16          sec;
+  u32          off;
+  u16          sec;
   CV_ProcFlags flags;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: REGREL32)
@@ -1460,10 +1460,10 @@ struct CV_SymProc32
 
 struct CV_SymRegrel32
 {
-  U32       reg_off;
+  u32       reg_off;
   CV_TypeId itype;
   CV_Reg    reg;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: LTHREAD32, GTHREAD32)
@@ -1473,14 +1473,14 @@ struct CV_SymRegrel32
 struct CV_SymThread32
 {
   CV_TypeId itype;
-  U32       tls_off;
-  U16       tls_seg;
-  // U8[] name (null terminated)
+  u32       tls_off;
+  u16       tls_seg;
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: COMPILE2)
 
-typedef U32 CV_Compile2Flags;
+typedef u32 CV_Compile2Flags;
 #define CV_Compile2Flags_Extract_Language(f)        (((f)    )&0xFF)
 #define CV_Compile2Flags_Extract_EditAndContinue(f) (((f)>> 8)&0x01)
 #define CV_Compile2Flags_Extract_NoDbgInfo(f)       (((f)>> 9)&0x01)
@@ -1498,13 +1498,13 @@ struct CV_SymCompile2
 {
   CV_Compile2Flags flags;
   CV_Arch          machine;
-  U16              ver_fe_major;
-  U16              ver_fe_minor;
-  U16              ver_fe_build;
-  U16              ver_major;
-  U16              ver_minor;
-  U16              ver_build;
-  // U8[] ver_str (null terminated)
+  u16              ver_fe_major;
+  u16              ver_fe_minor;
+  u16              ver_fe_build;
+  u16              ver_major;
+  u16              ver_minor;
+  u16              ver_build;
+  // u8[] ver_str (null terminated)
 };
 
 //- (SymKind: MANYREG2)
@@ -1514,8 +1514,8 @@ struct CV_SymCompile2
 struct CV_SymManyreg2
 {
   CV_TypeId itype;
-  U16       count;
-  // U16[count] regs;
+  u16       count;
+  // u16[count] regs;
 };
 
 //- (SymKind: LOCALSLOT)
@@ -1524,9 +1524,9 @@ struct CV_SymManyreg2
 
 struct CV_SymSlot
 {
-  U32       slot_index;
+  u32       slot_index;
   CV_TypeId itype;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: MANFRAMEREL, ATTR_FRAMEREL)
@@ -1535,10 +1535,10 @@ struct CV_SymSlot
 
 struct CV_SymAttrFrameRel
 {
-  U32             off;
+  u32             off;
   CV_TypeId       itype;
   CV_LocalVarAttr attr;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: MANREGISTER, ATTR_REGISTER)
@@ -1549,8 +1549,8 @@ struct CV_SymAttrReg
 {
   CV_TypeId       itype;
   CV_LocalVarAttr attr;
-  U16             reg;
-  // U8[] name (null terminated)
+  u16             reg;
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: MANMANYREG, ATTR_MANYREG)
@@ -1562,9 +1562,9 @@ struct CV_SymAttrManyReg
 {
   CV_TypeId       itype;
   CV_LocalVarAttr attr;
-  U8              count;
-  // U8[count] regs
-  // U8[] name (null terminated)
+  u8              count;
+  // u8[count] regs
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: MANREGREL, ATTR_REGREL)
@@ -1573,11 +1573,11 @@ struct CV_SymAttrManyReg
 
 struct CV_SymAttrRegRel
 {
-  U32             off;
+  u32             off;
   CV_TypeId       itype;
-  U16             reg;
+  u16             reg;
   CV_LocalVarAttr attr;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: UNAMESPACE)
@@ -1590,9 +1590,9 @@ struct CV_SymUNamespace
   // *** It is placed here so the C compiler will accept this struct.
   // *** The actual fixed size part of this record has a size of zero.
   
-  U8 dummy;
+  u8 dummy;
   
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: PROCREF, DATAREF, LPROCREF)
@@ -1601,15 +1601,15 @@ struct CV_SymUNamespace
 
 struct CV_SymRef2
 {
-  U32         suc_name;
-  U32         sym_off;
+  u32         suc_name;
+  u32         sym_off;
   CV_ModIndex imod;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: TRAMPOLINE)
 
-typedef U16 CV_TrampolineKind;
+typedef u16 CV_TrampolineKind;
 typedef enum CV_TrampolineKindEnum
 {
   CV_TrampolineKind_Incremental,
@@ -1622,16 +1622,16 @@ CV_TrampolineKindEnum;
 struct CV_SymTrampoline
 {
   CV_TrampolineKind kind;
-  U16               thunk_size;
-  U32               thunk_sec_off;
-  U32               target_sec_off;
+  u16               thunk_size;
+  u32               thunk_sec_off;
+  u32               target_sec_off;
   CV_SectionIndex   thunk_sec;
   CV_SectionIndex   target_sec;
 };
 
 //- (SymKind: SEPCODE)
 
-typedef U32 CV_SepcodeFlags;
+typedef u32 CV_SepcodeFlags;
 enum
 {
   CV_SepcodeFlag_IsLexicalScope  = (1 << 0),
@@ -1642,14 +1642,14 @@ enum
 
 struct CV_SymSepcode
 {
-  U32             parent;
-  U32             end;
-  U32             len;
+  u32             parent;
+  u32             end;
+  u32             len;
   CV_SepcodeFlags flags;
-  U32             sec_off;
-  U32             sec_parent_off;
-  U16             sec;
-  U16             sec_parent;
+  u32             sec_off;
+  u32             sec_parent_off;
+  u16             sec;
+  u16             sec_parent;
 };
 
 //- (SymKind: SECTION)
@@ -1658,13 +1658,13 @@ struct CV_SymSepcode
 
 struct CV_SymSection
 {
-  U16 sec_index;
-  U8  align;
-  U8  pad;
-  U32 rva;
-  U32 size;
-  U32 characteristics;
-  // U8[] name (null terminated)
+  u16 sec_index;
+  u8  align;
+  u8  pad;
+  u32 rva;
+  u32 size;
+  u32 characteristics;
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: COFFGROUP)
@@ -1673,16 +1673,16 @@ struct CV_SymSection
 
 struct CV_SymCoffGroup
 {
-  U32 size;
-  U32 characteristics;
-  U32 off;
-  U16 sec;
-  // U8[] name (null terminated)
+  u32 size;
+  u32 characteristics;
+  u32 off;
+  u16 sec;
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: EXPORT)
 
-typedef U16 CV_ExportFlags;
+typedef u16 CV_ExportFlags;
 enum
 {
   CV_ExportFlag_Constant  = (1 << 0),
@@ -1697,9 +1697,9 @@ enum
 
 struct CV_SymExport
 {
-  U16            ordinal;
+  u16            ordinal;
   CV_ExportFlags flags;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: CALLSITEINFO)
@@ -1708,15 +1708,15 @@ struct CV_SymExport
 
 struct CV_SymCallSiteInfo
 {
-  U32       off;
-  U16       sec;
-  U16       pad;
+  u32       off;
+  u16       sec;
+  u16       pad;
   CV_TypeId itype;
 };
 
 //- (SymKind: FRAMECOOKIE)
 
-typedef U8 CV_FrameCookieKind;
+typedef u8 CV_FrameCookieKind;
 typedef enum CV_FrameCookieKindEnum
 {
   CV_FrameCookieKind_Copy,
@@ -1730,15 +1730,15 @@ CV_FrameCookieKindEnum;
 
 struct CV_SymFrameCookie
 {
-  U32                off;
+  u32                off;
   CV_Reg             reg;
   CV_FrameCookieKind kind;
-  U8                 flags;
+  u8                 flags;
 };
 
 //- (SymKind: DISCARDED)
 
-typedef U8 CV_DiscardedKind;
+typedef u8 CV_DiscardedKind;
 typedef enum CV_DiscardedKindEnum
 {
   CV_DiscardedKind_Unknown,
@@ -1752,13 +1752,13 @@ CV_DiscardedKindEnum;
 struct CV_SymDiscarded
 {
   CV_DiscardedKind kind;
-  U32              file_id;
-  U32              file_ln;
-  // U8[] data (rest of data)
+  u32              file_id;
+  u32              file_ln;
+  // u8[] data (rest of data)
 };
 
 //- (SymKind: COMPILE3)
-typedef U32 CV_Compile3Flags;
+typedef u32 CV_Compile3Flags;
 enum
 {
   CV_Compile3Flag_EC             = (1 << 8),
@@ -1777,7 +1777,7 @@ enum
   CV_Compile3Flag_Language_Shift = 0, CV_Compile3Flag_Language_Mask = 0xff,
 };
 
-typedef U32 CV_Compile3Flags;
+typedef u32 CV_Compile3Flags;
 #define CV_Compile3Flags_Extract_Language(f)        (((f)    )&0xFF)
 #define CV_Compile3Flags_Extract_EditAndContinue(f) (((f)>> 9)&0x01)
 #define CV_Compile3Flags_Extract_NoDbgInfo(f)       (((f)>>10)&0x01)
@@ -1798,15 +1798,15 @@ struct CV_SymCompile3
 {
   CV_Compile3Flags flags;
   CV_Arch          machine;
-  U16              ver_fe_major;
-  U16              ver_fe_minor;
-  U16              ver_fe_build;
-  U16              ver_feqfe;
-  U16              ver_major;
-  U16              ver_minor;
-  U16              ver_build;
-  U16              ver_qfe;
-  // U8[] ver_str (null terminated)
+  u16              ver_fe_major;
+  u16              ver_fe_minor;
+  u16              ver_fe_build;
+  u16              ver_feqfe;
+  u16              ver_major;
+  u16              ver_minor;
+  u16              ver_build;
+  u16              ver_qfe;
+  // u8[] ver_str (null terminated)
 };
 
 //- (SymKind: ENVBLOCK)
@@ -1815,8 +1815,8 @@ struct CV_SymCompile3
 
 struct CV_SymEnvBlock
 {
-  U8 flags;
-  // U8[][] rgsz (sequence null terminated strings)
+  u8 flags;
+  // u8[][] rgsz (sequence null terminated strings)
 };
 
 //- (SymKind: LOCAL)
@@ -1827,7 +1827,7 @@ struct CV_SymLocal
 {
   CV_TypeId     itype;
   CV_LocalFlags flags;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- DEFRANGE
@@ -1836,20 +1836,20 @@ struct CV_SymLocal
 
 struct CV_LvarAddrRange
 {
-  U32 off;
-  U16 sec;
-  U16 len;
+  u32 off;
+  u16 sec;
+  u16 len;
 };
 
 
 
 struct CV_LvarAddrGap
 {
-  U16 off;
-  U16 len;
+  u16 off;
+  u16 len;
 };
 
-typedef U16 CV_RangeAttribs;
+typedef u16 CV_RangeAttribs;
 enum
 {
   CV_RangeAttrib_Maybe = (1 << 0),
@@ -1861,7 +1861,7 @@ enum
 
 struct CV_SymDefrange
 {
-  U32              program;
+  u32              program;
   CV_LvarAddrRange range;
   // variable-width: CV_LvarAddrGap gaps;
 };
@@ -1872,8 +1872,8 @@ struct CV_SymDefrange
 
 struct CV_SymDefrangeSubfield
 {
-  U32              program;
-  U32              off_in_parent;
+  u32              program;
+  u32              off_in_parent;
   CV_LvarAddrRange range;
   // CV_LvarAddrGap[] gaps (rest of data)
 };
@@ -1896,7 +1896,7 @@ struct CV_SymDefrangeRegister
 
 struct CV_SymDefrangeFramepointerRel
 {
-  S32              off;
+  i32              off;
   CV_LvarAddrRange range;
   // CV_LvarAddrGap[] gaps (rest of data)
 };
@@ -1911,7 +1911,7 @@ struct CV_SymDefrangeSubfieldRegister
 {
   CV_Reg           reg;
   CV_RangeAttribs  attribs;
-  U32              field_offset;
+  u32              field_offset;
   CV_LvarAddrRange range;
   // CV_LvarAddrGap[] gaps (rest of data)
 };
@@ -1922,12 +1922,12 @@ struct CV_SymDefrangeSubfieldRegister
 
 struct CV_SymDefrangeFramepointerRelFullScope
 {
-  S32 off;
+  i32 off;
 };
 
 //- (SymKind: DEFRANGE_REGISTER_REL)
 
-typedef U16 CV_DefrangeRegisterRelFlags;
+typedef u16 CV_DefrangeRegisterRelFlags;
 enum
 {
   CV_DefrangeRegisterRelFlag_SpilledOutUDTMember = (1 << 0),
@@ -1940,7 +1940,7 @@ struct CV_SymDefrangeRegisterRel
 {
   CV_Reg                      reg;
   CV_DefrangeRegisterRelFlags flags;
-  S32                         reg_off;
+  i32                         reg_off;
   CV_LvarAddrRange            range;
   // CV_LvarAddGap[] gaps (rest of data)
 };
@@ -1956,7 +1956,7 @@ struct CV_SymBuildInfo
 
 //- (SymKind: INLINESITE)
 
-typedef U32 CV_InlineBinaryAnnotation;
+typedef u32 CV_InlineBinaryAnnotation;
 typedef enum CV_InlineBinaryAnnotationEnum
 {
   CV_InlineBinaryAnnotation_Null,
@@ -1976,7 +1976,7 @@ typedef enum CV_InlineBinaryAnnotationEnum
 }
 CV_InlineBinaryAnnotationEnum;
 
-typedef U32 CV_InlineRangeKind;
+typedef u32 CV_InlineRangeKind;
 typedef enum CV_InlineRangeKindEnum
 {
   CV_InlineRangeKind_Expr,
@@ -1988,10 +1988,10 @@ CV_InlineRangeKindEnum;
 
 struct CV_SymInlineSite
 {
-  U32       parent;
-  U32       end;
+  u32       parent;
+  u32       end;
   CV_ItemId inlinee;
-  // U8 annotations[] (rest of data)
+  // u8 annotations[] (rest of data)
 };
 
 //- (SymKind: INLINESITE2)
@@ -2000,11 +2000,11 @@ struct CV_SymInlineSite
 
 struct CV_SymInlineSite2
 {
-  U32       parent_off;
-  U32       end_off;
+  u32       parent_off;
+  u32       end_off;
   CV_ItemId inlinee;
-  U32       invocations;
-  // U8 annotations[] (rest of data)
+  u32       invocations;
+  // u8 annotations[] (rest of data)
 };
 
 //- (SymKind: INLINESITE_END) (empty)
@@ -2016,14 +2016,14 @@ struct CV_SymInlineSite2
 struct CV_SymFileStatic
 {
   CV_TypeId     itype;
-  U32           mod_offset;
+  u32           mod_offset;
   CV_LocalFlags flags;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: ARMSWITCHTABLE)
 
-typedef U16 CV_ArmSwitchKind;
+typedef u16 CV_ArmSwitchKind;
 typedef enum CV_ArmSwitchKindEnum
 {
   CV_ArmSwitchKind_INT1,
@@ -2044,14 +2044,14 @@ CV_ArmSwitchKindEnum;
 
 struct CV_SymArmSwitchTable
 {
-  U32              off_base;
-  U16              sec_base;
+  u32              off_base;
+  u16              sec_base;
   CV_ArmSwitchKind kind;
-  U32              off_branch;
-  U32              off_table;
-  U16              sec_branch;
-  U16              sec_table;
-  U32              entry_count;
+  u32              off_branch;
+  u32              off_table;
+  u16              sec_branch;
+  u16              sec_table;
+  u32              entry_count;
 };
 
 //- (SymKind: CALLEES, CALLERS)
@@ -2060,9 +2060,9 @@ struct CV_SymArmSwitchTable
 
 struct CV_SymFunctionList
 {
-  U32 count;
+  u32 count;
   // CV_TypeId[count] funcs
-  // U32[clamp(count, rest_of_data/4)] invocations
+  // u32[clamp(count, rest_of_data/4)] invocations
 };
 
 //- (SymKind: POGODATA)
@@ -2071,10 +2071,10 @@ struct CV_SymFunctionList
 
 struct CV_SymPogoInfo
 {
-  U32 invocations;
-  U64 dynamic_inst_count;
-  U32 static_inst_count;
-  U32 post_inline_static_inst_count;
+  u32 invocations;
+  u64 dynamic_inst_count;
+  u32 static_inst_count;
+  u32 post_inline_static_inst_count;
 };
 
 //- (SymKind: HEAPALLOCSITE)
@@ -2083,15 +2083,15 @@ struct CV_SymPogoInfo
 
 struct CV_SymHeapAllocSite
 {
-  U32       off;
-  U16       sec;
-  U16       call_inst_len;
+  u32       off;
+  u16       sec;
+  u16       call_inst_len;
   CV_TypeId itype;
 };
 
 //- (SymKind: MOD_TYPEREF)
 
-typedef U32 CV_ModTypeRefFlags;
+typedef u32 CV_ModTypeRefFlags;
 enum
 {
   CV_ModTypeRefFlag_None     = (1 << 0),
@@ -2108,13 +2108,13 @@ struct CV_SymModTypeRef
 {
   CV_ModTypeRefFlags flags;
   // contain stream number or module index depending on flags     (undocumented)
-  U32                word0;
-  U32                word1;
+  u32                word0;
+  u32                word1;
 };
 
 //- (SymKind: REF_MINIPDB)
 
-typedef U16 CV_RefMiniPdbFlags;
+typedef u16 CV_RefMiniPdbFlags;
 enum
 {
   CV_RefMiniPdbFlag_Local = (1 << 0),
@@ -2128,15 +2128,15 @@ enum
 
 struct CV_SymRefMiniPdb
 {
-  U32                data;
+  u32                data;
   CV_ModIndex        imod;
   CV_RefMiniPdbFlags flags;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: FASTLINK)
 
-typedef U16 CV_FastLinkFlags;
+typedef u16 CV_FastLinkFlags;
 enum
 {
   CV_FastLinkFlag_IsGlobalData = (1 << 0),
@@ -2154,7 +2154,7 @@ struct CV_SymFastLink
 {
   CV_TypeId        itype;
   CV_FastLinkFlags flags;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (SymKind: INLINEES)
@@ -2163,8 +2163,8 @@ struct CV_SymFastLink
 
 struct CV_SymInlinees
 {
-  U32 count;
-  // U32[count] desc;
+  u32 count;
+  // u32[count] desc;
 };
 
 ////////////////////////////////
@@ -2184,7 +2184,7 @@ X(32BIT,      0x4)                \
 X(16_32BIT,   0x5)                \
 X(64BIT,      0x6)
 
-typedef U8 CV_BasicPointerKind;
+typedef u8 CV_BasicPointerKind;
 typedef enum
 {
 #define X(N,c) CV_BasicPointerKind_##N = c,
@@ -2195,7 +2195,7 @@ typedef enum
 #define CV_BasicTypeFromTypeId(x)        ((x)&0xFF)
 #define CV_BasicPointerKindFromTypeId(x) (((x)>>8)&0xFF)
 
-typedef U8 CV_HFAKind;
+typedef u8 CV_HFAKind;
 typedef enum CV_HFAKindEnum
 {
   CV_HFAKind_None,
@@ -2204,7 +2204,7 @@ typedef enum CV_HFAKindEnum
   CV_HFAKind_Other
 } CV_HFAKindEnum;
 
-typedef U8 CV_MoComUDTKind;
+typedef u8 CV_MoComUDTKind;
 typedef enum CV_MoComUDTKindEnum
 {
   CV_MoComUDTKind_None,
@@ -2213,8 +2213,8 @@ typedef enum CV_MoComUDTKindEnum
   CV_MoComUDTKind_Interface
 } CV_MoComUDTKindEnum;
 
-typedef U16 CV_TypeProps;
-typedef U32 CV_TypeProps32;
+typedef u16 CV_TypeProps;
+typedef u32 CV_TypeProps32;
 enum
 {
   CV_TypeProp_Packed                     = (1 << 0),
@@ -2235,7 +2235,7 @@ enum
 #define CV_TypeProps_Extract_HFA(f)   (((f)>>11)&0x3)
 #define CV_TypeProps_Extract_MOCOM(f) (((f)>>14)&0x3)
 
-typedef U8 CV_PointerKind;
+typedef u8 CV_PointerKind;
 typedef enum CV_PointerKindEnum
 {
   CV_PointerKind_Near,      // 16 bit
@@ -2253,7 +2253,7 @@ typedef enum CV_PointerKindEnum
   CV_PointerKind_64,        // 64 bit
 } CV_PointerKindEnum;
 
-typedef U8 CV_PointerMode;
+typedef u8 CV_PointerMode;
 typedef enum CV_PointerModeEnum
 {
   CV_PointerMode_Ptr,
@@ -2264,7 +2264,7 @@ typedef enum CV_PointerModeEnum
 }
 CV_PointerModeEnum;
 
-typedef U16 CV_MemberPointerKind;
+typedef u16 CV_MemberPointerKind;
 typedef enum CV_MemberPointerKindEnum
 {
   CV_MemberPointerKind_Undef,
@@ -2279,7 +2279,7 @@ typedef enum CV_MemberPointerKindEnum
 }
 CV_MemberPointerKindEnum;
 
-typedef U32 CV_VirtualTableShape;
+typedef u32 CV_VirtualTableShape;
 typedef enum CV_VirtualTableShapeEnum
 {
   CV_VirtualTableShape_Near,    // 16 bit ptr
@@ -2292,7 +2292,7 @@ typedef enum CV_VirtualTableShapeEnum
 }
 CV_VirtualTableShapeEnum;
 
-typedef U8 CV_MethodProp;
+typedef u8 CV_MethodProp;
 enum
 {
   CV_MethodProp_Vanilla,
@@ -2304,7 +2304,7 @@ enum
   CV_MethodProp_PureIntro,
 };
 
-typedef U8 CV_MemberAccess;
+typedef u8 CV_MemberAccess;
 typedef enum CV_MemberAccessEnum
 {
   CV_MemberAccess_Null,
@@ -2314,7 +2314,7 @@ typedef enum CV_MemberAccessEnum
 }
 CV_MemberAccessEnum;
 
-typedef U16 CV_FieldAttribs;
+typedef u16 CV_FieldAttribs;
 enum
 {
   // Access: 0,1
@@ -2328,7 +2328,7 @@ enum
 #define CV_FieldAttribs_Extract_Access(f)     ((f)&0x3)
 #define CV_FieldAttribs_Extract_MethodProp(f) (((f)>>2)&0x7)
 
-typedef U16 CV_LabelKind;
+typedef u16 CV_LabelKind;
 typedef enum CV_LabelKindEnum
 {
   CV_LabelKind_Near = 0,
@@ -2336,7 +2336,7 @@ typedef enum CV_LabelKindEnum
 }
 CV_LabelKindEnum;
 
-typedef U8 CV_FunctionAttribs;
+typedef u8 CV_FunctionAttribs;
 enum
 {
   CV_FunctionAttrib_CxxReturnUDT     = (1<<0),
@@ -2344,7 +2344,7 @@ enum
   CV_FunctionAttrib_ConstructorVBase = (1<<2),
 };
 
-typedef U8 CV_CallKind;
+typedef u8 CV_CallKind;
 typedef enum CV_CallKindEnum
 {
   CV_CallKind_NearC,
@@ -2381,10 +2381,10 @@ CV_CallKindEnum;
 
 struct CV_LeafPreComp
 {
-  U32 start_index;
-  U32 count;
-  U32 sig;
-  // U8[] name (null terminated)
+  u32 start_index;
+  u32 count;
+  u32 sig;
+  // u8[] name (null terminated)
 };
 
 //- (LeafKind; END_PRECOMP)
@@ -2393,7 +2393,7 @@ struct CV_LeafPreComp
 
 struct CV_LeafEndPreComp
 {
-  U32 sig;
+  u32 sig;
 };
 
 //- (LeafKind: TYPESERVER)
@@ -2402,9 +2402,9 @@ struct CV_LeafEndPreComp
 
 struct CV_LeafTypeServer
 {
-  U32 sig;
-  U32 age;
-  // U8[] name (null terminated)
+  u32 sig;
+  u32 age;
+  // u8[] name (null terminated)
 };
 
 //- (LeafKind: TYPESERVER2)
@@ -2414,8 +2414,8 @@ struct CV_LeafTypeServer
 struct CV_LeafTypeServer2
 {
   Guid sig70;
-  U32  age;
-  // U8[] name (null terminated)
+  u32  age;
+  // u8[] name (null terminated)
 };
 
 //- (LeafKind: SKIP)
@@ -2433,7 +2433,7 @@ struct CV_LeafSkip
 
 struct CV_LeafVTShape
 {
-  U16 count;
+  u16 count;
   // U4[count] shapes (CV_VirtualTableShape)
 };
 
@@ -2448,7 +2448,7 @@ struct CV_LeafLabel
 
 //- (LeafKind: MODIFIER)
 
-typedef U16 CV_ModifierFlags;
+typedef u16 CV_ModifierFlags;
 enum
 {
   CV_ModifierFlag_Const     = (1 << 0),
@@ -2466,7 +2466,7 @@ struct CV_LeafModifier
 
 //- (LeafKind: POINTER)
 
-typedef U32 CV_PointerAttribs;
+typedef u32 CV_PointerAttribs;
 enum
 {
   // Kind: [0:4]
@@ -2503,7 +2503,7 @@ struct CV_LeafProcedure
   CV_TypeId          ret_itype;
   CV_CallKind        call_kind;
   CV_FunctionAttribs attribs;
-  U16                arg_count;
+  u16                arg_count;
   CV_TypeId          arg_itype;
 };
 
@@ -2518,9 +2518,9 @@ struct CV_LeafMFunction
   CV_TypeId          this_itype;
   CV_CallKind        call_kind;
   CV_FunctionAttribs attribs;
-  U16                arg_count;
+  u16                arg_count;
   CV_TypeId          arg_itype;
-  S32                this_adjust;
+  i32                this_adjust;
 };
 
 //- (LeafKind: ARGLIST)
@@ -2529,7 +2529,7 @@ struct CV_LeafMFunction
 
 struct CV_LeafArgList
 {
-  U32 count;
+  u32 count;
   // CV_TypeId[count] itypes;
 };
 
@@ -2540,8 +2540,8 @@ struct CV_LeafArgList
 struct CV_LeafBitField
 {
   CV_TypeId itype;
-  U8        len;
-  U8        pos;
+  u8        len;
+  u8        pos;
 };
 
 //- (LeafKind: METHODLIST)
@@ -2552,9 +2552,9 @@ struct CV_LeafBitField
 struct CV_LeafMethodListMember
 {
   CV_FieldAttribs attribs;
-  U16             pad;
+  u16             pad;
   CV_TypeId       itype;
-  // U32 vbaseoff (when Intro or PureIntro)
+  // u32 vbaseoff (when Intro or PureIntro)
 };
 
 //- (LeafKind: INDEX)
@@ -2563,7 +2563,7 @@ struct CV_LeafMethodListMember
 
 struct CV_LeafIndex
 {
-  U16       pad;
+  u16       pad;
   CV_TypeId itype;
 };
 
@@ -2584,14 +2584,14 @@ struct CV_LeafArray
 
 struct CV_LeafStruct
 {
-  U16          count;
+  u16          count;
   CV_TypeProps props;
   CV_TypeId    field_itype;
   CV_TypeId    derived_itype;
   CV_TypeId    vshape_itype;
   // CV_Numeric size
-  // U8[] name (null terminated)
-  // U8[] unique_name (null terminated)
+  // u8[] name (null terminated)
+  // u8[] unique_name (null terminated)
 };
 
 //- (LeafKind: UNION)
@@ -2600,12 +2600,12 @@ struct CV_LeafStruct
 
 struct CV_LeafUnion
 {
-  U16          count;
+  u16          count;
   CV_TypeProps props;
   CV_TypeId    field_itype;
   // CV_Numeric size
-  // U8[] name (null terminated)
-  // U8[] unique_name (null terminated)
+  // u8[] name (null terminated)
+  // u8[] unique_name (null terminated)
 };
 
 //- (LeafKind: ENUM)
@@ -2614,12 +2614,12 @@ struct CV_LeafUnion
 
 struct CV_LeafEnum
 {
-  U16          count;
+  u16          count;
   CV_TypeProps props;
   CV_TypeId    base_itype;
   CV_TypeId    field_itype;
-  // U8[] name (null terminated)
-  // U8[] unique_name (null terminated)
+  // u8[] name (null terminated)
+  // u8[] unique_name (null terminated)
 };
 
 //- (LeafKind: ALIAS)
@@ -2629,7 +2629,7 @@ struct CV_LeafEnum
 struct CV_LeafAlias
 {
   CV_TypeId itype;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (LeafKind: MEMBER)
@@ -2641,7 +2641,7 @@ struct CV_LeafMember
   CV_FieldAttribs attribs;
   CV_TypeId       itype;
   // CV_Numeric offset
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (LeafKind: STMEMBER)
@@ -2652,7 +2652,7 @@ struct CV_LeafStMember
 {
   CV_FieldAttribs attribs;
   CV_TypeId       itype;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (LeafKind: METHOD)
@@ -2661,9 +2661,9 @@ struct CV_LeafStMember
 
 struct CV_LeafMethod
 {
-  U16       count;
+  u16       count;
   CV_TypeId list_itype;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (LeafKind: ONEMETHOD)
@@ -2674,8 +2674,8 @@ struct CV_LeafOneMethod
 {
   CV_FieldAttribs attribs;
   CV_TypeId       itype;
-  // U32 vbaseoff (when Intro or PureIntro)
-  // U8[] name (null terminated)
+  // u32 vbaseoff (when Intro or PureIntro)
+  // u8[] name (null terminated)
 };
 
 //- (LeafKind: ENUMERATE)
@@ -2686,7 +2686,7 @@ struct CV_LeafEnumerate
 {
   CV_FieldAttribs attribs;
   // CV_Numeric val
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (LeafKind: NESTTYPE)
@@ -2695,9 +2695,9 @@ struct CV_LeafEnumerate
 
 struct CV_LeafNestType
 {
-  U16       pad;
+  u16       pad;
   CV_TypeId itype;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (LeafKind: NESTTYPEEX)
@@ -2708,7 +2708,7 @@ struct CV_LeafNestTypeEx
 {
   CV_FieldAttribs attribs;
   CV_TypeId       itype;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (LeafKind: BCLASS)
@@ -2741,7 +2741,7 @@ struct CV_LeafVBClass
 
 struct CV_LeafVFuncTab
 {
-  U16       pad;
+  u16       pad;
   CV_TypeId itype;
 };
 
@@ -2751,9 +2751,9 @@ struct CV_LeafVFuncTab
 
 struct CV_LeafVFuncOff
 {
-  U16       pad;
+  u16       pad;
   CV_TypeId itype;
-  U32       off;
+  u32       off;
 };
 
 //- (LeafKind: VFTABLE)
@@ -2764,9 +2764,9 @@ struct CV_LeafVFTable
 {
   CV_TypeId owner_itype;
   CV_TypeId base_table_itype;
-  U32       offset_in_object_layout;
-  U32       names_len;
-  // U8[] names (multiple null terminated strings)
+  u32       offset_in_object_layout;
+  u32       names_len;
+  // u8[] names (multiple null terminated strings)
 };
 
 //- (LeafKind: VFTPATH)
@@ -2775,7 +2775,7 @@ struct CV_LeafVFTable
 
 struct CV_LeafVFPath
 {
-  U32 count;
+  u32 count;
   // CV_TypeId[count] base;
 };
 
@@ -2790,10 +2790,10 @@ struct CV_LeafStruct2
   CV_TypeId      field_itype;
   CV_TypeId      derived_itype;
   CV_TypeId      vshape_itype;
-  U16            unknown; // count for something? (possibly CV_Numeric)
+  u16            unknown; // count for something? (possibly CV_Numeric)
   // CV_Numeric size
-  // U8[] name (null terminated)
-  // U8[] unique_name (null terminated)
+  // u8[] name (null terminated)
+  // u8[] unique_name (null terminated)
 };
 
 //- (LeafIDKind: FUNC_ID)
@@ -2804,7 +2804,7 @@ struct CV_LeafFuncId
 {
   CV_ItemId scope_string_id;
   CV_TypeId itype;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (LeafIDKind: MFUNC_ID)
@@ -2815,7 +2815,7 @@ struct CV_LeafMFuncId
 {
   CV_TypeId owner_itype;
   CV_TypeId itype;
-  // U8[] name (null terminated)
+  // u8[] name (null terminated)
 };
 
 //- (LeafIDKind: STRING_ID)
@@ -2825,7 +2825,7 @@ struct CV_LeafMFuncId
 struct CV_LeafStringId
 {
   CV_ItemId substr_list_id;
-  // U8[] string (null terminated)
+  // u8[] string (null terminated)
 };
 
 //- (LeafIDKind: BUILDINFO)
@@ -2844,7 +2844,7 @@ CV_BuildInfoIndexEnum;
 
 struct CV_LeafBuildInfo
 {
-  U16 count;
+  u16 count;
   // CV_ItemId[count] items
 };
 
@@ -2854,7 +2854,7 @@ struct CV_LeafBuildInfo
 
 struct CV_LeafSubstrList
 {
-  U32 count;
+  u32 count;
   // CV_ItemId[count] items
 };
 
@@ -2866,7 +2866,7 @@ struct CV_LeafUDTSrcLine
 {
   CV_TypeId udt_itype;
   CV_ItemId src_string_id;
-  U32       line;
+  u32       line;
 };
 
 //- (LeafIDKind: UDT_MOD_SRC_LINE)
@@ -2877,7 +2877,7 @@ struct CV_LeafUDTModSrcLine
 {
   CV_TypeId   udt_itype;
   CV_ItemId   src_string_id;
-  U32         line;
+  u32         line;
   CV_ModIndex imod;
 };
 
@@ -2903,7 +2903,7 @@ X(CoffSymbolRVA,       0xFD)       \
 X(XfgHashType,         0xFF)       \
 X(XfgHashVirtual,      0x100)
 
-typedef U32 CV_C13SubSectionKind;
+typedef u32 CV_C13SubSectionKind;
 typedef enum CV_C13SubSectionKindEnum
 {
 #define X(N,c) CV_C13SubSectionKind_##N = c,
@@ -2917,12 +2917,12 @@ CV_C13SubSectionKindEnum;
 struct CV_C13SubSectionHeader
 {
   CV_C13SubSectionKind kind;
-  U32                  size;
+  u32                  size;
 };
 
 //- FileChksms sub-section
 
-typedef U8 CV_C13ChecksumKind;
+typedef u8 CV_C13ChecksumKind;
 typedef enum CV_C13ChecksumKindEnum
 {
   CV_C13ChecksumKind_Null,
@@ -2936,14 +2936,14 @@ CV_C13ChecksumKindEnum;
 
 struct CV_C13Checksum
 {
-  U32                name_off;
-  U8                 len;
+  u32                name_off;
+  u8                 len;
   CV_C13ChecksumKind kind;
 };
 
 //- Lines sub-section
 
-typedef U16 CV_C13SubSecLinesFlags;
+typedef u16 CV_C13SubSecLinesFlags;
 enum
 {
   CV_C13SubSecLinesFlag_HasColumns = (1 << 0)
@@ -2953,24 +2953,24 @@ enum
 
 struct CV_C13SubSecLinesHeader
 {
-  U32                    sec_off;
+  u32                    sec_off;
   CV_SectionIndex        sec;
   CV_C13SubSecLinesFlags flags;
-  U32                    len;
+  u32                    len;
 };
 
 
 
 struct CV_C13File
 {
-  U32 file_off;
-  U32 num_lines;
-  U32 block_size;
+  u32 file_off;
+  u32 num_lines;
+  u32 block_size;
   // CV_C13Line[num_lines] lines;
   // CV_C13Column[num_lines] columns; (if HasColumns)
 };
 
-typedef U32 CV_C13LineFlags;
+typedef u32 CV_C13LineFlags;
 #define CV_C13LineFlags_Extract_LineNumber(f) ((f)&0xFFFFFF)
 #define CV_C13LineFlags_Extract_DeltaToEnd(f) (((f)>>24)&0x7F)
 #define CV_C13LineFlags_Extract_Statement(f)  (((f)>>31)&0x1)
@@ -2979,7 +2979,7 @@ typedef U32 CV_C13LineFlags;
 
 struct CV_C13Line
 {
-  U32             off;
+  u32             off;
   CV_C13LineFlags flags;
 };
 
@@ -2987,13 +2987,13 @@ struct CV_C13Line
 
 struct CV_C13Column
 {
-  U16 start;
-  U16 end;
+  u16 start;
+  u16 end;
 };
 
 //- FrameData sub-section
 
-typedef U32 CV_C13FrameDataFlags;
+typedef u32 CV_C13FrameDataFlags;
 enum
 {
   CV_C13FrameDataFlag_HasStructuredExceptionHandling = (1 << 0),
@@ -3005,20 +3005,20 @@ enum
 
 struct CV_C13FrameData
 {
-  U32                  start_voff;
-  U32                  code_size;
-  U32                  local_size;
-  U32                  params_size;
-  U32                  max_stack_size;
-  U32                  frame_func;
-  U16                  prolog_size;
-  U16                  saved_reg_size;
+  u32                  start_voff;
+  u32                  code_size;
+  u32                  local_size;
+  u32                  params_size;
+  u32                  max_stack_size;
+  u32                  frame_func;
+  u16                  prolog_size;
+  u16                  saved_reg_size;
   CV_C13FrameDataFlags flags;
 };
 
 //- InlineLines sub-section 
 
-typedef U32 CV_C13InlineeLinesSig;
+typedef u32 CV_C13InlineeLinesSig;
 enum
 {
   CV_C13InlineeLinesSig_NORMAL,
@@ -3030,11 +3030,11 @@ enum
 struct CV_C13InlineeSourceLineHeader
 {
   CV_ItemId inlinee;          // LF_FUNC_ID or LF_MFUNC_ID
-  U32       file_off;         // offset into FileChksms sub-section
-  U32       first_source_ln;  // base source line number for binary annotations
+  u32       file_off;         // offset into FileChksms sub-section
+  u32       first_source_ln;  // base source line number for binary annotations
   // if sig set to CV_C13InlineeLinesSig_EXTRA_FILES
-  //  U32 extra_file_count;
-  //  U32 files[];
+  //  u32 extra_file_count;
+  //  u32 files[];
 };
 
 #pragma pack(pop)
@@ -3056,7 +3056,7 @@ typedef enum CV_TypeIndexSource CV_TypeIndexSource;
 struct CV_TypeIndexInfo
 {
   struct CV_TypeIndexInfo *next;
-  U64                      offset;
+  u64                      offset;
   CV_TypeIndexSource       source;
 };
 
@@ -3064,7 +3064,7 @@ struct CV_TypeIndexInfo
 
 struct CV_TypeIndexInfoList
 {
-  U64               count;
+  u64               count;
   CV_TypeIndexInfo *first;
   CV_TypeIndexInfo *last;
 };
@@ -3073,7 +3073,7 @@ struct CV_TypeIndexInfoList
 
 struct CV_TypeIndexArray
 {
-  U32           count;
+  u32           count;
   CV_TypeIndex *v;
 };
 

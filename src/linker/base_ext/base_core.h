@@ -40,7 +40,7 @@
     MemoryZeroStruct(to_concat);               \
   }                                            \
 } while (0)
-#define DLLConcatInPlaceArray(list, to_concat_arr, count) for (U64 i = 0; i < (count); i += 1) { DLLConcatInPlace(list, &(to_concat_arr)[i]); }
+#define DLLConcatInPlaceArray(list, to_concat_arr, count) for (u64 i = 0; i < (count); i += 1) { DLLConcatInPlace(list, &(to_concat_arr)[i]); }
 
 #define SLLQueuePushCount(list, node) do { \
   SLLQueuePush((list)->first, (list)->last, node); \
@@ -73,11 +73,11 @@
     MemoryZeroStruct(to_concat);               \
   }                                            \
 } while (0)
-#define SLLConcatInPlaceArray(list, to_concat_arr, count) for (U64 i = 0; i < (count); ++i) { SLLConcatInPlace(list, &(to_concat_arr)[i]); }
+#define SLLConcatInPlaceArray(list, to_concat_arr, count) for (u64 i = 0; i < (count); ++i) { SLLConcatInPlace(list, &(to_concat_arr)[i]); }
 
 #define SLLConcatInPlaceChunkList(list, to_concat, chunk_type) do {   \
     if ((list)->last != 0) {                                          \
-      U64 base_cursor = (list)->last->base + (list)->last->count;     \
+      u64 base_cursor = (list)->last->base + (list)->last->count;     \
       for (chunk_type *c = (to_concat)->first; c != 0; c = c->next) { \
         c->base = base_cursor;                                        \
         base_cursor += c->count;                                      \
@@ -86,7 +86,7 @@
     SLLConcatInPlace(list, to_concat);                                \
   } while (0)
 
-#define SLLConcatInPlaceChunkListArray(list, to_concat_arr, type, count) for (U64 i = 0; i < (count); ++i) { SLLConcatInPlaceChunkList(list, &(to_concat_arr)[i], type); }
+#define SLLConcatInPlaceChunkListArray(list, to_concat_arr, type, count) for (u64 i = 0; i < (count); ++i) { SLLConcatInPlaceChunkList(list, &(to_concat_arr)[i], type); }
 
 #define SLLChunkListPush(_arena, _list, _cap, _value_type) do {                      \
   if ((_list)->last == 0 || (_list)->last->count >= (_list)->last->cap) {            \
@@ -116,30 +116,30 @@
 
 typedef struct
 {
-  U64 major;
-  U64 minor;
+  u64 major;
+  u64 minor;
 } Version;
 
 ////////////////////////////////
 
 typedef struct ISectOff
 {
-  U32 isect;
-  U32 off;
+  u32 isect;
+  u32 off;
 } ISectOff;
 
 ////////////////////////////////
 
 typedef struct PairU32
 {
-  U32 v0;
-  U32 v1;
+  u32 v0;
+  u32 v1;
 } PairU32;
 
 typedef struct PairU64
 {
-  U64 v0;
-  U64 v1;
+  u64 v0;
+  u64 v1;
 } PairU64;
 
 ////////////////////////////////

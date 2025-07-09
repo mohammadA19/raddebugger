@@ -13,28 +13,28 @@
 
 struct PE_DosHeader
 {
-  U16 magic;
-  U16 last_page_size;
-  U16 page_count;
-  U16 reloc_count;
-  U16 paragraph_header_size;
-  U16 min_paragraph;
-  U16 max_paragraph;
-  U16 init_ss;
-  U16 init_sp;
-  U16 checksum;
-  U16 init_ip;
-  U16 init_cs;
-  U16 reloc_table_file_off;
-  U16 overlay_number;
-  U16 reserved[4];
-  U16 oem_id;
-  U16 oem_info;
-  U16 reserved2[10];
-  U32 coff_file_offset;
+  u16 magic;
+  u16 last_page_size;
+  u16 page_count;
+  u16 reloc_count;
+  u16 paragraph_header_size;
+  u16 min_paragraph;
+  u16 max_paragraph;
+  u16 init_ss;
+  u16 init_sp;
+  u16 checksum;
+  u16 init_ip;
+  u16 init_cs;
+  u16 reloc_table_file_off;
+  u16 overlay_number;
+  u16 reserved[4];
+  u16 oem_id;
+  u16 oem_info;
+  u16 reserved2[10];
+  u32 coff_file_offset;
 };
 
-typedef U16 PE_WindowsSubsystem;
+typedef u16 PE_WindowsSubsystem;
 enum
 {
   PE_WindowsSubsystem_UNKNOWN                  = 0,
@@ -54,7 +54,7 @@ enum
   PE_WindowsSubsystem_COUNT                    = 14
 };
 
-typedef U16 PE_ImageFileCharacteristics;
+typedef u16 PE_ImageFileCharacteristics;
 enum
 {
   PE_ImageFileCharacteristic_STRIPPED                     = (1 << 0),
@@ -75,7 +75,7 @@ enum
   PE_ImageFileCharacteristic_BYTES_RESERVED_HI            = (1 << 15),
 };
 
-typedef U16 PE_DllCharacteristics;
+typedef u16 PE_DllCharacteristics;
 enum
 {
   PE_DllCharacteristic_HIGH_ENTROPY_VA       = (1 << 5),
@@ -95,71 +95,71 @@ enum
 
 struct PE_OptionalHeader32
 {
-  U16                   magic;
-  U8                    major_linker_version;
-  U8                    minor_linker_version;
-  U32                   sizeof_code;
-  U32                   sizeof_inited_data;
-  U32                   sizeof_uninited_data;
-  U32                   entry_point_va;
-  U32                   code_base;
-  U32                   data_base;
-  U32                   image_base;
-  U32                   section_alignment;
-  U32                   file_alignment;
-  U16                   major_os_ver;
-  U16                   minor_os_ver;
-  U16                   major_img_ver;
-  U16                   minor_img_ver;
-  U16                   major_subsystem_ver;
-  U16                   minor_subsystem_ver;
-  U32                   win32_version_value;
-  U32                   sizeof_image;
-  U32                   sizeof_headers;
-  U32                   check_sum;
+  u16                   magic;
+  u8                    major_linker_version;
+  u8                    minor_linker_version;
+  u32                   sizeof_code;
+  u32                   sizeof_inited_data;
+  u32                   sizeof_uninited_data;
+  u32                   entry_point_va;
+  u32                   code_base;
+  u32                   data_base;
+  u32                   image_base;
+  u32                   section_alignment;
+  u32                   file_alignment;
+  u16                   major_os_ver;
+  u16                   minor_os_ver;
+  u16                   major_img_ver;
+  u16                   minor_img_ver;
+  u16                   major_subsystem_ver;
+  u16                   minor_subsystem_ver;
+  u32                   win32_version_value;
+  u32                   sizeof_image;
+  u32                   sizeof_headers;
+  u32                   check_sum;
   PE_WindowsSubsystem   subsystem;
   PE_DllCharacteristics dll_characteristics;
-  U32                   sizeof_stack_reserve;
-  U32                   sizeof_stack_commit;
-  U32                   sizeof_heap_reserve;
-  U32                   sizeof_heap_commit;
-  U32                   loader_flags;
-  U32                   data_dir_count;
+  u32                   sizeof_stack_reserve;
+  u32                   sizeof_stack_commit;
+  u32                   sizeof_heap_reserve;
+  u32                   sizeof_heap_commit;
+  u32                   loader_flags;
+  u32                   data_dir_count;
 };
 
 
 
 struct PE_OptionalHeader32Plus
 {
-  U16                   magic;
-  U8                    major_linker_version;
-  U8                    minor_linker_version;
-  U32                   sizeof_code;
-  U32                   sizeof_inited_data;
-  U32                   sizeof_uninited_data;
-  U32                   entry_point_va;
-  U32                   code_base;
-  U64                   image_base;
-  U32                   section_alignment;
-  U32                   file_alignment;
-  U16                   major_os_ver;
-  U16                   minor_os_ver;
-  U16                   major_img_ver;
-  U16                   minor_img_ver;
-  U16                   major_subsystem_ver;
-  U16                   minor_subsystem_ver;
-  U32                   win32_version_value;
-  U32                   sizeof_image;
-  U32                   sizeof_headers;
-  U32                   check_sum;
+  u16                   magic;
+  u8                    major_linker_version;
+  u8                    minor_linker_version;
+  u32                   sizeof_code;
+  u32                   sizeof_inited_data;
+  u32                   sizeof_uninited_data;
+  u32                   entry_point_va;
+  u32                   code_base;
+  u64                   image_base;
+  u32                   section_alignment;
+  u32                   file_alignment;
+  u16                   major_os_ver;
+  u16                   minor_os_ver;
+  u16                   major_img_ver;
+  u16                   minor_img_ver;
+  u16                   major_subsystem_ver;
+  u16                   minor_subsystem_ver;
+  u32                   win32_version_value;
+  u32                   sizeof_image;
+  u32                   sizeof_headers;
+  u32                   check_sum;
   PE_WindowsSubsystem   subsystem;
   PE_DllCharacteristics dll_characteristics;
-  U64                   sizeof_stack_reserve;
-  U64                   sizeof_stack_commit;
-  U64                   sizeof_heap_reserve;
-  U64                   sizeof_heap_commit;
-  U32                   loader_flags;
-  U32                   data_dir_count;
+  u64                   sizeof_stack_reserve;
+  u64                   sizeof_stack_commit;
+  u64                   sizeof_heap_reserve;
+  u64                   sizeof_heap_commit;
+  u32                   loader_flags;
+  u32                   data_dir_count;
 };
 
 typedef enum PE_DataDirectoryIndex
@@ -188,11 +188,11 @@ PE_DataDirectoryIndex;
 
 struct PE_DataDirectory
 {
-  U32 virt_off;
-  U32 virt_size;
+  u32 virt_off;
+  u32 virt_size;
 };
 
-typedef U32 PE_DebugDirectoryType;
+typedef u32 PE_DebugDirectoryType;
 enum
 {
   PE_DebugDirectoryType_UNKNOWN               = 0,
@@ -216,7 +216,7 @@ enum
   PE_DebugDirectoryType_COUNT                 = 18
 };
 
-typedef U8 PE_FPOFlags;
+typedef u8 PE_FPOFlags;
 enum
 {
   PE_FPOFlags_HAS_SEH    = 0x800,
@@ -225,7 +225,7 @@ enum
   PE_FPOFlags_COUNT      = 3
 };
 
-typedef U16 PE_FPOEncoded;
+typedef u16 PE_FPOEncoded;
 enum
 {
   PE_FPOEncoded_PROLOG_SIZE_SHIFT     = 0,  PE_FPOEncoded_PROLOG_SIZE_MASK     = 0xff,
@@ -233,12 +233,12 @@ enum
   PE_FPOEncoded_FLAGS_SHIFT           = 11, PE_FPOEncoded_FLAGS_MASK           = 0x7,
   PE_FPOEncoded_FRAME_TYPE_SHIFT      = 14, PE_FPOEncoded_FRAME_TYPE_MASK      = 0x3,
 };
-#define PE_FPOEncoded_Extract_PROLOG_SIZE(f)     (U8)(((f) >> PE_FPOEncoded_PROLOG_SIZE_SHIFT)     & PE_FPOEncoded_PROLOG_SIZE_MASK)
-#define PE_FPOEncoded_Extract_SAVED_REGS_SIZE(f) (U8)(((f) >> PE_FPOEncoded_SAVED_REGS_SIZE_SHIFT) & PE_FPOEncoded_SAVED_REGS_SIZE_MASK)
-#define PE_FPOEncoded_Extract_FLAGS(f)           (U8)(((f) >> PE_FPOEncoded_FLAGS_SHIFT)           & PE_FPOEncoded_FLAGS_MASK)
-#define PE_FPOEncoded_Extract_FRAME_TYPE(f)      (U8)(((f) >> PE_FPOEncoded_FRAME_TYPE_SHIFT)      & PE_FPOEncoded_FRAME_TYPE_MASK)
+#define PE_FPOEncoded_Extract_PROLOG_SIZE(f)     (u8)(((f) >> PE_FPOEncoded_PROLOG_SIZE_SHIFT)     & PE_FPOEncoded_PROLOG_SIZE_MASK)
+#define PE_FPOEncoded_Extract_SAVED_REGS_SIZE(f) (u8)(((f) >> PE_FPOEncoded_SAVED_REGS_SIZE_SHIFT) & PE_FPOEncoded_SAVED_REGS_SIZE_MASK)
+#define PE_FPOEncoded_Extract_FLAGS(f)           (u8)(((f) >> PE_FPOEncoded_FLAGS_SHIFT)           & PE_FPOEncoded_FLAGS_MASK)
+#define PE_FPOEncoded_Extract_FRAME_TYPE(f)      (u8)(((f) >> PE_FPOEncoded_FRAME_TYPE_SHIFT)      & PE_FPOEncoded_FRAME_TYPE_MASK)
 
-typedef U8 PE_FPOType;
+typedef u8 PE_FPOType;
 enum
 {
   PE_FPOType_FPO   = 0,
@@ -253,14 +253,14 @@ enum
 
 struct PE_DebugFPO
 {
-  U32 func_code_off;
-  U32 func_size;
-  U32 locals_size;
-  U16 params_size;
-  U16 flags;
+  u32 func_code_off;
+  u32 func_size;
+  u32 locals_size;
+  u16 params_size;
+  u16 flags;
 };
 
-typedef U32 PE_DebugMiscType;
+typedef u32 PE_DebugMiscType;
 enum
 {
   PE_DebugMiscType_NULL,
@@ -274,9 +274,9 @@ enum
 struct PE_DebugMisc
 {
   PE_DebugMiscType data_type;
-  U32              size;
-  U8               unicode;
-  U8               pad[3];
+  u32              size;
+  u8               unicode;
+  u8               pad[3];
   //char name[];
 };
 
@@ -285,31 +285,31 @@ struct PE_DebugMisc
 
 struct PE_DebugCoff
 {
-  U32 symbol_count;
-  U32 lva_to_first_symbol;
-  U32 line_number_count;
-  U32 lva_to_first_line_number;
-  U32 virt_off_to_first_byte_of_code;
-  U32 virt_off_to_last_byte_of_code;
-  U32 virt_off_to_first_byte_of_data;
-  U32 virt_off_to_last_byte_of_data;
+  u32 symbol_count;
+  u32 lva_to_first_symbol;
+  u32 line_number_count;
+  u32 lva_to_first_line_number;
+  u32 virt_off_to_first_byte_of_code;
+  u32 virt_off_to_last_byte_of_code;
+  u32 virt_off_to_first_byte_of_data;
+  u32 virt_off_to_last_byte_of_data;
 };
 
 
 
 struct PE_DebugDirectory
 {
-  U32                   characteristics;
+  u32                   characteristics;
   COFF_TimeStamp        time_stamp;
-  U16                   major_ver;
-  U16                   minor_ver;
+  u16                   major_ver;
+  u16                   minor_ver;
   PE_DebugDirectoryType type;
-  U32                   size;
-  U32                   voff;
-  U32                   foff;
+  u32                   size;
+  u32                   voff;
+  u32                   foff;
 };
 
-typedef U32 PE_GlobalFlags;
+typedef u32 PE_GlobalFlags;
 enum
 {
   PE_GlobalFlags_STOP_ON_EXCEPTION          = (1 << 0),
@@ -345,7 +345,7 @@ enum
   PE_GlobalFlags_DISABLE_PROTDLLS           = (1 << 31),
 };
 
-typedef U32 PE_LoadConfigGuardFlags;
+typedef u32 PE_LoadConfigGuardFlags;
 enum
 {
   PE_LoadConfigGuardFlags_CF_INSTRUMENTED                    = (1 << 8),
@@ -360,136 +360,136 @@ enum
   PE_LoadConfigGuardFlags_EH_CONTINUATION_TABLE_PRESENT      = (1 << 22),
   PE_LoadConfigGuardFlags_CF_FUNCTION_TABLE_SIZE_SHIFT       = 28, PE_LoadConfigGuardFlags_CF_FUNCTION_TABLE_SIZE_MASK = 0xf,
 };
-#define PE_LoadConfigGuardFlags_Extract_CF_FUNCTION_TABLE_SIZE(f) (U32)(((f) >> PE_LoadConfigGuardFlags_CF_FUNCTION_TABLE_SIZE_SHIFT) & PE_LoadConfigGuardFlags_CF_FUNCTION_TABLE_SIZE_MASK)
+#define PE_LoadConfigGuardFlags_Extract_CF_FUNCTION_TABLE_SIZE(f) (u32)(((f) >> PE_LoadConfigGuardFlags_CF_FUNCTION_TABLE_SIZE_SHIFT) & PE_LoadConfigGuardFlags_CF_FUNCTION_TABLE_SIZE_MASK)
 
 
 
 struct PE_LoadConfigCodeIntegrity
 {
-  U16 flags;
-  U16 catalog;
-  U32 catalog_offset;
-  U32 reserved;
+  u16 flags;
+  u16 catalog;
+  u32 catalog_offset;
+  u32 reserved;
 };
 
 
 
 struct PE_LoadConfig32
 {
-  U32            size;
+  u32            size;
   COFF_TimeStamp time_stamp;
-  U16            major_version;
-  U16            minor_version;
-  U32            global_flag_clear;
-  U32            global_flag_set;
-  U32            critical_section_timeout;
-  U32            decommit_free_block_threshold;
-  U32            decommit_total_free_threshold;
-  U32            lock_prefix_table;
-  U32            maximum_allocation_size;
-  U32            virtual_memory_threshold;
-  U32            process_affinity_mask;
-  U32            process_heap_flags;
-  U16            csd_version;
-  U16            reserved;
-  U32            edit_list;
-  U32            security_cookie;
-  U32            seh_handler_table;
-  U32            seh_handler_count;
+  u16            major_version;
+  u16            minor_version;
+  u32            global_flag_clear;
+  u32            global_flag_set;
+  u32            critical_section_timeout;
+  u32            decommit_free_block_threshold;
+  u32            decommit_total_free_threshold;
+  u32            lock_prefix_table;
+  u32            maximum_allocation_size;
+  u32            virtual_memory_threshold;
+  u32            process_affinity_mask;
+  u32            process_heap_flags;
+  u16            csd_version;
+  u16            reserved;
+  u32            edit_list;
+  u32            security_cookie;
+  u32            seh_handler_table;
+  u32            seh_handler_count;
   
   // msvc 2015
-  U32 guard_cf_check_func_ptr;
-  U32 guard_cf_dispatch_func_ptr;
-  U32 guard_cf_func_table;
-  U32 guard_cf_func_count;
-  U32 guard_flags;
+  u32 guard_cf_check_func_ptr;
+  u32 guard_cf_dispatch_func_ptr;
+  u32 guard_cf_func_table;
+  u32 guard_cf_func_count;
+  u32 guard_flags;
   
   // msvc 2017
   PE_LoadConfigCodeIntegrity code_integrity;
-  U32                        guard_address_taken_iat_entry_table;
-  U32                        guard_address_taken_iat_entry_count;
-  U32                        guard_long_jump_target_table;
-  U32                        guard_long_jump_target_count;
-  U32                        dynamic_value_reloc_table;
-  U32                        chpe_metadata_ptr;
-  U32                        guard_rf_failure_routine;
-  U32                        guard_rf_failure_routine_func_ptr;
-  U32                        dynamic_value_reloc_table_offset;
-  U16                        dynamic_value_reloc_table_section;
-  U16                        reserved2;
-  U32                        guard_rf_verify_stack_pointer_func_ptr;
-  U32                        hot_patch_table_offset;
+  u32                        guard_address_taken_iat_entry_table;
+  u32                        guard_address_taken_iat_entry_count;
+  u32                        guard_long_jump_target_table;
+  u32                        guard_long_jump_target_count;
+  u32                        dynamic_value_reloc_table;
+  u32                        chpe_metadata_ptr;
+  u32                        guard_rf_failure_routine;
+  u32                        guard_rf_failure_routine_func_ptr;
+  u32                        dynamic_value_reloc_table_offset;
+  u16                        dynamic_value_reloc_table_section;
+  u16                        reserved2;
+  u32                        guard_rf_verify_stack_pointer_func_ptr;
+  u32                        hot_patch_table_offset;
   
   // msvc 2019
-  U32 reserved3;
-  U32 enclave_config_ptr;
-  U32 volatile_metadata_ptr;
-  U32 guard_eh_continue_table;
-  U32 guard_eh_continue_count;
-  U32 guard_xfg_check_func_ptr;
-  U32 guard_xfg_dispatch_func_ptr;
-  U32 guard_xfg_table_dispatch_func_ptr;
-  U32 cast_guard_os_determined_failure_mode;
+  u32 reserved3;
+  u32 enclave_config_ptr;
+  u32 volatile_metadata_ptr;
+  u32 guard_eh_continue_table;
+  u32 guard_eh_continue_count;
+  u32 guard_xfg_check_func_ptr;
+  u32 guard_xfg_dispatch_func_ptr;
+  u32 guard_xfg_table_dispatch_func_ptr;
+  u32 cast_guard_os_determined_failure_mode;
 };
 
 
 
 struct PE_LoadConfig64
 {
-  U32            size;
+  u32            size;
   COFF_TimeStamp time_stamp;
-  U16            major_version;
-  U16            minor_version;
-  U32            global_flag_clear;
-  U32            global_flag_set;
-  U32            critical_section_timeout;
-  U64            decommit_free_block_threshold;
-  U64            decommit_total_free_threshold;
-  U64            lock_prefix_table;
-  U64            maximum_allocation_size;
-  U64            virtual_memory_threshold;
-  U64            process_affinity_mask;
-  U32            process_heap_flags;
-  U16            csd_version;
-  U16            reserved;
-  U64            edit_list;
-  U64            security_cookie;
-  U64            seh_handler_table;
-  U64            seh_handler_count;
+  u16            major_version;
+  u16            minor_version;
+  u32            global_flag_clear;
+  u32            global_flag_set;
+  u32            critical_section_timeout;
+  u64            decommit_free_block_threshold;
+  u64            decommit_total_free_threshold;
+  u64            lock_prefix_table;
+  u64            maximum_allocation_size;
+  u64            virtual_memory_threshold;
+  u64            process_affinity_mask;
+  u32            process_heap_flags;
+  u16            csd_version;
+  u16            reserved;
+  u64            edit_list;
+  u64            security_cookie;
+  u64            seh_handler_table;
+  u64            seh_handler_count;
   
   // msvc 2015
-  U64 guard_cf_check_func_ptr;
-  U64 guard_cf_dispatch_func_ptr;
-  U64 guard_cf_func_table;
-  U64 guard_cf_func_count;
-  U32 guard_flags;
+  u64 guard_cf_check_func_ptr;
+  u64 guard_cf_dispatch_func_ptr;
+  u64 guard_cf_func_table;
+  u64 guard_cf_func_count;
+  u32 guard_flags;
   
   // msvc 2017
   PE_LoadConfigCodeIntegrity code_integrity;
-  U64                        guard_address_taken_iat_entry_table;
-  U64                        guard_address_taken_iat_entry_count;
-  U64                        guard_long_jump_target_table;
-  U64                        guard_long_jump_target_count;
-  U64                        dynamic_value_reloc_table;
-  U64                        chpe_metadata_ptr;
-  U64                        guard_rf_failure_routine;
-  U64                        guard_rf_failure_routine_func_ptr;
-  U32                        dynamic_value_reloc_table_offset;
-  U16                        dynamic_value_reloc_table_section;
-  U16                        reserved2;
-  U64                        guard_rf_verify_stack_pointer_func_ptr;
-  U32                        hot_patch_table_offset;
+  u64                        guard_address_taken_iat_entry_table;
+  u64                        guard_address_taken_iat_entry_count;
+  u64                        guard_long_jump_target_table;
+  u64                        guard_long_jump_target_count;
+  u64                        dynamic_value_reloc_table;
+  u64                        chpe_metadata_ptr;
+  u64                        guard_rf_failure_routine;
+  u64                        guard_rf_failure_routine_func_ptr;
+  u32                        dynamic_value_reloc_table_offset;
+  u16                        dynamic_value_reloc_table_section;
+  u16                        reserved2;
+  u64                        guard_rf_verify_stack_pointer_func_ptr;
+  u32                        hot_patch_table_offset;
   
   // msvc 2019
-  U32 reserved3;
-  U64 enclave_config_ptr;
-  U64 volatile_metadata_ptr;
-  U64 guard_eh_continue_table;
-  U64 guard_eh_continue_count;
-  U64 guard_xfg_check_func_ptr;
-  U64 guard_xfg_dispatch_func_ptr;
-  U64 guard_xfg_table_dispatch_func_ptr;
-  U64 cast_guard_os_determined_failure_mode;
+  u32 reserved3;
+  u64 enclave_config_ptr;
+  u64 volatile_metadata_ptr;
+  u64 guard_eh_continue_table;
+  u64 guard_eh_continue_count;
+  u64 guard_xfg_check_func_ptr;
+  u64 guard_xfg_dispatch_func_ptr;
+  u64 guard_xfg_table_dispatch_func_ptr;
+  u64 cast_guard_os_determined_failure_mode;
 };
 
 // this is the "MZ" as a 16-bit short
@@ -502,34 +502,34 @@ struct PE_LoadConfig64
 
 struct PE_MipsPdata
 {
-  U32 voff_first;
-  U32 voff_one_past_last;
-  U32 voff_exception_handler;
-  U32 voff_exception_handler_data;
-  U32 voff_one_past_prolog;
+  u32 voff_first;
+  u32 voff_one_past_last;
+  u32 voff_exception_handler;
+  u32 voff_exception_handler_data;
+  u32 voff_one_past_prolog;
 };
 
 
 
 struct PE_ArmPdata
 {
-  U32 voff_first;
+  u32 voff_first;
   // NOTE(allen):
   // bits    | meaning
   // [0:7]   | prolog length
   // [8:29]  | function length
   // [30:30] | instructions_are_32bits (otherwise they are 16 bits)
   // [31:31] | has_exception_handler
-  U32 combined;
+  u32 combined;
 };
 
 
 
 struct PE_IntelPdata
 {
-  U32 voff_first;
-  U32 voff_one_past_last;
-  U32 voff_unwind_info;
+  u32 voff_first;
+  u32 voff_one_past_last;
+  u32 voff_unwind_info;
 };
 
 #define PE_CODEVIEW_PDB20_MAGIC 0x3031424e
@@ -540,10 +540,10 @@ struct PE_IntelPdata
 
 struct PE_CvHeaderPDB20
 {
-  U32            magic;
-  U32            offset;
+  u32            magic;
+  u32            offset;
   COFF_TimeStamp time_stamp;
-  U32            age;
+  u32            age;
   // file name packed after struct
 };
 
@@ -551,9 +551,9 @@ struct PE_CvHeaderPDB20
 
 struct PE_CvHeaderPDB70
 {
-  U32  magic;
+  u32  magic;
   Guid guid;
-  U32  age;
+  u32  age;
   // file name packed after struct
 };
 
@@ -561,7 +561,7 @@ struct PE_CvHeaderPDB70
 
 struct PE_CvHeaderRDI
 {
-  U32  magic;
+  u32  magic;
   Guid guid;
   // file name packed after struct
 };
@@ -570,11 +570,11 @@ struct PE_CvHeaderRDI
 
 struct PE_ImportEntry
 {
-  U32            lookup_table_voff;
+  u32            lookup_table_voff;
   COFF_TimeStamp time_stamp;
-  U32            forwarder_chain;
-  U32            name_voff;
-  U32            import_addr_table_voff;
+  u32            forwarder_chain;
+  u32            name_voff;
+  u32            import_addr_table_voff;
 };
 
 
@@ -583,13 +583,13 @@ struct PE_DelayedImportEntry
 {
   // According to COFF/PE spec this field is unused and should be set zero,
   // but when I compile mule with MSVC 2019 this is set to 1.
-  U32            attributes;
-  U32            name_voff;          // Name of the DLL
-  U32            module_handle_voff; // Place where module handle from LoadLibrary is stored
-  U32            iat_voff;
-  U32            name_table_voff;    // Array of hint/name or oridnals
-  U32            bound_table_voff;   // (Optional) Points to an array of PE_ThunkData
-  U32            unload_table_voff;  // (Optional) Copy of iat_voff
+  u32            attributes;
+  u32            name_voff;          // Name of the DLL
+  u32            module_handle_voff; // Place where module handle from LoadLibrary is stored
+  u32            iat_voff;
+  u32            name_table_voff;    // Array of hint/name or oridnals
+  u32            bound_table_voff;   // (Optional) Points to an array of PE_ThunkData
+  u32            unload_table_voff;  // (Optional) Copy of iat_voff
   //  0 not bound
   // -1 if bound and real timestamp located in bounded import directory
   // Otherwise time when dll was bound
@@ -600,28 +600,28 @@ struct PE_DelayedImportEntry
 
 struct PE_ExportTableHeader
 {
-  U32            flags;                       // must be zero
+  u32            flags;                       // must be zero
   COFF_TimeStamp time_stamp;                  // time and date when export table was created
-  U16            major_ver;                   // table version, user can change major and minor version
-  U16            minor_ver;
-  U32            name_voff;                   // ASCII name of the dll
-  U32            ordinal_base;                // Starting oridnal number
-  U32            export_address_table_count;
-  U32            name_pointer_table_count;
-  U32            export_address_table_voff;
-  U32            name_pointer_table_voff;
-  U32            ordinal_table_voff;
+  u16            major_ver;                   // table version, user can change major and minor version
+  u16            minor_ver;
+  u32            name_voff;                   // ASCII name of the dll
+  u32            ordinal_base;                // Starting oridnal number
+  u32            export_address_table_count;
+  u32            name_pointer_table_count;
+  u32            export_address_table_voff;
+  u32            name_pointer_table_voff;
+  u32            ordinal_table_voff;
 };
 
 
 
 struct PE_TLSHeader32
 {
-  U32               raw_data_start;    // Range of initialized data that is copied for each thread from the image.
-  U32               raw_data_end;      // (Typically points to .tls section)
-  U32               index_address;     // Address where image loader places TLS slot index.
-  U32               callbacks_address; // Zero terminated list of callbacks used for initializing data with constructors.
-  U32               zero_fill_size;    // Amount of memory to fill with zeroes in TLS.
+  u32               raw_data_start;    // Range of initialized data that is copied for each thread from the image.
+  u32               raw_data_end;      // (Typically points to .tls section)
+  u32               index_address;     // Address where image loader places TLS slot index.
+  u32               callbacks_address; // Zero terminated list of callbacks used for initializing data with constructors.
+  u32               zero_fill_size;    // Amount of memory to fill with zeroes in TLS.
   COFF_SectionFlags characteristics;   // COFF_SectionFlags but only align flags are used.
 };
 
@@ -629,15 +629,15 @@ struct PE_TLSHeader32
 
 struct PE_TLSHeader64
 {
-  U64               raw_data_start;    // Range of initialized data that is copied for each thread from the image.
-  U64               raw_data_end;      // (Typically points to .tls section)
-  U64               index_address;     // Address where image loader places TLS slot index.
-  U64               callbacks_address; // Zero terminated list of callbacks used for initializing data with constructors.
-  U32               zero_fill_size;    // Amount of memory to fill with zeroes in TLS.
+  u64               raw_data_start;    // Range of initialized data that is copied for each thread from the image.
+  u64               raw_data_end;      // (Typically points to .tls section)
+  u64               index_address;     // Address where image loader places TLS slot index.
+  u64               callbacks_address; // Zero terminated list of callbacks used for initializing data with constructors.
+  u32               zero_fill_size;    // Amount of memory to fill with zeroes in TLS.
   COFF_SectionFlags characteristics;   // COFF_SectionFlags but only align flags are used.
 };
 
-global @(rodata) U8 PE_RES_MAGIC[] =
+global @(rodata) u8 PE_RES_MAGIC[] =
 {
   0x00, 0x00, 0x00, 0x00,
   0x20, 0x00, 0x00, 0x00,
@@ -649,7 +649,7 @@ global @(rodata) U8 PE_RES_MAGIC[] =
   0x00, 0x00, 0x00, 0x00
 };
 
-typedef U32 PE_ResourceKind;
+typedef u32 PE_ResourceKind;
 enum
 {
   PE_ResourceKind_CURSOR       = 0x1,
@@ -692,18 +692,18 @@ PE_ResDataKind;
 struct PE_ResourceHeader
 {
   COFF_ResourceHeaderPrefix prefix;
-  U16                       type;
-  U16                       pad0;
-  U16                       name;
-  U16                       pad1;
-  U32                       data_version;
+  u16                       type;
+  u16                       pad0;
+  u16                       name;
+  u16                       pad1;
+  u32                       data_version;
   COFF_ResourceMemoryFlags  memory_flags;
-  U16                       language_id;
-  U32                       version;
-  U32                       characteristics;
+  u16                       language_id;
+  u32                       version;
+  u32                       characteristics;
 };
 
-typedef U16 PE_BaseRelocKind;
+typedef u16 PE_BaseRelocKind;
 enum
 {
   PE_BaseRelocKind_ABSOLUTE            = 0, // No reallocation is applied. Can be used as padding.
@@ -725,9 +725,9 @@ enum
 };
 #define PE_BaseRelocOffsetFromEntry(x) ((x) & 0x1fff)
 #define PE_BaseRelocKindFromEntry(x)   (((x) >> 12) & 0xf)
-#define PE_BaseRelocMake(k, off)       ((((U16)(k) & 0xf) << 12) | (U16)((off) & 0x1fff))
+#define PE_BaseRelocMake(k, off)       ((((u16)(k) & 0xf) << 12) | (u16)((off) & 0x1fff))
 
-typedef U32 PE_UnwindOpCode;
+typedef u32 PE_UnwindOpCode;
 enum
 {
   PE_UnwindOpCode_PUSH_NONVOL      = 0,
@@ -743,7 +743,7 @@ enum
   PE_UnwindOpCode_PUSH_MACHFRAME   = 10,
 };
 
-typedef U8 PE_UnwindGprRegX64;
+typedef u8 PE_UnwindGprRegX64;
 enum
 {
   PE_UnwindGprRegX64_RAX = 0,
@@ -764,7 +764,7 @@ enum
   PE_UnwindGprRegX64_R15 = 15,
 };
 
-typedef U8 PE_UnwindInfoFlags;
+typedef u8 PE_UnwindInfoFlags;
 enum
 {
   PE_UnwindInfoFlag_EHANDLER = (1<<0),
@@ -781,10 +781,10 @@ union PE_UnwindCode
 {
   struct
   {
-    U8 off_in_prolog;
-    U8 flags;
+    u8 off_in_prolog;
+    u8 flags;
   };
-  U16 u16;
+  u16 u16;
 };
 
 #define PE_UNWIND_INFO_VERSION_FROM_HDR(x) ((x)&0x7)
@@ -797,10 +797,10 @@ union PE_UnwindCode
 
 struct PE_UnwindInfo
 {
-  U8 header;
-  U8 prolog_size;
-  U8 codes_num;
-  U8 frame;
+  u8 header;
+  u8 prolog_size;
+  u8 codes_num;
+  u8 frame;
 };
 
 #pragma pack(pop)
@@ -809,7 +809,7 @@ struct PE_UnwindInfo
 //~ rjf: DOS Program
 
 // generated from pe/dos_program.asm
-@(rodata) global U8 pe_dos_program_data[] =
+@(rodata) global u8 pe_dos_program_data[] =
 {
   0x0E, 0x1F, 0xBA, 0x0E, 0x00, 0xB4, 0x09, 0xCD, 0x21, 0xB8, 0x01, 0x4C, 0xCD, 0x21, 0x54, 0x68,
   0x69, 0x73, 0x20, 0x70, 0x72, 0x6F, 0x67, 0x72, 0x61, 0x6D, 0x20, 0x63, 0x61, 0x6E, 0x6E, 0x6F,
@@ -827,9 +827,9 @@ struct PE_UnwindInfo
 
 struct PE_BaseRelocBlock
 {
-  U64  page_virt_off;
-  U64  entry_count;
-  U16 *entries;
+  u64  page_virt_off;
+  u64  entry_count;
+  u16 *entries;
 };
 
 
@@ -846,7 +846,7 @@ struct PE_BaseRelocBlockList
 {
   PE_BaseRelocBlockNode *first;
   PE_BaseRelocBlockNode *last;
-  U64                    count;
+  u64                    count;
 };
 
 //- rjf: resources
@@ -864,8 +864,8 @@ struct PE_Resource
     struct
     {
       COFF_ResourceID          type;
-      U32                      data_version;
-      U32                      version;
+      u32                      data_version;
+      u32                      version;
       COFF_ResourceMemoryFlags memory_flags;
       String8                  data;
     } coff_res;
@@ -886,7 +886,7 @@ struct PE_ResourceList
 {
   PE_ResourceNode *first;
   PE_ResourceNode *last;
-  U64              count;
+  u64              count;
 };
 
 
@@ -894,17 +894,17 @@ struct PE_ResourceList
 struct PE_ResourceArray
 {
   PE_Resource *v;
-  U64          count;
+  u64          count;
 };
 
 
 
 struct PE_ResourceDir
 {
-  U32             characteristics;
+  u32             characteristics;
   COFF_TimeStamp  time_stamp;
-  U16             major_version;
-  U16             minor_version;
+  u16             major_version;
+  u16             minor_version;
   PE_ResourceList named_list;
   PE_ResourceList id_list;
 };
@@ -917,24 +917,24 @@ struct PE_ParsedExport
 {
   String8 forwarder;
   String8 name;
-  U64     voff;
-  U64     ordinal;
+  u64     voff;
+  u64     ordinal;
 };
 
 
 
 struct PE_ParsedExportTable
 {
-  U32              flags;
+  u32              flags;
   COFF_TimeStamp   time_stamp;
-  U16              major_ver;
-  U16              minor_ver;
-  U64              ordinal_base;
-  U64              export_count;
+  u16              major_ver;
+  u16              minor_ver;
+  u64              ordinal_base;
+  u64              export_count;
   PE_ParsedExport *exports;
 };
 
-typedef U32 PE_ParsedImportType;
+typedef u32 PE_ParsedImportType;
 enum PE_ParsedImportTypeEnum
 {
   PE_ParsedImport_Null,
@@ -949,10 +949,10 @@ struct PE_ParsedImport
   PE_ParsedImportType type;
   union
   {
-    U16 ordinal;
+    u16 ordinal;
     struct
     {
-      U64     hint;
+      u64     hint;
       String8 string;
     } name;
   } u;
@@ -963,11 +963,11 @@ struct PE_ParsedImport
 struct PE_ParsedStaticDLLImport
 {
   String8          name;
-  U64              import_address_table_voff;
-  U64              import_name_table_voff;
+  u64              import_address_table_voff;
+  u64              import_name_table_voff;
   COFF_TimeStamp   time_stamp;
-  U64              forwarder_chain;
-  U64              import_count;
+  u64              forwarder_chain;
+  u64              import_count;
   PE_ParsedImport *imports;
 };
 
@@ -975,7 +975,7 @@ struct PE_ParsedStaticDLLImport
 
 struct PE_ParsedStaticImportTable
 {
-  U64                       count;
+  u64                       count;
   PE_ParsedStaticDLLImport *v;
 };
 
@@ -983,19 +983,19 @@ struct PE_ParsedStaticImportTable
 
 struct PE_ParsedDelayDLLImport
 {
-  U32              attributes;
+  u32              attributes;
   String8          name;
-  U64              module_handle_voff;
-  U64              iat_voff;
-  U64              name_table_voff;
-  U64              bound_table_voff;
-  U64              unload_table_voff;
+  u64              module_handle_voff;
+  u64              iat_voff;
+  u64              name_table_voff;
+  u64              bound_table_voff;
+  u64              unload_table_voff;
   COFF_TimeStamp   time_stamp;
-  U64              bound_table_count;
-  U64             *bound_table;
-  U64              unload_table_count;
-  U64             *unload_table;
-  U64              import_count;
+  u64              bound_table_count;
+  u64             *bound_table;
+  u64              unload_table_count;
+  u64             *unload_table;
+  u64              import_count;
   PE_ParsedImport *imports;
 };
 
@@ -1003,7 +1003,7 @@ struct PE_ParsedDelayDLLImport
 
 struct PE_ParsedDelayImportTable
 {
-  U64                      count;
+  u64                      count;
   PE_ParsedDelayDLLImport *v;
 };
 
@@ -1012,8 +1012,8 @@ struct PE_ParsedDelayImportTable
 struct PE_ParsedTLS
 {
   PE_TLSHeader64 header;
-  U64            callback_count;
-  U64           *callback_addrs;
+  u64            callback_count;
+  u64           *callback_addrs;
 };
 
 ////////////////////////////////
@@ -1023,10 +1023,10 @@ struct PE_ParsedTLS
 
 struct PE_HandlerScope
 {
-  U32 begin;
-  U32 end;
-  U32 handler;
-  U32 target;
+  u32 begin;
+  u32 end;
+  u32 handler;
+  u32 target;
 };
 
 //- rjf: bundle
@@ -1036,30 +1036,30 @@ struct PE_HandlerScope
 struct PE_BinInfo
 {
   Arch                 arch;
-  U64                  image_base;
-  U64                  entry_point;
-  B32                  is_pe32;
+  u64                  image_base;
+  u64                  entry_point;
+  b32                  is_pe32;
   PE_WindowsSubsystem  subsystem;
-  U32                 *check_sum;
-  U64                  virt_section_align;
-  U64                  file_section_align;
-  U64                  section_count;
-  U64                  symbol_count;
-  U64                  optional_header_off;
+  u32                 *check_sum;
+  u64                  virt_section_align;
+  u64                  file_section_align;
+  u64                  section_count;
+  u64                  symbol_count;
+  u64                  optional_header_off;
   Rng1U64              section_table_range;
   Rng1U64              symbol_table_range;
   Rng1U64              string_table_range;
   Rng1U64              data_dir_range;
   Rng1U64             *data_dir_franges;
   Rng1U64             *data_dir_vranges;
-  U32                  data_dir_count;
+  u32                  data_dir_count;
   PE_TLSHeader64       tls_header;
 };
 
 typedef struct PE_DebugInfo
 {
   PE_DebugDirectory header;
-  U32 cv_magic;
+  u32 cv_magic;
   PE_CvHeaderPDB20 cv_pdb20_header;
   PE_CvHeaderPDB70 cv_pdb70_header;
   PE_CvHeaderRDI cv_rdi_header;
@@ -1077,7 +1077,7 @@ typedef struct PE_DebugInfoList
 {
   PE_DebugInfoNode *first;
   PE_DebugInfoNode *last;
-  U64               count;
+  u64               count;
 } PE_DebugInfoList;
 
 ////////////////////////////////

@@ -8,14 +8,14 @@ typedef struct KeyValuePair
   union {
     String8 key_string;
     void   *key_raw;
-    U32     key_u32;
-    U64     key_u64;
+    u32     key_u32;
+    u64     key_u64;
   };
   union {
     String8  value_string;
     void    *value_raw;
-    U32      value_u32;
-    U64      value_u64;
+    u32      value_u32;
+    u64      value_u64;
   };
 } KeyValuePair;
 
@@ -33,8 +33,8 @@ typedef struct BucketList
 
 typedef struct HashTable
 {
-  U64         count;
-  U64         cap;
+  u64         count;
+  u64         cap;
   BucketList *buckets;
   BucketList  free_buckets;
 } HashTable;

@@ -145,7 +145,7 @@ os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title)
     XSyncIntToValue(&initial_value, 0);
     w->counter_xid = XSyncCreateCounter(os_lnx_gfx_state->display, initial_value);
   }
-  XChangeProperty(os_lnx_gfx_state->display, w->window, os_lnx_gfx_state->wm_sync_request_counter_atom, XA_CARDINAL, 32, PropModeReplace, (U8 *)&w->counter_xid, 1);
+  XChangeProperty(os_lnx_gfx_state->display, w->window, os_lnx_gfx_state->wm_sync_request_counter_atom, XA_CARDINAL, 32, PropModeReplace, (u8 *)&w->counter_xid, 1);
   
   //- rjf: create xic
   w->xic = XCreateIC(os_lnx_gfx_state->xim,
@@ -161,7 +161,7 @@ os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title)
   scratch_end(scratch);
   
   //- rjf: convert to handle & return
-  OS_Handle handle = {(U64)w};
+  OS_Handle handle = {(u64)w};
   return handle;
 }
 
@@ -200,7 +200,7 @@ os_window_focus(OS_Handle handle)
   XSetInputFocus(os_lnx_gfx_state->display, w->window, RevertToNone, CurrentTime);
 }
 
-internal B32
+internal b32
 os_window_is_focused(OS_Handle handle)
 {
   if(os_handle_match(handle, os_handle_zero())) {return 0;}
@@ -208,11 +208,11 @@ os_window_is_focused(OS_Handle handle)
   Window focused_window = 0;
   int revert_to = 0;
   XGetInputFocus(os_lnx_gfx_state->display, &focused_window, &revert_to);
-  B32 result = (w->window == focused_window);
+  b32 result = (w->window == focused_window);
   return result;
 }
 
-internal B32
+internal b32
 os_window_is_fullscreen(OS_Handle handle)
 {
   if(os_handle_match(handle, os_handle_zero())) {return 0;}
@@ -221,13 +221,13 @@ os_window_is_fullscreen(OS_Handle handle)
 }
 
 internal void
-os_window_set_fullscreen(OS_Handle handle, B32 fullscreen)
+os_window_set_fullscreen(OS_Handle handle, b32 fullscreen)
 {
   if(os_handle_match(handle, os_handle_zero())) {return;}
   // TODO(rjf)
 }
 
-internal B32
+internal b32
 os_window_is_maximized(OS_Handle handle)
 {
   if(os_handle_match(handle, os_handle_zero())) {return 0;}
@@ -236,13 +236,13 @@ os_window_is_maximized(OS_Handle handle)
 }
 
 internal void
-os_window_set_maximized(OS_Handle handle, B32 maximized)
+os_window_set_maximized(OS_Handle handle, b32 maximized)
 {
   if(os_handle_match(handle, os_handle_zero())) {return;}
   // TODO(rjf)
 }
 
-internal B32
+internal b32
 os_window_is_minimized(OS_Handle handle)
 {
   if(os_handle_match(handle, os_handle_zero())) {return 0;}
@@ -251,7 +251,7 @@ os_window_is_minimized(OS_Handle handle)
 }
 
 internal void
-os_window_set_minimized(OS_Handle handle, B32 minimized)
+os_window_set_minimized(OS_Handle handle, b32 minimized)
 {
   if(os_handle_match(handle, os_handle_zero())) {return;}
   // TODO(rjf)
@@ -279,14 +279,14 @@ os_window_clear_custom_border_data(OS_Handle handle)
 }
 
 internal void
-os_window_push_custom_title_bar(OS_Handle handle, F32 thickness)
+os_window_push_custom_title_bar(OS_Handle handle, f32 thickness)
 {
   if(os_handle_match(handle, os_handle_zero())) {return;}
   // TODO(rjf)
 }
 
 internal void
-os_window_push_custom_edges(OS_Handle handle, F32 thickness)
+os_window_push_custom_edges(OS_Handle handle, f32 thickness)
 {
   if(os_handle_match(handle, os_handle_zero())) {return;}
   // TODO(rjf)
@@ -306,7 +306,7 @@ os_rect_from_window(OS_Handle handle)
   OS_LNX_Window *w = (OS_LNX_Window *)handle.u64[0];
   XWindowAttributes atts = {0};
   Status s = XGetWindowAttributes(os_lnx_gfx_state->display, w->window, &atts);
-  Rng2F32 result = r2f32p((F32)atts.x, (F32)atts.y, (F32)atts.x + (F32)atts.width, (F32)atts.y + (F32)atts.height);
+  Rng2F32 result = r2f32p((f32)atts.x, (f32)atts.y, (f32)atts.x + (f32)atts.width, (f32)atts.y + (f32)atts.height);
   return result;
 }
 
@@ -316,11 +316,11 @@ os_client_rect_from_window(OS_Handle handle)
   OS_LNX_Window *w = (OS_LNX_Window *)handle.u64[0];
   XWindowAttributes atts = {0};
   Status s = XGetWindowAttributes(os_lnx_gfx_state->display, w->window, &atts);
-  Rng2F32 result = r2f32p(0, 0, (F32)atts.width, (F32)atts.height);
+  Rng2F32 result = r2f32p(0, 0, (f32)atts.width, (f32)atts.height);
   return result;
 }
 
-internal F32
+internal f32
 os_dpi_from_window(OS_Handle handle)
 {
   // TODO(rjf)
@@ -368,7 +368,7 @@ os_dim_from_monitor(OS_Handle monitor)
   return v2f32(0, 0);
 }
 
-internal F32
+internal f32
 os_dpi_from_monitor(OS_Handle monitor)
 {
   // TODO(rjf)
@@ -385,14 +385,14 @@ os_send_wakeup_event(void)
 }
 
 internal OS_EventList
-os_get_events(Arena *arena, B32 wait)
+os_get_events(Arena *arena, b32 wait)
 {
   OS_EventList evts = {0};
   for(;XPending(os_lnx_gfx_state->display) > 0 || (wait && evts.count == 0);)
   {
     XEvent evt = {0};
     XNextEvent(os_lnx_gfx_state->display, &evt);
-    B32 set_mouse_cursor = 0;
+    b32 set_mouse_cursor = 0;
     switch(evt.type)
     {
       default:{}break;
@@ -410,11 +410,11 @@ os_get_events(Arena *arena, B32 wait)
         // rjf: map keycode -> keysym & codepoint
         OS_LNX_Window *window = os_lnx_window_from_x11window(evt.xkey.window);
         KeySym keysym = 0;
-        U8 text[256] = {0};
-        U64 text_size = Xutf8LookupString(window->xic, &evt.xkey, (char *)text, sizeof(text), &keysym, 0);
+        u8 text[256] = {0};
+        u64 text_size = Xutf8LookupString(window->xic, &evt.xkey, (char *)text, sizeof(text), &keysym, 0);
         
         // rjf: map keysym -> OS_Key
-        B32 is_right_sided = 0;
+        b32 is_right_sided = 0;
         OS_Key key = OS_Key_Null;
         switch(keysym)
         {
@@ -487,13 +487,13 @@ os_get_events(Arena *arena, B32 wait)
         // rjf: push text event
         if(evt.type == KeyPress && text_size != 0)
         {
-          for(U64 off = 0; off < text_size;)
+          for(u64 off = 0; off < text_size;)
           {
             UnicodeDecode decode = utf8_decode(text+off, text_size-off);
             if(decode.codepoint != 0 && (decode.codepoint >= 32 || decode.codepoint == '\t'))
             {
               OS_Event *e = os_event_list_push_new(arena, &evts, OS_EventKind_Text);
-              e->window.u64[0] = (U64)window;
+              e->window.u64[0] = (u64)window;
               e->character = decode.codepoint;
             }
             if(decode.inc == 0)
@@ -507,7 +507,7 @@ os_get_events(Arena *arena, B32 wait)
         // rjf: push key event
         {
           OS_Event *e = os_event_list_push_new(arena, &evts, evt.type == KeyPress ? OS_EventKind_Press : OS_EventKind_Release);
-          e->window.u64[0] = (U64)window;
+          e->window.u64[0] = (u64)window;
           e->modifiers = modifiers;
           e->key = key;
           e->right_sided = is_right_sided;
@@ -539,19 +539,19 @@ os_get_events(Arena *arena, B32 wait)
         if(key != OS_Key_Null)
         {
           OS_Event *e = os_event_list_push_new(arena, &evts, evt.type == ButtonPress ? OS_EventKind_Press : OS_EventKind_Release);
-          e->window.u64[0] = (U64)window;
+          e->window.u64[0] = (u64)window;
           e->modifiers = modifiers;
           e->key = key;
-          e->pos = v2f32((F32)evt.xbutton.x, (F32)evt.xbutton.y);
+          e->pos = v2f32((f32)evt.xbutton.x, (f32)evt.xbutton.y);
         }
         else if(evt.xbutton.button == Button4 ||
                 evt.xbutton.button == Button5)
         {
           OS_Event *e = os_event_list_push_new(arena, &evts, OS_EventKind_Scroll);
-          e->window.u64[0] = (U64)window;
+          e->window.u64[0] = (u64)window;
           e->modifiers = modifiers;
           e->delta = v2f32(0, evt.xbutton.button == Button4 ? -1.f : +1.f);
-          e->pos = v2f32((F32)evt.xbutton.x, (F32)evt.xbutton.y);
+          e->pos = v2f32((f32)evt.xbutton.x, (f32)evt.xbutton.y);
         }
       }break;
       
@@ -560,9 +560,9 @@ os_get_events(Arena *arena, B32 wait)
       {
         OS_LNX_Window *window = os_lnx_window_from_x11window(evt.xclient.window);
         OS_Event *e = os_event_list_push_new(arena, &evts, OS_EventKind_MouseMove);
-        e->window.u64[0] = (U64)window;
-        e->pos.x = (F32)evt.xmotion.x;
-        e->pos.y = (F32)evt.xmotion.y;
+        e->window.u64[0] = (u64)window;
+        e->pos.x = (f32)evt.xmotion.x;
+        e->pos.y = (f32)evt.xmotion.y;
         set_mouse_cursor = 1;
       }break;
       
@@ -574,7 +574,7 @@ os_get_events(Arena *arena, B32 wait)
       {
         OS_LNX_Window *window = os_lnx_window_from_x11window(evt.xfocus.window);
         OS_Event *e = os_event_list_push_new(arena, &evts, OS_EventKind_WindowLoseFocus);
-        e->window.u64[0] = (U64)window;
+        e->window.u64[0] = (u64)window;
       }break;
       
       //- rjf: client messages
@@ -584,7 +584,7 @@ os_get_events(Arena *arena, B32 wait)
         {
           OS_LNX_Window *window = os_lnx_window_from_x11window(evt.xclient.window);
           OS_Event *e = os_event_list_push_new(arena, &evts, OS_EventKind_WindowClose);
-          e->window.u64[0] = (U64)window;
+          e->window.u64[0] = (u64)window;
         }
         else if((Atom)evt.xclient.data.l[0] == os_lnx_gfx_state->wm_sync_request_atom)
         {
@@ -627,7 +627,7 @@ os_get_modifiers(void)
   return 0;
 }
 
-internal B32
+internal b32
 os_key_is_down(OS_Key key)
 {
   // TODO(rjf)
@@ -670,7 +670,7 @@ os_set_cursor(OS_Cursor cursor)
 //~ rjf: @os_hooks Native User-Facing Graphical Messages (Implemented Per-OS)
 
 internal void
-os_graphical_message(B32 error, String8 title, String8 message)
+os_graphical_message(b32 error, String8 title, String8 message)
 {
   if(error)
   {

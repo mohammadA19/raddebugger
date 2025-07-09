@@ -42,7 +42,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(commands)
         FuzzyMatchRangeList desc_matches = fuzzy_match_find(scratch.arena, filter, description);
         FuzzyMatchRangeList name_matches = fuzzy_match_find(scratch.arena, filter, display_name);
         FuzzyMatchRangeList tags_matches = fuzzy_match_find(scratch.arena, filter, search_tags);
-        B32 binding_matches_good = 0;
+        b32 binding_matches_good = 0;
         RD_KeyMapNodePtrList bindings = rd_key_map_node_ptr_list_from_name(scratch.arena, code_name);
         for(RD_KeyMapNodePtr *n = bindings.first; n != 0; n = n->next)
         {
@@ -74,9 +74,9 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(commands)
 
 E_TYPE_EXPAND_RANGE_FUNCTION_DEF(commands)
 {
-  U64 out_idx = 0;
+  u64 out_idx = 0;
   String8Array *accel = (String8Array *)user_data;
-  for(U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
+  for(u64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
   {
     String8 cmd_name = accel->v[idx];
     E_Eval cmd_eval = e_eval_from_stringf("query:commands.%S", cmd_name);
@@ -148,9 +148,9 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(themes)
 
 E_TYPE_EXPAND_RANGE_FUNCTION_DEF(themes)
 {
-  U64 out_idx = 0;
+  u64 out_idx = 0;
   String8Array *accel = (String8Array *)user_data;
-  for(U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
+  for(u64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
   {
     String8 name = accel->v[idx];
     evals_out[out_idx] = e_eval_wrapf(eval, "$[\"%S\"]", name);
@@ -190,8 +190,8 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(locals)
   String8Array *accel = (String8Array *)user_data;
   Rng1U64 legal_idx_range = r1u64(0, accel->count);
   Rng1U64 read_range = intersect_1u64(idx_range, legal_idx_range);
-  U64 read_range_count = dim_1u64(read_range);
-  for(U64 idx = 0; idx < read_range_count; idx += 1)
+  u64 read_range_count = dim_1u64(read_range);
+  for(u64 idx = 0; idx < read_range_count; idx += 1)
   {
     String8 expr_string = accel->v[read_range.min + idx];
     evals_out[idx] = e_eval_from_string(expr_string);
@@ -206,12 +206,12 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(registers)
   Temp scratch = scratch_begin(&arena, 1);
   CTRL_Entity *thread = ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, rd_regs()->thread);
   Arch arch = thread->arch;
-  U64 reg_count     = regs_reg_code_count_from_arch(arch);
-  U64 alias_count   = regs_alias_code_count_from_arch(arch);
+  u64 reg_count     = regs_reg_code_count_from_arch(arch);
+  u64 alias_count   = regs_alias_code_count_from_arch(arch);
   String8 *reg_strings   = regs_reg_code_string_table_from_arch(arch);
   String8 *alias_strings = regs_alias_code_string_table_from_arch(arch);
   String8List exprs_list = {0};
-  for(U64 idx = 1; idx < reg_count; idx += 1)
+  for(u64 idx = 1; idx < reg_count; idx += 1)
   {
     FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, reg_strings[idx]);
     if(matches.count == matches.needle_part_count)
@@ -219,7 +219,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(registers)
       str8_list_push(scratch.arena, &exprs_list, reg_strings[idx]);
     }
   }
-  for(U64 idx = 1; idx < alias_count; idx += 1)
+  for(u64 idx = 1; idx < alias_count; idx += 1)
   {
     FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, alias_strings[idx]);
     if(matches.count == matches.needle_part_count)
@@ -239,8 +239,8 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(registers)
   String8Array *accel = (String8Array *)user_data;
   Rng1U64 legal_idx_range = r1u64(0, accel->count);
   Rng1U64 read_range = intersect_1u64(legal_idx_range, idx_range);
-  U64 read_range_count = dim_1u64(read_range);
-  for(U64 idx = 0; idx < read_range_count; idx += 1)
+  u64 read_range_count = dim_1u64(read_range);
+  for(u64 idx = 0; idx < read_range_count; idx += 1)
   {
     String8 register_name = accel->v[read_range.min + idx];
     String8 register_expr = push_str8f(arena, "reg:%S", register_name);
@@ -302,7 +302,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
       CTRL_Entity *entity = ext->entity;
       RD_Cfg *child = rd_cfg_child_from_string(cfg, child_schema->string);
       E_TypeKey child_type_key = {};
-      B32 wrap_child_w_meta_expr = 0;
+      b32 wrap_child_w_meta_expr = 0;
       if(0){}
       
       //- rjf: ctrl entity members
@@ -378,7 +378,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
       {
         Temp scratch = scratch_begin(&arena, 1);
         E_Expr *expr = e_parse_from_string(child->first->string).expr;
-        B32 expr_is_simple = 0;
+        b32 expr_is_simple = 0;
         if(expr->kind == E_ExprKind_LeafU64 ||
            expr->kind == E_ExprKind_LeafF64 ||
            expr->kind == E_ExprKind_LeafF32)
@@ -488,7 +488,7 @@ struct RD_SchemaExpandAccel
 {
   String8Array commands;
   MD_Node **children;
-  U64 children_count;
+  u64 children_count;
 };
 
 E_TYPE_EXPAND_INFO_FUNCTION_DEF(schema)
@@ -534,7 +534,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(schema)
     };
     ExpandChildNode *first_child_node = 0;
     ExpandChildNode *last_child_node = 0;
-    U64 child_count = 0;
+    u64 child_count = 0;
     for(MD_NodePtrNode *n = ext->schemas.first; n != 0; n = n->next)
     {
       MD_Node *schema = n->v;
@@ -543,7 +543,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(schema)
         if(!md_node_has_tag(child, str8_lit("no_expand"), 0))
         {
           MD_Node *expand_check = md_tag_from_string(child, str8_lit("expand_if"), 0);
-          B32 expand_this_child = 1;
+          b32 expand_this_child = 1;
           if(!md_node_is_nil(expand_check)) E_ParentKey(eval.key)
           {
             expand_this_child = !!e_value_from_string(expand_check->first->string).u64;
@@ -576,7 +576,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(schema)
     // rjf: flatten expansion member list
     MD_Node **children = push_array(arena, MD_Node *, child_count);
     {
-      U64 idx = 0;
+      u64 idx = 0;
       for(ExpandChildNode *n = first_child_node; n != 0; n = n->next, idx += 1)
       {
         children[idx] = n->n;
@@ -603,12 +603,12 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(schema)
   RD_SchemaExpandAccel *accel = (RD_SchemaExpandAccel *)user_data;
   Rng1U64 cmds_idx_range = r1u64(0, accel->commands.count);
   Rng1U64 chld_idx_range = r1u64(cmds_idx_range.max, cmds_idx_range.max + accel->children_count);
-  U64 out_idx = 0;
+  u64 out_idx = 0;
   
   // rjf: read commands
   {
     Rng1U64 read_range = intersect_1u64(idx_range, cmds_idx_range);
-    for(U64 idx = read_range.min; idx < read_range.max; idx += 1, out_idx += 1)
+    for(u64 idx = read_range.min; idx < read_range.max; idx += 1, out_idx += 1)
     {
       evals_out[out_idx] = e_eval_from_stringf("query:commands.%S", accel->commands.v[idx - cmds_idx_range.min]);
     }
@@ -617,7 +617,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(schema)
   // rjf: read children
   {
     Rng1U64 read_range = intersect_1u64(idx_range, chld_idx_range);
-    for(U64 idx = read_range.min; idx < read_range.max; idx += 1, out_idx += 1)
+    for(u64 idx = read_range.min; idx < read_range.max; idx += 1, out_idx += 1)
     {
       MD_Node *child_schema = accel->children[idx - chld_idx_range.min];
       evals_out[out_idx] = e_eval_wrapf(eval, "$.%S", child_schema->string);
@@ -730,7 +730,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(cfgs_slice)
     case E_ExprKind_ArrayIndex:
     {
       E_Value rhs_value = e_value_from_expr(expr->first->next);
-      U64 rhs_idx = rhs_value.u64;
+      u64 rhs_idx = rhs_value.u64;
       if(0 <= rhs_idx && rhs_idx < ext->cfgs.count)
       {
         cfg = ext->cfgs.v[rhs_idx];
@@ -861,14 +861,14 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(cfgs_slice)
   RD_CfgsExpandAccel *accel = (RD_CfgsExpandAccel *)user_data;
   Rng1U64 cmds_idx_range = accel->cmds_idx_range;
   Rng1U64 cfgs_idx_range = accel->cfgs_idx_range;
-  U64 dst_idx = 0;
+  u64 dst_idx = 0;
   
   // rjf: fill commands
   {
     Rng1U64 read_range = intersect_1u64(cmds_idx_range, idx_range);
-    U64 read_count = dim_1u64(read_range);
+    u64 read_count = dim_1u64(read_range);
     E_Eval cmds_eval = e_eval_from_stringf("query:commands");
-    for(U64 idx = 0; idx < read_count; idx += 1, dst_idx += 1)
+    for(u64 idx = 0; idx < read_count; idx += 1, dst_idx += 1)
     {
       String8 cmd_name = accel->cmds.v[idx + read_range.min - cmds_idx_range.min];
       E_Eval cmd_eval = e_eval_wrapf(cmds_eval, "$.%S", cmd_name);
@@ -879,8 +879,8 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(cfgs_slice)
   // rjf: fill cfgs
   {
     Rng1U64 read_range = intersect_1u64(cfgs_idx_range, idx_range);
-    U64 read_count = dim_1u64(read_range);
-    for(U64 idx = 0; idx < read_count; idx += 1, dst_idx += 1)
+    u64 read_count = dim_1u64(read_range);
+    for(u64 idx = 0; idx < read_count; idx += 1, dst_idx += 1)
     {
       RD_Cfg *cfg = accel->cfgs.v[idx + read_range.min - cfgs_idx_range.min];
       evals_out[dst_idx] = e_eval_from_stringf("query:config.$%I64x", cfg->id);
@@ -890,11 +890,11 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(cfgs_slice)
 
 E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(cfgs_slice)
 {
-  U64 id = 0;
+  u64 id = 0;
   RD_CfgsExpandAccel *accel = (RD_CfgsExpandAccel *)user_data;
   if(num != 0)
   {
-    U64 idx = num-1;
+    u64 idx = num-1;
     if(contains_1u64(accel->cfgs_idx_range, idx))
     {
       RD_Cfg *cfg = accel->cfgs.v[idx - accel->cfgs_idx_range.min];
@@ -911,7 +911,7 @@ E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(cfgs_slice)
 
 E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(cfgs_slice)
 {
-  U64 num = 0;
+  u64 num = 0;
   RD_CfgsExpandAccel *accel = (RD_CfgsExpandAccel *)user_data;
   if(id != 0)
   {
@@ -953,7 +953,7 @@ E_TYPE_IREXT_FUNCTION_DEF(call_stack)
     CTRL_Entity *entity = rd_ctrl_entity_from_eval_space(interp.space);
     if(entity->kind == CTRL_EntityKind_Thread)
     {
-      B32 call_stack_high_priority = ctrl_handle_match(entity->handle, rd_base_regs()->thread);
+      b32 call_stack_high_priority = ctrl_handle_match(entity->handle, rd_base_regs()->thread);
       accel->arch = entity->arch;
       accel->process = ctrl_process_from_entity(entity)->handle;
       accel->call_stack = ctrl_call_stack_from_thread(rd_state->frame_ctrl_scope, &d_state->ctrl_entity_store->ctx, entity, call_stack_high_priority, call_stack_high_priority ? rd_state->frame_eval_memread_endt_us : 0);
@@ -1058,10 +1058,10 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(environment)
   RD_EnvironmentAccel *accel = (RD_EnvironmentAccel *)user_data;
   Rng1U64 legal_idx_range = r1u64(0, accel->cfgs.count);
   Rng1U64 read_range = intersect_1u64(idx_range, legal_idx_range);
-  U64 read_range_count = dim_1u64(read_range);
-  for(U64 idx = 0; idx < read_range_count; idx += 1)
+  u64 read_range_count = dim_1u64(read_range);
+  for(u64 idx = 0; idx < read_range_count; idx += 1)
   {
-    U64 cfg_idx = read_range.min + idx;
+    u64 cfg_idx = read_range.min + idx;
     if(cfg_idx < accel->cfgs.count)
     {
       evals_out[idx] = e_eval_wrapf(eval, "$[%I64u]", cfg_idx);
@@ -1071,11 +1071,11 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(environment)
 
 E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(environment)
 {
-  U64 id = 0;
+  u64 id = 0;
   RD_EnvironmentAccel *accel = (RD_EnvironmentAccel *)user_data;
   if(1 <= num && num <= accel->cfgs.count)
   {
-    U64 idx = (num-1);
+    u64 idx = (num-1);
     id = accel->cfgs.v[idx]->id;
   }
   else if(num == accel->cfgs.count+1)
@@ -1087,7 +1087,7 @@ E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(environment)
 
 E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(environment)
 {
-  U64 num = 0;
+  u64 num = 0;
   RD_EnvironmentAccel *accel = (RD_EnvironmentAccel *)user_data;
   if(id != 0 && id != max_U64)
   {
@@ -1192,10 +1192,10 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(watches)
   RD_WatchesAccel *accel = (RD_WatchesAccel *)user_data;
   Rng1U64 legal_idx_range = r1u64(0, accel->cfgs.count);
   Rng1U64 read_range = intersect_1u64(idx_range, legal_idx_range);
-  U64 read_range_count = dim_1u64(read_range);
-  for(U64 idx = 0; idx < read_range_count; idx += 1)
+  u64 read_range_count = dim_1u64(read_range);
+  for(u64 idx = 0; idx < read_range_count; idx += 1)
   {
-    U64 cfg_idx = read_range.min + idx;
+    u64 cfg_idx = read_range.min + idx;
     if(cfg_idx < accel->cfgs.count)
     {
       RD_Cfg *cfg = accel->cfgs.v[cfg_idx];
@@ -1206,11 +1206,11 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(watches)
 
 E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(watches)
 {
-  U64 id = 0;
+  u64 id = 0;
   RD_WatchesAccel *accel = (RD_WatchesAccel *)user_data;
   if(1 <= num && num <= accel->cfgs.count)
   {
-    U64 idx = (num-1);
+    u64 idx = (num-1);
     id = accel->cfgs.v[idx]->id;
   }
   else if(num == accel->cfgs.count+1)
@@ -1222,7 +1222,7 @@ E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(watches)
 
 E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(watches)
 {
-  U64 num = 0;
+  u64 num = 0;
   RD_WatchesAccel *accel = (RD_WatchesAccel *)user_data;
   if(id != 0 && id != max_U64)
   {
@@ -1249,7 +1249,7 @@ struct RD_UnattachedProcessesAccel
 {
   DMN_ProcessInfo *infos;
   CTRL_Entity **machines;
-  U64 infos_count;
+  u64 infos_count;
 };
 
 E_TYPE_ACCESS_FUNCTION_DEF(unattached_processes)
@@ -1260,12 +1260,12 @@ E_TYPE_ACCESS_FUNCTION_DEF(unattached_processes)
     Temp scratch = scratch_begin(&arena, 1);
     
     // rjf: extract pid / name id from access string
-    U64 pid = 0;
-    U64 string_id = 0;
+    u64 pid = 0;
+    u64 string_id = 0;
     {
       String8 pid_string = {0};
       String8 name_id_string = {0};
-      U8 split_char = '$';
+      u8 split_char = '$';
       String8List parts = str8_split(scratch.arena, expr->first->next->string, &split_char, 1, 0);
       if(parts.first != 0 && parts.first->next != 0)
       {
@@ -1330,14 +1330,14 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(unattached_processes)
     };
     Node *first = 0;
     Node *last = 0;
-    U64 count = 0;
+    u64 count = 0;
     for idx in 0..<machines.count {
       CTRL_Entity *machine = machines.v[idx];
       DMN_ProcessIter iter = {0};
       dmn_process_iter_begin(&iter);
       for(DMN_ProcessInfo info = {0}; dmn_process_iter_next(scratch.arena, &iter, &info);)
       {
-        B32 passes_filter = 1;
+        b32 passes_filter = 1;
         if(filter.size != 0)
         {
           passes_filter = 0;
@@ -1361,11 +1361,11 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(unattached_processes)
     }
     
     //- rjf: list -> array
-    U64 infos_count = count;
+    u64 infos_count = count;
     DMN_ProcessInfo *infos = push_array(arena, DMN_ProcessInfo, infos_count);
     CTRL_Entity **infos_machines = push_array(arena, CTRL_Entity *, infos_count);
     {
-      U64 idx = 0;
+      u64 idx = 0;
       for(Node *n = first; n != 0; n = n->next, idx += 1)
       {
         infos[idx] = n->info;
@@ -1389,9 +1389,9 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(unattached_processes)
 E_TYPE_EXPAND_RANGE_FUNCTION_DEF(unattached_processes)
 {
   RD_UnattachedProcessesAccel *accel = (RD_UnattachedProcessesAccel *)user_data;
-  U64 out_idx = 0;
+  u64 out_idx = 0;
   E_TypeKey unattached_process_type = e_type_key_cons(.kind = E_TypeKind_U128, .name = str8_lit("unattached_process"));
-  for(U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
+  for(u64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
   {
     CTRL_Entity *machine = accel->machines[idx];
     String8 string = ctrl_string_from_handle(arena, machine->handle);
@@ -1420,7 +1420,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(ctrl_entities)
         E_Type *type = e_type_from_key(lhs_irtree->type_key);
         CTRL_EntityKind kind = ctrl_entity_kind_from_string(rd_singular_from_code_name_plural(type->name));
         E_Value rhs_value = e_value_from_expr(expr->first->next);
-        U64 rhs_idx = rhs_value.u64;
+        u64 rhs_idx = rhs_value.u64;
         CTRL_EntityArray entities = ctrl_entity_array_from_kind(&d_state->ctrl_entity_store->ctx, kind);
         if(0 <= rhs_idx && rhs_idx < entities.count)
         {
@@ -1511,8 +1511,8 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(ctrl_entities)
   CTRL_EntityArray *entities = (CTRL_EntityArray *)user_data;
   Rng1U64 legal_range = r1u64(0, entities->count);
   Rng1U64 read_range = intersect_1u64(legal_range, idx_range);
-  U64 read_count = dim_1u64(read_range);
-  for(U64 out_idx = 0; out_idx < read_count; out_idx += 1)
+  u64 read_count = dim_1u64(read_range);
+  for(u64 out_idx = 0; out_idx < read_count; out_idx += 1)
   {
     Temp scratch = scratch_begin(&arena, 1);
     CTRL_Entity *entity = entities->v[out_idx + read_range.min];
@@ -1528,7 +1528,7 @@ typedef struct RD_DebugInfoTableLookupAccel RD_DebugInfoTableLookupAccel;
 struct RD_DebugInfoTableLookupAccel
 {
   RDI_SectionKind section;
-  U64 rdis_count;
+  u64 rdis_count;
   RDI_Parsed **rdis;
   DI_SearchItemArray items;
 };
@@ -1554,21 +1554,21 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(debug_info_table)
   RD_DebugInfoTableLookupAccel *accel = push_array(arena, RD_DebugInfoTableLookupAccel, 1);
   if(section != RDI_SectionKind_NULL)
   {
-    U64 endt_us = rd_state->frame_eval_memread_endt_us;
+    u64 endt_us = rd_state->frame_eval_memread_endt_us;
     
     //- rjf: unpack context
     DI_KeyList dbgi_keys_list = d_push_active_dbgi_key_list(scratch.arena);
     DI_KeyArray dbgi_keys = di_key_array_from_list(scratch.arena, &dbgi_keys_list);
-    U64 rdis_count = dbgi_keys.count;
+    u64 rdis_count = dbgi_keys.count;
     RDI_Parsed **rdis = push_array(arena, RDI_Parsed *, rdis_count);
-    for(U64 idx = 0; idx < rdis_count; idx += 1)
+    for(u64 idx = 0; idx < rdis_count; idx += 1)
     {
       rdis[idx] = di_rdi_from_key(rd_state->frame_di_scope, &dbgi_keys.v[idx], 1, endt_us);
     }
     
     //- rjf: query all filtered items from dbgi searching system
-    U128 fuzzy_search_key = {d_hash_from_string(str8_struct(&rd_regs()->view)), (U64)section};
-    B32 items_stale = 0;
+    u128 fuzzy_search_key = {d_hash_from_string(str8_struct(&rd_regs()->view)), (u64)section};
+    b32 items_stale = 0;
     DI_SearchParams params = {section, dbgi_keys};
     accel->section = section;
     accel->rdis_count = rdis_count;
@@ -1588,7 +1588,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(debug_info_table)
 {
   Temp scratch = scratch_begin(&arena, 1);
   RD_DebugInfoTableLookupAccel *accel = (RD_DebugInfoTableLookupAccel *)user_data;
-  U64 needed_row_count = dim_1u64(idx_range);
+  u64 needed_row_count = dim_1u64(idx_range);
   for idx in 0..<needed_row_count {
     // rjf: unpack row
     DI_SearchItem *item = &accel->items.v[idx_range.min + idx];
@@ -1606,7 +1606,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(debug_info_table)
     // rjf: get item's string
     String8 item_string = {0};
     {
-      U64 element_idx = item->idx;
+      u64 element_idx = item->idx;
       switch(accel->section)
       {
         default:{}break;
@@ -1614,13 +1614,13 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(debug_info_table)
         {
           RDI_Procedure *procedure = rdi_element_from_name_idx(module->rdi, Procedures, element_idx);
           RDI_Scope *scope = rdi_element_from_name_idx(module->rdi, Scopes, procedure->root_scope_idx);
-          U64 voff = *rdi_element_from_name_idx(module->rdi, ScopeVOffData, scope->voff_range_first);
+          u64 voff = *rdi_element_from_name_idx(module->rdi, ScopeVOffData, scope->voff_range_first);
           E_OpList oplist = {0};
           e_oplist_push_op(arena, &oplist, RDI_EvalOp_ConstU64, e_value_u64(module->vaddr_range.min + voff));
           String8 bytecode = e_bytecode_from_oplist(arena, &oplist);
-          U32 type_idx = procedure->type_idx;
+          u32 type_idx = procedure->type_idx;
           RDI_TypeNode *type_node = rdi_element_from_name_idx(module->rdi, TypeNodes, type_idx);
-          E_TypeKey type_key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), type_idx, (U32)(module - e_base_ctx->modules));
+          E_TypeKey type_key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), type_idx, (u32)(module - e_base_ctx->modules));
           String8 symbol_name = {0};
           symbol_name.str = rdi_string_from_idx(module->rdi, procedure->name_string_idx, &symbol_name.size);
           item_string = symbol_name;
@@ -1660,7 +1660,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(debug_info_table)
     // rjf: build a valid expression string given item string
     String8 item_expr = item_string;
     {
-      B32 string_can_be_evalled = 1;
+      b32 string_can_be_evalled = 1;
       E_TokenArray tokens = e_token_array_from_text(scratch.arena, item_string);
       for idx in 0..<tokens.count {
         String8 token_string = str8_substr(item_string, tokens.v[idx].range);
@@ -1690,7 +1690,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(debug_info_table)
 E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(debug_info_table)
 {
   RD_DebugInfoTableLookupAccel *accel = (RD_DebugInfoTableLookupAccel *)user_data;
-  U64 id = 0;
+  u64 id = 0;
   if(0 < num && num <= accel->items.count)
   {
     id = accel->items.v[num-1].idx+1;
@@ -1701,6 +1701,6 @@ E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(debug_info_table)
 E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(debug_info_table)
 {
   RD_DebugInfoTableLookupAccel *accel = (RD_DebugInfoTableLookupAccel *)user_data;
-  U64 num = di_search_item_num_from_array_element_idx__linear_search(&accel->items, id-1);
+  u64 num = di_search_item_num_from_array_element_idx__linear_search(&accel->items, id-1);
   return num;
 }

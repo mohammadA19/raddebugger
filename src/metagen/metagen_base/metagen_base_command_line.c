@@ -4,11 +4,11 @@
 ////////////////////////////////
 //~ NOTE(rjf): Command Line Option Parsing
 
-internal U64
+internal u64
 cmd_line_hash_from_string(String8 string)
 {
-  U64 result = 5381;
-  for(U64 i = 0; i < string.size; i += 1)
+  u64 result = 5381;
+  for(u64 i = 0; i < string.size; i += 1)
   {
     result = ((result << 5) + result) + string.str[i];
   }
@@ -21,8 +21,8 @@ cmd_line_slot_from_string(CmdLine *cmd_line, String8 string)
   CmdLineOpt **slot = 0;
   if(cmd_line->option_table_size != 0)
   {
-    U64 hash = cmd_line_hash_from_string(string);
-    U64 bucket = hash % cmd_line->option_table_size;
+    u64 hash = cmd_line_hash_from_string(string);
+    u64 bucket = hash % cmd_line->option_table_size;
     slot = &cmd_line->option_table[bucket];
   }
   return slot;
@@ -91,8 +91,8 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
   }
   
   // NOTE(rjf): Parse command line.
-  B32 after_passthrough_option = 0;
-  B32 first_passthrough = 1;
+  b32 after_passthrough_option = 0;
+  b32 first_passthrough = 1;
   for(String8Node *node = command_line.first->next, *next = 0; node != 0; node = next)
   {
     next = node->next;
@@ -102,7 +102,7 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
     // argument to determine if it's a flag option. All arguments after a
     // single "--" (with no trailing string on the command line will be
     // considered as input files.
-    B32 is_option = 1;
+    b32 is_option = 1;
     if(after_passthrough_option == 0)
     {
       if(str8_match(node->string, str8_lit("--"), 0))
@@ -136,10 +136,10 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
     // NOTE(rjf): This string is an option.
     if(is_option)
     {
-      B32 has_arguments = 0;
-      U64 arg_signifier_position1 = str8_find_needle(option_name, 0, str8_lit(":"), 0);
-      U64 arg_signifier_position2 = str8_find_needle(option_name, 0, str8_lit("="), 0);
-      U64 arg_signifier_position = Min(arg_signifier_position1, arg_signifier_position2);
+      b32 has_arguments = 0;
+      u64 arg_signifier_position1 = str8_find_needle(option_name, 0, str8_lit(":"), 0);
+      u64 arg_signifier_position2 = str8_find_needle(option_name, 0, str8_lit("="), 0);
+      u64 arg_signifier_position = Min(arg_signifier_position1, arg_signifier_position2);
       String8 arg_portion_this_string = str8_skip(option_name, arg_signifier_position+1);
       if(arg_signifier_position < option_name.size)
       {
@@ -162,7 +162,7 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
             string = arg_portion_this_string;
           }
           
-          U8 splits[] = { ',' };
+          u8 splits[] = { ',' };
           String8List args_in_this_string = str8_split(arena, string, splits, len(splits), 0);
           for(String8Node *sub_arg = args_in_this_string.first; sub_arg; sub_arg = sub_arg->next)
           {
@@ -194,7 +194,7 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
   parsed.argc = command_line.node_count;
   parsed.argv = push_array(arena, char *, parsed.argc);
   {
-    U64 idx = 0;
+    u64 idx = 0;
     for(String8Node *n = command_line.first; n != 0; n = n->next)
     {
       parsed.argv[idx] = (char *)push_str8_copy(arena, n->string).str;
@@ -235,14 +235,14 @@ cmd_line_string(CmdLine *cmd_line, String8 name)
   return result;
 }
 
-internal B32
+internal b32
 cmd_line_has_flag(CmdLine *cmd_line, String8 name)
 {
   CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
   return(var != 0);
 }
 
-internal B32
+internal b32
 cmd_line_has_argument(CmdLine *cmd_line, String8 name)
 {
   CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);

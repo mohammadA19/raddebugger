@@ -164,33 +164,33 @@ e_type_group_from_kind(E_TypeKind kind)
   return result;
 }
 
-internal B32
+internal b32
 e_type_kind_is_integer(E_TypeKind kind)
 {
-  B32 result = (E_TypeKind_FirstInteger <= kind && kind <= E_TypeKind_LastInteger);
+  b32 result = (E_TypeKind_FirstInteger <= kind && kind <= E_TypeKind_LastInteger);
   return result;
 }
 
-internal B32
+internal b32
 e_type_kind_is_signed(E_TypeKind kind)
 {
-  B32 result = ((E_TypeKind_FirstSigned1 <= kind && kind <= E_TypeKind_LastSigned1) ||
+  b32 result = ((E_TypeKind_FirstSigned1 <= kind && kind <= E_TypeKind_LastSigned1) ||
                 (E_TypeKind_FirstSigned2 <= kind && kind <= E_TypeKind_LastSigned2));
   return result;
 }
 
-internal B32
+internal b32
 e_type_kind_is_basic_or_enum(E_TypeKind kind)
 {
-  B32 result = ((E_TypeKind_FirstBasic <= kind && kind <= E_TypeKind_LastBasic) ||
+  b32 result = ((E_TypeKind_FirstBasic <= kind && kind <= E_TypeKind_LastBasic) ||
                 kind == E_TypeKind_Enum);
   return result;
 }
 
-internal B32
+internal b32
 e_type_kind_is_pointer_or_ref(E_TypeKind kind)
 {
-  B32 result = (kind == E_TypeKind_Ptr || kind == E_TypeKind_LRef || kind == E_TypeKind_RRef);
+  b32 result = (kind == E_TypeKind_Ptr || kind == E_TypeKind_LRef || kind == E_TypeKind_RRef);
   return result;
 }
 
@@ -213,7 +213,7 @@ e_member_array_from_list(Arena *arena, E_MemberList *list)
   array.count = list->count;
   array.v = push_array(arena, E_Member, array.count);
   {
-    U64 idx = 0;
+    u64 idx = 0;
     for(E_MemberNode *n = list->first; n != 0; n = n->next, idx += 1)
     {
       MemoryCopyStruct(&array.v[idx], &n->v);
@@ -241,7 +241,7 @@ e_enum_val_array_from_list(Arena *arena, E_EnumValList *list)
   array.count = list->count;
   array.v = push_array(arena, E_EnumVal, array.count);
   {
-    U64 idx = 0;
+    u64 idx = 0;
     for(E_EnumValNode *n = list->first; n != 0; n = n->next, idx += 1)
     {
       MemoryCopyStruct(&array.v[idx], &n->v);
@@ -266,15 +266,15 @@ internal E_TypeKey
 e_type_key_basic(E_TypeKind kind)
 {
   E_TypeKey key = {E_TypeKeyKind_Basic};
-  key.u32[0] = (U32)kind;
+  key.u32[0] = (u32)kind;
   return key;
 }
 
 internal E_TypeKey
-e_type_key_ext(E_TypeKind kind, U32 type_idx, U32 rdi_idx)
+e_type_key_ext(E_TypeKind kind, u32 type_idx, u32 rdi_idx)
 {
   E_TypeKey key = {E_TypeKeyKind_Ext};
-  key.u32[0] = (U32)kind;
+  key.u32[0] = (u32)kind;
   if(E_TypeKind_FirstBasic <= kind && kind <= E_TypeKind_LastBasic)
   {
     key.kind = E_TypeKeyKind_Basic;
@@ -291,8 +291,8 @@ internal E_TypeKey
 e_type_key_reg(Arch arch, REGS_RegCode code)
 {
   E_TypeKey key = {E_TypeKeyKind_Reg};
-  key.u32[0] = (U32)arch;
-  key.u32[1] = (U32)code;
+  key.u32[0] = (u32)arch;
+  key.u32[1] = (u32)code;
   return key;
 }
 
@@ -300,37 +300,37 @@ internal E_TypeKey
 e_type_key_reg_alias(Arch arch, REGS_AliasCode code)
 {
   E_TypeKey key = {E_TypeKeyKind_RegAlias};
-  key.u32[0] = (U32)arch;
-  key.u32[1] = (U32)code;
+  key.u32[0] = (u32)arch;
+  key.u32[1] = (u32)code;
   return key;
 }
 
 //- rjf: constructed type construction
 
-internal U64
+internal u64
 e_hash_from_cons_type_params(E_ConsTypeParams *params)
 {
-  U32 buffer[] =
+  u32 buffer[] =
   {
-    (U32)params->kind,
-    (U32)params->direct_key.kind,
+    (u32)params->kind,
+    (u32)params->direct_key.kind,
     params->direct_key.u32[0],
     params->direct_key.u32[1],
     params->direct_key.u32[2],
-    (U32)((params->count & 0x00000000ffffffffull)>> 0),
-    (U32)((params->count & 0xffffffff00000000ull)>> 32),
-    (U32)((params->depth & 0x00000000ffffffffull)>> 0),
-    (U32)((params->depth & 0xffffffff00000000ull)>> 32),
+    (u32)((params->count & 0x00000000ffffffffull)>> 0),
+    (u32)((params->count & 0xffffffff00000000ull)>> 32),
+    (u32)((params->depth & 0x00000000ffffffffull)>> 0),
+    (u32)((params->depth & 0xffffffff00000000ull)>> 32),
   };
-  U64 hash = e_hash_from_string(5381, str8((U8 *)buffer, sizeof(buffer)));
+  u64 hash = e_hash_from_string(5381, str8((u8 *)buffer, sizeof(buffer)));
   hash = e_hash_from_string(hash, params->name);
   return hash;
 }
 
-internal B32
+internal b32
 e_cons_type_params_match(E_ConsTypeParams *l, E_ConsTypeParams *r)
 {
-  B32 result = (l->kind != E_TypeKind_Lens &&
+  b32 result = (l->kind != E_TypeKind_Lens &&
                 l->kind == r->kind &&
                 l->flags == r->flags &&
                 str8_match(l->name, r->name, 0) &&
@@ -339,7 +339,7 @@ e_cons_type_params_match(E_ConsTypeParams *l, E_ConsTypeParams *r)
                 l->depth == r->depth);
   if(result && l->members != 0 && r->members != 0)
   {
-    for(U64 idx = 0; idx < l->count; idx += 1)
+    for(u64 idx = 0; idx < l->count; idx += 1)
     {
       if(l->members[idx].kind != r->members[idx].kind ||
          !e_type_key_match(l->members[idx].type_key, r->members[idx].type_key) ||
@@ -353,7 +353,7 @@ e_cons_type_params_match(E_ConsTypeParams *l, E_ConsTypeParams *r)
   }
   if(result && l->enum_vals != 0 && r->enum_vals != 0)
   {
-    for(U64 idx = 0; idx < l->count; idx += 1)
+    for(u64 idx = 0; idx < l->count; idx += 1)
     {
       if(l->enum_vals[idx].val != r->enum_vals[idx].val ||
          !str8_match(l->enum_vals[idx].name, r->enum_vals[idx].name, 0))
@@ -369,8 +369,8 @@ e_cons_type_params_match(E_ConsTypeParams *l, E_ConsTypeParams *r)
 internal E_TypeKey
 e_type_key_cons_(E_ConsTypeParams *params)
 {
-  U64 content_hash = e_hash_from_cons_type_params(params);
-  U64 content_slot_idx = content_hash%e_cache->cons_content_slots_count;
+  u64 content_hash = e_hash_from_cons_type_params(params);
+  u64 content_slot_idx = content_hash%e_cache->cons_content_slots_count;
   E_ConsTypeSlot *content_slot = &e_cache->cons_content_slots[content_slot_idx];
   E_ConsTypeNode *node = 0;
   for(E_ConsTypeNode *n = content_slot->first; n != 0; n = n->content_next)
@@ -385,11 +385,11 @@ e_type_key_cons_(E_ConsTypeParams *params)
   if(node == 0)
   {
     E_TypeKey key = {E_TypeKeyKind_Cons};
-    key.u32[0] = (U32)params->kind;
-    key.u32[1] = (U32)e_cache->cons_id_gen;
+    key.u32[0] = (u32)params->kind;
+    key.u32[1] = (u32)e_cache->cons_id_gen;
     e_cache->cons_id_gen += 1;
-    U64 key_hash = e_hash_from_string(5381, str8_struct(&key));
-    U64 key_slot_idx = key_hash%e_cache->cons_key_slots_count;
+    u64 key_hash = e_hash_from_string(5381, str8_struct(&key));
+    u64 key_slot_idx = key_hash%e_cache->cons_key_slots_count;
     E_ConsTypeSlot *key_slot = &e_cache->cons_key_slots[key_slot_idx];
     E_ConsTypeNode *node = push_array(e_cache->arena, E_ConsTypeNode, 1);
     SLLQueuePush_N(content_slot->first, content_slot->last, node, content_next);
@@ -407,11 +407,11 @@ e_type_key_cons_(E_ConsTypeParams *params)
     {
       node->params.members = push_array(e_cache->arena, E_Member, params->count);
       MemoryCopy(node->params.members, params->members, sizeof(E_Member)*params->count);
-      for(U64 idx = 0; idx < node->params.count; idx += 1)
+      for(u64 idx = 0; idx < node->params.count; idx += 1)
       {
         node->params.members[idx].name = push_str8_copy(e_cache->arena, node->params.members[idx].name);
         node->params.members[idx].inheritance_key_chain = e_type_key_list_copy(e_cache->arena, &node->params.members[idx].inheritance_key_chain);
-        U64 opl_off = (node->params.members[idx].off + e_type_byte_size_from_key(node->params.members[idx].type_key));
+        u64 opl_off = (node->params.members[idx].off + e_type_byte_size_from_key(node->params.members[idx].type_key));
         node->byte_size = max(node->byte_size, opl_off);
       }
     }
@@ -419,7 +419,7 @@ e_type_key_cons_(E_ConsTypeParams *params)
     {
       node->params.enum_vals = push_array(e_cache->arena, E_EnumVal, params->count);
       MemoryCopy(node->params.enum_vals, params->enum_vals, sizeof(E_EnumVal)*params->count);
-      for(U64 idx = 0; idx < node->params.count; idx += 1)
+      for(u64 idx = 0; idx < node->params.count; idx += 1)
       {
         node->params.enum_vals[idx].name = push_str8_copy(e_cache->arena, node->params.enum_vals[idx].name);
       }
@@ -445,7 +445,7 @@ e_type_key_cons_(E_ConsTypeParams *params)
       }break;
       case E_TypeKind_Array:
       {
-        U64 ptee_size = e_type_byte_size_from_key(node->params.direct_key);
+        u64 ptee_size = e_type_byte_size_from_key(node->params.direct_key);
         node->byte_size = ptee_size * node->params.count;
       }break;
     }
@@ -461,14 +461,14 @@ e_type_key_cons_(E_ConsTypeParams *params)
 //- rjf: constructed type helpers
 
 internal E_TypeKey
-e_type_key_cons_array(E_TypeKey element_type_key, U64 count, E_TypeFlags flags)
+e_type_key_cons_array(E_TypeKey element_type_key, u64 count, E_TypeFlags flags)
 {
   E_TypeKey key = e_type_key_cons(.kind = E_TypeKind_Array, .direct_key = element_type_key, .count = count, .flags = flags);
   return key;
 }
 
 internal E_TypeKey
-e_type_key_cons_ptr(Arch arch, E_TypeKey element_type_key, U64 count, E_TypeFlags flags)
+e_type_key_cons_ptr(Arch arch, E_TypeKey element_type_key, u64 count, E_TypeFlags flags)
 {
   E_TypeKey key = e_type_key_cons(.arch = arch, .kind = E_TypeKind_Ptr, .flags = flags, .direct_key = element_type_key, .count = count);
   return key;
@@ -525,7 +525,7 @@ e_type_key_cons_base(Type *type)
     {
       Temp scratch = scratch_begin(0, 0);
       E_MemberList members = {0};
-      for(U64 idx = 0; idx < type->count; idx += 1)
+      for(u64 idx = 0; idx < type->count; idx += 1)
       {
         E_TypeKey member_type_key = e_type_key_cons_base(type->members[idx].type);
         e_member_list_push_new(scratch.arena, &members, .name = type->members[idx].name, .off = type->members[idx].value, .type_key = member_type_key);
@@ -558,19 +558,19 @@ e_type_key_folder(void)
 
 //- rjf: basic type key functions
 
-internal B32
+internal b32
 e_type_key_match(E_TypeKey l, E_TypeKey r)
 {
-  B32 result = MemoryMatchStruct(&l, &r);
+  b32 result = MemoryMatchStruct(&l, &r);
   return result;
 }
 
 //- rjf: type key -> info extraction
 
-internal U64
+internal u64
 e_hash_from_type(E_Type *type)
 {
-  U64 hash = 0;
+  u64 hash = 0;
   if(type != &e_type_nil)
   {
     Temp scratch = scratch_begin(0, 0);
@@ -584,8 +584,8 @@ e_hash_from_type(E_Type *type)
     str8_serial_push_struct(scratch.arena, &strings, &type->off);
     String8 direct_type_string = e_type_string_from_key(scratch.arena, type->direct_type_key);
     String8 owner_type_string = e_type_string_from_key(scratch.arena, type->owner_type_key);
-    U64 direct_hash = e_hash_from_string(5381, direct_type_string);
-    U64 owner_hash = e_hash_from_string(5381, owner_type_string);
+    u64 direct_hash = e_hash_from_string(5381, direct_type_string);
+    u64 owner_hash = e_hash_from_string(5381, owner_type_string);
     str8_serial_push_struct(scratch.arena, &strings, &direct_hash);
     str8_serial_push_struct(scratch.arena, &strings, &owner_hash);
     if(type->param_type_keys != 0)
@@ -593,7 +593,7 @@ e_hash_from_type(E_Type *type)
       for idx in 0..<type->count
       {
         String8 param_type_string = e_type_string_from_key(scratch.arena, type->param_type_keys[idx]);
-        U64 param_type_hash = e_hash_from_string(5381, param_type_string);
+        u64 param_type_hash = e_hash_from_string(5381, param_type_string);
         str8_serial_push_struct(scratch.arena, &strings, &param_type_hash);
       }
     }
@@ -602,7 +602,7 @@ e_hash_from_type(E_Type *type)
       for idx in 0..<type->count
       {
         String8 member_type_string = e_type_string_from_key(scratch.arena, type->members[idx].type_key);
-        U64 member_type_hash = e_hash_from_string(5381, member_type_string);
+        u64 member_type_hash = e_hash_from_string(5381, member_type_string);
         str8_serial_push_struct(scratch.arena, &strings, &type->members[idx].off);
         str8_serial_push_struct(scratch.arena, &strings, &member_type_hash);
       }
@@ -630,11 +630,11 @@ e_type_kind_from_key(E_TypeKey key)
   return kind;
 }
 
-internal U64
+internal u64
 e_type_byte_size_from_key(E_TypeKey key)
 {
   ProfBeginFunction();
-  U64 result = 0;
+  u64 result = 0;
   switch(key.kind)
   {
     default:{}break;
@@ -645,16 +645,16 @@ e_type_byte_size_from_key(E_TypeKey key)
     }break;
     case E_TypeKeyKind_Ext:
     {
-      U64 type_node_idx = key.u32[1];
-      U32 rdi_idx = key.u32[2];
+      u64 type_node_idx = key.u32[1];
+      u32 rdi_idx = key.u32[2];
       RDI_Parsed *rdi = e_base_ctx->modules[rdi_idx].rdi;
       RDI_TypeNode *rdi_type = rdi_element_from_name_idx(rdi, TypeNodes, type_node_idx);
       result = rdi_type->byte_size;
     }break;
     case E_TypeKeyKind_Cons:
     {
-      U64 key_hash = e_hash_from_string(5381, str8_struct(&key));
-      U64 key_slot_idx = key_hash%e_cache->cons_key_slots_count;
+      u64 key_hash = e_hash_from_string(5381, str8_struct(&key));
+      u64 key_slot_idx = key_hash%e_cache->cons_key_slots_count;
       E_ConsTypeSlot *key_slot = &e_cache->cons_key_slots[key_slot_idx];
       for(E_ConsTypeNode *node = key_slot->first;
           node != 0;
@@ -677,7 +677,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
 {
   ProfBeginFunction();
   E_Type *type = &e_type_nil;
-  U64 reg_byte_count = 0;
+  u64 reg_byte_count = 0;
   {
     switch(key.kind)
     {
@@ -699,8 +699,8 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
       //- rjf: constructed type keys
       case E_TypeKeyKind_Cons:
       {
-        U64 key_hash = e_hash_from_string(5381, str8_struct(&key));
-        U64 key_slot_idx = key_hash%e_cache->cons_key_slots_count;
+        u64 key_hash = e_hash_from_string(5381, str8_struct(&key));
+        u64 key_slot_idx = key_hash%e_cache->cons_key_slots_count;
         E_ConsTypeSlot *key_slot = &e_cache->cons_key_slots[key_slot_idx];
         for(E_ConsTypeNode *node = key_slot->first;
             node != 0;
@@ -738,9 +738,9 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
               {
                 type->members = push_array(arena, E_Member, type->count);
                 MemoryCopy(type->members, node->params.members, sizeof(E_Member)*type->count);
-                for(U64 idx = 0; idx < type->count; idx += 1)
+                for(u64 idx = 0; idx < type->count; idx += 1)
                 {
-                  U64 opl_byte = type->members[idx].off + e_type_byte_size_from_key(type->members[idx].type_key);
+                  u64 opl_byte = type->members[idx].off + e_type_byte_size_from_key(type->members[idx].type_key);
                   type->byte_size = max(type->byte_size, opl_byte);
                 }
               }break;
@@ -757,8 +757,8 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
       //- rjf: external (rdi) type keys
       case E_TypeKeyKind_Ext:
       {
-        U64 type_node_idx = key.u32[1];
-        U32 rdi_idx = key.u32[2];
+        u64 type_node_idx = key.u32[1];
+        u32 rdi_idx = key.u32[2];
         RDI_Parsed *rdi = e_base_ctx->modules[rdi_idx].rdi;
         RDI_TypeNode *rdi_type = rdi_element_from_name_idx(rdi, TypeNodes, type_node_idx);
         if(rdi_type->kind != RDI_TypeKind_NULL)
@@ -777,13 +777,13 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
             
             // rjf: unpack members
             E_Member *members = 0;
-            U32 members_count = 0;
+            u32 members_count = 0;
             {
               members_count = udt->member_count;
               members = push_array(arena, E_Member, members_count);
               if(members_count != 0)
               {
-                for(U32 member_idx = udt->member_first;
+                for(u32 member_idx = udt->member_first;
                     member_idx < udt->member_first+udt->member_count;
                     member_idx += 1)
                 {
@@ -795,7 +795,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                   dst->kind     = e_member_kind_from_rdi(src->kind);
                   dst->type_key = e_type_key_ext(member_type_kind, src->type_idx, rdi_idx);
                   dst->name.str = rdi_string_from_idx(rdi, src->name_string_idx, &dst->name.size);
-                  dst->off      = (U64)src->off;
+                  dst->off      = (u64)src->off;
                 }
               }
             }
@@ -804,7 +804,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
             type = push_array(arena, E_Type, 1);
             type->kind       = kind;
             type->name       = push_str8_copy(arena, name);
-            type->byte_size  = (U64)rdi_type->byte_size;
+            type->byte_size  = (u64)rdi_type->byte_size;
             type->count      = members_count;
             type->arch       = e_base_ctx->modules[rdi_idx].arch;
             type->members    = members;
@@ -828,13 +828,13 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
             
             // rjf: unpack members
             E_EnumVal *enum_vals = 0;
-            U32 enum_vals_count = 0;
+            u32 enum_vals_count = 0;
             {
-              U32 udt_idx = rdi_type->user_defined.udt_idx;
+              u32 udt_idx = rdi_type->user_defined.udt_idx;
               RDI_UDT *udt = rdi_element_from_name_idx(rdi, UDTs, udt_idx);
               enum_vals_count = udt->member_count;
               enum_vals = push_array(arena, E_EnumVal, enum_vals_count);
-              for(U32 member_idx = udt->member_first;
+              for(u32 member_idx = udt->member_first;
                   member_idx < udt->member_first+udt->member_count;
                   member_idx += 1)
               {
@@ -849,7 +849,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
             type = push_array(arena, E_Type, 1);
             type->kind            = kind;
             type->name            = push_str8_copy(arena, name);
-            type->byte_size       = (U64)rdi_type->byte_size;
+            type->byte_size       = (u64)rdi_type->byte_size;
             type->count           = enum_vals_count;
             type->arch            = e_base_ctx->modules[rdi_idx].arch;
             type->enum_vals       = enum_vals;
@@ -860,16 +860,16 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
           else if(RDI_TypeKind_FirstConstructed <= rdi_type->kind && rdi_type->kind <= RDI_TypeKind_LastConstructed)
           {
             // rjf: unpack direct type
-            B32 direct_type_is_good = 0;
+            b32 direct_type_is_good = 0;
             E_TypeKey direct_type_key = {};
-            U64 direct_type_byte_size = 0;
+            u64 direct_type_byte_size = 0;
             if(rdi_type->constructed.direct_type_idx < type_node_idx)
             {
               RDI_TypeNode *direct_type_node = rdi_element_from_name_idx(rdi, TypeNodes, rdi_type->constructed.direct_type_idx);
               E_TypeKind direct_type_kind = e_type_kind_from_rdi(direct_type_node->kind);
               direct_type_key = e_type_key_ext(direct_type_kind, rdi_type->constructed.direct_type_idx, rdi_idx);
               direct_type_is_good = 1;
-              direct_type_byte_size = (U64)direct_type_node->byte_size;
+              direct_type_byte_size = (u64)direct_type_node->byte_size;
             }
             
             // rjf: construct based on kind
@@ -916,10 +916,10 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
               }break;
               case RDI_TypeKind_Function:
               {
-                U32 count = rdi_type->constructed.count;
-                U32 idx_run_first = rdi_type->constructed.param_idx_run_first;
-                U32 check_count = 0;
-                U32 *idx_run = rdi_idx_run_from_first_count(rdi, idx_run_first, count, &check_count);
+                u32 count = rdi_type->constructed.count;
+                u32 idx_run_first = rdi_type->constructed.param_idx_run_first;
+                u32 check_count = 0;
+                u32 *idx_run = rdi_idx_run_from_first_count(rdi, idx_run_first, count, &check_count);
                 if(check_count == count)
                 {
                   type = push_array(arena, E_Type, 1);
@@ -929,9 +929,9 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                   type->count           = count;
                   type->param_type_keys = push_array(arena, E_TypeKey, type->count);
                   type->arch            = e_base_ctx->modules[rdi_idx].arch;
-                  for(U32 idx = 0; idx < type->count; idx += 1)
+                  for(u32 idx = 0; idx < type->count; idx += 1)
                   {
-                    U32 param_type_idx = idx_run[idx];
+                    u32 param_type_idx = idx_run[idx];
                     if(param_type_idx < type_node_idx)
                     {
                       RDI_TypeNode *param_type_node = rdi_element_from_name_idx(rdi, TypeNodes, param_type_idx);
@@ -950,10 +950,10 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                 // NOTE(rjf): for methods, the `direct` type points at the owner type.
                 // the return type, instead of being encoded via the `direct` type, is
                 // encoded via the first parameter.
-                U32 count = rdi_type->constructed.count;
-                U32 idx_run_first = rdi_type->constructed.param_idx_run_first;
-                U32 check_count = 0;
-                U32 *idx_run = rdi_idx_run_from_first_count(rdi, idx_run_first, count, &check_count);
+                u32 count = rdi_type->constructed.count;
+                u32 idx_run_first = rdi_type->constructed.param_idx_run_first;
+                u32 check_count = 0;
+                u32 *idx_run = rdi_idx_run_from_first_count(rdi, idx_run_first, count, &check_count);
                 if(check_count == count)
                 {
                   type = push_array(arena, E_Type, 1);
@@ -963,9 +963,9 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                   type->count           = count;
                   type->param_type_keys = push_array_no_zero(arena, E_TypeKey, type->count);
                   type->arch            = e_base_ctx->modules[rdi_idx].arch;
-                  for(U32 idx = 0; idx < type->count; idx += 1)
+                  for(u32 idx = 0; idx < type->count; idx += 1)
                   {
-                    U32 param_type_idx = idx_run[idx];
+                    u32 param_type_idx = idx_run[idx];
                     if(param_type_idx < type_node_idx)
                     {
                       RDI_TypeNode *param_type_node = rdi_element_from_name_idx(rdi, TypeNodes, param_type_idx);
@@ -1014,7 +1014,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
             
             // rjf: unpack direct type
             E_TypeKey direct_type_key = {};
-            U64 direct_type_byte_size = 0;
+            u64 direct_type_byte_size = 0;
             if(rdi_type->user_defined.direct_type_idx < type_node_idx)
             {
               RDI_TypeNode *direct_type_node = rdi_element_from_name_idx(rdi, TypeNodes, rdi_type->user_defined.direct_type_idx);
@@ -1037,7 +1037,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
           {
             // rjf: unpack direct type
             E_TypeKey direct_type_key = {};
-            U64 direct_type_byte_size = 0;
+            u64 direct_type_byte_size = 0;
             if(rdi_type->bitfield.direct_type_idx < type_node_idx)
             {
               RDI_TypeNode *direct_type_node = rdi_element_from_name_idx(rdi, TypeNodes, rdi_type->bitfield.direct_type_idx);
@@ -1051,8 +1051,8 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
             type->kind            = kind;
             type->byte_size       = direct_type_byte_size;
             type->direct_type_key = direct_type_key;
-            type->off             = (U32)rdi_type->bitfield.off;
-            type->count           = (U64)rdi_type->bitfield.size;
+            type->off             = (u32)rdi_type->bitfield.off;
+            type->count           = (u64)rdi_type->bitfield.size;
             type->arch            = e_base_ctx->modules[rdi_idx].arch;
           }
           
@@ -1079,14 +1079,14 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
         Arch arch = (Arch)key.u32[0];
         REGS_RegCode code = (REGS_RegCode)key.u32[1];
         REGS_Rng rng = regs_reg_code_rng_table_from_arch(arch)[code];
-        reg_byte_count = (U64)rng.byte_size;
+        reg_byte_count = (u64)rng.byte_size;
       }goto build_reg_type;
       case E_TypeKeyKind_RegAlias:
       {
         Arch arch = (Arch)key.u32[0];
         REGS_AliasCode code = (REGS_AliasCode)key.u32[1];
         REGS_Slice slice = regs_alias_code_slice_table_from_arch(arch)[code];
-        reg_byte_count = (U64)slice.byte_size;
+        reg_byte_count = (u64)slice.byte_size;
       }goto build_reg_type;
       build_reg_type:
       {
@@ -1094,7 +1094,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
         type = push_array(arena, E_Type, 1);
         type->kind       = E_TypeKind_Union;
         type->name       = push_str8f(arena, "reg_%I64u_bit", reg_byte_count*8);
-        type->byte_size  = (U64)reg_byte_count;
+        type->byte_size  = (u64)reg_byte_count;
         type->arch       = (Arch)key.u32[0];
         
         // rjf: build register type members
@@ -1232,7 +1232,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
         // rjf: commit members
         type->count = members.count;
         type->members = push_array_no_zero(arena, E_Member, members.count);
-        U64 idx = 0;
+        u64 idx = 0;
         for(E_MemberNode *n = members.first; n != 0; n = n->next, idx += 1)
         {
           MemoryCopyStruct(&type->members[idx], &n->v);
@@ -1277,14 +1277,14 @@ e_type_data_members_from_key(Arena *arena, E_TypeKey key)
   
   //- rjf: walk type tree; gather members list
   E_MemberList members_list = {0};
-  B32 members_need_offset_sort = 0;
+  b32 members_need_offset_sort = 0;
   {
     E_Type *root_type = e_type_from_key(key);
     typedef struct Task Task;
     struct Task
     {
       Task *next;
-      U64 base_off;
+      u64 base_off;
       E_TypeKeyList inheritance_chain;
       E_TypeKey type_key;
       E_Type *type;
@@ -1297,8 +1297,8 @@ e_type_data_members_from_key(Arena *arena, E_TypeKey key)
       E_Type *type = task->type;
       if(type->members != 0)
       {
-        U64 last_member_off = 0;
-        for(U64 member_idx = 0; member_idx < type->count; member_idx += 1)
+        u64 last_member_off = 0;
+        for(u64 member_idx = 0; member_idx < type->count; member_idx += 1)
         {
           if(type->members[member_idx].name.size != 0 && type->members[member_idx].kind == E_MemberKind_DataField)
           {
@@ -1333,7 +1333,7 @@ e_type_data_members_from_key(Arena *arena, E_TypeKey key)
   {
     members.count = members_list.count;
     members.v = push_array(arena, E_Member, members.count);
-    U64 idx = 0;
+    u64 idx = 0;
     for(E_MemberNode *n = members_list.first; n != 0; n = n->next)
     {
       MemoryCopyStruct(&members.v[idx], &n->v);
@@ -1354,21 +1354,21 @@ e_type_data_members_from_key(Arena *arena, E_TypeKey key)
   struct PaddingNode
   {
     PaddingNode *next;
-    U64 off;
-    U64 size;
-    U64 prev_member_idx;
+    u64 off;
+    u64 size;
+    u64 prev_member_idx;
   };
   PaddingNode *first_padding = 0;
   PaddingNode *last_padding = 0;
-  U64 padding_count = 0;
+  u64 padding_count = 0;
   if((root_type_kind == E_TypeKind_Struct || root_type_kind == E_TypeKind_Class) && key.kind != E_TypeKeyKind_Cons)
   {
-    for(U64 idx = 0; idx < members.count; idx += 1)
+    for(u64 idx = 0; idx < members.count; idx += 1)
     {
       E_Member *member = &members.v[idx];
       if(idx+1 < members.count)
       {
-        U64 member_byte_size = e_type_byte_size_from_key(member->type_key);
+        u64 member_byte_size = e_type_byte_size_from_key(member->type_key);
         Rng1U64 member_byte_range = r1u64(member->off, member->off + member_byte_size);
         if(member[1].off > member_byte_range.max)
         {
@@ -1390,7 +1390,7 @@ e_type_data_members_from_key(Arena *arena, E_TypeKey key)
     new_members.count = members.count + padding_count;
     new_members.v = push_array(arena, E_Member, new_members.count);
     MemoryCopy(new_members.v, members.v, sizeof(E_Member)*members.count);
-    U64 padding_idx = 0;
+    u64 padding_idx = 0;
     for(PaddingNode *n = first_padding; n != 0; n = n->next)
     {
       if(members.count+padding_idx > n->prev_member_idx+1)
@@ -1495,10 +1495,10 @@ e_type_key_unwrap(E_TypeKey key, E_TypeUnwrapFlags flags)
 {
   E_TypeKey result = key;
   E_TypeKind kind = e_type_kind_from_key(result);
-  B32 did_ptr = 0;
+  b32 did_ptr = 0;
   for(;;)
   {
-    B32 done = 0;
+    b32 done = 0;
     switch(kind)
     {
       default:{done = 1;}break;
@@ -1531,7 +1531,7 @@ e_type_key_unwrap(E_TypeKey key, E_TypeUnwrapFlags flags)
 
 //- rjf: type comparisons
 
-internal B32
+internal b32
 e_type_match(E_TypeKey l, E_TypeKey r)
 {
   // rjf: unpack parameters
@@ -1539,7 +1539,7 @@ e_type_match(E_TypeKey l, E_TypeKey r)
   E_TypeKey ru = e_type_key_unwrap(r, E_TypeUnwrapFlag_AllDecorative);
   
   // rjf: exact key matches -> match
-  B32 result = e_type_key_match(lu, ru);
+  b32 result = e_type_key_match(lu, ru);
   
   // rjf: if keys don't match, type *contents* could still match,
   // so we need to unpack the type info & compare
@@ -1597,11 +1597,11 @@ e_type_match(E_TypeKey l, E_TypeKey r)
           E_Type *rt = e_type_from_key(r);
           if(lt->count == rt->count && e_type_match(lt->direct_type_key, rt->direct_type_key))
           {
-            B32 params_match = 1;
+            b32 params_match = 1;
             E_TypeKey *lp = lt->param_type_keys;
             E_TypeKey *rp = rt->param_type_keys;
-            U64 count = lt->count;
-            for(U64 i = 0; i < count; i += 1, lp += 1, rp += 1)
+            u64 count = lt->count;
+            for(u64 i = 0; i < count; i += 1, lp += 1, rp += 1)
             {
               if(!e_type_match(*lp, *rp))
               {
@@ -1621,11 +1621,11 @@ e_type_match(E_TypeKey l, E_TypeKey r)
              e_type_match(lt->direct_type_key, rt->direct_type_key) &&
              e_type_match(lt->owner_type_key, rt->owner_type_key))
           {
-            B32 params_match = 1;
+            b32 params_match = 1;
             E_TypeKey *lp = lt->param_type_keys;
             E_TypeKey *rp = rt->param_type_keys;
-            U64 count = lt->count;
-            for(U64 i = 0; i < count; i += 1, lp += 1, rp += 1)
+            u64 count = lt->count;
+            for(u64 i = 0; i < count; i += 1, lp += 1, rp += 1)
             {
               if(!e_type_match(*lp, *rp))
               {
@@ -1646,7 +1646,7 @@ e_type_match(E_TypeKey l, E_TypeKey r)
 //- rjf: key -> string
 
 internal void
-e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec, B32 skip_return)
+e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, u32 prec, b32 skip_return)
 {
   String8 keyword = {0};
   E_TypeKind kind = e_type_kind_from_key(key);
@@ -1800,7 +1800,7 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
 }
 
 internal void
-e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec)
+e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, u32 prec)
 {
   E_TypeKind kind = e_type_kind_from_key(key);
   switch(kind)
@@ -1852,9 +1852,9 @@ e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
       else
       {
         str8_list_push(arena, out, str8_lit("("));
-        U64 param_count = type->count;
+        u64 param_count = type->count;
         E_TypeKey *param_type_keys = type->param_type_keys;
-        for(U64 param_idx = 0; param_idx < param_count; param_idx += 1)
+        for(u64 param_idx = 0; param_idx < param_count; param_idx += 1)
         {
           E_TypeKey param_type_key = param_type_keys[param_idx];
           String8 param_str = e_type_string_from_key(arena, param_type_key);
@@ -1896,12 +1896,12 @@ internal E_TypeKey
 e_default_expansion_type_from_key(E_TypeKey root_key)
 {
   E_TypeKey type_key = {};
-  B32 hit_1ptr = 0;
+  b32 hit_1ptr = 0;
   for(E_TypeKey key = root_key;
       !e_type_key_match(e_type_key_zero(), key);
       key = e_type_key_direct(key))
   {
-    B32 done = 1;
+    b32 done = 1;
     E_TypeKind kind = e_type_kind_from_key(key);
     
     //- rjf: if we have pointers which point to a single thing (count = 1),
@@ -1998,8 +1998,8 @@ e_type_from_key(E_TypeKey key)
 {
   E_Type *type = &e_type_nil;
   {
-    U64 hash = e_hash_from_string(5381, str8_struct(&key));
-    U64 slot_idx = hash%e_cache->type_cache_slots_count;
+    u64 hash = e_hash_from_string(5381, str8_struct(&key));
+    u64 slot_idx = hash%e_cache->type_cache_slots_count;
     E_TypeCacheNode *node = 0;
     for(E_TypeCacheNode *n = e_cache->type_cache_slots[slot_idx].first; n != 0; n = n->next)
     {
@@ -2026,8 +2026,8 @@ e_type_from_key(E_TypeKey key)
 internal E_MemberCacheNode *
 e_member_cache_node_from_type_key(E_TypeKey key)
 {
-  U64 hash = e_hash_from_string(5381, str8_struct(&key));
-  U64 slot_idx = hash%e_cache->member_cache_slots_count;
+  u64 hash = e_hash_from_string(5381, str8_struct(&key));
+  u64 slot_idx = hash%e_cache->member_cache_slots_count;
   E_MemberCacheSlot *slot = &e_cache->member_cache_slots[slot_idx];
   E_MemberCacheNode *node = 0;
   for(E_MemberCacheNode *n = slot->first; n != 0; n = n->next)
@@ -2050,8 +2050,8 @@ e_member_cache_node_from_type_key(E_TypeKey key)
     node->member_filter_slots = push_array(e_cache->arena, E_MemberFilterSlot, node->member_filter_slots_count);
     for idx in 0..<node->members.count
     {
-      U64 hash = e_hash_from_string(5381, node->members.v[idx].name);
-      U64 slot_idx = hash%node->member_hash_slots_count;
+      u64 hash = e_hash_from_string(5381, node->members.v[idx].name);
+      u64 slot_idx = hash%node->member_hash_slots_count;
       E_MemberHashNode *n = push_array(e_cache->arena, E_MemberHashNode, 1);
       SLLQueuePush(node->member_hash_slots[slot_idx].first, node->member_hash_slots[slot_idx].last, n);
       n->member_idx = idx;
@@ -2073,8 +2073,8 @@ e_type_data_members_from_key_filter__cached(E_TypeKey key, String8 filter)
     }
     else
     {
-      U64 hash = e_hash_from_string(5381, filter);
-      U64 slot_idx = hash%node->member_filter_slots_count;
+      u64 hash = e_hash_from_string(5381, filter);
+      u64 slot_idx = hash%node->member_filter_slots_count;
       E_MemberFilterSlot *slot = &node->member_filter_slots[slot_idx];
       E_MemberFilterNode *filter_node = 0;
       for(E_MemberFilterNode *n = slot->first; n != 0; n = n->next)
@@ -2128,8 +2128,8 @@ e_type_member_from_key_name__cached(E_TypeKey key, String8 name)
   E_MemberCacheNode *node = e_member_cache_node_from_type_key(key);
   if(node != 0 && node->member_hash_slots_count != 0)
   {
-    U64 hash = e_hash_from_string(5381, name);
-    U64 slot_idx = hash%node->member_hash_slots_count;
+    u64 hash = e_hash_from_string(5381, name);
+    u64 slot_idx = hash%node->member_hash_slots_count;
     for(E_MemberHashNode *n = node->member_hash_slots[slot_idx].first; n != 0; n = n->next)
     {
       if(str8_match(node->members.v[n->member_idx].name, name, 0))
@@ -2147,8 +2147,8 @@ e_type_member_from_key_name__cached(E_TypeKey key, String8 name)
 internal E_EnumValCacheNode *
 e_enum_val_cache_node_from_type_key(E_TypeKey key)
 {
-  U64 hash = e_hash_from_string(5381, str8_struct(&key));
-  U64 slot_idx = hash%e_cache->enum_val_cache_slots_count;
+  u64 hash = e_hash_from_string(5381, str8_struct(&key));
+  u64 slot_idx = hash%e_cache->enum_val_cache_slots_count;
   E_EnumValCacheSlot *slot = &e_cache->enum_val_cache_slots[slot_idx];
   E_EnumValCacheNode *node = 0;
   for(E_EnumValCacheNode *n = slot->first; n != 0; n = n->next)
@@ -2173,8 +2173,8 @@ e_enum_val_cache_node_from_type_key(E_TypeKey key)
       node->val_filter_slots = push_array(e_cache->arena, E_EnumValFilterSlot, node->val_filter_slots_count);
       for idx in 0..<type->count
       {
-        U64 hash = e_hash_from_string(5381, type->enum_vals[idx].name);
-        U64 slot_idx = hash%node->val_hash_slots_count;
+        u64 hash = e_hash_from_string(5381, type->enum_vals[idx].name);
+        u64 slot_idx = hash%node->val_hash_slots_count;
         E_EnumValHashNode *n = push_array(e_cache->arena, E_EnumValHashNode, 1);
         SLLQueuePush(node->val_hash_slots[slot_idx].first, node->val_hash_slots[slot_idx].last, n);
         n->val_idx = idx;
@@ -2202,8 +2202,8 @@ e_type_enum_vals_from_key_filter__cached(E_TypeKey key, String8 filter)
     }
     else
     {
-      U64 hash = e_hash_from_string(5381, filter);
-      U64 slot_idx = hash%node->val_filter_slots_count;
+      u64 hash = e_hash_from_string(5381, filter);
+      u64 slot_idx = hash%node->val_filter_slots_count;
       E_EnumValFilterSlot *slot = &node->val_filter_slots[slot_idx];
       E_EnumValFilterNode *filter_node = 0;
       for(E_EnumValFilterNode *n = slot->first; n != 0; n = n->next)
@@ -2260,8 +2260,8 @@ e_type_enum_val_from_key_name__cached(E_TypeKey key, String8 name)
     E_Type *type = e_type_from_key(key);
     String8 name_qualified_0 = push_str8f(scratch.arena, "%S%S", type->name, name);
     String8 name_qualified_1 = push_str8f(scratch.arena, "%S_%S", type->name, name);
-    U64 hash = e_hash_from_string(5381, name);
-    U64 slot_idx = hash%node->val_hash_slots_count;
+    u64 hash = e_hash_from_string(5381, name);
+    u64 slot_idx = hash%node->val_hash_slots_count;
     for(E_EnumValHashNode *n = node->val_hash_slots[slot_idx].first; n != 0; n = n->next)
     {
       if(str8_match(type->enum_vals[n->val_idx].name, name, 0) ||
@@ -2289,7 +2289,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(default)
     E_TypeKey expand_type_key = e_default_expansion_type_from_key(eval.irtree.type_key);
     
     //- rjf: struct type? -> use the struct type for expansion
-    B32 did_expansion = 0;
+    b32 did_expansion = 0;
     if(!did_expansion)
     {
       E_TypeKind struct_type_kind = e_type_kind_from_key(expand_type_key);
@@ -2350,10 +2350,10 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(default)
       E_MemberArray data_members = e_type_data_members_from_key_filter__cached(expand_type_key, filter);
       Rng1U64 legal_idx_range = r1u64(0, data_members.count);
       Rng1U64 read_range = intersect_1u64(legal_idx_range, idx_range);
-      U64 read_range_count = dim_1u64(read_range);
-      for(U64 idx = 0; idx < read_range_count; idx += 1)
+      u64 read_range_count = dim_1u64(read_range);
+      for(u64 idx = 0; idx < read_range_count; idx += 1)
       {
-        U64 member_idx = idx + read_range.min;
+        u64 member_idx = idx + read_range.min;
         String8 member_name = data_members.v[member_idx].name;
         evals_out[idx] = e_eval_wrapf(eval, "$.%S", member_name);
       }
@@ -2366,10 +2366,10 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(default)
       E_EnumValArray enum_vals = e_type_enum_vals_from_key_filter__cached(expand_type_key, filter);
       Rng1U64 legal_idx_range = r1u64(0, enum_vals.count);
       Rng1U64 read_range = intersect_1u64(legal_idx_range, idx_range);
-      U64 read_range_count = dim_1u64(read_range);
-      for(U64 idx = 0; idx < read_range_count; idx += 1)
+      u64 read_range_count = dim_1u64(read_range);
+      for(u64 idx = 0; idx < read_range_count; idx += 1)
       {
-        U64 val_idx = idx + read_range.min;
+        u64 val_idx = idx + read_range.min;
         String8 member_name = enum_vals.v[val_idx].name;
         String8 sufficient_suffix = member_name;
         if(str8_match(sufficient_suffix, type->name, StringMatchFlag_RightSideSloppy))
@@ -2391,8 +2391,8 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(default)
             expand_type_kind == E_TypeKind_Array ||
             expand_type_kind == E_TypeKind_Set)
     {
-      U64 read_range_count = dim_1u64(idx_range);
-      for(U64 idx = 0; idx < read_range_count; idx += 1)
+      u64 read_range_count = dim_1u64(idx_range);
+      for(u64 idx = 0; idx < read_range_count; idx += 1)
       {
         evals_out[idx] = e_eval_wrapf(eval, "$[%I64u]", idx_range.min + idx);
       }
@@ -2442,8 +2442,8 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(rows)
 E_TYPE_EXPAND_RANGE_FUNCTION_DEF(rows)
 {
   E_RowsAccel *accel = (E_RowsAccel *)user_data;
-  U64 out_idx = 0;
-  for(U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
+  u64 out_idx = 0;
+  for(u64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
   {
     evals_out[out_idx] = accel->root_evals[idx];
   }
@@ -2476,7 +2476,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(omit)
           if(evals[idx].expr->kind == E_ExprKind_MemberAccess)
           {
             String8 name = evals[idx].expr->first->next->string;
-            B32 name_is_allowed = 1;
+            b32 name_is_allowed = 1;
             for arg_idx in 0..<type->count
             {
               if(str8_match(type->args[arg_idx]->string, name, 0))
@@ -2505,8 +2505,8 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(omit)
 E_TYPE_EXPAND_RANGE_FUNCTION_DEF(omit)
 {
   String8Array *ext = (String8Array *)user_data;
-  U64 out_idx = 0;
-  for(U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
+  u64 out_idx = 0;
+  for(u64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
   {
     String8 name = ext->v[idx];
     if(name.size != 0)
@@ -2527,8 +2527,8 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(sequence)
 
 E_TYPE_EXPAND_RANGE_FUNCTION_DEF(sequence)
 {
-  U64 read_range_count = dim_1u64(idx_range);
-  for(U64 idx = 0; idx < read_range_count; idx += 1)
+  u64 read_range_count = dim_1u64(idx_range);
+  for(u64 idx = 0; idx < read_range_count; idx += 1)
   {
     evals_out[idx] = e_eval_from_stringf("%I64u", idx_range.min + idx);
   }
@@ -2540,7 +2540,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(sequence)
 E_TYPE_EXPAND_INFO_FUNCTION_DEF(array)
 {
   E_Type *type = e_type_from_key(eval.irtree.type_key);
-  U64 count = 1;
+  u64 count = 1;
   if(type->args != 0 && type->count > 0) E_ParentKey(eval.key)
   {
     E_Key count_key = e_key_from_expr(type->args[0]);
@@ -2553,8 +2553,8 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(array)
 
 E_TYPE_EXPAND_RANGE_FUNCTION_DEF(array)
 {
-  U64 read_range_count = dim_1u64(idx_range);
-  for(U64 idx = 0; idx < read_range_count; idx += 1)
+  u64 read_range_count = dim_1u64(idx_range);
+  for(u64 idx = 0; idx < read_range_count; idx += 1)
   {
     evals_out[idx] = e_eval_wrapf(eval, "$[%I64u]", idx_range.min + idx);
   }
@@ -2575,8 +2575,8 @@ typedef struct E_SliceAccel E_SliceAccel;
 struct E_SliceAccel
 {
   Arch arch;
-  U64 count;
-  U64 base_ptr_vaddr;
+  u64 count;
+  u64 base_ptr_vaddr;
   E_TypeKey element_type_key;
 };
 
@@ -2598,7 +2598,7 @@ E_TYPE_IREXT_FUNCTION_DEF(slice)
       E_Member *base_ptr_member = 0;
       E_Member *opl_ptr_member = 0;
       E_Member *count_member = 0;
-      for(U64 idx = 0; idx < members.count; idx += 1)
+      for(u64 idx = 0; idx < members.count; idx += 1)
       {
         E_Member *member = &members.v[idx];
         E_TypeKey member_type = e_type_key_unwrap(member->type_key, E_TypeUnwrapFlag_AllDecorative);
@@ -2700,7 +2700,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(slice)
 E_TYPE_EXPAND_INFO_FUNCTION_DEF(slice)
 {
   E_SliceIRExt *accel = (E_SliceIRExt *)eval.irtree.user_data;
-  U64 count = 0;
+  u64 count = 0;
   {
     if(accel->count_member != 0)
     {
@@ -2717,8 +2717,8 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(slice)
 
 E_TYPE_EXPAND_RANGE_FUNCTION_DEF(slice)
 {
-  U64 read_range_count = dim_1u64(idx_range);
-  for(U64 idx = 0; idx < read_range_count; idx += 1)
+  u64 read_range_count = dim_1u64(idx_range);
+  for(u64 idx = 0; idx < read_range_count; idx += 1)
   {
     evals_out[idx] = e_eval_wrapf(eval, "$[%I64u]", idx_range.min + idx);
   }
@@ -2742,13 +2742,13 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(folder)
     Temp scratch = scratch_begin(&arena, 1);
     
     //- rjf: evaluate lhs file path ID
-    U64 lhs_string_id = eval.value.u64;
+    u64 lhs_string_id = eval.value.u64;
     String8 folder_path = e_string_from_id(lhs_string_id);
     
     //- rjf: compute filter - omit common prefixes (common parent paths)
     String8 local_filter = filter;
     {
-      U64 folder_pos_in_filter = str8_find_needle(filter, 0, folder_path, StringMatchFlag_CaseInsensitive|StringMatchFlag_SlashInsensitive);
+      u64 folder_pos_in_filter = str8_find_needle(filter, 0, folder_path, StringMatchFlag_CaseInsensitive|StringMatchFlag_SlashInsensitive);
       if(folder_pos_in_filter < filter.size)
       {
         local_filter = str8_skip(local_filter, folder_pos_in_filter+folder_path.size);
@@ -2798,8 +2798,8 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(folder)
 E_TYPE_EXPAND_RANGE_FUNCTION_DEF(folder)
 {
   E_FolderAccel *accel = (E_FolderAccel *)user_data;
-  U64 out_idx = 0;
-  for(U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
+  u64 out_idx = 0;
+  for(u64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
   {
     Temp scratch = scratch_begin(&arena, 1);
     String8 path_expr_string = {0};
@@ -2822,7 +2822,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(folder)
 
 E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(folder)
 {
-  U64 id = 0;
+  u64 id = 0;
   E_FolderAccel *accel = (E_FolderAccel *)user_data;
   String8 name = {0};
   if(0 < num && num <= accel->folders.count)
@@ -2839,9 +2839,9 @@ E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(folder)
 
 E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(folder)
 {
-  U64 num = 0;
+  u64 num = 0;
   E_FolderAccel *accel = (E_FolderAccel *)user_data;
-  for(U64 idx = 0; idx < accel->folders.count+accel->files.count; idx += 1)
+  for(u64 idx = 0; idx < accel->folders.count+accel->files.count; idx += 1)
   {
     String8 name = {0};
     if(0 <= idx && idx < accel->folders.count)
@@ -2852,7 +2852,7 @@ E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(folder)
     {
       name = accel->files.v[idx-accel->folders.count];
     }
-    U64 hash = e_hash_from_string(5381, name);
+    u64 hash = e_hash_from_string(5381, name);
     if(hash == id)
     {
       num = idx+1;
@@ -2885,7 +2885,7 @@ E_TYPE_IREXT_FUNCTION_DEF(file)
     String8 lhs_bytecode = e_bytecode_from_oplist(scratch.arena, &lhs_oplist);
     E_Interpretation lhs_interp = e_interpret(lhs_bytecode);
     E_Value lhs_value = lhs_interp.value;
-    U64 lhs_string_id = lhs_value.u64;
+    u64 lhs_string_id = lhs_value.u64;
     
     //- rjf: get file path
     String8 file_path = e_string_from_id(lhs_string_id);
@@ -2962,8 +2962,8 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(file)
 E_TYPE_EXPAND_RANGE_FUNCTION_DEF(file)
 {
   E_FileAccel *accel = (E_FileAccel *)user_data;
-  U64 out_idx = 0;
-  for(U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
+  u64 out_idx = 0;
+  for(u64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
   {
     E_Expr *expr = &e_expr_nil;
     String8 string = {0};

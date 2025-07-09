@@ -79,7 +79,7 @@ str8_lit_comp("meta_display_name"),
 str8_lit_comp("meta_description"),
 };
 
-U8 e_type_kind_basic_byte_size_table[61] =
+u8 e_type_kind_basic_byte_size_table[61] =
 {
 0,
 0,

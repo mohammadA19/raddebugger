@@ -14,7 +14,7 @@
 ////////////////////////////////
 //~ rjf: Enums
 
-typedef U32 R_GeoVertexFlags;
+typedef u32 R_GeoVertexFlags;
 enum
 {
   R_GeoVertexFlag_TexCoord = (1<<0),
@@ -29,9 +29,9 @@ enum
 
 union R_Handle
 {
-  U64 u64[1];
-  U32 u32[2];
-  U16 u16[4];
+  u64 u64[1];
+  u32 u32[2];
+  u16 u16[4];
 };
 
 ////////////////////////////////
@@ -44,11 +44,11 @@ struct R_Rect2DInst
   Rng2F32 dst;
   Rng2F32 src;
   Vec4F32 colors[Corner_COUNT];
-  F32 corner_radii[Corner_COUNT];
-  F32 border_thickness;
-  F32 edge_softness;
-  F32 white_texture_override;
-  F32 _unused_[1];
+  f32 corner_radii[Corner_COUNT];
+  f32 border_thickness;
+  f32 edge_softness;
+  f32 white_texture_override;
+  f32 _unused_[1];
 };
 
 
@@ -65,9 +65,9 @@ struct R_Mesh3DInst
 
 struct R_Batch
 {
-  U8 *v;
-  U64 byte_count;
-  U64 byte_cap;
+  u8 *v;
+  u64 byte_count;
+  u64 byte_cap;
 };
 
 
@@ -84,9 +84,9 @@ struct R_BatchList
 {
   R_BatchNode *first;
   R_BatchNode *last;
-  U64 batch_count;
-  U64 byte_count;
-  U64 bytes_per_inst;
+  u64 batch_count;
+  u64 byte_count;
+  u64 bytes_per_inst;
 };
 
 
@@ -97,7 +97,7 @@ struct R_BatchGroup2DParams
   R_Tex2DSampleKind tex_sample_kind;
   Mat3x3F32 xform;
   Rng2F32 clip;
-  F32 transparency;
+  f32 transparency;
 };
 
 
@@ -115,7 +115,7 @@ struct R_BatchGroup2DList
 {
   R_BatchGroup2DNode *first;
   R_BatchGroup2DNode *last;
-  U64 count;
+  u64 count;
 };
 
 
@@ -136,7 +136,7 @@ struct R_BatchGroup3DParams
 struct R_BatchGroup3DMapNode
 {
   R_BatchGroup3DMapNode *next;
-  U64 hash;
+  u64 hash;
   R_BatchList batches;
   R_BatchGroup3DParams params;
 };
@@ -146,7 +146,7 @@ struct R_BatchGroup3DMapNode
 struct R_BatchGroup3DMap
 {
   R_BatchGroup3DMapNode **slots;
-  U64 slots_count;
+  u64 slots_count;
 };
 
 ////////////////////////////////
@@ -165,8 +165,8 @@ struct R_PassParams_Blur
 {
   Rng2F32 rect;
   Rng2F32 clip;
-  F32 blur_size;
-  F32 corner_radii[Corner_COUNT];
+  f32 blur_size;
+  f32 corner_radii[Corner_COUNT];
 };
 
 
@@ -208,7 +208,7 @@ struct R_PassList
 {
   R_PassNode *first;
   R_PassNode *last;
-  U64 count;
+  u64 count;
 };
 
 ////////////////////////////////
@@ -252,7 +252,7 @@ r_hook R_Tex2DFormat     r_format_from_tex2d(R_Handle texture);
 r_hook void              r_fill_tex2d_region(R_Handle texture, Rng2S32 subrect, void *data);
 
 //- rjf: buffers
-r_hook R_Handle          r_buffer_alloc(R_ResourceKind kind, U64 size, void *data);
+r_hook R_Handle          r_buffer_alloc(R_ResourceKind kind, u64 size, void *data);
 r_hook void              r_buffer_release(R_Handle buffer);
 
 //- rjf: frame markers

@@ -47,7 +47,7 @@ UI_MouseButtonKind;
 ////////////////////////////////
 //~ rjf: Codepath Permissions
 
-enum UI_PermissionFlags : U32
+enum UI_PermissionFlags : u32
 {
   UI_PermissionFlag_ClicksLeft        = (1<<0),
   UI_PermissionFlag_ClicksMiddle      = (1<<1),
@@ -107,7 +107,7 @@ typedef enum UI_EventActionSlot
 }
 UI_EventActionSlot;
 
-enum UI_EventFlags : U32
+enum UI_EventFlags : u32
 {
   UI_EventFlag_KeepMark            = (1<<0),
   UI_EventFlag_Delete              = (1<<1),
@@ -148,7 +148,7 @@ struct UI_Event
   Vec2F32 pos;
   Vec2F32 delta_2f32;
   Vec2S32 delta_2s32;
-  U64 timestamp_us;
+  u64 timestamp_us;
 };
 
 
@@ -166,13 +166,13 @@ struct UI_EventList
 {
   UI_EventNode *first;
   UI_EventNode *last;
-  U64 count;
+  u64 count;
 };
 
 ////////////////////////////////
 //~ rjf: Textual Operations
 
-enum UI_TxtOpFlags : U32
+enum UI_TxtOpFlags : u32
 {
   UI_TxtOpFlag_Invalid = (1<<0),
   UI_TxtOpFlag_Copy    = (1<<1),
@@ -197,7 +197,7 @@ struct UI_TxtOp
 
 struct UI_Key
 {
-  U64 u64[1];
+  u64 u64[1];
 };
 
 ////////////////////////////////
@@ -218,8 +218,8 @@ UI_SizeKind;
 struct UI_Size
 {
   UI_SizeKind kind;
-  F32 value;
-  F32 strictness;
+  f32 value;
+  f32 strictness;
 };
 
 ////////////////////////////////
@@ -238,7 +238,7 @@ struct UI_ThemePattern
 struct UI_Theme
 {
   UI_ThemePattern *patterns;
-  U64 patterns_count;
+  u64 patterns_count;
 };
 
 ////////////////////////////////
@@ -248,12 +248,12 @@ struct UI_Theme
 
 struct UI_AnimationInfo
 {
-  F32 hot_animation_rate;
-  F32 active_animation_rate;
-  F32 focus_animation_rate;
-  F32 tooltip_animation_rate;
-  F32 menu_animation_rate;
-  F32 scroll_animation_rate;
+  f32 hot_animation_rate;
+  f32 active_animation_rate;
+  f32 focus_animation_rate;
+  f32 tooltip_animation_rate;
+  f32 menu_animation_rate;
+  f32 scroll_animation_rate;
 };
 
 ////////////////////////////////
@@ -263,8 +263,8 @@ struct UI_AnimationInfo
 
 struct UI_ScrollPt
 {
-  S64 idx;
-  F32 off;
+  i64 idx;
+  f32 off;
 };
 
 
@@ -293,7 +293,7 @@ UI_TextAlign;
 #define UI_BOX_CUSTOM_DRAW(name) void name(struct UI_Box *box, void *user_data)
 typedef UI_BOX_CUSTOM_DRAW(UI_BoxCustomDrawFunctionType);
 
-typedef U64 UI_BoxFlags;
+typedef u64 UI_BoxFlags;
 //{
 //- rjf: interaction
 # define UI_BoxFlag_MouseClickable            (UI_BoxFlags)(1ull<<0)
@@ -383,7 +383,7 @@ struct UI_Box
   UI_Box *next;
   UI_Box *prev;
   UI_Box *parent;
-  U64 child_count;
+  u64 child_count;
   
   //- rjf: per-build equipment
   UI_Key key;
@@ -397,7 +397,7 @@ struct UI_Box
   UI_Size pref_size[Axis2_COUNT];
   Axis2 child_layout_axis;
   OS_Cursor hover_cursor;
-  U32 fastpath_codepoint;
+  u32 fastpath_codepoint;
   UI_Key group_key;
   DR_Bucket *draw_bucket;
   UI_BoxCustomDrawFunctionType *custom_draw;
@@ -406,14 +406,14 @@ struct UI_Box
   Vec4F32 text_color;
   Vec4F32 border_color;
   FNT_Tag font;
-  F32 font_size;
-  F32 tab_size;
+  f32 font_size;
+  f32 tab_size;
   FNT_RasterFlags text_raster_flags;
-  F32 corner_radii[Corner_COUNT];
-  F32 blur_size;
-  F32 transparency;
-  F32 squish;
-  F32 text_padding;
+  f32 corner_radii[Corner_COUNT];
+  f32 blur_size;
+  f32 transparency;
+  f32 squish;
+  f32 text_padding;
   
   //- rjf: per-build artifacts
   DR_FStrList display_fstrs;
@@ -424,15 +424,15 @@ struct UI_Box
   FuzzyMatchRangeList fuzzy_match_ranges;
   
   //- rjf: persistent data
-  U64 first_touched_build_index;
-  U64 last_touched_build_index;
-  U64 first_disabled_build_index;
-  F32 hot_t;
-  F32 active_t;
-  F32 disabled_t;
-  F32 focus_hot_t;
-  F32 focus_active_t;
-  F32 focus_active_disabled_t;
+  u64 first_touched_build_index;
+  u64 last_touched_build_index;
+  u64 first_disabled_build_index;
+  f32 hot_t;
+  f32 active_t;
+  f32 disabled_t;
+  f32 focus_hot_t;
+  f32 focus_active_t;
+  f32 focus_active_disabled_t;
   Vec2F32 view_off;
   Vec2F32 view_off_target;
   Vec2F32 view_bounds;
@@ -447,8 +447,8 @@ struct UI_Box
 struct UI_BoxRec
 {
   UI_Box *next;
-  S32 push_count;
-  S32 pop_count;
+  i32 push_count;
+  i32 pop_count;
 };
 
 
@@ -465,10 +465,10 @@ struct UI_BoxList
 {
   UI_BoxNode *first;
   UI_BoxNode *last;
-  U64 count;
+  u64 count;
 };
 
-enum UI_SignalFlags : U32
+enum UI_SignalFlags : u32
 {
   // rjf: mouse press -> box was pressed while hovering
   UI_SignalFlag_LeftPressed         = (1<<0),
@@ -555,7 +555,7 @@ struct UI_Signal
 
 struct UI_Nav
 {
-  B32 moved;
+  b32 moved;
   Vec2S64 new_p;
 };
 
@@ -566,11 +566,11 @@ struct UI_Nav
 
 struct UI_AnimParams
 {
-  F32 initial;
-  F32 target;
-  F32 rate;
-  F32 epsilon;
-  B32 reset;
+  f32 initial;
+  f32 target;
+  f32 rate;
+  f32 epsilon;
+  b32 reset;
 };
 
 
@@ -581,11 +581,11 @@ struct UI_AnimNode
   UI_AnimNode *slot_prev;
   UI_AnimNode *lru_next;
   UI_AnimNode *lru_prev;
-  U64 first_touched_build_index;
-  U64 last_touched_build_index;
+  u64 first_touched_build_index;
+  u64 last_touched_build_index;
   UI_Key key;
   UI_AnimParams params;
-  F32 current;
+  f32 current;
 };
 
 
@@ -641,7 +641,7 @@ struct UI_ThemePatternCacheNode
   UI_ThemePatternCacheNode *slot_prev;
   UI_ThemePatternCacheNode *lru_next;
   UI_ThemePatternCacheNode *lru_prev;
-  U64 last_build_index_accessed;
+  u64 last_build_index_accessed;
   UI_Key key;
   Vec4F32 target_rgba;
   Vec4F32 current_rgba;
@@ -679,34 +679,34 @@ struct UI_State
   
   //- rjf: build arenas
   Arena *build_arenas[2];
-  U64 build_index;
+  u64 build_index;
   
   //- rjf: box cache
   UI_Box *first_free_box;
-  U64 box_table_size;
+  u64 box_table_size;
   UI_BoxHashSlot *box_table;
   
   //- rjf: anim cache
   UI_AnimNode *free_anim_node;
   UI_AnimNode *lru_anim_node;
   UI_AnimNode *mru_anim_node;
-  U64 anim_slots_count;
+  u64 anim_slots_count;
   UI_AnimSlot *anim_slots;
   
   //- rjf: build state machine state
-  B32 is_in_open_ctx_menu;
+  b32 is_in_open_ctx_menu;
   String8 autocomplete_string;
-  B32 tooltip_can_overflow_window;
+  b32 tooltip_can_overflow_window;
   UI_Key tooltip_anchor_key;
   String8Array current_gen_tags;
-  U64 current_gen_tags_gen;
+  u64 current_gen_tags_gen;
   UI_TagsKeyStackNode *tags_key_stack_top;
   UI_TagsKeyStackNode *tags_key_stack_free;
-  U64 tags_cache_slots_count;
+  u64 tags_cache_slots_count;
   UI_TagsCacheSlot *tags_cache_slots;
   
   //- rjf: theme pattern cache
-  U64 theme_pattern_cache_slots_count;
+  u64 theme_pattern_cache_slots_count;
   UI_ThemePatternCacheSlot *theme_pattern_cache_slots;
   UI_ThemePatternCacheNode *theme_pattern_cache_node_free;
   UI_ThemePatternCacheNode *lru_theme_pattern_cache_node;
@@ -717,10 +717,10 @@ struct UI_State
   UI_Box *tooltip_root;
   UI_Box *ctx_menu_root;
   UI_Key default_nav_root_key;
-  U64 build_box_count;
-  U64 last_build_box_count;
-  B32 ctx_menu_touched_this_frame;
-  B32 is_animating;
+  u64 build_box_count;
+  u64 last_build_box_count;
+  b32 ctx_menu_touched_this_frame;
+  b32 is_animating;
   
   //- rjf: build parameters
   UI_IconInfo icon_info;
@@ -729,15 +729,15 @@ struct UI_State
   OS_Handle window;
   UI_EventList *events;
   Vec2F32 mouse;
-  F32 animation_dt;
-  F32 default_animation_rate;
+  f32 animation_dt;
+  f32 default_animation_rate;
   
   //- rjf: user interaction state
   UI_Key hot_box_key;
   UI_Key active_box_key[UI_MouseButtonKind_COUNT];
   UI_Key drop_hot_box_key;
   UI_Key clipboard_copy_key;
-  U64 press_timestamp_history_us[UI_MouseButtonKind_COUNT][3];
+  u64 press_timestamp_history_us[UI_MouseButtonKind_COUNT][3];
   UI_Key press_key_history[UI_MouseButtonKind_COUNT][3];
   Vec2F32 press_pos_history[UI_MouseButtonKind_COUNT][3];
   Vec2F32 drag_start_mouse;
@@ -745,26 +745,26 @@ struct UI_State
   String8 drag_state_data;
   Arena *string_hover_arena;
   String8 string_hover_string;
-  F32 string_hover_size;
+  f32 string_hover_size;
   DR_FStrList string_hover_fstrs;
-  U64 string_hover_begin_us;
-  U64 string_hover_build_index;
-  U64 last_time_mousemoved_us;
+  u64 string_hover_begin_us;
+  u64 string_hover_build_index;
+  u64 last_time_mousemoved_us;
   
   //- rjf: tooltip state
-  F32 tooltip_open_t;
-  B32 tooltip_open;
+  f32 tooltip_open_t;
+  b32 tooltip_open;
   
   //- rjf: context menu state
   UI_Key ctx_menu_anchor_key;
   UI_Key next_ctx_menu_anchor_key;
   Vec2F32 ctx_menu_anchor_box_last_pos;
   Vec2F32 ctx_menu_anchor_off;
-  B32 ctx_menu_open;
-  B32 next_ctx_menu_open;
-  F32 ctx_menu_open_t;
+  b32 ctx_menu_open;
+  b32 next_ctx_menu_open;
+  f32 ctx_menu_open_t;
   UI_Key ctx_menu_key;
-  B32 ctx_menu_changed;
+  b32 ctx_menu_changed;
   
   //- rjf: build phase stacks
   UI_DeclStackNils;

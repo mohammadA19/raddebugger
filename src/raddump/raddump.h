@@ -14,7 +14,7 @@
 #define rd_indent()       do { if (indent.size + RD_INDENT_WIDTH <= RD_INDENT_MAX) { indent.size += RD_INDENT_WIDTH; } else { assert(!"indent overflow");   } } while (0)
 #define rd_unindent()     do { if (indent.size >= RD_INDENT_WIDTH)                 { indent.size -= RD_INDENT_WIDTH; } else { assert(!"unbalanced indent"); } } while (0)
 
-typedef U64 RD_Option;
+typedef u64 RD_Option;
 
 #define RD_Option_Help       (1ull << 0)
 #define RD_Option_Version    (1ull << 1)
@@ -111,13 +111,13 @@ RD_Option_RdiStrings)
 
 typedef struct RD_Marker
 {
-  U64     off;
+  u64     off;
   String8 string;
 } RD_Marker;
 
 typedef struct RD_MarkerArray
 {
-  U64        count;
+  u64        count;
   RD_Marker *v;
 } RD_MarkerArray;
 
@@ -129,7 +129,7 @@ typedef struct MarkerNode
 
 typedef struct RD_MarkerList
 {
-  U64            count;
+  u64            count;
   RD_MarkerNode *first;
   RD_MarkerNode *last;
 } RD_MarkerList;
@@ -137,7 +137,7 @@ typedef struct RD_MarkerList
 typedef struct RD_DisasmResult
 {
   String8 text;
-  U64     size;
+  u64     size;
 } RD_DisasmResult;
 
 typedef struct RD_Section
@@ -148,14 +148,14 @@ typedef struct RD_Section
 
 typedef struct RD_SectionArray
 {
-  U64         count;
+  u64         count;
   RD_Section *v;
 } RD_SectionArray;
 
 typedef struct RD_Line
 {
   String8 file_path;
-  U32     line_num;
+  u32     line_num;
 } RD_Line;
 
 ////////////////////////////////

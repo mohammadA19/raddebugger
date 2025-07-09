@@ -45,8 +45,8 @@ struct TXT_Token
 struct TXT_TokenChunkNode
 {
   TXT_TokenChunkNode *next;
-  U64 count;
-  U64 cap;
+  u64 count;
+  u64 cap;
   TXT_Token *v;
 };
 
@@ -56,8 +56,8 @@ struct TXT_TokenChunkList
 {
   TXT_TokenChunkNode *first;
   TXT_TokenChunkNode *last;
-  U64 chunk_count;
-  U64 token_count;
+  u64 chunk_count;
+  u64 token_count;
 };
 
 
@@ -74,14 +74,14 @@ struct TXT_TokenList
 {
   TXT_TokenNode *first;
   TXT_TokenNode *last;
-  U64 count;
+  u64 count;
 };
 
 
 
 struct TXT_TokenArray
 {
-  U64 count;
+  u64 count;
   TXT_Token *v;
 };
 
@@ -89,7 +89,7 @@ struct TXT_TokenArray
 
 struct TXT_TokenArrayArray
 {
-  U64 count;
+  u64 count;
   TXT_TokenArray *v;
 };
 
@@ -97,13 +97,13 @@ struct TXT_TokenArrayArray
 
 struct TXT_TextInfo
 {
-  U64 lines_count;
+  u64 lines_count;
   Rng1U64 *lines_ranges;
-  U64 lines_max_size;
+  u64 lines_max_size;
   TXT_LineEndKind line_end_kind;
   TXT_TokenArray tokens;
-  U64 bytes_processed;
-  U64 bytes_to_process;
+  u64 bytes_processed;
+  u64 bytes_to_process;
 };
 
 
@@ -129,7 +129,7 @@ typedef enum TXT_LangKind
 }
 TXT_LangKind;
 
-typedef TXT_TokenArray TXT_LangLexFunctionType(Arena *arena, U64 *bytes_processed_counter, String8 string);
+typedef TXT_TokenArray TXT_LangLexFunctionType(Arena *arena, u64 *bytes_processed_counter, String8 string);
 
 ////////////////////////////////
 //~ rjf: Cache Types
@@ -143,7 +143,7 @@ struct TXT_Node
   TXT_Node *prev;
   
   // rjf: key
-  U128 hash;
+  u128 hash;
   TXT_LangKind lang;
   
   // rjf: artifacts
@@ -151,11 +151,11 @@ struct TXT_Node
   TXT_TextInfo info;
   
   // rjf: metadata
-  B32 is_working;
-  U64 scope_ref_count;
-  U64 last_time_touched_us;
-  U64 last_user_clock_idx_touched;
-  U64 load_count;
+  b32 is_working;
+  u64 scope_ref_count;
+  u64 last_time_touched_us;
+  u64 last_user_clock_idx_touched;
+  u64 load_count;
 };
 
 
@@ -183,7 +183,7 @@ struct TXT_Stripe
 struct TXT_Touch
 {
   TXT_Touch *next;
-  U128 hash;
+  u128 hash;
   TXT_LangKind lang;
 };
 
@@ -217,20 +217,20 @@ struct TXT_Shared
   Arena *arena;
   
   // rjf: user clock
-  U64 user_clock_idx;
+  u64 user_clock_idx;
   
   // rjf: cache
-  U64 slots_count;
-  U64 stripes_count;
+  u64 slots_count;
+  u64 stripes_count;
   TXT_Slot *slots;
   TXT_Stripe *stripes;
   TXT_Node **stripes_free_nodes;
   
   // rjf: user -> parse thread
-  U64 u2p_ring_size;
-  U8 *u2p_ring_base;
-  U64 u2p_ring_write_pos;
-  U64 u2p_ring_read_pos;
+  u64 u2p_ring_size;
+  u8 *u2p_ring_base;
+  u64 u2p_ring_write_pos;
+  u64 u2p_ring_read_pos;
   OS_Handle u2p_ring_cv;
   OS_Handle u2p_ring_mutex;
   

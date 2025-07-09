@@ -19,10 +19,10 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
     os_abort(1);
   }
   
-  B32 is_pe_present        = 0;
-  B32 is_pdb_present       = 0;
-  B32 is_elf_present       = 0;
-  B32 is_elf_debug_present = 0;
+  b32 is_pe_present        = 0;
+  b32 is_pdb_present       = 0;
+  b32 is_elf_present       = 0;
+  b32 is_elf_debug_present = 0;
   String8 pe_name        = {0};
   String8 pe_data        = {0};
   String8 pdb_name       = {0};
@@ -111,7 +111,7 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
       is_pe_present = 1;
     } else if (elf_check_magic(input_data)) {
       ELF_BinInfo elf              = elf_bin_from_data(input_data);
-      B32         is_dwarf_present = dw_is_dwarf_present_elf_section_table(input_data, &elf);
+      b32         is_dwarf_present = dw_is_dwarf_present_elf_section_table(input_data, &elf);
       if (is_dwarf_present) {
         if (is_elf_debug_present) {
           fprintf(stderr, "error: ambiguous input, both ELFs have DWARF debug sections, please use --elf:<path> --elf_debug:<path> to clarify inputs.\n");
@@ -172,10 +172,10 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
   String8   debug_name = {0};
   String8   debug_data = {0};
   
-  B32  check_guid  = 0;
+  b32  check_guid  = 0;
   Guid pe_pdb_guid = {0};
   
-  B32              elf_has_debug_link = 0;
+  b32              elf_has_debug_link = 0;
   ELF_GnuDebugLink debug_link         = {0};
   
   //
@@ -211,7 +211,7 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
       PE_BinInfo          pe                = pe_bin_info_from_data(scratch.arena, pe_data);
       String8             raw_section_table = str8_substr(pe_data, pe.section_table_range);
       String8             string_table      = str8_substr(pe_data, pe.string_table_range);
-      U64                 section_count     = raw_section_table.size / sizeof(COFF_SectionHeader);
+      u64                 section_count     = raw_section_table.size / sizeof(COFF_SectionHeader);
       COFF_SectionHeader *section_table     = (COFF_SectionHeader *)raw_section_table.str;
       if (dw_is_dwarf_present_coff_section_table(pe_data, string_table, section_count, section_table)) {
         driver     = RC_Driver_Dwarf;
@@ -235,7 +235,7 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
     // Load image ELF
     //
     ELF_BinInfo elf           = elf_bin_from_data(elf_data);
-    B32         has_elf_dwarf = dw_is_dwarf_present_elf_section_table(elf_data, &elf);
+    b32         has_elf_dwarf = dw_is_dwarf_present_elf_section_table(elf_data, &elf);
     
     // 
     // ELF doesn't have debug info and no .debug was specified on command line,
@@ -253,12 +253,12 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
     // Load .debug ELF
     //
     ELF_BinInfo elf_debug           = elf_bin_from_data(elf_debug_data);
-    B32         has_elf_debug_dwarf = dw_is_dwarf_present_elf_section_table(elf_debug_data, &elf_debug);
+    b32         has_elf_debug_dwarf = dw_is_dwarf_present_elf_section_table(elf_debug_data, &elf_debug);
     
     //
     // Input is image ELF and .debug ELF
     //
-    B32 is_split_elf = is_elf_present && is_elf_debug_present && !has_elf_dwarf && has_elf_debug_dwarf;
+    b32 is_split_elf = is_elf_present && is_elf_debug_present && !has_elf_dwarf && has_elf_debug_dwarf;
     if (is_split_elf) {
       driver     = RC_Driver_Dwarf;
       image      = ELF_HdrIs64Bit(elf.hdr.e_ident) ? ExecutableImageKind_Elf64 : ExecutableImageKind_Elf32;
@@ -272,7 +272,7 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
     //
     // Input ELF is image with debug info
     //
-    B32 is_monolithic_elf = is_elf_present && !is_elf_debug_present && has_elf_dwarf;
+    b32 is_monolithic_elf = is_elf_present && !is_elf_debug_present && has_elf_dwarf;
     if (is_monolithic_elf) {
       driver     = RC_Driver_Dwarf;
       image      = ELF_HdrIs64Bit(elf.hdr.e_ident) ? ExecutableImageKind_Elf64 : ExecutableImageKind_Elf32;
@@ -286,7 +286,7 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
     //
     // Input ELF is .debug
     //
-    B32 is_debug_elf = !is_elf_present && is_elf_debug_present && has_elf_debug_dwarf;
+    b32 is_debug_elf = !is_elf_present && is_elf_debug_present && has_elf_debug_dwarf;
     if (is_debug_elf) {
       driver     = RC_Driver_Dwarf;
       image      = ELF_HdrIs64Bit(elf_debug.hdr.e_ident) ? ExecutableImageKind_Elf64 : ExecutableImageKind_Elf32;
@@ -439,7 +439,7 @@ rc_rdi_from_cmd_line(Arena *arena, CmdLine *cmdl)
 internal void
 rc_main(CmdLine *cmdl)
 {
-  B32 do_help = (cmd_line_has_flag(cmdl, str8_lit("help")) ||
+  b32 do_help = (cmd_line_has_flag(cmdl, str8_lit("help")) ||
                  cmd_line_has_flag(cmdl, str8_lit("h")) ||
                  cmd_line_has_flag(cmdl, str8_lit("?")) ||
                  cmdl->argc == 1);

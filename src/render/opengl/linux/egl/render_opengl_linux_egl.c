@@ -54,7 +54,7 @@ r_ogl_os_init(CmdLine *cmdln)
   
   //- rjf: construct context
   {
-    B32 debug_mode = cmd_line_has_flag(cmdln, str8_lit("opengl_debug"));
+    b32 debug_mode = cmd_line_has_flag(cmdln, str8_lit("opengl_debug"));
 #if BUILD_DEBUG
     debug_mode = 1;
 #endif
@@ -132,7 +132,7 @@ r_ogl_os_window_equip(OS_Handle window)
           EGL_GL_COLORSPACE, EGL_GL_COLORSPACE_SRGB,
           EGL_NONE,
         };
-        for(U32 idx = 0; idx < configs_count; idx += 1)
+        for(u32 idx = 0; idx < configs_count; idx += 1)
         {
           w->surface = eglCreateWindowSurface(r_ogl_lnx_state->display, configs[idx], window_os->window, config_options);
           if(w->surface != EGL_NO_SURFACE)
@@ -158,7 +158,7 @@ r_ogl_os_window_equip(OS_Handle window)
       os_abort(1);
     }
   }
-  R_Handle result = {(U64)w};
+  R_Handle result = {(u64)w};
   return result;
 }
 

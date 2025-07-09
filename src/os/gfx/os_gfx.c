@@ -63,13 +63,13 @@ os_string_from_modifiers_key(Arena *arena, OS_Modifiers modifiers, OS_Key key)
   return result;
 }
 
-internal U32
+internal u32
 os_codepoint_from_modifiers_and_key(OS_Modifiers modifiers, OS_Key key)
 {
-  U32 result = 0;
+  u32 result = 0;
   
   // rjf: special-case map
-  local_persist @(rodata) struct {U32 character; OS_Key key; OS_Modifiers modifiers;} map[] =
+  local_persist @(rodata) struct {u32 character; OS_Key key; OS_Modifiers modifiers;} map[] =
   {
     {'!', OS_Key_1, OS_Modifier_Shift},
     {'@', OS_Key_2, OS_Modifier_Shift},
@@ -166,7 +166,7 @@ os_codepoint_from_modifiers_and_key(OS_Modifiers modifiers, OS_Key key)
   }
   
   // rjf: check special-case map
-  for(U64 idx = 0; idx < len(map); idx += 1)
+  for(u64 idx = 0; idx < len(map); idx += 1)
   {
     if(map[idx].key == key && map[idx].modifiers == modifiers)
     {
@@ -185,10 +185,10 @@ os_eat_event(OS_EventList *events, OS_Event *event)
   events->count -= 1;
 }
 
-internal B32
+internal b32
 os_key_press(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key)
 {
-  B32 result = 0;
+  b32 result = 0;
   for(OS_Event *event = events->first; event != 0; event = event->next)
   {
     if((os_handle_match(event->window, window) || os_handle_match(window, os_handle_zero())) &&
@@ -202,10 +202,10 @@ os_key_press(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_
   return result;
 }
 
-internal B32
+internal b32
 os_key_release(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key)
 {
-  B32 result = 0;
+  b32 result = 0;
   for(OS_Event *event = events->first; event != 0; event = event->next)
   {
     if((os_handle_match(event->window, window) || os_handle_match(window, os_handle_zero())) &&
@@ -219,10 +219,10 @@ os_key_release(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, O
   return result;
 }
 
-internal B32
-os_text(OS_EventList *events, OS_Handle window, U32 character)
+internal b32
+os_text(OS_EventList *events, OS_Handle window, u32 character)
 {
-  B32 result = 0;
+  b32 result = 0;
   for(OS_Event *event = events->first; event != 0; event = event->next)
   {
     if((os_handle_match(event->window, window) || os_handle_match(window, os_handle_zero())) &&

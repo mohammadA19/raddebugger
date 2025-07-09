@@ -18,7 +18,7 @@ global @(rodata) String8 e_multichar_symbol_strings[] =
   str8_lit_comp("=>"),
 };
 
-global @(rodata) S64 e_max_precedence = 15;
+global @(rodata) i64 e_max_precedence = 15;
 
 ////////////////////////////////
 //~ rjf: Tokenization Functions
@@ -31,7 +31,7 @@ e_token_zero(void)
 }
 
 internal void
-e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_Token *token)
+e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, u64 chunk_size, E_Token *token)
 {
   E_TokenChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
@@ -53,7 +53,7 @@ e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list)
   E_TokenArray array = {0};
   array.count = list->total_count;
   array.v = push_array_no_zero(arena, E_Token, array.count);
-  U64 idx = 0;
+  u64 idx = 0;
   for(E_TokenChunkNode *node = list->first; node != 0; node = node->next)
   {
     MemoryCopy(array.v+idx, node->v, sizeof(E_Token)*node->count);
@@ -69,19 +69,19 @@ e_token_array_from_text(Arena *arena, String8 text)
   
   //- rjf: lex loop
   E_TokenChunkList tokens = {0};
-  U64 active_token_start_idx = 0;
+  u64 active_token_start_idx = 0;
   E_TokenKind active_token_kind = E_TokenKind_Null;
-  B32 active_token_kind_started_with_tick = 0;
-  B32 escaped = 0;
-  B32 exp = 0;
-  for(U64 idx = 0, advance = 0; idx <= text.size; idx += advance)
+  b32 active_token_kind_started_with_tick = 0;
+  b32 escaped = 0;
+  b32 exp = 0;
+  for(u64 idx = 0, advance = 0; idx <= text.size; idx += advance)
   {
-    U8 byte      = (idx+0 < text.size) ? text.str[idx+0] : 0;
-    U8 byte_next = (idx+1 < text.size) ? text.str[idx+1] : 0;
-    U8 byte_next2= (idx+2 < text.size) ? text.str[idx+2] : 0;
+    u8 byte      = (idx+0 < text.size) ? text.str[idx+0] : 0;
+    u8 byte_next = (idx+1 < text.size) ? text.str[idx+1] : 0;
+    u8 byte_next2= (idx+2 < text.size) ? text.str[idx+2] : 0;
     advance = 1;
-    B32 token_formed = 0;
-    U64 token_end_idx_pad = 0;
+    b32 token_formed = 0;
+    u64 token_end_idx_pad = 0;
     switch(active_token_kind)
     {
       //- rjf: no active token -> seek token starter
@@ -139,8 +139,8 @@ e_token_array_from_text(Arena *arena, String8 text)
         {
           // NOTE(rjf): encountering C++-style templates - try to find ender. if no ender found,
           // assume this is an operator & just consume the identifier part.
-          S64 nest = 1;
-          for(U64 idx2 = idx+1; idx2 <= text.size; idx2 += 1)
+          i64 nest = 1;
+          for(u64 idx2 = idx+1; idx2 <= text.size; idx2 += 1)
           {
             if(idx2 < text.size && text.str[idx2] == '<')
             {
@@ -257,11 +257,11 @@ e_token_array_from_text(Arena *arena, String8 text)
       // >1-length symbol strings.
       else
       {
-        U64 advance2 = 0;
-        for(U64 idx2 = active_token_start_idx; idx2 < idx; idx2 += advance2)
+        u64 advance2 = 0;
+        for(u64 idx2 = active_token_start_idx; idx2 < idx; idx2 += advance2)
         {
           advance2 = 1;
-          for(U64 multichar_symbol_idx = 0;
+          for(u64 multichar_symbol_idx = 0;
               multichar_symbol_idx < len(e_multichar_symbol_strings);
               multichar_symbol_idx += 1)
           {
@@ -292,7 +292,7 @@ e_token_array_from_text(Arena *arena, String8 text)
 internal E_TokenArray
 e_token_array_make_first_opl(E_Token *first, E_Token *opl)
 {
-  E_TokenArray array = {first, (U64)(opl-first)};
+  E_TokenArray array = {first, (u64)(opl-first)};
   return array;
 }
 
@@ -348,8 +348,8 @@ e_expr_copy(Arena *arena, E_Expr *src)
       Task *next;
       E_Expr *dst_parent;
       E_Expr *src;
-      B32 is_ref;
-      B32 is_sib;
+      b32 is_ref;
+      b32 is_sib;
     };
     Task start_task = {0, &e_expr_nil, src};
     Task *first_task = &start_task;
@@ -436,7 +436,7 @@ e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_strin
         op_info->sep,
         op_info->post,
       };
-      U64 sep_idx = 0;
+      u64 sep_idx = 0;
       for(E_Expr *child = expr->first;; child = child->next)
       {
         if(sep_idx == len(seps)-1 && child != &e_expr_nil)
@@ -453,7 +453,7 @@ e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_strin
           break;
         }
         E_OpInfo *child_op_info = &e_expr_kind_op_info_table[child->kind];
-        B32 need_parens = (child_op_info->precedence > op_info->precedence);
+        b32 need_parens = (child_op_info->precedence > op_info->precedence);
         if(need_parens)
         {
           str8_list_pushf(arena, out, "(");
@@ -531,48 +531,48 @@ e_leaf_builtin_type_key_from_name(String8 name)
   E_TypeKey result = {0};
   if(0){}
 #define BuiltInType_XList \
-BasicCase("uint8", U8)\
-BasicCase("uint8_t", U8)\
+BasicCase("uint8", u8)\
+BasicCase("uint8_t", u8)\
 BasicCase("uchar", UChar8)\
 BasicCase("uchar8", UChar8)\
-BasicCase("uint16", U16)\
-BasicCase("uint16_t", U16)\
+BasicCase("uint16", u16)\
+BasicCase("uint16_t", u16)\
 BasicCase("uchar16", UChar16)\
-BasicCase("uint32", U32)\
-BasicCase("uint32_t", U32)\
+BasicCase("uint32", u32)\
+BasicCase("uint32_t", u32)\
 BasicCase("uchar32", UChar32)\
-BasicCase("uint64", U64)\
-BasicCase("uint64_t", U64)\
-BasicCase("uint128", U128)\
-BasicCase("uint128_t", U128)\
+BasicCase("uint64", u64)\
+BasicCase("uint64_t", u64)\
+BasicCase("uint128", u128)\
+BasicCase("uint128_t", u128)\
 BasicCase("uint256", U256)\
 BasicCase("uint256_t", U256)\
 BasicCase("uint512", U512)\
 BasicCase("uint512_t", U512)\
-BasicCase("int8", S8)\
-BasicCase("int8_t", S8)\
+BasicCase("int8", i8)\
+BasicCase("int8_t", i8)\
 BasicCase("char", Char8)\
 BasicCase("char8", Char8)\
-BasicCase("int16", S16)\
-BasicCase("int16_t", S16)\
+BasicCase("int16", i16)\
+BasicCase("int16_t", i16)\
 BasicCase("char16", Char16)\
-BasicCase("int32", S32)\
-BasicCase("int32_t", S32)\
+BasicCase("int32", i32)\
+BasicCase("int32_t", i32)\
 BasicCase("char32", Char32)\
-BasicCase("int64", S64)\
-BasicCase("int64_t", S64)\
-BasicCase("int128", S128)\
-BasicCase("int128_t", S128)\
+BasicCase("int64", i64)\
+BasicCase("int64_t", i64)\
+BasicCase("int128", i128)\
+BasicCase("int128_t", i128)\
 BasicCase("int256", S256)\
 BasicCase("int256_t", S256)\
 BasicCase("int512", S512)\
 BasicCase("int512_t", S512)\
 BasicCase("void", Void)\
 BasicCase("bool", Bool)\
-BasicCase("float", F32)\
-BasicCase("float32", F32)\
-BasicCase("double", F64)\
-BasicCase("float64", F64)
+BasicCase("float", f32)\
+BasicCase("float32", f32)\
+BasicCase("double", f64)\
+BasicCase("float64", f64)
 #define BasicCase(str, kind) else if(str8_match(name, str8_lit(str), 0)) {result = e_type_key_basic(E_TypeKind_##kind);}
   BuiltInType_XList
 #undef BasicCase
@@ -590,9 +590,9 @@ e_leaf_type_key_from_name(String8 name)
     {
       E_Module *module = &e_base_ctx->modules[match.dbgi_idx];
       RDI_Parsed *rdi = module->rdi;
-      U32 type_idx = match.idx;
+      u32 type_idx = match.idx;
       RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, type_idx);
-      key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), type_idx, (U32)match.dbgi_idx);
+      key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), type_idx, (u32)match.dbgi_idx);
     }
   }
   return key;
@@ -637,7 +637,7 @@ e_push_type_parse_from_text_tokens(Arena *arena, String8 text, E_TokenArray toke
   E_Token *token_it = tokens.v;
   
   //- rjf: parse unsigned marker
-  B32 unsigned_marker = 0;
+  b32 unsigned_marker = 0;
   {
     E_Token token = e_token_at_it(token_it, &tokens);
     if(token.kind == E_TokenKind_Identifier)
@@ -722,7 +722,7 @@ e_push_type_parse_from_text_tokens(Arena *arena, String8 text, E_TokenArray toke
 }
 
 internal E_Parse
-e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray tokens, S64 max_precedence, U64 max_chain_count)
+e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray tokens, i64 max_precedence, u64 max_chain_count)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -733,7 +733,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
   //////////////////////////////
   //- rjf: parse chain of expressions
   //
-  for(U64 chain_count = 0; it < it_opl && chain_count < max_chain_count;)
+  for(u64 chain_count = 0; it < it_opl && chain_count < max_chain_count;)
   {
     ////////////////////////////
     //- rjf: exit on symbols callers may be waiting on
@@ -784,8 +784,8 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
     PrefixUnaryTask *first_prefix_unary = 0;
     PrefixUnaryTask *last_prefix_unary = 0;
     E_Expr *atom = &e_expr_nil;
-    B32 atom_is_maybe_cast = 0;
-    for(B32 done = 0; !done && it < it_opl;)
+    b32 atom_is_maybe_cast = 0;
+    for(b32 done = 0; !done && it < it_opl;)
     {
       //////////////////////////
       //- rjf: prefix unary operators
@@ -793,7 +793,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
       {
         E_Token token = e_token_at_it(it, &tokens);
         String8 token_string = str8_substr(text, token.range);
-        S64 prefix_unary_precedence = 0;
+        i64 prefix_unary_precedence = 0;
         E_ExprKind prefix_unary_kind = 0;
         E_Expr *prefix_unary_cast_expr = &e_expr_nil;
         
@@ -883,7 +883,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
       //
       if(atom == &e_expr_nil || atom_is_maybe_cast)
       {
-        B32 got_new_atom = 0;
+        b32 got_new_atom = 0;
         E_Expr *maybe_cast = atom_is_maybe_cast ? atom : &e_expr_nil;
         atom_is_maybe_cast = 0;
         
@@ -961,7 +961,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
             it = nested_parse.last_token;
             got_new_atom = 1;
             
-            // rjf: build cast-to-U64*, and dereference operators
+            // rjf: build cast-to-u64*, and dereference operators
             if(nested_parse.expr == &e_expr_nil)
             {
               e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token.range, "Expected expression following `[`.");
@@ -1024,13 +1024,13 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
           String8 token_string = str8_substr(text, token.range);
           if(token.kind == E_TokenKind_Numeric)
           {
-            U64 dot_pos = str8_find_needle(token_string, 0, str8_lit("."), 0);
+            u64 dot_pos = str8_find_needle(token_string, 0, str8_lit("."), 0);
             it += 1;
             
             // rjf: no . => integral
             if(dot_pos == token_string.size)
             {
-              U64 val = 0;
+              u64 val = 0;
               try_u64_from_str8_c_rules(token_string, &val);
               atom = e_push_expr(arena, E_ExprKind_LeafU64, token.range);
               atom->value.u64 = val;
@@ -1039,8 +1039,8 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
             // rjf: presence of . => double or float
             if(dot_pos < token_string.size)
             {
-              F64 val = f64_from_str8(token_string);
-              U64 f_pos = str8_find_needle(token_string, 0, str8_lit("f"), StringMatchFlag_CaseInsensitive);
+              f64 val = f64_from_str8(token_string);
+              u64 f_pos = str8_find_needle(token_string, 0, str8_lit("f"), StringMatchFlag_CaseInsensitive);
               
               // rjf: presence of f after . => f32
               if(f_pos < token_string.size)
@@ -1075,9 +1075,9 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
             {
               String8 char_literal_escaped = str8_skip(str8_chop(token_string, 1), 1);
               String8 char_literal_raw = raw_from_escaped_str8(scratch.arena, char_literal_escaped);
-              U8 char_val = char_literal_raw.size > 0 ? char_literal_raw.str[0] : 0;
+              u8 char_val = char_literal_raw.size > 0 ? char_literal_raw.str[0] : 0;
               atom = e_push_expr(arena, E_ExprKind_LeafU64, token.range);
-              atom->value.u64 = (U64)char_val;
+              atom->value.u64 = (u64)char_val;
               got_new_atom = 1;
             }
             else
@@ -1160,7 +1160,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
     {
       E_Token token = e_token_at_it(it, &tokens);
       String8 token_string = str8_substr(text, token.range);
-      B32 is_postfix_unary = 0;
+      b32 is_postfix_unary = 0;
       
       // rjf: dot/arrow operator
       if(max_precedence >= 1 &&
@@ -1176,7 +1176,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         // rjf: look for member name
         E_Token member_name_maybe = e_token_at_it(it, &tokens);
         String8 member_name_maybe_string = str8_substr(text, member_name_maybe.range);
-        B32 member_name_is_good = (member_name_maybe.kind == E_TokenKind_Identifier);
+        b32 member_name_is_good = (member_name_maybe.kind == E_TokenKind_Identifier);
         
         // rjf: build dot-operator tree
         E_Expr *lhs = atom;
@@ -1336,7 +1336,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
       //- rjf: parse binaries
       {
         // rjf: first try to find a matching binary operator
-        S64 binary_precedence = 0;
+        i64 binary_precedence = 0;
         E_ExprKind binary_kind = 0;
         for EachNonZeroEnumVal(E_ExprKind, k)
         {
@@ -1398,7 +1398,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
           }
           
           // rjf: expect :
-          B32 got_colon = 0;
+          b32 got_colon = 0;
           E_Token colon_token = {};
           String8 colon_token_string = {0};
           {

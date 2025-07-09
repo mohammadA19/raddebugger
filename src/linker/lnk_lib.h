@@ -8,11 +8,11 @@ typedef struct LNK_Lib
   String8          path;
   String8          data;
   COFF_ArchiveType type;
-  U32              symbol_count;
-  U32             *member_off_arr;
+  u32              symbol_count;
+  u32             *member_off_arr;
   String8List      symbol_name_list;
   String8          long_names;
-  U64              input_idx;
+  u64              input_idx;
 } LNK_Lib;
 
 typedef struct LNK_LibNode
@@ -23,13 +23,13 @@ typedef struct LNK_LibNode
 
 typedef struct LNK_LibNodeArray
 {
-  U64          count;
+  u64          count;
   LNK_LibNode *v;
 } LNK_LibNodeArray;
 
 typedef struct LNK_LibList
 {
-  U64                 count;
+  u64                 count;
   struct LNK_LibNode *first;
 } LNK_LibList;
  

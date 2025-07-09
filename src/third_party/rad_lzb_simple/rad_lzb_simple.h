@@ -13,7 +13,7 @@ To encode :
 
 	rr_lzb_simple_context c;
 	c.m_tableSizeBits = 14;
-	c.m_hashTable = OODLE_MALLOC_ARRAY(U16,RR_ONE_SA<<c.m_tableSizeBits);
+	c.m_hashTable = OODLE_MALLOC_ARRAY(u16,RR_ONE_SA<<c.m_tableSizeBits);
 	
 	then call _encode
 
@@ -41,20 +41,20 @@ To decode :
 #define __RAD64REGS__
 
 #include <stdint.h>
-typedef uint8_t  U8;
-typedef uint16_t U16;
-typedef uint32_t U32;
-typedef uint64_t U64;
-typedef int8_t   S8;
-typedef int16_t  S16;
-typedef int32_t  S32;
-typedef int64_t  S64;
+typedef uint8_t  u8;
+typedef uint16_t u16;
+typedef uint32_t u32;
+typedef uint64_t u64;
+typedef int8_t   i8;
+typedef int16_t  i16;
+typedef int32_t  i32;
+typedef int64_t  i64;
 
-typedef S64 SINTa;
-typedef U64 RAD_U64;
-typedef S64 RAD_S64;
-typedef U32 RAD_U32;
-typedef S32 RAD_S32;
+typedef i64 SINTa;
+typedef u64 RAD_U64;
+typedef i64 RAD_S64;
+typedef u32 RAD_U32;
+typedef i32 RAD_S32;
 
 #define RADINLINE __inline
 
@@ -102,11 +102,11 @@ typedef S32 RAD_S32;
 #define RR_ASSERT_ALWAYS(c) do{if(!(c)) {RADLZB_TRAP();}}while(0)
 #define RR_ASSERT(c) RR_ASSERT_ALWAYS(c)
 
-#define RR_PUT16_LE(ptr,val)       *((U16 *)(ptr)) = (U16)(val)
-#define RR_GET16_LE_UNALIGNED(ptr) *((const U16 *)(ptr))
+#define RR_PUT16_LE(ptr,val)       *((u16 *)(ptr)) = (u16)(val)
+#define RR_GET16_LE_UNALIGNED(ptr) *((const u16 *)(ptr))
 
-static RADINLINE U32
-rrCtzBytes32(U32 val)
+static RADINLINE u32
+rrCtzBytes32(u32 val)
 {
   // Don't get fancy here. Assumes val != 0.
   if (val & 0x000000ffu) return 0;
@@ -115,11 +115,11 @@ rrCtzBytes32(U32 val)
   return 3;
 }
 
-static RADINLINE U32
-rrCtzBytes64(U64 val)
+static RADINLINE u32
+rrCtzBytes64(u64 val)
 {
-  U32 lo = (U32) val;
-  return lo ? rrCtzBytes32(lo) : 4 + rrCtzBytes32((U32) (val >> 32));
+  u32 lo = (u32) val;
+  return lo ? rrCtzBytes32(lo) : 4 + rrCtzBytes32((u32) (val >> 32));
 }
 
 //~
@@ -130,8 +130,8 @@ rrCtzBytes64(U64 val)
 
 struct rr_lzb_simple_context
 {
-	U16	*	m_hashTable;	// must be allocated to sizeof(U16)*(1<<m_tableSizeBits)
-	S32		m_tableSizeBits;
+	u16	*	m_hashTable;	// must be allocated to sizeof(u16)*(1<<m_tableSizeBits)
+	i32		m_tableSizeBits;
 };
 
 SINTa rr_lzb_simple_encode_fast(rr_lzb_simple_context * ctx,

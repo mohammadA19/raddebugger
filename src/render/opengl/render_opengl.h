@@ -91,10 +91,10 @@ typedef ptrdiff_t GLintptr;
 
 struct R_OGL_Attribute
 {
-  U64 index;
+  u64 index;
   String8 name;
   GLenum type;
-  U64 count;
+  u64 count;
 };
 
 
@@ -102,7 +102,7 @@ struct R_OGL_Attribute
 struct R_OGL_AttributeArray
 {
   R_OGL_Attribute *v;
-  U64 count;
+  u64 count;
 };
 
 ////////////////////////////////

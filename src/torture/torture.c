@@ -61,12 +61,12 @@ t_string_from_result(T_Result v)
 }
 
 global String8 g_stdout_file_name = str8_lit_comp("torture");
-global U64     g_linker_time_out;
+global u64     g_linker_time_out;
 global String8 g_linker;
 global String8 g_wdir;
 global String8 g_out = str8_lit_comp("torture_out");
-global B32     g_verbose;
-global B32     g_redirect_stdout;
+global b32     g_verbose;
+global b32     g_redirect_stdout;
 
 #define T_LINKER_TIME_OUT_EXIT_CODE 999999
 
@@ -97,7 +97,7 @@ t_ident_linker(void)
 }
 
 internal int
-t_invoke_linker_with_time_out(U64 time_out, String8 cmdline)
+t_invoke_linker_with_time_out(u64 time_out, String8 cmdline)
 {
   Temp scratch = scratch_begin(0,0);
 
@@ -136,7 +136,7 @@ t_invoke_linker_with_time_out(U64 time_out, String8 cmdline)
     if (os_handle_match(linker_handle, os_handle_zero())) {
       fprintf(stderr, "unable to start process: %.*s\n", str8_varg(g_linker));
     } else {
-      B32 was_joined = os_process_join_exit_code(linker_handle, time_out, &exit_code);
+      b32 was_joined = os_process_join_exit_code(linker_handle, time_out, &exit_code);
       if (!was_joined) {
         os_process_kill(linker_handle);
         exit_code = T_LINKER_TIME_OUT_EXIT_CODE;
@@ -173,7 +173,7 @@ t_invoke_linkerf(char *fmt, ...)
 }
 
 internal int
-t_invoke_linker_with_time_outf(U64 time_out, char *fmt, ...)
+t_invoke_linker_with_time_outf(u64 time_out, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0,0);
   va_list args;
@@ -191,17 +191,17 @@ t_make_file_path(Arena *arena, String8 name)
   return push_str8f(arena, "%S\\%S", g_wdir, name);
 }
 
-internal B32
+internal b32
 t_write_file_list(String8 name, String8List data)
 {
   Temp scratch = scratch_begin(0,0);
   String8 path = t_make_file_path(scratch.arena, name);
-  B32 is_written = os_write_data_list_to_file_path(path, data);
+  b32 is_written = os_write_data_list_to_file_path(path, data);
   scratch_end(scratch);
   return is_written;
 }
 
-internal B32
+internal b32
 t_write_file(String8 name, String8 data)
 {
   String8Node temp_node = {0};
@@ -253,9 +253,9 @@ t_run(T_Run run)
 }
 
 internal COFF_SectionHeader *
-t_coff_section_header_from_name(String8 string_table, COFF_SectionHeader *section_table, U64 section_count, String8 name)
+t_coff_section_header_from_name(String8 string_table, COFF_SectionHeader *section_table, u64 section_count, String8 name)
 {
-  for (U64 sect_idx = 0; sect_idx < section_count; sect_idx += 1) {
+  for (u64 sect_idx = 0; sect_idx < section_count; sect_idx += 1) {
     COFF_SectionHeader *section_header = &section_table[sect_idx];
     String8             section_name   = coff_name_from_section_header(string_table, section_header);
     if (str8_match(section_name, name, 0)) {
@@ -266,10 +266,10 @@ t_coff_section_header_from_name(String8 string_table, COFF_SectionHeader *sectio
 }
 
 internal COFF_SectionHeaderArray
-t_coff_section_header_array_from_name(Arena *arena, String8 string_table, COFF_SectionHeader *section_table, U64 section_count, String8 name)
+t_coff_section_header_array_from_name(Arena *arena, String8 string_table, COFF_SectionHeader *section_table, u64 section_count, String8 name)
 {
-  U64 match_count = 0;
-  for (U64 sect_idx = 0; sect_idx < section_count; sect_idx += 1) {
+  u64 match_count = 0;
+  for (u64 sect_idx = 0; sect_idx < section_count; sect_idx += 1) {
     COFF_SectionHeader *section_header = &section_table[sect_idx];
     String8             section_name   = coff_name_from_section_header(string_table, section_header);
     if (str8_match(section_name, name, 0)) {
@@ -278,7 +278,7 @@ t_coff_section_header_array_from_name(Arena *arena, String8 string_table, COFF_S
   }
 
   COFF_SectionHeader *matches = push_array(arena, COFF_SectionHeader, match_count);
-  for (U64 sect_idx = 0, match_idx = 0; sect_idx < section_count; sect_idx += 1) {
+  for (u64 sect_idx = 0, match_idx = 0; sect_idx < section_count; sect_idx += 1) {
     COFF_SectionHeader *section_header = &section_table[sect_idx];
     String8             section_name   = coff_name_from_section_header(string_table, section_header);
     if (str8_match(section_name, name, 0)) {
@@ -324,7 +324,7 @@ internal void
 t_write_entry_obj(void)
 {
   COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-  U8 text[] = { 0xc3 };
+  u8 text[] = { 0xc3 };
   COFF_ObjSection *text_sect = t_push_text_section(obj_writer, str8_array_fixed(text));
   coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("entry"), 0, text_sect);
   String8 obj = coff_obj_writer_serialize(obj_writer->arena, obj_writer);
@@ -375,7 +375,7 @@ t_machine_compat_check(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = { 0xC3 };
+    u8 text[] = { 0xC3 };
     COFF_ObjSection *text_sect = t_push_text_section(obj_writer, str8_array_fixed(text));
     coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("my_entry"), 0, text_sect);
     String8 obj = coff_obj_writer_serialize(scratch.arena, obj_writer);
@@ -434,7 +434,7 @@ t_out_of_bounds_section_number(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -594,7 +594,7 @@ t_simple_link_test(void)
 
   T_Result result = T_Result_Fail;
 
-  U8 text_payload[] = { 0xC3 };
+  u8 text_payload[] = { 0xC3 };
 
   String8 main_obj;
   {
@@ -651,7 +651,7 @@ t_simple_link_test(void)
   }
 
   // check section alignment
-  for (U64 sect_idx = 0; sect_idx < pe.section_count; sect_idx += 1) {
+  for (u64 sect_idx = 0; sect_idx < pe.section_count; sect_idx += 1) {
     COFF_SectionHeader *sect_header = &section_table[sect_idx];
     if (AlignPadPow2(sect_header->fsize, file_align) != 0) {
       goto exit;
@@ -750,8 +750,8 @@ t_abs_vs_weak(void)
 
   T_Result result = T_Result_Fail;
 
-  U32 abs_value = 0x123;
-  U8 text_code[] = { 0x48, 0xb8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xC3 };
+  u32 abs_value = 0x123;
+  u8 text_code[] = { 0x48, 0xb8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xC3 };
 
   String8 abs_obj;
   {
@@ -778,7 +778,7 @@ t_abs_vs_weak(void)
   }
 
   {
-    B32 was_file_written = 0;
+    b32 was_file_written = 0;
     was_file_written = t_write_file(str8_lit("abs.obj"),  abs_obj);
     if (!was_file_written) {
       goto exit;
@@ -810,7 +810,7 @@ t_abs_vs_weak(void)
     String8 inst      = str8_prefix(text_data, 2);
     if (str8_match(inst, str8_array(text_code, 2), 0)) {
       String8 imm          = str8_prefix(str8_skip(text_data, 2), 8);
-      U64     expected_imm = abs_value;
+      u64     expected_imm = abs_value;
       if (str8_match(imm, str8_struct(&expected_imm), 0)) {
         result = T_Result_Pass;
       }
@@ -831,7 +831,7 @@ t_abs_vs_regular(void)
 
   String8 shared_symbol_name = str8_lit("foo");
 
-  U8 regular_payload[] = { 0xC0, 0xFF, 0xEE };
+  u8 regular_payload[] = { 0xC0, 0xFF, 0xEE };
   String8 regular_obj_name = str8_lit("regular.obj");
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
@@ -855,7 +855,7 @@ t_abs_vs_regular(void)
     }
   }
 
-  U8 entry_text[] = { 
+  u8 entry_text[] = { 
     0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00, // mov rax, $imm
     0xC3 // ret
   };
@@ -925,7 +925,7 @@ t_abs_vs_common(void)
     }
   }
 
-  U8 entry_text[] = { 0xC3 };
+  u8 entry_text[] = { 0xC3 };
   String8 entry_obj_name = str8_lit("entry.obj");
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
@@ -968,7 +968,7 @@ t_undef_weak(void)
   String8 entry_symbol_name = str8_lit("my_entry");
   String8 shared_symbol_name = str8_lit("foo");
 
-  U8 weak_payload[] = { 0xDE, 0xAD, 0xBE, 0xEF };
+  u8 weak_payload[] = { 0xDE, 0xAD, 0xBE, 0xEF };
   String8 weak_obj_name = str8_lit("weak.obj");
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
@@ -994,7 +994,7 @@ t_undef_weak(void)
     }
   }
 
-  U8 undef_obj_payload[] = { 0x00, 0x00, 0x00, 0x00 };
+  u8 undef_obj_payload[] = { 0x00, 0x00, 0x00, 0x00 };
   String8 undef_obj_name = str8_lit("undef.obj");
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
@@ -1008,7 +1008,7 @@ t_undef_weak(void)
     }
   }
 
-  U8 entry_payload[] = {0xC3};
+  u8 entry_payload[] = {0xC3};
   String8 entry_obj_name = str8_lit("entry.obj");
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
@@ -1067,7 +1067,7 @@ t_weak_cycle(void)
   }
 
   String8 entry_obj_name = str8_lit("entry.obj");
-  U8 entry_payload[] = { 0xC3 };
+  u8 entry_payload[] = { 0xC3 };
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
     COFF_ObjSection *text_sect = t_push_text_section(obj_writer, str8_array_fixed(entry_payload));
@@ -1079,7 +1079,7 @@ t_weak_cycle(void)
     }
   }
 
-  U64 time_out = os_now_microseconds() + 3 * 1000 * 1000; // give a generous 3 seconds
+  u64 time_out = os_now_microseconds() + 3 * 1000 * 1000; // give a generous 3 seconds
   int linker_exit_code = t_invoke_linker_with_time_outf(time_out, "/subsystem:console /entry:my_entry %S %S %S", entry_obj_name, ab_obj_name, ba_obj_name);
   if (linker_exit_code != T_LINKER_TIME_OUT_EXIT_CODE) {
     if (t_ident_linker() == T_Linker_MSVC) {
@@ -1103,7 +1103,7 @@ t_weak_tag(void)
 
   T_Result result = T_Result_Fail;
 
-  U32 weak_tag_expected_value = 0x12345678;
+  u32 weak_tag_expected_value = 0x12345678;
   String8 weak_tag_obj_name = str8_lit("weak_tag.obj");
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
@@ -1111,7 +1111,7 @@ t_weak_tag(void)
     COFF_ObjSymbol *weak_first  = coff_obj_writer_push_symbol_weak(obj_writer, str8_lit("strong_first"), COFF_WeakExt_SearchAlias, tag_symbol);
     COFF_ObjSymbol *weak_second = coff_obj_writer_push_symbol_weak(obj_writer, str8_lit("strong_second"), COFF_WeakExt_SearchAlias, weak_first);
 
-    U8 sect_data[] = { 0, 0, 0, 0 };
+    u8 sect_data[] = { 0, 0, 0, 0 };
     COFF_ObjSection *sect = t_push_data_section(obj_writer, str8_array_fixed(sect_data));
     coff_obj_writer_section_push_reloc(obj_writer, sect, 0, weak_second, COFF_Reloc_X64_Addr32);
 
@@ -1123,7 +1123,7 @@ t_weak_tag(void)
   }
 
   String8 entry_name = str8_lit("my_entry");
-  U8 entry_text[] = { 0xC3 };
+  u8 entry_text[] = { 0xC3 };
   String8 entry_obj_name = str8_lit("entry.obj");
   {
     COFF_ObjWriter  *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
@@ -1182,12 +1182,12 @@ t_undef_section(void)
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
 
-    U8 data[] = { 0, 0, 0, 0 };
+    u8 data[] = { 0, 0, 0, 0 };
     COFF_ObjSection *data_section = t_push_data_section(obj_writer, str8_array_fixed(data));
     COFF_ObjSymbol  *foo          = coff_obj_writer_push_symbol_undef_sect(obj_writer, str8_lit(".mysect"), COFF_SectionFlag_CntInitializedData|COFF_SectionFlag_MemRead);
     coff_obj_writer_section_push_reloc(obj_writer, data_section, 0, foo, COFF_Reloc_X64_Addr32Nb);
 
-    U8 text[] = { 0xC3 };
+    u8 text[] = { 0xC3 };
     COFF_ObjSection *text_section = t_push_text_section(obj_writer, str8_array_fixed(text));
     coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("my_entry"), 0, text_section);
 
@@ -1196,7 +1196,7 @@ t_undef_section(void)
     coff_obj_writer_release(&obj_writer);
   }
 
-  U8 payload[] = { 1, 2, 3 };
+  u8 payload[] = { 1, 2, 3 };
   String8 sec_defn_obj = t_make_sec_defn_obj(scratch.arena, str8_array_fixed(payload));
 
   t_write_file(str8_lit("main.obj"), main_obj);
@@ -1248,13 +1248,13 @@ t_sect_symbol(void)
 
   String8 main_obj_name = str8_lit("main.obj");
   {
-    U8 data[8] = {0};
+    u8 data[8] = {0};
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
     COFF_ObjSection *sect = t_push_data_section(obj_writer, str8_array_fixed(data));
     COFF_ObjSymbol *symbol = coff_obj_writer_push_symbol_undef_sect(obj_writer, str8_lit(".mysect$2222"), PE_DATA_SECTION_FLAGS);
     coff_obj_writer_section_push_reloc_addr(obj_writer, sect, 0, symbol);
 
-    U8 text[] = { 0xC3 };
+    u8 text[] = { 0xC3 };
     COFF_ObjSection *text_sect = t_push_text_section(obj_writer, str8_array_fixed(text));
     coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("my_entry"), 0, text_sect);
 
@@ -1284,11 +1284,11 @@ t_sect_symbol(void)
 
   String8 sect_data = str8_substr(exe, rng_1u64(sect->foff, sect->foff + sect->vsize));
 
-  String8 addr_data = str8_substr(sect_data, rng_1u64(0, sizeof(U64)));
-  if (addr_data.size != sizeof(U64)) {
+  String8 addr_data = str8_substr(sect_data, rng_1u64(0, sizeof(u64)));
+  if (addr_data.size != sizeof(u64)) {
     goto exit;
   }
-  U64 addr = *(U64 *)addr_data.str;
+  u64 addr = *(u64 *)addr_data.str;
   if (addr - (pe.image_base + sect->voff) != 8) {
     goto exit;
   }
@@ -1315,11 +1315,11 @@ t_undef_reloc_section(void)
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
 
-    U8 text[] = { 0xC3 };
+    u8 text[] = { 0xC3 };
     COFF_ObjSection *text_section = coff_obj_writer_push_section(obj_writer, str8_lit(".text"), PE_TEXT_SECTION_FLAGS, str8_array_fixed(text));
     COFF_ObjSymbol *my_entry_symbol = coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("my_entry"), 0, text_section);
 
-    U8 data[8] = { 0 };
+    u8 data[8] = { 0 };
     COFF_ObjSection *data_section = t_push_data_section(obj_writer, str8_array_fixed(data));
     COFF_ObjSymbol  *foo          = coff_obj_writer_push_symbol_undef_sect(obj_writer, str8_lit(".reloc"), PE_RELOC_SECTION_FLAGS);
     coff_obj_writer_section_push_reloc(obj_writer, data_section, 0, foo, COFF_Reloc_X64_Addr64);
@@ -1329,7 +1329,7 @@ t_undef_reloc_section(void)
     coff_obj_writer_release(&obj_writer);
   }
 
-  U8 payload[] = { 1, 2, 3 };
+  u8 payload[] = { 1, 2, 3 };
   String8 sec_defn_obj = t_make_sec_defn_obj(scratch.arena, str8_array_fixed(payload));
 
   t_write_file(str8_lit("main.obj"), main_obj);
@@ -1358,7 +1358,7 @@ t_find_merged_pdata(void)
 
   T_Result result = T_Result_Fail;
 
-  U8 foobar_payload[] = {
+  u8 foobar_payload[] = {
     0x40, 0x57, 0x48, 0x81, 0xEC, 0x00, 0x02, 0x00, 0x00, 0x48, 0x8B, 0x05, 0x00, 0x00, 0x00, 0x00,
     0x48, 0x33, 0xC4, 0x48, 0x89, 0x84, 0x24, 0xF0, 0x01, 0x00, 0x00, 0x48, 0x8D, 0x04, 0x24, 0x48,
     0x8B, 0xF8, 0x33, 0xC0, 0xB9, 0xEC, 0x01, 0x00, 0x00, 0xF3, 0xAA, 0xB8, 0x04, 0x00, 0x00, 0x00,
@@ -1367,12 +1367,12 @@ t_find_merged_pdata(void)
     0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC, 0xCC,
     0x48, 0x83, 0xEC, 0x28, 0xE8, 0x00, 0x00, 0x00, 0x00, 0x48, 0x83, 0xC4, 0x28, 0xC3      
   };
-  U8 xdata_payload[] = {
+  u8 xdata_payload[] = {
     0x19, 0x1B, 0x03, 0x00, 0x09, 0x01, 0x40, 0x00, 0x02, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
     0xF0, 0x01, 0x00, 0x00, 0x01, 0x04, 0x01, 0x00, 0x04, 0x42, 0x00, 0x00
   };
   PE_IntelPdata intel_pdata = {0};
-  U8 text_payload[]  = { 0xC3 };
+  u8 text_payload[]  = { 0xC3 };
 
   String8 main_obj;
   {
@@ -1440,7 +1440,7 @@ t_section_sort(void)
   }
 
   String8 entry_obj_name = str8_lit("entry.obj");
-  U8 entry_text[] = { 0xC3 };
+  u8 entry_text[] = { 0xC3 };
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
     COFF_ObjSection *text_sect = t_push_text_section(obj_writer, str8_array_fixed(entry_text));
@@ -1501,7 +1501,7 @@ t_flag_conf(void)
     }
   }
 
-  U8 entry_text[] = { 0xC3 };
+  u8 entry_text[] = { 0xC3 };
   String8 entry_obj_name = str8_lit("entry.obj");
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
@@ -1569,7 +1569,7 @@ t_invalid_bss(void)
   String8 entry_obj_name = str8_lit("entry.obj");
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = { 0xC3 };
+    u8 text[] = { 0xC3 };
     COFF_ObjSection *text_sect = t_push_text_section(obj_writer, str8_array_fixed(text));
     coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("my_entry"), 0, text_sect);
     String8 entry_obj = coff_obj_writer_serialize(scratch.arena, obj_writer);
@@ -1619,7 +1619,7 @@ t_common_block(void)
   T_Result result = T_Result_Fail;
 
   String8 a_obj_name = str8_lit("a.obj");
-  U8 a_data[6] = {0};
+  u8 a_data[6] = {0};
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
     COFF_ObjSymbol *symbol = coff_obj_writer_push_symbol_common(obj_writer, str8_lit("A"), 3);
@@ -1633,7 +1633,7 @@ t_common_block(void)
   }
 
   String8 b_obj_name = str8_lit("b.obj");
-  U8 b_data[9] = { 0 };
+  u8 b_data[9] = { 0 };
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
     COFF_ObjSection *data_sect = t_push_data_section(obj_writer, str8_array_fixed(b_data));
@@ -1648,7 +1648,7 @@ t_common_block(void)
   String8 entry_obj_name = str8_lit("entry.obj");
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = { 0xC3 };
+    u8 text[] = { 0xC3 };
     COFF_ObjSection *text_sect = t_push_text_section(obj_writer, str8_array_fixed(text));
     coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("my_entry"), 0, text_sect);
     String8 entry_obj = coff_obj_writer_serialize(scratch.arena, obj_writer);
@@ -1673,8 +1673,8 @@ t_common_block(void)
 
   // ensure linker correctly patched addresses for symbols pointing into common block
   String8             data      = str8_substr(exe, rng_1u64(data_sect->foff, data_sect->foff + data_sect->fsize));
-  U32                *a_addr    = (U32 *)data.str;
-  U64                *b_addr    = (U64 *)(data.str + sizeof(a_data));
+  u32                *a_addr    = (u32 *)data.str;
+  u64                *b_addr    = (u64 *)(data.str + sizeof(a_data));
   if (*a_addr != (pe.image_base + comm_sect->voff + 0x10)) { goto exit; }
   if (*b_addr != (pe.image_base + comm_sect->voff + 0x8)) { goto exit; }
   
@@ -1693,9 +1693,9 @@ t_base_relocs(void)
 
   // main.obj
   String8 entry_name = str8_lit("my_entry");
-  U64 mov_func_name64 = 2;
-  U64 mov_func_name32 = 16;
-  U8 main_text[] = {
+  u64 mov_func_name64 = 2;
+  u64 mov_func_name32 = 16;
+  u8 main_text[] = {
     0x48, 0xb8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,  // mov rax, func_name
     0xff, 0xd0,                                                  // call rax
     0x48, 0x31, 0xc0,                                            // xor rax, rax
@@ -1706,7 +1706,7 @@ t_base_relocs(void)
 
   // func.obj
   String8 func_name   = str8_lit("foo");
-  U8      func_text[] = { 0xc3 };
+  u8      func_text[] = { 0xc3 };
 
   String8 main_obj_name = str8_lit("main.obj");
   {
@@ -1717,7 +1717,7 @@ t_base_relocs(void)
     coff_obj_writer_section_push_reloc(obj_writer, text_sect, mov_func_name32, func_undef, COFF_Reloc_X64_Addr32);
 
     // linker must not produce base relocations for absolute symbol
-    U8 data[4] = {0};
+    u8 data[4] = {0};
     COFF_ObjSection *data_sect = t_push_data_section(obj_writer, str8_array_fixed(data));
     COFF_ObjSymbol *abs_symbol = coff_obj_writer_push_symbol_abs(obj_writer, str8_lit("abs"), 0x12345678, COFF_SymStorageClass_Static);
     coff_obj_writer_section_push_reloc(obj_writer, data_sect, 0, abs_symbol, COFF_Reloc_X64_Addr32);
@@ -1806,7 +1806,7 @@ t_simple_lib_test(void)
     }
   }
 
-  U8 entry_text[] = {
+  u8 entry_text[] = {
     0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,
     0xC3
   };
@@ -1852,7 +1852,7 @@ t_simple_lib_test(void)
   }
 
   // linker must pull-in test.obj and patch relocation for "test" symbol
-  U32 *data_addr32nb = (U32 *)(text_data.str+3);
+  u32 *data_addr32nb = (u32 *)(text_data.str+3);
   if (*data_addr32nb != data_sect->voff) {
     goto exit;
   }
@@ -1874,7 +1874,7 @@ t_import_export(void)
   {
     String8 export_obj_name    = str8_lit("export.obj");
     String8 export_obj_payload = str8_lit("test");
-    U8      export_text[]      = { 0xC3 };
+    u8      export_text[]      = { 0xC3 };
 
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
     COFF_ObjSection *data_sect = t_push_data_section(obj_writer, export_obj_payload);
@@ -1900,7 +1900,7 @@ t_import_export(void)
 
   {
     String8 import_obj_name = str8_lit("import.obj");
-    U8 import_payload[1024] = {0};
+    u8 import_payload[1024] = {0};
 
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
     COFF_ObjSection *data_sect = t_push_data_section(obj_writer, str8_array_fixed(import_payload));
@@ -1920,7 +1920,7 @@ t_import_export(void)
       "ord",
     };
 
-    for (U64 i = 0; i < len(import_symbols); ++i) {
+    for (u64 i = 0; i < len(import_symbols); ++i) {
       COFF_ObjSymbol *symbol = coff_obj_writer_push_symbol_undef(obj_writer, str8_cstring(import_symbols[i]));
       coff_obj_writer_section_push_reloc_voff(obj_writer, data_sect, i * 4, symbol);
     }
@@ -1936,7 +1936,7 @@ t_import_export(void)
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
     COFF_ObjSection *s1 = coff_obj_writer_push_section(obj_writer, str8_lit(".s1"), PE_DATA_SECTION_FLAGS, str8_lit("s1"));
     COFF_ObjSection *s2 = coff_obj_writer_push_section(obj_writer, str8_lit(".s2"), PE_DATA_SECTION_FLAGS, str8_lit("s2"));
-    COFF_ObjSection *text_sect = coff_obj_writer_push_section(obj_writer, str8_lit(".text"), PE_TEXT_SECTION_FLAGS, str8_array_fixed((U8[]){ 0xC3 }));
+    COFF_ObjSection *text_sect = coff_obj_writer_push_section(obj_writer, str8_lit(".text"), PE_TEXT_SECTION_FLAGS, str8_array_fixed((u8[]){ 0xC3 }));
     coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("_DllMainCRTStartup"), 0, text_sect);
     coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("s1"), 0, s1);
     coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("s2"), 0, s2);
@@ -1988,9 +1988,9 @@ t_import_export(void)
         str8_lit_comp("ord"),
         str8_lit_comp("ord2")
       };
-      U64 match_count = 0;
-      for (U64 i = 0; i < export_table.export_count; i += 1) {
-        for (U64 k = 0; k < len(expected_symbols); k += 1) {
+      u64 match_count = 0;
+      for (u64 i = 0; i < export_table.export_count; i += 1) {
+        for (u64 k = 0; k < len(expected_symbols); k += 1) {
           if (str8_match(export_table.exports[i].name, expected_symbols[k], 0)) {
             match_count += 1;
           }
@@ -2006,9 +2006,9 @@ t_import_export(void)
         str8_lit_comp("baz.qwe"),
         str8_lit_comp("baz.#1"),
       };
-      U64 match_count = 0;
-      for (U64 i = 0; i < export_table.export_count; i += 1) {
-        for (U64 k = 0; k < len(expected_forwarders); k += 1) {
+      u64 match_count = 0;
+      for (u64 i = 0; i < export_table.export_count; i += 1) {
+        for (u64 k = 0; k < len(expected_forwarders); k += 1) {
           if (str8_match(export_table.exports[i].forwarder, expected_forwarders[k], 0)) {
             match_count += 1;
           }
@@ -2031,15 +2031,15 @@ t_import_export(void)
   }
 
   char *export_dll_procs[] = { "foo", "bar", "baz", "baf" };
-  for (U64 i = 0; i < len(export_dll_procs); ++i) {
+  for (u64 i = 0; i < len(export_dll_procs); ++i) {
     void *proc = GetProcAddress(export_dll, export_dll_procs[i]);
     if (proc == 0) {
       goto exit;
     }
   }
 
-  U16 export_dll_ordinals[] = { 5 };
-  for (U64 i = 0; i < len(export_dll_ordinals); ++i) {
+  u16 export_dll_ordinals[] = { 5 };
+  for (u64 i = 0; i < len(export_dll_ordinals); ++i) {
     void *proc = GetProcAddress(export_dll, MAKEINTRESOURCE(export_dll_ordinals[i]));
     if (proc == 0) {
       goto exit;
@@ -2071,7 +2071,7 @@ t_image_base(void)
   String8 obj_name = str8_lit("image_base.obj");
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = { 
+    u8 text[] = { 
       0x48, 0x8D, 0x0D, 0x00, 0x00, 0x00, 0x00, // lea rcx, [__ImageBase]
       0x48, 0xB8, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // mov rax, __ImageBase
       0xB8, 0x00, 0x00, 0x00, 0x00, // mov eax, __ImageBase
@@ -2106,7 +2106,7 @@ t_image_base(void)
     goto exit;
   }
 
-  U8 expected_text[] = {
+  u8 expected_text[] = {
     0x48, 0x8D, 0x0D, 0xF9, 0xEF, 0xFF, 0xFF,
     0x48, 0xB8, 0x00, 0x00, 0x00, 0x40, 0x01, 0x00, 0x00, 0x20,
     0xB8, 0x00, 0x00, 0x00, 0x00,
@@ -2158,7 +2158,7 @@ t_comdat_any(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -2290,7 +2290,7 @@ t_comdat_same_size(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -2367,7 +2367,7 @@ t_comdat_exact_match(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -2443,7 +2443,7 @@ t_comdat_largest(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -2528,7 +2528,7 @@ t_comdat_associative(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -2597,7 +2597,7 @@ t_comdat_associative_loop(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -2641,7 +2641,7 @@ t_comdat_associative_non_comdat(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -2709,7 +2709,7 @@ t_comdat_associative_out_of_bounds(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -2742,7 +2742,7 @@ t_comdat_with_offset(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 a[] = "1Hello, World!";
+    u8 a[] = "1Hello, World!";
     COFF_ObjSection *sect = coff_obj_writer_push_section(obj_writer, str8_lit(".rdata"), PE_RDATA_SECTION_FLAGS|COFF_SectionFlag_LnkCOMDAT, str8_array_fixed(a));
     coff_obj_writer_push_symbol_secdef(obj_writer, sect, COFF_ComdatSelect_Largest);
     coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("TEST"), 1, sect);
@@ -2753,7 +2753,7 @@ t_comdat_with_offset(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 a[] = "Hello, World!";
+    u8 a[] = "Hello, World!";
     COFF_ObjSection *sect = coff_obj_writer_push_section(obj_writer, str8_lit(".rdata"), PE_RDATA_SECTION_FLAGS|COFF_SectionFlag_LnkCOMDAT, str8_array_fixed(a));
     coff_obj_writer_push_symbol_secdef(obj_writer, sect, COFF_ComdatSelect_Largest);
     coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("TEST"), 1, sect);
@@ -2764,7 +2764,7 @@ t_comdat_with_offset(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -2794,7 +2794,7 @@ t_reloc_against_removed_comdat(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 a[] = "1Hello, World!";
+    u8 a[] = "1Hello, World!";
     COFF_ObjSection *sect = coff_obj_writer_push_section(obj_writer, str8_lit(".rdata"), PE_RDATA_SECTION_FLAGS|COFF_SectionFlag_LnkCOMDAT, str8_array_fixed(a));
     coff_obj_writer_push_symbol_secdef(obj_writer, sect, COFF_ComdatSelect_Largest);
     coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("TEST"), 1, sect);
@@ -2805,13 +2805,13 @@ t_reloc_against_removed_comdat(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 a[] = "H";
+    u8 a[] = "H";
     COFF_ObjSection *comdat_sect = coff_obj_writer_push_section(obj_writer, str8_lit(".rdata"), PE_RDATA_SECTION_FLAGS|COFF_SectionFlag_LnkCOMDAT, str8_array_fixed(a));
     coff_obj_writer_push_symbol_secdef(obj_writer, comdat_sect, COFF_ComdatSelect_Largest);
     coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("TEST"), 1, comdat_sect);
     COFF_ObjSymbol *static_symbol = coff_obj_writer_push_symbol_static(obj_writer, str8_lit("STATIC"), 2, comdat_sect);
 
-    U8 rdata[4] = {0};
+    u8 rdata[4] = {0};
     COFF_ObjSection *regular_sect = coff_obj_writer_push_section(obj_writer, str8_lit(".rdata"), PE_RDATA_SECTION_FLAGS, str8_array_fixed(rdata));
     coff_obj_writer_section_push_reloc_voff(obj_writer, regular_sect, 0, static_symbol);
 
@@ -2822,7 +2822,7 @@ t_reloc_against_removed_comdat(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -2871,7 +2871,7 @@ t_sect_align(void)
     COFF_ObjSection *sect_align_4096 = coff_obj_writer_push_section(obj_writer, str8_lit(".a"), PE_DATA_SECTION_FLAGS|COFF_SectionFlag_Align4096Bytes, str8_lit("m"));
     COFF_ObjSection *sect_align_8192 = coff_obj_writer_push_section(obj_writer, str8_lit(".a"), PE_DATA_SECTION_FLAGS|COFF_SectionFlag_Align8192Bytes, str8_lit("z"));
 
-    U8 text[] = { 0xC3 };
+    u8 text[] = { 0xC3 };
     COFF_ObjSection *text_sect = t_push_text_section(obj_writer, str8_array_fixed(text));
     coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("my_entry"), 0, text_sect);
 
@@ -2993,7 +2993,7 @@ t_alt_name(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -3083,7 +3083,7 @@ t_include(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -3149,7 +3149,7 @@ t_communal_var_vs_regular(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -3174,7 +3174,7 @@ t_communal_var_vs_regular(void)
   if (linker_exit_code != 0) { goto exit; }
 
   char *exes[] = { "a.exe", "b.exe" };
-  for (U64 i = 0; i < len(exes); i += 1) {
+  for (u64 i = 0; i < len(exes); i += 1) {
     String8             exe           = t_read_file(scratch.arena, str8_cstring(exes[i]));
     PE_BinInfo          pe            = pe_bin_info_from_data(scratch.arena, exe);
     COFF_SectionHeader *section_table = (COFF_SectionHeader *)str8_substr(exe, pe.section_table_range).str;
@@ -3218,7 +3218,7 @@ t_communal_var_vs_regular_comdat(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -3243,7 +3243,7 @@ t_communal_var_vs_regular_comdat(void)
   if (linker_exit_code != 0) { goto exit; }
 
   char *exes[] = { "a.exe", "b.exe" };
-  for (U64 i = 0; i < len(exes); i += 1) {
+  for (u64 i = 0; i < len(exes); i += 1) {
     String8             exe           = t_read_file(scratch.arena, str8_cstring(exes[i]));
     PE_BinInfo          pe            = pe_bin_info_from_data(scratch.arena, exe);
     COFF_SectionHeader *section_table = (COFF_SectionHeader *)str8_substr(exe, pe.section_table_range).str;
@@ -3268,8 +3268,8 @@ t_import_kernel32(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 data[] = "test";
-    U8 text[] = {
+    u8 data[] = "test";
+    u8 text[] = {
       0x48, 0x83, 0xec, 0x68,                               // sub  rsp,68h                        ; alloc space on stack
       0xc7, 0x44, 0x24, 0x48, 0x18, 0x00, 0x00, 0x00,       // mov  dword ptr [rsp+48h],18h        ; SECURITY_ATTRIBUTES.nLength
       0x48, 0xc7, 0x44, 0x24, 0x50, 0x00, 0x00, 0x00, 0x00, // mov  qword ptr [rsp+50h],0          ; SECURITY_ATTRIBUTES.lpSecurityDescriptor
@@ -3339,15 +3339,15 @@ t_delay_import(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 return_0[] = {
+    u8 return_0[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00, // mov rax, 0
       0xc3 // ret
     };
-    U8 return_1[] = {
+    u8 return_1[] = {
       0x48, 0xC7, 0xC0, 0x01, 0x00, 0x00, 0x00, // mov rax, 1
       0xc3 // ret
     };
-    U8 return_2[] = {
+    u8 return_2[] = {
       0x48, 0xC7, 0xC0, 0x02, 0x00, 0x00, 0x00, // mov rax, 2
       0xc3 // ret
     };
@@ -3363,15 +3363,15 @@ t_delay_import(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 return_0[] = {
+    u8 return_0[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00, // mov rax, 0
       0xc3 // ret
     };
-    U8 return_123[] = {
+    u8 return_123[] = {
       0x48, 0xC7, 0xC0, 0x7B, 0x00, 0x00, 0x00, // mov rax, 123
       0xc3 // ret
     };
-    U8 return_321[] = {
+    u8 return_321[] = {
       0x48, 0xC7, 0xC0, 0x41, 0x01, 0x00, 0x00, // mov rax, 321 
       0xc3 // ret
     };
@@ -3386,7 +3386,7 @@ t_delay_import(void)
   }
 
   {
-    U8 text[] = {
+    u8 text[] = {
       0x56,                         // push  rsi
       0x57,                         // push  rdi
       0x48, 0x83, 0xEC, 0x28,       // sub   rsp,28h
@@ -3498,14 +3498,14 @@ t_delay_import_user32(void)
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
     COFF_ObjSection *data_sect = coff_obj_writer_push_section(obj_writer, str8_lit(".str"), PE_DATA_SECTION_FLAGS, str8_zero());
-    U64 msg_off = data_sect->data.total_size;
+    u64 msg_off = data_sect->data.total_size;
     str8_list_pushf(obj_writer->arena, &data_sect->data, "test\0");
-    U64 caption_off = data_sect->data.total_size;
+    u64 caption_off = data_sect->data.total_size;
     str8_list_pushf(obj_writer->arena, &data_sect->data, "foo\0");
     COFF_ObjSymbol *msg_symbol = coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("msg"), msg_off, data_sect);
     COFF_ObjSymbol *caption_symbol = coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("caption"), caption_off, data_sect);
 
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0x83, 0xEC, 0x28,                   // sub  rsp,28h
       0x45, 0x33, 0xC9,                         // xor  r9d,r9d
       0x4C, 0x8D, 0x05, 0x00, 0x00, 0x00, 0x00, // lea  r8,[msg]
@@ -3554,7 +3554,7 @@ t_empty_section(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -3584,7 +3584,7 @@ t_removed_section(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 test_text[] = { 0xc3 };
+    u8 test_text[] = { 0xc3 };
     COFF_ObjSection *test_sect = coff_obj_writer_push_section(obj_writer, str8_lit(".test"), PE_TEXT_SECTION_FLAGS | COFF_SectionFlag_LnkRemove, str8_array_fixed(test_text));
     coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("TEST"), 0, test_sect);
     String8 obj = coff_obj_writer_serialize(scratch.arena, obj_writer);
@@ -3594,7 +3594,7 @@ t_removed_section(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 text[] = {
+    u8 text[] = {
       0x48, 0xC7, 0xC0, 0x00, 0x00, 0x00, 0x00,  // mov rax, $imm
       0xC3 // ret
     };
@@ -3624,7 +3624,7 @@ t_function_pad_min(void)
 
   {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
-    U8 ret[] = { 0xc3 };
+    u8 ret[] = { 0xc3 };
     COFF_ObjSection *text_sect_0 = t_push_text_section(obj_writer, str8_array_fixed(ret));
     COFF_ObjSection *text_sect_1 = t_push_text_section(obj_writer, str8_array_fixed(ret));
     COFF_ObjSection *text_sect_2 = t_push_text_section(obj_writer, str8_array_fixed(ret));
@@ -3649,7 +3649,7 @@ t_function_pad_min(void)
   if (text_sect == 0) { goto exit; }
   String8             text_data     = str8_substr(exe, rng_1u64(text_sect->foff, text_sect->foff + text_sect->vsize));
 
-  U8 expected_text[] = {
+  u8 expected_text[] = {
     0xcc, 0xcc, 0xcc, 0xcc, 0xc3, 
     0xcc, 0xcc, 0xcc, 0xc3, 
     0xcc, 0xc3, 
@@ -3725,7 +3725,7 @@ entry_point(CmdLine *cmdline)
   // Handle -help
   //
   {
-    B32 print_help = cmd_line_has_flag(cmdline, str8_lit("help")) ||
+    b32 print_help = cmd_line_has_flag(cmdline, str8_lit("help")) ||
                      cmd_line_has_flag(cmdline, str8_lit("h"));
      if (print_help) {
       fprintf(stderr, "--- Help -----------------------------------------------------------------------\n");
@@ -3749,7 +3749,7 @@ entry_point(CmdLine *cmdline)
   {
     if (cmd_line_has_flag(cmdline, str8_lit("list"))) {
       fprintf(stdout, "--- Targets --------------------------------------------------------------------\n");
-      for (U64 i = 0; i < len(target_array); i += 1) {
+      for (u64 i = 0; i < len(target_array); i += 1) {
         fprintf(stdout, "  %s\n", target_array[i].label);
       }
       os_abort(0);
@@ -3842,27 +3842,27 @@ entry_point(CmdLine *cmdline)
   // Run Test Targets
   //
   {
-    U64 max_label_size = 0;
-    for (U64 i = 0; i < len(target_array); i += 1) { max_label_size = max(max_label_size, cstring8_length(target_array[i].label)); }
+    u64 max_label_size = 0;
+    for (u64 i = 0; i < len(target_array); i += 1) { max_label_size = max(max_label_size, cstring8_length(target_array[i].label)); }
 
-    U64 dots_min = 10;
-    U64 dots_size = max_label_size+dots_min;
-    U8 *dots      = push_array(scratch.arena, U8, dots_size);
+    u64 dots_min = 10;
+    u64 dots_size = max_label_size+dots_min;
+    u8 *dots      = push_array(scratch.arena, u8, dots_size);
     MemorySet(dots, '.', dots_size);
 
-    U64  target_indices_count;
-    U64 *target_indices;
+    u64  target_indices_count;
+    u64 *target_indices;
     if (target.node_count == 0) {
       target_indices_count = len(target_array);
-      target_indices       = push_array(scratch.arena, U64, len(target_array));
-      for (U64 i = 0; i < target_indices_count; i += 1) { target_indices[i] = i; }
+      target_indices       = push_array(scratch.arena, u64, len(target_array));
+      for (u64 i = 0; i < target_indices_count; i += 1) { target_indices[i] = i; }
     } else {
       target_indices_count = 0;
-      target_indices       = push_array(scratch.arena, U64, target.node_count);
+      target_indices       = push_array(scratch.arena, u64, target.node_count);
 
       for (String8Node *target_n = target.first; target_n != 0; target_n = target_n->next) {
-        B32 is_target_unknown = 1;
-        for (U64 i = 0; i < len(target_array); i += 1) {
+        b32 is_target_unknown = 1;
+        for (u64 i = 0; i < len(target_array); i += 1) {
           if (str8_match(str8_cstring(target_array[i].label), target_n->string, 0)) {
             target_indices[target_indices_count++] = i;
             is_target_unknown = 0;
@@ -3875,11 +3875,11 @@ entry_point(CmdLine *cmdline)
       }
     }
 
-    U64 pass_count  = 0;
-    U64 fail_count  = 0;
-    U64 crash_count = 0;
-    for (U64 i = 0; i < target_indices_count; i += 1) {
-      U64 target_idx = target_indices[i];
+    u64 pass_count  = 0;
+    u64 fail_count  = 0;
+    u64 crash_count = 0;
+    for (u64 i = 0; i < target_indices_count; i += 1) {
+      u64 target_idx = target_indices[i];
 
       g_wdir = push_str8f(scratch.arena, "%S\\%s", g_out, target_array[target_idx].label);
       g_wdir = os_full_path_from_path(scratch.arena, g_wdir);
@@ -3891,7 +3891,7 @@ entry_point(CmdLine *cmdline)
 
       T_Result result = t_run(target_array[target_idx].r);
 
-      U64 dots_count = (max_label_size - cstring8_length(target_array[target_idx].label)) + dots_min;
+      u64 dots_count = (max_label_size - cstring8_length(target_array[target_idx].label)) + dots_min;
       String8 msg = push_str8f(scratch.arena, "%s%.*s%s", target_array[target_idx].label, dots_count, dots, t_string_from_result(result));
 
       // run progress

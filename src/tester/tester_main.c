@@ -32,7 +32,7 @@
 ////////////////////////////////
 //~ rjf: Entry Points
 
-internal B32 frame(void) { return 0; }
+internal b32 frame(void) { return 0; }
 
 internal void
 entry_point(CmdLine *cmdline)
@@ -72,7 +72,7 @@ entry_point(CmdLine *cmdline)
     Test *next;
     String8 name;
     String8List out;
-    B32 good;
+    b32 good;
   };
   Test *first_test = 0;
   Test *last_test = 0;
@@ -88,7 +88,7 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
   //
   Test(pdb2rdi_determinism)
   {
-    U64 num_repeats_per_pdb = 32;
+    u64 num_repeats_per_pdb = 32;
     String8 pdb_paths[] =
     {
       push_str8f(arena, "%S/mule_main/mule_main.pdb", test_data_folder_path),
@@ -134,14 +134,14 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
       }
       
       // rjf: gather all hashes/paths
-      U64 rdi_hashes_count = rdi_paths.node_count;
-      U128 *rdi_hashes = push_array(arena, U128, rdi_hashes_count);
+      u64 rdi_hashes_count = rdi_paths.node_count;
+      u128 *rdi_hashes = push_array(arena, u128, rdi_hashes_count);
       String8 *rdi_paths_array = push_array(arena, String8, rdi_hashes_count);
-      U64 dump_hashes_count = dump_paths.node_count;
-      U128 *dump_hashes = push_array(arena, U128, dump_hashes_count);
+      u64 dump_hashes_count = dump_paths.node_count;
+      u128 *dump_hashes = push_array(arena, u128, dump_hashes_count);
       String8 *dump_paths_array = push_array(arena, String8, dump_hashes_count);
       {
-        U64 idx = 0;
+        u64 idx = 0;
         for(String8Node *n = rdi_paths.first; n != 0; n = n->next, idx += 1)
         {
           Temp scratch = scratch_begin(0, 0);
@@ -153,7 +153,7 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
         }
       }
       {
-        U64 idx = 0;
+        u64 idx = 0;
         for(String8Node *n = dump_paths.first; n != 0; n = n->next, idx += 1)
         {
           Temp scratch = scratch_begin(0, 0);
@@ -166,7 +166,7 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
       }
       
       // rjf: determine if all hashes match
-      B32 matches = 1;
+      b32 matches = 1;
       for idx in 0..<rdi_hashes_count {
         if(!u128_match(rdi_hashes[idx], rdi_hashes[0]))
         {
@@ -230,7 +230,7 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
   //////////////////////////////
   //- rjf: dump results
   //
-  B32 all_good = 1;
+  b32 all_good = 1;
   for(Test *t = first_test; t != 0; t = t->next)
   {
     if(!t->good)

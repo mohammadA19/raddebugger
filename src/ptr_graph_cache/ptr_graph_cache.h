@@ -11,9 +11,9 @@
 
 struct PTG_Key
 {
-  U128 root_hash;
-  U64 link_offsets[8];
-  U64 link_offsets_count;
+  u128 root_hash;
+  u64 link_offsets[8];
+  u64 link_offsets_count;
 };
 
 ////////////////////////////////
@@ -23,15 +23,15 @@ struct PTG_Key
 
 struct PTG_Node
 {
-  U64 value;
+  u64 value;
 };
 
 
 
 struct PTG_Link
 {
-  U32 from;
-  U32 to;
+  u32 from;
+  u32 to;
 };
 
 
@@ -40,8 +40,8 @@ struct PTG_NodeChunkNode
 {
   PTG_NodeChunkNode *next;
   PTG_Node *v;
-  U64 count;
-  U64 cap;
+  u64 count;
+  u64 cap;
 };
 
 
@@ -50,8 +50,8 @@ struct PTG_NodeChunkList
 {
   PTG_NodeChunkNode *first;
   PTG_NodeChunkNode *last;
-  U64 chunk_count;
-  U64 total_count;
+  u64 chunk_count;
+  u64 total_count;
 };
 
 
@@ -59,7 +59,7 @@ struct PTG_NodeChunkList
 struct PTG_NodeArray
 {
   PTG_Node *v;
-  U64 count;
+  u64 count;
 };
 
 
@@ -68,8 +68,8 @@ struct PTG_LinkChunkNode
 {
   PTG_LinkChunkNode *next;
   PTG_Link *v;
-  U64 count;
-  U64 cap;
+  u64 count;
+  u64 cap;
 };
 
 
@@ -78,8 +78,8 @@ struct PTG_LinkChunkList
 {
   PTG_LinkChunkNode *first;
   PTG_LinkChunkNode *last;
-  U64 chunk_count;
-  U64 total_count;
+  u64 chunk_count;
+  u64 total_count;
 };
 
 
@@ -87,7 +87,7 @@ struct PTG_LinkChunkList
 struct PTG_LinkArray
 {
   PTG_Link *v;
-  U64 count;
+  u64 count;
 };
 
 
@@ -110,11 +110,11 @@ struct PTG_GraphNode
   PTG_Key key;
   
   // rjf: metadata
-  U64 scope_ref_count;
-  U64 last_time_touched_us;
-  U64 last_user_clock_idx_touched;
-  U64 load_count;
-  B32 is_working;
+  u64 scope_ref_count;
+  u64 last_time_touched_us;
+  u64 last_user_clock_idx_touched;
+  u64 load_count;
+  b32 is_working;
   
   // rjf: content
   Arena *arena;
@@ -180,24 +180,24 @@ struct PTG_Shared
   Arena *arena;
   
   // rjf: user clock
-  U64 user_clock_idx;
+  u64 user_clock_idx;
   
   // rjf: cache
-  U64 slots_count;
-  U64 stripes_count;
+  u64 slots_count;
+  u64 stripes_count;
   PTG_GraphSlot *slots;
   PTG_GraphStripe *stripes;
   
   // rjf: user -> xfer thread
-  U64 u2b_ring_size;
-  U8 *u2b_ring_base;
-  U64 u2b_ring_write_pos;
-  U64 u2b_ring_read_pos;
+  u64 u2b_ring_size;
+  u8 *u2b_ring_base;
+  u64 u2b_ring_write_pos;
+  u64 u2b_ring_read_pos;
   OS_Handle u2b_ring_cv;
   OS_Handle u2b_ring_mutex;
   
   // rjf: builder threads
-  U64 builder_thread_count;
+  u64 builder_thread_count;
   OS_Handle *builder_threads;
   
   // rjf: evictor thread

@@ -42,10 +42,10 @@
 ////////////////////////////////
 //~ rjf: Units
 
-#define KB(n)  (((U64)(n)) << 10)
-#define MB(n)  (((U64)(n)) << 20)
-#define GB(n)  (((U64)(n)) << 30)
-#define TB(n)  (((U64)(n)) << 40)
+#define KB(n)  (((u64)(n)) << 10)
+#define MB(n)  (((u64)(n)) << 20)
+#define GB(n)  (((u64)(n)) << 30)
+#define TB(n)  (((u64)(n)) << 40)
 #define Thousand(n)   ((n)*1000)
 #define Million(n)    ((n)*1000000)
 #define Billion(n)    ((n)*1000000000)
@@ -76,8 +76,8 @@
 
 #define Member(T,m)                 (((T*)0)->m)
 #define OffsetOf(T,m)               IntFromPtr(&Member(T,m))
-#define MemberFromOffset(T,ptr,off) (T)((((U8 *)ptr)+(off)))
-#define CastFromMember(T,m,ptr)     (T*)(((U8*)ptr) - OffsetOf(T,m))
+#define MemberFromOffset(T,ptr,off) (T)((((u8 *)ptr)+(off)))
+#define CastFromMember(T,m,ptr)     (T*)(((u8*)ptr) - OffsetOf(T,m))
 
 ////////////////////////////////
 //~ rjf: For-Loop Construct Macros
@@ -132,7 +132,7 @@
 #define InvalidPath        Assert(!"Invalid Path!")
 #define NotImplemented     Assert(!"Not Implemented!")
 #define NoOp               ((void)0)
-#define StaticAssert(C, ID) global U8 Glue(ID, __LINE__)[(C)?1:-1]
+#define StaticAssert(C, ID) global u8 Glue(ID, __LINE__)[(C)?1:-1]
 
 ////////////////////////////////
 //~ rjf: Linked List Building Macros
@@ -209,15 +209,15 @@ CheckNil(nil,p) ? \
 #define Swap(T,a,b) do{T t__ = a; a = b; b = t__;}while(0)
 
 #if ARCH_64BIT
-# define IntFromPtr(ptr) ((U64)(ptr))
+# define IntFromPtr(ptr) ((u64)(ptr))
 #elif ARCH_32BIT
-# define IntFromPtr(ptr) ((U32)(ptr))
+# define IntFromPtr(ptr) ((u32)(ptr))
 #else
 # error Missing pointer-to-integer cast for this architecture.
 #endif
-#define PtrFromInt(i) (void*)((U8*)0 + (i))
+#define PtrFromInt(i) (void*)((u8*)0 + (i))
 
-#define Compose64Bit(a,b)  ((((U64)a) << 32) | ((U64)b));
+#define Compose64Bit(a,b)  ((((u64)a) << 32) | ((u64)b));
 #define AlignPow2(x,b)     (((x) + (b) - 1)&(~((b) - 1)))
 #define AlignDownPow2(x,b) ((x)&(~((b) - 1)))
 #define AlignPadPow2(x,b)  ((0-(x)) & ((b) - 1))
@@ -235,27 +235,7 @@ CheckNil(nil,p) ? \
 ////////////////////////////////
 //~ rjf: Base Types
 
-typedef uint8_t  U8;
-typedef uint16_t U16;
-typedef uint32_t U32;
-typedef uint64_t U64;
-typedef int8_t   S8;
-typedef int16_t  S16;
-typedef int32_t  S32;
-typedef int64_t  S64;
-typedef S8       B8;
-typedef S16      B16;
-typedef S32      B32;
-typedef S64      B64;
-typedef float    F32;
-typedef double   F64;
 typedef void VoidProc(void);
-
-
-struct U128
-{
-  U64 u64[2];
-};
 
 ////////////////////////////////
 //~ rjf: Basic Types & Spaces
@@ -363,8 +343,8 @@ Compiler;
 
 struct TxtPt
 {
-  S64 line;
-  S64 column;
+  i64 line;
+  i64 column;
 };
 
 
@@ -383,175 +363,175 @@ union Guid
 {
   struct
   {
-    U32 data1;
-    U16 data2;
-    U16 data3;
-    U8  data4[8];
+    u32 data1;
+    u16 data2;
+    u16 data3;
+    u8  data4[8];
   };
-  U8 v[16];
+  u8 v[16];
 };
 StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
 
 ////////////////////////////////
 //~ NOTE(allen): Constants
 
-global U32 sign32     = 0x80000000;
-global U32 exponent32 = 0x7F800000;
-global U32 mantissa32 = 0x007FFFFF;
+global u32 sign32     = 0x80000000;
+global u32 exponent32 = 0x7F800000;
+global u32 mantissa32 = 0x007FFFFF;
 
-global F32   big_golden32 = 1.61803398875f;
-global F32 small_golden32 = 0.61803398875f;
+global f32   big_golden32 = 1.61803398875f;
+global f32 small_golden32 = 0.61803398875f;
 
-global F32 pi32 = 3.1415926535897f;
+global f32 pi32 = 3.1415926535897f;
 
-global F64 machine_epsilon64 = 4.94065645841247e-324;
+global f64 machine_epsilon64 = 4.94065645841247e-324;
 
-global U64 max_U64 = 0xffffffffffffffffull;
-global U32 max_U32 = 0xffffffff;
-global U16 max_U16 = 0xffff;
-global U8  max_U8  = 0xff;
+global u64 max_U64 = 0xffffffffffffffffull;
+global u32 max_U32 = 0xffffffff;
+global u16 max_U16 = 0xffff;
+global u8  max_U8  = 0xff;
 
-global S64 max_S64 = (S64)0x7fffffffffffffffull;
-global S32 max_S32 = (S32)0x7fffffff;
-global S16 max_S16 = (S16)0x7fff;
-global S8  max_S8  =  (S8)0x7f;
+global i64 max_S64 = (i64)0x7fffffffffffffffull;
+global i32 max_S32 = (i32)0x7fffffff;
+global i16 max_S16 = (i16)0x7fff;
+global i8  max_S8  =  (i8)0x7f;
 
-global S64 min_S64 = (S64)0xffffffffffffffffull;
-global S32 min_S32 = (S32)0xffffffff;
-global S16 min_S16 = (S16)0xffff;
-global S8  min_S8  =  (S8)0xff;
+global i64 min_S64 = (i64)0xffffffffffffffffull;
+global i32 min_S32 = (i32)0xffffffff;
+global i16 min_S16 = (i16)0xffff;
+global i8  min_S8  =  (i8)0xff;
 
-global const U32 bitmask1  = 0x00000001;
-global const U32 bitmask2  = 0x00000003;
-global const U32 bitmask3  = 0x00000007;
-global const U32 bitmask4  = 0x0000000f;
-global const U32 bitmask5  = 0x0000001f;
-global const U32 bitmask6  = 0x0000003f;
-global const U32 bitmask7  = 0x0000007f;
-global const U32 bitmask8  = 0x000000ff;
-global const U32 bitmask9  = 0x000001ff;
-global const U32 bitmask10 = 0x000003ff;
-global const U32 bitmask11 = 0x000007ff;
-global const U32 bitmask12 = 0x00000fff;
-global const U32 bitmask13 = 0x00001fff;
-global const U32 bitmask14 = 0x00003fff;
-global const U32 bitmask15 = 0x00007fff;
-global const U32 bitmask16 = 0x0000ffff;
-global const U32 bitmask17 = 0x0001ffff;
-global const U32 bitmask18 = 0x0003ffff;
-global const U32 bitmask19 = 0x0007ffff;
-global const U32 bitmask20 = 0x000fffff;
-global const U32 bitmask21 = 0x001fffff;
-global const U32 bitmask22 = 0x003fffff;
-global const U32 bitmask23 = 0x007fffff;
-global const U32 bitmask24 = 0x00ffffff;
-global const U32 bitmask25 = 0x01ffffff;
-global const U32 bitmask26 = 0x03ffffff;
-global const U32 bitmask27 = 0x07ffffff;
-global const U32 bitmask28 = 0x0fffffff;
-global const U32 bitmask29 = 0x1fffffff;
-global const U32 bitmask30 = 0x3fffffff;
-global const U32 bitmask31 = 0x7fffffff;
-global const U32 bitmask32 = 0xffffffff;
+global const u32 bitmask1  = 0x00000001;
+global const u32 bitmask2  = 0x00000003;
+global const u32 bitmask3  = 0x00000007;
+global const u32 bitmask4  = 0x0000000f;
+global const u32 bitmask5  = 0x0000001f;
+global const u32 bitmask6  = 0x0000003f;
+global const u32 bitmask7  = 0x0000007f;
+global const u32 bitmask8  = 0x000000ff;
+global const u32 bitmask9  = 0x000001ff;
+global const u32 bitmask10 = 0x000003ff;
+global const u32 bitmask11 = 0x000007ff;
+global const u32 bitmask12 = 0x00000fff;
+global const u32 bitmask13 = 0x00001fff;
+global const u32 bitmask14 = 0x00003fff;
+global const u32 bitmask15 = 0x00007fff;
+global const u32 bitmask16 = 0x0000ffff;
+global const u32 bitmask17 = 0x0001ffff;
+global const u32 bitmask18 = 0x0003ffff;
+global const u32 bitmask19 = 0x0007ffff;
+global const u32 bitmask20 = 0x000fffff;
+global const u32 bitmask21 = 0x001fffff;
+global const u32 bitmask22 = 0x003fffff;
+global const u32 bitmask23 = 0x007fffff;
+global const u32 bitmask24 = 0x00ffffff;
+global const u32 bitmask25 = 0x01ffffff;
+global const u32 bitmask26 = 0x03ffffff;
+global const u32 bitmask27 = 0x07ffffff;
+global const u32 bitmask28 = 0x0fffffff;
+global const u32 bitmask29 = 0x1fffffff;
+global const u32 bitmask30 = 0x3fffffff;
+global const u32 bitmask31 = 0x7fffffff;
+global const u32 bitmask32 = 0xffffffff;
 
-global const U64 bitmask33 = 0x00000001ffffffffull;
-global const U64 bitmask34 = 0x00000003ffffffffull;
-global const U64 bitmask35 = 0x00000007ffffffffull;
-global const U64 bitmask36 = 0x0000000fffffffffull;
-global const U64 bitmask37 = 0x0000001fffffffffull;
-global const U64 bitmask38 = 0x0000003fffffffffull;
-global const U64 bitmask39 = 0x0000007fffffffffull;
-global const U64 bitmask40 = 0x000000ffffffffffull;
-global const U64 bitmask41 = 0x000001ffffffffffull;
-global const U64 bitmask42 = 0x000003ffffffffffull;
-global const U64 bitmask43 = 0x000007ffffffffffull;
-global const U64 bitmask44 = 0x00000fffffffffffull;
-global const U64 bitmask45 = 0x00001fffffffffffull;
-global const U64 bitmask46 = 0x00003fffffffffffull;
-global const U64 bitmask47 = 0x00007fffffffffffull;
-global const U64 bitmask48 = 0x0000ffffffffffffull;
-global const U64 bitmask49 = 0x0001ffffffffffffull;
-global const U64 bitmask50 = 0x0003ffffffffffffull;
-global const U64 bitmask51 = 0x0007ffffffffffffull;
-global const U64 bitmask52 = 0x000fffffffffffffull;
-global const U64 bitmask53 = 0x001fffffffffffffull;
-global const U64 bitmask54 = 0x003fffffffffffffull;
-global const U64 bitmask55 = 0x007fffffffffffffull;
-global const U64 bitmask56 = 0x00ffffffffffffffull;
-global const U64 bitmask57 = 0x01ffffffffffffffull;
-global const U64 bitmask58 = 0x03ffffffffffffffull;
-global const U64 bitmask59 = 0x07ffffffffffffffull;
-global const U64 bitmask60 = 0x0fffffffffffffffull;
-global const U64 bitmask61 = 0x1fffffffffffffffull;
-global const U64 bitmask62 = 0x3fffffffffffffffull;
-global const U64 bitmask63 = 0x7fffffffffffffffull;
-global const U64 bitmask64 = 0xffffffffffffffffull;
+global const u64 bitmask33 = 0x00000001ffffffffull;
+global const u64 bitmask34 = 0x00000003ffffffffull;
+global const u64 bitmask35 = 0x00000007ffffffffull;
+global const u64 bitmask36 = 0x0000000fffffffffull;
+global const u64 bitmask37 = 0x0000001fffffffffull;
+global const u64 bitmask38 = 0x0000003fffffffffull;
+global const u64 bitmask39 = 0x0000007fffffffffull;
+global const u64 bitmask40 = 0x000000ffffffffffull;
+global const u64 bitmask41 = 0x000001ffffffffffull;
+global const u64 bitmask42 = 0x000003ffffffffffull;
+global const u64 bitmask43 = 0x000007ffffffffffull;
+global const u64 bitmask44 = 0x00000fffffffffffull;
+global const u64 bitmask45 = 0x00001fffffffffffull;
+global const u64 bitmask46 = 0x00003fffffffffffull;
+global const u64 bitmask47 = 0x00007fffffffffffull;
+global const u64 bitmask48 = 0x0000ffffffffffffull;
+global const u64 bitmask49 = 0x0001ffffffffffffull;
+global const u64 bitmask50 = 0x0003ffffffffffffull;
+global const u64 bitmask51 = 0x0007ffffffffffffull;
+global const u64 bitmask52 = 0x000fffffffffffffull;
+global const u64 bitmask53 = 0x001fffffffffffffull;
+global const u64 bitmask54 = 0x003fffffffffffffull;
+global const u64 bitmask55 = 0x007fffffffffffffull;
+global const u64 bitmask56 = 0x00ffffffffffffffull;
+global const u64 bitmask57 = 0x01ffffffffffffffull;
+global const u64 bitmask58 = 0x03ffffffffffffffull;
+global const u64 bitmask59 = 0x07ffffffffffffffull;
+global const u64 bitmask60 = 0x0fffffffffffffffull;
+global const u64 bitmask61 = 0x1fffffffffffffffull;
+global const u64 bitmask62 = 0x3fffffffffffffffull;
+global const u64 bitmask63 = 0x7fffffffffffffffull;
+global const u64 bitmask64 = 0xffffffffffffffffull;
 
-global const U32 bit1  = (1<<0);
-global const U32 bit2  = (1<<1);
-global const U32 bit3  = (1<<2);
-global const U32 bit4  = (1<<3);
-global const U32 bit5  = (1<<4);
-global const U32 bit6  = (1<<5);
-global const U32 bit7  = (1<<6);
-global const U32 bit8  = (1<<7);
-global const U32 bit9  = (1<<8);
-global const U32 bit10 = (1<<9);
-global const U32 bit11 = (1<<10);
-global const U32 bit12 = (1<<11);
-global const U32 bit13 = (1<<12);
-global const U32 bit14 = (1<<13);
-global const U32 bit15 = (1<<14);
-global const U32 bit16 = (1<<15);
-global const U32 bit17 = (1<<16);
-global const U32 bit18 = (1<<17);
-global const U32 bit19 = (1<<18);
-global const U32 bit20 = (1<<19);
-global const U32 bit21 = (1<<20);
-global const U32 bit22 = (1<<21);
-global const U32 bit23 = (1<<22);
-global const U32 bit24 = (1<<23);
-global const U32 bit25 = (1<<24);
-global const U32 bit26 = (1<<25);
-global const U32 bit27 = (1<<26);
-global const U32 bit28 = (1<<27);
-global const U32 bit29 = (1<<28);
-global const U32 bit30 = (1<<29);
-global const U32 bit31 = (1<<30);
-global const U32 bit32 = (1<<31);
+global const u32 bit1  = (1<<0);
+global const u32 bit2  = (1<<1);
+global const u32 bit3  = (1<<2);
+global const u32 bit4  = (1<<3);
+global const u32 bit5  = (1<<4);
+global const u32 bit6  = (1<<5);
+global const u32 bit7  = (1<<6);
+global const u32 bit8  = (1<<7);
+global const u32 bit9  = (1<<8);
+global const u32 bit10 = (1<<9);
+global const u32 bit11 = (1<<10);
+global const u32 bit12 = (1<<11);
+global const u32 bit13 = (1<<12);
+global const u32 bit14 = (1<<13);
+global const u32 bit15 = (1<<14);
+global const u32 bit16 = (1<<15);
+global const u32 bit17 = (1<<16);
+global const u32 bit18 = (1<<17);
+global const u32 bit19 = (1<<18);
+global const u32 bit20 = (1<<19);
+global const u32 bit21 = (1<<20);
+global const u32 bit22 = (1<<21);
+global const u32 bit23 = (1<<22);
+global const u32 bit24 = (1<<23);
+global const u32 bit25 = (1<<24);
+global const u32 bit26 = (1<<25);
+global const u32 bit27 = (1<<26);
+global const u32 bit28 = (1<<27);
+global const u32 bit29 = (1<<28);
+global const u32 bit30 = (1<<29);
+global const u32 bit31 = (1<<30);
+global const u32 bit32 = (1<<31);
 
-global const U64 bit33 = (1ull<<32);
-global const U64 bit34 = (1ull<<33);
-global const U64 bit35 = (1ull<<34);
-global const U64 bit36 = (1ull<<35);
-global const U64 bit37 = (1ull<<36);
-global const U64 bit38 = (1ull<<37);
-global const U64 bit39 = (1ull<<38);
-global const U64 bit40 = (1ull<<39);
-global const U64 bit41 = (1ull<<40);
-global const U64 bit42 = (1ull<<41);
-global const U64 bit43 = (1ull<<42);
-global const U64 bit44 = (1ull<<43);
-global const U64 bit45 = (1ull<<44);
-global const U64 bit46 = (1ull<<45);
-global const U64 bit47 = (1ull<<46);
-global const U64 bit48 = (1ull<<47);
-global const U64 bit49 = (1ull<<48);
-global const U64 bit50 = (1ull<<49);
-global const U64 bit51 = (1ull<<50);
-global const U64 bit52 = (1ull<<51);
-global const U64 bit53 = (1ull<<52);
-global const U64 bit54 = (1ull<<53);
-global const U64 bit55 = (1ull<<54);
-global const U64 bit56 = (1ull<<55);
-global const U64 bit57 = (1ull<<56);
-global const U64 bit58 = (1ull<<57);
-global const U64 bit59 = (1ull<<58);
-global const U64 bit60 = (1ull<<59);
-global const U64 bit61 = (1ull<<60);
-global const U64 bit62 = (1ull<<61);
-global const U64 bit63 = (1ull<<62);
-global const U64 bit64 = (1ull<<63);
+global const u64 bit33 = (1ull<<32);
+global const u64 bit34 = (1ull<<33);
+global const u64 bit35 = (1ull<<34);
+global const u64 bit36 = (1ull<<35);
+global const u64 bit37 = (1ull<<36);
+global const u64 bit38 = (1ull<<37);
+global const u64 bit39 = (1ull<<38);
+global const u64 bit40 = (1ull<<39);
+global const u64 bit41 = (1ull<<40);
+global const u64 bit42 = (1ull<<41);
+global const u64 bit43 = (1ull<<42);
+global const u64 bit44 = (1ull<<43);
+global const u64 bit45 = (1ull<<44);
+global const u64 bit46 = (1ull<<45);
+global const u64 bit47 = (1ull<<46);
+global const u64 bit48 = (1ull<<47);
+global const u64 bit49 = (1ull<<48);
+global const u64 bit50 = (1ull<<49);
+global const u64 bit51 = (1ull<<50);
+global const u64 bit52 = (1ull<<51);
+global const u64 bit53 = (1ull<<52);
+global const u64 bit54 = (1ull<<53);
+global const u64 bit55 = (1ull<<54);
+global const u64 bit56 = (1ull<<55);
+global const u64 bit57 = (1ull<<56);
+global const u64 bit58 = (1ull<<57);
+global const u64 bit59 = (1ull<<58);
+global const u64 bit60 = (1ull<<59);
+global const u64 bit61 = (1ull<<60);
+global const u64 bit62 = (1ull<<61);
+global const u64 bit63 = (1ull<<62);
+global const u64 bit64 = (1ull<<63);
 
 ////////////////////////////////
 //~ allen: Time
@@ -591,31 +571,31 @@ Month;
 
 struct DateTime
 {
-  U16 micro_sec; // [0,999]
-  U16 msec; // [0,999]
-  U16 sec;  // [0,60]
-  U16 min;  // [0,59]
-  U16 hour; // [0,24]
-  U16 day;  // [0,30]
+  u16 micro_sec; // [0,999]
+  u16 msec; // [0,999]
+  u16 sec;  // [0,60]
+  u16 min;  // [0,59]
+  u16 hour; // [0,24]
+  u16 day;  // [0,30]
   union
   {
     WeekDay week_day;
-    U32 wday;
+    u32 wday;
   };
   union
   {
     Month month;
-    U32 mon;
+    u32 mon;
   };
-  U32 year; // 1 = 1 CE, 0 = 1 BC
+  u32 year; // 1 = 1 CE, 0 = 1 BC
 };
 
-typedef U64 DenseTime;
+typedef u64 DenseTime;
 
 ////////////////////////////////
 //~ allen: Files
 
-typedef U32 FilePropertyFlags;
+typedef u32 FilePropertyFlags;
 enum
 {
   FilePropertyFlag_IsFolder = (1 << 0),
@@ -625,7 +605,7 @@ enum
 
 struct FileProperties
 {
-  U64 size;
+  u64 size;
   DenseTime modified;
   DenseTime created;
   FilePropertyFlags flags;

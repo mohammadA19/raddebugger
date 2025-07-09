@@ -31,10 +31,10 @@
 // Demon Linux Entity Extensions
 //  Process: ext_u64 set to memory file descriptor
 //  Thread : ext_u64 cast to DEMON_LNX_ThreadExt
-//  Module : ext_u64 set to U64 (address of name)
+//  Module : ext_u64 set to u64 (address of name)
 
 struct DEMON_LNX_ThreadExt{
-  B32 expecting_dummy_sigstop;
+  b32 expecting_dummy_sigstop;
 };
 StaticAssert(sizeof(DEMON_LNX_ThreadExt) <= sizeof(Member(DEMON_Entity, ext_u64)), check_demon_lnx_thread_ext);
 
@@ -46,24 +46,24 @@ struct DEMON_LNX_AttachNode{
 };
 
 struct DEMON_LNX_ProcessAux{
-  B32 filled;
-  U64 phnum;
-  U64 phent;
-  U64 phdr;
-  U64 execfn;
+  b32 filled;
+  u64 phnum;
+  u64 phent;
+  u64 phdr;
+  u64 execfn;
 };
 
 struct DEMON_LNX_PhdrInfo{
   Rng1U64 range;
-  U64 dynamic;
+  u64 dynamic;
 };
 
 struct DEMON_LNX_ModuleNode{
   DEMON_LNX_ModuleNode *next;
-  U64 vaddr;
-  U64 size;
-  U64 name;
-  U64 already_known;
+  u64 vaddr;
+  u64 size;
+  u64 name;
+  u64 already_known;
 };
 
 struct DEMON_LNX_EntityNode{
@@ -79,78 +79,78 @@ struct DEMON_LNX_EntityNode{
 // we define them here so that we have them all "at once"
 
 struct DEMON_LNX_UserRegsX64{
-  U64 r15;
-	U64 r14;
-	U64 r13;
-	U64 r12;
-	U64 rbp;
-	U64 rbx;
-	U64 r11;
-	U64 r10;
-	U64 r9;
-	U64 r8;
-	U64 rax;
-	U64 rcx;
-	U64 rdx;
-	U64 rsi;
-	U64 rdi;
-	U64 orig_rax;
-	U64 rip;
-	U64 cs;
-	U64 rflags;
-	U64 rsp;
-	U64 ss;
-	U64 fsbase;
-	U64 gsbase;
-	U64 ds;
-	U64 es;
-	U64 fs;
-	U64 gs;
+  u64 r15;
+	u64 r14;
+	u64 r13;
+	u64 r12;
+	u64 rbp;
+	u64 rbx;
+	u64 r11;
+	u64 r10;
+	u64 r9;
+	u64 r8;
+	u64 rax;
+	u64 rcx;
+	u64 rdx;
+	u64 rsi;
+	u64 rdi;
+	u64 orig_rax;
+	u64 rip;
+	u64 cs;
+	u64 rflags;
+	u64 rsp;
+	u64 ss;
+	u64 fsbase;
+	u64 gsbase;
+	u64 ds;
+	u64 es;
+	u64 fs;
+	u64 gs;
 };
 
 struct DEMON_LNX_UserX64{
   DEMON_LNX_UserRegsX64 regs;
-  S32 u_fpvalid, _pad0;
+  i32 u_fpvalid, _pad0;
   SYMS_XSaveLegacy i387;
-  U64 u_tsize, u_dsize, u_ssize, start_code, start_stack;
-  U64 signal;
-  S32 reserved, _pad1;
-  U64 u_ar0, u_fpstate;
-  U64 magic;
-  U8  u_comm[32];
-  U64 u_debugreg[8];
+  u64 u_tsize, u_dsize, u_ssize, start_code, start_stack;
+  u64 signal;
+  i32 reserved, _pad1;
+  u64 u_ar0, u_fpstate;
+  u64 magic;
+  u8  u_comm[32];
+  u64 u_debugreg[8];
 };
 
 struct DEMON_LNX_UserRegsX86{
-  U32 ebx;
-	U32 ecx;
-	U32 edx;
-	U32 esi;
-	U32 edi;
-	U32 ebp;
-	U32 eax;
-	U32 ds;
-	U32 es;
-	U32 fs;
-	U32 gs;
-	U32 orig_eax;
-	U32 eip;
-	U32 cs;
-	U32 eflags;
-	U32 sp;
-	U32 ss;
+  u32 ebx;
+	u32 ecx;
+	u32 edx;
+	u32 esi;
+	u32 edi;
+	u32 ebp;
+	u32 eax;
+	u32 ds;
+	u32 es;
+	u32 fs;
+	u32 gs;
+	u32 orig_eax;
+	u32 eip;
+	u32 cs;
+	u32 eflags;
+	u32 sp;
+	u32 ss;
 };
 
 struct DEMON_LNX_UserX86{
   DEMON_LNX_UserRegsX86 regs;
-  S32 u_fpvalid;
+  i32 u_fpvalid;
   SYMS_FSave i387;
-  U32 u_tsize, u_dsize, u_ssize, start_code, start_stack;
-  S32 signal, reserved;
-  U32 u_ar0, u_fpstate;
-  U32 magic;
-  U8  u_comm[32];
-  U32 u_debugreg[8];
+  u32 u_tsize, u_dsize, u_ssize, start_code, start_stack;
+  i32 signal, reserved;
+  u32 u_ar0, u_fpstate;
+  u32 magic;
+  u8  u_comm[32];
+  u32 u_debugreg[8];
 };
 
 ////////////////////////////////
@@ -176,13 +176,13 @@ typedef int DEMON_LNX_MapsEntryType;
 
 struct DEMON_LNX_MapsEntry
 {
-  U64 address_lo;
-  U64 address_hi;
+  u64 address_lo;
+  u64 address_hi;
   DEMON_LNX_PermFlags perms;
-  U64 offset;
-  U32 dev_major;
-  U32 dev_minor;
-  U64 inode;
+  u64 offset;
+  u32 dev_major;
+  u32 dev_minor;
+  u64 inode;
   String8 pathname;
   DEMON_LNX_MapsEntryType type;
   pid_t stack_tid;
@@ -200,8 +200,8 @@ struct DEMON_LNX_MapsEntry
 
 
 
-internal DEMON_LNX_PhdrInfo    demon_lnx_phdr_info_from_memory(int memory_fd, B32 is_32bit,
-                                                               U64 phvaddr, U64 phstride, U64 phcount);
+internal DEMON_LNX_PhdrInfo    demon_lnx_phdr_info_from_memory(int memory_fd, b32 is_32bit,
+                                                               u64 phvaddr, u64 phstride, u64 phcount);
 
 
 

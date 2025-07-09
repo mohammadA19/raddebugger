@@ -10,10 +10,10 @@ typedef struct LNK_Obj
   String8             data;
   String8             path;
   String8             lib_path;
-  U32                 input_idx;
+  u32                 input_idx;
   COFF_FileHeaderInfo header;
-  U32                *comdats;
-  B8                  hotpatch;
+  u32                *comdats;
+  b8                  hotpatch;
 } LNK_Obj;
 
 typedef struct LNK_ObjNode
@@ -24,14 +24,14 @@ typedef struct LNK_ObjNode
 
 typedef struct LNK_ObjList
 {
-  U64          count;
+  u64          count;
   LNK_ObjNode *first;
   LNK_ObjNode *last;
 } LNK_ObjList;
 
 typedef struct LNK_ObjNodeArray
 {
-  U64          count;
+  u64          count;
   LNK_ObjNode *v;
 } LNK_ObjNodeArray;
 
@@ -52,7 +52,7 @@ typedef struct LNK_Directive
 
 typedef struct LNK_DirectiveList
 {
-  U64            count;
+  u64            count;
   LNK_Directive *first;
   LNK_Directive *last;
 } LNK_DirectiveList;
@@ -68,8 +68,8 @@ typedef struct
 {
   LNK_InputObj    **inputs;
   LNK_ObjNodeArray  objs;
-  U64               obj_id_base;
-  U32               machine;
+  u64               obj_id_base;
+  u32               machine;
 } LNK_ObjIniter;
 
 typedef struct
@@ -84,7 +84,7 @@ typedef struct
 {
   LNK_Obj    **objs;
   String8      name;
-  B32          collect_discarded;
+  b32          collect_discarded;
   String8List *out_lists;
 } LNK_SectionCollector;
 

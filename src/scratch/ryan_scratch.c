@@ -35,10 +35,10 @@ global R_Handle window_r = {0};
 ////////////////////////////////
 //~ rjf: Entry Points
 
-internal B32
+internal b32
 frame(void)
 {
-  B32 quit = 0;
+  b32 quit = 0;
   Temp scratch = scratch_begin(0, 0);
   
   //- rjf: events test

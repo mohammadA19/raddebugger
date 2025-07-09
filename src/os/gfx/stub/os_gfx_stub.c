@@ -60,42 +60,42 @@ os_window_focus(OS_Handle window)
 {
 }
 
-internal B32
+internal b32
 os_window_is_focused(OS_Handle window)
 {
   return 0;
 }
 
-internal B32
+internal b32
 os_window_is_fullscreen(OS_Handle window)
 {
   return 0;
 }
 
 internal void
-os_window_set_fullscreen(OS_Handle window, B32 fullscreen)
+os_window_set_fullscreen(OS_Handle window, b32 fullscreen)
 {
 }
 
-internal B32
+internal b32
 os_window_is_maximized(OS_Handle window)
 {
   return 0;
 }
 
 internal void
-os_window_set_maximized(OS_Handle window, B32 maximized)
+os_window_set_maximized(OS_Handle window, b32 maximized)
 {
 }
 
-internal B32
+internal b32
 os_window_is_minimized(OS_Handle window)
 {
   return 0;
 }
 
 internal void
-os_window_set_minimized(OS_Handle window, B32 minimized)
+os_window_set_minimized(OS_Handle window, b32 minimized)
 {
 }
 
@@ -115,12 +115,12 @@ os_window_clear_custom_border_data(OS_Handle handle)
 }
 
 internal void
-os_window_push_custom_title_bar(OS_Handle handle, F32 thickness)
+os_window_push_custom_title_bar(OS_Handle handle, f32 thickness)
 {
 }
 
 internal void
-os_window_push_custom_edges(OS_Handle handle, F32 thickness)
+os_window_push_custom_edges(OS_Handle handle, f32 thickness)
 {
 }
 
@@ -143,7 +143,7 @@ os_client_rect_from_window(OS_Handle window)
   return rect;
 }
 
-internal F32
+internal f32
 os_dpi_from_window(OS_Handle window)
 {
   return 96.f;
@@ -186,7 +186,7 @@ os_dim_from_monitor(OS_Handle monitor)
   return v;
 }
 
-internal F32
+internal f32
 os_dpi_from_monitor(OS_Handle monitor)
 {
   return 96.f;
@@ -201,7 +201,7 @@ os_send_wakeup_event(void)
 }
 
 internal OS_EventList
-os_get_events(Arena *arena, B32 wait)
+os_get_events(Arena *arena, b32 wait)
 {
   OS_EventList evts = {0};
   return evts;
@@ -214,7 +214,7 @@ os_get_modifiers(void)
   return f;
 }
 
-internal B32
+internal b32
 os_key_is_down(OS_Key key)
 {
   return 0;
@@ -238,7 +238,7 @@ os_set_cursor(OS_Cursor cursor)
 //~ rjf: @os_hooks Native User-Facing Graphical Messages (Implemented Per-OS)
 
 internal void
-os_graphical_message(B32 error, String8 title, String8 message)
+os_graphical_message(b32 error, String8 title, String8 message)
 {
 }
 

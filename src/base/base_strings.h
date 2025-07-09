@@ -12,20 +12,20 @@
 
 struct String8
 {
-  U8 *str;
-  U64 size;
+  u8 *str;
+  u64 size;
 };
 
 struct String16
 {
-  U16 *str;
-  U64 size;
+  u16 *str;
+  u64 size;
 };
 
 struct String32
 {
-  U32 *str;
-  U64 size;
+  u32 *str;
+  u64 size;
 };
 
 ////////////////////////////////
@@ -47,27 +47,27 @@ struct String8List
 {
   String8Node *first;
   String8Node *last;
-  U64 node_count;
-  U64 total_size;
+  u64 node_count;
+  u64 total_size;
 };
 
 struct String8Array
 {
   String8 *v;
-  U64 count;
+  u64 count;
 };
 
 ////////////////////////////////
 //~ rjf: String Matching, Splitting, & Joining Types
 
-enum StringMatchFlags : U32
+enum StringMatchFlags : u32
 {
   StringMatchFlag_CaseInsensitive  = (1 << 0),
   StringMatchFlag_RightSideSloppy  = (1 << 1),
   StringMatchFlag_SlashInsensitive = (1 << 2),
 };
 
-enum StringSplitFlags : U32
+enum StringSplitFlags : u32
 {
   StringSplitFlag_KeepEmpties = (1 << 0),
 };
@@ -110,8 +110,8 @@ struct String8TxtPtPair
 
 struct UnicodeDecode
 {
-  U32 inc;
-  U32 codepoint;
+  u32 inc;
+  u32 codepoint;
 };
 
 ////////////////////////////////
@@ -127,21 +127,21 @@ struct FuzzyMatchRangeList
 {
   FuzzyMatchRangeNode *first;
   FuzzyMatchRangeNode *last;
-  U64 count;
-  U64 needle_part_count;
-  U64 total_dim;
+  u64 count;
+  u64 needle_part_count;
+  u64 total_dim;
 };
 
 ////////////////////////////////
 //~ rjf: String Constructors
 
-#define str8_lit(S)  str8((U8*)(S), sizeof(S) - 1)
-#define str8_lit_comp(S) {(U8*)(S), sizeof(S) - 1,}
+#define str8_lit(S)  str8((u8*)(S), sizeof(S) - 1)
+#define str8_lit_comp(S) {(u8*)(S), sizeof(S) - 1,}
 #define str8_varg(S) (int)((S).size), ((S).str)
 
-#define str8_array(S,C) str8((U8*)(S), sizeof(*(S))*(C))
-#define str8_array_fixed(S) str8((U8*)(S), sizeof(S))
-#define str8_struct(S) str8((U8*)(S), sizeof(*(S)))
+#define str8_array(S,C) str8((u8*)(S), sizeof(*(S))*(C))
+#define str8_array_fixed(S) str8((u8*)(S), sizeof(S))
+#define str8_struct(S) str8((u8*)(S), sizeof(*(S)))
 
 ////////////////////////////////
 //~ rjf: String Matching

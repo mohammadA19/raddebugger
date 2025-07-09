@@ -11,7 +11,7 @@ fp_handle_zero(void)
   return result;
 }
 
-internal B32
+internal b32
 fp_handle_match(FP_Handle a, FP_Handle b)
 {
   return (a.u64[0] == b.u64[0] && a.u64[1] == b.u64[1]);

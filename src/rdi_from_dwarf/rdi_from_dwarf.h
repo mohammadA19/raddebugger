@@ -13,14 +13,14 @@ struct D2R_ConvertParams
   String8 exe_data;
   ExecutableImageKind exe_kind;
   RDIM_SubsetFlags subset_flags;
-  B32 deterministic;
+  b32 deterministic;
 };
 
 typedef struct D2R_TypeTable
 {
   HashTable          *ht;
   RDIM_TypeChunkList *types;
-  U64                 type_chunk_cap;
+  u64                 type_chunk_cap;
   RDIM_Type          *varg_type;
 } D2R_TypeTable;
 
@@ -34,8 +34,8 @@ typedef struct D2R_TagNode
 
 typedef struct D2R_CompUnitContribMap
 {
-  U64                    count;
-  U64                   *info_off_arr;
+  u64                    count;
+  u64                   *info_off_arr;
   RDIM_Rng1U64ChunkList *voff_range_arr;
 } D2R_CompUnitContribMap;
 
