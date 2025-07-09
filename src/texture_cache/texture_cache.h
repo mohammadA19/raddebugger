@@ -7,7 +7,8 @@
 ////////////////////////////////
 //~ rjf: Texture Topology
 
-typedef struct TEX_Topology TEX_Topology;
+
+
 struct TEX_Topology
 {
   Vec2S16 dim;
@@ -17,7 +18,8 @@ struct TEX_Topology
 ////////////////////////////////
 //~ rjf: Cache Types
 
-typedef struct TEX_Node TEX_Node;
+
+
 struct TEX_Node
 {
   TEX_Node *next;
@@ -32,14 +34,16 @@ struct TEX_Node
   U64 load_count;
 };
 
-typedef struct TEX_Slot TEX_Slot;
+
+
 struct TEX_Slot
 {
   TEX_Node *first;
   TEX_Node *last;
 };
 
-typedef struct TEX_Stripe TEX_Stripe;
+
+
 struct TEX_Stripe
 {
   Arena *arena;
@@ -50,7 +54,8 @@ struct TEX_Stripe
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-typedef struct TEX_Touch TEX_Touch;
+
+
 struct TEX_Touch
 {
   TEX_Touch *next;
@@ -58,7 +63,8 @@ struct TEX_Touch
   TEX_Topology topology;
 };
 
-typedef struct TEX_Scope TEX_Scope;
+
+
 struct TEX_Scope
 {
   TEX_Scope *next;
@@ -68,7 +74,8 @@ struct TEX_Scope
 ////////////////////////////////
 //~ rjf: Thread Context
 
-typedef struct TEX_TCTX TEX_TCTX;
+
+
 struct TEX_TCTX
 {
   Arena *arena;
@@ -79,7 +86,8 @@ struct TEX_TCTX
 ////////////////////////////////
 //~ rjf: Shared State
 
-typedef struct TEX_Shared TEX_Shared;
+
+
 struct TEX_Shared
 {
   Arena *arena;

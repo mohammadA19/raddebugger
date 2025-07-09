@@ -25,7 +25,8 @@
 ////////////////////////////////
 //~ rjf: File Iterator Types
 
-typedef struct OS_W32_FileIter OS_W32_FileIter;
+
+
 struct OS_W32_FileIter
 {
   HANDLE handle;
@@ -49,7 +50,8 @@ typedef enum OS_W32_EntityKind
 }
 OS_W32_EntityKind;
 
-typedef struct OS_W32_Entity OS_W32_Entity;
+
+
 struct OS_W32_Entity
 {
   OS_W32_Entity *next;
@@ -72,7 +74,8 @@ struct OS_W32_Entity
 ////////////////////////////////
 //~ rjf: State
 
-typedef struct OS_W32_State OS_W32_State;
+
+
 struct OS_W32_State
 {
   Arena *arena;

@@ -160,13 +160,15 @@ union Vec4S32
 ////////////////////////////////
 //~ rjf: Matrix Types
 
-typedef struct Mat3x3F32 Mat3x3F32;
+
+
 struct Mat3x3F32
 {
   F32 v[3][3];
 };
 
-typedef struct Mat4x4F32 Mat4x4F32;
+
+
 struct Mat4x4F32
 {
   F32 v[4][4];
@@ -329,14 +331,16 @@ union Rng2S64
 ////////////////////////////////
 //~ rjf: List Types
 
-typedef struct Rng1U64Node Rng1U64Node;
+
+
 struct Rng1U64Node
 {
   Rng1U64Node *next;
   Rng1U64 v;
 };
 
-typedef struct Rng1U64List Rng1U64List;
+
+
 struct Rng1U64List
 {
   U64 count;
@@ -344,21 +348,24 @@ struct Rng1U64List
   Rng1U64Node *last;
 };
 
-typedef struct Rng1U64Array Rng1U64Array;
+
+
 struct Rng1U64Array
 {
   Rng1U64 *v;
   U64 count;
 };
 
-typedef struct Rng1S64Node Rng1S64Node;
+
+
 struct Rng1S64Node
 {
   Rng1S64Node *next;
   Rng1S64 v;
 };
 
-typedef struct Rng1S64List Rng1S64List;
+
+
 struct Rng1S64List
 {
   Rng1S64Node *first;
@@ -366,7 +373,8 @@ struct Rng1S64List
   U64 count;
 };
 
-typedef struct Rng1S64Array Rng1S64Array;
+
+
 struct Rng1S64Array
 {
   Rng1S64 *v;

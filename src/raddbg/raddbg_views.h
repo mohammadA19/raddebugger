@@ -14,7 +14,8 @@ enum
   RD_CodeViewBuildFlag_All         = 0xffffffff,
 };
 
-typedef struct RD_CodeViewState RD_CodeViewState;
+
+
 struct RD_CodeViewState
 {
   // rjf: stable state
@@ -34,7 +35,8 @@ struct RD_CodeViewState
   String8 find_text_bwd;
 };
 
-typedef struct RD_CodeViewBuildResult RD_CodeViewBuildResult;
+
+
 struct RD_CodeViewBuildResult
 {
   DI_KeyList dbgi_keys;
@@ -65,7 +67,8 @@ enum
   RD_WatchCellFlag_Indented                = (1<<8),
 };
 
-typedef struct RD_WatchCell RD_WatchCell;
+
+
 struct RD_WatchCell
 {
   RD_WatchCell *next;
@@ -78,7 +81,8 @@ struct RD_WatchCell
   F32 px;
 };
 
-typedef struct RD_WatchCellList RD_WatchCellList;
+
+
 struct RD_WatchCellList
 {
   RD_WatchCell *first;
@@ -86,7 +90,8 @@ struct RD_WatchCellList
   U64 count;
 };
 
-typedef struct RD_WatchRowInfo RD_WatchRowInfo;
+
+
 struct RD_WatchRowInfo
 {
   CTRL_Entity *module;
@@ -105,7 +110,8 @@ struct RD_WatchRowInfo
   RD_ViewUIRule *view_ui_rule;
 };
 
-typedef struct RD_WatchRowCellInfo RD_WatchRowCellInfo;
+
+
 struct RD_WatchRowCellInfo
 {
   RD_WatchCellFlags flags;
@@ -121,7 +127,8 @@ struct RD_WatchRowCellInfo
   RD_ViewUIRule *view_ui_rule;
 };
 
-typedef struct RD_WatchPt RD_WatchPt;
+
+
 struct RD_WatchPt
 {
   EV_Key parent_key;
@@ -129,7 +136,8 @@ struct RD_WatchPt
   U64 cell_id;
 };
 
-typedef struct RD_WatchViewTextEditState RD_WatchViewTextEditState;
+
+
 struct RD_WatchViewTextEditState
 {
   RD_WatchViewTextEditState *pt_hash_next;
@@ -142,7 +150,8 @@ struct RD_WatchViewTextEditState
   U64 initial_size;
 };
 
-typedef struct RD_WatchViewState RD_WatchViewState;
+
+
 struct RD_WatchViewState
 {
   B32 initialized;

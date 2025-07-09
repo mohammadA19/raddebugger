@@ -17,7 +17,8 @@ enum
 ////////////////////////////////
 //~ rjf: Handles & Tags
 
-typedef struct FNT_Tag FNT_Tag;
+
+
 struct FNT_Tag
 {
   U64 u64[2];
@@ -26,7 +27,8 @@ struct FNT_Tag
 ////////////////////////////////
 //~ rjf: Draw Package Types (For Cache Queries)
 
-typedef struct FNT_Piece FNT_Piece;
+
+
 struct FNT_Piece
 {
   R_Handle texture;
@@ -36,7 +38,8 @@ struct FNT_Piece
   U16 decode_size;
 };
 
-typedef struct FNT_PieceChunkNode FNT_PieceChunkNode;
+
+
 struct FNT_PieceChunkNode
 {
   FNT_PieceChunkNode *next;
@@ -45,7 +48,8 @@ struct FNT_PieceChunkNode
   U64 cap;
 };
 
-typedef struct FNT_PieceChunkList FNT_PieceChunkList;
+
+
 struct FNT_PieceChunkList
 {
   FNT_PieceChunkNode *first;
@@ -54,14 +58,16 @@ struct FNT_PieceChunkList
   U64 total_piece_count;
 };
 
-typedef struct FNT_PieceArray FNT_PieceArray;
+
+
 struct FNT_PieceArray
 {
   FNT_Piece *v;
   U64 count;
 };
 
-typedef struct FNT_Run FNT_Run;
+
+
 struct FNT_Run
 {
   FNT_PieceArray pieces;
@@ -73,7 +79,8 @@ struct FNT_Run
 ////////////////////////////////
 //~ rjf: Font Path -> Handle * Metrics * Path Cache Types
 
-typedef struct FNT_FontHashNode FNT_FontHashNode;
+
+
 struct FNT_FontHashNode
 {
   FNT_FontHashNode *hash_next;
@@ -83,7 +90,8 @@ struct FNT_FontHashNode
   String8 path;
 };
 
-typedef struct FNT_FontHashSlot FNT_FontHashSlot;
+
+
 struct FNT_FontHashSlot
 {
   FNT_FontHashNode *first;
@@ -95,7 +103,8 @@ struct FNT_FontHashSlot
 
 //- rjf: base glyph rasterization / dimensions cache 
 
-typedef struct FNT_RasterCacheInfo FNT_RasterCacheInfo;
+
+
 struct FNT_RasterCacheInfo
 {
   Rng2S16 subrect;
@@ -104,7 +113,8 @@ struct FNT_RasterCacheInfo
   F32 advance;
 };
 
-typedef struct FNT_Hash2InfoRasterCacheNode FNT_Hash2InfoRasterCacheNode;
+
+
 struct FNT_Hash2InfoRasterCacheNode
 {
   FNT_Hash2InfoRasterCacheNode *hash_next;
@@ -113,7 +123,8 @@ struct FNT_Hash2InfoRasterCacheNode
   FNT_RasterCacheInfo info;
 };
 
-typedef struct FNT_Hash2InfoRasterCacheSlot FNT_Hash2InfoRasterCacheSlot;
+
+
 struct FNT_Hash2InfoRasterCacheSlot
 {
   FNT_Hash2InfoRasterCacheNode *first;
@@ -122,7 +133,8 @@ struct FNT_Hash2InfoRasterCacheSlot
 
 //- rjf: run cache (arrangements of many glyphs to represent a full string)
 
-typedef struct FNT_RunCacheNode FNT_RunCacheNode;
+
+
 struct FNT_RunCacheNode
 {
   FNT_RunCacheNode *next;
@@ -130,7 +142,8 @@ struct FNT_RunCacheNode
   FNT_Run run;
 };
 
-typedef struct FNT_RunCacheSlot FNT_RunCacheSlot;
+
+
 struct FNT_RunCacheSlot
 {
   FNT_RunCacheNode *first;
@@ -139,7 +152,8 @@ struct FNT_RunCacheSlot
 
 //- rjf: style hash -> artifacts/metrics cache
 
-typedef struct FNT_Hash2StyleRasterCacheNode FNT_Hash2StyleRasterCacheNode;
+
+
 struct FNT_Hash2StyleRasterCacheNode
 {
   FNT_Hash2StyleRasterCacheNode *hash_next;
@@ -157,7 +171,8 @@ struct FNT_Hash2StyleRasterCacheNode
   U64 run_slots_frame_index;
 };
 
-typedef struct FNT_Hash2StyleRasterCacheSlot FNT_Hash2StyleRasterCacheSlot;
+
+
 struct FNT_Hash2StyleRasterCacheSlot
 {
   FNT_Hash2StyleRasterCacheNode *first;
@@ -173,7 +188,8 @@ enum
   FNT_AtlasRegionNodeFlag_Taken = (1<<0),
 };
 
-typedef struct FNT_AtlasRegionNode FNT_AtlasRegionNode;
+
+
 struct FNT_AtlasRegionNode
 {
   FNT_AtlasRegionNode *parent;
@@ -183,7 +199,8 @@ struct FNT_AtlasRegionNode
   U64 num_allocated_descendants;
 };
 
-typedef struct FNT_Atlas FNT_Atlas;
+
+
 struct FNT_Atlas
 {
   FNT_Atlas *next;
@@ -196,7 +213,8 @@ struct FNT_Atlas
 ////////////////////////////////
 //~ rjf: Metrics
 
-typedef struct FNT_Metrics FNT_Metrics;
+
+
 struct FNT_Metrics
 {
   F32 ascent;
@@ -208,7 +226,8 @@ struct FNT_Metrics
 ////////////////////////////////
 //~ rjf: Main State Type
 
-typedef struct FNT_State FNT_State;
+
+
 struct FNT_State
 {
   Arena *permanent_arena;

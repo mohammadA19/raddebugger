@@ -7,7 +7,8 @@
 ////////////////////////////////
 //~ rjf: Key Type (Uniquely Refers To One Tree Node)
 
-typedef struct EV_Key EV_Key;
+
+
 struct EV_Key
 {
   U64 parent_hash;
@@ -19,7 +20,8 @@ struct EV_Key
 
 //- rjf: expand hash table & tree
 
-typedef struct EV_ExpandNode EV_ExpandNode;
+
+
 struct EV_ExpandNode
 {
   EV_ExpandNode *hash_next;
@@ -33,7 +35,8 @@ struct EV_ExpandNode
   B32 expanded;
 };
 
-typedef struct EV_ExpandSlot EV_ExpandSlot;
+
+
 struct EV_ExpandSlot
 {
   EV_ExpandNode *first;
@@ -42,7 +45,8 @@ struct EV_ExpandSlot
 
 //- rjf: hash table for view rules
 
-typedef struct EV_KeyViewRuleNode EV_KeyViewRuleNode;
+
+
 struct EV_KeyViewRuleNode
 {
   EV_KeyViewRuleNode *hash_next;
@@ -53,7 +57,8 @@ struct EV_KeyViewRuleNode
   U64 buffer_string_size;
 };
 
-typedef struct EV_KeyViewRuleSlot EV_KeyViewRuleSlot;
+
+
 struct EV_KeyViewRuleSlot
 {
   EV_KeyViewRuleNode *first;
@@ -62,7 +67,8 @@ struct EV_KeyViewRuleSlot
 
 //- rjf: view state bundle
 
-typedef struct EV_View EV_View;
+
+
 struct EV_View
 {
   Arena *arena;
@@ -77,7 +83,8 @@ struct EV_View
 ////////////////////////////////
 //~ rjf: Expansion Rule Types
 
-typedef struct EV_ExpandInfo EV_ExpandInfo;
+
+
 struct EV_ExpandInfo
 {
   void *user_data;
@@ -92,35 +99,40 @@ struct EV_ExpandInfo
 #define EV_EXPAND_RULE_INFO_FUNCTION_DEF(name) internal EV_EXPAND_RULE_INFO_FUNCTION_SIG(EV_EXPAND_RULE_INFO_FUNCTION_NAME(name))
 typedef EV_EXPAND_RULE_INFO_FUNCTION_SIG(EV_ExpandRuleInfoHookFunctionType);
 
-typedef struct EV_ExpandRule EV_ExpandRule;
+
+
 struct EV_ExpandRule
 {
   String8 string;
   EV_ExpandRuleInfoHookFunctionType *info;
 };
 
-typedef struct EV_ExpandRuleNode EV_ExpandRuleNode;
+
+
 struct EV_ExpandRuleNode
 {
   EV_ExpandRuleNode *next;
   EV_ExpandRule v;
 };
 
-typedef struct EV_ExpandRuleSlot EV_ExpandRuleSlot;
+
+
 struct EV_ExpandRuleSlot
 {
   EV_ExpandRuleNode *first;
   EV_ExpandRuleNode *last;
 };
 
-typedef struct EV_ExpandRuleTable EV_ExpandRuleTable;
+
+
 struct EV_ExpandRuleTable
 {
   EV_ExpandRuleSlot *slots;
   U64 slots_count;
 };
 
-typedef struct EV_ExpandRuleTagPair EV_ExpandRuleTagPair;
+
+
 struct EV_ExpandRuleTagPair
 {
   EV_ExpandRule *rule;
@@ -130,7 +142,8 @@ struct EV_ExpandRuleTagPair
 ////////////////////////////////
 //~ rjf: Blocks
 
-typedef struct EV_Block EV_Block;
+
+
 struct EV_Block
 {
   // rjf: links
@@ -159,7 +172,8 @@ struct EV_Block
   U64 row_count;
 };
 
-typedef struct EV_BlockTree EV_BlockTree;
+
+
 struct EV_BlockTree
 {
   EV_Block *root;
@@ -167,21 +181,24 @@ struct EV_BlockTree
   U64 total_item_count;
 };
 
-typedef struct EV_BlockRange EV_BlockRange;
+
+
 struct EV_BlockRange
 {
   EV_Block *block;
   Rng1U64 range;
 };
 
-typedef struct EV_BlockRangeNode EV_BlockRangeNode;
+
+
 struct EV_BlockRangeNode
 {
   EV_BlockRangeNode *next;
   EV_BlockRange v;
 };
 
-typedef struct EV_BlockRangeList EV_BlockRangeList;
+
+
 struct EV_BlockRangeList
 {
   EV_BlockRangeNode *first;
@@ -192,7 +209,8 @@ struct EV_BlockRangeList
 ////////////////////////////////
 //~ rjf: Rows
 
-typedef struct EV_Row EV_Row;
+
+
 struct EV_Row
 {
   EV_Block *block;
@@ -202,7 +220,8 @@ struct EV_Row
   E_Eval eval;
 };
 
-typedef struct EV_WindowedRowNode EV_WindowedRowNode;
+
+
 struct EV_WindowedRowNode
 {
   EV_WindowedRowNode *next;
@@ -211,7 +230,8 @@ struct EV_WindowedRowNode
   EV_Row row;
 };
 
-typedef struct EV_WindowedRowList EV_WindowedRowList;
+
+
 struct EV_WindowedRowList
 {
   EV_WindowedRowNode *first;
@@ -235,7 +255,8 @@ enum
   EV_StringFlag_DisableStringQuotes  = (1<<5),
 };
 
-typedef struct EV_StringParams EV_StringParams;
+
+
 struct EV_StringParams
 {
   EV_StringFlags flags;
@@ -247,7 +268,8 @@ struct EV_StringParams
   U64 limit_strings_size;
 };
 
-typedef struct EV_StringIterTask EV_StringIterTask;
+
+
 struct EV_StringIterTask
 {
   EV_StringIterTask *next;
@@ -259,7 +281,8 @@ struct EV_StringIterTask
   void *user_data;
 };
 
-typedef struct EV_StringIter EV_StringIter;
+
+
 struct EV_StringIter
 {
   EV_StringIterTask *top_task;

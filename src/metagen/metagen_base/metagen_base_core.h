@@ -295,7 +295,8 @@ typedef S64      B64;
 typedef float    F32;
 typedef double   F64;
 typedef void VoidProc(void);
-typedef struct U128 U128;
+
+
 struct U128
 {
   U64 u64[2];
@@ -403,14 +404,16 @@ Compiler;
 ////////////////////////////////
 //~ rjf: Text 2D Coordinates & Ranges
 
-typedef struct TxtPt TxtPt;
+
+
 struct TxtPt
 {
   S64 line;
   S64 column;
 };
 
-typedef struct TxtRng TxtRng;
+
+
 struct TxtRng
 {
   TxtPt min;
@@ -437,25 +440,29 @@ StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
 ////////////////////////////////
 //~ Arrays
 
-typedef struct U16Array U16Array;
+
+
 struct U16Array
 {
   U64  count;
   U16 *v;
 };
-typedef struct U32Array U32Array;
+
+
 struct U32Array
 {
   U64  count;
   U32 *v;
 };
-typedef struct U64Array U64Array;
+
+
 struct U64Array
 {
   U64  count;
   U64 *v;
 };
-typedef struct U128Array U128Array;
+
+
 struct U128Array
 {
   U64   count;
@@ -657,7 +664,8 @@ typedef enum Month
 }
 Month;
 
-typedef struct DateTime DateTime;
+
+
 struct DateTime
 {
   U16 micro_sec; // [0,999]
@@ -690,7 +698,8 @@ enum
   FilePropertyFlag_IsFolder = (1 << 0),
 };
 
-typedef struct FileProperties FileProperties;
+
+
 struct FileProperties
 {
   U64 size;

@@ -200,8 +200,10 @@ static inline UINT32                            IDWriteBitmapRenderTarget_Releas
 
 //- rjf: font file loader interface types
 
-typedef struct FP_DWrite_FontFileLoader FP_DWrite_FontFileLoader;
-typedef struct FP_DWrite_FontFileLoaderVTable FP_DWrite_FontFileLoaderVTable;
+
+
+
+
 
 struct FP_DWrite_FontFileLoaderVTable
 {
@@ -218,9 +220,12 @@ struct FP_DWrite_FontFileLoader
 
 //- rjf: font file stream interface types
 
-typedef struct FP_DWrite_FontFileStream FP_DWrite_FontFileStream;
-typedef struct FP_DWrite_FontFileStreamVTable FP_DWrite_FontFileStreamVTable;
-typedef struct FP_DWrite_FontFileStreamNode FP_DWrite_FontFileStreamNode;
+
+
+
+
+
+
 
 struct FP_DWrite_FontFileStreamVTable
 {
@@ -248,7 +253,8 @@ struct FP_DWrite_FontFileStreamNode
 
 //- rjf: state & underlying handle types
 
-typedef struct FP_DWrite_State FP_DWrite_State;
+
+
 struct FP_DWrite_State
 {
   Arena *arena;
@@ -267,7 +273,8 @@ struct FP_DWrite_State
   FP_DWrite_FontFileStreamNode *free_stream_node;
 };
 
-typedef struct FP_DWrite_Font FP_DWrite_Font;
+
+
 struct FP_DWrite_Font
 {
   IDWriteFontFile *file;

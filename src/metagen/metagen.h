@@ -7,7 +7,8 @@
 ////////////////////////////////
 //~ rjf: Message Type
 
-typedef struct MG_Msg MG_Msg;
+
+
 struct MG_Msg
 {
   String8 location;
@@ -15,14 +16,16 @@ struct MG_Msg
   String8 msg;
 };
 
-typedef struct MG_MsgNode MG_MsgNode;
+
+
 struct MG_MsgNode
 {
   MG_MsgNode *next;
   MG_Msg v;
 };
 
-typedef struct MG_MsgList MG_MsgList;
+
+
 struct MG_MsgList
 {
   MG_MsgNode *first;
@@ -33,20 +36,23 @@ struct MG_MsgList
 ////////////////////////////////
 //~ rjf: Parse Artifact Types
 
-typedef struct MG_FileParse MG_FileParse;
+
+
 struct MG_FileParse
 {
   MD_Node *root;
 };
 
-typedef struct MG_FileParseNode MG_FileParseNode;
+
+
 struct MG_FileParseNode
 {
   MG_FileParseNode *next;
   MG_FileParse v;
 };
 
-typedef struct MG_FileParseList MG_FileParseList;
+
+
 struct MG_FileParseList
 {
   MG_FileParseNode *first;
@@ -57,7 +63,8 @@ struct MG_FileParseList
 ////////////////////////////////
 //~ rjf: Map Type
 
-typedef struct MG_MapNode MG_MapNode;
+
+
 struct MG_MapNode
 {
   MG_MapNode *next;
@@ -65,14 +72,16 @@ struct MG_MapNode
   void *val;
 };
 
-typedef struct MG_MapSlot MG_MapSlot;
+
+
 struct MG_MapSlot
 {
   MG_MapNode *first;
   MG_MapNode *last;
 };
 
-typedef struct MG_Map MG_Map;
+
+
 struct MG_Map
 {
   MG_MapSlot *slots;
@@ -126,7 +135,8 @@ typedef enum MG_StrExprOp
 }
 MG_StrExprOp;
 
-typedef struct MG_StrExpr MG_StrExpr;
+
+
 struct MG_StrExpr
 {
   MG_StrExpr *parent;
@@ -136,7 +146,8 @@ struct MG_StrExpr
   MD_Node *node;
 };
 
-typedef struct MG_StrExprParseResult MG_StrExprParseResult;
+
+
 struct MG_StrExprParseResult
 {
   MG_StrExpr *root;
@@ -147,14 +158,16 @@ struct MG_StrExprParseResult
 ////////////////////////////////
 //~ rjf: Table Generation Types
 
-typedef struct MG_NodeArray MG_NodeArray;
+
+
 struct MG_NodeArray
 {
   MD_Node **v;
   U64 count;
 };
 
-typedef struct MG_NodeGrid MG_NodeGrid;
+
+
 struct MG_NodeGrid
 {
   U64 x_stride;
@@ -172,7 +185,8 @@ typedef enum MG_ColumnKind
 }
 MG_ColumnKind;
 
-typedef struct MG_ColumnDesc MG_ColumnDesc;
+
+
 struct MG_ColumnDesc
 {
   String8 name;
@@ -180,14 +194,16 @@ struct MG_ColumnDesc
   String8 tag_name;
 };
 
-typedef struct MG_ColumnDescArray MG_ColumnDescArray;
+
+
 struct MG_ColumnDescArray
 {
   U64 count;
   MG_ColumnDesc *v;
 };
 
-typedef struct MG_TableExpandTask MG_TableExpandTask;
+
+
 struct MG_TableExpandTask
 {
   MG_TableExpandTask *next;
@@ -198,7 +214,8 @@ struct MG_TableExpandTask
   U64 idx;
 };
 
-typedef struct MG_TableExpandInfo MG_TableExpandInfo;
+
+
 struct MG_TableExpandInfo
 {
   MG_TableExpandTask *first_expand_task;
@@ -208,7 +225,8 @@ struct MG_TableExpandInfo
 ////////////////////////////////
 //~ rjf: Main Output Path Types
 
-typedef struct MG_Layer MG_Layer;
+
+
 struct MG_Layer
 {
   String8 key;
@@ -230,21 +248,24 @@ struct MG_Layer
   String8List c_footer;
 };
 
-typedef struct MG_LayerNode MG_LayerNode;
+
+
 struct MG_LayerNode
 {
   MG_LayerNode *next;
   MG_Layer v;
 };
 
-typedef struct MG_LayerSlot MG_LayerSlot;
+
+
 struct MG_LayerSlot
 {
   MG_LayerNode *first;
   MG_LayerNode *last;
 };
 
-typedef struct MG_State MG_State;
+
+
 struct MG_State
 {
   U64 slots_count;
