@@ -62,8 +62,8 @@ arena_alloc_(ArenaParams *params)
   arena->free_size = 0;
   arena->free_last = 0;
 #endif
-  AsanPoisonMemoryRegion(base, commit_size);
-  AsanUnpoisonMemoryRegion(base, ARENA_HEADER_SIZE);
+  address_poison(base, commit_size);
+  address_unpoison(base, ARENA_HEADER_SIZE);
   return arena;
 }
 
@@ -106,7 +106,7 @@ arena_push(Arena *arena, U64 size, U64 align)
           arena->free_last = new_block->prev;
         }
         arena->free_size -= new_block->res_size;
-        AsanUnpoisonMemoryRegion((U8*)new_block + ARENA_HEADER_SIZE, new_block->res_size - ARENA_HEADER_SIZE);
+        address_unpoison((U8*)new_block + ARENA_HEADER_SIZE, new_block->res_size - ARENA_HEADER_SIZE);
         break;
       }
     }
@@ -159,7 +159,7 @@ arena_push(Arena *arena, U64 size, U64 align)
   {
     result = (U8 *)current+pos_pre;
     current->pos = pos_pst;
-    AsanUnpoisonMemoryRegion(result, size);
+    address_unpoison(result, size);
   }
   
   // rjf: panic on failure
@@ -195,7 +195,7 @@ arena_pop_to(Arena *arena, U64 pos)
     current->pos = ARENA_HEADER_SIZE;
     arena->free_size += current->res_size;
     SLLStackPush_N(arena->free_last, current, prev);
-    AsanPoisonMemoryRegion((U8*)current + ARENA_HEADER_SIZE, current->res_size - ARENA_HEADER_SIZE);
+    address_poison((U8*)current + ARENA_HEADER_SIZE, current->res_size - ARENA_HEADER_SIZE);
   }
 #else
   for(Arena *prev = 0; current->base_pos >= big_pos; current = prev)
@@ -207,7 +207,7 @@ arena_pop_to(Arena *arena, U64 pos)
   arena->current = current;
   U64 new_pos = big_pos - current->base_pos;
   AssertAlways(new_pos <= current->pos);
-  AsanPoisonMemoryRegion((U8*)current + new_pos, (current->pos - new_pos));
+  address_poison((U8*)current + new_pos, (current->pos - new_pos));
   current->pos = new_pos;
 }
 
