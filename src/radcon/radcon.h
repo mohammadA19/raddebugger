@@ -4,8 +4,7 @@
 #ifndef RADCON_H
 #define RADCON_H
 
-typedef U32 RC_Flags;
-enum
+enum RC_Flags : U32
 {
   RC_Flag_Strings                 = (1 <<  0),
   RC_Flag_IndexRuns               = (1 <<  1),

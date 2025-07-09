@@ -1379,8 +1379,7 @@ typedef enum DW_CFAEnum
   DW_CFA_OplKind2 = DW_CFA_Restore,
 } DW_CFAEnum;
 
-typedef U8 DW_CFAMask;
-enum
+enum DW_CFAMask : U8
 {
   //  kind1:  opcode: [0,5] zeroes:[6,7]; kind2:  operand:[0,5] opcode:[6,7] 
   DW_CFAMask_OpcodeHi = 0xC0,

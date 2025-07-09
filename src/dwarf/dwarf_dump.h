@@ -31,8 +31,7 @@ typedef enum DW_DumpSubset
 }
 DW_DumpSubset;
 
-typedef U32 DW_DumpSubsetFlags;
-enum
+enum DW_DumpSubsetFlags : U32
 {
 #define X(name, name_lower, title) DW_DumpSubsetFlag_##name = (1<<DW_DumpSubset_##name),
   DW_DumpSubset_XList
