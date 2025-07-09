@@ -26,7 +26,7 @@ enum
 ////////////////////////////////
 //~ rjf: Handle Type
 
-typedef union R_Handle R_Handle;
+
 union R_Handle
 {
   U64 u64[1];

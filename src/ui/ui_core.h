@@ -270,7 +270,7 @@ struct UI_ScrollPt
   F32 off;
 };
 
-typedef union UI_ScrollPt2 UI_ScrollPt2;
+
 union UI_ScrollPt2
 {
   UI_ScrollPt v[2];
@@ -293,7 +293,6 @@ typedef enum UI_TextAlign
 }
 UI_TextAlign;
 
-struct UI_Box;
 #define UI_BOX_CUSTOM_DRAW(name) void name(struct UI_Box *box, void *user_data)
 typedef UI_BOX_CUSTOM_DRAW(UI_BoxCustomDrawFunctionType);
 

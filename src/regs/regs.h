@@ -20,14 +20,14 @@ REGS_UsageKind;
 typedef U8 REGS_RegCode;
 typedef U8 REGS_AliasCode;
 
-typedef union REGS_Reg16 REGS_Reg16;
+
 union REGS_Reg16
 {
   U8 v[2];
   U16 u16;
 };
 
-typedef union REGS_Reg32 REGS_Reg32;
+
 union REGS_Reg32
 {
   U8 v[4];
@@ -35,7 +35,7 @@ union REGS_Reg32
   F32 f32;
 };
 
-typedef union REGS_Reg64 REGS_Reg64;
+
 union REGS_Reg64
 {
   U8 v[8];
@@ -53,7 +53,7 @@ struct REGS_Reg80
 };
 #pragma pack(pop)
 
-typedef union REGS_Reg128 REGS_Reg128;
+
 union REGS_Reg128
 {
   U8 v[16];
@@ -63,7 +63,7 @@ union REGS_Reg128
   F64 f64[2];
 };
 
-typedef union REGS_Reg256 REGS_Reg256;
+
 union REGS_Reg256
 {
   U8 v[32];
@@ -73,7 +73,7 @@ union REGS_Reg256
   F64 f64[4];
 };
 
-typedef union REGS_Reg512 REGS_Reg512;
+
 union REGS_Reg512
 {
   U8 v[64];

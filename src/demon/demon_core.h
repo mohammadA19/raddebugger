@@ -22,7 +22,7 @@ struct DMN_CtrlCtx
 ////////////////////////////////
 //~ rjf: Handle Types
 
-typedef union DMN_Handle DMN_Handle;
+
 union DMN_Handle
 {
   U32 u32[2];

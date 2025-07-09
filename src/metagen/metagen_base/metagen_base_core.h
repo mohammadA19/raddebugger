@@ -423,7 +423,7 @@ struct TxtRng
 ////////////////////////////////
 //~ Globally Unique Ids
 
-typedef union Guid Guid;
+
 union Guid
 {
   struct

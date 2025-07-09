@@ -776,7 +776,7 @@ enum
 #define PE_UNWIND_OPCODE_FROM_FLAGS(f) ((f)&0xF)
 #define PE_UNWIND_INFO_FROM_FLAGS(f) (((f) >> 4)&0xF)
 
-typedef union PE_UnwindCode PE_UnwindCode;
+
 union PE_UnwindCode
 {
   struct
