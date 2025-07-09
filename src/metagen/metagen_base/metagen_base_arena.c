@@ -206,7 +206,7 @@ arena_pop_to(Arena *arena, u64 pos)
 #endif
   arena->current = current;
   u64 new_pos = big_pos - current->base_pos;
-  AssertAlways(new_pos <= current->pos);
+  ensure(new_pos <= current->pos);
   address_poison((u8*)current + new_pos, (current->pos - new_pos));
   current->pos = new_pos;
 }

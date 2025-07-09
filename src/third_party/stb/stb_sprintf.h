@@ -679,7 +679,7 @@ cl = lg;                                 \
         }
         else 
         {
-          Assert(size <= max_U64/100ull);
+          assert(size <= max_U64/100ull);
           hi = size / one_tib;
           lo = ((size * 100) / one_tib) % 100;
           units = "TiB";

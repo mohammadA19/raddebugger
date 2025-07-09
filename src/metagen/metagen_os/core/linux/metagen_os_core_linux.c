@@ -1074,7 +1074,7 @@ os_semaphore_alloc(u32 initial_count, u32 max_count, String8 name)
     NotImplemented;
   } else {
     sem_t *s = mmap(0, sizeof(*s), PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
-    AssertAlways(s != MAP_FAILED);
+    ensure(s != MAP_FAILED);
     int err = sem_init(s, 0, initial_count);
     if (err == 0) {
       result.u64[0] = (u64)s;
@@ -1087,7 +1087,7 @@ internal void
 os_semaphore_release(OS_Handle semaphore)
 {
   int err = munmap((void*)semaphore.u64[0], sizeof(sem_t));
-  AssertAlways(err == 0);
+  ensure(err == 0);
 }
 
 internal OS_Handle
@@ -1105,7 +1105,7 @@ os_semaphore_close(OS_Handle semaphore)
 internal b32
 os_semaphore_take(OS_Handle semaphore, u64 endt_us)
 {
-  AssertAlways(endt_us == max_U64);
+  ensure(endt_us == max_U64);
   for (;;) {
     int err = sem_wait((sem_t*)semaphore.u64[0]);
     if (err == 0) {

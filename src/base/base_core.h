@@ -112,13 +112,6 @@
 ////////////////////////////////
 //~ rjf: Asserts
 
-#if COMPILER_MSVC
-# define Trap() __debugbreak()
-#elif COMPILER_CLANG || COMPILER_GCC
-# define Trap() __builtin_trap()
-#else
-# error Unknown trap intrinsic for this compiler.
-#endif
 #define InvalidPath        assert(!"Invalid Path!")
 #define NotImplemented     assert(!"Not Implemented!")
 #define NoOp               ((void)0)

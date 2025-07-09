@@ -115,22 +115,8 @@
 ////////////////////////////////
 //~ rjf: Asserts
 
-#if COMPILER_MSVC
-# define Trap() __debugbreak()
-#elif COMPILER_CLANG || COMPILER_GCC
-# define Trap() __builtin_trap()
-#else
-# error Unknown trap intrinsic for this compiler.
-#endif
-
-#define AssertAlways(x) do{if(!(x)) {Trap();}}while(0)
-#if BUILD_DEBUG
-# define Assert(x) AssertAlways(x)
-#else
-# define Assert(x) (void)(x)
-#endif
-#define InvalidPath        Assert(!"Invalid Path!")
-#define NotImplemented     Assert(!"Not Implemented!")
+#define InvalidPath        assert(!"Invalid Path!")
+#define NotImplemented     assert(!"Not Implemented!")
 #define NoOp               ((void)0)
 #define StaticAssert(C, ID) global u8 Glue(ID, __LINE__)[(C)?1:-1]
 
@@ -339,15 +325,11 @@ Compiler;
 ////////////////////////////////
 //~ rjf: Text 2D Coordinates & Ranges
 
-
-
 struct TxtPt
 {
   i64 line;
   i64 column;
 };
-
-
 
 struct TxtRng
 {
@@ -357,7 +339,6 @@ struct TxtRng
 
 ////////////////////////////////
 //~ Globally Unique Ids
-
 
 union Guid
 {
@@ -567,8 +548,6 @@ typedef enum Month
 }
 Month;
 
-
-
 struct DateTime
 {
   u16 micro_sec; // [0,999]
@@ -601,8 +580,6 @@ enum
   FilePropertyFlag_IsFolder = (1 << 0),
 };
 
-
-
 struct FileProperties
 {
   u64 size;
@@ -610,12 +587,6 @@ struct FileProperties
   DenseTime created;
   FilePropertyFlags flags;
 };
-
-////////////////////////////////
-//~ rjf: Safe Casts
-
-////////////////////////////////
-//~ rjf: Large Base Type Functions
 
 ////////////////////////////////
 //~ rjf: Bit Patterns
@@ -629,21 +600,6 @@ struct FileProperties
 # define from_be_u32(x) (x)
 # define from_be_u64(x) (x)
 #endif
-
-////////////////////////////////
-//~ rjf: Enum -> Sign
-
-////////////////////////////////
-//~ rjf: Memory Functions
-
-////////////////////////////////
-//~ rjf: Text 2D Coordinate/Range Functions
-
-////////////////////////////////
-//~ rjf: Toolchain/Environment Enum Functions
-
-////////////////////////////////
-//~ rjf: Time Functions
 
 ////////////////////////////////
 //~ rjf: Non-Fancy Ring Buffer Reads/Writes
