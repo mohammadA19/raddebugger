@@ -1217,7 +1217,7 @@ internal CV_RecRangeStream*
 cv_rec_range_stream_from_data(Arena *arena, String8 sym_data, U64 sym_align)
 {
   Assert(1 <= sym_align && IsPow2OrZero(sym_align));
-  CV_RecRangeStream *result = push_array(arena, CV_RecRangeStream, 1);
+  CV_RecRangeStream *result = push_array(CV_RecRangeStream, 1);
   U8 *data = sym_data.str;
   U64 cursor = 0;
   U64 cap = sym_data.size;
@@ -1279,7 +1279,7 @@ cv_sym_from_data(Arena *arena, String8 sym_data, U64 sym_align)
   CV_RecRangeStream *stream = cv_rec_range_stream_from_data(scratch.arena, sym_data, sym_align);
   
   //- rjf: convert to result, fill basics
-  CV_SymParsed *result = push_array(arena, CV_SymParsed, 1);
+  CV_SymParsed *result = push_array(CV_SymParsed, 1);
   result->data = sym_data;
   result->sym_align = sym_align;
   result->sym_ranges = cv_rec_range_array_from_stream(arena, stream);
@@ -1352,7 +1352,7 @@ cv_leaf_from_data(Arena *arena, String8 leaf_data, CV_TypeId itype_first)
   CV_RecRangeStream *stream = cv_rec_range_stream_from_data(scratch.arena, leaf_data, 1);
   
   // convert to result
-  CV_LeafParsed *result = push_array(arena, CV_LeafParsed, 1);
+  CV_LeafParsed *result = push_array(CV_LeafParsed, 1);
   result->data = leaf_data;
   result->itype_first = itype_first;
   result->itype_opl = itype_first + stream->total_count;
@@ -1392,7 +1392,7 @@ cv_c13_parsed_from_data(Arena *arena, String8 c13_data, String8 strtbl, COFF_Sec
       // emit sub section
       if(!(hdr->kind & CV_C13SubSectionKind_IgnoreFlag))
       {
-        CV_C13SubSectionNode *node = push_array(arena, CV_C13SubSectionNode, 1);
+        CV_C13SubSectionNode *node = push_array(CV_C13SubSectionNode, 1);
         SLLQueuePush(first, last, node);
         count += 1;
         node->kind = hdr->kind;
@@ -1413,7 +1413,7 @@ cv_c13_parsed_from_data(Arena *arena, String8 c13_data, String8 strtbl, COFF_Sec
   //- rjf: parse each sub-section
   //
   U64 inlinee_lines_parsed_slots_count = 4096;
-  CV_C13InlineeLinesParsedNode **inlinee_lines_parsed_slots = push_array(arena, CV_C13InlineeLinesParsedNode *, inlinee_lines_parsed_slots_count);
+  CV_C13InlineeLinesParsedNode **inlinee_lines_parsed_slots = push_array(CV_C13InlineeLinesParsedNode *, inlinee_lines_parsed_slots_count);
   for(CV_C13SubSectionNode *node = first;
       node != 0;
       node = node->next)
@@ -1501,7 +1501,7 @@ cv_c13_parsed_from_data(Arena *arena, String8 c13_data, String8 strtbl, COFF_Sec
           }
           
           // emit parsed lines
-          CV_C13LinesParsedNode *lines_parsed_node = push_array(arena, CV_C13LinesParsedNode, 1);
+          CV_C13LinesParsedNode *lines_parsed_node = push_array(CV_C13LinesParsedNode, 1);
           CV_C13LinesParsed *lines_parsed = &lines_parsed_node->v;
           lines_parsed->sec_idx = sec_idx;
           lines_parsed->file_off = file_off;
@@ -1561,7 +1561,7 @@ cv_c13_parsed_from_data(Arena *arena, String8 c13_data, String8 strtbl, COFF_Sec
           }
           
           // rjf: push node for this inlinee lines parsed into this subsection's list
-          CV_C13InlineeLinesParsedNode *n = push_array(arena, CV_C13InlineeLinesParsedNode, 1);
+          CV_C13InlineeLinesParsedNode *n = push_array(CV_C13InlineeLinesParsedNode, 1);
           SLLQueuePush(node->inlinee_lines_first, node->inlinee_lines_last, n);
           n->v.inlinee          = hdr->inlinee;
           n->v.file_name        = file_name;
@@ -1582,7 +1582,7 @@ cv_c13_parsed_from_data(Arena *arena, String8 c13_data, String8 strtbl, COFF_Sec
   //////////////////////////////
   //- rjf: fill output
   //
-  CV_C13Parsed *result = push_array(arena, CV_C13Parsed, 1);
+  CV_C13Parsed *result = push_array(CV_C13Parsed, 1);
   result->data = c13_data;
   result->first_sub_section = first;
   result->last_sub_section = last;

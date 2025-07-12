@@ -58,7 +58,7 @@ rd_rdi_from_pe(Arena *arena, String8 pe_path)
   // load RDI
   RDI_Parsed *rdi = 0;
   if (raw_rdi.size) {
-    rdi = push_array(arena, RDI_Parsed, 1);
+    rdi = push_array(RDI_Parsed, 1);
     
     // TODO: check guid
     RDI_ParseStatus parse_status = rdi_parse(raw_rdi.str, raw_rdi.size, rdi);
@@ -329,7 +329,7 @@ rd_section_markers_from_rdi(Arena *arena, RDI_Parsed *rdi)
   U64                sect_count = 0;
   RDI_BinarySection *sect_lo    = rdi_table_from_name(rdi, BinarySections, &sect_count);
   
-  Rng1U64 *sect_vranges = push_array(scratch.arena, Rng1U64, sect_count);
+  Rng1U64 *sect_vranges = push_array(Rng1U64, sect_count);
   for (U64 i = 0; i < sect_count; ++i) {
     sect_vranges[i].min = sect_lo[i].voff_first;
     sect_vranges[i].max = i;
@@ -339,7 +339,7 @@ rd_section_markers_from_rdi(Arena *arena, RDI_Parsed *rdi)
   U64            proc_count = 0;
   RDI_Procedure *proc_lo    = rdi_table_from_name(rdi, Procedures, &proc_count);
   
-  RD_MarkerList *markers = push_array(scratch.arena, RD_MarkerList, sect_count);
+  RD_MarkerList *markers = push_array(RD_MarkerList, sect_count);
   for (U64 i = 0; i < proc_count; ++i) {
     RDI_Procedure *proc         = proc_lo + i;
     U64            proc_voff_lo = rdi_first_voff_from_procedure(rdi, proc);
@@ -353,7 +353,7 @@ rd_section_markers_from_rdi(Arena *arena, RDI_Parsed *rdi)
       String8 name = str8_zero();
       name.str = rdi_name_from_procedure(rdi, proc, &name.size);
       
-      RD_MarkerNode *n = push_array(scratch.arena, RD_MarkerNode, 1);
+      RD_MarkerNode *n = push_array(RD_MarkerNode, 1);
       n->v.off         = proc_voff_lo - sect_range.min;
       n->v.string      = name;
       
@@ -364,10 +364,10 @@ rd_section_markers_from_rdi(Arena *arena, RDI_Parsed *rdi)
   }
   
   // lists -> arrays
-  RD_MarkerArray *result = push_array(arena, RD_MarkerArray, sect_count);
+  RD_MarkerArray *result = push_array(RD_MarkerArray, sect_count);
   for (U64 i = 0; i < sect_count; ++i) {
     result[i].count = 0;
-    result[i].v     = push_array(arena, RD_Marker, markers[i].count);
+    result[i].v     = push_array(RD_Marker, markers[i].count);
     for (RD_MarkerNode *n = markers[i].first; n != 0; n = n->next) {
       result[i].v[result[i].count++] = n->v;
     }
@@ -388,7 +388,7 @@ rd_section_markers_from_coff_symbol_table(Arena *arena, String8 string_table, U6
   Temp scratch = scratch_begin(&arena, 1);
   
   // extract markers from symbol table
-  RD_MarkerList *markers = push_array(scratch.arena, RD_MarkerList, section_count+1);
+  RD_MarkerList *markers = push_array(RD_MarkerList, section_count+1);
   for (U64 symbol_idx = 0; symbol_idx < symbols.count; ++symbol_idx) {
     COFF_Symbol32 *symbol = &symbols.v[symbol_idx];
     
@@ -400,7 +400,7 @@ rd_section_markers_from_coff_symbol_table(Arena *arena, String8 string_table, U6
     if (is_marker) {
       String8 name = coff_read_symbol_name(string_table, &symbol->name);
       
-      RD_MarkerNode *n = push_array(scratch.arena, RD_MarkerNode, 1);
+      RD_MarkerNode *n = push_array(RD_MarkerNode, 1);
       n->v.off         = symbol->value;
       n->v.string      = name;
       
@@ -413,10 +413,10 @@ rd_section_markers_from_coff_symbol_table(Arena *arena, String8 string_table, U6
   }
   
   // lists -> arrays
-  RD_MarkerArray *result = push_array(arena, RD_MarkerArray, section_count);
+  RD_MarkerArray *result = push_array(RD_MarkerArray, section_count);
   for (U64 i = 0; i < section_count; ++i) {
     result[i].count = 0;
-    result[i].v     = push_array(arena, RD_Marker, markers[i].count);
+    result[i].v     = push_array(RD_Marker, markers[i].count);
     for (RD_MarkerNode *n = markers[i].first; n != 0; n = n->next) {
       result[i].v[result[i].count++] = n->v;
     }
@@ -470,7 +470,7 @@ rd_print_disasm(Arena            *arena,
   Temp scratch = scratch_begin(&arena, 1);
   
   U64   bytes_buffer_max = 256;
-  char *bytes_buffer     = push_array(scratch.arena, char, bytes_buffer_max);
+  char *bytes_buffer     = push_array(char, bytes_buffer_max);
   
   U64     decode_off    = 0;
   U64     marker_cursor = 0;
@@ -525,7 +525,7 @@ internal String8
 rd_format_hex_array(Arena *arena, U8 *ptr, U64 size)
 {
   U64   buf_max  = 32 + size * 8;
-  char *buf      = push_array(arena, char, buf_max);
+  char *buf      = push_array(char, buf_max);
   U64   buf_size = 0;
   
   buf_size += raddbg_snprintf(buf+buf_size, buf_max-buf_size, "{ ");
@@ -709,10 +709,10 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
     case CV_SymKind_CALLEES: {
       CV_SymFunctionList sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
-      CV_TypeIndex *funcs = push_array(scratch.arena, CV_TypeIndex, sym.count);
+      CV_TypeIndex *funcs = push_array(CV_TypeIndex, sym.count);
       cursor += str8_deserial_read_array(raw_symbol, cursor, &funcs[0], sym.count);
       U32  invocation_count = (raw_symbol.size - cursor) / sizeof(U32);
-      U32 *invocations      = push_array(arena, U32, invocation_count);
+      U32 *invocations      = push_array(U32, invocation_count);
       cursor += str8_deserial_read_array(raw_symbol, cursor, &invocations[0], invocation_count);
       
       rd_printf("Count: %u", sym.count);
@@ -1409,7 +1409,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
       
       CV_SymAttrManyReg sym = {0};
       cursor += str8_deserial_read_struct(raw_symbol, cursor, &sym);
-      U8 *regs = push_array(scratch.arena, U8, sym.count);
+      U8 *regs = push_array(U8, sym.count);
       cursor += str8_deserial_read_array(raw_symbol, cursor, &regs[0], sym.count);
       String8 name = str8_zero();
       cursor += str8_deserial_read_cstr(raw_symbol, cursor, &name);
@@ -3172,7 +3172,7 @@ pe_print_resources(Arena *arena, String8List *out, String8 indent, PE_ResourceDi
     U64              dir_id;
     String8          dir_name;
     PE_ResourceDir  *table;
-  } *stack = push_array(scratch.arena, struct stack_s, 1);
+  } *stack = push_array(struct stack_s, 1);
   stack->table          = root;
   stack->print_table    = 1;
   stack->is_named       = 1;
@@ -3229,7 +3229,7 @@ pe_print_resources(Arena *arena, String8List *out, String8 indent, PE_ResourceDi
         
         PE_Resource *res = &named_node->data;
         if (res->kind == PE_ResDataKind_DIR) {
-          struct stack_s *frame = push_array(scratch.arena, struct stack_s, 1);
+          struct stack_s *frame = push_array(struct stack_s, 1);
           frame->table          = res->u.dir;
           frame->print_table    = 1;
           frame->dir_idx        = stack->name_idx;
@@ -3255,7 +3255,7 @@ pe_print_resources(Arena *arena, String8List *out, String8 indent, PE_ResourceDi
         U64 id_idx = stack->id_idx++;
         
         if (res->kind == PE_ResDataKind_DIR) {
-          struct stack_s *frame = push_array(scratch.arena, struct stack_s, 1);
+          struct stack_s *frame = push_array(struct stack_s, 1);
           frame->table          = res->u.dir;
           frame->print_table    = 1;
           frame->dir_idx        = stack->table->named_list.count + id_idx;
@@ -3911,7 +3911,7 @@ pe_print(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Op
   
   COFF_Symbol32Array symbols = coff_symbol_array_from_data_16(scratch.arena, raw_data, file_header->symbol_table_foff, file_header->symbol_count);
   
-  U8 *raw_opt_header = push_array(scratch.arena, U8, file_header->optional_header_size);
+  U8 *raw_opt_header = push_array(U8, file_header->optional_header_size);
   str8_deserial_read_array(raw_data, opt_header_off, raw_opt_header, file_header->optional_header_size);
   
   if (opts & RD_Option_Headers) {
@@ -3953,8 +3953,8 @@ pe_print(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Op
   }
   
   // map data directory RVA to file offsets
-  Rng1U64 *dirs_file_ranges = push_array(scratch.arena, Rng1U64, dir_count);
-  Rng1U64 *dirs_virt_ranges = push_array(scratch.arena, Rng1U64, dir_count);
+  Rng1U64 *dirs_file_ranges = push_array(Rng1U64, dir_count);
+  Rng1U64 *dirs_virt_ranges = push_array(Rng1U64, dir_count);
   for (U64 i = 0; i < dir_count; ++i) {
     PE_DataDirectory dir = dirs[i];
     U64 file_off = coff_foff_from_voff(sections, file_header->section_count, dir.virt_off);
@@ -4111,7 +4111,7 @@ elf_print_dwarf_expressions(Arena *arena, String8List *out, String8 indent, Stri
         if (tag.has_children) {
           struct TagNode *n = free_tags;
           if (n == 0) {
-            n = push_array(comp_temp.arena, struct TagNode, 1);
+            n = push_array(struct TagNode, 1);
           } else {
             SLLStackPop(free_tags);
           }

@@ -62,7 +62,7 @@ cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line, String8 string, String8List
   }
   else
   {
-    var = push_array(arena, CmdLineOpt, 1);
+    var = push_array(CmdLineOpt, 1);
     var->hash_next = *slot;
     var->hash = cmd_line_hash_from_string(string);
     var->string = push_str8_copy(arena, string);
@@ -87,7 +87,7 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
   // NOTE(rjf): Set up config option table.
   {
     parsed.option_table_size = 4096;
-    parsed.option_table = push_array(arena, CmdLineOpt *, parsed.option_table_size);
+    parsed.option_table = push_array(CmdLineOpt *, parsed.option_table_size);
   }
   
   // NOTE(rjf): Parse command line.
@@ -192,7 +192,7 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
   
   // rjf: fill argc/argv
   parsed.argc = command_line.node_count;
-  parsed.argv = push_array(arena, char *, parsed.argc);
+  parsed.argv = push_array(char *, parsed.argc);
   {
     U64 idx = 0;
     for(String8Node *n = command_line.first; n != 0; n = n->next)

@@ -149,7 +149,7 @@ d2r_collect_proc_params(Arena *arena, D2R_TypeTable *type_table, DW_Input *input
   B32 has_vargs = 0;
   for (DW_TagNode *i = cur_node->first_child; i != 0; i = i->sibling) {
     if (i->tag.kind == DW_TagKind_FormalParameter) {
-      RDIM_TypeNode *n = push_array(scratch.arena, RDIM_TypeNode, 1);
+      RDIM_TypeNode *n = push_array(RDIM_TypeNode, 1);
       n->v             = d2r_type_from_attrib(arena, type_table, input, cu, i->tag, DW_AttribKind_Type);
       SLLQueuePush(list.first, list.last, n);
       ++list.count;
@@ -159,7 +159,7 @@ d2r_collect_proc_params(Arena *arena, D2R_TypeTable *type_table, DW_Input *input
   }
   
   if (has_vargs) {
-    RDIM_TypeNode *n = push_array(scratch.arena, RDIM_TypeNode, 1);
+    RDIM_TypeNode *n = push_array(RDIM_TypeNode, 1);
     n->v = type_table->varg_type;
     SLLQueuePush(list.first, list.last, n);
     ++list.count;
@@ -261,7 +261,7 @@ d2r_bytecode_from_expression(Arena       *arena,
   };
   struct Frame *stack = 0;
 #define push_of_type(type) do {                                 \
-struct Frame *f = push_array(scratch.arena, struct Frame, 1); \
+struct Frame *f = push_array(struct Frame, 1); \
 f->value_type   = d2r_type_group_from_type_kind(type);        \
 SLLStackPush(stack, f);                                       \
 } while (0)
@@ -828,7 +828,7 @@ d2r_transpile_expression(Arena *arena, DW_Input *input, U64 image_base, U64 addr
     B32               is_addr  = 0;
     RDIM_EvalBytecode bytecode = d2r_bytecode_from_expression(arena, input, image_base, address_size, arch, addr_lu, expr, cu, &is_addr);
     
-    loc           = push_array(arena, RDIM_Location, 1);
+    loc           = push_array(RDIM_Location, 1);
     loc->kind     = is_addr ? RDI_LocationKind_AddrBytecodeStream : RDI_LocationKind_ValBytecodeStream;
     loc->bytecode = bytecode;
   }
@@ -919,7 +919,7 @@ d2r_var_locset_from_tag(Arena               *arena,
     rdim_bytecode_push_uconst(arena, &bc, const_value);
     
     // fill out location
-    RDIM_Location *loc = push_array(arena, RDIM_Location, 1);
+    RDIM_Location *loc = push_array(RDIM_Location, 1);
     loc->kind          = RDI_LocationKind_ValBytecodeStream;
     loc->bytecode      = bc;
     
@@ -944,8 +944,8 @@ d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, U64 image_base)
   
   D2R_CompUnitContribMap cm = {0};
   cm.count                  = 0;
-  cm.info_off_arr           = push_array(arena, U64,                   unit_range_list.count);
-  cm.voff_range_arr         = push_array(arena, RDIM_Rng1U64ChunkList, unit_range_list.count);
+  cm.info_off_arr           = push_array(U64,                   unit_range_list.count);
+  cm.voff_range_arr         = push_array(RDIM_Rng1U64ChunkList, unit_range_list.count);
   
   for (Rng1U64Node *range_n = unit_range_list.first; range_n != 0; range_n = range_n->next) {
     String8 unit_data = str8_substr(aranges_data, range_n->v);
@@ -1199,7 +1199,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
   // should just be logged via log_info(...), and then the caller of this
   // converter can collect those & display as necessary.
   B32 is_parse_relaxed = 1;
-  DW_CompUnit *cu_arr = push_array(scratch.arena, DW_CompUnit, cu_ranges.count);
+  DW_CompUnit *cu_arr = push_array(DW_CompUnit, cu_ranges.count);
   for (U64 cu_idx = 0; cu_idx < cu_ranges.count; ++cu_idx) {
     cu_arr[cu_idx] = dw_cu_from_info_off(scratch.arena, &input, lu_input, cu_ranges.v[cu_idx].min, is_parse_relaxed);
   }
@@ -1208,7 +1208,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
   ////////////////////////////////
   
   ProfBegin("Parse Line Tables");
-  DW_LineTableParseResult *cu_line_tables = push_array(scratch.arena, DW_LineTableParseResult, cu_ranges.count);
+  DW_LineTableParseResult *cu_line_tables = push_array(DW_LineTableParseResult, cu_ranges.count);
   for (U64 cu_idx = 0; cu_idx < cu_ranges.count; ++cu_idx) {
     DW_CompUnit *cu           = &cu_arr[cu_idx];
     String8      cu_stmt_list = dw_line_ptr_from_tag_attrib_kind(&input, cu, cu->tag, DW_AttribKind_StmtList);
@@ -1223,7 +1223,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
   ProfBegin("Convert Line Tables");
   
   HashTable       *source_file_ht     = hash_table_init(scratch.arena, 0x4000);
-  RDIM_LineTable **cu_line_tables_rdi = push_array(scratch.arena, RDIM_LineTable *, cu_ranges.count);
+  RDIM_LineTable **cu_line_tables_rdi = push_array(RDIM_LineTable *, cu_ranges.count);
   
   for (U64 cu_idx = 0; cu_idx < cu_ranges.count; ++cu_idx) {
     cu_line_tables_rdi[cu_idx] = rdim_line_table_chunk_list_push(arena, &line_tables, LINE_TABLE_CAP);
@@ -1231,7 +1231,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
     DW_LineTableParseResult *line_table   = &cu_line_tables[cu_idx];
     DW_LineVMFileArray      *dir_table    = &line_table->vm_header.dir_table;
     DW_LineVMFileArray      *file_table   = &line_table->vm_header.file_table;
-    RDIM_SrcFile           **src_file_map = push_array(scratch.arena, RDIM_SrcFile *, file_table->count);
+    RDIM_SrcFile           **src_file_map = push_array(RDIM_SrcFile *, file_table->count);
     for (U64 file_idx = 0; file_idx < file_table->count; ++file_idx) {
       DW_LineFile  *file                 = &file_table->v[file_idx];
       String8       file_path            = dw_path_from_file_idx(scratch.arena, &line_table->vm_header, file_idx);
@@ -1253,8 +1253,8 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
         continue;
       }
       
-      U64 *voffs     = push_array(arena, U64, line_seq->count);
-      U32 *line_nums = push_array(arena, U32, line_seq->count);
+      U64 *voffs     = push_array(U64, line_seq->count);
+      U32 *line_nums = push_array(U32, line_seq->count);
       U16 *col_nums  = 0;
       U64  line_idx  = 0;
       
@@ -1362,15 +1362,15 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
     unit->line_table    = cu_line_tables_rdi[cu_idx];
     unit->voff_ranges   = cu_voff_ranges;
     
-    D2R_TypeTable *type_table   = push_array(comp_temp.arena, D2R_TypeTable, 1);
+    D2R_TypeTable *type_table   = push_array(D2R_TypeTable, 1);
     type_table->ht              = hash_table_init(comp_temp.arena, 0x4000);
     type_table->types           = &types;
     type_table->type_chunk_cap  = TYPE_CHUNK_CAP;
     type_table->varg_type       = d2r_create_type(arena, type_table);
     type_table->varg_type->kind = RDI_TypeKind_Variadic;
     
-    D2R_TagNode *free_tags = push_array(comp_temp.arena, D2R_TagNode, 1);
-    D2R_TagNode *tag_stack = push_array(comp_temp.arena, D2R_TagNode, 1);
+    D2R_TagNode *free_tags = push_array(D2R_TagNode, 1);
+    D2R_TagNode *tag_stack = push_array(D2R_TagNode, 1);
     tag_stack->cur_node = tag_tree.root;
     
     while (tag_stack) {
@@ -1984,7 +1984,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
             SLLStackPop(free_tags);
             MemoryZeroStruct(frame);
           } else {
-            frame = push_array(scratch.arena, D2R_TagNode, 1);
+            frame = push_array(D2R_TagNode, 1);
           }
           frame->cur_node = tag_stack->cur_node->first_child;
           SLLStackPush(tag_stack, frame);
@@ -2039,7 +2039,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
           for (t = type; t != 0 && t->kind == RDI_TypeKind_Array; t = t->direct_type) {
             RDIM_TypeNode *f = free_types;
             if (f == 0) {
-              f = push_array(scratch.arena, RDIM_TypeNode, 1);
+              f = push_array(RDIM_TypeNode, 1);
             } else {
               SLLStackPop(free_types);
             }

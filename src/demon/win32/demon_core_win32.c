@@ -64,7 +64,7 @@ dmn_w32_entity_alloc(DMN_W32_Entity *parent, DMN_W32_EntityKind kind, U64 id)
     }
     else
     {
-      e = /* no zero */ push_array(dmn_w32_shared->entities_arena, DMN_W32_Entity, 1);
+      e = /* no zero */ push_array(DMN_W32_Entity, 1);
       dmn_w32_shared->entities_count += 1;
     }
     MemoryZeroStruct(e);
@@ -107,7 +107,7 @@ dmn_w32_entity_alloc(DMN_W32_Entity *parent, DMN_W32_EntityKind kind, U64 id)
       }
       else
       {
-        node = push_array(dmn_w32_shared->arena, DMN_W32_EntityIDHashNode, 1);
+        node = push_array(DMN_W32_EntityIDHashNode, 1);
       }
       DLLPushBack(slot->first, slot->last, node);
     }
@@ -144,7 +144,7 @@ dmn_w32_entity_release(DMN_W32_Entity *entity)
     {
       for(DMN_W32_Entity *child = t->e->first; child != &dmn_w32_entity_nil; child = child->next)
       {
-        Task *t = push_array(scratch.arena, Task, 1);
+        Task *t = push_array(Task, 1);
         t->e = child;
         SLLQueuePush(first_task, last_task, t);
       }
@@ -221,7 +221,7 @@ dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module)
     if(module->handle != 0)
     {
       DWORD cap16 = GetFinalPathNameByHandleW(module->handle, 0, 0, VOLUME_NAME_DOS);
-      U16 *buffer16 = /* no zero */ push_array(scratch.arena, U16, cap16);
+      U16 *buffer16 = /* no zero */ push_array(U16, cap16);
       DWORD size16 = GetFinalPathNameByHandleW(module->handle, (WCHAR*)buffer16, cap16, VOLUME_NAME_DOS);
       path16 = str16(buffer16, size16);
     }
@@ -231,7 +231,7 @@ dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module)
     {
       DMN_W32_Entity *process = module->parent;
       DWORD size = KB(4);
-      U16 *buf = /* no zero */ push_array(scratch.arena, U16, size);
+      U16 *buf = /* no zero */ push_array(U16, size);
       if(QueryFullProcessImageNameW(process->handle, 0, (WCHAR*)buf, &size))
       {
         path16 = str16(buf, size);
@@ -373,7 +373,7 @@ dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, U64 address)
   U64 cap = max_cap;
   U64 read_p = address;
   for (;;){
-    U8 *block = push_array(scratch.arena, U8, cap);
+    U8 *block = push_array(U8, cap);
     for (;cap > 0;){
       if (dmn_w32_process_read(process_handle, r1u64(read_p, read_p+cap), block)){
         break;
@@ -422,7 +422,7 @@ dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, U64 address)
   U64 cap = max_cap;
   U64 read_p = address;
   for (;;){
-    U8 *block = push_array(scratch.arena, U8, cap);
+    U8 *block = push_array(U8, cap);
     for (;cap > 1;){
       if (dmn_w32_process_read(process_handle, r1u64(read_p, read_p+cap), block)){
         break;
@@ -699,7 +699,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
       InitializeContext(0, ctx_flags, 0, &size);
       if(GetLastError() == ERROR_INSUFFICIENT_BUFFER)
       {
-        void *ctx_memory = push_array(scratch.arena, U8, size);
+        void *ctx_memory = push_array(U8, size);
         if(!InitializeContext(ctx_memory, ctx_flags, &ctx, &size))
         {
           ctx = 0;
@@ -978,7 +978,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
       InitializeContext(0, ctx_flags, 0, &size);
       if(GetLastError() == ERROR_INSUFFICIENT_BUFFER)
       {
-        void *ctx_memory = push_array(scratch.arena, U8, size);
+        void *ctx_memory = push_array(U8, size);
         if(!InitializeContext(ctx_memory, ctx_flags, &ctx, &size))
         {
           ctx = 0;
@@ -1140,14 +1140,14 @@ internal void
 dmn_init(void)
 {
   Arena *arena = arena_alloc();
-  dmn_w32_shared = push_array(arena, DMN_W32_Shared, 1);
+  dmn_w32_shared = push_array(DMN_W32_Shared, 1);
   dmn_w32_shared->arena = arena;
   dmn_w32_shared->access_mutex = os_mutex_alloc();
   dmn_w32_shared->detach_arena = arena_alloc();
   dmn_w32_shared->entities_arena = arena_alloc(.reserve_size = GB(8), .commit_size = KB(64));
   dmn_w32_shared->entities_base = dmn_w32_entity_alloc(&dmn_w32_entity_nil, DMN_W32_EntityKind_Root, 0);
   dmn_w32_shared->entities_id_hash_slots_count = 4096;
-  dmn_w32_shared->entities_id_hash_slots = push_array(arena, DMN_W32_EntityIDHashSlot, dmn_w32_shared->entities_id_hash_slots_count);
+  dmn_w32_shared->entities_id_hash_slots = push_array(DMN_W32_EntityIDHashSlot, dmn_w32_shared->entities_id_hash_slots_count);
   
   // rjf: load Windows 10+ GetThreadDescription API
   {
@@ -1493,7 +1493,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             InitializeContext(0, ctx_flags, 0, &size);
             if(GetLastError() == ERROR_INSUFFICIENT_BUFFER)
             {
-              void *ctx_memory = push_array(scratch.arena, U8, size);
+              void *ctx_memory = push_array(U8, size);
               if(!InitializeContext(ctx_memory, ctx_flags, &single_step_thread_ctx, &size))
               {
                 single_step_thread_ctx = 0;
@@ -1550,7 +1550,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
       //////////////////////////
       //- rjf: write all traps into memory
       //
-      U8 *trap_swap_bytes = /* no zero */ push_array(scratch.arena, U8, ctrls->traps.trap_count);
+      U8 *trap_swap_bytes = /* no zero */ push_array(U8, ctrls->traps.trap_count);
       ProfScope("write all traps into memory")
       {
         U64 trap_idx = 0;
@@ -1600,7 +1600,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             }
             if(task == 0)
             {
-              task = push_array(scratch.arena, DMN_FlaggedTrapTask, 1);
+              task = push_array(DMN_FlaggedTrapTask, 1);
               SLLQueuePush(first_flagged_trap_task, last_flagged_trap_task, task);
               task->process = trap->process;
             }
@@ -1793,7 +1793,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             //- rjf: add to list
             if(!is_frozen)
             {
-              DMN_W32_EntityNode *n = push_array(scratch.arena, DMN_W32_EntityNode, 1);
+              DMN_W32_EntityNode *n = push_array(DMN_W32_EntityNode, 1);
               n->v = thread;
               SLLQueuePush(first_run_thread, last_run_thread, n);
             }
@@ -2290,7 +2290,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                   {
                     Temp temp = temp_begin(scratch.arena);
                     U64 regs_block_size = regs_block_size_from_arch(thread->arch);
-                    void *regs_block = push_array(scratch.arena, U8, regs_block_size);
+                    void *regs_block = push_array(U8, regs_block_size);
                     if(dmn_w32_thread_read_reg_block(thread->arch, thread->handle, regs_block))
                     {
                       regs_arch_block_write_rip(thread->arch, regs_block, instruction_pointer);
@@ -2308,7 +2308,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                     InitializeContext(0, ctx_flags, 0, &size);
                     if(GetLastError() == ERROR_INSUFFICIENT_BUFFER)
                     {
-                      void *ctx_memory = push_array(scratch.arena, U8, size);
+                      void *ctx_memory = push_array(U8, size);
                       if(!InitializeContext(ctx_memory, ctx_flags, &ctx, &size))
                       {
                         ctx = 0;
@@ -2495,7 +2495,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                       U64 total_string_size = 0;
                       for(;total_string_size < KB(4);)
                       {
-                        U8 *buffer = push_array(scratch.arena, U8, 256);
+                        U8 *buffer = push_array(U8, 256);
                         B32 good_read = dmn_w32_process_read(process->handle, r1u64(read_addr, read_addr+256), buffer);
                         if(good_read)
                         {
@@ -2563,7 +2563,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                     U64 size       = exception->ExceptionInformation[1];
                     U64 name_vaddr = exception->ExceptionInformation[2];
                     U64 name_size  = exception->ExceptionInformation[3];
-                    U8 *name_buffer = push_array(arena, U8, name_size);
+                    U8 *name_buffer = push_array(U8, name_size);
                     dmn_w32_process_read(process->handle, r1u64(name_vaddr, name_vaddr+name_size), name_buffer), 
                     e->kind = DMN_EventKind_SetVAddrRangeNote;
                     e->address = vaddr;
@@ -2593,7 +2593,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
               U64 string_size = (U64)evt.u.DebugString.nDebugStringLength;
               
               // rjf: read memory
-              U8 *buffer = /* no zero */ push_array(scratch.arena, U8, string_size + 1);
+              U8 *buffer = /* no zero */ push_array(U8, string_size + 1);
               dmn_w32_process_read(process->handle, r1u64(string_address, string_address+string_size), buffer);
               buffer[string_size] = 0;
               

@@ -7,7 +7,7 @@
 internal void
 md_msg_list_push(Arena *arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind, String8 string)
 {
-  MD_Msg *msg = push_array(arena, MD_Msg, 1);
+  MD_Msg *msg = push_array(MD_Msg, 1);
   msg->node = node;
   msg->kind = kind;
   msg->string = string;
@@ -88,7 +88,7 @@ md_token_chunk_list_push(Arena *arena, MD_TokenChunkList *list, U64 cap, MD_Toke
   MD_TokenChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
   {
-    node = push_array(arena, MD_TokenChunkNode, 1);
+    node = push_array(MD_TokenChunkNode, 1);
     node->cap = cap;
     node->v = new MD_Token[cap] /* no zero */;
     SLLQueuePush(list->first, list->last, node);
@@ -187,7 +187,7 @@ md_node_rec_depth_first(MD_Node *node, MD_Node *subtree_root, U64 child_off, U64
 internal MD_Node *
 md_push_node(Arena *arena, MD_NodeKind kind, MD_NodeFlags flags, String8 string, String8 raw_string, U64 src_offset)
 {
-  MD_Node *node = push_array(arena, MD_Node, 1);
+  MD_Node *node = push_array(MD_Node, 1);
   node->first = node->last = node->parent = node->next = node->prev = node->first_tag = node->last_tag = &md_nil_node;
   node->kind       = kind;
   node->flags      = flags;
@@ -482,7 +482,7 @@ md_tree_copy(Arena *arena, MD_Node *src_root)
     MD_NodeRec rec = {0};
     for(MD_Node *src = src_root; !md_node_is_nil(src); src = rec.next)
     {
-      MD_Node *dst = push_array(arena, MD_Node, 1);
+      MD_Node *dst = push_array(MD_Node, 1);
       dst->first = dst->last = dst->parent = dst->next = dst->prev = &md_nil_node;
       dst->first_tag = dst->last_tag = &md_nil_node;
       dst->kind  = src->kind;
@@ -855,7 +855,7 @@ md_parse_from_text_tokens(Arena *arena, String8 filename, String8 text, MD_Token
 #define MD_ParseWorkPush(work_kind, work_parent) do\
 {\
 MD_ParseWorkNode *work_node = work_free;\
-if(work_node == 0) {work_node = push_array(scratch.arena, MD_ParseWorkNode, 1);}\
+if(work_node == 0) {work_node = push_array(MD_ParseWorkNode, 1);}\
 else { SLLStackPop(work_free); }\
 work_node->kind = (work_kind);\
 work_node->parent = (work_parent);\
@@ -1211,7 +1211,7 @@ md_debug_string_list_from_tree(Arena *arena, MD_Node *root)
 internal void
 md_node_ptr_list_push(Arena *arena, MD_NodePtrList *list, MD_Node *node)
 {
-  MD_NodePtrNode *n = push_array(arena, MD_NodePtrNode, 1);
+  MD_NodePtrNode *n = push_array(MD_NodePtrNode, 1);
   n->v = node;
   SLLQueuePush(list->first, list->last, n);
   list->count += 1;
@@ -1220,7 +1220,7 @@ md_node_ptr_list_push(Arena *arena, MD_NodePtrList *list, MD_Node *node)
 internal void
 md_node_ptr_list_push_front(Arena *arena, MD_NodePtrList *list, MD_Node *node)
 {
-  MD_NodePtrNode *n = push_array(arena, MD_NodePtrNode, 1);
+  MD_NodePtrNode *n = push_array(MD_NodePtrNode, 1);
   n->v = node;
   SLLQueuePushFront(list->first, list->last, n);
   list->count += 1;

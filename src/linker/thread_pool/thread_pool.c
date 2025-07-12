@@ -81,13 +81,13 @@ tp_alloc(Arena *arena, U32 worker_count, U32 max_worker_count, String8 name)
   void *worker_entry = is_shared ? tp_worker_main_shared : tp_worker_main;
 
   // init pool
-  TP_Context *pool     = push_array(arena, TP_Context, 1);
+  TP_Context *pool     = push_array(TP_Context, 1);
   pool->exec_semaphore = exec_semaphore;
   pool->task_semaphore = task_semaphore;
   pool->main_semaphore = main_semaphore;
   pool->is_live        = 1;
   pool->worker_count   = worker_count;
-  pool->worker_arr     = push_array(arena, TP_Worker, worker_count);
+  pool->worker_arr     = push_array(TP_Worker, worker_count);
   
   // init worker data
   for (U64 i = 0; i < worker_count; i += 1) {
@@ -137,13 +137,13 @@ tp_arena_alloc(TP_Context *pool)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
-  Arena **arr = push_array(scratch.arena, Arena *, pool->worker_count);
+  Arena **arr = push_array(Arena *, pool->worker_count);
   for (U64 i = 0; i < pool->worker_count; ++i) {
     arr[i] = arena_alloc();
   }
-  Arena **dst = push_array(arr[0], Arena *, pool->worker_count);
+  Arena **dst = push_array(Arena *, pool->worker_count);
   MemoryCopy(dst, arr, sizeof(Arena*) * pool->worker_count);
-  TP_Arena *worker_arena_arr = push_array(arr[0], TP_Arena, 1);
+  TP_Arena *worker_arena_arr = push_array(TP_Arena, 1);
   worker_arena_arr->count = pool->worker_count;
   worker_arena_arr->v = dst;
   scratch_end(scratch);
@@ -172,7 +172,7 @@ tp_temp_begin(TP_Arena *arena)
 
   TP_Temp temp;
   temp.count = arena->count;
-  temp.v     = /* no zero */ push_array(first_temp.arena, Temp, arena->count);
+  temp.v     = /* no zero */ push_array(Temp, arena->count);
 
   temp.v[0] = first_temp;
 

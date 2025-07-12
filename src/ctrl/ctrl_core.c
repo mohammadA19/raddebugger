@@ -169,7 +169,7 @@ ctrl_handle_match(CTRL_Handle a, CTRL_Handle b)
 internal void
 ctrl_handle_list_push(Arena *arena, CTRL_HandleList *list, CTRL_Handle *pair)
 {
-  CTRL_HandleNode *n = push_array(arena, CTRL_HandleNode, 1);
+  CTRL_HandleNode *n = push_array(CTRL_HandleNode, 1);
   MemoryCopyStruct(&n->v, pair);
   SLLQueuePush(list->first, list->last, n);
   list->count += 1;
@@ -220,7 +220,7 @@ ctrl_handle_from_string(String8 string)
 internal void
 ctrl_trap_list_push(Arena *arena, CTRL_TrapList *list, CTRL_Trap *trap)
 {
-  CTRL_TrapNode *node = push_array(arena, CTRL_TrapNode, 1);
+  CTRL_TrapNode *node = push_array(CTRL_TrapNode, 1);
   MemoryCopyStruct(&node->v, trap);
   SLLQueuePush(list->first, list->last, node);
   list->count += 1;
@@ -243,7 +243,7 @@ ctrl_trap_list_copy(Arena *arena, CTRL_TrapList *src)
 internal void
 ctrl_user_breakpoint_list_push(Arena *arena, CTRL_UserBreakpointList *list, CTRL_UserBreakpoint *bp)
 {
-  CTRL_UserBreakpointNode *n = push_array(arena, CTRL_UserBreakpointNode, 1);
+  CTRL_UserBreakpointNode *n = push_array(CTRL_UserBreakpointNode, 1);
   MemoryCopyStruct(&n->v, bp);
   SLLQueuePush(list->first, list->last, n);
   list->count += 1;
@@ -286,7 +286,7 @@ ctrl_msg_deep_copy(Arena *arena, CTRL_Msg *dst, CTRL_Msg *src)
 internal CTRL_Msg *
 ctrl_msg_list_push(Arena *arena, CTRL_MsgList *list)
 {
-  CTRL_MsgNode *n = push_array(arena, CTRL_MsgNode, 1);
+  CTRL_MsgNode *n = push_array(CTRL_MsgNode, 1);
   SLLQueuePush(list->first, list->last, n);
   list->count += 1;
   CTRL_Msg *msg = &n->v;
@@ -433,7 +433,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
     for(U64 msg_idx = 0; msg_idx < msg_count; msg_idx += 1)
     {
       // rjf: construct message
-      CTRL_MsgNode *msg_node = push_array(arena, CTRL_MsgNode, 1);
+      CTRL_MsgNode *msg_node = push_array(CTRL_MsgNode, 1);
       SLLQueuePush(msgs.first, msgs.last, msg_node);
       msgs.count += 1;
       CTRL_Msg *msg = &msg_node->v;
@@ -452,7 +452,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       
       // rjf: read path string
       read_off += str8_deserial_read_struct(string, read_off, &msg->path.size);
-      msg->path.str = /* no zero */ push_array(arena, U8, msg->path.size);
+      msg->path.str = /* no zero */ push_array(U8, msg->path.size);
       read_off += str8_deserial_read(string, read_off, msg->path.str, msg->path.size, 1);
       
       // rjf: read entry point string list
@@ -493,13 +493,13 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       
       // rjf: read stdout/stderr/stdin paths
       read_off += str8_deserial_read_struct(string, read_off, &msg->stdout_path.size);
-      msg->stdout_path.str = push_array(arena, U8, msg->stdout_path.size);
+      msg->stdout_path.str = push_array(U8, msg->stdout_path.size);
       read_off += str8_deserial_read(string, read_off, msg->stdout_path.str, msg->stdout_path.size, 1);
       read_off += str8_deserial_read_struct(string, read_off, &msg->stderr_path.size);
-      msg->stderr_path.str = push_array(arena, U8, msg->stderr_path.size);
+      msg->stderr_path.str = push_array(U8, msg->stderr_path.size);
       read_off += str8_deserial_read(string, read_off, msg->stderr_path.str, msg->stderr_path.size, 1);
       read_off += str8_deserial_read_struct(string, read_off, &msg->stdin_path.size);
-      msg->stdin_path.str = push_array(arena, U8, msg->stdin_path.size);
+      msg->stdin_path.str = push_array(U8, msg->stdin_path.size);
       read_off += str8_deserial_read(string, read_off, msg->stdin_path.str, msg->stdin_path.size, 1);
       
       // rjf: read trap list
@@ -507,7 +507,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       read_off += str8_deserial_read_struct(string, read_off, &trap_count);
       for(U64 idx = 0; idx < trap_count; idx += 1)
       {
-        CTRL_TrapNode *n = push_array(arena, CTRL_TrapNode, 1);
+        CTRL_TrapNode *n = push_array(CTRL_TrapNode, 1);
         SLLQueuePush(msg->traps.first, msg->traps.last, n);
         msg->traps.count += 1;
         CTRL_Trap *trap = &n->v;
@@ -520,7 +520,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       read_off += str8_deserial_read_struct(string, read_off, &user_bp_count);
       for(U64 idx = 0; idx < user_bp_count; idx += 1)
       {
-        CTRL_UserBreakpointNode *n = push_array(arena, CTRL_UserBreakpointNode, 1);
+        CTRL_UserBreakpointNode *n = push_array(CTRL_UserBreakpointNode, 1);
         SLLQueuePush(msg->user_bps.first, msg->user_bps.last, n);
         msg->user_bps.count += 1;
         CTRL_UserBreakpoint *bp = &n->v;
@@ -528,12 +528,12 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
         read_off += str8_deserial_read_struct(string, read_off, &bp->flags);
         read_off += str8_deserial_read_struct(string, read_off, &bp->id);
         read_off += str8_deserial_read_struct(string, read_off, &bp->string.size);
-        bp->string.str = /* no zero */ push_array(arena, U8, bp->string.size);
+        bp->string.str = /* no zero */ push_array(U8, bp->string.size);
         read_off += str8_deserial_read(string, read_off, bp->string.str, bp->string.size, 1);
         read_off += str8_deserial_read_struct(string, read_off, &bp->pt);
         read_off += str8_deserial_read_struct(string, read_off, &bp->size);
         read_off += str8_deserial_read_struct(string, read_off, &bp->condition.size);
-        bp->condition.str = /* no zero */ push_array(arena, U8, bp->condition.size);
+        bp->condition.str = /* no zero */ push_array(U8, bp->condition.size);
         read_off += str8_deserial_read(string, read_off, bp->condition.str, bp->condition.size, 1);
       }
     }
@@ -549,7 +549,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
 internal CTRL_Event *
 ctrl_event_list_push(Arena *arena, CTRL_EventList *list)
 {
-  CTRL_EventNode *n = push_array(arena, CTRL_EventNode, 1);
+  CTRL_EventNode *n = push_array(CTRL_EventNode, 1);
   SLLQueuePush(list->first, list->last, n);
   list->count += 1;
   CTRL_Event *event = &n->v;
@@ -632,7 +632,7 @@ ctrl_event_from_serialized_string(Arena *arena, String8 string)
     read_off += str8_deserial_read_struct(string, read_off, &event.rgba);
     read_off += str8_deserial_read_struct(string, read_off, &event.bp_flags);
     read_off += str8_deserial_read_struct(string, read_off, &event.string.size);
-    event.string.str = /* no zero */ push_array(arena, U8, event.string.size);
+    event.string.str = /* no zero */ push_array(U8, event.string.size);
     read_off += str8_deserial_read(string, read_off, event.string.str, event.string.size, 1);
   }
   return event;
@@ -646,7 +646,7 @@ ctrl_event_from_serialized_string(Arena *arena, String8 string)
 internal void
 ctrl_entity_list_push(Arena *arena, CTRL_EntityList *list, CTRL_Entity *entity)
 {
-  CTRL_EntityNode *n = push_array(arena, CTRL_EntityNode, 1);
+  CTRL_EntityNode *n = push_array(CTRL_EntityNode, 1);
   n->v = entity;
   SLLQueuePush(list->first, list->last, n);
   list->count += 1;
@@ -671,7 +671,7 @@ ctrl_entity_array_from_list(Arena *arena, CTRL_EntityList *list)
 {
   CTRL_EntityArray result = {0};
   result.count = list->count;
-  result.v = /* no zero */ push_array(arena, CTRL_Entity *, result.count);
+  result.v = /* no zero */ push_array(CTRL_Entity *, result.count);
   U64 idx = 0;
   for(CTRL_EntityNode *n = list->first; n != 0; n = n->next, idx += 1)
   {
@@ -852,10 +852,10 @@ internal CTRL_EntityCtxRWStore *
 ctrl_entity_ctx_rw_store_alloc(void)
 {
   Arena *arena = arena_alloc();
-  CTRL_EntityCtxRWStore *store = push_array(arena, CTRL_EntityCtxRWStore, 1);
+  CTRL_EntityCtxRWStore *store = push_array(CTRL_EntityCtxRWStore, 1);
   store->arena = arena;
   store->ctx.hash_slots_count = 1024;
-  store->ctx.hash_slots = push_array(arena, CTRL_EntityHashSlot, store->ctx.hash_slots_count);
+  store->ctx.hash_slots = push_array(CTRL_EntityHashSlot, store->ctx.hash_slots_count);
   CTRL_Entity *root = store->ctx.root = ctrl_entity_alloc(store, &ctrl_entity_nil, CTRL_EntityKind_Root, Arch_Null, ctrl_handle_zero(), 0);
   CTRL_Entity *local_machine = ctrl_entity_alloc(store, root, CTRL_EntityKind_Machine, arch_from_context(), ctrl_handle_make(CTRL_MachineID_Local, dmn_handle_zero()), 0);
   Temp scratch = scratch_begin(0, 0);
@@ -929,7 +929,7 @@ ctrl_entity_string_alloc(CTRL_EntityCtxRWStore *store, String8 string)
       else
       {
         U64 chunk_size = u64_up_to_pow2(string.size);
-        node = (CTRL_EntityStringChunkNode *)push_array(store->arena, U8, chunk_size);
+        node = (CTRL_EntityStringChunkNode *)push_array(U8, chunk_size);
       }
     }
     else if(bucket_num != 0)
@@ -941,7 +941,7 @@ ctrl_entity_string_alloc(CTRL_EntityCtxRWStore *store, String8 string)
       }
       else
       {
-        node = (CTRL_EntityStringChunkNode *)push_array(store->arena, U8, ctrl_entity_string_bucket_chunk_sizes[bucket_num-1]);
+        node = (CTRL_EntityStringChunkNode *)push_array(U8, ctrl_entity_string_bucket_chunk_sizes[bucket_num-1]);
       }
     }
   }
@@ -986,7 +986,7 @@ ctrl_entity_alloc(CTRL_EntityCtxRWStore *store, CTRL_Entity *parent, CTRL_Entity
       }
       else
       {
-        entity = /* no zero */ push_array(store->arena, CTRL_Entity, 1);
+        entity = /* no zero */ push_array(CTRL_Entity, 1);
       }
       MemoryZeroStruct(entity);
     }
@@ -1028,7 +1028,7 @@ ctrl_entity_alloc(CTRL_EntityCtxRWStore *store, CTRL_Entity *parent, CTRL_Entity
         }
         else
         {
-          node = /* no zero */ push_array(store->arena, CTRL_EntityHashNode, 1);
+          node = /* no zero */ push_array(CTRL_EntityHashNode, 1);
         }
         MemoryZeroStruct(node);
         DLLPushBack(slot->first, slot->last, node);
@@ -1069,7 +1069,7 @@ ctrl_entity_release(CTRL_EntityCtxRWStore *store, CTRL_Entity *entity)
     {
       for(CTRL_Entity *child = t->e->first; child != &ctrl_entity_nil; child = child->next)
       {
-        Task *t = push_array(scratch.arena, Task, 1);
+        Task *t = push_array(Task, 1);
         t->e = child;
         SLLQueuePush(first_task, last_task, t);
       }
@@ -1122,7 +1122,7 @@ ctrl_thread_entity_ctx_lookup_accel(void)
   if(ctrl_entity_ctx_lookup_accel == 0)
   {
     Arena *arena = arena_alloc();
-    ctrl_entity_ctx_lookup_accel = push_array(arena, CTRL_EntityCtxLookupAccel, 1);
+    ctrl_entity_ctx_lookup_accel = push_array(CTRL_EntityCtxLookupAccel, 1);
     ctrl_entity_ctx_lookup_accel->arena = arena;
     for EachEnumVal(CTRL_EntityKind, k)
     {
@@ -1423,7 +1423,7 @@ ctrl_scope_open(void)
   if(ctrl_tctx == 0)
   {
     Arena *arena = arena_alloc();
-    ctrl_tctx = push_array(arena, CTRL_TCTX, 1);
+    ctrl_tctx = push_array(CTRL_TCTX, 1);
     ctrl_tctx->arena = arena;
   }
   CTRL_Scope *scope = ctrl_tctx->free_scope;
@@ -1433,7 +1433,7 @@ ctrl_scope_open(void)
   }
   else
   {
-    scope = /* no zero */ push_array(ctrl_tctx->arena, CTRL_Scope, 1);
+    scope = /* no zero */ push_array(CTRL_Scope, 1);
   }
   MemoryZeroStruct(scope);
   return scope;
@@ -1463,7 +1463,7 @@ ctrl_scope_touch_call_stack_node__stripe_r_guarded(CTRL_Scope *scope, CTRL_CallS
   }
   else
   {
-    touch = push_array(ctrl_tctx->arena, CTRL_ScopeCallStackTouch, 1);
+    touch = push_array(CTRL_ScopeCallStackTouch, 1);
   }
   SLLQueuePush(scope->first_call_stack_touch, scope->last_call_stack_touch, touch);
   touch->stripe = stripe;
@@ -1477,7 +1477,7 @@ internal void
 ctrl_init(void)
 {
   Arena *arena = arena_alloc();
-  ctrl_state = push_array(arena, CTRL_State, 1);
+  ctrl_state = push_array(CTRL_State, 1);
   ctrl_state->arena = arena;
   for(Arch arch = (Arch)0; arch < Arch_COUNT; arch = (Arch)(arch+1))
   {
@@ -1497,27 +1497,27 @@ ctrl_init(void)
     }
   }
   ctrl_state->process_memory_cache.slots_count = 256;
-  ctrl_state->process_memory_cache.slots = push_array(arena, CTRL_ProcessMemoryCacheSlot, ctrl_state->process_memory_cache.slots_count);
+  ctrl_state->process_memory_cache.slots = push_array(CTRL_ProcessMemoryCacheSlot, ctrl_state->process_memory_cache.slots_count);
   ctrl_state->process_memory_cache.stripes_count = os_get_system_info()->logical_processor_count;
-  ctrl_state->process_memory_cache.stripes = push_array(arena, CTRL_ProcessMemoryCacheStripe, ctrl_state->process_memory_cache.stripes_count);
+  ctrl_state->process_memory_cache.stripes = push_array(CTRL_ProcessMemoryCacheStripe, ctrl_state->process_memory_cache.stripes_count);
   for(U64 idx = 0; idx < ctrl_state->process_memory_cache.stripes_count; idx += 1)
   {
     ctrl_state->process_memory_cache.stripes[idx].rw_mutex = os_rw_mutex_alloc();
     ctrl_state->process_memory_cache.stripes[idx].cv = os_condition_variable_alloc();
   }
   ctrl_state->thread_reg_cache.slots_count = 1024;
-  ctrl_state->thread_reg_cache.slots = push_array(arena, CTRL_ThreadRegCacheSlot, ctrl_state->thread_reg_cache.slots_count);
+  ctrl_state->thread_reg_cache.slots = push_array(CTRL_ThreadRegCacheSlot, ctrl_state->thread_reg_cache.slots_count);
   ctrl_state->thread_reg_cache.stripes_count = os_get_system_info()->logical_processor_count;
-  ctrl_state->thread_reg_cache.stripes = push_array(arena, CTRL_ThreadRegCacheStripe, ctrl_state->thread_reg_cache.stripes_count);
+  ctrl_state->thread_reg_cache.stripes = push_array(CTRL_ThreadRegCacheStripe, ctrl_state->thread_reg_cache.stripes_count);
   for(U64 idx = 0; idx < ctrl_state->thread_reg_cache.stripes_count; idx += 1)
   {
     ctrl_state->thread_reg_cache.stripes[idx].arena = arena_alloc();
     ctrl_state->thread_reg_cache.stripes[idx].rw_mutex = os_rw_mutex_alloc();
   }
   ctrl_state->call_stack_cache.slots_count = 1024;
-  ctrl_state->call_stack_cache.slots = push_array(arena, CTRL_CallStackCacheSlot, ctrl_state->call_stack_cache.slots_count);
+  ctrl_state->call_stack_cache.slots = push_array(CTRL_CallStackCacheSlot, ctrl_state->call_stack_cache.slots_count);
   ctrl_state->call_stack_cache.stripes_count = os_get_system_info()->logical_processor_count;
-  ctrl_state->call_stack_cache.stripes = push_array(arena, CTRL_CallStackCacheStripe, ctrl_state->call_stack_cache.stripes_count);
+  ctrl_state->call_stack_cache.stripes = push_array(CTRL_CallStackCacheStripe, ctrl_state->call_stack_cache.stripes_count);
   for(U64 idx = 0; idx < ctrl_state->call_stack_cache.stripes_count; idx += 1)
   {
     ctrl_state->call_stack_cache.stripes[idx].arena = arena_alloc();
@@ -1525,9 +1525,9 @@ ctrl_init(void)
     ctrl_state->call_stack_cache.stripes[idx].cv = os_condition_variable_alloc();
   }
   ctrl_state->module_image_info_cache.slots_count = 1024;
-  ctrl_state->module_image_info_cache.slots = push_array(arena, CTRL_ModuleImageInfoCacheSlot, ctrl_state->module_image_info_cache.slots_count);
+  ctrl_state->module_image_info_cache.slots = push_array(CTRL_ModuleImageInfoCacheSlot, ctrl_state->module_image_info_cache.slots_count);
   ctrl_state->module_image_info_cache.stripes_count = os_get_system_info()->logical_processor_count;
-  ctrl_state->module_image_info_cache.stripes = push_array(arena, CTRL_ModuleImageInfoCacheStripe, ctrl_state->module_image_info_cache.stripes_count);
+  ctrl_state->module_image_info_cache.stripes = push_array(CTRL_ModuleImageInfoCacheStripe, ctrl_state->module_image_info_cache.stripes_count);
   for(U64 idx = 0; idx < ctrl_state->module_image_info_cache.stripes_count; idx += 1)
   {
     ctrl_state->module_image_info_cache.stripes[idx].arena = arena_alloc();
@@ -1566,11 +1566,11 @@ ctrl_init(void)
     }
   }
   ctrl_state->u2ms_ring_size = KB(64);
-  ctrl_state->u2ms_ring_base = push_array(arena, U8, ctrl_state->u2ms_ring_size);
+  ctrl_state->u2ms_ring_base = push_array(U8, ctrl_state->u2ms_ring_size);
   ctrl_state->u2ms_ring_mutex = os_mutex_alloc();
   ctrl_state->u2ms_ring_cv = os_condition_variable_alloc();
   ctrl_state->u2csb_ring_size = KB(64);
-  ctrl_state->u2csb_ring_base = push_array(arena, U8, ctrl_state->u2csb_ring_size);
+  ctrl_state->u2csb_ring_base = push_array(U8, ctrl_state->u2csb_ring_size);
   ctrl_state->u2csb_ring_mutex = os_mutex_alloc();
   ctrl_state->u2csb_ring_cv = os_condition_variable_alloc();
   ctrl_state->ctrl_thread_log = log_alloc();
@@ -1634,13 +1634,13 @@ ctrl_key_from_process_vaddr_range(CTRL_Handle process, Rng1U64 vaddr_range, B32 
       if(!node_found)
       {
         Arena *node_arena = arena_alloc();
-        CTRL_ProcessMemoryCacheNode *node = push_array(node_arena, CTRL_ProcessMemoryCacheNode, 1);
+        CTRL_ProcessMemoryCacheNode *node = push_array(CTRL_ProcessMemoryCacheNode, 1);
         DLLPushBack(process_slot->first, process_slot->last, node);
         node->arena = node_arena;
         node->handle = process;
         node->root = hs_root_alloc();
         node->range_hash_slots_count = 1024;
-        node->range_hash_slots = push_array(node_arena, CTRL_ProcessMemoryRangeHashSlot, node->range_hash_slots_count);
+        node->range_hash_slots = push_array(CTRL_ProcessMemoryRangeHashSlot, node->range_hash_slots_count);
         root = node->root;
       }
     }
@@ -1737,7 +1737,7 @@ ctrl_key_from_process_vaddr_range(CTRL_Handle process, Rng1U64 vaddr_range, B32 
             }
             if(range_n == 0)
             {
-              range_n = push_array(process_n->arena, CTRL_ProcessMemoryRangeHashNode, 1);
+              range_n = push_array(CTRL_ProcessMemoryRangeHashNode, 1);
               SLLQueuePush(range_slot->first, range_slot->last, range_n);
               range_n->vaddr_range = vaddr_range;
               range_n->zero_terminated = zero_terminated;
@@ -1829,8 +1829,8 @@ ctrl_process_memory_slice_from_vaddr_range(Arena *arena, CTRL_Handle process, Rn
     U64 page_size = KB(4);
     Rng1U64 page_range = r1u64(AlignDownPow2(range.min, page_size), AlignPow2(range.max, page_size));
     U64 page_count = dim_1u64(page_range)/page_size;
-    U128 *page_hashes = push_array(scratch.arena, U128, page_count);
-    U128 *page_last_hashes = push_array(scratch.arena, U128, page_count);
+    U128 *page_hashes = push_array(U128, page_count);
+    U128 *page_last_hashes = push_array(U128, page_count);
     
     //- rjf: gather hashes & last-hashes for each page
     ProfScope("gather hashes & last-hashes for each page")
@@ -1849,9 +1849,9 @@ ctrl_process_memory_slice_from_vaddr_range(Arena *arena, CTRL_Handle process, Rn
     }
     
     //- rjf: setup output buffers
-    void *read_out = push_array(arena, U8, dim_1u64(range));
-    U64 *byte_bad_flags = push_array(arena, U64, (dim_1u64(range)+63)/64);
-    U64 *byte_changed_flags = push_array(arena, U64, (dim_1u64(range)+63)/64);
+    void *read_out = push_array(U8, dim_1u64(range));
+    U64 *byte_bad_flags = push_array(U64, (dim_1u64(range)+63)/64);
+    U64 *byte_changed_flags = push_array(U64, (dim_1u64(range)+63)/64);
     
     //- rjf: iterate pages, fill output
     ProfScope("iterate pages, fill output")
@@ -2024,7 +2024,7 @@ ctrl_process_write(CTRL_Handle process, Rng1U64 range, void *src)
               Rng1U64 intersection_w_range = intersect_1u64(range, n->vaddr_range);
               if(dim_1u64(intersection_w_range) != 0 && dim_1u64(n->vaddr_range) <= KB(64))
               {
-                Task *task = push_array(scratch.arena, Task, 1);
+                Task *task = push_array(Task, 1);
                 task->process = proc_n->handle;
                 task->range = n->vaddr_range;
                 SLLQueuePush(first_task, last_task, task);
@@ -2067,7 +2067,7 @@ ctrl_reg_block_from_thread(Arena *arena, CTRL_EntityCtx *ctx, CTRL_Handle handle
   U64 stripe_idx = slot_idx%cache->stripes_count;
   CTRL_ThreadRegCacheSlot *slot = &cache->slots[slot_idx];
   CTRL_ThreadRegCacheStripe *stripe = &cache->stripes[stripe_idx];
-  void *result = push_array(arena, U8, reg_block_size);
+  void *result = push_array(U8, reg_block_size);
   OS_MutexScopeW(stripe->rw_mutex)
   {
     // rjf: find existing node
@@ -2084,11 +2084,11 @@ ctrl_reg_block_from_thread(Arena *arena, CTRL_EntityCtx *ctx, CTRL_Handle handle
     // rjf: allocate existing node
     if(!node)
     {
-      node = push_array(stripe->arena, CTRL_ThreadRegCacheNode, 1);
+      node = push_array(CTRL_ThreadRegCacheNode, 1);
       DLLPushBack(slot->first, slot->last, node);
       node->handle     = handle;
       node->block_size = reg_block_size;
-      node->block      = push_array(stripe->arena, U8, reg_block_size);
+      node->block      = push_array(U8, reg_block_size);
     }
     
     // rjf: copy from node
@@ -2219,7 +2219,7 @@ ctrl_intel_pdata_from_module_voff(Arena *arena, CTRL_Handle module_handle, U64 v
             PE_IntelPdata *pdata = pdatas + index;
             if(pdata->voff_first <= voff && voff < pdata->voff_one_past_last)
             {
-              first_pdata = push_array(arena, PE_IntelPdata, 1);
+              first_pdata = push_array(PE_IntelPdata, 1);
               MemoryCopyStruct(first_pdata, pdata);
             }
           }
@@ -2323,7 +2323,7 @@ ctrl_unwind_deep_copy(Arena *arena, Arch arch, CTRL_Unwind *src)
   {
     dst.flags = src->flags;
     dst.frames.count = src->frames.count;
-    dst.frames.v = push_array(arena, CTRL_UnwindFrame, dst.frames.count);
+    dst.frames.v = push_array(CTRL_UnwindFrame, dst.frames.count);
     MemoryCopy(dst.frames.v, src->frames.v, sizeof(dst.frames.v[0])*dst.frames.count);
     U64 block_size = regs_block_size_from_arch(arch);
     for(U64 idx = 0; idx < dst.frames.count; idx += 1)
@@ -2851,7 +2851,7 @@ ctrl_unwind_step__pe_x64(CTRL_Handle process_handle, CTRL_Handle module_handle, 
       U64 unwind_info_off = pdata->voff_unwind_info;
       PE_UnwindInfo unwind_info = {0};
       good_unwind_info = good_unwind_info && ctrl_process_memory_read_struct(process_handle, module_base_vaddr+unwind_info_off, &is_stale, &unwind_info, endt_us);
-      PE_UnwindCode *unwind_codes = push_array(scratch.arena, PE_UnwindCode, unwind_info.codes_num);
+      PE_UnwindCode *unwind_codes = push_array(PE_UnwindCode, unwind_info.codes_num);
       good_unwind_info = good_unwind_info && ctrl_process_memory_read(process_handle, r1u64(module_base_vaddr+unwind_info_off+sizeof(unwind_info),
                                                                                             module_base_vaddr+unwind_info_off+sizeof(unwind_info)+sizeof(PE_UnwindCode)*unwind_info.codes_num),
                                                                       &is_stale, unwind_codes, endt_us);
@@ -3131,7 +3131,7 @@ ctrl_unwind_step__pe_x64(CTRL_Handle process_handle, CTRL_Handle module_handle, 
         U64 code_size = code_count_rounded*sizeof(PE_UnwindCode);
         U64 chained_pdata_off = unwind_info_off + sizeof(PE_UnwindInfo) + code_size;
         last_pdata = pdata;
-        pdata = push_array(scratch.arena, PE_IntelPdata, 1);
+        pdata = push_array(PE_IntelPdata, 1);
         if(!ctrl_process_memory_read_struct(process_handle, module_base_vaddr+chained_pdata_off, &is_stale, pdata, endt_us) ||
            is_stale)
         {
@@ -3241,7 +3241,7 @@ ctrl_unwind_from_thread(Arena *arena, CTRL_EntityCtx *ctx, CTRL_Handle thread, U
       }
       
       // rjf: valid step -> push frame
-      CTRL_UnwindFrameNode *frame_node = push_array(scratch.arena, CTRL_UnwindFrameNode, 1);
+      CTRL_UnwindFrameNode *frame_node = push_array(CTRL_UnwindFrameNode, 1);
       CTRL_UnwindFrame *frame = &frame_node->v;
       frame->regs = new U8[arch_reg_block_size] /* no zero */;
       MemoryCopy(frame->regs, regs_block, arch_reg_block_size);
@@ -3265,7 +3265,7 @@ ctrl_unwind_from_thread(Arena *arena, CTRL_EntityCtx *ctx, CTRL_Handle thread, U
   //- rjf: bake frames list into result array
   {
     unwind.frames.count = frame_node_count;
-    unwind.frames.v = push_array(arena, CTRL_UnwindFrame, unwind.frames.count);
+    unwind.frames.v = push_array(CTRL_UnwindFrame, unwind.frames.count);
     U64 idx = 0;
     for(CTRL_UnwindFrameNode *n = first_frame_node; n != 0; n = n->next, idx += 1)
     {
@@ -3319,7 +3319,7 @@ ctrl_call_stack_from_unwind(Arena *arena, CTRL_Entity *process, CTRL_Unwind *bas
           s->inline_site_idx != 0;
           s = rdi_element_from_name_idx(rdi, Scopes, s->parent_scope_idx))
       {
-        FrameNode *dst_inline = push_array(scratch.arena, FrameNode, 1);
+        FrameNode *dst_inline = push_array(FrameNode, 1);
         if(first_inline_frame == 0)
         {
           first_inline_frame = dst_inline;
@@ -3333,7 +3333,7 @@ ctrl_call_stack_from_unwind(Arena *arena, CTRL_Entity *process, CTRL_Unwind *bas
       }
       
       // rjf: build concrete frame
-      FrameNode *dst_base = push_array(scratch.arena, FrameNode, 1);
+      FrameNode *dst_base = push_array(FrameNode, 1);
       SLLQueuePush(first_frame, last_frame, dst_base);
       dst_base->v.unwind_count = base_frame_idx;
       dst_base->v.regs         = src->regs;
@@ -3353,9 +3353,9 @@ ctrl_call_stack_from_unwind(Arena *arena, CTRL_Entity *process, CTRL_Unwind *bas
     
     //- rjf: package
     result.frames_count = frame_count; 
-    result.frames = push_array(arena, CTRL_CallStackFrame, result.frames_count);
+    result.frames = push_array(CTRL_CallStackFrame, result.frames_count);
     result.concrete_frames_count = base_unwind->frames.count;
-    result.concrete_frames = push_array(arena, CTRL_CallStackFrame *, result.concrete_frames_count);
+    result.concrete_frames = push_array(CTRL_CallStackFrame *, result.concrete_frames_count);
     {
       U64 idx = 0;
       U64 concrete_idx = 0;
@@ -3478,7 +3478,7 @@ ctrl_call_stack_from_thread(CTRL_Scope *scope, CTRL_EntityCtx *entity_ctx, CTRL_
       }
       if(node == 0)
       {
-        node = push_array(stripe->arena, CTRL_CallStackCacheNode, 1);
+        node = push_array(CTRL_CallStackCacheNode, 1);
         DLLPushBack(slot->first, slot->last, node);
         node->thread = thread->handle;
       }
@@ -3611,7 +3611,7 @@ ctrl_u2c_pop_msgs(Arena *arena)
       U64 size_to_decode = 0;
       ctrl_state->u2c_ring_read_pos += ring_read_struct(ctrl_state->u2c_ring_base, ctrl_state->u2c_ring_size, ctrl_state->u2c_ring_read_pos, &size_to_decode);
       msgs_srlzed_baked.size = size_to_decode;
-      msgs_srlzed_baked.str = /* no zero */ push_array(scratch.arena, U8, msgs_srlzed_baked.size);
+      msgs_srlzed_baked.str = /* no zero */ push_array(U8, msgs_srlzed_baked.size);
       ctrl_state->u2c_ring_read_pos += ring_read(ctrl_state->u2c_ring_base, ctrl_state->u2c_ring_size, ctrl_state->u2c_ring_read_pos, msgs_srlzed_baked.str, size_to_decode);
       break;
     }
@@ -3676,7 +3676,7 @@ ctrl_c2u_pop_events(Arena *arena)
       ctrl_state->c2u_ring_read_pos += ring_read_struct(ctrl_state->c2u_ring_base, ctrl_state->c2u_ring_size, ctrl_state->c2u_ring_read_pos, &size_to_decode);
       String8 event_srlzed = {0};
       event_srlzed.size = size_to_decode;
-      event_srlzed.str = /* no zero */ push_array(scratch.arena, U8, event_srlzed.size);
+      event_srlzed.str = /* no zero */ push_array(U8, event_srlzed.size);
       ctrl_state->c2u_ring_read_pos += ring_read(ctrl_state->c2u_ring_base, ctrl_state->c2u_ring_size, ctrl_state->c2u_ring_read_pos, event_srlzed.str, event_srlzed.size);
       CTRL_Event *new_event = ctrl_event_list_push(arena, &events);
       *new_event = ctrl_event_from_serialized_string(arena, event_srlzed);
@@ -3726,7 +3726,7 @@ ctrl_thread__entry_point(void *p)
         //- rjf: reset per-message state
         arena_clear(ctrl_state->ctrl_thread_msg_process_arena);
         ctrl_state->module_req_cache_slots_count = 1024;
-        ctrl_state->module_req_cache_slots = push_array(ctrl_state->ctrl_thread_msg_process_arena, CTRL_ModuleReqCacheNode *, ctrl_state->module_req_cache_slots_count);
+        ctrl_state->module_req_cache_slots = push_array(CTRL_ModuleReqCacheNode *, ctrl_state->module_req_cache_slots_count);
         MemoryZeroStruct(&ctrl_state->msg_user_bp_touched_files);
         MemoryZeroStruct(&ctrl_state->msg_user_bp_touched_symbols);
         MemoryCopyArray(ctrl_state->exception_code_filters, msg->exception_code_filters);
@@ -3766,14 +3766,14 @@ ctrl_thread__entry_point(void *p)
                 }
                 if(expr->next != &e_expr_nil)
                 {
-                  ExprWalkTask *task = push_array(scratch.arena, ExprWalkTask, 1);
+                  ExprWalkTask *task = push_array(ExprWalkTask, 1);
                   task->expr = expr->next;
                   task->next = t->next;
                   t->next = task;
                 }
                 if(expr->first != &e_expr_nil)
                 {
-                  ExprWalkTask *task = push_array(scratch.arena, ExprWalkTask, 1);
+                  ExprWalkTask *task = push_array(ExprWalkTask, 1);
                   task->expr = expr->first;
                   task->next = t->next;
                   t->next = task;
@@ -4120,7 +4120,7 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
         dmn_process_read_struct(process.dmn_handle, vaddr_range.min + opt_ext_off_range.min + reported_data_dir_offset + sizeof(PE_DataDirectory)*PE_DataDirectoryIndex_EXCEPTIONS, &dir);
         Rng1U64 pdatas_voff_range = r1u64((U64)dir.virt_off, (U64)dir.virt_off + (U64)dir.virt_size);
         pdatas_count = dim_1u64(pdatas_voff_range)/sizeof(PE_IntelPdata);
-        pdatas = push_array(arena, PE_IntelPdata, pdatas_count);
+        pdatas = push_array(PE_IntelPdata, pdatas_count);
         dmn_process_read(process.dmn_handle, r1u64(vaddr_range.min + pdatas_voff_range.min, vaddr_range.min + pdatas_voff_range.max), pdatas);
       }
       
@@ -4223,7 +4223,7 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
         Temp scratch = scratch_begin(0, 0);
         U64 sec_array_off = opt_ext_off_range.max;
         U64 sec_count = file_header.section_count;
-        COFF_SectionHeader *sec = push_array(scratch.arena, COFF_SectionHeader, sec_count);
+        COFF_SectionHeader *sec = push_array(COFF_SectionHeader, sec_count);
         dmn_process_read(process.dmn_handle, r1u64(vaddr_range.min + sec_array_off, vaddr_range.min + sec_array_off + sec_count*sizeof(COFF_SectionHeader)), sec);
         for EachIndex(idx, sec_count)
         {
@@ -4235,7 +4235,7 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
           }
         }
         raddbg_data.size = dim_1u64(raddbg_section_voff_range);
-        raddbg_data.str = push_array(arena, U8, raddbg_data.size);
+        raddbg_data.str = push_array(U8, raddbg_data.size);
         dmn_process_read(process.dmn_handle, r1u64(vaddr_range.min + raddbg_section_voff_range.min,
                                                    vaddr_range.min + raddbg_section_voff_range.max), raddbg_data.str);
         scratch_end(scratch);
@@ -4317,7 +4317,7 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
       }
       if(!node)
       {
-        node = push_array(arena, CTRL_ModuleImageInfoCacheNode, 1);
+        node = push_array(CTRL_ModuleImageInfoCacheNode, 1);
         DLLPushBack(slot->first, slot->last, node);
         node->module = module;
         node->arena = arena;
@@ -4381,7 +4381,7 @@ internal DMN_Event *
 ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, DMN_RunCtrls *run_ctrls, CTRL_Spoof *spoof)
 {
   ProfBeginFunction();
-  DMN_Event *event = push_array(arena, DMN_Event, 1);
+  DMN_Event *event = push_array(DMN_Event, 1);
   Temp scratch = scratch_begin(&arena, 1);
   CTRL_EntityCtx *entity_ctx = &ctrl_state->ctrl_thread_entity_store->ctx;
   
@@ -4595,7 +4595,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
           }
           else
           {
-            dst_n = push_array(ctrl_state->dmn_event_arena, DMN_EventNode, 1);
+            dst_n = push_array(DMN_EventNode, 1);
           }
           MemoryCopyStruct(&dst_n->v, &src_n->v);
           dst_n->v.string = push_str8_copy(ctrl_state->dmn_event_arena, dst_n->v.string);
@@ -4618,7 +4618,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
   {
     CTRL_Entity *thread = ctrl_entity_from_handle(entity_ctx, ctrl_handle_make(CTRL_MachineID_Local, spoof->thread));
     Arch arch = thread->arch;
-    void *regs_block = push_array(scratch.arena, U8, regs_block_size_from_arch(arch));
+    void *regs_block = push_array(U8, regs_block_size_from_arch(arch));
     dmn_thread_read_reg_block(spoof->thread, regs_block);
     U64 spoof_thread_rip = regs_rip_from_arch_block(arch, regs_block);
     if(spoof_thread_rip == spoof->new_ip_value)
@@ -4793,7 +4793,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
   if(ctrl_state->process_counter == 1 && event->kind == DMN_EventKind_CreateProcess)
   {
     arena_clear(ctrl_state->dbg_dir_arena);
-    ctrl_state->dbg_dir_root = push_array(ctrl_state->dbg_dir_arena, CTRL_DbgDirNode, 1);
+    ctrl_state->dbg_dir_root = push_array(CTRL_DbgDirNode, 1);
   }
   
   //- rjf: when a new module is loaded, pre-emptively try to open all adjacent
@@ -4857,7 +4857,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
         }
         if(next_child == 0)
         {
-          next_child = push_array(ctrl_state->dbg_dir_arena, CTRL_DbgDirNode, 1);
+          next_child = push_array(CTRL_DbgDirNode, 1);
           DLLPushBack(parent_dir_node->first, parent_dir_node->last, next_child);
           next_child->parent = parent_dir_node;
           next_child->name = push_str8_copy(ctrl_state->dbg_dir_arena, name);
@@ -4934,7 +4934,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
                 }
                 if(existing_dir_child == 0)
                 {
-                  existing_dir_child = push_array(ctrl_state->dbg_dir_arena, CTRL_DbgDirNode, 1);
+                  existing_dir_child = push_array(CTRL_DbgDirNode, 1);
                   DLLPushBack(t->node->first, t->node->last, existing_dir_child);
                   existing_dir_child->parent = t->node;
                   existing_dir_child->name = push_str8_copy(ctrl_state->dbg_dir_arena, info.name);
@@ -4942,7 +4942,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
                 }
                 if(existing_dir_child->search_count == 0)
                 {
-                  Task *task = push_array(scratch.arena, Task, 1);
+                  Task *task = push_array(Task, 1);
                   task->node = existing_dir_child;
                   task->path = push_str8f(scratch.arena, "%S/%S", t->path, info.name);
                   SLLQueuePush(first_task, last_task, task);
@@ -5063,7 +5063,7 @@ internal CTRL_EvalScope *
 ctrl_thread__eval_scope_begin(Arena *arena, CTRL_UserBreakpointList *user_bps, CTRL_Entity *thread)
 {
   CTRL_EntityCtx *entity_ctx = &ctrl_state->ctrl_thread_entity_store->ctx;
-  CTRL_EvalScope *scope = push_array(arena, CTRL_EvalScope, 1);
+  CTRL_EvalScope *scope = push_array(CTRL_EvalScope, 1);
   scope->di_scope = di_scope_open();
   
   //////////////////////////////
@@ -5079,7 +5079,7 @@ ctrl_thread__eval_scope_begin(Arena *arena, CTRL_UserBreakpointList *user_bps, C
   //- rjf: gather evaluation modules
   //
   U64 eval_modules_count = Max(1, entity_ctx->entity_kind_counts[CTRL_EntityKind_Module]);
-  E_Module *eval_modules = push_array(arena, E_Module, eval_modules_count);
+  E_Module *eval_modules = push_array(E_Module, eval_modules_count);
   E_Module *eval_modules_primary = &eval_modules[0];
   eval_modules_primary->rdi = &rdi_parsed_nil;
   eval_modules_primary->vaddr_range = r1u64(0, max_U64);
@@ -5175,7 +5175,7 @@ ctrl_thread__eval_scope_begin(Arena *arena, CTRL_UserBreakpointList *user_bps, C
                 }
               }
               os_file_close(file);
-              node = push_array(ctrl_state->ctrl_thread_msg_process_arena, CTRL_ModuleReqCacheNode, 1);
+              node = push_array(CTRL_ModuleReqCacheNode, 1);
               node->next = slot;
               ctrl_state->module_req_cache_slots[slot_idx] = node;
               node->module = mod->handle;
@@ -5242,9 +5242,9 @@ ctrl_thread__eval_scope_begin(Arena *arena, CTRL_UserBreakpointList *user_bps, C
     ctx->reg_alias_map = ctrl_string2alias_from_arch(arch);
     ctx->locals_map    = e_push_locals_map_from_rdi_voff(arena, eval_modules_primary->rdi, thread_rip_voff);
     ctx->member_map    = e_push_member_map_from_rdi_voff(arena, eval_modules_primary->rdi, thread_rip_voff);
-    ctx->macro_map     = push_array(arena, E_String2ExprMap, 1);
+    ctx->macro_map     = push_array(E_String2ExprMap, 1);
     ctx->macro_map[0]  = e_string2expr_map_make(arena, 512);
-    ctx->auto_hook_map = push_array(arena, E_AutoHookMap, 1);
+    ctx->auto_hook_map = push_array(E_AutoHookMap, 1);
     ctx->auto_hook_map[0] = e_auto_hook_map_make(arena, 512);
   }
   e_select_ir_ctx(&scope->ir_ctx);
@@ -5259,11 +5259,11 @@ ctrl_thread__eval_scope_begin(Arena *arena, CTRL_UserBreakpointList *user_bps, C
     ctx->reg_arch      = eval_modules_primary->arch;
     ctx->reg_space     = e_space_make(CTRL_EvalSpaceKind_Entity);
     ctx->reg_space.u64_0 = (U64)thread;
-    ctx->module_base   = push_array(arena, U64, 1);
+    ctx->module_base   = push_array(U64, 1);
     ctx->module_base[0]= module->vaddr_range.min;
-    ctx->frame_base    = push_array(arena, U64, 1);
+    ctx->frame_base    = push_array(U64, 1);
     // TODO(rjf): need to compute this out here somehow... ctx->frame_base[0] = ;
-    ctx->tls_base      = push_array(arena, U64, 1);
+    ctx->tls_base      = push_array(U64, 1);
   }
   e_select_interpret_ctx(&scope->interpret_ctx, eval_modules_primary->rdi, thread_rip_voff);
   
@@ -5491,7 +5491,7 @@ ctrl_thread__kill_all(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
   for EachIndex(idx, initial_processes.count)
   {
     CTRL_Entity *entity = initial_processes.v[idx];
-    Task *t = push_array(scratch.arena, Task, 1);
+    Task *t = push_array(Task, 1);
     t->process = entity;
     DLLPushBack(first_task, last_task, t);
   }
@@ -5524,7 +5524,7 @@ ctrl_thread__kill_all(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
         case DMN_EventKind_CreateProcess:
         {
           CTRL_Entity *new_process = ctrl_entity_from_handle(entity_ctx, ctrl_handle_make(CTRL_MachineID_Local, event->process));
-          Task *t = push_array(scratch.arena, Task, 1);
+          Task *t = push_array(Task, 1);
           t->process = new_process;
           DLLPushBack(first_task, last_task, t);
         }break;
@@ -5872,7 +5872,7 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
       DMN_RunCtrls run_ctrls = {0};
       run_ctrls.ignore_previous_exception = 1;
       run_ctrls.run_entity_count = frozen_threads.count;
-      run_ctrls.run_entities     = push_array(scratch.arena, DMN_Handle, run_ctrls.run_entity_count);
+      run_ctrls.run_entities     = push_array(DMN_Handle, run_ctrls.run_entity_count);
       run_ctrls.run_entities_are_unfrozen = 0;
       {
         U64 idx = 0;
@@ -7053,7 +7053,7 @@ ASYNC_WORK_DEF(ctrl_call_stack_build_work)
   CTRL_CallStackCacheStripe *stripe = &cache->stripes[stripe_idx];
   
   //- rjf: produce mini entity context for just this process
-  CTRL_EntityCtx *entity_ctx = push_array(scratch.arena, CTRL_EntityCtx, 1);
+  CTRL_EntityCtx *entity_ctx = push_array(CTRL_EntityCtx, 1);
   OS_MutexScopeR(ctrl_state->ctrl_thread_entity_ctx_rw_mutex)
   {
     CTRL_EntityCtx *src_ctx = &ctrl_state->ctrl_thread_entity_store->ctx;
@@ -7061,7 +7061,7 @@ ASYNC_WORK_DEF(ctrl_call_stack_build_work)
     {
       dst_ctx->root = &ctrl_entity_nil;
       dst_ctx->hash_slots_count = 1024;
-      dst_ctx->hash_slots = push_array(scratch.arena, CTRL_EntityHashSlot, dst_ctx->hash_slots_count);
+      dst_ctx->hash_slots = push_array(CTRL_EntityHashSlot, dst_ctx->hash_slots_count);
       MemoryCopyArray(dst_ctx->entity_kind_counts, src_ctx->entity_kind_counts);
       MemoryCopyArray(dst_ctx->entity_kind_alloc_gens, src_ctx->entity_kind_alloc_gens);
     }
@@ -7075,7 +7075,7 @@ ASYNC_WORK_DEF(ctrl_call_stack_build_work)
         rec = ctrl_entity_rec_depth_first_pre(src_e, src_process);
         
         // rjf: copy this entity
-        CTRL_Entity *dst_e = push_array(scratch.arena, CTRL_Entity, 1);
+        CTRL_Entity *dst_e = push_array(CTRL_Entity, 1);
         {
           dst_e->first = dst_e->last = dst_e->next = dst_e->prev = &ctrl_entity_nil;
           dst_e->parent           = dst_parent;
@@ -7117,7 +7117,7 @@ ASYNC_WORK_DEF(ctrl_call_stack_build_work)
           }
           if(node == 0)
           {
-            node = push_array(scratch.arena, CTRL_EntityHashNode, 1);
+            node = push_array(CTRL_EntityHashNode, 1);
             MemoryZeroStruct(node);
             DLLPushBack(slot->first, slot->last, node);
             node->entity = dst_e;

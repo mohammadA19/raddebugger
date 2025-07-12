@@ -635,7 +635,7 @@ dw_unwind_eh_frame_cfi_from_ip_slow_x64(String8 raw_eh_frame, DW_EhPtrCtx *ptr_c
       DW_CIEUnpacked cie = {0};
       dw_unwind_parse_cie_x64(raw_rec.str, rng_1u64(0, raw_rec.size), ptr_ctx, after_discrim_off, &cie);
       if (cie.version != 0) {
-        DW_CIEUnpackedNode *node = push_array(scratch.arena, DW_CIEUnpackedNode, 1);
+        DW_CIEUnpackedNode *node = push_array(DW_CIEUnpackedNode, 1);
         node->cie                = cie;
         node->offset             = rec_off;
         SLLQueuePush(cie_first, cie_last, node);
@@ -817,8 +817,8 @@ dw_unwind_machine_equip_fde_ip_x64(DW_CFIMachine *machine, U64 fde_ip)
 internal DW_CFIRow*
 dw_unwind_row_alloc_x64(Arena *arena, U64 cells_per_row)
 {
-  DW_CFIRow *result = push_array(arena, DW_CFIRow, 1);
-  result->cells     = push_array(arena, DW_CFICell, cells_per_row);
+  DW_CFIRow *result = push_array(DW_CFIRow, 1);
+  result->cells     = push_array(DW_CFICell, cells_per_row);
   return result;
 }
 

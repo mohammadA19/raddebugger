@@ -22,11 +22,11 @@ lnk_section_contrib_chunk_push_atomic(LNK_SectionContribChunk *chunk, U64 count)
 internal LNK_SectionContribChunk *
 lnk_section_contrib_chunk_list_push_chunk(Arena *arena, LNK_SectionContribChunkList *list, U64 cap, String8 sort_idx)
 {
-  LNK_SectionContribChunk *chunk = push_array(arena, LNK_SectionContribChunk, 1);
+  LNK_SectionContribChunk *chunk = push_array(LNK_SectionContribChunk, 1);
   chunk->count    = 0;
   chunk->cap      = cap;
-  chunk->v        = push_array(arena, LNK_SectionContrib *, cap);
-  chunk->v2       = push_array(arena, LNK_SectionContrib, cap);
+  chunk->v        = push_array(LNK_SectionContrib *, cap);
+  chunk->v2       = push_array(LNK_SectionContrib, cap);
   chunk->sort_idx = sort_idx;
   for (U64 i = 0; i < cap; i += 1) { chunk->v[i] = &chunk->v2[i]; }
   SLLQueuePush(list->first, list->last, chunk);
@@ -49,7 +49,7 @@ lnk_section_contrib_chunk_list_concat_in_place(LNK_SectionContribChunkList *list
 internal LNK_SectionContribChunk **
 lnk_array_from_section_contrib_chunk_list(Arena *arena, LNK_SectionContribChunkList list)
 {
-  LNK_SectionContribChunk **result = push_array(arena, LNK_SectionContribChunk *, list.chunk_count);
+  LNK_SectionContribChunk **result = push_array(LNK_SectionContribChunk *, list.chunk_count);
   U64 i = 0;
   for (LNK_SectionContribChunk *chunk = list.first; chunk != 0; chunk = chunk->next, i += 1) {
     result[i] = chunk;
@@ -62,7 +62,7 @@ lnk_section_array_from_list(Arena *arena, LNK_SectionList list)
 {
   LNK_SectionArray result;
   result.count = 0;
-  result.v = /* no zero */ push_array(arena, LNK_Section *, list.count);
+  result.v = /* no zero */ push_array(LNK_Section *, list.count);
   for (LNK_SectionNode *node = list.first; node != 0; node = node->next) {
     result.v[result.count] = &node->data;
     result.count += 1;
@@ -87,7 +87,7 @@ lnk_section_table_alloc(void)
 {
   ProfBeginFunction();
   Arena *arena = arena_alloc();
-  LNK_SectionTable *sectab = push_array(arena, LNK_SectionTable, 1);
+  LNK_SectionTable *sectab = push_array(LNK_SectionTable, 1);
   sectab->arena            = arena;
   sectab->sect_ht          = hash_table_init(arena, 256);
   ProfEnd();
@@ -109,7 +109,7 @@ lnk_section_table_push(LNK_SectionTable *sectab, String8 name, COFF_SectionFlags
 {
   ProfBeginFunction();
 
-  LNK_SectionNode *sect_node = push_array(sectab->arena, LNK_SectionNode, 1);
+  LNK_SectionNode *sect_node = push_array(LNK_SectionNode, 1);
   LNK_Section     *sect      = &sect_node->data;
   sect->name  = push_str8_copy(sectab->arena, name);
   sect->flags = flags;
@@ -205,7 +205,7 @@ lnk_section_table_search_many(Arena *arena, LNK_SectionTable *sectab, String8 fu
 
   if (match_count > 0) {
     result.count = 0;
-    result.v = push_array(arena, LNK_Section *, match_count);
+    result.v = push_array(LNK_Section *, match_count);
 
     for (LNK_SectionNode *sect_n = sectab->list.first; sect_n != 0; sect_n = sect_n->next) {
       if (str8_match(sect_n->data.name, name, 0)) {

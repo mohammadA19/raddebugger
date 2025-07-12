@@ -56,7 +56,7 @@ d_breakpoint_array_copy(Arena *arena, D_BreakpointArray *src)
 {
   D_BreakpointArray dst = {0};
   dst.count = src->count;
-  dst.v = push_array(arena, D_Breakpoint, dst.count);
+  dst.v = push_array(D_Breakpoint, dst.count);
   MemoryCopy(dst.v, src->v, sizeof(dst.v[0])*dst.count);
   for(U64 idx = 0; idx < dst.count; idx += 1)
   {
@@ -149,7 +149,7 @@ d_line_list_copy(Arena *arena, D_LineList *list)
   D_LineList dst = {0};
   for(D_LineNode *src_n = list->first; src_n != 0; src_n = src_n->next)
   {
-    D_LineNode *dst_n = push_array(arena, D_LineNode, 1);
+    D_LineNode *dst_n = push_array(D_LineNode, 1);
     MemoryCopyStruct(dst_n, src_n);
     dst_n->v.file_path = push_str8_copy(arena, dst_n->v.file_path);
     dst_n->v.dbgi_key = di_key_copy(arena, &src_n->v.dbgi_key);
@@ -170,7 +170,7 @@ d_cmd_params_copy(Arena *arena, D_CmdParams *src)
   D_CmdParams dst = {0};
   MemoryCopyStruct(&dst, src);
   dst.file_path = push_str8_copy(arena, dst.file_path);
-  dst.targets.v = push_array(arena, D_Target, dst.targets.count);
+  dst.targets.v = push_array(D_Target, dst.targets.count);
   MemoryCopy(dst.targets.v, src->targets.v, sizeof(D_Target)*dst.targets.count);
   for(U64 idx = 0; idx < dst.targets.count; idx += 1)
   {
@@ -189,7 +189,7 @@ d_cmd_params_copy(Arena *arena, D_CmdParams *src)
 internal void
 d_cmd_list_push_new(Arena *arena, D_CmdList *cmds, D_CmdKind kind, D_CmdParams *params)
 {
-  D_CmdNode *n = push_array(arena, D_CmdNode, 1);
+  D_CmdNode *n = push_array(D_CmdNode, 1);
   n->cmd.kind = kind;
   n->cmd.params = d_cmd_params_copy(arena, params);
   DLLPushBack(cmds->first, cmds->last, n);
@@ -758,7 +758,7 @@ d_lines_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff)
         RDI_InlineSite *inline_site = rdi_element_from_name_idx(rdi, InlineSites, s->inline_site_idx);
         if(inline_site->line_table_idx != 0)
         {
-          LineTableNode *n = push_array(scratch.arena, LineTableNode, 1);
+          LineTableNode *n = push_array(LineTableNode, 1);
           SLLStackPush(top_line_table, n);
           RDI_LineTable *line_table = rdi_element_from_name_idx(rdi, LineTables, inline_site->line_table_idx);
           rdi_parsed_from_line_table(rdi, line_table, &n->parsed_line_table);
@@ -790,7 +790,7 @@ d_lines_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff)
         StringJoin join = {0};
         join.sep = str8_lit("/");
         String8 file_normalized_full_path = str8_list_join(arena, &path_parts, &join);
-        D_LineNode *n = push_array(arena, D_LineNode, 1);
+        D_LineNode *n = push_array(D_LineNode, 1);
         SLLQueuePush(result.first, result.last, n);
         result.count += 1;
         if(line->file_idx != 0 && file_normalized_full_path.size != 0)
@@ -828,11 +828,11 @@ d_lines_array_from_dbgi_key_file_path_line_range(Arena *arena, DI_Key dbgi_key, 
   D_LineListArray array = {0};
   {
     array.count = dim_1s64(line_num_range)+1;
-    array.v = push_array(arena, D_LineList, array.count);
+    array.v = push_array(D_LineList, array.count);
     di_key_list_push(arena, &array.dbgi_keys, &dbgi_key);
   }
   Temp scratch = scratch_begin(&arena, 1);
-  U64 *lines_num_voffs = push_array(scratch.arena, U64, array.count);
+  U64 *lines_num_voffs = push_array(U64, array.count);
   DI_Scope *scope = di_scope_open();
   String8List overrides = rd_possible_overrides_from_file_path(scratch.arena, file_path);
   for(String8Node *override_n = overrides.first;
@@ -894,7 +894,7 @@ d_lines_array_from_dbgi_key_file_path_line_range(Arena *arena, DI_Key dbgi_key, 
           {
             Rng1U64 range = r1u64(base_voff, unit_line_info.voffs[line_info_idx+1]);
             S64 actual_line = (S64)unit_line_info.lines[line_info_idx].line_num;
-            D_LineNode *n = push_array(arena, D_LineNode, 1);
+            D_LineNode *n = push_array(D_LineNode, 1);
             n->v.voff_range = range;
             n->v.pt.line = (S64)actual_line;
             n->v.pt.column = 1;
@@ -922,10 +922,10 @@ d_lines_array_from_file_path_line_range(Arena *arena, String8 file_path, Rng1S64
   D_LineListArray array = {0};
   {
     array.count = dim_1s64(line_num_range)+1;
-    array.v = push_array(arena, D_LineList, array.count);
+    array.v = push_array(D_LineList, array.count);
   }
   Temp scratch = scratch_begin(&arena, 1);
-  U64 *lines_num_voffs = push_array(scratch.arena, U64, array.count);
+  U64 *lines_num_voffs = push_array(U64, array.count);
   DI_Scope *scope = di_scope_open();
   DI_KeyList dbgi_keys = d_push_active_dbgi_key_list(scratch.arena);
   String8List overrides = rd_possible_overrides_from_file_path(scratch.arena, file_path);
@@ -992,7 +992,7 @@ d_lines_array_from_file_path_line_range(Arena *arena, String8 file_path, Rng1S64
             {
               Rng1U64 range = r1u64(base_voff, unit_line_info.voffs[line_info_idx+1]);
               S64 actual_line = (S64)unit_line_info.lines[line_info_idx].line_num;
-              D_LineNode *n = push_array(arena, D_LineNode, 1);
+              D_LineNode *n = push_array(D_LineNode, 1);
               n->v.voff_range = range;
               n->v.pt.line = (S64)actual_line;
               n->v.pt.column = 1;
@@ -1229,7 +1229,7 @@ d_query_cached_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, U64 ro
     if(cache_idx == 0 && cache->slots_count == 0)
     {
       cache->slots_count = 256;
-      cache->slots = push_array(cache->arena, D_RunTLSBaseCacheSlot, cache->slots_count);
+      cache->slots = push_array(D_RunTLSBaseCacheSlot, cache->slots_count);
     }
     else if(cache->slots_count == 0)
     {
@@ -1253,7 +1253,7 @@ d_query_cached_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, U64 ro
       U64 tls_base_vaddr = d_tls_base_vaddr_from_process_root_rip(process, root_vaddr, rip_vaddr);
       if(tls_base_vaddr != 0)
       {
-        node = push_array(cache->arena, D_RunTLSBaseCacheNode, 1);
+        node = push_array(D_RunTLSBaseCacheNode, 1);
         SLLQueuePush_N(slot->first, slot->last, node, hash_next);
         node->process = handle;
         node->root_vaddr = root_vaddr;
@@ -1281,7 +1281,7 @@ d_query_cached_locals_map_from_dbgi_key_voff(DI_Key *dbgi_key, U64 voff)
     if(cache_idx == 0 && cache->table_size == 0)
     {
       cache->table_size = 256;
-      cache->table = push_array(cache->arena, D_RunLocalsCacheSlot, cache->table_size);
+      cache->table = push_array(D_RunLocalsCacheSlot, cache->table_size);
     }
     else if(cache->table_size == 0)
     {
@@ -1306,7 +1306,7 @@ d_query_cached_locals_map_from_dbgi_key_voff(DI_Key *dbgi_key, U64 voff)
       E_String2NumMap *map = e_push_locals_map_from_rdi_voff(cache->arena, rdi, voff);
       if(map->slots_count != 0)
       {
-        node = push_array(cache->arena, D_RunLocalsCacheNode, 1);
+        node = push_array(D_RunLocalsCacheNode, 1);
         node->dbgi_key = di_key_copy(cache->arena, dbgi_key);
         node->voff = voff;
         node->locals_map = map;
@@ -1335,7 +1335,7 @@ d_query_cached_member_map_from_dbgi_key_voff(DI_Key *dbgi_key, U64 voff)
     if(cache_idx == 0 && cache->table_size == 0)
     {
       cache->table_size = 256;
-      cache->table = push_array(cache->arena, D_RunLocalsCacheSlot, cache->table_size);
+      cache->table = push_array(D_RunLocalsCacheSlot, cache->table_size);
     }
     else if(cache->table_size == 0)
     {
@@ -1360,7 +1360,7 @@ d_query_cached_member_map_from_dbgi_key_voff(DI_Key *dbgi_key, U64 voff)
       E_String2NumMap *map = e_push_member_map_from_rdi_voff(cache->arena, rdi, voff);
       if(map->slots_count != 0)
       {
-        node = push_array(cache->arena, D_RunLocalsCacheNode, 1);
+        node = push_array(D_RunLocalsCacheNode, 1);
         node->dbgi_key = di_key_copy(cache->arena, dbgi_key);
         node->voff = voff;
         node->locals_map = map;
@@ -1418,7 +1418,7 @@ internal void
 d_init(void)
 {
   Arena *arena = arena_alloc();
-  d_state = push_array(arena, D_State, 1);
+  d_state = push_array(D_State, 1);
   d_state->arena = arena;
   d_state->cmds_arena = arena_alloc();
   d_state->output_log_key = hs_key_make(hs_root_alloc(), hs_id_make(0, 0));
@@ -1534,7 +1534,7 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
               }break;
               case CTRL_EventCause_UserBreakpoint:    {cause = D_EventCause_UserBreakpoint;}break;
             }
-            D_EventNode *n = push_array(arena, D_EventNode, 1);
+            D_EventNode *n = push_array(D_EventNode, 1);
             SLLQueuePush(result.first, result.last, n);
             result.count += 1;
             D_Event *evt = &n->v;
@@ -1561,7 +1561,7 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
         
         case CTRL_EventKind_EndProc:
         {
-          D_EventNode *n = push_array(arena, D_EventNode, 1);
+          D_EventNode *n = push_array(D_EventNode, 1);
           SLLQueuePush(result.first, result.last, n);
           result.count += 1;
           D_Event *evt = &n->v;
@@ -1953,7 +1953,7 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
         case D_CmdKind_RunToLine:
         {
           run_extra_bps.count = 1;
-          run_extra_bps.v = push_array(scratch.arena, D_Breakpoint, 1);
+          run_extra_bps.v = push_array(D_Breakpoint, 1);
           if(params->file_path.size != 0)
           {
             run_extra_bps.v[0].file_path = params->file_path;

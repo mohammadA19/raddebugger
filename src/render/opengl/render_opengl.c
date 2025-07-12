@@ -81,7 +81,7 @@ r_ogl_instance_buffer_from_size(U64 size)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     
     // rjf: push buffer to flush list
-    R_OGL_FlushBuffer *n = push_array(r_ogl_state->buffer_flush_arena, R_OGL_FlushBuffer, 1);
+    R_OGL_FlushBuffer *n = push_array(R_OGL_FlushBuffer, 1);
     n->id = buffer;
     SLLQueuePush(r_ogl_state->first_buffer_to_flush, r_ogl_state->last_buffer_to_flush, n);
   }
@@ -108,7 +108,7 @@ r_init(CmdLine *cmdln)
   
   //- rjf: top-level initialization
   Arena *arena = arena_alloc();
-  r_ogl_state = push_array(arena, R_OGL_State, 1);
+  r_ogl_state = push_array(R_OGL_State, 1);
   r_ogl_state->arena = arena;
   
   //- rjf: load gl procedures
@@ -137,7 +137,7 @@ r_init(CmdLine *cmdln)
       glGetShaderiv(stages[idx].out, GL_INFO_LOG_LENGTH, &info_log_length);
       if(info_log_length != 0)
       {
-        stages[idx].errors.str = push_array(r_ogl_state->arena, U8, info_log_length+1);
+        stages[idx].errors.str = push_array(U8, info_log_length+1);
         stages[idx].errors.size = info_log_length;
         glGetShaderInfoLog(stages[idx].out, info_log_length, 0, (char *)stages[idx].errors.str);
       }
@@ -226,7 +226,7 @@ r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void *dat
   }
   else
   {
-    tex2d = push_array(r_ogl_state->arena, R_OGL_Tex2D, 1);
+    tex2d = push_array(R_OGL_Tex2D, 1);
   }
   
   //- rjf: map kind/format -> gl counterparts

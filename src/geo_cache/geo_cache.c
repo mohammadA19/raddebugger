@@ -11,13 +11,13 @@ internal void
 geo_init(void)
 {
   Arena *arena = arena_alloc();
-  geo_shared = push_array(arena, GEO_Shared, 1);
+  geo_shared = push_array(GEO_Shared, 1);
   geo_shared->arena = arena;
   geo_shared->slots_count = 1024;
   geo_shared->stripes_count = Min(geo_shared->slots_count, os_get_system_info()->logical_processor_count);
-  geo_shared->slots = push_array(arena, GEO_Slot, geo_shared->slots_count);
-  geo_shared->stripes = push_array(arena, GEO_Stripe, geo_shared->stripes_count);
-  geo_shared->stripes_free_nodes = push_array(arena, GEO_Node *, geo_shared->stripes_count);
+  geo_shared->slots = push_array(GEO_Slot, geo_shared->slots_count);
+  geo_shared->stripes = push_array(GEO_Stripe, geo_shared->stripes_count);
+  geo_shared->stripes_free_nodes = push_array(GEO_Node *, geo_shared->stripes_count);
   for(U64 idx = 0; idx < geo_shared->stripes_count; idx += 1)
   {
     geo_shared->stripes[idx].arena = arena_alloc();
@@ -40,7 +40,7 @@ geo_tctx_ensure_inited(void)
   if(geo_tctx == 0)
   {
     Arena *arena = arena_alloc();
-    geo_tctx = push_array(arena, GEO_TCTX, 1);
+    geo_tctx = push_array(GEO_TCTX, 1);
     geo_tctx->arena = arena;
   }
 }
@@ -59,7 +59,7 @@ geo_scope_open(void)
   }
   else
   {
-    scope = /* no zero */ push_array(geo_tctx->arena, GEO_Scope, 1);
+    scope = /* no zero */ push_array(GEO_Scope, 1);
   }
   MemoryZeroStruct(scope);
   return scope;
@@ -105,7 +105,7 @@ geo_scope_touch_node__stripe_r_guarded(GEO_Scope *scope, GEO_Node *node)
   }
   else
   {
-    touch = /* no zero */ push_array(geo_tctx->arena, GEO_Touch, 1);
+    touch = /* no zero */ push_array(GEO_Touch, 1);
   }
   MemoryZeroStruct(touch);
   touch->hash = node->hash;
@@ -162,7 +162,7 @@ geo_buffer_from_hash(GEO_Scope *scope, U128 hash)
           }
           else
           {
-            node = /* no zero */ push_array(stripe->arena, GEO_Node, 1);
+            node = /* no zero */ push_array(GEO_Node, 1);
           }
           MemoryZeroStruct(node);
           DLLPushBack(slot->first, slot->last, node);

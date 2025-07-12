@@ -256,7 +256,7 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
       F32 total_text_width = fnt_dim_from_tag_size_string(ui_top_font(), ui_top_font_size(), 0, ui_top_tab_size(), edit_string).x;
       ui_set_next_pref_width(ui_px(total_text_width+ui_top_font_size()*5, 1.f));
       UI_Box *editstr_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText|UI_BoxFlag_DisableTextTrunc, "###editstr");
-      UI_LineEditDrawData *draw_data = push_array(ui_build_arena(), UI_LineEditDrawData, 1);
+      UI_LineEditDrawData *draw_data = push_array(UI_LineEditDrawData, 1);
       draw_data->edited_string = push_str8_copy(ui_build_arena(), edit_string);
       draw_data->cursor = *cursor;
       draw_data->mark = *mark;
@@ -373,7 +373,7 @@ internal UI_Signal
 ui_image(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, F32 blur, String8 string)
 {
   UI_Box *box = ui_build_box_from_string(0, string);
-  UI_ImageDrawData *draw_data = push_array(ui_build_arena(), UI_ImageDrawData, 1);
+  UI_ImageDrawData *draw_data = push_array(UI_ImageDrawData, 1);
   draw_data->texture = texture;
   draw_data->sample_kind = sample_kind;
   draw_data->region = region;
@@ -618,7 +618,7 @@ ui_sat_val_picker(F32 hue, F32 *out_sat, F32 *out_val, String8 string)
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
   UI_Box *box = ui_build_box_from_string(UI_BoxFlag_Clickable, string);
-  UI_SatValDrawData *user = push_array(ui_build_arena(), UI_SatValDrawData, 1);
+  UI_SatValDrawData *user = push_array(UI_SatValDrawData, 1);
   ui_box_equip_custom_draw(box, ui_sat_val_picker_draw, user);
   UI_Signal sig = ui_signal_from_box(box);
   
@@ -727,7 +727,7 @@ ui_hue_picker(F32 *out_hue, F32 sat, F32 val, String8 string)
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
   UI_Box *box = ui_build_box_from_string(UI_BoxFlag_Clickable, string);
-  UI_HueDrawData *user = push_array(ui_build_arena(), UI_HueDrawData, 1);
+  UI_HueDrawData *user = push_array(UI_HueDrawData, 1);
   ui_box_equip_custom_draw(box, ui_hue_picker_draw, user);
   UI_Signal sig = ui_signal_from_box(box);
   
@@ -814,7 +814,7 @@ ui_alpha_picker(F32 *out_alpha, String8 string)
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
   UI_Box *box = ui_build_box_from_string(UI_BoxFlag_Clickable, string);
-  UI_AlphaDrawData *user = push_array(ui_build_arena(), UI_AlphaDrawData, 1);
+  UI_AlphaDrawData *user = push_array(UI_AlphaDrawData, 1);
   ui_box_equip_custom_draw(box, ui_alpha_picker_draw, user);
   UI_Signal sig = ui_signal_from_box(box);
   
@@ -1049,7 +1049,7 @@ ui_table_begin(U64 column_pct_count, F32 **column_pcts, String8 string)
   }
   
   //- rjf: form stable pcts
-  ui_ts_col_pcts_stable = push_array(ui_build_arena(), F32, ui_ts_col_pct_count);
+  ui_ts_col_pcts_stable = push_array(F32, ui_ts_col_pct_count);
   for(U64 idx = 0; idx < column_pct_count; idx += 1)
   {
     ui_ts_col_pcts_stable[idx] = *column_pcts[idx];
@@ -1153,7 +1153,7 @@ ui_scroll_list_row_block_chunk_list_push(Arena *arena, UI_ScrollListRowBlockChun
   UI_ScrollListRowBlockChunkNode *n = list->last;
   if(n == 0 || n->count >= n->cap)
   {
-    n = push_array(arena, UI_ScrollListRowBlockChunkNode, 1);
+    n = push_array(UI_ScrollListRowBlockChunkNode, 1);
     n->cap = cap;
     n->v = new UI_ScrollListRowBlock[n->cap] /* no zero */;
     SLLQueuePush(list->first, list->last, n);

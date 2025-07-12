@@ -277,7 +277,7 @@ t_coff_section_header_array_from_name(Arena *arena, String8 string_table, COFF_S
     }
   }
 
-  COFF_SectionHeader *matches = push_array(arena, COFF_SectionHeader, match_count);
+  COFF_SectionHeader *matches = push_array(COFF_SectionHeader, match_count);
   for (U64 sect_idx = 0, match_idx = 0; sect_idx < section_count; sect_idx += 1) {
     COFF_SectionHeader *section_header = &section_table[sect_idx];
     String8             section_name   = coff_name_from_section_header(string_table, section_header);
@@ -3847,18 +3847,18 @@ entry_point(CmdLine *cmdline)
 
     U64 dots_min = 10;
     U64 dots_size = max_label_size+dots_min;
-    U8 *dots      = push_array(scratch.arena, U8, dots_size);
+    U8 *dots      = push_array(U8, dots_size);
     MemorySet(dots, '.', dots_size);
 
     U64  target_indices_count;
     U64 *target_indices;
     if (target.node_count == 0) {
       target_indices_count = ArrayCount(target_array);
-      target_indices       = push_array(scratch.arena, U64, ArrayCount(target_array));
+      target_indices       = push_array(U64, ArrayCount(target_array));
       for (U64 i = 0; i < target_indices_count; i += 1) { target_indices[i] = i; }
     } else {
       target_indices_count = 0;
-      target_indices       = push_array(scratch.arena, U64, target.node_count);
+      target_indices       = push_array(U64, target.node_count);
 
       for (String8Node *target_n = target.first; target_n != 0; target_n = target_n->next) {
         B32 is_target_unknown = 1;

@@ -77,7 +77,7 @@ os_w32_window_alloc(void)
   }
   else
   {
-    result = /* no zero */ push_array(os_w32_gfx_state->arena, OS_W32_Window, 1);
+    result = /* no zero */ push_array(OS_W32_Window, 1);
   }
   MemoryZeroStruct(result);
   if(result)
@@ -562,7 +562,7 @@ os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         for(U64 idx = 0; idx < num_files_dropped; idx += 1)
         {
           U64 name_size = DragQueryFile(drop, idx, 0, 0) + 1;
-          U8 *name_ptr = push_array(os_w32_event_arena, U8, name_size);
+          U8 *name_ptr = push_array(U8, name_size);
           DragQueryFile(drop, idx, (char *)name_ptr, name_size);
           str8_list_push(os_w32_event_arena, &event->strings, str8(name_ptr, name_size - 1));
         }
@@ -809,7 +809,7 @@ os_gfx_init(void)
 {
   //- rjf: set up base shared state
   Arena *arena = arena_alloc();
-  os_w32_gfx_state = push_array(arena, OS_W32_GfxState, 1);
+  os_w32_gfx_state = push_array(OS_W32_GfxState, 1);
   os_w32_gfx_state->arena = arena;
   os_w32_gfx_state->gfx_thread_tid = (U32)GetCurrentThreadId();
   os_w32_gfx_state->hInstance = GetModuleHandle(0);
@@ -1314,7 +1314,7 @@ os_window_push_custom_title_bar_client_area(OS_Handle handle, Rng2F32 rect)
   OS_W32_Window *window = os_w32_window_from_handle(handle);
   if(window->custom_border)
   {
-    OS_W32_TitleBarClientArea *area = push_array(window->paint_arena, OS_W32_TitleBarClientArea, 1);
+    OS_W32_TitleBarClientArea *area = push_array(OS_W32_TitleBarClientArea, 1);
     if(area != 0)
     {
       area->rect = rect;
@@ -1584,7 +1584,7 @@ os_graphical_pick_file(Arena *arena, String8 initial_path)
   {
     Temp scratch = scratch_begin(&arena, 1);
     U64 buffer_size = 4096;
-    U16 *buffer = push_array(scratch.arena, U16, buffer_size);
+    U16 *buffer = push_array(U16, buffer_size);
     OPENFILENAMEW params = {sizeof(params)};
     {
       params.lpstrFile = (WCHAR *)buffer;

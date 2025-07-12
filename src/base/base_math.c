@@ -707,7 +707,7 @@ rgba_from_u32(U32 hex)
 internal void
 rng1u64_list_push(Arena *arena, Rng1U64List *list, Rng1U64 rng)
 {
-  Rng1U64Node *n = push_array(arena, Rng1U64Node, 1);
+  Rng1U64Node *n = push_array(Rng1U64Node, 1);
   MemoryCopyStruct(&n->v, &rng);
   SLLQueuePush(list->first, list->last, n);
   list->count += 1;
@@ -781,7 +781,7 @@ rng_1u64_array_bsearch(Rng1U64Array arr, U64 value)
 internal void
 rng1s64_list_push(Arena *arena, Rng1S64List *list, Rng1S64 rng)
 {
-  Rng1S64Node *n = push_array(arena, Rng1S64Node, 1);
+  Rng1S64Node *n = push_array(Rng1S64Node, 1);
   MemoryCopyStruct(&n->v, &rng);
   SLLQueuePush(list->first, list->last, n);
   list->count += 1;

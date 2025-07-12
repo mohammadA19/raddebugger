@@ -68,7 +68,7 @@ elf_shdr64_array_from_bin(Arena *arena, String8 raw_data, ELF_Hdr64 *hdr)
   
   ELF_Shdr64Array result = {0};
   result.count           = hdr->e_shnum;
-  result.v               = push_array(arena, ELF_Shdr64, hdr->e_shnum);
+  result.v               = push_array(ELF_Shdr64, hdr->e_shnum);
   
   for(U64 shdr_idx = 0; shdr_idx < hdr->e_shnum; ++shdr_idx) {
     switch (hdr->e_ident[ELF_Identifier_Class]) {

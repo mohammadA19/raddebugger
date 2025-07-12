@@ -171,7 +171,7 @@ ASYNC_WORK_DEF(rdim_bake_line_tables_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeLineTablesIn *in = (RDIM_BakeLineTablesIn *)input;
-  RDIM_LineTableBakeResult *out = push_array(arena, RDIM_LineTableBakeResult, 1);
+  RDIM_LineTableBakeResult *out = push_array(RDIM_LineTableBakeResult, 1);
   ProfScope("bake line tables") *out = rdim_bake_line_tables(arena, in->line_tables);
   ProfEnd();
   return out;
@@ -226,7 +226,7 @@ ASYNC_WORK_DEF(rdim_bake_string_map_sort_work)
       {
         if(in->src_map->slots[slot_idx]->total_count > 1)
         {
-          in->dst_map->slots[slot_idx] = push_array(arena, RDIM_BakeStringChunkList, 1);
+          in->dst_map->slots[slot_idx] = push_array(RDIM_BakeStringChunkList, 1);
           *in->dst_map->slots[slot_idx] = rdim_bake_string_chunk_list_sorted_from_unsorted(arena, in->src_map->slots[slot_idx]);
         }
         else
@@ -260,7 +260,7 @@ ASYNC_WORK_DEF(rdim_bake_units_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeUnitsIn *in = (RDIM_BakeUnitsIn *)input;
-  RDIM_UnitBakeResult *out = push_array(arena, RDIM_UnitBakeResult, 1);
+  RDIM_UnitBakeResult *out = push_array(RDIM_UnitBakeResult, 1);
   ProfScope("bake units") *out = rdim_bake_units(arena, in->strings, in->path_tree, in->units);
   ProfEnd();
   return out;
@@ -271,7 +271,7 @@ ASYNC_WORK_DEF(rdim_bake_unit_vmap_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeUnitVMapIn *in = (RDIM_BakeUnitVMapIn *)input;
-  RDIM_UnitVMapBakeResult *out = push_array(arena, RDIM_UnitVMapBakeResult, 1);
+  RDIM_UnitVMapBakeResult *out = push_array(RDIM_UnitVMapBakeResult, 1);
   ProfScope("bake unit vmap") *out = rdim_bake_unit_vmap(arena, in->units);
   ProfEnd();
   return out;
@@ -282,7 +282,7 @@ ASYNC_WORK_DEF(rdim_bake_src_files_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeSrcFilesIn *in = (RDIM_BakeSrcFilesIn *)input;
-  RDIM_SrcFileBakeResult *out = push_array(arena, RDIM_SrcFileBakeResult, 1);
+  RDIM_SrcFileBakeResult *out = push_array(RDIM_SrcFileBakeResult, 1);
   ProfScope("bake src files") *out = rdim_bake_src_files(arena, in->strings, in->path_tree, in->src_files);
   ProfEnd();
   return out;
@@ -293,7 +293,7 @@ ASYNC_WORK_DEF(rdim_bake_udts_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeUDTsIn *in = (RDIM_BakeUDTsIn *)input;
-  RDIM_UDTBakeResult *out = push_array(arena, RDIM_UDTBakeResult, 1);
+  RDIM_UDTBakeResult *out = push_array(RDIM_UDTBakeResult, 1);
   ProfScope("bake udts") *out = rdim_bake_udts(arena, in->strings, in->udts);
   ProfEnd();
   return out;
@@ -304,7 +304,7 @@ ASYNC_WORK_DEF(rdim_bake_global_variables_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeGlobalVariablesIn *in = (RDIM_BakeGlobalVariablesIn *)input;
-  RDIM_GlobalVariableBakeResult *out = push_array(arena, RDIM_GlobalVariableBakeResult, 1);
+  RDIM_GlobalVariableBakeResult *out = push_array(RDIM_GlobalVariableBakeResult, 1);
   ProfScope("bake global variables") *out = rdim_bake_global_variables(arena, in->strings, in->global_variables);
   ProfEnd();
   return out;
@@ -315,7 +315,7 @@ ASYNC_WORK_DEF(rdim_bake_global_vmap_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeGlobalVMapIn *in = (RDIM_BakeGlobalVMapIn *)input;
-  RDIM_GlobalVMapBakeResult *out = push_array(arena, RDIM_GlobalVMapBakeResult, 1);
+  RDIM_GlobalVMapBakeResult *out = push_array(RDIM_GlobalVMapBakeResult, 1);
   ProfScope("bake global vmap") *out = rdim_bake_global_vmap(arena, in->global_variables);
   ProfEnd();
   return out;
@@ -326,7 +326,7 @@ ASYNC_WORK_DEF(rdim_bake_thread_variables_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeThreadVariablesIn *in = (RDIM_BakeThreadVariablesIn *)input;
-  RDIM_ThreadVariableBakeResult *out = push_array(arena, RDIM_ThreadVariableBakeResult, 1);
+  RDIM_ThreadVariableBakeResult *out = push_array(RDIM_ThreadVariableBakeResult, 1);
   ProfScope("bake thread variables") *out = rdim_bake_thread_variables(arena, in->strings, in->thread_variables);
   ProfEnd();
   return out;
@@ -337,7 +337,7 @@ ASYNC_WORK_DEF(rdim_bake_constants_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeConstantsIn *in = (RDIM_BakeConstantsIn *)input;
-  RDIM_ConstantsBakeResult *out = push_array(arena, RDIM_ConstantsBakeResult, 1);
+  RDIM_ConstantsBakeResult *out = push_array(RDIM_ConstantsBakeResult, 1);
   ProfScope("bake constants") *out = rdim_bake_constants(arena, in->strings, in->constants);
   ProfEnd();
   return out;
@@ -348,7 +348,7 @@ ASYNC_WORK_DEF(rdim_bake_procedures_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeProceduresIn *in = (RDIM_BakeProceduresIn *)input;
-  RDIM_ProcedureBakeResult *out = push_array(arena, RDIM_ProcedureBakeResult, 1);
+  RDIM_ProcedureBakeResult *out = push_array(RDIM_ProcedureBakeResult, 1);
   ProfScope("bake procedures") *out = rdim_bake_procedures(arena, in->strings, in->location_blocks, in->location_data_blobs, in->procedures);
   ProfEnd();
   return out;
@@ -359,7 +359,7 @@ ASYNC_WORK_DEF(rdim_bake_scopes_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeScopesIn *in = (RDIM_BakeScopesIn *)input;
-  RDIM_ScopeBakeResult *out = push_array(arena, RDIM_ScopeBakeResult, 1);
+  RDIM_ScopeBakeResult *out = push_array(RDIM_ScopeBakeResult, 1);
   ProfScope("bake scopes") *out = rdim_bake_scopes(arena, in->strings, in->location_blocks, in->location_data_blobs, in->scopes);
   ProfEnd();
   return out;
@@ -370,7 +370,7 @@ ASYNC_WORK_DEF(rdim_bake_scope_vmap_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeScopeVMapIn *in = (RDIM_BakeScopeVMapIn *)input;
-  RDIM_ScopeVMapBakeResult *out = push_array(arena, RDIM_ScopeVMapBakeResult, 1);
+  RDIM_ScopeVMapBakeResult *out = push_array(RDIM_ScopeVMapBakeResult, 1);
   ProfScope("bake scope vmap") *out = rdim_bake_scope_vmap(arena, in->scopes);
   ProfEnd();
   return out;
@@ -381,7 +381,7 @@ ASYNC_WORK_DEF(rdim_bake_inline_sites_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeInlineSitesIn *in = (RDIM_BakeInlineSitesIn *)input;
-  RDIM_InlineSiteBakeResult *out = push_array(arena, RDIM_InlineSiteBakeResult, 1);
+  RDIM_InlineSiteBakeResult *out = push_array(RDIM_InlineSiteBakeResult, 1);
   ProfScope("bake inline sites") *out = rdim_bake_inline_sites(arena, in->strings, in->inline_sites);
   ProfEnd();
   return out;
@@ -392,7 +392,7 @@ ASYNC_WORK_DEF(rdim_bake_file_paths_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeFilePathsIn *in = (RDIM_BakeFilePathsIn *)input;
-  RDIM_FilePathBakeResult *out = push_array(arena, RDIM_FilePathBakeResult, 1);
+  RDIM_FilePathBakeResult *out = push_array(RDIM_FilePathBakeResult, 1);
   ProfScope("bake file paths") *out = rdim_bake_file_paths(arena, in->strings, in->path_tree);
   ProfEnd();
   return out;
@@ -403,7 +403,7 @@ ASYNC_WORK_DEF(rdim_bake_strings_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeStringsIn *in = (RDIM_BakeStringsIn *)input;
-  RDIM_StringBakeResult *out = push_array(arena, RDIM_StringBakeResult, 1);
+  RDIM_StringBakeResult *out = push_array(RDIM_StringBakeResult, 1);
   ProfScope("bake strings") *out = rdim_bake_strings(arena, in->strings);
   ProfEnd();
   return out;
@@ -416,7 +416,7 @@ ASYNC_WORK_DEF(rdim_bake_type_nodes_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeTypeNodesIn *in = (RDIM_BakeTypeNodesIn *)input;
-  RDIM_TypeNodeBakeResult *out = push_array(arena, RDIM_TypeNodeBakeResult, 1);
+  RDIM_TypeNodeBakeResult *out = push_array(RDIM_TypeNodeBakeResult, 1);
   ProfScope("bake type nodes") *out = rdim_bake_types(arena, in->strings, in->idx_runs, in->types);
   ProfEnd();
   return out;
@@ -427,7 +427,7 @@ ASYNC_WORK_DEF(rdim_bake_name_map_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeNameMapIn *in = (RDIM_BakeNameMapIn *)input;
-  RDIM_NameMapBakeResult *out = push_array(arena, RDIM_NameMapBakeResult, 1);
+  RDIM_NameMapBakeResult *out = push_array(RDIM_NameMapBakeResult, 1);
   ProfScope("bake name map %i", in->kind) *out = rdim_bake_name_map(arena, in->strings, in->idx_runs, in->map);
   ProfEnd();
   return out;
@@ -438,7 +438,7 @@ ASYNC_WORK_DEF(rdim_bake_idx_runs_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(rdim_local_async_root);
   RDIM_BakeIdxRunsIn *in = (RDIM_BakeIdxRunsIn *)input;
-  RDIM_IndexRunBakeResult *out = push_array(arena, RDIM_IndexRunBakeResult, 1);
+  RDIM_IndexRunBakeResult *out = push_array(RDIM_IndexRunBakeResult, 1);
   ProfScope("bake idx runs") *out = rdim_bake_index_runs(arena, in->idx_runs);
   ProfEnd();
   return out;
@@ -635,7 +635,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
   //
   ASYNC_Task *bake_line_tables_task = 0;
   {
-    RDIM_BakeLineTablesIn *in = push_array(scratch.arena, RDIM_BakeLineTablesIn, 1);
+    RDIM_BakeLineTablesIn *in = push_array(RDIM_BakeLineTablesIn, 1);
     in->line_tables = &in_params->line_tables;
     bake_line_tables_task = async_task_launch(scratch.arena, rdim_bake_line_tables_work, .input = in);
   }
@@ -657,13 +657,13 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
                                                           in_params->global_variables.total_count*1 +
                                                           in_params->thread_variables.total_count*1 +
                                                           in_params->types.total_count/2)};
-  RDIM_BakeStringMapLoose **bake_string_maps__in_progress = push_array(scratch.arena, RDIM_BakeStringMapLoose *, async_thread_count());
+  RDIM_BakeStringMapLoose **bake_string_maps__in_progress = push_array(RDIM_BakeStringMapLoose *, async_thread_count());
   ASYNC_TaskList bake_string_map_build_tasks = {0};
   {
     // rjf: src files
     ProfScope("kick off src files string map build task")
     {
-      RDIM_BakeSrcFilesStringsIn *in = push_array(scratch.arena, RDIM_BakeSrcFilesStringsIn, 1);
+      RDIM_BakeSrcFilesStringsIn *in = push_array(RDIM_BakeSrcFilesStringsIn, 1);
       in->top = &bake_string_map_topology;
       in->maps = bake_string_maps__in_progress;
       in->list = &in_params->src_files;
@@ -673,7 +673,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
     // rjf: units
     ProfScope("kick off units string map build task")
     {
-      RDIM_BakeUnitsStringsIn *in = push_array(scratch.arena, RDIM_BakeUnitsStringsIn, 1);
+      RDIM_BakeUnitsStringsIn *in = push_array(RDIM_BakeUnitsStringsIn, 1);
       in->top = &bake_string_map_topology;
       in->maps = bake_string_maps__in_progress;
       in->list = &in_params->units;
@@ -689,14 +689,14 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
       U64 chunk_off = 0;
       for(U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
       {
-        RDIM_BakeTypesStringsIn *in = push_array(scratch.arena, RDIM_BakeTypesStringsIn, 1);
+        RDIM_BakeTypesStringsIn *in = push_array(RDIM_BakeTypesStringsIn, 1);
         in->top = &bake_string_map_topology;
         in->maps = bake_string_maps__in_progress;
         U64 items_left = items_per_task;
         for(;chunk != 0 && items_left > 0;)
         {
           U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
-          RDIM_BakeTypesStringsInNode *n = push_array(scratch.arena, RDIM_BakeTypesStringsInNode, 1);
+          RDIM_BakeTypesStringsInNode *n = push_array(RDIM_BakeTypesStringsInNode, 1);
           SLLQueuePush(in->first, in->last, n);
           n->v = chunk->v + chunk_off;
           n->count = items_in_this_chunk;
@@ -721,14 +721,14 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
       U64 chunk_off = 0;
       for(U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
       {
-        RDIM_BakeUDTsStringsIn *in = push_array(scratch.arena, RDIM_BakeUDTsStringsIn, 1);
+        RDIM_BakeUDTsStringsIn *in = push_array(RDIM_BakeUDTsStringsIn, 1);
         in->top = &bake_string_map_topology;
         in->maps = bake_string_maps__in_progress;
         U64 items_left = items_per_task;
         for(;chunk != 0 && items_left > 0;)
         {
           U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
-          RDIM_BakeUDTsStringsInNode *n = push_array(scratch.arena, RDIM_BakeUDTsStringsInNode, 1);
+          RDIM_BakeUDTsStringsInNode *n = push_array(RDIM_BakeUDTsStringsInNode, 1);
           SLLQueuePush(in->first, in->last, n);
           n->v = chunk->v + chunk_off;
           n->count = items_in_this_chunk;
@@ -762,14 +762,14 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
         U64 chunk_off = 0;
         for(U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
         {
-          RDIM_BakeSymbolsStringsIn *in = push_array(scratch.arena, RDIM_BakeSymbolsStringsIn, 1);
+          RDIM_BakeSymbolsStringsIn *in = push_array(RDIM_BakeSymbolsStringsIn, 1);
           in->top = &bake_string_map_topology;
           in->maps = bake_string_maps__in_progress;
           U64 items_left = items_per_task;
           for(;chunk != 0 && items_left > 0;)
           {
             U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
-            RDIM_BakeSymbolsStringsInNode *n = push_array(scratch.arena, RDIM_BakeSymbolsStringsInNode, 1);
+            RDIM_BakeSymbolsStringsInNode *n = push_array(RDIM_BakeSymbolsStringsInNode, 1);
             SLLQueuePush(in->first, in->last, n);
             n->v = chunk->v + chunk_off;
             n->count = items_in_this_chunk;
@@ -795,14 +795,14 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
       U64 chunk_off = 0;
       for(U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
       {
-        RDIM_BakeInlineSiteStringsIn *in = push_array(scratch.arena, RDIM_BakeInlineSiteStringsIn, 1);
+        RDIM_BakeInlineSiteStringsIn *in = push_array(RDIM_BakeInlineSiteStringsIn, 1);
         in->top = &bake_string_map_topology;
         in->maps = bake_string_maps__in_progress;
         U64 items_left = items_per_task;
         for(;chunk != 0 && items_left > 0;)
         {
           U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
-          RDIM_BakeInlineSiteStringsInNode *n = push_array(scratch.arena, RDIM_BakeInlineSiteStringsInNode, 1);
+          RDIM_BakeInlineSiteStringsInNode *n = push_array(RDIM_BakeInlineSiteStringsInNode, 1);
           SLLQueuePush(in->first, in->last, n);
           n->v = chunk->v + chunk_off;
           n->count = items_in_this_chunk;
@@ -827,14 +827,14 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
       U64 chunk_off = 0;
       for(U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
       {
-        RDIM_BakeScopesStringsIn *in = push_array(scratch.arena, RDIM_BakeScopesStringsIn, 1);
+        RDIM_BakeScopesStringsIn *in = push_array(RDIM_BakeScopesStringsIn, 1);
         in->top = &bake_string_map_topology;
         in->maps = bake_string_maps__in_progress;
         U64 items_left = items_per_task;
         for(;chunk != 0 && items_left > 0;)
         {
           U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
-          RDIM_BakeScopesStringsInNode *n = push_array(scratch.arena, RDIM_BakeScopesStringsInNode, 1);
+          RDIM_BakeScopesStringsInNode *n = push_array(RDIM_BakeScopesStringsInNode, 1);
           SLLQueuePush(in->first, in->last, n);
           n->v = chunk->v + chunk_off;
           n->count = items_in_this_chunk;
@@ -884,12 +884,12 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
   {
     U64 slots_per_task = 16384;
     U64 num_tasks = (bake_string_map_topology.slots_count+slots_per_task-1)/slots_per_task;
-    ASYNC_Task **tasks = push_array(scratch.arena, ASYNC_Task *, num_tasks);
+    ASYNC_Task **tasks = push_array(ASYNC_Task *, num_tasks);
     
     // rjf: kickoff tasks
     for(U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
     {
-      RDIM_JoinBakeStringMapSlotsIn *in = push_array(scratch.arena, RDIM_JoinBakeStringMapSlotsIn, 1);
+      RDIM_JoinBakeStringMapSlotsIn *in = push_array(RDIM_JoinBakeStringMapSlotsIn, 1);
       in->top = &bake_string_map_topology;
       in->src_maps = bake_string_maps__in_progress;
       in->src_maps_count = async_thread_count();
@@ -921,7 +921,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
     U64 num_tasks = (bake_string_map_topology.slots_count+slots_per_task-1)/slots_per_task;
     for(U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
     {
-      RDIM_SortBakeStringMapSlotsIn *in = push_array(scratch.arena, RDIM_SortBakeStringMapSlotsIn, 1);
+      RDIM_SortBakeStringMapSlotsIn *in = push_array(RDIM_SortBakeStringMapSlotsIn, 1);
       {
         in->top = &bake_string_map_topology;
         in->src_map = unsorted_bake_string_map;
@@ -1071,7 +1071,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
       {
         continue;
       }
-      RDIM_BakeNameMapIn *in = push_array(scratch.arena, RDIM_BakeNameMapIn, 1);
+      RDIM_BakeNameMapIn *in = push_array(RDIM_BakeNameMapIn, 1);
       in->strings       = &bake_strings;
       in->idx_runs      = idx_runs;
       in->map           = name_maps[k];
@@ -1141,7 +1141,7 @@ rdim_compress(Arena *arena, RDIM_SerializedSectionBundle *in)
   //- rjf: set up compression context
   rr_lzb_simple_context ctx = {0};
   ctx.m_tableSizeBits = 14;
-  ctx.m_hashTable = push_array(arena, U16, 1<<ctx.m_tableSizeBits);
+  ctx.m_hashTable = push_array(U16, 1<<ctx.m_tableSizeBits);
   
   //- rjf: compress, or just copy, all sections
   for EachEnumVal(RDI_SectionKind, k)

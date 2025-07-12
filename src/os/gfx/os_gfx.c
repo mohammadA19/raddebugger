@@ -242,7 +242,7 @@ os_event_list_copy(Arena *arena, OS_EventList *src)
   OS_EventList dst = {0};
   for(OS_Event *s = src->first; s != 0; s = s->next)
   {
-    OS_Event *d = push_array(arena, OS_Event, 1);
+    OS_Event *d = push_array(OS_Event, 1);
     MemoryCopyStruct(d, s);
     d->strings = str8_list_copy(arena, &s->strings);
     DLLPushBack(dst.first, dst.last, d);
@@ -271,7 +271,7 @@ os_event_list_concat_in_place(OS_EventList *dst, OS_EventList *to_push)
 internal OS_Event *
 os_event_list_push_new(Arena *arena, OS_EventList *evts, OS_EventKind kind)
 {
-  OS_Event *evt = push_array(arena, OS_Event, 1);
+  OS_Event *evt = push_array(OS_Event, 1);
   DLLPushBack(evts->first, evts->last, evt);
   evts->count += 1;
   evt->timestamp_us = os_now_microseconds();

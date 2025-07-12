@@ -36,7 +36,7 @@ e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_
   E_TokenChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
   {
-    node = push_array(arena, E_TokenChunkNode, 1);
+    node = push_array(E_TokenChunkNode, 1);
     SLLQueuePush(list->first, list->last, node);
     node->cap = chunk_size;
     node->v = new E_Token[node->cap] /* no zero */;
@@ -302,7 +302,7 @@ e_token_array_make_first_opl(E_Token *first, E_Token *opl)
 internal E_Expr *
 e_push_expr(Arena *arena, E_ExprKind kind, Rng1U64 range)
 {
-  E_Expr *e = push_array(arena, E_Expr, 1);
+  E_Expr *e = push_array(E_Expr, 1);
   e->first = e->last = e->next = e->prev = e->ref = &e_expr_nil;
   e->range = range;
   e->kind = kind;
@@ -383,7 +383,7 @@ e_expr_copy(Arena *arena, E_Expr *src)
       }
       if(t->src->next != &e_expr_nil)
       {
-        Task *task = push_array(scratch.arena, Task, 1);
+        Task *task = push_array(Task, 1);
         task->dst_parent = dst;
         task->src = t->src->next;
         task->is_sib = 1;
@@ -391,7 +391,7 @@ e_expr_copy(Arena *arena, E_Expr *src)
       }
       if(t->src->ref != &e_expr_nil)
       {
-        Task *task = push_array(scratch.arena, Task, 1);
+        Task *task = push_array(Task, 1);
         task->dst_parent = dst;
         task->src = t->src->ref;
         task->is_ref = 1;
@@ -399,7 +399,7 @@ e_expr_copy(Arena *arena, E_Expr *src)
       }
       for(E_Expr *src_child = t->src->first; src_child != &e_expr_nil; src_child = src_child->next)
       {
-        Task *task = push_array(scratch.arena, Task, 1);
+        Task *task = push_array(Task, 1);
         task->dst_parent = dst;
         task->src = src_child;
         SLLQueuePush(first_task, last_task, task);
@@ -413,7 +413,7 @@ e_expr_copy(Arena *arena, E_Expr *src)
 internal void
 e_expr_list_push(Arena *arena, E_ExprList *list, E_Expr *expr)
 {
-  E_ExprNode *n = push_array(arena, E_ExprNode, 1);
+  E_ExprNode *n = push_array(E_ExprNode, 1);
   n->v = expr;
   SLLQueuePush(list->first, list->last, n);
   list->count +=1;
@@ -869,7 +869,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         // rjf: push prefix unary if we got one
         if(prefix_unary_precedence != 0)
         {
-          PrefixUnaryTask *prefix_unary_task = push_array(scratch.arena, PrefixUnaryTask, 1);
+          PrefixUnaryTask *prefix_unary_task = push_array(PrefixUnaryTask, 1);
           prefix_unary_task->kind = prefix_unary_kind;
           prefix_unary_task->range = token.range;
           prefix_unary_task->cast_type_expr = prefix_unary_cast_expr;
@@ -1138,7 +1138,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         //
         if(got_new_atom && maybe_cast != &e_expr_nil)
         {
-          PrefixUnaryTask *prefix_unary_task = push_array(scratch.arena, PrefixUnaryTask, 1);
+          PrefixUnaryTask *prefix_unary_task = push_array(PrefixUnaryTask, 1);
           prefix_unary_task->kind = E_ExprKind_Cast;
           prefix_unary_task->range = maybe_cast->range;
           prefix_unary_task->cast_type_expr = maybe_cast;

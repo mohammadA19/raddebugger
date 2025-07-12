@@ -70,7 +70,7 @@ fp_dwrite_font_file_stream_node_alloc(String8 *data_ptr)
     }
     else
     {
-      node = /* no zero */ push_array(fp_dwrite_state->arena, FP_DWrite_FontFileStreamNode, 1);
+      node = /* no zero */ push_array(FP_DWrite_FontFileStreamNode, 1);
     }
     MemoryZeroStruct(node);
     node->stream.lpVtbl = &fp_dwrite_static_data_font_file_stream__vtable;
@@ -167,7 +167,7 @@ fp_init(void)
   //- rjf: initialize main state
   {
     Arena *arena = arena_alloc();
-    fp_dwrite_state = push_array(arena, FP_DWrite_State, 1);
+    fp_dwrite_state = push_array(FP_DWrite_State, 1);
     fp_dwrite_state->arena = arena;
   }
   
@@ -361,7 +361,7 @@ fp_font_open(String8 path)
         status = RegOpenKeyExW(HKEY_CURRENT_USER, L"Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders\\Fonts", 0, KEY_QUERY_VALUE, &reg_key);
         status = RegEnumValueA(reg_key, 0, name, &name_size, 0, &type, (unsigned char *)data, &data_size);
         String8 user_fonts_path = str8_cstring(data);
-        PathTask *task = push_array(scratch.arena, PathTask, 1);
+        PathTask *task = push_array(PathTask, 1);
         task->path = push_str8f(scratch.arena, "%s/%S", user_fonts_path, path);
         SLLQueuePush(first_task, last_task, task);
       }
@@ -370,7 +370,7 @@ fp_font_open(String8 path)
       {
         char windows_path[256] = {0};
         GetWindowsDirectoryA(windows_path, sizeof(windows_path));
-        PathTask *task = push_array(scratch.arena, PathTask, 1);
+        PathTask *task = push_array(PathTask, 1);
         task->path = push_str8f(scratch.arena, "%s/Fonts/%S", windows_path, path);
         SLLQueuePush(first_task, last_task, task);
       }
@@ -467,7 +467,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   F32 design_units_per_em = (F32)font_metrics.designUnitsPerEm;
   
   //- rjf: get glyph indices
-  U16 *glyph_indices = /* no zero */ push_array(scratch.arena, U16, string32.size);
+  U16 *glyph_indices = /* no zero */ push_array(U16, string32.size);
   if(font.face != 0)
   {
     error = IDWriteFontFace_GetGlyphIndices(font.face, string32.str, string32.size, glyph_indices);
@@ -475,7 +475,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   
   //- rjf: get metrics info
   U64 glyphs_count = string32.size;
-  DWRITE_GLYPH_METRICS *glyphs_metrics = /* no zero */ push_array(scratch.arena, DWRITE_GLYPH_METRICS, glyphs_count);
+  DWRITE_GLYPH_METRICS *glyphs_metrics = /* no zero */ push_array(DWRITE_GLYPH_METRICS, glyphs_count);
   if(font.face != 0)
   {
     error = IDWriteFontFace_GetGdiCompatibleGlyphMetrics(font.face, (96.f/72.f)*size, 1.f, 0, 1, glyph_indices, glyphs_count, glyphs_metrics, 0);
@@ -582,7 +582,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   {
     // rjf: fill basics
     result.atlas_dim    = atlas_dim;
-    result.atlas        = /* no zero */ push_array(arena, U8, atlas_dim.x*atlas_dim.y*4);
+    result.atlas        = /* no zero */ push_array(U8, atlas_dim.x*atlas_dim.y*4);
     result.advance      = floor_f32(advance);
     
     // rjf: fill atlas

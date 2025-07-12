@@ -92,13 +92,13 @@ pdb_info_from_data(Arena *arena, String8 data){
                                                (char*)(data.str + names_base_opl));
             
             // push info node
-            PDB_InfoNode *node = push_array(arena, PDB_InfoNode, 1);
+            PDB_InfoNode *node = push_array(PDB_InfoNode, 1);
             SLLQueuePush(first, last, node);
             node->string = name;
             node->sn = sn;
           }
           
-          result = push_array(arena, PDB_Info, 1);
+          result = push_array(PDB_Info, 1);
           result->first = first;
           result->last = last;
           result->auth_guid = *auth_guid;
@@ -142,7 +142,7 @@ pdb_named_stream_table_from_info(Arena *arena, PDB_Info *info){
   };
   
   // build baked table
-  PDB_NamedStreamTable *result = push_array(arena, PDB_NamedStreamTable, 1);
+  PDB_NamedStreamTable *result = push_array(PDB_NamedStreamTable, 1);
   struct StreamNameIndexPair *p = pairs;
   for (U64 i = 0; i < ArrayCount(pairs); i += 1, p += 1){
     String8 name = p->name;
@@ -182,7 +182,7 @@ pdb_strtbl_from_data(Arena *arena, String8 data){
     header = (PDB_StringTableHeader *)data.str;
   }
   
-  PDB_Strtbl *result = push_array(arena, PDB_Strtbl, 1);
+  PDB_Strtbl *result = push_array(PDB_Strtbl, 1);
   if (header != 0 && header->magic == PDB_StringTableHeader_MAGIC && header->version == 1){
     U32 strblock_size_off = sizeof(*header);
     U32 strblock_size = 0;
@@ -238,7 +238,7 @@ pdb_dbi_from_data(Arena *arena, String8 data){
     range_size[PDB_DbiRange_DbgHeader]  = header->dbg_header_size;
     
     // fill result
-    result = push_array(arena, PDB_DbiParsed, 1);
+    result = push_array(PDB_DbiParsed, 1);
     result->data = data;
     result->machine_type = header->machine;
     result->gsi_sn = header->gsi_sn;
@@ -292,7 +292,7 @@ pdb_tpi_from_data(Arena *arena, String8 data){
     U64 leaf_opl_raw   = leaf_first + header->leaf_data_size;
     U64 leaf_opl       = ClampTop(leaf_opl_raw, data.size);
     
-    result       = push_array(arena, PDB_TpiParsed, 1);
+    result       = push_array(PDB_TpiParsed, 1);
     result->data = data;
     
     result->leaf_first  = leaf_first;
@@ -328,7 +328,7 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
   if (1 <= stride && stride <= 8 && bucket_count > 0 && data.str != 0){
     
     // allocate buckets
-    PDB_TpiHashBlock **buckets = push_array(arena, PDB_TpiHashBlock*, bucket_count);
+    PDB_TpiHashBlock **buckets = push_array(PDB_TpiHashBlock*, bucket_count);
     
     // extract "hash" array
     U8 *hashes = data.str + tpi->hash_vals_off;
@@ -347,7 +347,7 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
       if (bucket_idx < bucket_count){
         PDB_TpiHashBlock *block = buckets[bucket_idx];
         if (block == 0 || block->local_count == ArrayCount(block->itypes)){
-          block = push_array(arena, PDB_TpiHashBlock, 1);
+          block = push_array(PDB_TpiHashBlock, 1);
           SLLStackPush(buckets[bucket_idx], block);
         }
         if(block->local_count != 0)
@@ -436,7 +436,7 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
     }
     
     // fill result
-    result = push_array(arena, PDB_TpiHashParsed, 1);
+    result = push_array(PDB_TpiHashParsed, 1);
     result->data = data;
     result->aux_data = aux_data;
     result->buckets = buckets;
@@ -488,7 +488,7 @@ pdb_gsi_from_data(Arena *arena, String8 data){
     // unpack
     U32 *unpacked_offsets = 0;
     if (packed_offsets != 0){
-      unpacked_offsets = push_array(scratch.arena, U32, slot_count);
+      unpacked_offsets = push_array(U32, slot_count);
       
       U32 *bitmask_ptr = (U32*)bitmasks;
       U32 *bitmask_opl = bitmask_ptr + bitmask_u32_count;
@@ -522,7 +522,7 @@ pdb_gsi_from_data(Arena *arena, String8 data){
     // construct table
     B32 bad_table = 0;
     if (unpacked_offsets != 0){
-      result = push_array(arena, PDB_GsiParsed, 1);
+      result = push_array(PDB_GsiParsed, 1);
       
       // hash records
       PDB_GsiHashRecord *hash_records = (PDB_GsiHashRecord*)(data.str + hash_record_array_off);
@@ -686,7 +686,7 @@ pdb_comp_unit_array_from_data(Arena *arena, String8 data){
   
   
   // fill result
-  PDB_CompUnit **units = /* no zero */ push_array(arena, PDB_CompUnit*, count);
+  PDB_CompUnit **units = /* no zero */ push_array(PDB_CompUnit*, count);
   {
     U64 idx = 0;
     for (PDB_CompUnitNode *node = first;
@@ -696,7 +696,7 @@ pdb_comp_unit_array_from_data(Arena *arena, String8 data){
     }
   }
   
-  PDB_CompUnitArray *result = push_array(arena, PDB_CompUnitArray, 1);
+  PDB_CompUnitArray *result = push_array(PDB_CompUnitArray, 1);
   result->units = units;
   result->count = count;
   
@@ -758,7 +758,7 @@ pdb_comp_unit_contribution_array_from_data(Arena *arena, String8 data, COFF_Sect
   }
   
   // fill result
-  PDB_CompUnitContributionArray *result = push_array(arena, PDB_CompUnitContributionArray, 1);
+  PDB_CompUnitContributionArray *result = push_array(PDB_CompUnitContributionArray, 1);
   result->contributions = contributions;
   result->count = count;
   
@@ -967,7 +967,7 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
       }
       
       if (str8_match(extracted_name, name, 0)){
-        struct Chain *chain = push_array(scratch.arena, struct Chain, 1);
+        struct Chain *chain = push_array(struct Chain, 1);
         SLLQueuePush(first, last, chain);
         count += 1;
         chain->itype = itype;

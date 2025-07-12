@@ -551,7 +551,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
     data_dir_count = ClampTop(reported_data_dir_count, data_dir_max);
     
     // rjf: convert PE directories to ranges
-    data_dir_franges = push_array(arena, Rng1U64, Max(data_dir_count, PE_DataDirectoryIndex_COUNT));
+    data_dir_franges = push_array(Rng1U64, Max(data_dir_count, PE_DataDirectoryIndex_COUNT));
     for(U32 dir_idx = 0; dir_idx < data_dir_count; dir_idx += 1)
     {
       U64              dir_offset = optional_range.min + reported_data_dir_offset + sizeof(PE_DataDirectory)*dir_idx;
@@ -568,7 +568,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
     }
 
     // export virtual directory ranges
-    data_dir_vranges = push_array(arena, Rng1U64, data_dir_count);
+    data_dir_vranges = push_array(Rng1U64, data_dir_count);
     for(U32 dir_idx = 0; dir_idx < data_dir_count; dir_idx += 1)
     {
       U64              dir_offset = optional_range.min + reported_data_dir_offset + sizeof(PE_DataDirectory)*dir_idx;
@@ -669,7 +669,7 @@ pe_debug_info_list_from_raw_debug_dir(Arena *arena, String8 raw_image, String8 r
   PE_DebugDirectory *debug_entry_opl = debug_entry + raw_debug_dir.size/sizeof(*debug_entry_opl);
   for(PE_DebugDirectory *entry = debug_entry; entry < debug_entry_opl; entry += 1)
   {
-    PE_DebugInfoNode *n = push_array(arena, PE_DebugInfoNode, 1);
+    PE_DebugInfoNode *n = push_array(PE_DebugInfoNode, 1);
     SLLQueuePush(result.first, result.last, n);
     result.count += 1;
     n->v.header = *entry;
@@ -823,7 +823,7 @@ pe_base_reloc_block_list_from_data(Arena *arena, String8 raw_base_relocs)
     }
     
     // rjf: add node
-    PE_BaseRelocBlockNode *node = push_array(arena, PE_BaseRelocBlockNode, 1);
+    PE_BaseRelocBlockNode *node = push_array(PE_BaseRelocBlockNode, 1);
     SLLQueuePush(list.first, list.last, node);
     list.count += 1;
     
@@ -833,7 +833,7 @@ pe_base_reloc_block_list_from_data(Arena *arena, String8 raw_base_relocs)
     PE_BaseRelocBlock *block = &node->v;
     block->page_virt_off     = page_virt_off;
     block->entry_count       = entries_size / sizeof(U16);
-    block->entries           = push_array(arena, U16, block->entry_count);
+    block->entries           = push_array(U16, block->entry_count);
     U64 entry_read_size = str8_deserial_read_array(raw_base_relocs, off, &block->entries[0], block->entry_count);
     Assert(entry_read_size == sizeof(block->entries[0]) * block->entry_count);
     
@@ -1015,7 +1015,7 @@ pe_parsed_imports_from_data(Arena              *arena,
   if (is_pe32) {
     import_count = index_of_zero_u32((U32 *)entries.str, entries.size/sizeof(U32));
     if (import_count == max_U64) { import_count = 0; }
-    imports = push_array(arena, PE_ParsedImport, import_count);
+    imports = push_array(PE_ParsedImport, import_count);
 
     for (U64 imp_idx = 0; imp_idx < import_count; imp_idx += 1) {
       U32 raw_entry = 0;
@@ -1047,7 +1047,7 @@ pe_parsed_imports_from_data(Arena              *arena,
   } else {
     import_count = index_of_zero_u64((U64 *)entries.str, entries.size/sizeof(U64));
     if (import_count == max_U64) { import_count = 0; }
-    imports = push_array(arena, PE_ParsedImport, import_count);
+    imports = push_array(PE_ParsedImport, import_count);
 
     for (U64 imp_idx = 0; imp_idx < import_count; imp_idx += 1) {
       U64 raw_entry = 0;
@@ -1098,7 +1098,7 @@ pe_array_from_null_term_addr(Arena *arena, B32 is_pe32, String8 raw_data, Rng1U6
     
     // push output array
     *count_out = (U64)(ptr - src);
-    result     = push_array(arena, U64, *count_out);
+    result     = push_array(U64, *count_out);
     
     // convert & copy
     for (U64 i = 0; i < *count_out; ++i) {
@@ -1114,7 +1114,7 @@ pe_array_from_null_term_addr(Arena *arena, B32 is_pe32, String8 raw_data, Rng1U6
     
     // push output array
     *count_out = (U64)(ptr - src);
-    result     = push_array(arena, U64, *count_out);
+    result     = push_array(U64, *count_out);
     
     // copy
     MemoryCopyTyped(result, src, *count_out);
@@ -1142,7 +1142,7 @@ pe_static_imports_from_data(Arena              *arena,
     }
   }
   
-  PE_ParsedStaticDLLImport *dlls = push_array(arena, PE_ParsedStaticDLLImport, dll_count);
+  PE_ParsedStaticDLLImport *dlls = push_array(PE_ParsedStaticDLLImport, dll_count);
   
   for (U64 dll_idx = 0; dll_idx < dll_count; ++dll_idx) {
     PE_ImportEntry *raw_dll = str8_deserial_get_raw_ptr(raw_data, dir_file_range.min+(dll_idx*sizeof(*raw_dll)), sizeof(*raw_dll));
@@ -1197,7 +1197,7 @@ pe_delay_imports_from_data(Arena              *arena,
   }
   
   // parse dll imports
-  PE_ParsedDelayDLLImport *dlls = push_array(arena, PE_ParsedDelayDLLImport, dll_count);
+  PE_ParsedDelayDLLImport *dlls = push_array(PE_ParsedDelayDLLImport, dll_count);
   for (U64 dll_idx = 0; dll_idx < dll_count; ++dll_idx) {
     PE_DelayedImportEntry *raw_dll = str8_deserial_get_raw_ptr(raw_data, dir_file_range.min+(dll_idx*sizeof(*raw_dll)), sizeof(*raw_dll));
     
@@ -1290,9 +1290,9 @@ pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sectio
       }
       
       U64  ordinal_max     = header->export_address_table_count;
-      B32 *is_ordinal_used = push_array(scratch.arena, B32, ordinal_max);
+      B32 *is_ordinal_used = push_array(B32, ordinal_max);
       
-      PE_ParsedExport *exports  = push_array(arena, PE_ParsedExport, ordinal_count);
+      PE_ParsedExport *exports  = push_array(PE_ParsedExport, ordinal_count);
       PE_ParsedExport *curr_exp = exports;
       
       // parse exports with name
@@ -1400,7 +1400,7 @@ pe_tls_from_data(Arena              *arena,
       for (; ptr < opl && *ptr != 0; ++ptr);
       
       callback_count = (U64)(ptr-src);
-      callback_addrs = push_array(arena, U64, callback_count);
+      callback_addrs = push_array(U64, callback_count);
       for (U64 i = 0; i < callback_count; ++i) {
         callback_addrs[i] = (U64)src[i];
       }
@@ -1417,7 +1417,7 @@ pe_tls_from_data(Arena              *arena,
       for (; ptr < opl && *ptr != 0; ++ptr);
       
       callback_count = (U64)(ptr-src);
-      callback_addrs = push_array(arena, U64, callback_count);
+      callback_addrs = push_array(U64, callback_count);
       MemoryCopyTyped(callback_addrs, src, callback_count);
     } break;
     default: NotImplemented;
@@ -1453,11 +1453,11 @@ pe_resource_dir_push_dir_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID
     case COFF_ResourceIDType_Number: list = &dir->id_list;    break;
   }
   
-  PE_ResourceNode *res_node = push_array(arena, PE_ResourceNode, 1);
+  PE_ResourceNode *res_node = push_array(PE_ResourceNode, 1);
   SLLQueuePush(list->first, list->last, res_node);
   list->count += 1;
   
-  PE_ResourceDir *sub_dir = push_array(arena, PE_ResourceDir, 1);
+  PE_ResourceDir *sub_dir = push_array(PE_ResourceDir, 1);
   sub_dir->characteristics = characteristics;
   sub_dir->time_stamp      = time_stamp;
   sub_dir->major_version   = major_version;
@@ -1482,7 +1482,7 @@ pe_resource_dir_push_entry_node(Arena *arena, PE_ResourceDir *dir, COFF_Resource
     case COFF_ResourceIDType_Number: list = &dir->id_list;    break;
   }
   
-  PE_ResourceNode *res_node = push_array(arena, PE_ResourceNode, 1);
+  PE_ResourceNode *res_node = push_array(PE_ResourceNode, 1);
   SLLQueuePush(list->first, list->last, res_node);
   list->count += 1;
   
@@ -1535,7 +1535,7 @@ pe_resource_list_to_array(Arena *arena, PE_ResourceList *list)
 {
   PE_ResourceArray result;
   result.count = 0;
-  result.v = push_array(arena, PE_Resource, list->count);
+  result.v = push_array(PE_Resource, list->count);
   for (PE_ResourceNode *n = list->first; n != NULL; n = n->next) {
     result.v[result.count++] = n->data;
   }
@@ -1596,7 +1596,7 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
   };
   
   Temp scratch = scratch_begin(&arena,1);
-  struct stack_s *bottom_frame = push_array(scratch.arena, struct stack_s, 1);
+  struct stack_s *bottom_frame = push_array(struct stack_s, 1);
   struct stack_s *stack = bottom_frame;
   
   while (stack) {
@@ -1604,7 +1604,7 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
       COFF_ResourceDirTable coff_table = {0};
       str8_deserial_read_struct(data, stack->table_offset, &coff_table);
       
-      PE_ResourceDir *table = push_array(arena, PE_ResourceDir, 1);
+      PE_ResourceDir *table = push_array(PE_ResourceDir, 1);
       table->characteristics = coff_table.characteristics;
       table->time_stamp = coff_table.time_stamp;
       table->major_version = coff_table.major_version;
@@ -1625,7 +1625,7 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
       U64 entry_offset = stack->name_base_offset + stack->name_ientry * sizeof(COFF_ResourceDirEntry);
       ++stack->name_ientry;
       
-      PE_ResourceNode *named_node = push_array(arena, PE_ResourceNode, 1);
+      PE_ResourceNode *named_node = push_array(PE_ResourceNode, 1);
       SLLQueuePush(stack->table->named_list.first, stack->table->named_list.last, named_node);
       ++stack->table->named_list.count;
       PE_Resource *entry = &named_node->data;
@@ -1649,7 +1649,7 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
       entry->kind = is_dir ? PE_ResDataKind_DIR : PE_ResDataKind_COFF_LEAF;
       
       if (is_dir) {
-        struct stack_s *frame = push_array(scratch.arena, struct stack_s, 1);
+        struct stack_s *frame = push_array(struct stack_s, 1);
         frame->table_offset = coff_entry.id.sub_dir_offset & ~COFF_Resource_SubDirFlag;
         frame->directory_ptr = &entry->u.dir;
         SLLStackPush(stack, frame);
@@ -1663,7 +1663,7 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
       U64 entry_offset = stack->id_base_offset + stack->id_ientry * sizeof(COFF_ResourceDirEntry);
       ++stack->id_ientry;
       
-      PE_ResourceNode *id_node = push_array(arena, PE_ResourceNode, 1);
+      PE_ResourceNode *id_node = push_array(PE_ResourceNode, 1);
       SLLQueuePush(stack->table->id_list.first, stack->table->id_list.last, id_node);
       ++stack->table->id_list.count;
       PE_Resource *entry = &id_node->data;
@@ -1678,7 +1678,7 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
       entry->kind = is_dir ? PE_ResDataKind_DIR : PE_ResDataKind_COFF_LEAF;
       
       if (is_dir) {
-        struct stack_s *frame = push_array(scratch.arena, struct stack_s, 1);
+        struct stack_s *frame = push_array(struct stack_s, 1);
         frame->table_offset = coff_entry.id.sub_dir_offset & ~COFF_Resource_SubDirFlag;
         frame->directory_ptr = &entry->u.dir;
         SLLStackPush(stack, frame);

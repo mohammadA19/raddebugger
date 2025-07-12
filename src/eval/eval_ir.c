@@ -113,7 +113,7 @@ e_oplist_concat_in_place(E_OpList *dst, E_OpList *to_push)
 internal E_IRNode *
 e_push_irnode(Arena *arena, RDI_EvalOp op)
 {
-  E_IRNode *n = push_array(arena, E_IRNode, 1);
+  E_IRNode *n = push_array(E_IRNode, 1);
   n->first = n->last = n->next = &e_irnode_nil;
   n->op = op;
   return n;
@@ -345,7 +345,7 @@ e_expr_poison(E_Expr *expr)
 {
   U64 hash = e_hash_from_string(5381, str8_struct(&expr));
   U64 slot_idx = hash%e_cache->used_expr_map->slots_count;
-  E_UsedExprNode *n = push_array(e_cache->arena, E_UsedExprNode, 1);
+  E_UsedExprNode *n = push_array(E_UsedExprNode, 1);
   n->expr = expr;
   DLLPushBack(e_cache->used_expr_map->slots[slot_idx].first, e_cache->used_expr_map->slots[slot_idx].last, n);
 }
@@ -1492,7 +1492,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
             }
             
             // rjf: flatten extra arguments
-            E_Expr **args = push_array(scratch.arena, E_Expr *, arg_count);
+            E_Expr **args = push_array(E_Expr *, arg_count);
             {
               U64 idx = 0;
               for(E_Expr *arg = lhs->next->next; arg != &e_expr_nil; arg = arg->next, idx += 1)
@@ -2364,7 +2364,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
     //- rjf: equip previous task's irtree
     if(parent != 0 && parent->root != &e_irnode_nil)
     {
-      E_IRTreeAndType *new_chain = push_array(arena, E_IRTreeAndType, 1);
+      E_IRTreeAndType *new_chain = push_array(E_IRTreeAndType, 1);
       MemoryCopyStruct(new_chain, parent);
       E_IRTreeAndType *first_chain = 0;
       E_IRTreeAndType *last_chain = 0;
@@ -2372,7 +2372,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
       {
         for(E_IRTreeAndType *p = result.prev; p != 0; p = p->prev)
         {
-          E_IRTreeAndType *p_copy = push_array(arena, E_IRTreeAndType, 1);
+          E_IRTreeAndType *p_copy = push_array(E_IRTreeAndType, 1);
           MemoryCopyStruct(p_copy, p);
           SLLQueuePush_N(first_chain, last_chain, p_copy, prev);
         }
@@ -2404,12 +2404,12 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
         B32 e_is_poisoned = e_expr_is_poisoned(match->expr);
         if(!e_is_poisoned)
         {
-          Task *task = push_array(scratch.arena, Task, 1);
+          Task *task = push_array(Task, 1);
           SLLQueuePush(first_task, last_task, task);
           task->expr = match->expr;
           task->first_wildcard_inst = match->first_wildcard_inst;
           task->last_wildcard_inst  = match->last_wildcard_inst;
-          task->overridden = push_array(scratch.arena, E_IRTreeAndType, 1);
+          task->overridden = push_array(E_IRTreeAndType, 1);
           task->overridden[0] = result;
           goto end_autohook_find;
         }

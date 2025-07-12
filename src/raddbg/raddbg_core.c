@@ -15,7 +15,7 @@
 internal void
 rd_cfg_id_list_push(Arena *arena, RD_CfgIDList *list, RD_CfgID id)
 {
-  RD_CfgIDNode *n = push_array(arena, RD_CfgIDNode, 1);
+  RD_CfgIDNode *n = push_array(RD_CfgIDNode, 1);
   n->v = id;
   SLLQueuePush(list->first, list->last, n);
   list->count += 1;
@@ -55,7 +55,7 @@ rd_regs_copy_contents(Arena *arena, RD_Regs *dst, RD_Regs *src)
 internal RD_Regs *
 rd_regs_copy(Arena *arena, RD_Regs *src)
 {
-  RD_Regs *dst = push_array(arena, RD_Regs, 1);
+  RD_Regs *dst = push_array(RD_Regs, 1);
   rd_regs_copy_contents(arena, dst, src);
   return dst;
 }
@@ -66,7 +66,7 @@ rd_regs_copy(Arena *arena, RD_Regs *src)
 internal void
 rd_cmd_list_push_new(Arena *arena, RD_CmdList *cmds, String8 name, RD_Regs *regs)
 {
-  RD_CmdNode *n = push_array(arena, RD_CmdNode, 1);
+  RD_CmdNode *n = push_array(RD_CmdNode, 1);
   n->cmd.name = push_str8_copy(arena, name);
   n->cmd.regs = rd_regs_copy(arena, regs);
   DLLPushBack(cmds->first, cmds->last, n);
@@ -79,9 +79,9 @@ rd_cmd_list_push_new(Arena *arena, RD_CmdList *cmds, String8 name, RD_Regs *regs
 internal RD_ViewUIRuleMap *
 rd_view_ui_rule_map_make(Arena *arena, U64 slots_count)
 {
-  RD_ViewUIRuleMap *map = push_array(arena, RD_ViewUIRuleMap, 1);
+  RD_ViewUIRuleMap *map = push_array(RD_ViewUIRuleMap, 1);
   map->slots_count = slots_count;
-  map->slots = push_array(arena, RD_ViewUIRuleSlot, map->slots_count);
+  map->slots = push_array(RD_ViewUIRuleSlot, map->slots_count);
   return map;
 }
 
@@ -90,7 +90,7 @@ rd_view_ui_rule_map_insert(Arena *arena, RD_ViewUIRuleMap *map, String8 string, 
 {
   U64 hash = d_hash_from_string(string);
   U64 slot_idx = hash%map->slots_count;
-  RD_ViewUIRuleNode *n = push_array(arena, RD_ViewUIRuleNode, 1);
+  RD_ViewUIRuleNode *n = push_array(RD_ViewUIRuleNode, 1);
   n->v.name = push_str8_copy(arena, string);
   n->v.ui = ui;
   SLLQueuePush(map->slots[slot_idx].first, map->slots[slot_idx].last, n);
@@ -228,7 +228,7 @@ rd_name_alloc(String8 string)
       else
       {
         U64 chunk_size = u64_up_to_pow2(string.size);
-        node = (RD_NameChunkNode *)push_array(rd_state->arena, U8, chunk_size);
+        node = (RD_NameChunkNode *)push_array(U8, chunk_size);
       }
     }
     else if(bucket_num != 0)
@@ -240,7 +240,7 @@ rd_name_alloc(String8 string)
       }
       else
       {
-        node = (RD_NameChunkNode *)push_array(rd_state->arena, U8, rd_name_bucket_chunk_sizes[bucket_num-1]);
+        node = (RD_NameChunkNode *)push_array(U8, rd_name_bucket_chunk_sizes[bucket_num-1]);
       }
     }
   }
@@ -286,7 +286,7 @@ rd_cfg_alloc(void)
     }
     else
     {
-      result = /* no zero */ push_array(rd_state->arena, RD_Cfg, 1);
+      result = /* no zero */ push_array(RD_Cfg, 1);
     }
   }
   
@@ -305,7 +305,7 @@ rd_cfg_alloc(void)
     }
     else
     {
-      cfg_id_node = push_array(rd_state->arena, RD_CfgNode, 1);
+      cfg_id_node = push_array(RD_CfgNode, 1);
     }
     U64 hash = d_hash_from_string(str8_struct(&result->id));
     U64 slot_idx = hash%rd_state->cfg_id_slots_count;
@@ -597,7 +597,7 @@ rd_cfg_array_from_list(Arena *arena, RD_CfgList *list)
 {
   RD_CfgArray array = {0};
   array.count = list->count;
-  array.v = /* no zero */ push_array(arena, RD_Cfg *, array.count);
+  array.v = /* no zero */ push_array(RD_Cfg *, array.count);
   U64 idx = 0;
   for(RD_CfgNode *n = list->first; n != 0; n = n->next, idx += 1)
   {
@@ -800,7 +800,7 @@ rd_string_from_cfg_tree(Arena *arena, String8 root_path, RD_Cfg *cfg)
             break;
           }
         }
-        NestTask *task = push_array(scratch.arena, NestTask, 1);
+        NestTask *task = push_array(NestTask, 1);
         task->cfg = c;
         task->schema = c_schema;
         task->is_simple = is_simple_children_list;
@@ -875,7 +875,7 @@ rd_cfg_rec__depth_first(RD_Cfg *root, RD_Cfg *cfg)
 internal void
 rd_cfg_list_push(Arena *arena, RD_CfgList *list, RD_Cfg *cfg)
 {
-  RD_CfgNode *n = push_array(arena, RD_CfgNode, 1);
+  RD_CfgNode *n = push_array(RD_CfgNode, 1);
   n->v = cfg;
   DLLPushBack(list->first, list->last, n);
   list->count += 1;
@@ -884,7 +884,7 @@ rd_cfg_list_push(Arena *arena, RD_CfgList *list, RD_Cfg *cfg)
 internal void
 rd_cfg_list_push_front(Arena *arena, RD_CfgList *list, RD_Cfg *cfg)
 {
-  RD_CfgNode *n = push_array(arena, RD_CfgNode, 1);
+  RD_CfgNode *n = push_array(RD_CfgNode, 1);
   n->v = cfg;
   if(list->first != 0)
   {
@@ -913,7 +913,7 @@ rd_panel_tree_from_cfg(Arena *arena, RD_Cfg *cfg)
     for(RD_Cfg *src = src_root; src != &rd_nil_cfg; src = rec.next)
     {
       // rjf: build a panel node
-      RD_PanelNode *dst = push_array(arena, RD_PanelNode, 1);
+      RD_PanelNode *dst = push_array(RD_PanelNode, 1);
       MemoryCopyStruct(dst, &rd_nil_panel_node);
       dst->parent = dst_active_parent;
       if(dst_active_parent != &rd_nil_panel_node)
@@ -1067,7 +1067,7 @@ rd_target_rect_from_panel_node(Rng2F32 root_rect, RD_PanelNode *root, RD_PanelNo
   }
   
   // rjf: gather ancestors
-  RD_PanelNode **ancestors = push_array(scratch.arena, RD_PanelNode *, ancestor_count);
+  RD_PanelNode **ancestors = push_array(RD_PanelNode *, ancestor_count);
   {
     U64 ancestor_idx = 0;
     for(RD_PanelNode *p = panel->parent; p != &rd_nil_panel_node; p = p->parent)
@@ -1117,7 +1117,7 @@ rd_key_map_node_ptr_list_from_name(Arena *arena, String8 string)
     {
       if(str8_match(n->name, string, 0))
       {
-        RD_KeyMapNodePtr *ptr = push_array(arena, RD_KeyMapNodePtr, 1);
+        RD_KeyMapNodePtr *ptr = push_array(RD_KeyMapNodePtr, 1);
         ptr->v = n;
         SLLQueuePush(list.first, list.last, ptr);
         list.count += 1;
@@ -1138,7 +1138,7 @@ rd_key_map_node_ptr_list_from_binding(Arena *arena, RD_Binding binding)
     {
       if(MemoryMatchStruct(&binding, &n->binding))
       {
-        RD_KeyMapNodePtr *ptr = push_array(arena, RD_KeyMapNodePtr, 1);
+        RD_KeyMapNodePtr *ptr = push_array(RD_KeyMapNodePtr, 1);
         ptr->v = n;
         SLLQueuePush(list.first, list.last, ptr);
         list.count += 1;
@@ -1359,7 +1359,7 @@ rd_setting_from_name(String8 name)
           }
           if(next_bucket.size != 0)
           {
-            CfgSeedTask *task = push_array(scratch.arena, CfgSeedTask, 1);
+            CfgSeedTask *task = push_array(CfgSeedTask, 1);
             SLLQueuePush(first_task, last_task, task);
             task->cfg = rd_cfg_child_from_string(rd_state->root_cfg, next_bucket);
             task->allow_bucket_chains = allow_bucket_chains;
@@ -2529,7 +2529,7 @@ rd_view_state_from_cfg(RD_Cfg *cfg)
     }
     else
     {
-      view_state = push_array(rd_state->arena, RD_ViewState, 1);
+      view_state = push_array(RD_ViewState, 1);
     }
     MemoryCopyStruct(view_state, &rd_nil_view_state);
     U64 hash = d_hash_from_string(str8_struct(&id));
@@ -3460,7 +3460,7 @@ rd_view_ui(Rng2F32 rect)
               arena_clear(ewv->text_edit_arena);
               ewv->text_edit_state_slots_count = u64_up_to_pow2(selection_dim.y+1);
               ewv->text_edit_state_slots_count = Max(ewv->text_edit_state_slots_count, 64);
-              ewv->text_edit_state_slots = push_array(ewv->text_edit_arena, RD_WatchViewTextEditState*, ewv->text_edit_state_slots_count);
+              ewv->text_edit_state_slots = push_array(RD_WatchViewTextEditState*, ewv->text_edit_state_slots_count);
               EV_WindowedRowList rows = ev_rows_from_num_range(scratch.arena, eval_view, &block_ranges, r1u64(selection_tbl.min.y, selection_tbl.max.y+1));
               EV_WindowedRowNode *row_node = rows.first;
               B32 any_edits_started = 0;
@@ -3492,7 +3492,7 @@ rd_view_ui(Rng2F32 rect)
                     RD_WatchPt pt = {row->block->key, row->key, rd_id_from_watch_cell(cell)};
                     U64 hash = ev_hash_from_key(pt.key);
                     U64 slot_idx = hash%ewv->text_edit_state_slots_count;
-                    RD_WatchViewTextEditState *edit_state = push_array(ewv->text_edit_arena, RD_WatchViewTextEditState, 1);
+                    RD_WatchViewTextEditState *edit_state = push_array(RD_WatchViewTextEditState, 1);
                     SLLStackPush_N(ewv->text_edit_state_slots[slot_idx], edit_state, pt_hash_next);
                     edit_state->pt           = pt;
                     edit_state->cursor       = txt_pt(1, string.size+1);
@@ -4134,7 +4134,7 @@ rd_view_ui(Rng2F32 rect)
               ////////////////////////
               //- rjf: rows -> row infos
               //
-              RD_WatchRowInfo *row_infos = push_array(scratch.arena, RD_WatchRowInfo, rows.count);
+              RD_WatchRowInfo *row_infos = push_array(RD_WatchRowInfo, rows.count);
               {
                 U64 idx = 0;
                 for(EV_WindowedRowNode *row_node = rows.first; row_node != 0; row_node = row_node->next, idx += 1)
@@ -4525,7 +4525,7 @@ rd_view_ui(Rng2F32 rect)
                   ui_set_next_pref_height(ui_px(row_height_px*row->visual_size, 1.f));
                   ui_set_next_focus_hot(row_selected ? UI_FocusKind_On : UI_FocusKind_Off);
                   UI_Box *row_box = ui_build_box_from_stringf(row_flags|((!row_node->next)*UI_BoxFlag_DrawSideBottom)|UI_BoxFlag_Clickable, "row_%I64x", row_hash);
-                  RD_WatchRowExtrasDrawData *row_draw_data = push_array(ui_build_arena(), RD_WatchRowExtrasDrawData, 1);
+                  RD_WatchRowExtrasDrawData *row_draw_data = push_array(RD_WatchRowExtrasDrawData, 1);
                   row_draw_data->breaks_from_prev = !row_matches_last_row_topology;
                   ui_box_equip_custom_draw(row_box, rd_watch_row_extras_custom_draw, row_draw_data);
                   
@@ -5687,7 +5687,7 @@ rd_view_state_by_size(U64 size)
   RD_ViewState *view_state = rd_view_state_from_cfg(view);
   if(view_state->user_data == 0)
   {
-    view_state->user_data = push_array(view_state->arena, U8, size);
+    view_state->user_data = push_array(U8, size);
   }
   return view_state->user_data;
 }
@@ -5697,7 +5697,7 @@ rd_push_view_arena(void)
 {
   RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
   RD_ViewState *view_state = rd_view_state_from_cfg(view);
-  RD_ArenaExt *ext = push_array(view_state->arena, RD_ArenaExt, 1);
+  RD_ArenaExt *ext = push_array(RD_ArenaExt, 1);
   ext->arena = arena_alloc();
   SLLQueuePush(view_state->first_arena_ext, view_state->last_arena_ext, ext);
   return ext->arena;
@@ -5849,7 +5849,7 @@ rd_window_state_from_cfg(RD_Cfg *cfg)
     }
     else
     {
-      ws = /* no zero */ push_array(rd_state->arena, RD_WindowState, 1);
+      ws = /* no zero */ push_array(RD_WindowState, 1);
     }
     MemoryZeroStruct(ws);
     
@@ -6030,7 +6030,7 @@ rd_window_frame(void)
     {
       for(RD_CfgNode *n = colors_cfgs.first; n != 0; n = n->next)
       {
-        ThemeTask *t = push_array(scratch.arena, ThemeTask, 1);
+        ThemeTask *t = push_array(ThemeTask, 1);
         SLLQueuePushFront(first_task, last_task, t);
         t->tree = md_tree_from_string(scratch.arena, rd_string_from_cfg_tree(scratch.arena, str8_zero(), n->v));
       }
@@ -6060,7 +6060,7 @@ rd_window_frame(void)
           String8List tags = str8_split(scratch.arena, tags_child->first->string, &split_char, 1, 0);
           U32 color_u32 = e_value_from_stringf("raw(%S)", value_child->first->string).u32;
           Vec4F32 color_linear = linear_from_srgba(rgba_from_u32(color_u32));
-          ThemePatternNode *node = push_array(scratch.arena, ThemePatternNode, 1);
+          ThemePatternNode *node = push_array(ThemePatternNode, 1);
           node->pattern.tags = str8_array_from_list(rd_frame_arena(), &tags);
           node->pattern.linear = color_linear;
           SLLQueuePush(first_pattern, last_pattern, node);
@@ -6070,9 +6070,9 @@ rd_window_frame(void)
     }
     
     //- rjf: convert to final pattern array
-    ws->theme = push_array(rd_frame_arena(), UI_Theme, 1);
+    ws->theme = push_array(UI_Theme, 1);
     ws->theme->patterns_count = pattern_count;
-    ws->theme->patterns = push_array(rd_frame_arena(), UI_ThemePattern, ws->theme->patterns_count);
+    ws->theme->patterns = push_array(UI_ThemePattern, ws->theme->patterns_count);
     {
       U64 idx = 0;
       for(ThemePatternNode *n = first_pattern; n != 0; n = n->next, idx += 1)
@@ -6985,7 +6985,7 @@ rd_window_frame(void)
         // rjf: push task
         if(predicted_block_tree.total_row_count > 1)
         {
-          FloatingViewTask *t = push_array(scratch.arena, FloatingViewTask, 1);
+          FloatingViewTask *t = push_array(FloatingViewTask, 1);
           SLLQueuePush(first_floating_view_task, last_floating_view_task, t);
           autocomp_floating_view_task = t;
           t->view          = view;
@@ -7100,7 +7100,7 @@ rd_window_frame(void)
           
           // rjf: push hover eval task
           {
-            FloatingViewTask *t = push_array(scratch.arena, FloatingViewTask, 1);
+            FloatingViewTask *t = push_array(FloatingViewTask, 1);
             SLLQueuePush(first_floating_view_task, last_floating_view_task, t);
             hover_eval_floating_view_task = t;
             t->view          = view;
@@ -7262,7 +7262,7 @@ rd_window_frame(void)
         
         // rjf: push query task
         {
-          FloatingViewTask *t = push_array(scratch.arena, FloatingViewTask, 1);
+          FloatingViewTask *t = push_array(FloatingViewTask, 1);
           SLLQueuePush(first_floating_view_task, last_floating_view_task, t);
           query_floating_view_task = t;
           t->view          = view;
@@ -8956,7 +8956,7 @@ rd_window_frame(void)
               }
               UI_TagF(tab != panel->selected_tab ? "inactive" : "")
               {
-                TabTask *t = push_array(scratch.arena, TabTask, 1);
+                TabTask *t = push_array(TabTask, 1);
                 t->tab = tab;
                 t->fstrs = rd_title_fstrs_from_cfg(scratch.arena, tab, 0);
                 F32 tab_width_target = dr_dim_from_fstrs(ui_top_tab_size(), &t->fstrs).x + tab_close_width_px + ui_top_font_size()*1.f;
@@ -9394,7 +9394,7 @@ rd_window_frame(void)
       Vec2S32 buckets_dim = {(S32)(size.x/heatmap_bucket_size), (S32)(size.y/heatmap_bucket_size)};
       heatmap_bucket_pitch = buckets_dim.x;
       heatmap_bucket_count = buckets_dim.x*buckets_dim.y;
-      heatmap_buckets = push_array(scratch.arena, U64, heatmap_bucket_count);
+      heatmap_buckets = push_array(U64, heatmap_bucket_count);
     }
     
     //- rjf: draw background color
@@ -10041,7 +10041,7 @@ rd_set_autocomp_regs_(E_Eval dst_eval, RD_Regs *regs)
           S32 best_depth = 0;
           for(E_Expr *chain = parse.expr->next; chain != &e_expr_nil; chain = chain->next)
           {
-            ExprWalkTask *task = push_array(scratch.arena, ExprWalkTask, 1);
+            ExprWalkTask *task = push_array(ExprWalkTask, 1);
             SLLQueuePush(first_task, last_task, task);
             task->parent = &e_expr_nil;
             task->expr = chain;
@@ -10057,7 +10057,7 @@ rd_set_autocomp_regs_(E_Eval dst_eval, RD_Regs *regs)
             }
             for(E_Expr *child = e->first; child != &e_expr_nil; child = child->next)
             {
-              ExprWalkTask *task = push_array(scratch.arena, ExprWalkTask, 1);
+              ExprWalkTask *task = push_array(ExprWalkTask, 1);
               SLLQueuePush(first_task, last_task, task);
               task->parent = e;
               task->expr = child;
@@ -10573,7 +10573,7 @@ rd_frame_arena(void)
 internal RD_Regs *
 rd_push_regs_(RD_Regs *regs)
 {
-  RD_RegsNode *n = push_array(rd_frame_arena(), RD_RegsNode, 1);
+  RD_RegsNode *n = push_array(RD_RegsNode, 1);
   rd_regs_copy_contents(rd_frame_arena(), &n->v, regs);
   SLLStackPush(rd_state->top_regs, n);
   return &n->v;
@@ -10820,7 +10820,7 @@ rd_init(CmdLine *cmdln)
 {
   ProfBeginFunction();
   Arena *arena = arena_alloc();
-  rd_state = push_array(arena, RD_State, 1);
+  rd_state = push_array(RD_State, 1);
   rd_state->arena = arena;
   rd_state->quit_after_success = (cmd_line_has_flag(cmdln, str8_lit("quit_after_success")) ||
                                   cmd_line_has_flag(cmdln, str8_lit("q")));
@@ -10860,13 +10860,13 @@ rd_init(CmdLine *cmdln)
   rd_state->drop_completion_key = ui_key_from_string(ui_key_zero(), str8_lit("drop_completion_ctx_menu"));
   rd_state->bind_change_arena = arena_alloc();
   rd_state->drag_drop_arena = arena_alloc();
-  rd_state->drag_drop_regs = push_array(rd_state->drag_drop_arena, RD_Regs, 1);
+  rd_state->drag_drop_regs = push_array(RD_Regs, 1);
   rd_state->top_regs = &rd_state->base_regs;
   
   // rjf: set up schemas
   {
     U64 schemas_count = ArrayCount(rd_name_schema_info_table);
-    rd_state->schemas = push_array(rd_state->arena, MD_NodePtrList, schemas_count);
+    rd_state->schemas = push_array(MD_NodePtrList, schemas_count);
     for EachIndex(idx, schemas_count)
     {
       Temp scratch = scratch_begin(0, 0);
@@ -10891,7 +10891,7 @@ rd_init(CmdLine *cmdln)
             {
               if(str8_match(rd_name_schema_info_table[idx2].name, tag->first->string, 0))
               {
-                SchemaParseTask *new_task = push_array(scratch.arena, SchemaParseTask, 1);
+                SchemaParseTask *new_task = push_array(SchemaParseTask, 1);
                 SLLQueuePush(first_task, last_task, new_task);
                 new_task->schema_text = rd_name_schema_info_table[idx2].schema;
                 break;
@@ -10915,12 +10915,12 @@ rd_init(CmdLine *cmdln)
   // rjf: set up vocab info map
   {
     rd_state->vocab_info_map.single_slots_count = 1024;
-    rd_state->vocab_info_map.single_slots = push_array(rd_state->arena, RD_VocabInfoMapSlot, rd_state->vocab_info_map.single_slots_count);
+    rd_state->vocab_info_map.single_slots = push_array(RD_VocabInfoMapSlot, rd_state->vocab_info_map.single_slots_count);
     rd_state->vocab_info_map.plural_slots_count = 1024;
-    rd_state->vocab_info_map.plural_slots = push_array(rd_state->arena, RD_VocabInfoMapSlot, rd_state->vocab_info_map.plural_slots_count);
+    rd_state->vocab_info_map.plural_slots = push_array(RD_VocabInfoMapSlot, rd_state->vocab_info_map.plural_slots_count);
     for EachElement(idx, rd_vocab_info_table)
     {
-      RD_VocabInfoMapNode *n = push_array(rd_state->arena, RD_VocabInfoMapNode, 1);
+      RD_VocabInfoMapNode *n = push_array(RD_VocabInfoMapNode, 1);
       MemoryCopyStruct(&n->v, &rd_vocab_info_table[idx]);
       U64 single_hash = d_hash_from_string(n->v.code_name);
       U64 plural_hash = d_hash_from_string(n->v.code_name_plural);
@@ -10940,7 +10940,7 @@ rd_init(CmdLine *cmdln)
   // rjf: set up top-level config entity trees & tables
   {
     rd_state->cfg_id_slots_count = 1024;
-    rd_state->cfg_id_slots = push_array(arena, RD_CfgSlot, rd_state->cfg_id_slots_count);
+    rd_state->cfg_id_slots = push_array(RD_CfgSlot, rd_state->cfg_id_slots_count);
     rd_state->root_cfg = rd_cfg_alloc();
     RD_Cfg *user_tree         = rd_cfg_new(rd_state->root_cfg, str8_lit("user"));
     RD_Cfg *project_tree      = rd_cfg_new(rd_state->root_cfg, str8_lit("project"));
@@ -10951,14 +10951,14 @@ rd_init(CmdLine *cmdln)
   // rjf: set up window cache
   {
     rd_state->window_state_slots_count = 64;
-    rd_state->window_state_slots = push_array(arena, RD_WindowStateSlot, rd_state->window_state_slots_count);
+    rd_state->window_state_slots = push_array(RD_WindowStateSlot, rd_state->window_state_slots_count);
     rd_state->first_window_state = rd_state->last_window_state = &rd_nil_window_state;
   }
   
   // rjf: set up view cache
   {
     rd_state->view_state_slots_count = 4096;
-    rd_state->view_state_slots = push_array(arena, RD_ViewStateSlot, rd_state->view_state_slots_count);
+    rd_state->view_state_slots = push_array(RD_ViewStateSlot, rd_state->view_state_slots_count);
   }
   
   // rjf: set up user / project paths
@@ -11054,7 +11054,7 @@ rd_init(CmdLine *cmdln)
     
     // rjf: read image entries
     U64 entries_count = hdr.num_images;
-    ICO_Entry *entries = push_array(scratch.arena, ICO_Entry, hdr.num_images);
+    ICO_Entry *entries = push_array(ICO_Entry, hdr.num_images);
     {
       U64 bytes_to_read = sizeof(ICO_Entry)*entries_count;
       bytes_to_read = Min(bytes_to_read, opl-ptr);
@@ -11156,7 +11156,7 @@ rd_frame(void)
   }
   else
   {
-    rd_state->hover_regs = push_array(rd_frame_arena(), RD_Regs, 1);
+    rd_state->hover_regs = push_array(RD_Regs, 1);
     rd_state->hover_regs_slot = RD_RegSlot_Null;
   }
   B32 allow_text_hotkeys = !rd_state->text_edit_mode;
@@ -11481,12 +11481,12 @@ rd_frame(void)
   ProfScope("build key map from config")
   {
     //- rjf: set up table
-    rd_state->key_map = push_array(rd_frame_arena(), RD_KeyMap, 1);
+    rd_state->key_map = push_array(RD_KeyMap, 1);
     RD_KeyMap *key_map = rd_state->key_map;
     key_map->name_slots_count = 4096;
-    key_map->name_slots = push_array(rd_frame_arena(), RD_KeyMapSlot, key_map->name_slots_count);
+    key_map->name_slots = push_array(RD_KeyMapSlot, key_map->name_slots_count);
     key_map->binding_slots_count = 4096;
-    key_map->binding_slots = push_array(rd_frame_arena(), RD_KeyMapSlot, key_map->binding_slots_count);
+    key_map->binding_slots = push_array(RD_KeyMapSlot, key_map->binding_slots_count);
     
     //- rjf: gather & parse all explicitly stored keybinding sets
     RD_CfgList keybindings_cfg_list = rd_cfg_top_level_list_from_string(scratch.arena, str8_lit("keybindings"));
@@ -11537,7 +11537,7 @@ rd_frame(void)
           U64 binding_hash = d_hash_from_string(str8_struct(&binding));
           U64 name_slot_idx = name_hash%key_map->name_slots_count;
           U64 binding_slot_idx = binding_hash%key_map->binding_slots_count;
-          RD_KeyMapNode *n = push_array(rd_frame_arena(), RD_KeyMapNode, 1);
+          RD_KeyMapNode *n = push_array(RD_KeyMapNode, 1);
           n->cfg_id = keybinding->id;
           n->name = push_str8_copy(rd_frame_arena(), name);
           n->binding = binding;
@@ -11732,7 +11732,7 @@ rd_frame(void)
     U64 tls_root_vaddr = ctrl_tls_root_vaddr_from_thread(&d_state->ctrl_entity_store->ctx, thread->handle);
     CTRL_EntityArray all_modules = ctrl_entity_array_from_kind(&d_state->ctrl_entity_store->ctx, CTRL_EntityKind_Module);
     U64 eval_modules_count = Max(1, all_modules.count);
-    E_Module *eval_modules = push_array(scratch.arena, E_Module, eval_modules_count);
+    E_Module *eval_modules = push_array(E_Module, eval_modules_count);
     E_Module *eval_modules_primary = &eval_modules[0];
     eval_modules_primary->rdi = &rdi_parsed_nil;
     eval_modules_primary->vaddr_range = r1u64(0, max_U64);
@@ -11764,7 +11764,7 @@ rd_frame(void)
     ////////////////////////////
     //- rjf: build base evaluation context
     //
-    E_BaseCtx *eval_base_ctx = push_array(scratch.arena, E_BaseCtx, 1);
+    E_BaseCtx *eval_base_ctx = push_array(E_BaseCtx, 1);
     {
       E_BaseCtx *ctx = eval_base_ctx;
       
@@ -11791,13 +11791,13 @@ rd_frame(void)
     ////////////////////////////
     //- rjf: build extra types & maps
     //
-    E_String2ExprMap *macro_map = push_array(scratch.arena, E_String2ExprMap, 1);
+    E_String2ExprMap *macro_map = push_array(E_String2ExprMap, 1);
     macro_map[0] = e_string2expr_map_make(scratch.arena, 512);
-    E_AutoHookMap *auto_hook_map = push_array(scratch.arena, E_AutoHookMap, 1);
+    E_AutoHookMap *auto_hook_map = push_array(E_AutoHookMap, 1);
     auto_hook_map[0] = e_auto_hook_map_make(scratch.arena, 512);
-    rd_state->meta_name2type_map = push_array(rd_frame_arena(), E_String2TypeKeyMap, 1);
+    rd_state->meta_name2type_map = push_array(E_String2TypeKeyMap, 1);
     rd_state->meta_name2type_map[0] = e_string2typekey_map_make(rd_frame_arena(), 256);
-    EV_ExpandRuleTable *expand_rule_table = push_array(scratch.arena, EV_ExpandRuleTable, 1);
+    EV_ExpandRuleTable *expand_rule_table = push_array(EV_ExpandRuleTable, 1);
     rd_state->view_ui_rule_map = rd_view_ui_rule_map_make(scratch.arena, 512);
     ProfScope("build extra types & maps")
     {
@@ -12047,7 +12047,7 @@ rd_frame(void)
                     {
                       for(E_Expr *child = t->expr->first; child != &e_expr_nil; child = child->next)
                       {
-                        ExprWalkTask *task = push_array(scratch.arena, ExprWalkTask, 1);
+                        ExprWalkTask *task = push_array(ExprWalkTask, 1);
                         SLLQueuePush(first_task, last_task, task);
                         task->expr = child;
                       }
@@ -12522,7 +12522,7 @@ rd_frame(void)
     ////////////////////////////
     //- rjf: build IR evaluation context
     //
-    E_IRCtx *ir_ctx = push_array(scratch.arena, E_IRCtx, 1);
+    E_IRCtx *ir_ctx = push_array(E_IRCtx, 1);
     {
       E_IRCtx *ctx = ir_ctx;
       ctx->regs_map       = ctrl_string2reg_from_arch(eval_base_ctx->primary_module->arch);
@@ -12537,7 +12537,7 @@ rd_frame(void)
     ////////////////////////////
     //- rjf: build eval interpretation context
     //
-    E_InterpretCtx *interpret_ctx = push_array(scratch.arena, E_InterpretCtx, 1);
+    E_InterpretCtx *interpret_ctx = push_array(E_InterpretCtx, 1);
     {
       E_InterpretCtx *ctx = interpret_ctx;
       ctx->space_read        = rd_eval_space_read;
@@ -12546,9 +12546,9 @@ rd_frame(void)
       ctx->reg_arch          = eval_modules_primary->arch;
       ctx->reg_space         = rd_eval_space_from_ctrl_entity(thread, RD_EvalSpaceKind_CtrlEntity);
       ctx->reg_unwind_count  = unwind_count;
-      ctx->module_base       = push_array(scratch.arena, U64, 1);
+      ctx->module_base       = push_array(U64, 1);
       ctx->module_base[0]    = module->vaddr_range.min;
-      ctx->tls_base          = push_array(scratch.arena, U64, 1);
+      ctx->tls_base          = push_array(U64, 1);
       ctx->tls_base[0]       = d_query_cached_tls_base_vaddr_from_process_root_rip(process, tls_root_vaddr, rip_vaddr);
     }
     e_select_interpret_ctx(interpret_ctx, eval_modules_primary->rdi, rip_voff);
@@ -12687,7 +12687,7 @@ rd_frame(void)
               params.prefer_disasm = rd_regs()->prefer_disasm;
               params.pid           = rd_regs()->pid;
               params.targets.count = 1;
-              params.targets.v = push_array(scratch.arena, D_Target, params.targets.count);
+              params.targets.v = push_array(D_Target, params.targets.count);
               params.targets.v[0] = rd_target_from_cfg(scratch.arena, rd_cfg_from_id(rd_regs()->cfg));
               d_push_cmd((D_CmdKind)kind, &params);
             }
@@ -14781,7 +14781,7 @@ rd_frame(void)
                 {
                   continue;
                 }
-                WindowTask *t = push_array(scratch.arena, WindowTask, 1);
+                WindowTask *t = push_array(WindowTask, 1);
                 SLLQueuePush(first_window_task, last_window_task, t);
                 t->window = rd_cfg_from_id(ws->cfg_id);
               }
@@ -14811,7 +14811,7 @@ rd_frame(void)
             {
               RD_Cfg *window = t->window;
               RD_PanelTree panel_tree = rd_panel_tree_from_cfg(scratch.arena, window);
-              WindowInfo *info = push_array(scratch.arena, WindowInfo, 1);
+              WindowInfo *info = push_array(WindowInfo, 1);
               SLLQueuePush(first_window_info, last_window_info, info);
               info->window = window;
               info->panel_tree = panel_tree;
@@ -15043,7 +15043,7 @@ rd_frame(void)
               // rjf: push task
               if(src_code_dst_panel != &rd_nil_panel_node || disasm_dst_panel != &rd_nil_panel_node)
               {
-                FindCodeLocTask *t = push_array(scratch.arena, FindCodeLocTask, 1);
+                FindCodeLocTask *t = push_array(FindCodeLocTask, 1);
                 SLLQueuePush(first_task, last_task, t);
                 t->window               = info->window;
                 t->src_code_dst_panel   = src_code_dst_panel;
@@ -15081,7 +15081,7 @@ rd_frame(void)
               // rjf: push task
               if(src_code_dst_panel != &rd_nil_panel_node || disasm_dst_panel != &rd_nil_panel_node)
               {
-                FindCodeLocTask *t = push_array(scratch.arena, FindCodeLocTask, 1);
+                FindCodeLocTask *t = push_array(FindCodeLocTask, 1);
                 SLLQueuePush(first_task, last_task, t);
                 t->window               = info->window;
                 t->src_code_dst_panel   = src_code_dst_panel;
@@ -15110,7 +15110,7 @@ rd_frame(void)
               // rjf: push task
               if(src_code_dst_panel != &rd_nil_panel_node)
               {
-                FindCodeLocTask *t = push_array(scratch.arena, FindCodeLocTask, 1);
+                FindCodeLocTask *t = push_array(FindCodeLocTask, 1);
                 SLLQueuePush(first_task, last_task, t);
                 t->window               = info->window;
                 t->src_code_dst_panel   = src_code_dst_panel;
@@ -15153,7 +15153,7 @@ rd_frame(void)
               // rjf: push task
               if(src_code_dst_panel != &rd_nil_panel_node || disasm_dst_panel != &rd_nil_panel_node)
               {
-                FindCodeLocTask *t = push_array(scratch.arena, FindCodeLocTask, 1);
+                FindCodeLocTask *t = push_array(FindCodeLocTask, 1);
                 SLLQueuePush(first_task, last_task, t);
                 t->window               = info->window;
                 t->src_code_dst_panel   = src_code_dst_panel;
@@ -16600,7 +16600,7 @@ rd_frame(void)
     {
       RD_CfgList target_cfgs = rd_cfg_top_level_list_from_string(scratch.arena, str8_lit("target"));
       targets.count = target_cfgs.count;
-      targets.v = push_array(scratch.arena, D_Target, targets.count);
+      targets.v = push_array(D_Target, targets.count);
       U64 idx = 0;
       for(RD_CfgNode *n = target_cfgs.first; n != 0; n = n->next)
       {
@@ -16624,7 +16624,7 @@ rd_frame(void)
     {
       RD_CfgList bp_cfgs = rd_cfg_top_level_list_from_string(scratch.arena, str8_lit("breakpoint"));
       breakpoints.count = bp_cfgs.count;
-      breakpoints.v = push_array(scratch.arena, D_Breakpoint, breakpoints.count);
+      breakpoints.v = push_array(D_Breakpoint, breakpoints.count);
       U64 idx = 0;
       for(RD_CfgNode *n = bp_cfgs.first; n != 0; n = n->next)
       {
@@ -16681,7 +16681,7 @@ rd_frame(void)
             }
             for(E_Expr *child = t->expr->first; child != &e_expr_nil; child = child->next)
             {
-              ExprWalkTask *task = push_array(scratch.arena, ExprWalkTask, 1);
+              ExprWalkTask *task = push_array(ExprWalkTask, 1);
               task->expr = child;
               task->next = t->next;
               t->next = task;
@@ -16754,7 +16754,7 @@ rd_frame(void)
     {
       RD_CfgList maps = rd_cfg_top_level_list_from_string(scratch.arena, str8_lit("file_path_map"));
       path_maps.count = maps.count;
-      path_maps.v = push_array(scratch.arena, D_PathMap, path_maps.count);
+      path_maps.v = push_array(D_PathMap, path_maps.count);
       U64 idx = 0;
       for(RD_CfgNode *n = maps.first; n != 0; n = n->next, idx += 1)
       {
@@ -16958,7 +16958,7 @@ rd_frame(void)
   {
     Temp scratch = scratch_begin(0, 0);
     rd_state->ambiguous_path_slots_count = 512;
-    rd_state->ambiguous_path_slots = push_array(rd_frame_arena(), RD_AmbiguousPathNode *, rd_state->ambiguous_path_slots_count);
+    rd_state->ambiguous_path_slots = push_array(RD_AmbiguousPathNode *, rd_state->ambiguous_path_slots_count);
     for(RD_WindowState *ws = rd_state->first_window_state; ws != &rd_nil_window_state; ws = ws->order_next)
     {
       RD_Cfg *window = rd_cfg_from_id(ws->cfg_id);
@@ -16994,7 +16994,7 @@ rd_frame(void)
               }
               if(node == 0)
               {
-                node = push_array(rd_frame_arena(), RD_AmbiguousPathNode, 1);
+                node = push_array(RD_AmbiguousPathNode, 1);
                 SLLStackPush(rd_state->ambiguous_path_slots[slot_idx], node);
                 node->name = push_str8_copy(rd_frame_arena(), name);
               }

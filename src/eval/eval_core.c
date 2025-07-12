@@ -99,7 +99,7 @@ e_key_zero(void)
 internal void
 e_type_key_list_push(Arena *arena, E_TypeKeyList *list, E_TypeKey key)
 {
-  E_TypeKeyNode *n = push_array(arena, E_TypeKeyNode, 1);
+  E_TypeKeyNode *n = push_array(E_TypeKeyNode, 1);
   n->v = key;
   SLLQueuePush(list->first, list->last, n);
   list->count += 1;
@@ -108,7 +108,7 @@ e_type_key_list_push(Arena *arena, E_TypeKeyList *list, E_TypeKey key)
 internal void
 e_type_key_list_push_front(Arena *arena, E_TypeKeyList *list, E_TypeKey key)
 {
-  E_TypeKeyNode *n = push_array(arena, E_TypeKeyNode, 1);
+  E_TypeKeyNode *n = push_array(E_TypeKeyNode, 1);
   n->v = key;
   SLLQueuePushFront(list->first, list->last, n);
   list->count += 1;
@@ -131,7 +131,7 @@ e_type_key_list_copy(Arena *arena, E_TypeKeyList *src)
 internal void
 e_msg(Arena *arena, E_MsgList *msgs, E_MsgKind kind, Rng1U64 range, String8 text)
 {
-  E_Msg *msg = push_array(arena, E_Msg, 1);
+  E_Msg *msg = push_array(E_Msg, 1);
   SLLQueuePush(msgs->first, msgs->last, msg);
   msgs->count += 1;
   msgs->max_kind = Max(kind, msgs->max_kind);
@@ -206,7 +206,7 @@ e_string2num_map_make(Arena *arena, U64 slot_count)
 {
   E_String2NumMap map = {0};
   map.slots_count = slot_count;
-  map.slots = push_array(arena, E_String2NumMapSlot, map.slots_count);
+  map.slots = push_array(E_String2NumMapSlot, map.slots_count);
   return map;
 }
 
@@ -226,7 +226,7 @@ e_string2num_map_insert(Arena *arena, E_String2NumMap *map, String8 string, U64 
   }
   if(existing_node == 0)
   {
-    E_String2NumMapNode *node = push_array(arena, E_String2NumMapNode, 1);
+    E_String2NumMapNode *node = push_array(E_String2NumMapNode, 1);
     SLLQueuePush_N(map->slots[slot_idx].first, map->slots[slot_idx].last, node, hash_next);
     SLLQueuePush_N(map->first, map->last, node, order_next);
     node->string = push_str8_copy(arena, string);
@@ -265,7 +265,7 @@ e_string2num_map_node_array_from_map(Arena *arena, E_String2NumMap *map)
 {
   E_String2NumMapNodeArray result = {0};
   result.count = map->node_count;
-  result.v = push_array(arena, E_String2NumMapNode *, result.count);
+  result.v = push_array(E_String2NumMapNode *, result.count);
   U64 idx = 0;
   for(E_String2NumMapNode *n = map->first; n != 0; n = n->order_next, idx += 1)
   {
@@ -302,7 +302,7 @@ e_string2expr_map_make(Arena *arena, U64 slot_count)
 {
   E_String2ExprMap map = {0};
   map.slots_count = slot_count;
-  map.slots = push_array(arena, E_String2ExprMapSlot, map.slots_count);
+  map.slots = push_array(E_String2ExprMapSlot, map.slots_count);
   return map;
 }
 
@@ -324,7 +324,7 @@ e_string2expr_map_insert(Arena *arena, E_String2ExprMap *map, String8 string, E_
   }
   if(existing_node == 0)
   {
-    E_String2ExprMapNode *node = push_array(arena, E_String2ExprMapNode, 1);
+    E_String2ExprMapNode *node = push_array(E_String2ExprMapNode, 1);
     SLLQueuePush_N(map->slots[slot_idx].first, map->slots[slot_idx].last, node, hash_next);
     node->string = push_str8_copy(arena, string);
     existing_node = node;
@@ -398,14 +398,14 @@ e_string2typekey_map_make(Arena *arena, U64 slots_count)
 {
   E_String2TypeKeyMap map = {0};
   map.slots_count = slots_count;
-  map.slots = push_array(arena, E_String2TypeKeySlot, map.slots_count);
+  map.slots = push_array(E_String2TypeKeySlot, map.slots_count);
   return map;
 }
 
 internal void
 e_string2typekey_map_insert(Arena *arena, E_String2TypeKeyMap *map, String8 string, E_TypeKey key)
 {
-  E_String2TypeKeyNode *n = push_array(arena, E_String2TypeKeyNode, 1);
+  E_String2TypeKeyNode *n = push_array(E_String2TypeKeyNode, 1);
   U64 hash = e_hash_from_string(5381, string);
   U64 slot_idx = hash%map->slots_count;
   SLLQueuePush(map->slots[slot_idx].first, map->slots[slot_idx].last, n);
@@ -437,7 +437,7 @@ e_auto_hook_map_make(Arena *arena, U64 slots_count)
 {
   E_AutoHookMap map = {0};
   map.slots_count = slots_count;
-  map.slots = push_array(arena, E_AutoHookSlot, map.slots_count);
+  map.slots = push_array(E_AutoHookSlot, map.slots_count);
   return map;
 }
 
@@ -465,7 +465,7 @@ e_auto_hook_map_insert_new_(Arena *arena, E_AutoHookMap *map, E_AutoHookParams *
         String8 new_part = str8_substr(params->type_pattern, r1u64(start_string_off, off));
         if(new_part.size != 0)
         {
-          E_PatternPart *p = push_array(arena, E_PatternPart, 1);
+          E_PatternPart *p = push_array(E_PatternPart, 1);
           SLLQueuePush(pattern.first_part, pattern.last_part, p);
           p->string = new_part;
           pattern.count += 1;
@@ -473,7 +473,7 @@ e_auto_hook_map_insert_new_(Arena *arena, E_AutoHookMap *map, E_AutoHookParams *
       }
       if(byte == '?')
       {
-        E_PatternPart *p = push_array(arena, E_PatternPart, 1);
+        E_PatternPart *p = push_array(E_PatternPart, 1);
         SLLQueuePush(pattern.first_part, pattern.last_part, p);
         pattern.count += 1;
         if(off+1 < params->type_pattern.size && params->type_pattern.str[off+1] == '{')
@@ -504,7 +504,7 @@ e_auto_hook_map_insert_new_(Arena *arena, E_AutoHookMap *map, E_AutoHookParams *
   if(!e_type_key_match(e_type_key_zero(), type_key) ||
      pattern.count != 0)
   {
-    E_AutoHookNode *node = push_array(arena, E_AutoHookNode, 1);
+    E_AutoHookNode *node = push_array(E_AutoHookNode, 1);
     node->type_string = str8_skip_chop_whitespace(e_type_string_from_key(arena, type_key));
     node->type_pattern = pattern;
     node->expr_string = push_str8_copy(arena, params->tag_expr_string);
@@ -544,7 +544,7 @@ e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
   {
     U64 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff);
     RDI_Scope *scope = rdi_element_from_name_idx(rdi, Scopes, scope_idx);
-    Task *task = push_array(scratch.arena, Task, 1);
+    Task *task = push_array(Task, 1);
     task->scope = scope;
     SLLQueuePush(first_task, last_task, task);
     tightest_scope = scope;
@@ -557,7 +557,7 @@ e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
     RDI_Scope *scope = rdi_element_from_name_idx(rdi, Scopes, scope_idx);
     if(scope != tightest_scope)
     {
-      Task *task = push_array(scratch.arena, Task, 1);
+      Task *task = push_array(Task, 1);
       task->scope = scope;
       SLLQueuePush(first_task, last_task, task);
     }
@@ -571,14 +571,14 @@ e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
         scope != 0 && scope != nil_scope;
         scope = rdi_element_from_name_idx(rdi, Scopes, scope->parent_scope_idx))
     {
-      Task *task = push_array(scratch.arena, Task, 1);
+      Task *task = push_array(Task, 1);
       task->scope = scope;
       SLLQueuePush(first_task, last_task, task);
     }
   }
   
   //- rjf: build blank map
-  E_String2NumMap *map = push_array(arena, E_String2NumMap, 1);
+  E_String2NumMap *map = push_array(E_String2NumMap, 1);
   *map = e_string2num_map_make(arena, 1024);
   
   //- rjf: accumulate locals for all tasks
@@ -619,7 +619,7 @@ e_push_member_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
   RDI_UDT *udt = rdi_element_from_name_idx(rdi, UDTs, udt_idx);
   
   //- rjf: build blank map
-  E_String2NumMap *map = push_array(arena, E_String2NumMap, 1);
+  E_String2NumMap *map = push_array(E_String2NumMap, 1);
   *map = e_string2num_map_make(arena, 64);
   
   //- rjf: udt -> fill member map
@@ -651,7 +651,7 @@ internal E_Cache *
 e_cache_alloc(void)
 {
   Arena *arena = arena_alloc();
-  E_Cache *cache = push_array(arena, E_Cache, 1);
+  E_Cache *cache = push_array(E_Cache, 1);
   cache->arena = arena;
   cache->arena_eval_start_pos = arena_pos(arena);
   return cache;
@@ -684,22 +684,22 @@ e_select_base_ctx(E_BaseCtx *ctx)
   arena_pop_to(e_cache->arena, e_cache->arena_eval_start_pos);
   e_cache->key_id_gen = 0;
   e_cache->key_slots_count = 4096;
-  e_cache->key_slots = push_array(e_cache->arena, E_CacheSlot, e_cache->key_slots_count);
+  e_cache->key_slots = push_array(E_CacheSlot, e_cache->key_slots_count);
   e_cache->string_slots_count = 4096;
-  e_cache->string_slots = push_array(e_cache->arena, E_CacheSlot, e_cache->string_slots_count);
+  e_cache->string_slots = push_array(E_CacheSlot, e_cache->string_slots_count);
   e_cache->free_parent_node = 0;
   e_cache->top_parent_node = 0;
   e_cache->cons_id_gen = 0;
   e_cache->cons_content_slots_count = 256;
   e_cache->cons_key_slots_count = 256;
-  e_cache->cons_content_slots = push_array(e_cache->arena, E_ConsTypeSlot, e_cache->cons_content_slots_count);
-  e_cache->cons_key_slots = push_array(e_cache->arena, E_ConsTypeSlot, e_cache->cons_key_slots_count);
+  e_cache->cons_content_slots = push_array(E_ConsTypeSlot, e_cache->cons_content_slots_count);
+  e_cache->cons_key_slots = push_array(E_ConsTypeSlot, e_cache->cons_key_slots_count);
   e_cache->member_cache_slots_count = 256;
-  e_cache->member_cache_slots = push_array(e_cache->arena, E_MemberCacheSlot, e_cache->member_cache_slots_count);
+  e_cache->member_cache_slots = push_array(E_MemberCacheSlot, e_cache->member_cache_slots_count);
   e_cache->enum_val_cache_slots_count = 256;
-  e_cache->enum_val_cache_slots = push_array(e_cache->arena, E_EnumValCacheSlot, e_cache->enum_val_cache_slots_count);
+  e_cache->enum_val_cache_slots = push_array(E_EnumValCacheSlot, e_cache->enum_val_cache_slots_count);
   e_cache->type_cache_slots_count = 1024;
-  e_cache->type_cache_slots = push_array(e_cache->arena, E_TypeCacheSlot, e_cache->type_cache_slots_count);
+  e_cache->type_cache_slots = push_array(E_TypeCacheSlot, e_cache->type_cache_slots_count);
   e_cache->file_type_key = e_type_key_cons(.kind = E_TypeKind_Set,
                                            .name = str8_lit("file"),
                                            .irext  = E_TYPE_IREXT_FUNCTION_NAME(file),
@@ -719,18 +719,18 @@ e_select_base_ctx(E_BaseCtx *ctx)
                                                .num_from_id = E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_NAME(folder),
                                              });
   e_cache->thread_ip_procedure = rdi_procedure_from_voff(e_base_ctx->primary_module->rdi, e_base_ctx->thread_ip_voff);
-  e_cache->used_expr_map = push_array(e_cache->arena, E_UsedExprMap, 1);
+  e_cache->used_expr_map = push_array(E_UsedExprMap, 1);
   e_cache->used_expr_map->slots_count = 64;
-  e_cache->used_expr_map->slots = push_array(e_cache->arena, E_UsedExprSlot, e_cache->used_expr_map->slots_count);
-  e_cache->type_auto_hook_cache_map = push_array(e_cache->arena, E_TypeAutoHookCacheMap, 1);
+  e_cache->used_expr_map->slots = push_array(E_UsedExprSlot, e_cache->used_expr_map->slots_count);
+  e_cache->type_auto_hook_cache_map = push_array(E_TypeAutoHookCacheMap, 1);
   e_cache->type_auto_hook_cache_map->slots_count = 256;
-  e_cache->type_auto_hook_cache_map->slots = push_array(e_cache->arena, E_TypeAutoHookCacheSlot, e_cache->type_auto_hook_cache_map->slots_count);
+  e_cache->type_auto_hook_cache_map->slots = push_array(E_TypeAutoHookCacheSlot, e_cache->type_auto_hook_cache_map->slots_count);
   e_cache->string_id_gen = 0;
-  e_cache->string_id_map = push_array(e_cache->arena, E_StringIDMap, 1);
+  e_cache->string_id_map = push_array(E_StringIDMap, 1);
   e_cache->string_id_map->id_slots_count = 1024;
-  e_cache->string_id_map->id_slots = push_array(e_cache->arena, E_StringIDSlot, e_cache->string_id_map->id_slots_count);
+  e_cache->string_id_map->id_slots = push_array(E_StringIDSlot, e_cache->string_id_map->id_slots_count);
   e_cache->string_id_map->hash_slots_count = 1024;
-  e_cache->string_id_map->hash_slots = push_array(e_cache->arena, E_StringIDSlot, e_cache->string_id_map->hash_slots_count);
+  e_cache->string_id_map->hash_slots = push_array(E_StringIDSlot, e_cache->string_id_map->hash_slots_count);
 }
 
 internal void
@@ -740,7 +740,7 @@ e_select_ir_ctx(E_IRCtx *ctx)
   if(ctx->reg_alias_map == 0)  { ctx->reg_alias_map = &e_string2num_map_nil; }
   if(ctx->locals_map == 0)     { ctx->locals_map = &e_string2num_map_nil; }
   if(ctx->member_map == 0)     { ctx->member_map = &e_string2num_map_nil; }
-  if(ctx->macro_map == 0)      { ctx->macro_map = push_array(e_cache->arena, E_String2ExprMap, 1); ctx->macro_map[0] = e_string2expr_map_make(e_cache->arena, 512); }
+  if(ctx->macro_map == 0)      { ctx->macro_map = push_array(E_String2ExprMap, 1); ctx->macro_map[0] = e_string2expr_map_make(e_cache->arena, 512); }
   e_ir_ctx = ctx;
 }
 
@@ -764,7 +764,7 @@ e_parent_key_push(E_Key key)
   }
   else
   {
-    n = push_array(e_cache->arena, E_CacheParentNode, 1);
+    n = push_array(E_CacheParentNode, 1);
   }
   SLLStackPush(e_cache->top_parent_node, n);
   n->key = key;
@@ -813,7 +813,7 @@ e_key_from_string(String8 string)
     U64 key_hash = e_hash_from_string(5381, str8_struct(&key));
     U64 key_slot_idx = key_hash%e_cache->key_slots_count;
     E_CacheSlot *key_slot = &e_cache->key_slots[key_slot_idx];
-    node = push_array(e_cache->arena, E_CacheNode, 1);
+    node = push_array(E_CacheNode, 1);
     SLLQueuePush_N(slot->first, slot->last, node, string_next);
     SLLQueuePush_N(key_slot->first, key_slot->last, node, key_next);
     node->bundle.key = key;
@@ -980,7 +980,7 @@ e_full_expr_string_from_key(Arena *arena, E_Key key)
     {
       if(!e_key_match(t->bundle->parent_key, e_key_zero()))
       {
-        ParentResolveTask *task = push_array(scratch.arena, ParentResolveTask, 1);
+        ParentResolveTask *task = push_array(ParentResolveTask, 1);
         SLLQueuePushFront(first_task, last_task, task);
         task->bundle = e_cache_bundle_from_key(t->bundle->parent_key);
         next = task;
@@ -1105,7 +1105,7 @@ e_push_auto_hook_matches_from_type_key(Arena *arena, E_TypeKey type_key)
       {
         if(str8_match(n->type_string, type_string, 0))
         {
-          E_AutoHookMatch *match = push_array(arena, E_AutoHookMatch, 1);
+          E_AutoHookMatch *match = push_array(E_AutoHookMatch, 1);
           SLLQueuePush(matches.first, matches.last, match);
           match->expr = e_parse_from_string(n->expr_string).expr;
           matches.count += 1;
@@ -1185,7 +1185,7 @@ e_push_auto_hook_matches_from_type_key(Arena *arena, E_TypeKey type_key)
                 {
                   String8 wildcard_inst_string = str8_skip_chop_whitespace(str8_substr(type_string, r1u64(start_inst_off, scan_pos)));
                   start_inst_off = scan_pos+1;
-                  E_AutoHookWildcardInst *inst = push_array(arena, E_AutoHookWildcardInst, 1);
+                  E_AutoHookWildcardInst *inst = push_array(E_AutoHookWildcardInst, 1);
                   SLLQueuePush(first_wildcard_inst, last_wildcard_inst, inst);
                   inst->name = wildcard_inst_name_node ? wildcard_inst_name_node->string : str8_zero();
                   inst->inst_expr = e_parse_from_string(wildcard_inst_string).expr;
@@ -1225,7 +1225,7 @@ e_push_auto_hook_matches_from_type_key(Arena *arena, E_TypeKey type_key)
         //
         if(fits_this_type_string)
         {
-          E_AutoHookMatch *match = push_array(arena, E_AutoHookMatch, 1);
+          E_AutoHookMatch *match = push_array(E_AutoHookMatch, 1);
           SLLQueuePush(matches.first, matches.last, match);
           match->expr = e_parse_from_string(auto_hook_node->expr_string).expr;
           match->first_wildcard_inst = first_wildcard_inst;
@@ -1260,7 +1260,7 @@ e_auto_hook_matches_from_type_key(E_TypeKey type_key)
     }
     if(node == 0)
     {
-      node = push_array(e_cache->arena, E_TypeAutoHookCacheNode, 1);
+      node = push_array(E_TypeAutoHookCacheNode, 1);
       SLLQueuePush(e_cache->type_auto_hook_cache_map->slots[slot_idx].first, e_cache->type_auto_hook_cache_map->slots[slot_idx].last, node);
       node->key = type_key;
       node->matches = e_push_auto_hook_matches_from_type_key(e_cache->arena, type_key);
@@ -1291,7 +1291,7 @@ e_id_from_string(String8 string)
     e_cache->string_id_gen += 1;
     U64 id = e_cache->string_id_gen;
     U64 id_slot_idx = id%e_cache->string_id_map->id_slots_count;
-    node = push_array(e_cache->arena, E_StringIDNode, 1);
+    node = push_array(E_StringIDNode, 1);
     SLLQueuePush_N(e_cache->string_id_map->hash_slots[hash_slot_idx].first, e_cache->string_id_map->hash_slots[hash_slot_idx].last, node, hash_next);
     SLLQueuePush_N(e_cache->string_id_map->id_slots[id_slot_idx].first, e_cache->string_id_map->hash_slots[id_slot_idx].last, node, id_next);
     node->id = id;
@@ -1440,7 +1440,7 @@ e_debug_log_from_expr_string(Arena *arena, String8 string)
       Task *last_task = t;
       for(E_Expr *child = expr->first; child != &e_expr_nil; child = child->next)
       {
-        Task *task = push_array(scratch.arena, Task, 1);
+        Task *task = push_array(Task, 1);
         task->next = last_task->next;
         last_task->next = task;
         task->expr = child;
@@ -1496,7 +1496,7 @@ e_debug_log_from_expr_string(Arena *arena, String8 string)
       Task *last_task = t;
       for(E_IRNode *child = irnode->first; child != &e_irnode_nil; child = child->next)
       {
-        Task *task = push_array(scratch.arena, Task, 1);
+        Task *task = push_array(Task, 1);
         task->next = last_task->next;
         last_task->next = task;
         task->irnode = child;

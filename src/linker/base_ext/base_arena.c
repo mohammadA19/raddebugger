@@ -36,9 +36,9 @@ push_array_copy_u64(Arena *arena, U64 *v, U64 count)
 internal U64 **
 push_matrix_u64(Arena *arena, U64 rows, U64 columns)
 {
-  U64 **result = /* no zero */ push_array(arena, U64 *, rows);
+  U64 **result = /* no zero */ push_array(U64 *, rows);
   for (U64 row_idx = 0; row_idx < rows; row_idx += 1) {
-    result[row_idx] = push_array(arena, U64, columns);
+    result[row_idx] = push_array(U64, columns);
   }
   return result;
 }

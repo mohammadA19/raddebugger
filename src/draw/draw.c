@@ -7,7 +7,7 @@
 #define DR_StackPushImpl(name_upper, name_lower, type, val) \
 DR_Bucket *bucket = dr_top_bucket();\
 type old_val = bucket->top_##name_lower->v;\
-DR_##name_upper##Node *node = push_array(dr_thread_ctx->arena, DR_##name_upper##Node, 1);\
+DR_##name_upper##Node *node = push_array(DR_##name_upper##Node, 1);\
 node->v = (val);\
 SLLStackPush(bucket->top_##name_lower, node);\
 bucket->stack_gen += 1;\
@@ -142,7 +142,7 @@ dr_fuzzy_match_find_from_fstrs(Arena *arena, DR_FStrList *fstrs, String8 needle)
   Temp scratch = scratch_begin(&arena, 1);
   String8 fstrs_string = {0};
   fstrs_string.size = fstrs->total_size;
-  fstrs_string.str = push_array(arena, U8, fstrs_string.size);
+  fstrs_string.str = push_array(U8, fstrs_string.size);
   {
     // TODO(rjf): the fact that we only increment on non-icon portions is super weird?
     // we are only doing that because of the rendering of the fuzzy matches, so maybe
@@ -170,7 +170,7 @@ dr_fruns_from_fstrs(Arena *arena, F32 tab_size_px, DR_FStrList *strs)
   F32 base_align_px = 0;
   for(DR_FStrNode *n = strs->first; n != 0; n = n->next)
   {
-    DR_FRunNode *dst_n = push_array(arena, DR_FRunNode, 1);
+    DR_FRunNode *dst_n = push_array(DR_FRunNode, 1);
     dst_n->v.run = fnt_run_from_string(n->v.params.font, n->v.params.size, base_align_px, tab_size_px, n->v.params.raster_flags, n->v.string);
     dst_n->v.color = n->v.params.color;
     dst_n->v.underline_thickness = n->v.params.underline_thickness;
@@ -207,7 +207,7 @@ dr_begin_frame(FNT_Tag icon_font)
   if(dr_thread_ctx == 0)
   {
     Arena *arena = arena_alloc(.reserve_size = GB(64), .commit_size = MB(8));
-    dr_thread_ctx = push_array(arena, DR_ThreadCtx, 1);
+    dr_thread_ctx = push_array(DR_ThreadCtx, 1);
     dr_thread_ctx->arena = arena;
     dr_thread_ctx->arena_frame_start_pos = arena_pos(arena);
   }
@@ -231,7 +231,7 @@ dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket *bucket)
 internal DR_Bucket *
 dr_bucket_make(void)
 {
-  DR_Bucket *bucket = push_array(dr_thread_ctx->arena, DR_Bucket, 1);
+  DR_Bucket *bucket = push_array(DR_Bucket, 1);
   DR_BucketStackInits(bucket);
   return bucket;
 }
@@ -246,7 +246,7 @@ dr_push_bucket(DR_Bucket *bucket)
   }
   else
   {
-    node = push_array(dr_thread_ctx->arena, DR_BucketSelectionNode, 1);
+    node = push_array(DR_BucketSelectionNode, 1);
   }
   SLLStackPush(dr_thread_ctx->top_bucket, node);
   node->bucket = bucket;
@@ -296,7 +296,7 @@ dr_rect(Rng2F32 dst, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32
   R_BatchGroup2DNode *node = rects->last;
   if(node == 0 || bucket->stack_gen != bucket->last_cmd_stack_gen)
   {
-    node = push_array(arena, R_BatchGroup2DNode, 1);
+    node = push_array(R_BatchGroup2DNode, 1);
     SLLQueuePush(rects->first, rects->last, node);
     rects->count += 1;
     node->batches = r_batch_list_make(sizeof(R_Rect2DInst));
@@ -341,7 +341,7 @@ dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, F32 corner_rad
   }
   else if(node == 0 || bucket->stack_gen != bucket->last_cmd_stack_gen || !r_handle_match(texture, node->params.tex))
   {
-    node = push_array(arena, R_BatchGroup2DNode, 1);
+    node = push_array(R_BatchGroup2DNode, 1);
     SLLQueuePush(rects->first, rects->last, node);
     rects->count += 1;
     node->batches = r_batch_list_make(sizeof(R_Rect2DInst));
@@ -417,7 +417,7 @@ dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_ge
   if(params->mesh_batches.slots_count == 0)
   {
     params->mesh_batches.slots_count = 64;
-    params->mesh_batches.slots = push_array(arena, R_BatchGroup3DMapNode *, params->mesh_batches.slots_count);
+    params->mesh_batches.slots = push_array(R_BatchGroup3DMapNode *, params->mesh_batches.slots_count);
   }
   
   // rjf: hash batch group 3d params
@@ -456,7 +456,7 @@ dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_ge
   // rjf: no batch group node? -> make one
   if(node == 0)
   {
-    node = push_array(arena, R_BatchGroup3DMapNode, 1);
+    node = push_array(R_BatchGroup3DMapNode, 1);
     SLLStackPush(params->mesh_batches.slots[slot_idx], node);
     node->hash = hash;
     node->batches = r_batch_list_make(sizeof(R_Mesh3DInst));
@@ -501,7 +501,7 @@ dr_sub_bucket(DR_Bucket *bucket)
             src_group_n != 0;
             src_group_n = src_group_n->next)
         {
-          R_BatchGroup2DNode *dst_group_n = push_array(arena, R_BatchGroup2DNode, 1);
+          R_BatchGroup2DNode *dst_group_n = push_array(R_BatchGroup2DNode, 1);
           SLLQueuePush(dst_ui->rects.first, dst_ui->rects.last, dst_group_n);
           dst_ui->rects.count += 1;
           MemoryCopyStruct(&dst_group_n->params, &src_group_n->params);

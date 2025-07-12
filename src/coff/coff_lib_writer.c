@@ -75,7 +75,7 @@ internal COFF_LibWriter *
 coff_lib_writer_alloc(void)
 {
   Arena *arena = arena_alloc();
-  COFF_LibWriter *writer = push_array(arena, COFF_LibWriter, 1);
+  COFF_LibWriter *writer = push_array(COFF_LibWriter, 1);
   writer->arena = arena;
   return writer;
 }
@@ -187,7 +187,7 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
   }
 
   // serialize members
-  U64         *member_offsets   = /* no zero */ push_array(scratch.arena, U64, member_count);
+  U64         *member_offsets   = /* no zero */ push_array(U64, member_count);
   String8List  long_names_list  = {0};
   String8List  member_data_list = {0};
   {
@@ -221,7 +221,7 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
       str8_list_push(arena, &member_data_list, member_data);
       {
         U64 pad_size = AlignPadPow2(member_data_list.total_size, COFF_Archive_MemberAlign);
-        U8 *pad      = push_array(arena, U8, pad_size);
+        U8 *pad      = push_array(U8, pad_size);
         str8_list_push(arena, &member_data_list, str8(pad, pad_size));
       }
     }
@@ -234,7 +234,7 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
     U64     member_offset = member_data_list.total_size + data.size + header.size;
     {
       U64 pad_size = AlignPadPow2(member_offset, COFF_Archive_MemberAlign);
-      U8 *pad      = push_array(arena, U8, pad_size);
+      U8 *pad      = push_array(U8, pad_size);
       str8_list_push_front(arena, &member_data_list, str8(pad, pad_size));
     }
     str8_list_push_front(arena, &member_data_list, data);
@@ -249,7 +249,7 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
   }
 
   // write symbol name buffer
-  U8 *name_buffer = /* no zero */ push_array(scratch.arena, U8, name_buffer_size);
+  U8 *name_buffer = /* no zero */ push_array(U8, name_buffer_size);
   {
     U64 name_cursor = 0;
     for (COFF_LibWriterSymbol *ptr = &symbols[0], *opl = ptr + symbols_count; ptr < opl; ptr += 1) {
@@ -284,8 +284,8 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
     U32 member_count32 = safe_cast_u32(member_count);
     U32 symbol_count32 = safe_cast_u32(symbols_count);
 
-    U32 *member_off32_arr = /* no zero */ push_array(scratch.arena, U32, member_count);
-    U16 *member_idx16_arr = /* no zero */ push_array(scratch.arena, U16, symbols_count);
+    U32 *member_off32_arr = /* no zero */ push_array(U32, member_count);
+    U16 *member_idx16_arr = /* no zero */ push_array(U16, symbols_count);
 
     // write member offset array
     for (U64 member_idx = 0; member_idx < member_count; member_idx += 1) {
@@ -316,7 +316,7 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
     U64 member_offset = member_data_list.total_size + member_data.size + member_header.size;
     {
       U64 pad_size = AlignPadPow2(member_offset, COFF_Archive_MemberAlign);
-      U8 *pad      = push_array(arena, U8, pad_size);
+      U8 *pad      = push_array(U8, pad_size);
       str8_list_push_front(arena, &member_data_list, str8(pad, pad_size));
     }
     str8_list_push_front(arena, &member_data_list, member_data);
@@ -326,7 +326,7 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
   // first linker member (obsolete, but kept for compatability reasons)
   {
     U32  symbol_count_be  = from_be_u32(symbols_count);
-    U32 *member_off32_arr = /* no zero */ push_array(scratch.arena, U32, symbols_count);
+    U32 *member_off32_arr = /* no zero */ push_array(U32, symbols_count);
 
     for (U64 symbol_idx = 0; symbol_idx < symbols_count; symbol_idx += 1) {
       COFF_LibWriterSymbol *symbol = &symbols[symbol_idx];
@@ -349,7 +349,7 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
     U64 member_offset = sizeof(g_coff_archive_sig) + member_header.size + member_data.size;
     {
       U64 pad_size = AlignPadPow2(member_offset, COFF_Archive_MemberAlign);
-      U8 *pad      = push_array(arena, U8, pad_size);
+      U8 *pad      = push_array(U8, pad_size);
       str8_list_push_front(arena, &member_data_list, str8(pad, pad_size));
     }
     str8_list_push_front(arena, &member_data_list, member_data);

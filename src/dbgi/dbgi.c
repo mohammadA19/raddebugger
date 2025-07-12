@@ -66,7 +66,7 @@ di_normalized_key_from_key(Arena *arena, DI_Key *src)
 internal void
 di_key_list_push(Arena *arena, DI_KeyList *list, DI_Key *key)
 {
-  DI_KeyNode *n = push_array(arena, DI_KeyNode, 1);
+  DI_KeyNode *n = push_array(DI_KeyNode, 1);
   MemoryCopyStruct(&n->v, key);
   SLLQueuePush(list->first, list->last, n);
   list->count += 1;
@@ -91,7 +91,7 @@ di_key_array_copy(Arena *arena, DI_KeyArray *src)
 {
   DI_KeyArray dst = {0};
   dst.count = src->count;
-  dst.v = push_array(arena, DI_Key, dst.count);
+  dst.v = push_array(DI_Key, dst.count);
   for EachIndex(idx, dst.count)
   {
     dst.v[idx] = di_key_copy(arena, &src->v[idx]);
@@ -200,12 +200,12 @@ internal void
 di_init(void)
 {
   Arena *arena = arena_alloc();
-  di_shared = push_array(arena, DI_Shared, 1);
+  di_shared = push_array(DI_Shared, 1);
   di_shared->arena = arena;
   di_shared->slots_count = 4096;
-  di_shared->slots = push_array(arena, DI_Slot, di_shared->slots_count);
+  di_shared->slots = push_array(DI_Slot, di_shared->slots_count);
   di_shared->stripes_count = Min(di_shared->slots_count, os_get_system_info()->logical_processor_count);
-  di_shared->stripes = push_array(arena, DI_Stripe, di_shared->stripes_count);
+  di_shared->stripes = push_array(DI_Stripe, di_shared->stripes_count);
   for(U64 idx = 0; idx < di_shared->stripes_count; idx += 1)
   {
     di_shared->stripes[idx].arena = arena_alloc();
@@ -213,9 +213,9 @@ di_init(void)
     di_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
   di_shared->search_slots_count = 512;
-  di_shared->search_slots = push_array(arena, DI_SearchSlot, di_shared->search_slots_count);
+  di_shared->search_slots = push_array(DI_SearchSlot, di_shared->search_slots_count);
   di_shared->search_stripes_count = Min(di_shared->search_slots_count, os_get_system_info()->logical_processor_count);
-  di_shared->search_stripes = push_array(arena, DI_SearchStripe, di_shared->search_stripes_count);
+  di_shared->search_stripes = push_array(DI_SearchStripe, di_shared->search_stripes_count);
   for(U64 idx = 0; idx < di_shared->search_stripes_count; idx += 1)
   {
     di_shared->search_stripes[idx].arena = arena_alloc();
@@ -231,13 +231,13 @@ di_init(void)
   di_shared->p2u_ring_size = KB(64);
   di_shared->p2u_ring_base = new U8[di_shared->p2u_ring_size] /* no zero */;
   di_shared->search_threads_count = 1;
-  di_shared->search_threads = push_array(arena, DI_SearchThread, di_shared->search_threads_count);
+  di_shared->search_threads = push_array(DI_SearchThread, di_shared->search_threads_count);
   for EachIndex(idx, di_shared->search_threads_count)
   {
     di_shared->search_threads[idx].ring_mutex = os_mutex_alloc();
     di_shared->search_threads[idx].ring_cv    = os_condition_variable_alloc();
     di_shared->search_threads[idx].ring_size  = KB(64);
-    di_shared->search_threads[idx].ring_base  = /* no zero */ push_array(arena, U8, di_shared->search_threads[idx].ring_size);
+    di_shared->search_threads[idx].ring_base  = /* no zero */ push_array(U8, di_shared->search_threads[idx].ring_size);
     di_shared->search_threads[idx].thread = os_thread_launch(di_search_thread__entry_point, (void *)idx, 0);
   }
   di_shared->search_evictor_thread = os_thread_launch(di_search_evictor_thread__entry_point, 0, 0);
@@ -252,7 +252,7 @@ di_scope_open(void)
   if(di_tctx == 0)
   {
     Arena *arena = arena_alloc();
-    di_tctx = push_array(arena, DI_TCTX, 1);
+    di_tctx = push_array(DI_TCTX, 1);
     di_tctx->arena = arena;
   }
   DI_Scope *scope = di_tctx->free_scope;
@@ -262,7 +262,7 @@ di_scope_open(void)
   }
   else
   {
-    scope = /* no zero */ push_array(di_tctx->arena, DI_Scope, 1);
+    scope = /* no zero */ push_array(DI_Scope, 1);
   }
   MemoryZeroStruct(scope);
   DLLPushBack(di_tctx->first_scope, di_tctx->last_scope, scope);
@@ -305,7 +305,7 @@ di_scope_touch_node__stripe_mutex_r_guarded(DI_Scope *scope, DI_Stripe *stripe, 
   }
   else
   {
-    touch = /* no zero */ push_array(di_tctx->arena, DI_Touch, 1);
+    touch = /* no zero */ push_array(DI_Touch, 1);
   }
   MemoryZeroStruct(touch);
   SLLQueuePush(scope->first_touch, scope->last_touch, touch);
@@ -327,7 +327,7 @@ di_scope_touch_search_node__stripe_mutex_r_guarded(DI_Scope *scope, DI_SearchStr
   }
   else
   {
-    touch = /* no zero */ push_array(di_tctx->arena, DI_Touch, 1);
+    touch = /* no zero */ push_array(DI_Touch, 1);
   }
   MemoryZeroStruct(touch);
   SLLQueuePush(scope->first_touch, scope->last_touch, touch);
@@ -433,7 +433,7 @@ di_string_alloc__stripe_mutex_w_guarded(DI_Stripe *stripe, String8 string)
     {
       chunk_size = u64_up_to_pow2(string.size);
     }
-    U8 *chunk_memory = push_array(stripe->arena, U8, chunk_size);
+    U8 *chunk_memory = push_array(U8, chunk_size);
     node = (DI_StringChunkNode *)chunk_memory;
   }
   
@@ -488,7 +488,7 @@ di_open(DI_Key *key)
         }
         else
         {
-          node = /* no zero */ push_array(stripe->arena, DI_Node, 1);
+          node = /* no zero */ push_array(DI_Node, 1);
         }
         MemoryZeroStruct(node);
         DLLPushBack(slot->first, slot->last, node);
@@ -686,7 +686,7 @@ di_search_items_from_key_params_query(DI_Scope *scope, U128 key, DI_SearchParams
         }
         else
         {
-          node = push_array(stripe->arena, DI_SearchNode, 1);
+          node = push_array(DI_SearchNode, 1);
         }
         DLLPushBack(slot->first, slot->last, node);
         node->key = key;
@@ -789,7 +789,7 @@ di_u2p_dequeue_key(Arena *arena, DI_Key *out_key)
     {
       di_shared->u2p_ring_read_pos += ring_read_struct(di_shared->u2p_ring_base, di_shared->u2p_ring_size, di_shared->u2p_ring_read_pos, &out_key->min_timestamp);
       di_shared->u2p_ring_read_pos += ring_read_struct(di_shared->u2p_ring_base, di_shared->u2p_ring_size, di_shared->u2p_ring_read_pos, &out_key->path.size);
-      out_key->path.str = push_array(arena, U8, out_key->path.size);
+      out_key->path.str = push_array(U8, out_key->path.size);
       di_shared->u2p_ring_read_pos += ring_read(di_shared->u2p_ring_base, di_shared->u2p_ring_size, di_shared->u2p_ring_read_pos, out_key->path.str, out_key->path.size);
       break;
     }
@@ -827,12 +827,12 @@ di_p2u_pop_events(Arena *arena, U64 endt_us)
     U64 unconsumed_size = (di_shared->p2u_ring_write_pos-di_shared->p2u_ring_read_pos);
     if(unconsumed_size >= sizeof(DI_EventKind) + sizeof(U64))
     {
-      DI_EventNode *n = push_array(arena, DI_EventNode, 1);
+      DI_EventNode *n = push_array(DI_EventNode, 1);
       SLLQueuePush(events.first, events.last, n);
       events.count += 1;
       di_shared->p2u_ring_read_pos += ring_read_struct(di_shared->p2u_ring_base, di_shared->p2u_ring_size, di_shared->p2u_ring_read_pos, &n->v.kind);
       di_shared->p2u_ring_read_pos += ring_read_struct(di_shared->p2u_ring_base, di_shared->p2u_ring_size, di_shared->p2u_ring_read_pos, &n->v.string.size);
-      n->v.string.str = /* no zero */ push_array(arena, U8, n->v.string.size);
+      n->v.string.str = /* no zero */ push_array(U8, n->v.string.size);
       di_shared->p2u_ring_read_pos += ring_read(di_shared->p2u_ring_base, di_shared->p2u_ring_size, di_shared->p2u_ring_read_pos, n->v.string.str, n->v.string.size);
     }
     else if(os_now_microseconds() >= endt_us)
@@ -1231,7 +1231,7 @@ ASYNC_WORK_DEF(di_search_work)
   DI_SearchStripe * stripe     = &di_shared->search_stripes[stripe_idx];
   
   //- rjf: setup output
-  DI_SearchWorkOut *out = push_array(arena, DI_SearchWorkOut, 1);
+  DI_SearchWorkOut *out = push_array(DI_SearchWorkOut, 1);
   
   //- rjf: unpack table info
   U64 element_count = 0;
@@ -1309,7 +1309,7 @@ ASYNC_WORK_DEF(di_search_work)
       DI_SearchItemChunk *chunk = out->items.last;
       if(chunk == 0 || chunk->count >= chunk->cap)
       {
-        chunk = push_array(arena, DI_SearchItemChunk, 1);
+        chunk = push_array(DI_SearchItemChunk, 1);
         chunk->cap = 1024;
         chunk->count = 0;
         chunk->v = new DI_SearchItem[chunk->cap] /* no zero */;
@@ -1395,7 +1395,7 @@ di_search_thread__entry_point(void *p)
     
     //- rjf: get all rdis
     U64 rdis_count = params.dbgi_keys.count;
-    RDI_Parsed **rdis = push_array(scratch.arena, RDI_Parsed *, rdis_count);
+    RDI_Parsed **rdis = push_array(RDI_Parsed *, rdis_count);
     for EachIndex(idx, rdis_count)
     {
       rdis[idx] = di_rdi_from_key(di_scope, &params.dbgi_keys.v[idx], 1, max_U64);
@@ -1407,7 +1407,7 @@ di_search_thread__entry_point(void *p)
     if(arena != 0)
     {
       U64 elements_per_task = 16384;
-      work_thread_arenas = push_array(arena, Arena *, async_thread_count());
+      work_thread_arenas = push_array(Arena *, async_thread_count());
       for EachIndex(idx, rdis_count)
       {
         RDI_Parsed *rdi = rdis[idx];
@@ -1416,7 +1416,7 @@ di_search_thread__entry_point(void *p)
         U64 tasks_per_this_rdi = (element_count_in_this_rdi+elements_per_task-1)/elements_per_task;
         for(U64 task_in_this_rdi_idx = 0; task_in_this_rdi_idx < tasks_per_this_rdi; task_in_this_rdi_idx += 1)
         {
-          DI_SearchWorkIn *in = push_array(scratch.arena, DI_SearchWorkIn, 1);
+          DI_SearchWorkIn *in = push_array(DI_SearchWorkIn, 1);
           in->key                      = key;
           in->initial_bucket_write_gen = initial_bucket_write_gen;
           in->work_thread_arenas       = work_thread_arenas;
@@ -1449,7 +1449,7 @@ di_search_thread__entry_point(void *p)
     if(arena != 0 && !cancelled)
     {
       items.count = items_list.total_count;
-      items.v = push_array(arena, DI_SearchItem, items.count);
+      items.v = push_array(DI_SearchItem, items.count);
       U64 off = 0;
       for(DI_SearchItemChunk *chunk = items_list.first; chunk != 0; chunk = chunk->next)
       {
@@ -1574,7 +1574,7 @@ internal DI_MatchStore *
 di_match_store_alloc(void)
 {
   Arena *arena = arena_alloc();
-  DI_MatchStore *store = push_array(arena, DI_MatchStore, 1);
+  DI_MatchStore *store = push_array(DI_MatchStore, 1);
   store->arena                  = arena;
   for EachElement(idx, store->gen_arenas)
   {
@@ -1583,7 +1583,7 @@ di_match_store_alloc(void)
   store->params_arena           = arena_alloc();
   store->params_rw_mutex        = os_rw_mutex_alloc();
   store->match_name_slots_count = 4096;
-  store->match_name_slots       = push_array(arena, DI_MatchNameSlot, store->match_name_slots_count);
+  store->match_name_slots       = push_array(DI_MatchNameSlot, store->match_name_slots_count);
   store->match_rw_mutex         = os_rw_mutex_alloc();
   store->match_cv               = os_condition_variable_alloc();
   store->u2m_ring_cv            = os_condition_variable_alloc();
@@ -1687,7 +1687,7 @@ di_match_from_name(DI_MatchStore *store, String8 name, U64 endt_us)
       }
       else
       {
-        node = /* no zero */ push_array(store->arena, DI_MatchNameNode, 1);
+        node = /* no zero */ push_array(DI_MatchNameNode, 1);
       }
       MemoryZeroStruct(node);
       node->hash = hash;
@@ -1784,7 +1784,7 @@ ASYNC_WORK_DEF(di_match_work)
         store->u2m_ring_read_pos += ring_read_struct(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_read_pos, &node);
         store->u2m_ring_read_pos += ring_read_struct(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_read_pos, &alloc_gen);
         store->u2m_ring_read_pos += ring_read_struct(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_read_pos, &name.size);
-        name.str = push_array(scratch.arena, U8, name.size);
+        name.str = push_array(U8, name.size);
         store->u2m_ring_read_pos += ring_read(store->u2m_ring_base, store->u2m_ring_size, store->u2m_ring_read_pos, name.str, name.size);
         break;
       }
@@ -1849,7 +1849,7 @@ ASYNC_WORK_DEF(di_match_work)
             // rjf: gather all alternate matches
             for(U32 match_idx = 1; match_idx < num; match_idx += 1)
             {
-              DI_MatchNode *m = push_array(scratch.arena, DI_MatchNode, 1);
+              DI_MatchNode *m = push_array(DI_MatchNode, 1);
               SLLQueuePush(first_match, last_match, m);
               m->v.dbgi_idx = dbgi_idx;
               m->v.section  = name_map_section_kinds[name_map_kind_idx];

@@ -125,8 +125,8 @@ internal COFF_SectionHeader **
 coff_section_table_from_data(Arena *arena, String8 data, Rng1U64 section_table_range)
 {
   U64                  section_count = dim_1u64(section_table_range) / sizeof(COFF_SectionHeader);
-  COFF_SectionHeader **section_table = /* no zero */ push_array(arena, COFF_SectionHeader *, section_count+1);
-  section_table[0] = push_array(arena, COFF_SectionHeader, 1);
+  COFF_SectionHeader **section_table = /* no zero */ push_array(COFF_SectionHeader *, section_count+1);
+  section_table[0] = push_array(COFF_SectionHeader, 1);
   for (U64 i = 0; i < section_count; ++i) {
     section_table[i+1] = str8_deserial_get_raw_ptr(data, section_table_range.min + i*sizeof(COFF_SectionHeader), sizeof(COFF_SectionHeader));
   }
@@ -247,7 +247,7 @@ coff_symbol_array_from_data(Arena *arena, String8 data, U64 symbol_array_off, U6
 internal COFF_Symbol16Node *
 coff_symbol16_list_push(Arena *arena, COFF_Symbol16List *list, COFF_Symbol16 symbol)
 {
-  COFF_Symbol16Node *node = push_array(arena, COFF_Symbol16Node, 1);
+  COFF_Symbol16Node *node = push_array(COFF_Symbol16Node, 1);
   node->next = 0;
   node->data = symbol;
   SLLQueuePush(list->first, list->last, node);
@@ -319,7 +319,7 @@ coff_parse_weak_tag(COFF_ParsedSymbol symbol, B32 is_big_obj)
 internal COFF_RelocNode *
 coff_reloc_list_push(Arena *arena, COFF_RelocList *list, COFF_Reloc reloc)
 {
-  COFF_RelocNode *node = push_array(arena, COFF_RelocNode, 1);
+  COFF_RelocNode *node = push_array(COFF_RelocNode, 1);
   node->data = reloc;
   SLLQueuePush(list->first, list->last, node);
   ++list->count;
@@ -460,7 +460,7 @@ coff_resource_list_from_data(Arena *arena, String8 data)
   COFF_ParsedResourceList list = {0};
   U64 cursor;
   for (cursor = 0 ; cursor < data.size; ) {
-    COFF_ParsedResourceNode *node = push_array(arena, COFF_ParsedResourceNode, 1);
+    COFF_ParsedResourceNode *node = push_array(COFF_ParsedResourceNode, 1);
     cursor += coff_read_resource(arena, data, cursor, &node->data);
     SLLQueuePush(list.first, list.last, node);
     ++list.count;
@@ -501,7 +501,7 @@ coff_write_resource(Arena          *arena,
   
   String8List list = {0};
   
-  COFF_ResourceHeaderPrefix *prefix      = push_array(scratch.arena, COFF_ResourceHeaderPrefix, 1);
+  COFF_ResourceHeaderPrefix *prefix      = push_array(COFF_ResourceHeaderPrefix, 1);
   String8                    packed_type = coff_write_resource_id(scratch.arena, type);
   String8                    packed_name = coff_write_resource_id(scratch.arena, name);
   
@@ -526,7 +526,7 @@ coff_write_resource(Arena          *arena,
   
   // align
   U64 align_size = AlignPow2(list.total_size, COFF_ResourceAlign) - list.total_size;
-  U8 *align      = push_array(scratch.arena, U8, align_size);
+  U8 *align      = push_array(U8, align_size);
   str8_list_push(scratch.arena, &list, str8(align, align_size));
   
   // join

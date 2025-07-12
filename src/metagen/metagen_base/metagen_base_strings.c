@@ -1133,7 +1133,7 @@ str8_array_reserve(Arena *arena, U64 count)
 {
   String8Array arr;
   arr.count = 0;
-  arr.v = push_array(arena, String8, count);
+  arr.v = push_array(String8, count);
   return arr;
 }
 
@@ -1272,7 +1272,7 @@ str8_path_list_resolve_dots_in_place(String8List *path, PathStyle style){
         SLLStackPop(free_meta_node);
       }
       else{
-        stack_node = /* no zero */ push_array(scratch.arena, String8MetaNode, 1);
+        stack_node = /* no zero */ push_array(String8MetaNode, 1);
       }
       SLLStackPush(stack, stack_node);
       stack_node->node = node;
@@ -2124,7 +2124,7 @@ fuzzy_match_find(Arena *arena, String8 needle, String8 haystack)
     if(find_pos < haystack.size)
     {
       Rng1U64 range = r1u64(find_pos, find_pos+needle_n->string.size);
-      FuzzyMatchRangeNode *n = push_array(arena, FuzzyMatchRangeNode, 1);
+      FuzzyMatchRangeNode *n = push_array(FuzzyMatchRangeNode, 1);
       n->range = range;
       SLLQueuePush(result.first, result.last, n);
       result.count += 1;
@@ -2141,7 +2141,7 @@ fuzzy_match_range_list_copy(Arena *arena, FuzzyMatchRangeList *src)
   FuzzyMatchRangeList dst = {0};
   for(FuzzyMatchRangeNode *src_n = src->first; src_n != 0; src_n = src_n->next)
   {
-    FuzzyMatchRangeNode *dst_n = push_array(arena, FuzzyMatchRangeNode, 1);
+    FuzzyMatchRangeNode *dst_n = push_array(FuzzyMatchRangeNode, 1);
     SLLQueuePush(dst.first, dst.last, dst_n);
     dst_n->range = src_n->range;
   }
@@ -2156,7 +2156,7 @@ fuzzy_match_range_list_copy(Arena *arena, FuzzyMatchRangeList *src)
 
 internal void
 str8_serial_begin(Arena *arena, String8List *srl){
-  String8Node *node = push_array(arena, String8Node, 1);
+  String8Node *node = push_array(String8Node, 1);
   node->string.str = new U8[0] /* no zero */;
   srl->first = srl->last = node;
   srl->node_count = 1;
@@ -2194,7 +2194,7 @@ str8_serial_push_align(Arena *arena, String8List *srl, U64 align){
   
   if(size != 0)
   {
-    U8 *buf = push_array(arena, U8, size);
+    U8 *buf = push_array(U8, size);
     
     String8 *str = &srl->last->string;
     if (str->str + str->size == buf){

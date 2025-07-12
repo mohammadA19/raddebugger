@@ -214,7 +214,7 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
     }
     
     if (got_streams) {
-      result                   = push_array(arena, MSF_RawStreamTable, 1);
+      result                   = push_array(MSF_RawStreamTable, 1);
       result->total_page_count = whole_file_page_count;
       result->index_size       = index_size;
       result->page_size        = page_size;

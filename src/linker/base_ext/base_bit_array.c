@@ -6,7 +6,7 @@ bit_array_init32(Arena *arena, U64 word_count)
 {
   U32Array result;
   result.count = CeilIntegerDiv(word_count, 32);
-  result.v = push_array(arena, U32, word_count);
+  result.v = push_array(U32, word_count);
   return result;
 }
 

@@ -63,7 +63,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(commands)
         }
       }
     }
-    String8Array *accel = push_array(arena, String8Array, 1);
+    String8Array *accel = push_array(String8Array, 1);
     *accel = str8_array_from_list(arena, &cmd_names);
     result.user_data = accel;
     result.expr_count = accel->count;
@@ -137,7 +137,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(themes)
     }
     
     //- rjf: flatten & build accelerator
-    String8Array *accel = push_array(arena, String8Array, 1);
+    String8Array *accel = push_array(String8Array, 1);
     *accel = str8_array_from_list(arena, &names);
     result.user_data = accel;
     result.expr_count = accel->count;
@@ -177,7 +177,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(locals)
         str8_list_push(scratch.arena, &exprs_filtered, local_expr_string);
       }
     }
-    String8Array *accel = push_array(arena, String8Array, 1);
+    String8Array *accel = push_array(String8Array, 1);
     *accel = str8_array_from_list(arena, &exprs_filtered);
     result.user_data = accel;
     result.expr_count = accel->count;
@@ -228,7 +228,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(registers)
       str8_list_push(scratch.arena, &exprs_list, alias_strings[idx]);
     }
   }
-  String8Array *accel = push_array(arena, String8Array, 1);
+  String8Array *accel = push_array(String8Array, 1);
   *accel = str8_array_from_list(arena, &exprs_list);
   E_TypeExpandInfo info = {accel, accel->count};
   scratch_end(scratch);
@@ -262,7 +262,7 @@ struct RD_SchemaIRExt
 
 E_TYPE_IREXT_FUNCTION_DEF(schema)
 {
-  RD_SchemaIRExt *ext = push_array(arena, RD_SchemaIRExt, 1);
+  RD_SchemaIRExt *ext = push_array(RD_SchemaIRExt, 1);
   {
     Temp scratch = scratch_begin(&arena, 1);
     E_OpList oplist = e_oplist_from_irtree(scratch.arena, irtree->root);
@@ -564,7 +564,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(schema)
                display_name_matches.count == display_name_matches.needle_part_count ||
                desc_matches.count == desc_matches.needle_part_count)
             {
-              ExpandChildNode *n = push_array(scratch.arena, ExpandChildNode, 1);
+              ExpandChildNode *n = push_array(ExpandChildNode, 1);
               n->n = child;
               SLLQueuePush(first_child_node, last_child_node, n);
               child_count += 1;
@@ -575,7 +575,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(schema)
     }
     
     // rjf: flatten expansion member list
-    MD_Node **children = push_array(arena, MD_Node *, child_count);
+    MD_Node **children = push_array(MD_Node *, child_count);
     {
       U64 idx = 0;
       for(ExpandChildNode *n = first_child_node; n != 0; n = n->next, idx += 1)
@@ -585,7 +585,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(schema)
     }
     
     // rjf: build accelerator for lookups
-    RD_SchemaExpandAccel *accel = push_array(arena, RD_SchemaExpandAccel, 1);
+    RD_SchemaExpandAccel *accel = push_array(RD_SchemaExpandAccel, 1);
     accel->commands = commands;
     accel->children = children;
     accel->children_count = child_count;
@@ -682,7 +682,7 @@ struct RD_CfgsIRExt
 
 E_TYPE_IREXT_FUNCTION_DEF(cfgs_slice)
 {
-  RD_CfgsIRExt *ext = push_array(arena, RD_CfgsIRExt, 1);
+  RD_CfgsIRExt *ext = push_array(RD_CfgsIRExt, 1);
   {
     Temp scratch = scratch_begin(&arena, 1);
     
@@ -768,7 +768,7 @@ struct RD_CfgsExpandAccel
 
 E_TYPE_EXPAND_INFO_FUNCTION_DEF(cfgs_slice)
 {
-  RD_CfgsExpandAccel *accel = push_array(arena, RD_CfgsExpandAccel, 1);
+  RD_CfgsExpandAccel *accel = push_array(RD_CfgsExpandAccel, 1);
   E_TypeExpandInfo info = {accel};
   Temp scratch = scratch_begin(&arena, 1);
   {
@@ -811,7 +811,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(cfgs_slice)
 
 E_TYPE_EXPAND_INFO_FUNCTION_DEF(cfgs_query)
 {
-  RD_CfgsExpandAccel *accel = push_array(arena, RD_CfgsExpandAccel, 1);
+  RD_CfgsExpandAccel *accel = push_array(RD_CfgsExpandAccel, 1);
   {
     Temp scratch = scratch_begin(&arena, 1);
     RD_Cfg *root_cfg = rd_cfg_from_eval_space(eval.space);
@@ -947,7 +947,7 @@ struct RD_CallStackAccel
 
 E_TYPE_IREXT_FUNCTION_DEF(call_stack)
 {
-  RD_CallStackAccel *accel = push_array(arena, RD_CallStackAccel, 1);
+  RD_CallStackAccel *accel = push_array(RD_CallStackAccel, 1);
   {
     Temp scratch = scratch_begin(&arena, 1);
     E_OpList oplist = e_oplist_from_irtree(scratch.arena, irtree->root);
@@ -1007,7 +1007,7 @@ struct RD_EnvironmentAccel
 
 E_TYPE_IREXT_FUNCTION_DEF(environment)
 {
-  RD_EnvironmentAccel *accel = push_array(arena, RD_EnvironmentAccel, 1);
+  RD_EnvironmentAccel *accel = push_array(RD_EnvironmentAccel, 1);
   {
     Temp scratch = scratch_begin(&arena, 1);
     E_OpList oplist = e_oplist_from_irtree(scratch.arena, irtree->root);
@@ -1121,7 +1121,7 @@ struct RD_WatchesAccel
 
 E_TYPE_IREXT_FUNCTION_DEF(watches)
 {
-  RD_WatchesAccel *accel = push_array(arena, RD_WatchesAccel, 1);
+  RD_WatchesAccel *accel = push_array(RD_WatchesAccel, 1);
   {
     Temp scratch = scratch_begin(&arena, 1);
     E_OpList oplist = e_oplist_from_irtree(scratch.arena, irtree->root);
@@ -1166,7 +1166,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(watches)
 E_TYPE_EXPAND_INFO_FUNCTION_DEF(watches)
 {
   RD_WatchesAccel *ext = (RD_WatchesAccel *)eval.irtree.user_data;
-  RD_WatchesAccel *accel = push_array(arena, RD_WatchesAccel, 1);
+  RD_WatchesAccel *accel = push_array(RD_WatchesAccel, 1);
   {
     RD_CfgArray cfgs__filtered = ext->cfgs;
     if(filter.size != 0)
@@ -1357,7 +1357,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(unattached_processes)
         }
         if(passes_filter)
         {
-          Node *node = push_array(scratch.arena, Node, 1);
+          Node *node = push_array(Node, 1);
           SLLQueuePush(first, last, node);
           node->machine = machine;
           node->info = info;
@@ -1369,8 +1369,8 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(unattached_processes)
     
     //- rjf: list -> array
     U64 infos_count = count;
-    DMN_ProcessInfo *infos = push_array(arena, DMN_ProcessInfo, infos_count);
-    CTRL_Entity **infos_machines = push_array(arena, CTRL_Entity *, infos_count);
+    DMN_ProcessInfo *infos = push_array(DMN_ProcessInfo, infos_count);
+    CTRL_Entity **infos_machines = push_array(CTRL_Entity *, infos_count);
     {
       U64 idx = 0;
       for(Node *n = first; n != 0; n = n->next, idx += 1)
@@ -1382,7 +1382,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(unattached_processes)
     }
     
     //- rjf: build accelerator
-    RD_UnattachedProcessesAccel *accel = push_array(arena, RD_UnattachedProcessesAccel, 1);
+    RD_UnattachedProcessesAccel *accel = push_array(RD_UnattachedProcessesAccel, 1);
     accel->infos       = infos;
     accel->infos_count = infos_count;
     accel->machines    = infos_machines;
@@ -1505,7 +1505,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(ctrl_entities)
     }
     
     //- rjf: list -> array & fill
-    CTRL_EntityArray *accel = push_array(arena, CTRL_EntityArray, 1);
+    CTRL_EntityArray *accel = push_array(CTRL_EntityArray, 1);
     *accel = array__filtered;
     result.user_data = accel;
     result.expr_count = accel->count;
@@ -1559,7 +1559,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(debug_info_table)
   }
   
   // rjf: gather debug info table items
-  RD_DebugInfoTableLookupAccel *accel = push_array(arena, RD_DebugInfoTableLookupAccel, 1);
+  RD_DebugInfoTableLookupAccel *accel = push_array(RD_DebugInfoTableLookupAccel, 1);
   if(section != RDI_SectionKind_NULL)
   {
     U64 endt_us = rd_state->frame_eval_memread_endt_us;
@@ -1568,7 +1568,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(debug_info_table)
     DI_KeyList dbgi_keys_list = d_push_active_dbgi_key_list(scratch.arena);
     DI_KeyArray dbgi_keys = di_key_array_from_list(scratch.arena, &dbgi_keys_list);
     U64 rdis_count = dbgi_keys.count;
-    RDI_Parsed **rdis = push_array(arena, RDI_Parsed *, rdis_count);
+    RDI_Parsed **rdis = push_array(RDI_Parsed *, rdis_count);
     for(U64 idx = 0; idx < rdis_count; idx += 1)
     {
       rdis[idx] = di_rdi_from_key(rd_state->frame_di_scope, &dbgi_keys.v[idx], 1, endt_us);
