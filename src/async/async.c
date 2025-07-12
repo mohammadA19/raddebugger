@@ -17,7 +17,7 @@ async_init(CmdLine *cmdline)
   {
     ASYNC_Ring *ring = &async_shared->rings[p];
     ring->ring_size  = MB(8);
-    ring->ring_base  = push_array_no_zero(arena, U8, ring->ring_size);
+    ring->ring_base  = new U8[ring->ring_size] /* no zero */;
     ring->ring_mutex = os_mutex_alloc();
     ring->ring_cv    = os_condition_variable_alloc();
   }

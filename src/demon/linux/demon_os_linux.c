@@ -47,7 +47,7 @@ demon_lnx_attach_pid(Arena *arena, pid_t pid, DEMON_LNX_AttachNode **new_node){
     // return a new attachment node as soon as the ptrace exists. we use these nodes
     // for cleanup on failure *and* for initializing on success. either way we need
     // to see all new attachments whether or not they fully initialized correctly.
-    DEMON_LNX_AttachNode *proc_attachment = push_array_no_zero(arena, DEMON_LNX_AttachNode, 1);
+    DEMON_LNX_AttachNode *proc_attachment = new DEMON_LNX_AttachNode[1] /* no zero */;
     proc_attachment->next = 0;
     proc_attachment->pid = pid;
     *new_node = proc_attachment;
@@ -84,7 +84,7 @@ demon_lnx_executable_path_from_pid(Arena *arena, pid_t pid){
   S64 cap = PATH_MAX;
   for (S64 r = 0; r < 4; cap *= 2, r += 1){
     temp_end(restore_point);
-    buffer = push_array_no_zero(arena, U8, cap);
+    buffer = new U8[cap] /* no zero */;
     size = readlink((char*)exe_symbol_path.str, (char*)buffer, cap);
     if (size < cap){
       got_final_result = true;
@@ -586,7 +586,7 @@ demon_lnx_read_int_string(Arena *arena, int fd, int radix){
   }
   
   if (lseek(fd, -to_seek, SEEK_CUR) != -1) {
-    char *buf = push_array_no_zero(arena, char, to_read + 1);
+    char *buf = new char[to_read + 1] /* no zero */;
     read(fd, buf, to_read);
     buf[to_read] = '\0';
     integer = str8((U8*)buf, (U64)to_read);
@@ -657,7 +657,7 @@ demon_lnx_read_string(Arena *arena, int fd){
   }
   
   if (to_seek > 0 && lseek(fd, -to_seek, SEEK_CUR) != -1){
-    char *buf = push_array_no_zero(arena, char, to_read + 1);
+    char *buf = new char[to_read + 1] /* no zero */;
     read(fd, buf, to_read);
     buf[to_read] = '\0';
     result = str8((U8*)buf, to_read);
@@ -820,7 +820,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
       for (DEMON_Event *node = demon_lnx_queued_events.first;
            node != 0;
            node = node->next){
-        DEMON_Event *copy = push_array_no_zero(arena, DEMON_Event, 1);
+        DEMON_Event *copy = new DEMON_Event[1] /* no zero */;
         MemoryCopyStruct(copy, node);
         SLLQueuePush(result.first, result.last, copy);
       }
@@ -864,7 +864,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
       }
       
       // TODO(allen): per-Arch implementation of traps
-      trap_swap_bytes = push_array_no_zero(scratch.arena, U8, controls->trap_count);
+      trap_swap_bytes = /* no zero */ push_array(scratch.arena, U8, controls->trap_count);
       
       {
         DEMON_OS_Trap *trap = controls->traps;
@@ -937,7 +937,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
               if (!is_frozen){
                 errno = 0;
                 ptrace(PTRACE_CONT, (pid_t)thread->id, 0, 0);
-                DEMON_LNX_EntityNode *thread_node = push_array_no_zero(scratch.arena, DEMON_LNX_EntityNode, 1);
+                DEMON_LNX_EntityNode *thread_node = /* no zero */ push_array(scratch.arena, DEMON_LNX_EntityNode, 1);
                 SLLStackPush(resume_threads, thread_node);
                 thread_node->entity = thread;
               }
@@ -1240,7 +1240,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
                 }
               }
               if (!still_exists){
-                DEMON_LNX_EntityNode *node = push_array_no_zero(scratch.arena, DEMON_LNX_EntityNode, 1);
+                DEMON_LNX_EntityNode *node = /* no zero */ push_array(scratch.arena, DEMON_LNX_EntityNode, 1);
                 SLLQueuePush(first_unloaded, last_unloaded, node);
                 node->entity = entity;
               }
@@ -1433,7 +1433,7 @@ demon_os_launch_process(OS_LaunchOptions *options){
   char *binary = 0;
   char **args = 0;
   if (options->cmd_line.node_count > 0){
-    args = push_array_no_zero(scratch.arena, char*, options->cmd_line.node_count + 1);
+    args = /* no zero */ push_array(scratch.arena, char*, options->cmd_line.node_count + 1);
     char **arg_ptr = args;
     for (String8Node *node = options->cmd_line.first;
          node != 0;
@@ -1453,7 +1453,7 @@ demon_os_launch_process(OS_LaunchOptions *options){
   
   char **env = 0;
   if (options->env.node_count > 0){
-    env = push_array_no_zero(scratch.arena, char*, options->env.node_count + 1);
+    env = /* no zero */ push_array(scratch.arena, char*, options->env.node_count + 1);
     char **env_ptr = env;
     for (String8Node *node = options->env.first;
          node != 0;

@@ -927,7 +927,7 @@ os_machine_name(void){
          r < 4;
          cap *= 2, r += 1){
       scratch.restore();
-      buffer = push_array_no_zero(scratch.arena, U8, cap);
+      buffer = /* no zero */ push_array(scratch.arena, U8, cap);
       size = gethostname((char*)buffer, cap);
       if (size < cap){
         got_final_result = true;
@@ -938,7 +938,7 @@ os_machine_name(void){
     // save string
     if (got_final_result && size > 0){
       name.size = size;
-      name.str = push_array_no_zero(lnx_perm_arena, U8, name.size + 1);
+      name.str = new U8[name.size + 1] /* no zero */;
       MemoryCopy(name.str, buffer, name.size);
       name.str[name.size] = 0;
     }
@@ -1028,7 +1028,7 @@ os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *o
              r < 4;
              cap *= 2, r += 1){
           scratch.restore();
-          buffer = push_array_no_zero(scratch.arena, U8, cap);
+          buffer = /* no zero */ push_array(scratch.arena, U8, cap);
           size = readlink("/proc/self/exe", (char*)buffer, cap);
           if (size < cap){
             got_final_result = true;

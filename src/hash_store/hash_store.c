@@ -342,7 +342,7 @@ hs_submit_data(HS_Key key, Arena **data_arena, String8 data)
               SLLQueuePush(n->ids.first, n->ids.last, chunk);
               n->ids.chunk_count += 1;
               chunk->cap = 1024;
-              chunk->v = push_array_no_zero(n->arena, HS_ID, chunk->cap);
+              chunk->v = /* no zero */ push_array(n->arena, HS_ID, chunk->cap);
             }
             chunk->v[chunk->count] = key.id;
             chunk->count += 1;
@@ -397,7 +397,7 @@ hs_scope_open(void)
   }
   else
   {
-    scope = push_array_no_zero(hs_tctx->arena, HS_Scope, 1);
+    scope = /* no zero */ push_array(hs_tctx->arena, HS_Scope, 1);
   }
   MemoryZeroStruct(scope);
   return scope;
@@ -441,7 +441,7 @@ hs_scope_touch_node__stripe_r_guarded(HS_Scope *scope, HS_Node *node)
   }
   else
   {
-    touch = push_array_no_zero(hs_tctx->arena, HS_Touch, 1);
+    touch = /* no zero */ push_array(hs_tctx->arena, HS_Touch, 1);
   }
   MemoryZeroStruct(touch);
   touch->hash = node->hash;

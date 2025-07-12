@@ -33,7 +33,7 @@ internal PE_ExportParsePtrArray
 pe_array_from_export_list(Arena *arena, PE_ExportParseList list)
 {
   PE_ExportParsePtrArray result = {0};
-  result.v = push_array_no_zero(arena, PE_ExportParse *, list.count);
+  result.v = /* no zero */ push_array(arena, PE_ExportParse *, list.count);
   for (PE_ExportParseNode *exp = list.first; exp != 0; exp = exp->next) {
     result.v[result.count++] = &exp->data;
   }

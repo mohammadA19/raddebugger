@@ -1157,7 +1157,7 @@ rdim_compress(Arena *arena, RDIM_SerializedSectionBundle *in)
     if(should_compress)
     {
       MemoryZero(ctx.m_hashTable, sizeof(U16)*(1<<ctx.m_tableSizeBits));
-      dst->data = push_array_no_zero(arena, U8, src->encoded_size);
+      dst->data = new U8[src->encoded_size] /* no zero */;
       dst->encoded_size = rr_lzb_simple_encode_veryfast(&ctx, src->data, src->encoded_size, dst->data);
       dst->unpacked_size = src->encoded_size;
       dst->encoding = RDI_SectionEncoding_LZB;

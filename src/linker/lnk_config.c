@@ -737,7 +737,7 @@ lnk_parse_export_directive(Arena *arena, String8 directive, String8 obj_path, St
 internal LNK_MergeDirectiveNode *
 lnk_merge_directive_list_push(Arena *arena, LNK_MergeDirectiveList *list, LNK_MergeDirective data)
 {
-  LNK_MergeDirectiveNode *node = push_array_no_zero(arena, LNK_MergeDirectiveNode, 1);
+  LNK_MergeDirectiveNode *node = new LNK_MergeDirectiveNode[1] /* no zero */;
   node->data = data;
   SLLQueuePush(list->first, list->last, node);
   list->count += 1;

@@ -124,7 +124,7 @@ lnk_parse_debug_t_sections(TP_Context *tp, TP_Arena *arena, U64 obj_count, LNK_O
   // parse debug types
   LNK_ParseDebugTTaskData parse;
   parse.data_arr_arr = data_arr_arr;
-  parse.debug_t_arr  = push_array_no_zero(arena->v[0], CV_DebugT, obj_count);
+  parse.debug_t_arr  = /* no zero */ push_array(arena->v[0], CV_DebugT, obj_count);
   tp_for_parallel(tp, arena, obj_count, lnk_parse_debug_t_task, &parse);
 
   ProfEnd();
@@ -171,7 +171,7 @@ lnk_setup_pch(Arena *arena, U64 obj_count, LNK_Obj *obj_arr, CV_DebugT *debug_t_
     }
   }
 
-  LNK_PchInfo* pch_arr = push_array_no_zero(arena, LNK_PchInfo, obj_count);
+  LNK_PchInfo* pch_arr = new LNK_PchInfo[obj_count] /* no zero */;
   for (U64 obj_idx = 0; obj_idx < obj_count; ++obj_idx) {
     CV_DebugT debug_t = debug_t_arr[obj_idx];
     if (cv_debug_t_is_pch(debug_t)) {
@@ -285,7 +285,7 @@ lnk_msf_parsed_from_data_parallel(TP_Arena *arena, TP_Context *tp, String8Array 
   ProfBeginFunction();
   LNK_MsfParsedFromDataTask task = {0};
   task.data_arr                  = data_arr;
-  task.msf_parse_arr             = push_array_no_zero(arena->v[0], MSF_Parsed *, data_arr.count);
+  task.msf_parse_arr             = /* no zero */ push_array(arena->v[0], MSF_Parsed *, data_arr.count);
   tp_for_parallel(tp, arena, data_arr.count, lnk_msf_parsed_from_data_task, &task);
   ProfEnd();
   return task.msf_parse_arr;
@@ -340,7 +340,7 @@ THREAD_POOL_TASK_FUNC(lnk_get_external_leaves_task)
 internal CV_DebugT *
 lnk_merge_debug_t_and_debug_p(Arena *arena, U64 obj_count, CV_DebugT *debug_t_arr, CV_DebugT *debug_p_arr)
 {
-  CV_DebugT *result = push_array_no_zero(arena, CV_DebugT, obj_count);
+  CV_DebugT *result = new CV_DebugT[obj_count] /* no zero */;
   for (U64 obj_idx = 0; obj_idx < obj_count; ++obj_idx) {
     CV_DebugT *debug_p = &debug_p_arr[obj_idx];
     CV_DebugT *debug_t = &debug_t_arr[obj_idx];
@@ -419,10 +419,10 @@ lnk_make_code_view_input(TP_Context *tp, TP_Arena *tp_arena, LNK_IO_Flags io_fla
   ProfBegin("Sort Type Servers");
 
   U64 external_count = 0, internal_count = 0;
-  LNK_Obj   *sorted_obj_arr     = push_array_no_zero(tp_arena->v[0], LNK_Obj, obj_count);
-  CV_DebugS *sorted_debug_s_arr = push_array_no_zero(tp_arena->v[0], CV_DebugS, obj_count);
-  CV_DebugT *sorted_debug_t_arr = push_array_no_zero(tp_arena->v[0], CV_DebugT, obj_count);
-  CV_DebugT *sorted_debug_p_arr = push_array_no_zero(tp_arena->v[0], CV_DebugT, obj_count);
+  LNK_Obj   *sorted_obj_arr     = /* no zero */ push_array(tp_arena->v[0], LNK_Obj, obj_count);
+  CV_DebugS *sorted_debug_s_arr = /* no zero */ push_array(tp_arena->v[0], CV_DebugS, obj_count);
+  CV_DebugT *sorted_debug_t_arr = /* no zero */ push_array(tp_arena->v[0], CV_DebugT, obj_count);
+  CV_DebugT *sorted_debug_p_arr = /* no zero */ push_array(tp_arena->v[0], CV_DebugT, obj_count);
   for (U64 obj_idx = 0; obj_idx < obj_count; ++obj_idx) {
     B32 is_type_server = cv_debug_t_is_type_server(debug_t_arr[obj_idx]);
     if (is_type_server) {
@@ -478,8 +478,8 @@ lnk_make_code_view_input(TP_Context *tp, TP_Arena *tp_arena, LNK_IO_Flags io_fla
 
   ProfBegin("Prepare Symbol Inputs");
   U64                       total_symbol_input_count = internal_total_symbol_input_count + external_total_symbol_input_count;
-  LNK_CodeViewSymbolsInput *symbol_inputs            = push_array_no_zero(tp_arena->v[0], LNK_CodeViewSymbolsInput, total_symbol_input_count);
-  CV_SymbolListArray       *parsed_symbols           = push_array_no_zero(tp_arena->v[0], CV_SymbolListArray,       obj_count);
+  LNK_CodeViewSymbolsInput *symbol_inputs            = /* no zero */ push_array(tp_arena->v[0], LNK_CodeViewSymbolsInput, total_symbol_input_count);
+  CV_SymbolListArray       *parsed_symbols           = /* no zero */ push_array(tp_arena->v[0], CV_SymbolListArray,       obj_count);
   {
     CV_SymbolList *reserved_lists = push_array(tp_arena->v[0], CV_SymbolList, total_symbol_input_count);
     for (U64 obj_idx = 0, input_idx = 0; obj_idx < obj_count; ++obj_idx) {
@@ -543,7 +543,7 @@ lnk_make_code_view_input(TP_Context *tp, TP_Arena *tp_arena, LNK_IO_Flags io_fla
   String8Array ts_path_arr;
   Rng1U64    **external_ti_ranges;
   CV_DebugT  **external_leaves;
-  U64         *obj_to_ts_idx_arr = push_array_no_zero(tp_arena->v[0], U64, external_count);
+  U64         *obj_to_ts_idx_arr = /* no zero */ push_array(tp_arena->v[0], U64, external_count);
   U64List     *ts_to_obj_arr     = push_array(tp_arena->v[0], U64List, external_count);
   {
     HashTable             *type_server_path_ht   = hash_table_init(scratch.arena, 256);
@@ -714,9 +714,9 @@ lnk_make_code_view_input(TP_Context *tp, TP_Arena *tp_arena, LNK_IO_Flags io_fla
       LNK_GetExternalLeavesTask task = {0};
       task.ts_info_arr               = ts_info_arr;
       task.msf_parse_arr             = msf_parse_arr;
-      task.external_ti_ranges        = push_array_no_zero(tp_arena->v[0], Rng1U64 *, msf_data_arr.count);
-      task.external_leaves           = push_array_no_zero(tp_arena->v[0], CV_DebugT *, msf_data_arr.count);
-      task.is_corrupted              = push_array_no_zero(scratch.arena, B8, msf_data_arr.count);
+      task.external_ti_ranges        = /* no zero */ push_array(tp_arena->v[0], Rng1U64 *, msf_data_arr.count);
+      task.external_leaves           = /* no zero */ push_array(tp_arena->v[0], CV_DebugT *, msf_data_arr.count);
+      task.is_corrupted              = /* no zero */ push_array(scratch.arena, B8, msf_data_arr.count);
       tp_for_parallel(tp, tp_arena, msf_data_arr.count, lnk_get_external_leaves_task, &task);
       ProfEnd();
 
@@ -1267,7 +1267,7 @@ lnk_hash_cv_leaf_deep(Arena               *arena,
   };
 
   // set up root frame
-  struct stack_s *root_frame = push_array_no_zero(temp.arena, struct stack_s, 1);
+  struct stack_s *root_frame = /* no zero */ push_array(temp.arena, struct stack_s, 1);
   root_frame->next         = 0;
   root_frame->ti_info_list = ti_info_list;
   root_frame->ti_info      = ti_info_list.first;
@@ -1305,7 +1305,7 @@ lnk_hash_cv_leaf_deep(Arena               *arena,
           // do we have sub leaves?
           if (sub_ti_info_list.count) {
             // fill out new frame
-            struct stack_s *frame = push_array_no_zero(temp.arena, struct stack_s, 1);
+            struct stack_s *frame = /* no zero */ push_array(temp.arena, struct stack_s, 1);
             frame->next         = 0;
             frame->ti_info_list = sub_ti_info_list;
             frame->ti_info      = sub_ti_info_list.first;
@@ -1612,7 +1612,7 @@ THREAD_POOL_TASK_FUNC(lnk_leaf_dedup_internal_task)
     U128        leaf_hash = lnk_hash_from_leaf_ref(task->hashes, leaf_ref);
 
     if (bucket == 0) {
-      bucket = push_array_no_zero(arena, LNK_LeafBucket, 1);
+      bucket = new LNK_LeafBucket[1] /* no zero */;
     }
     bucket->leaf_ref = leaf_ref;
 
@@ -1647,7 +1647,7 @@ THREAD_POOL_TASK_FUNC(lnk_leaf_dedup_external_task)
       U128        leaf_hash = lnk_hash_from_leaf_ref(task->hashes, leaf_ref);
 
       if (bucket == 0) {
-        bucket = push_array_no_zero(arena, LNK_LeafBucket, 1);
+        bucket = new LNK_LeafBucket[1] /* no zero */;
       }
       bucket->leaf_ref = leaf_ref;
 
@@ -1709,7 +1709,7 @@ lnk_present_bucket_array_from_leaf_hash_table(TP_Context *tp, Arena *arena, LNK_
 
   LNK_LeafBucketArray result;
   result.count = sum_array_u64(tp->worker_count, task.count_arr);
-  result.v     = push_array_no_zero(arena, LNK_LeafBucket *, result.count);
+  result.v     = /* no zero */ push_array(arena, LNK_LeafBucket *, result.count);
 
   task.result     = result;
   task.offset_arr = offsets_from_counts_array_u64(scratch.arena, task.count_arr, tp->worker_count);
@@ -1899,14 +1899,14 @@ lnk_leaf_bucket_array_sort(TP_Context *tp, LNK_LeafBucketArray arr, U64 obj_coun
     task.counts_max            = (1 << 11);
     task.loc_idx_max           = arr.count;
     task.ranges                = tp_divide_work(scratch.arena, arr.count, tp->worker_count);
-    task.dst                   = push_array_no_zero(scratch.arena, LNK_LeafBucket *, arr.count);
+    task.dst                   = /* no zero */ push_array(scratch.arena, LNK_LeafBucket *, arr.count);
     task.src                   = arr.v;
 
     ProfBegin("Push Counts");
-    task.counts_arr = push_array_no_zero(scratch.arena, U32 *, tp->worker_count);
+    task.counts_arr = /* no zero */ push_array(scratch.arena, U32 *, tp->worker_count);
     for (U64 i = 0; i < tp->worker_count; ++i) {
       // zero-out happens in histogram step
-      task.counts_arr[i] = push_array_no_zero(scratch.arena, U32, task.counts_max);
+      task.counts_arr[i] = /* no zero */ push_array(scratch.arena, U32, task.counts_max);
     }
     ProfEnd();
 
@@ -2193,7 +2193,7 @@ lnk_unbucket_leaf_array(TP_Context *tp, Arena *arena, LNK_CodeViewInput *input, 
   LNK_UnbucketRawLeavesTask task = {0};
   task.input        = input;
   task.bucket_arr   = bucket_arr.v;
-  task.raw_leaf_arr = push_array_no_zero(arena, U8 *, bucket_arr.count);
+  task.raw_leaf_arr = /* no zero */ push_array(arena, U8 *, bucket_arr.count);
   task.range_arr    = tp_divide_work(scratch.arena, bucket_arr.count, tp->worker_count);
   tp_for_parallel(tp, 0, tp->worker_count, lnk_unbucket_raw_leaves_task, &task);
 
@@ -2274,13 +2274,13 @@ lnk_import_types(TP_Context *tp, TP_Arena *tp_temp, LNK_CodeViewInput *input)
     // TPI and IPI leaves in .debug$T are stored in one array (we don't move them
     // to respective arrays before this point to save on memory move)
     ProfBegin("Push Internal Hash Arrays");
-    hashes->internal_hashes = push_array_no_zero(tp_temp->v[0], U128Array *, input->internal_count);
+    hashes->internal_hashes = /* no zero */ push_array(tp_temp->v[0], U128Array *, input->internal_count);
     for (U64 obj_idx = 0; obj_idx < input->internal_count; ++obj_idx) {
       CV_DebugT debug_t = input->merged_debug_t_p_arr[obj_idx];
 
       U128Array arr = {0};
       arr.count     = debug_t.count;
-      arr.v         = push_array_no_zero(tp_temp->v[0], U128, debug_t.count);
+      arr.v         = /* no zero */ push_array(tp_temp->v[0], U128, debug_t.count);
       // :debug_zero_hash_assert
 #if BUILD_DEBUG
       MemoryZeroTyped(arr.v, arr.count);
@@ -2295,9 +2295,9 @@ lnk_import_types(TP_Context *tp, TP_Arena *tp_temp, LNK_CodeViewInput *input)
 
     // push external hash arrays
     ProfBegin("Push External Hash Arrays");
-    hashes->external_hashes = push_array_no_zero(tp_temp->v[0], U128Array *, input->type_server_count);
+    hashes->external_hashes = /* no zero */ push_array(tp_temp->v[0], U128Array *, input->type_server_count);
     for (U64 ts_idx = 0; ts_idx < input->type_server_count; ++ts_idx) {
-      hashes->external_hashes[ts_idx] = push_array_no_zero(tp_temp->v[0], U128Array, CV_TypeIndexSource_COUNT);
+      hashes->external_hashes[ts_idx] = /* no zero */ push_array(tp_temp->v[0], U128Array, CV_TypeIndexSource_COUNT);
       for (U64 ti_source = 0; ti_source < CV_TypeIndexSource_COUNT; ++ti_source) {
         U64 leaf_count = dim_1u64(input->external_ti_ranges[ts_idx][ti_source]);
         hashes->external_hashes[ts_idx][ti_source].count = leaf_count;
@@ -2756,7 +2756,7 @@ THREAD_POOL_TASK_FUNC(lnk_process_sym_data_task)
   ProfEnd();
 
   // alloc buffer
-  U8 *buffer        = push_array_no_zero(arena, U8, buffer_size);
+  U8 *buffer        = new U8[buffer_size] /* no zero */;
   U64 buffer_cursor = 0;
 
   // MS Symbol and Type Information p.4:
@@ -2856,8 +2856,8 @@ lnk_process_c13_data(TP_Context *tp, TP_Arena *arena, U64 obj_count, CV_DebugS *
   task.debug_s_arr                = debug_s_arr;
   task.msf                        = msf;
   task.dbi_mod_arr                = mod_arr;
-  task.c13_data_arr               = push_array_no_zero(arena->v[0], String8List, obj_count);
-  task.source_file_names_list_arr = push_array_no_zero(arena->v[0], String8List, obj_count);
+  task.c13_data_arr               = /* no zero */ push_array(arena->v[0], String8List, obj_count);
+  task.source_file_names_list_arr = /* no zero */ push_array(arena->v[0], String8List, obj_count);
   task.string_data_base_offset    = string_data_base_offset;
   task.string_ht                  = string_ht;
   tp_for_parallel(tp, arena, obj_count, lnk_process_c13_data_task, &task);
@@ -2937,7 +2937,7 @@ lnk_hash_cv_symbol_ptr_arr(TP_Context *tp, Arena *arena, CV_SymbolPtrArray arr)
   Temp scratch = scratch_begin(&arena, 1);
 
   LNK_CvSymbolPtrArrayHasher task = {0};
-  task.hash_arr                   = push_array_no_zero(arena, U64, arr.count);
+  task.hash_arr                   = new U64[arr.count] /* no zero */;
   task.arr                        = arr.v;
   task.range_arr = tp_divide_work(scratch.arena, arr.count, tp->worker_count);
   tp_for_parallel(tp, 0, tp->worker_count, lnk_cv_symbol_ptr_array_hasher, &task);
@@ -2960,7 +2960,7 @@ THREAD_POOL_TASK_FUNC(lnk_push_dbi_sec_contrib_task)
   LNK_Obj                        *obj     = &task->obj_arr[obj_idx];
 
   COFF_SectionHeader        *obj_section_table = (COFF_SectionHeader *)str8_substr(obj->data, obj->header.section_table_range).str;
-  PDB_DbiSectionContribNode *sc_arr            = push_array_no_zero(arena, PDB_DbiSectionContribNode, obj->header.section_count_no_null);
+  PDB_DbiSectionContribNode *sc_arr            = /* no zero */ push_array(arena, PDB_DbiSectionContribNode, obj->header.section_count_no_null);
   U64                        sc_count          = 0;
   
   for (U64 sect_idx = 0; sect_idx < obj->header.section_count_no_null; sect_idx += 1) {
@@ -3033,7 +3033,7 @@ THREAD_POOL_TASK_FUNC(lnk_build_pdb_public_symbols_defined_task)
   LNK_SymbolHashTrieChunkList   chunk_list = task->chunk_lists[task_id];
 
   for (LNK_SymbolHashTrieChunk *chunk = chunk_list.first; chunk != 0; chunk = chunk->next) {
-    CV_SymbolNode *nodes = push_array_no_zero(arena, CV_SymbolNode, chunk->count);
+    CV_SymbolNode *nodes = new CV_SymbolNode[chunk->count] /* no zero */;
 
     for (U64 i = 0, node_idx = 0; i < chunk->count; ++i) {
       LNK_Symbol *symbol = chunk->v[i].symbol;
@@ -5314,7 +5314,7 @@ THREAD_POOL_TASK_FUNC(lnk_collect_obj_virtual_ranges_task)
 
   RDIB_Unit *dst        = &task->units[unit_chunk_idx].v[local_unit_idx];
   dst->virt_range_count = 0;
-  dst->virt_ranges      = push_array_no_zero(arena, Rng1U64, obj->header.section_count_no_null);
+  dst->virt_ranges      = /* no zero */ push_array(arena, Rng1U64, obj->header.section_count_no_null);
 
   COFF_SectionHeader *section_table = (COFF_SectionHeader *)str8_substr(obj->data, obj->header.section_table_range).str;
 

@@ -4,7 +4,7 @@
 internal COFF_LibWriterSymbolNode *
 coff_lib_writer_symbol_list_push(Arena *arena, COFF_LibWriterSymbolList *list, COFF_LibWriterSymbol symbol)
 {
-  COFF_LibWriterSymbolNode *node = push_array_no_zero(arena, COFF_LibWriterSymbolNode, 1);
+  COFF_LibWriterSymbolNode *node = new COFF_LibWriterSymbolNode[1] /* no zero */;
   node->next = 0;
   node->data = symbol;
   SLLQueuePush(list->first, list->last, node);
@@ -15,7 +15,7 @@ coff_lib_writer_symbol_list_push(Arena *arena, COFF_LibWriterSymbolList *list, C
 internal COFF_LibWriterMemberNode *
 coff_lib_writer_member_list_push(Arena *arena, COFF_LibWriterMemberList *list, COFF_LibWriterMember member)
 {
-  COFF_LibWriterMemberNode *node = push_array_no_zero(arena, COFF_LibWriterMemberNode, 1);
+  COFF_LibWriterMemberNode *node = new COFF_LibWriterMemberNode[1] /* no zero */;
   node->next = 0;
   node->data = member;
   SLLQueuePush(list->first, list->last, node);
@@ -26,7 +26,7 @@ coff_lib_writer_member_list_push(Arena *arena, COFF_LibWriterMemberList *list, C
 internal COFF_LibWriterSymbol *
 coff_lib_writer_symbol_array_from_list(Arena *arena, COFF_LibWriterSymbolList list)
 {
-  COFF_LibWriterSymbol *arr = push_array_no_zero(arena, COFF_LibWriterSymbol, list.count + 2);
+  COFF_LibWriterSymbol *arr = new COFF_LibWriterSymbol[list.count + 2] /* no zero */;
   COFF_LibWriterSymbol *ptr = arr + 1;
   for (COFF_LibWriterSymbolNode *i = list.first; i != 0; i = i->next, ptr += 1) {
     ptr->name       = push_str8_copy(arena, i->data.name);
@@ -40,7 +40,7 @@ coff_lib_writer_symbol_array_from_list(Arena *arena, COFF_LibWriterSymbolList li
 internal COFF_LibWriterMember *
 coff_lib_writer_member_array_from_list(Arena *arena, COFF_LibWriterMemberList list)
 {
-  COFF_LibWriterMember *arr = push_array_no_zero(arena, COFF_LibWriterMember, list.count);
+  COFF_LibWriterMember *arr = new COFF_LibWriterMember[list.count] /* no zero */;
   COFF_LibWriterMember *ptr = arr;
   for (COFF_LibWriterMemberNode *i = list.first; i != 0; i = i->next, ptr += 1) {
     ptr->name = push_str8_copy(arena, i->data.name);
@@ -187,7 +187,7 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
   }
 
   // serialize members
-  U64         *member_offsets   = push_array_no_zero(scratch.arena, U64, member_count);
+  U64         *member_offsets   = /* no zero */ push_array(scratch.arena, U64, member_count);
   String8List  long_names_list  = {0};
   String8List  member_data_list = {0};
   {
@@ -249,7 +249,7 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
   }
 
   // write symbol name buffer
-  U8 *name_buffer = push_array_no_zero(scratch.arena, U8, name_buffer_size);
+  U8 *name_buffer = /* no zero */ push_array(scratch.arena, U8, name_buffer_size);
   {
     U64 name_cursor = 0;
     for (COFF_LibWriterSymbol *ptr = &symbols[0], *opl = ptr + symbols_count; ptr < opl; ptr += 1) {
@@ -284,8 +284,8 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
     U32 member_count32 = safe_cast_u32(member_count);
     U32 symbol_count32 = safe_cast_u32(symbols_count);
 
-    U32 *member_off32_arr = push_array_no_zero(scratch.arena, U32, member_count);
-    U16 *member_idx16_arr = push_array_no_zero(scratch.arena, U16, symbols_count);
+    U32 *member_off32_arr = /* no zero */ push_array(scratch.arena, U32, member_count);
+    U16 *member_idx16_arr = /* no zero */ push_array(scratch.arena, U16, symbols_count);
 
     // write member offset array
     for (U64 member_idx = 0; member_idx < member_count; member_idx += 1) {
@@ -326,7 +326,7 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
   // first linker member (obsolete, but kept for compatability reasons)
   {
     U32  symbol_count_be  = from_be_u32(symbols_count);
-    U32 *member_off32_arr = push_array_no_zero(scratch.arena, U32, symbols_count);
+    U32 *member_off32_arr = /* no zero */ push_array(scratch.arena, U32, symbols_count);
 
     for (U64 symbol_idx = 0; symbol_idx < symbols_count; symbol_idx += 1) {
       COFF_LibWriterSymbol *symbol = &symbols[symbol_idx];

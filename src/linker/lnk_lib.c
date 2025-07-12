@@ -81,7 +81,7 @@ lnk_lib_from_data(Arena *arena, String8 data, String8 path, LNK_Lib *lib_out)
     
     symbol_count   = second_member.symbol_count;
     string_table   = second_member.string_table;
-    member_off_arr = push_array_no_zero(arena, U32, symbol_count);
+    member_off_arr = new U32[symbol_count] /* no zero */;
     
     // decompress member offsets
     for (U64 symbol_idx = 0; symbol_idx < symbol_count; symbol_idx += 1) {

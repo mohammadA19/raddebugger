@@ -253,8 +253,8 @@ lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, LNK_IO_Flags
     Temp scratch = scratch_begin(&arena,1);
 
     reader.path_arr       = path_arr;
-    reader.handle_arr     = push_array_no_zero(scratch.arena, OS_Handle, path_arr.count);
-    reader.size_arr       = push_array_no_zero(scratch.arena, U64, path_arr.count);
+    reader.handle_arr     = /* no zero */ push_array(scratch.arena, OS_Handle, path_arr.count);
+    reader.size_arr       = /* no zero */ push_array(scratch.arena, U64, path_arr.count);
 
     // open handles and get sizes
     tp_for_parallel(tp, 0, path_arr.count, lnk_data_size_from_file_path_task, &reader);
@@ -263,14 +263,14 @@ lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, LNK_IO_Flags
     U64 total_data_size = sum_array_u64(path_arr.count, reader.size_arr);
 
     // assign offsets into file buffer
-    U64 *off_arr = push_array_no_zero(scratch.arena, U64, path_arr.count);
+    U64 *off_arr = /* no zero */ push_array(scratch.arena, U64, path_arr.count);
     MemoryCopyTyped(off_arr, reader.size_arr, path_arr.count);
     counts_to_offsets_array_u64(path_arr.count, off_arr);
 
     reader.io_flags = io_flags;
     reader.data_arr = str8_array_reserve(arena, path_arr.count);
     reader.off_arr  = off_arr;
-    reader.buffer   = push_array_no_zero(arena, U8, total_data_size);
+    reader.buffer   = new U8[total_data_size] /* no zero */;
 
     // read files and close handles
     tp_for_parallel(tp, 0, path_arr.count, lnk_data_from_file_path_task, &reader);

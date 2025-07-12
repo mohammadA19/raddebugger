@@ -82,7 +82,7 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
     // }
     
     //- parse stream directory
-    U8 *directory_buf = push_array_no_zero(arena, U8, directory_size);
+    U8 *directory_buf = new U8[directory_size] /* no zero */;
     B32 got_directory = 1;
     
     {
@@ -178,7 +178,7 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
       
       // set output buffer and count
       stream_count = stream_count__inner;
-      streams      = push_array_no_zero(arena, MSF_RawStream, stream_count);
+      streams      = new MSF_RawStream[stream_count] /* no zero */;
       
       // iterate sizes and indices in lock step
       U32            entry_cursor = all_stream_entries_off;
@@ -234,7 +234,7 @@ msf_data_from_stream_number(Arena *arena, String8 msf_data, MSF_RawStreamTable *
   if(sn < st->stream_count)
   {
     MSF_RawStream stream = st->streams[sn];
-    U8 *stream_buf     = push_array_no_zero(arena, U8, stream.size);
+    U8 *stream_buf     = new U8[stream.size] /* no zero */;
     U8 *stream_out_ptr = stream_buf;
     for (U32 i = 0; i < stream.page_count; ++i) {
       U64 page_idx;
@@ -280,12 +280,12 @@ msf_parsed_from_data(Arena *arena, String8 msf_data)
   
   MSF_RawStreamTable *st = msf_raw_stream_table_from_data(scratch.arena, msf_data);
   if (st) {
-    String8 *streams = push_array_no_zero(arena, String8, st->stream_count);
+    String8 *streams = new String8[st->stream_count] /* no zero */;
     for (MSF_StreamNumber sn = 0; sn < st->stream_count; ++sn) {
       streams[sn] = msf_data_from_stream_number(arena, msf_data, st, sn);
     }
     
-    result               = push_array_no_zero(arena, MSF_Parsed, 1);
+    result               = new MSF_Parsed[1] /* no zero */;
     result->streams      = streams;
     result->stream_count = st->stream_count;
     result->page_size   = st->page_size;

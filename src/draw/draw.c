@@ -47,7 +47,7 @@ dr_hash_from_string(String8 string)
 internal void
 dr_fstrs_push(Arena *arena, DR_FStrList *list, DR_FStr *str)
 {
-  DR_FStrNode *n = push_array_no_zero(arena, DR_FStrNode, 1);
+  DR_FStrNode *n = new DR_FStrNode[1] /* no zero */;
   MemoryCopyStruct(&n->v, str);
   SLLQueuePush(list->first, list->last, n);
   list->node_count += 1;

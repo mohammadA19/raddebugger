@@ -103,7 +103,7 @@ e_interpret(String8 bytecode)
   
   //- rjf: allocate stack & "registers"
   U64 stack_cap = 128; // TODO(rjf): scan bytecode; determine maximum stack depth
-  E_Value *stack = push_array_no_zero(scratch.arena, E_Value, stack_cap);
+  E_Value *stack = /* no zero */ push_array(scratch.arena, E_Value, stack_cap);
   U64 stack_count = 0;
   E_Space selected_space = {0};
   if(bytecode.size != 0)

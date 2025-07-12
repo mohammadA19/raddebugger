@@ -96,7 +96,7 @@ dw_input_from_elf_section_table(Arena *arena, String8 raw_image, ELF_BinInfo *bi
           String8 comp_data = str8_skip(comp_data_with_header, chdr_size);
           
           // push buffer for the decompressor
-          U8  *decomp_buffer      = push_array_no_zero_aligned(arena, U8, chdr64.ch_size, chdr64.ch_addr_align);
+          U8  *decomp_buffer      = new U8[chdr64.ch_size] /* align: chdr64.ch_addr_align */;
           U64  actual_decomp_size = 0;
           
           // decompress

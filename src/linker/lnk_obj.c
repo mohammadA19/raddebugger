@@ -14,7 +14,7 @@ lnk_error_obj(LNK_ErrorCode code, LNK_Obj *obj, char *fmt, ...)
 internal LNK_Obj **
 lnk_array_from_obj_list(Arena *arena, LNK_ObjList list)
 {
-  LNK_Obj **arr = push_array_no_zero(arena, LNK_Obj *, list.count);
+  LNK_Obj **arr = /* no zero */ push_array(arena, LNK_Obj *, list.count);
   U64 idx = 0;
   for (LNK_ObjNode *node = list.first; node != 0; node = node->next, ++idx) {
     arr[idx] = &node->data;
@@ -137,7 +137,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
   //
   U32 *comdats;
   {
-    comdats = push_array_no_zero(arena, U32, header.section_count_no_null);
+    comdats = new U32[header.section_count_no_null] /* no zero */;
     MemorySet(comdats, 0xff, header.section_count_no_null * sizeof(comdats[0]));
 
     String8 string_table = str8_substr(input->data, header.string_table_range);
@@ -567,7 +567,7 @@ lnk_parse_msvc_linker_directive(Arena *arena, LNK_Obj *obj, LNK_DirectiveInfo *d
       continue;
     }
 
-    LNK_Directive *directive = push_array_no_zero(arena, LNK_Directive, 1);
+    LNK_Directive *directive = new LNK_Directive[1] /* no zero */;
     directive->next          = 0;
     directive->id            = str8_cstring(cmd_switch->name);
     directive->value_list    = str8_list_copy(arena, &opt->value_strings);

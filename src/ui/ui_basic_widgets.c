@@ -1155,7 +1155,7 @@ ui_scroll_list_row_block_chunk_list_push(Arena *arena, UI_ScrollListRowBlockChun
   {
     n = push_array(arena, UI_ScrollListRowBlockChunkNode, 1);
     n->cap = cap;
-    n->v = push_array_no_zero(arena, UI_ScrollListRowBlock, n->cap);
+    n->v = new UI_ScrollListRowBlock[n->cap] /* no zero */;
     SLLQueuePush(list->first, list->last, n);
     list->chunk_count += 1;
   }
@@ -1169,7 +1169,7 @@ ui_scroll_list_row_block_array_from_chunk_list(Arena *arena, UI_ScrollListRowBlo
 {
   UI_ScrollListRowBlockArray array = {0};
   array.count = list->total_count;
-  array.v = push_array_no_zero(arena, UI_ScrollListRowBlock, array.count);
+  array.v = new UI_ScrollListRowBlock[array.count] /* no zero */;
   U64 idx = 0;
   for(UI_ScrollListRowBlockChunkNode *n = list->first; n != 0; n = n->next)
   {

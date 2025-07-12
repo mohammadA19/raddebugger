@@ -39,7 +39,7 @@ e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_
     node = push_array(arena, E_TokenChunkNode, 1);
     SLLQueuePush(list->first, list->last, node);
     node->cap = chunk_size;
-    node->v = push_array_no_zero(arena, E_Token, node->cap);
+    node->v = new E_Token[node->cap] /* no zero */;
     list->node_count += 1;
   }
   MemoryCopyStruct(&node->v[node->count], token);
@@ -52,7 +52,7 @@ e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list)
 {
   E_TokenArray array = {0};
   array.count = list->total_count;
-  array.v = push_array_no_zero(arena, E_Token, array.count);
+  array.v = new E_Token[array.count] /* no zero */;
   U64 idx = 0;
   for(E_TokenChunkNode *node = list->first; node != 0; node = node->next)
   {

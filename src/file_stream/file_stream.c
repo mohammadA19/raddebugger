@@ -23,7 +23,7 @@ fs_big_hash_from_string_range(String8 string, Rng1U64 range)
 {
   Temp scratch = scratch_begin(0, 0);
   U64 buffer_size = string.size + sizeof(U64)*2;
-  U8 *buffer = push_array_no_zero(scratch.arena, U8, buffer_size);
+  U8 *buffer = /* no zero */ push_array(scratch.arena, U8, buffer_size);
   MemoryCopy(buffer, string.str, string.size);
   MemoryCopy(buffer + string.size, &range.min, sizeof(range.min));
   MemoryCopy(buffer + string.size + sizeof(range.min), &range.max, sizeof(range.max));
@@ -53,7 +53,7 @@ fs_init(void)
     fs_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
   }
   fs_shared->u2s_ring_size = KB(64);
-  fs_shared->u2s_ring_base = push_array_no_zero(arena, U8, fs_shared->u2s_ring_size);
+  fs_shared->u2s_ring_base = new U8[fs_shared->u2s_ring_size] /* no zero */;
   fs_shared->u2s_ring_cv = os_condition_variable_alloc();
   fs_shared->u2s_ring_mutex = os_mutex_alloc();
   fs_shared->detector_thread = os_thread_launch(fs_detector_thread__entry_point, 0, 0);

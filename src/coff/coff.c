@@ -344,7 +344,7 @@ coff_make_import_header(Arena            *arena,
   
   // alloc memory
   U64  buffer_size = sizeof(header) + header.data_size;
-  U8  *buffer      = push_array_no_zero(arena, U8, buffer_size);
+  U8  *buffer      = new U8[buffer_size] /* no zero */;
   
   // copy header
   MemoryCopy(buffer, &header, sizeof(header));

@@ -552,7 +552,7 @@ pdb_gsi_from_data(Arena *arena, String8 data){
           U32 num_steps = prev_n - n;
           
           // fill this bucket
-          U32 *bucket_offs = push_array_aligned(arena, U32, num_steps, 4);
+          U32 *bucket_offs = new U32[num_steps] /* align: 4 */;
           for (U32 j = num_steps; j > 0;){
             j -= 1;
             // * The "- 1" is more sloppy PDB magic.
@@ -648,7 +648,7 @@ pdb_comp_unit_array_from_data(Arena *arena, String8 data){
     U64 after_name2_off = name2_off + name2.size + 1;
     
     // save mod info
-    PDB_CompUnitNode *node = push_array_no_zero(arena, PDB_CompUnitNode, 1);
+    PDB_CompUnitNode *node = new PDB_CompUnitNode[1] /* no zero */;
     SLLQueuePush(first, last, node);
     count += 1;
     node->unit.sn = header->sn;
@@ -686,7 +686,7 @@ pdb_comp_unit_array_from_data(Arena *arena, String8 data){
   
   
   // fill result
-  PDB_CompUnit **units = push_array_no_zero(arena, PDB_CompUnit*, count);
+  PDB_CompUnit **units = /* no zero */ push_array(arena, PDB_CompUnit*, count);
   {
     U64 idx = 0;
     for (PDB_CompUnitNode *node = first;
@@ -734,7 +734,7 @@ pdb_comp_unit_contribution_array_from_data(Arena *arena, String8 data, COFF_Sect
     
     // allocate ranges
     U64 max_count = (data.size - array_off)/item_size;
-    contributions = push_array_no_zero(arena, PDB_CompUnitContribution, max_count);
+    contributions = new PDB_CompUnitContribution[max_count] /* no zero */;
     
     // binary section info
     U64 section_count = sections.count;
@@ -982,7 +982,7 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
   
   
   // assemble result
-  CV_TypeId *itypes = push_array_aligned(arena, CV_TypeId, count, 8);
+  CV_TypeId *itypes = new CV_TypeId[count] /* align: 8 */;
   {
     CV_TypeId *itype_ptr = itypes;
     for (struct Chain *node = first;

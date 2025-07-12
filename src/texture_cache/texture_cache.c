@@ -38,7 +38,7 @@ tex_init(void)
     tex_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
   tex_shared->u2x_ring_size = KB(64);
-  tex_shared->u2x_ring_base = push_array_no_zero(arena, U8, tex_shared->u2x_ring_size);
+  tex_shared->u2x_ring_base = new U8[tex_shared->u2x_ring_size] /* no zero */;
   tex_shared->u2x_ring_cv = os_condition_variable_alloc();
   tex_shared->u2x_ring_mutex = os_mutex_alloc();
   tex_shared->evictor_thread = os_thread_launch(tex_evictor_thread__entry_point, 0, 0);
@@ -72,7 +72,7 @@ tex_scope_open(void)
   }
   else
   {
-    scope = push_array_no_zero(tex_tctx->arena, TEX_Scope, 1);
+    scope = /* no zero */ push_array(tex_tctx->arena, TEX_Scope, 1);
   }
   MemoryZeroStruct(scope);
   return scope;
@@ -118,7 +118,7 @@ tex_scope_touch_node__stripe_r_guarded(TEX_Scope *scope, TEX_Node *node)
   }
   else
   {
-    touch = push_array_no_zero(tex_tctx->arena, TEX_Touch, 1);
+    touch = /* no zero */ push_array(tex_tctx->arena, TEX_Touch, 1);
   }
   MemoryZeroStruct(touch);
   touch->hash = node->hash;
@@ -176,7 +176,7 @@ tex_texture_from_hash_topology(TEX_Scope *scope, U128 hash, TEX_Topology topolog
           }
           else
           {
-            node = push_array_no_zero(stripe->arena, TEX_Node, 1);
+            node = /* no zero */ push_array(stripe->arena, TEX_Node, 1);
           }
           MemoryZeroStruct(node);
           DLLPushBack(slot->first, slot->last, node);

@@ -90,7 +90,7 @@ pdb_hash_table_from_data(PDB_HashTable *ht,
     B32 is_deleted_bits_ok = deleted_bits.count <= AlignPow2(max, 32);
     if (is_count_ok && is_load_factor_ok && is_present_bits_ok && is_deleted_bits_ok) {
       Arena *arena = arena_alloc();
-      PDB_HashTableBucket *bucket_arr = push_array_no_zero(arena, PDB_HashTableBucket, max);
+      PDB_HashTableBucket *bucket_arr = new PDB_HashTableBucket[max] /* no zero */;
       U32Array present_bits_new = bit_array_init32(arena, max);
       U32Array deleted_bits_new = bit_array_init32(arena, max);
       MemoryCopyTyped(&present_bits_new.v[0], &present_bits.v[0], present_bits.count);
@@ -570,11 +570,11 @@ pdb_strtab_open(PDB_StringTable *strtab, MSF_Context *msf, MSF_StreamNumber sn)
           offset_buffer.size == sizeof(U32)*bucket_max &&
           bucket_count <= bucket_max) {
         // init string table
-        ibucket_array = push_array_no_zero(arena, U32, bucket_max);
-        bucket_array  = push_array_no_zero(arena, PDB_StringTableBucket *, bucket_max);
+        ibucket_array = new U32[bucket_max] /* no zero */;
+        bucket_array  = /* no zero */ push_array(arena, PDB_StringTableBucket *, bucket_max);
 
         // open buckets
-        PDB_StringTableBucket *node_arr = push_array_no_zero(arena, PDB_StringTableBucket, bucket_count);
+        PDB_StringTableBucket *node_arr = new PDB_StringTableBucket[bucket_count] /* no zero */;
         U8  *string_buffer_ptr = string_buffer.str;
         U8  *string_buffer_opl = string_buffer.str + string_buffer.size;
         U32 *offset_array      = (U32*)offset_buffer.str;
@@ -656,7 +656,7 @@ pdb_strtab_build(PDB_StringTable *strtab, MSF_Context *msf, MSF_StreamNumber sn)
   Temp scratch = scratch_begin(0,0);
 
   // serialize bucket data
-  U8  *string_buffer     = push_array_no_zero(scratch.arena, U8, strtab->size);
+  U8  *string_buffer     = /* no zero */ push_array(scratch.arena, U8, strtab->size);
   U32 *bucket_offset_arr = push_array(scratch.arena, U32, strtab->bucket_max);
 
   for (U32 bucket_idx = 0; bucket_idx < strtab->bucket_max; bucket_idx += 1) {
@@ -758,7 +758,7 @@ pdb_strtab_add_cv_string_hash_table(PDB_StringTable *strtab, CV_StringHashTable 
   pdb_strtab_grow(strtab, string_ht.total_insert_count);
 
   // upfront push buckets
-  PDB_StringTableBucket *buckets = push_array_no_zero(strtab->arena, PDB_StringTableBucket, string_ht.total_insert_count);
+  PDB_StringTableBucket *buckets = /* no zero */ push_array(strtab->arena, PDB_StringTableBucket, string_ht.total_insert_count);
 
   U64 base_offset = strtab->size;
 
@@ -1251,9 +1251,9 @@ pdb_type_server_build(TP_Context *tp, PDB_TypeServer *ts, PDB_StringTable *strta
   ProfBeginDynamic("Prepare Buffers [Leaf Count: %llu]", ts->leaf_list.node_count);
 
   U64             hint_count    = CeilIntegerDiv(ts->leaf_list.node_count, PDB_TYPE_HINT_STEP);
-  PDB_TpiOffHint *hint_arr      = push_array_no_zero(scratch.arena, PDB_TpiOffHint, hint_count);
-  String8Node   **lf_arr        = push_array_no_zero(scratch.arena, String8Node *, tp->worker_count);
-  U64            *lf_cursor_arr = push_array_no_zero(scratch.arena, U64, tp->worker_count);
+  PDB_TpiOffHint *hint_arr      = /* no zero */ push_array(scratch.arena, PDB_TpiOffHint, hint_count);
+  String8Node   **lf_arr        = /* no zero */ push_array(scratch.arena, String8Node *, tp->worker_count);
+  U64            *lf_cursor_arr = /* no zero */ push_array(scratch.arena, U64, tp->worker_count);
   Rng1U64        *lf_range_arr  = tp_divide_work(scratch.arena, ts->leaf_list.node_count, tp->worker_count);
 
   U64 lf_buf_size = 0;
@@ -1281,7 +1281,7 @@ pdb_type_server_build(TP_Context *tp, PDB_TypeServer *ts, PDB_StringTable *strta
   write_types_task.lf_arr        = lf_arr;
   write_types_task.lf_range_arr  = lf_range_arr;
   write_types_task.lf_cursor_arr = lf_cursor_arr;
-  write_types_task.lf_buf        = push_array_no_zero(scratch.arena, U8, lf_buf_size);
+  write_types_task.lf_buf        = /* no zero */ push_array(scratch.arena, U8, lf_buf_size);
   write_types_task.lf_buf_size   = lf_buf_size;
   tp_for_parallel(tp, 0, tp->worker_count, pdb_write_types_task, &write_types_task);
 
@@ -1385,7 +1385,7 @@ pdb_type_server_push_udt_arr(PDB_TypeServer *ts, U64 count, U32 *hash_arr, Strin
   }
 #endif
   
-  PDB_TypeBucket *bucket_arr = push_array_no_zero(ts->arena, PDB_TypeBucket, count);
+  PDB_TypeBucket *bucket_arr = /* no zero */ push_array(ts->arena, PDB_TypeBucket, count);
 
   for (U64 leaf_idx = 0; leaf_idx < count; leaf_idx += 1) {
     U32     hash     = hash_arr[leaf_idx];
@@ -1503,7 +1503,7 @@ pdb_type_server_push_parallel(TP_Context *tp, PDB_TypeServer *type_server, CV_De
   ProfBegin("Push UDT Leaves");
   U64 total_udt_count = sum_array_u64(tp->worker_count, task.udt_counts);
   task.udt_offsets = offsets_from_counts_array_u64(scratch.arena, task.udt_counts, tp->worker_count);
-  task.udt_buckets = push_array_no_zero(type_server->arena, PDB_TypeBucket, total_udt_count);
+  task.udt_buckets = /* no zero */ push_array(type_server->arena, PDB_TypeBucket, total_udt_count);
   tp_for_parallel(tp, 0, tp->worker_count, pdb_push_udt_leaf_task, &task);
   ProfEnd();
 
@@ -1765,7 +1765,7 @@ pdb_info_open(MSF_Context *msf, MSF_StreamNumber sn)
     
   // fill out info
   Arena *arena = arena_alloc();
-  PDB_InfoContext *info = push_array_no_zero(arena, PDB_InfoContext, 1);
+  PDB_InfoContext *info = new PDB_InfoContext[1] /* no zero */;
   info->arena               = arena;
   info->time_stamp          = parse.time_stamp;
   info->age                 = parse.age;
@@ -2342,13 +2342,13 @@ gsi_build_ex(TP_Context *tp, Arena *arena, PDB_GsiContext *gsi, U64 symbol_data_
 
   // prepare serial buffer
   U64 buffer_size = sum_array_u64(gsi->bucket_count, serial_task.bucket_size_arr);
-  serial_task.buffer         = push_array_no_zero(arena, U8, buffer_size);
+  serial_task.buffer         = new U8[buffer_size] /* no zero */;
   serial_task.bucket_off_arr = push_array_copy_u64(scratch.arena, serial_task.bucket_size_arr, gsi->bucket_count);
   counts_to_offsets_array_u64(gsi->bucket_count, serial_task.bucket_off_arr);
 
   // prepare GSI records
-  serial_task.sort_record_arr_arr  = push_array_no_zero(scratch.arena, PDB_GsiSortRecord *, gsi->bucket_count);
-  serial_task.sort_record_arr      = push_array_no_zero(arena, PDB_GsiSortRecord, gsi->symbol_count);
+  serial_task.sort_record_arr_arr  = /* no zero */ push_array(scratch.arena, PDB_GsiSortRecord *, gsi->bucket_count);
+  serial_task.sort_record_arr      = new PDB_GsiSortRecord[gsi->symbol_count] /* no zero */;
   for (U64 bucket_idx = 0, cursor = 0; bucket_idx < gsi->bucket_count; bucket_idx += 1) {
     serial_task.sort_record_arr_arr[bucket_idx] = serial_task.sort_record_arr + cursor;
     cursor += gsi->bucket_arr[bucket_idx].count;
@@ -2364,8 +2364,8 @@ gsi_build_ex(TP_Context *tp, Arena *arena, PDB_GsiContext *gsi, U64 symbol_data_
   U64             compressed_offset_count = 0;
   U64             hash_record_count       = gsi->symbol_count;
   U32            *bitmap                  = push_array(arena, U32, bitmap_count);
-  U32            *compressed_offset_arr   = push_array_no_zero(arena, U32, gsi->bucket_count);
-  PDB_GsiHashRecord *hash_record_arr      = push_array_no_zero(arena, PDB_GsiHashRecord, hash_record_count);
+  U32            *compressed_offset_arr   = new U32[gsi->bucket_count] /* no zero */;
+  PDB_GsiHashRecord *hash_record_arr      = new PDB_GsiHashRecord[hash_record_count] /* no zero */;
 
   // offsets for symbol stream are shifted by one to tell apart from null and zero (see GSI1::fixSymRecs) 
   U64 offset_cursor = (1 + symbol_data_base);
@@ -2457,7 +2457,7 @@ gsi_push(PDB_GsiContext *gsi, CV_Symbol *symbol)
   String8 name = cv_name_from_symbol(symbol->kind, symbol->data);
   U32     hash = gsi_hash(gsi, name);
 
-  CV_SymbolNode *node = push_array_no_zero(gsi->arena, CV_SymbolNode, 1);
+  CV_SymbolNode *node = /* no zero */ push_array(gsi->arena, CV_SymbolNode, 1);
   node->next = 0;
   node->prev = 0;
   node->data = *symbol;
@@ -2492,7 +2492,7 @@ gsi_push_many_arr(TP_Context *tp, PDB_GsiContext *gsi, U64 count, CV_SymbolNode 
   task.gsi                  = gsi;
   task.ranges               = tp_divide_work(scratch.arena, count, tp->worker_count);
   task.symbols              = symbols;
-  task.hashes               = push_array_no_zero(scratch.arena, U32, count);
+  task.hashes               = /* no zero */ push_array(scratch.arena, U32, count);
   tp_for_parallel(tp, 0, tp->worker_count, gsi_symbol_hasher_task, &task);
   ProfEnd();
 
@@ -2592,7 +2592,7 @@ psi_build(TP_Context *tp, PDB_PsiContext *psi, MSF_Context *msf, MSF_StreamNumbe
   ProfBegin("Offset Fill");
   U64 addr_map_count = gsi_build.hash_record_count;
   U64 addr_map_size = addr_map_count * sizeof(U32);
-  U32 *addr_map     = push_array_no_zero(scratch.arena, U32, addr_map_count);
+  U32 *addr_map     = /* no zero */ push_array(scratch.arena, U32, addr_map_count);
   for (U64 i = 0; i < addr_map_count; i += 1) {
     addr_map[i] = gsi_build.sort_record_arr[i].offset;
   }
@@ -2651,7 +2651,7 @@ dbi_sec_contrib_list_push_node(PDB_DbiSectionContribList *list, PDB_DbiSectionCo
 internal PDB_DbiSectionContribNode *
 dbi_sec_contrib_list_push(Arena *arena, PDB_DbiSectionContribList *list)
 {
-  PDB_DbiSectionContribNode *node = push_array_no_zero(arena, PDB_DbiSectionContribNode, 1);
+  PDB_DbiSectionContribNode *node = new PDB_DbiSectionContribNode[1] /* no zero */;
   node->next = 0;
   dbi_sec_contrib_list_push_node(list, node);
   return node;
@@ -2809,7 +2809,7 @@ dbi_open_sec_contrib(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, PDB_Db
       MSF_UInt sec_con_read = msf_stream_read_array(msf, sn, &src_contrib_array[0], contrib_count);
       Assert(sec_con_read == sizeof(src_contrib_array[0]) * contrib_count);
       
-      PDB_DbiSectionContribNode *dst_contrib_array = push_array_no_zero(arena, PDB_DbiSectionContribNode, contrib_count);
+      PDB_DbiSectionContribNode *dst_contrib_array = new PDB_DbiSectionContribNode[contrib_count] /* no zero */;
       for (U64 icontrib = 0; icontrib < contrib_count; icontrib += 1) {
         dst_contrib_array[icontrib].next = 0;
         dst_contrib_array[icontrib].data = src_contrib_array[icontrib];
@@ -2979,7 +2979,7 @@ dbi_build_file_info(Arena *arena, TP_Context *tp, PDB_DbiModuleList mod_list, CV
   
   U64             total_source_file_count = 0;
   U64             mod_arr_count           = 0;
-  PDB_DbiModule **mod_arr                 = push_array_no_zero(scratch.arena, PDB_DbiModule *, mod_list.count);
+  PDB_DbiModule **mod_arr                 = /* no zero */ push_array(scratch.arena, PDB_DbiModule *, mod_list.count);
 
   for (PDB_DbiModule *mod = mod_list.first; mod != 0; mod = mod->next) {
     mod_arr[mod_arr_count++] = mod;
@@ -2988,8 +2988,8 @@ dbi_build_file_info(Arena *arena, TP_Context *tp, PDB_DbiModuleList mod_list, CV
     }
   }
 
-  U32 **source_file_name_offsets_arr = push_array_no_zero(scratch.arena, U32 *, mod_list.count);
-  U32  *source_file_name_offsets     = push_array_no_zero(arena, U32, total_source_file_count);
+  U32 **source_file_name_offsets_arr = /* no zero */ push_array(scratch.arena, U32 *, mod_list.count);
+  U32  *source_file_name_offsets     = new U32[total_source_file_count] /* no zero */;
   for (U64 mod_idx = 0, cursor = 0; mod_idx < mod_list.count; ++mod_idx) {
     if (mod_arr[mod_idx]->imod != CV_ModIndex_Invalid) {
       source_file_name_offsets_arr[mod_idx] = source_file_name_offsets + cursor;
@@ -3005,8 +3005,8 @@ dbi_build_file_info(Arena *arena, TP_Context *tp, PDB_DbiModuleList mod_list, CV
   PDB_DbiBuildFileInfoTask task    = {0};
   task.string_ht                   = string_ht;
   task.mod_arr                     = mod_arr;
-  task.imod_arr                    = push_array_no_zero(arena, U16, mod_count16);
-  task.source_file_name_count_arr  = push_array_no_zero(arena, U16, mod_list.count);
+  task.imod_arr                    = new U16[mod_count16] /* no zero */;
+  task.source_file_name_count_arr  = new U16[mod_list.count] /* no zero */;
   task.source_file_name_offset_arr = source_file_name_offsets_arr;
   tp_for_parallel(tp, 0, mod_arr_count, dbi_build_file_info_assign_file_offsets_task, &task);
 
@@ -3114,7 +3114,7 @@ lnk_radix_sort_dbi_sc_array(PDB_DbiSectionContrib *arr, U64 sc_count, U64 sect_c
 
   Temp scratch = scratch_begin(0,0);
 
-  PDB_DbiSectionContrib *temp_arr = push_array_no_zero(scratch.arena, PDB_DbiSectionContrib, sc_count);
+  PDB_DbiSectionContrib *temp_arr = /* no zero */ push_array(scratch.arena, PDB_DbiSectionContrib, sc_count);
   PDB_DbiSectionContrib *src_arr = arr;
   PDB_DbiSectionContrib *dst_arr = temp_arr;
 
@@ -3239,7 +3239,7 @@ dbi_build_sec_con(Arena *arena, PDB_DbiContext *dbi)
   
   // push section contribs V1
   ProfBegin("Push sect contribs [Count %llu]", dbi->sec_contrib_list.count);
-  PDB_DbiSectionContrib *sc_array = push_array_no_zero(arena, PDB_DbiSectionContrib, dbi->sec_contrib_list.count);
+  PDB_DbiSectionContrib *sc_array = /* no zero */ push_array(arena, PDB_DbiSectionContrib, dbi->sec_contrib_list.count);
   PDB_DbiSectionContrib *dst = &sc_array[0];
   for (PDB_DbiSectionContribNode *src = dbi->sec_contrib_list.first; src != 0; src = src->next, dst += 1) {
     *dst = src->data;
@@ -3438,7 +3438,7 @@ dbi_module_push_section_contrib(PDB_DbiContext *dbi,
   sc.data_crc     = data_crc;
   sc.reloc_crc    = reloc_crc;
 
-  PDB_DbiSectionContribNode *node = push_array_no_zero(dbi->arena, PDB_DbiSectionContribNode, 1);
+  PDB_DbiSectionContribNode *node = /* no zero */ push_array(dbi->arena, PDB_DbiSectionContribNode, 1);
   node->data = sc;
   dbi_sec_contrib_list_push_node(&dbi->sec_contrib_list, node);
   

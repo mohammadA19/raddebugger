@@ -92,7 +92,7 @@ internal LNK_CmdOption *
 lnk_cmd_line_push_option_list(Arena *arena, LNK_CmdLine *cmd_line, String8 string, String8List value_strings)
 {
   // fill out node
-  LNK_CmdOption *opt = push_array_no_zero(arena, LNK_CmdOption, 1);
+  LNK_CmdOption *opt = new LNK_CmdOption[1] /* no zero */;
   opt->next          = 0;
   opt->string        = string;
   opt->value_strings = value_strings;

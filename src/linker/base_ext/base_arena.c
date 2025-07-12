@@ -4,7 +4,7 @@
 internal U32 *
 push_u32(Arena *arena, U32 value)
 {
-  U32 *result = push_array_no_zero(arena, U32, 1);
+  U32 *result = new U32[1] /* no zero */;
   *result = value;
   return result;
 }
@@ -12,7 +12,7 @@ push_u32(Arena *arena, U32 value)
 internal U64 *
 push_u64(Arena *arena, U64 value)
 {
-  U64 *result = push_array_no_zero(arena, U64, 1);
+  U64 *result = new U64[1] /* no zero */;
   *result = value;
   return result;
 }
@@ -20,7 +20,7 @@ push_u64(Arena *arena, U64 value)
 internal U32 *
 push_array_copy_u32(Arena *arena, U32 *v, U64 count)
 {
-  U32 *result = push_array_no_zero(arena, U32, count);
+  U32 *result = new U32[count] /* no zero */;
   MemoryCopyTyped(result, v, count);
   return result;
 }
@@ -28,7 +28,7 @@ push_array_copy_u32(Arena *arena, U32 *v, U64 count)
 internal U64 *
 push_array_copy_u64(Arena *arena, U64 *v, U64 count)
 {
-  U64 *result = push_array_no_zero(arena, U64, count);
+  U64 *result = new U64[count] /* no zero */;
   MemoryCopyTyped(result, v, count);
   return result;
 }
@@ -36,7 +36,7 @@ push_array_copy_u64(Arena *arena, U64 *v, U64 count)
 internal U64 **
 push_matrix_u64(Arena *arena, U64 rows, U64 columns)
 {
-  U64 **result = push_array_no_zero(arena, U64 *, rows);
+  U64 **result = /* no zero */ push_array(arena, U64 *, rows);
   for (U64 row_idx = 0; row_idx < rows; row_idx += 1) {
     result[row_idx] = push_array(arena, U64, columns);
   }
@@ -47,7 +47,7 @@ internal Arena **
 alloc_fixed_size_arena_array(Arena *arena, U64 count, U64 res, U64 cmt)
 {
   U64 data_size = sizeof(count) + sizeof(Arena *) * count;
-  U8 *data = push_array_no_zero(arena, U8, data_size);
+  U8 *data = new U8[data_size] /* no zero */;
   U64 *count_ptr = (U64 *)data;
   Arena **arr = (Arena **)(count_ptr + 1);
   *count_ptr = count;

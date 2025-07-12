@@ -476,7 +476,7 @@ fnt_piece_chunk_list_push_new(Arena *arena, FNT_PieceChunkList *list, U64 cap)
   if(node == 0 || node->count >= node->cap)
   {
     node = push_array(arena, FNT_PieceChunkNode, 1);
-    node->v = push_array_no_zero(arena, FNT_Piece, cap);
+    node->v = new FNT_Piece[cap] /* no zero */;
     node->cap = cap;
     SLLQueuePush(list->first, list->last, node);
     list->node_count += 1;
@@ -499,7 +499,7 @@ fnt_piece_array_from_chunk_list(Arena *arena, FNT_PieceChunkList *list)
 {
   FNT_PieceArray array = {0};
   array.count = list->total_piece_count;
-  array.v = push_array_no_zero(arena, FNT_Piece, array.count);
+  array.v = new FNT_Piece[array.count] /* no zero */;
   U64 write_idx = 0;
   for(FNT_PieceChunkNode *node = list->first; node != 0; node = node->next)
   {
@@ -514,7 +514,7 @@ fnt_piece_array_copy(Arena *arena, FNT_PieceArray *src)
 {
   FNT_PieceArray dst = {0};
   dst.count = src->count;
-  dst.v = push_array_no_zero(arena, FNT_Piece, dst.count);
+  dst.v = new FNT_Piece[dst.count] /* no zero */;
   MemoryCopy(dst.v, src->v, sizeof(FNT_Piece)*dst.count);
   return dst;
 }
@@ -563,7 +563,7 @@ fnt_hash2style_from_tag_size_flags(FNT_Tag tag, F32 size, FNT_RasterFlags flags)
       hash2style_node->style_hash = style_hash;
       hash2style_node->ascent   = metrics.ascent;
       hash2style_node->descent  = metrics.descent;
-      hash2style_node->utf8_class1_direct_map = push_array_no_zero(fnt_state->raster_arena, FNT_RasterCacheInfo, 256);
+      hash2style_node->utf8_class1_direct_map = /* no zero */ push_array(fnt_state->raster_arena, FNT_RasterCacheInfo, 256);
       hash2style_node->hash2info_slots_count = 1024;
       hash2style_node->hash2info_slots = push_array(fnt_state->raster_arena, FNT_Hash2InfoRasterCacheSlot, hash2style_node->hash2info_slots_count);
     }
@@ -807,7 +807,7 @@ fnt_run_from_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, F
           {
             U64 slot_idx = piece_hash%hash2style_node->hash2info_slots_count;
             FNT_Hash2InfoRasterCacheSlot *slot = &hash2style_node->hash2info_slots[slot_idx];
-            FNT_Hash2InfoRasterCacheNode *node = push_array_no_zero(fnt_state->raster_arena, FNT_Hash2InfoRasterCacheNode, 1);
+            FNT_Hash2InfoRasterCacheNode *node = /* no zero */ push_array(fnt_state->raster_arena, FNT_Hash2InfoRasterCacheNode, 1);
             DLLPushBack_NP(slot->first, slot->last, node, hash_next, hash_prev);
             node->hash = piece_hash;
             info = &node->info;

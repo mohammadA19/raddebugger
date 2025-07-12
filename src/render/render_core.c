@@ -70,7 +70,7 @@ r_batch_list_push_inst(Arena *arena, R_BatchList *list, U64 batch_inst_cap)
     {
       n = push_array(arena, R_BatchNode, 1);
       n->v.byte_cap = batch_inst_cap*list->bytes_per_inst;
-      n->v.v = push_array_no_zero(arena, U8, n->v.byte_cap); 
+      n->v.v = /* no zero */ push_array(arena, U8, n->v.byte_cap); 
       SLLQueuePush(list->first, list->last, n);
       list->batch_count += 1;
     }

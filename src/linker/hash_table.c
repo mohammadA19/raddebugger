@@ -312,7 +312,7 @@ key_value_pair_is_before_string_sensitive(void *a, void *b)
 internal U32 *
 keys_from_hash_table_u32(Arena *arena, HashTable *ht)
 {
-  U32 *result = push_array_no_zero(arena, U32, ht->count);
+  U32 *result = new U32[ht->count] /* no zero */;
   for (U64 bucket_idx = 0, cursor = 0; bucket_idx < ht->cap; ++bucket_idx) {
     for (BucketNode *n = ht->buckets[bucket_idx].first; n != 0; n = n->next) {
       Assert(cursor < ht->count);
@@ -325,7 +325,7 @@ keys_from_hash_table_u32(Arena *arena, HashTable *ht)
 internal U64 *
 keys_from_hash_table_u64(Arena *arena, HashTable *ht)
 {
-  U64 *result = push_array_no_zero(arena, U64, ht->count);
+  U64 *result = new U64[ht->count] /* no zero */;
   for (U64 bucket_idx = 0, cursor = 0; bucket_idx < ht->cap; ++bucket_idx) {
     for (BucketNode *n = ht->buckets[bucket_idx].first; n != 0; n = n->next) {
       Assert(cursor < ht->count);
@@ -338,7 +338,7 @@ keys_from_hash_table_u64(Arena *arena, HashTable *ht)
 internal String8 *
 keys_from_hash_table_string(Arena *arena, HashTable *ht)
 {
-  String8 *result = push_array_no_zero(arena, String8, ht->count);
+  String8 *result = new String8[ht->count] /* no zero */;
   for (U64 bucket_idx = 0, cursor = 0; bucket_idx < ht->cap; ++bucket_idx) {
     for (BucketNode *n = ht->buckets[bucket_idx].first; n != 0; n = n->next) {
       Assert(cursor < ht->count);
@@ -351,7 +351,7 @@ keys_from_hash_table_string(Arena *arena, HashTable *ht)
 internal KeyValuePair *
 key_value_pairs_from_hash_table(Arena *arena, HashTable *ht)
 {
-  KeyValuePair *pairs = push_array_no_zero(arena, KeyValuePair, ht->count);
+  KeyValuePair *pairs = new KeyValuePair[ht->count] /* no zero */;
   for (U64 bucket_idx = 0, cursor = 0; bucket_idx < ht->cap; ++bucket_idx) {
     for (BucketNode *n = ht->buckets[bucket_idx].first; n != 0; n = n->next) {
       Assert(cursor < ht->count);

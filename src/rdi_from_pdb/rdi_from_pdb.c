@@ -1020,8 +1020,8 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
                 RDI_U64  line_count = 0;
                 if(src_file_node != 0)
                 {
-                  voffs = push_array_no_zero(arena, RDI_U64, total_line_chunk_line_count+1);
-                  line_nums = push_array_no_zero(arena, RDI_U32, total_line_chunk_line_count);
+                  voffs = new RDI_U64[total_line_chunk_line_count+1] /* no zero */;
+                  line_nums = new RDI_U32[total_line_chunk_line_count] /* no zero */;
                   line_count = total_line_chunk_line_count;
                   U64 dst_idx = 0;
                   for(LineChunk *chunk = first_line_chunk; chunk != 0; chunk = chunk->next)
@@ -1060,8 +1060,8 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
                   chunk = push_array(scratch.arena, LineChunk, 1);
                   SLLQueuePush(first_line_chunk, last_line_chunk, chunk);
                   chunk->cap       = 8;
-                  chunk->voffs     = push_array_no_zero(scratch.arena, U64, chunk->cap);
-                  chunk->line_nums = push_array_no_zero(scratch.arena, U32, chunk->cap);
+                  chunk->voffs     = /* no zero */ push_array(scratch.arena, U64, chunk->cap);
+                  chunk->line_nums = /* no zero */ push_array(scratch.arena, U32, chunk->cap);
                 }
                 chunk->voffs[chunk->count]     = step.line_voff;
                 chunk->voffs[chunk->count+1]   = step.line_voff_end;
@@ -2270,7 +2270,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
   //
   U64 procedure_frameprocs_count = 0;
   U64 procedure_frameprocs_cap   = (in->sym_ranges_opl - in->sym_ranges_first);
-  CV_SymFrameproc **procedure_frameprocs = push_array_no_zero(scratch.arena, CV_SymFrameproc *, procedure_frameprocs_cap);
+  CV_SymFrameproc **procedure_frameprocs = /* no zero */ push_array(scratch.arena, CV_SymFrameproc *, procedure_frameprocs_cap);
   ProfScope("symbols pass 1: produce procedure frame info map (procedure -> frame info)")
   {
     U64 procedure_num = 0;
@@ -2426,7 +2426,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           {
             P2R_ScopeNode *node = free_scope_node;
             if(node != 0) { SLLStackPop(free_scope_node); }
-            else { node = push_array_no_zero(scratch.arena, P2R_ScopeNode, 1); }
+            else { node = /* no zero */ push_array(scratch.arena, P2R_ScopeNode, 1); }
             node->scope = scope;
             SLLStackPush(top_scope_node, node);
           }
@@ -2584,7 +2584,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           {
             P2R_ScopeNode *node = free_scope_node;
             if(node != 0) { SLLStackPop(free_scope_node); }
-            else { node = push_array_no_zero(scratch.arena, P2R_ScopeNode, 1); }
+            else { node = /* no zero */ push_array(scratch.arena, P2R_ScopeNode, 1); }
             node->scope = procedure_root_scope;
             SLLStackPush(top_scope_node, node);
           }
@@ -3050,7 +3050,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           {
             P2R_ScopeNode *node = free_scope_node;
             if(node != 0) { SLLStackPop(free_scope_node); }
-            else { node = push_array_no_zero(scratch.arena, P2R_ScopeNode, 1); }
+            else { node = /* no zero */ push_array(scratch.arena, P2R_ScopeNode, 1); }
             node->scope = scope;
             SLLStackPush(top_scope_node, node);
           }

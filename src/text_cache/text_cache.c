@@ -110,7 +110,7 @@ txt_token_chunk_list_push(Arena *arena, TXT_TokenChunkList *list, U64 cap, TXT_T
     node = push_array(arena, TXT_TokenChunkNode, 1);
     SLLQueuePush(list->first, list->last, node);
     node->cap = cap;
-    node->v = push_array_no_zero(arena, TXT_Token, node->cap);
+    node->v = new TXT_Token[node->cap] /* no zero */;
     list->chunk_count += 1;
   }
   MemoryCopyStruct(&node->v[node->count], token);
@@ -132,7 +132,7 @@ txt_token_array_from_chunk_list(Arena *arena, TXT_TokenChunkList *list)
 {
   TXT_TokenArray array = {0};
   array.count = list->token_count;
-  array.v = push_array_no_zero(arena, TXT_Token, array.count);
+  array.v = new TXT_Token[array.count] /* no zero */;
   U64 idx = 0;
   for(TXT_TokenChunkNode *n = list->first; n != 0; n = n->next)
   {
@@ -147,7 +147,7 @@ txt_token_array_from_list(Arena *arena, TXT_TokenList *list)
 {
   TXT_TokenArray array = {0};
   array.count = list->count;
-  array.v = push_array_no_zero(arena, TXT_Token, array.count);
+  array.v = new TXT_Token[array.count] /* no zero */;
   U64 idx = 0;
   for(TXT_TokenNode *n = list->first; n != 0; n = n->next)
   {
@@ -1611,7 +1611,7 @@ txt_init(void)
     txt_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
   txt_shared->u2p_ring_size = KB(64);
-  txt_shared->u2p_ring_base = push_array_no_zero(arena, U8, txt_shared->u2p_ring_size);
+  txt_shared->u2p_ring_base = new U8[txt_shared->u2p_ring_size] /* no zero */;
   txt_shared->u2p_ring_cv = os_condition_variable_alloc();
   txt_shared->u2p_ring_mutex = os_mutex_alloc();
   txt_shared->evictor_thread = os_thread_launch(txt_evictor_thread__entry_point, 0, 0);
@@ -1645,7 +1645,7 @@ txt_scope_open(void)
   }
   else
   {
-    scope = push_array_no_zero(txt_tctx->arena, TXT_Scope, 1);
+    scope = /* no zero */ push_array(txt_tctx->arena, TXT_Scope, 1);
   }
   MemoryZeroStruct(scope);
   return scope;
@@ -1691,7 +1691,7 @@ txt_scope_touch_node__stripe_r_guarded(TXT_Scope *scope, TXT_Node *node)
   }
   else
   {
-    touch = push_array_no_zero(txt_tctx->arena, TXT_Touch, 1);
+    touch = /* no zero */ push_array(txt_tctx->arena, TXT_Touch, 1);
   }
   MemoryZeroStruct(touch);
   touch->hash = node->hash;
@@ -1751,7 +1751,7 @@ txt_text_info_from_hash_lang(TXT_Scope *scope, U128 hash, TXT_LangKind lang)
           }
           else
           {
-            node = push_array_no_zero(stripe->arena, TXT_Node, 1);
+            node = /* no zero */ push_array(stripe->arena, TXT_Node, 1);
           }
           MemoryZeroStruct(node);
           DLLPushBack(slot->first, slot->last, node);
@@ -2260,7 +2260,7 @@ ASYNC_WORK_DEF(txt_parse_work)
     
     //- rjf: allocate & store line ranges
     info.lines_count = line_count;
-    info.lines_ranges = push_array_no_zero(info_arena, Rng1U64, info.lines_count);
+    info.lines_ranges = new Rng1U64[info.lines_count] /* no zero */;
     U64 line_idx = 0;
     U64 line_start_idx = 0;
     for(U64 idx = 0; idx <= data.size; idx += 1)

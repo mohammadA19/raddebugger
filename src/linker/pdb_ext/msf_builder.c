@@ -21,10 +21,10 @@ msf_page_data_list_push(Arena *arena, MSF_PageDataList *list, MSF_UInt page_size
     // we can make API for stream allocation to let user 
     // choose between zeroed and dirty allocations
     //
-    U8 *data = push_array_aligned(arena, U8, data_size, page_size);
+    U8 *data = new U8[data_size] /* align: page_size */;
 
     // init node
-    MSF_PageDataNode *node = push_array_no_zero(arena, MSF_PageDataNode, 1);
+    MSF_PageDataNode *node = new MSF_PageDataNode[1] /* no zero */;
     node->prev = 0;
     node->next = 0;
     node->data = data;
@@ -85,7 +85,7 @@ msf_set_page_data_list(Arena *arena, MSF_PageDataList *list, MSF_UInt page_size,
     last_node_data = data.str + node_idx * node_size;
   } else {
     U64 last_node_size = data.size % node_size;
-    last_node_data = push_array_no_zero(arena, U8, node_size);
+    last_node_data = new U8[node_size] /* no zero */;
     MemoryCopy(last_node_data, data.str + node_idx * node_size, last_node_size);
   }
   ProfEnd();

@@ -111,7 +111,7 @@ os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title)
   }
   else
   {
-    w = push_array_no_zero(os_lnx_gfx_state->arena, OS_LNX_Window, 1);
+    w = /* no zero */ push_array(os_lnx_gfx_state->arena, OS_LNX_Window, 1);
   }
   MemoryZeroStruct(w);
   DLLPushBack(os_lnx_gfx_state->first_window, os_lnx_gfx_state->last_window, w);

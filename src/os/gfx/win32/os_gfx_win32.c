@@ -77,7 +77,7 @@ os_w32_window_alloc(void)
   }
   else
   {
-    result = push_array_no_zero(os_w32_gfx_state->arena, OS_W32_Window, 1);
+    result = /* no zero */ push_array(os_w32_gfx_state->arena, OS_W32_Window, 1);
   }
   MemoryZeroStruct(result);
   if(result)

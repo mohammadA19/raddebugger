@@ -125,7 +125,7 @@ internal COFF_SectionHeader **
 coff_section_table_from_data(Arena *arena, String8 data, Rng1U64 section_table_range)
 {
   U64                  section_count = dim_1u64(section_table_range) / sizeof(COFF_SectionHeader);
-  COFF_SectionHeader **section_table = push_array_no_zero(arena, COFF_SectionHeader *, section_count+1);
+  COFF_SectionHeader **section_table = /* no zero */ push_array(arena, COFF_SectionHeader *, section_count+1);
   section_table[0] = push_array(arena, COFF_SectionHeader, 1);
   for (U64 i = 0; i < section_count; ++i) {
     section_table[i+1] = str8_deserial_get_raw_ptr(data, section_table_range.min + i*sizeof(COFF_SectionHeader), sizeof(COFF_SectionHeader));
@@ -184,7 +184,7 @@ coff_symbol_array_from_data_16(Arena *arena, String8 raw_coff, U64 symbol_array_
 {
   COFF_Symbol32Array result = {0};
   result.count              = symbol_count;
-  result.v                  = push_array_no_zero_aligned(arena, COFF_Symbol32, result.count, 8);
+  result.v                  = new COFF_Symbol32[result.count] /* align: 8 */;
   
   Rng1U64        sym16_arr_range = rng_1u64(symbol_array_off, symbol_array_off + sizeof(COFF_Symbol16) * symbol_count);
   String8        raw_sym16_arr   = str8_substr(raw_coff, sym16_arr_range);
@@ -350,7 +350,7 @@ coff_resource_string_from_str16(Arena *arena, String16 string)
   AssertAlways(string.size <= max_U16);
   U16 size16 = (U16)string.size;
   
-  U16 *buffer = push_array_no_zero(arena, U16, size16 + 1);
+  U16 *buffer = new U16[size16 + 1] /* no zero */;
   MemoryCopy(buffer + 0, &size16,    sizeof(size16));
   MemoryCopy(buffer + 1, string.str, size16 * sizeof(string.str[0]));
   
@@ -370,7 +370,7 @@ coff_resource_string_from_str8(Arena *arena, String8 string)
 internal String8
 coff_resource_number_from_u16(Arena *arena, U16 number)
 {
-  U16 *buffer = push_array_no_zero(arena, U16, 2);
+  U16 *buffer = new U16[2] /* no zero */;
   buffer[0] = max_U16;
   buffer[1] = number;
   return str8_array(buffer, 2);

@@ -62,7 +62,7 @@ lnk_section_array_from_list(Arena *arena, LNK_SectionList list)
 {
   LNK_SectionArray result;
   result.count = 0;
-  result.v = push_array_no_zero(arena, LNK_Section *, list.count);
+  result.v = /* no zero */ push_array(arena, LNK_Section *, list.count);
   for (LNK_SectionNode *node = list.first; node != 0; node = node->next) {
     result.v[result.count] = &node->data;
     result.count += 1;

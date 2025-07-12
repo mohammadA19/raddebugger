@@ -579,7 +579,7 @@ cv_type_index_source_from_leaf_kind(CV_LeafKind leaf_kind)
 internal CV_TypeIndexInfo *
 cv_symbol_type_index_info_push(Arena *arena, CV_TypeIndexInfoList *list, CV_TypeIndexSource source, U64 offset)
 {
-  CV_TypeIndexInfo *info = push_array_no_zero(arena, CV_TypeIndexInfo, 1);
+  CV_TypeIndexInfo *info = new CV_TypeIndexInfo[1] /* no zero */;
   info->next   = 0;
   info->offset = offset;
   info->source = source;
@@ -997,7 +997,7 @@ cv_get_data_around_type_indices(Arena *arena, CV_TypeIndexInfoList ti_list, Stri
   if(ti_list.count > 0)
   {
     result.count = ti_list.count + 1;
-    result.v = push_array_no_zero(arena, String8, result.count);
+    result.v = new String8[result.count] /* no zero */;
     
     U64 cursor = 0;
     U64 ti_idx = 0;
@@ -1015,7 +1015,7 @@ cv_get_data_around_type_indices(Arena *arena, CV_TypeIndexInfoList ti_list, Stri
   else
   {
     result.count = 1;
-    result.v = push_array_no_zero(arena, String8, 1);
+    result.v = new String8[1] /* no zero */;
     result.v[0] = data;
   }
   return result;
@@ -1224,7 +1224,7 @@ cv_rec_range_stream_from_data(Arena *arena, String8 sym_data, U64 sym_align)
   for(;cursor + sizeof(CV_RecHeader) <= cap;)
   {
     // setup a new chunk
-    CV_RecRangeChunk *cur_chunk = push_array_aligned(arena, CV_RecRangeChunk, 1, 64);
+    CV_RecRangeChunk *cur_chunk = new CV_RecRangeChunk[1] /* align: 64 */;
     SLLQueuePush(result->first_chunk, result->last_chunk, cur_chunk);
     U64 partial_count = 0;
     for(;partial_count < CV_REC_RANGE_CHUNK_SIZE && cursor + sizeof(CV_RecHeader) <= cap; partial_count += 1)
@@ -1251,7 +1251,7 @@ internal CV_RecRangeArray
 cv_rec_range_array_from_stream(Arena *arena, CV_RecRangeStream *stream)
 {
   U64 total_count = stream->total_count;
-  CV_RecRange *ranges = push_array_no_zero_aligned(arena, CV_RecRange, total_count, 8);
+  CV_RecRange *ranges = new CV_RecRange[total_count] /* align: 8 */;
   U64 idx = 0;
   for(CV_RecRangeChunk *chunk = stream->first_chunk; chunk != 0; chunk = chunk->next)
   {
@@ -1483,8 +1483,8 @@ cv_c13_parsed_from_data(Arena *arena, String8 c13_data, String8 strtbl, COFF_Sec
           U32 col_array_off = line_array_off + line_count*sizeof(CV_C13Line);
           
           // parse lines
-          U64 *voffs = push_array_no_zero(arena, U64, line_count + 1);
-          U32 *line_nums = push_array_no_zero(arena, U32, line_count);
+          U64 *voffs = new U64[line_count + 1] /* no zero */;
+          U32 *line_nums = new U32[line_count] /* no zero */;
           
           {
             CV_C13Line *line_ptr = (CV_C13Line*)(first + line_array_off);

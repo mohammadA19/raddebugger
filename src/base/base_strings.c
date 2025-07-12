@@ -483,7 +483,7 @@ internal String8
 push_str8_cat(Arena *arena, String8 s1, String8 s2){
   String8 str;
   str.size = s1.size + s2.size;
-  str.str = push_array_no_zero(arena, U8, str.size + 1);
+  str.str = new U8[str.size + 1] /* no zero */;
   MemoryCopy(str.str, s1.str, s1.size);
   MemoryCopy(str.str + s1.size, s2.str, s2.size);
   str.str[str.size] = 0;
@@ -494,7 +494,7 @@ internal String8
 push_str8_copy(Arena *arena, String8 s){
   String8 str;
   str.size = s.size;
-  str.str = push_array_no_zero(arena, U8, str.size + 1);
+  str.str = new U8[str.size + 1] /* no zero */;
   MemoryCopy(str.str, s.str, s.size);
   str.str[str.size] = 0;
   return(str);
@@ -506,7 +506,7 @@ push_str8fv(Arena *arena, char *fmt, va_list args){
   va_copy(args2, args);
   U32 needed_bytes = raddbg_vsnprintf(0, 0, fmt, args) + 1;
   String8 result = {0};
-  result.str = push_array_no_zero(arena, U8, needed_bytes);
+  result.str = new U8[needed_bytes] /* no zero */;
   result.size = raddbg_vsnprintf((char*)result.str, needed_bytes, fmt, args2);
   result.str[result.size] = 0;
   va_end(args2);
@@ -526,7 +526,7 @@ internal String8
 push_cstr(Arena *arena, String8 str)
 {
   U64 buffer_size = str.size + 1;
-  U8 *buffer = push_array_no_zero(arena, U8, buffer_size);
+  U8 *buffer = new U8[buffer_size] /* no zero */;
   MemoryCopy(buffer, str.str, str.size);
   buffer[str.size] = 0;
   String8 result = str8(buffer, buffer_size);
@@ -831,7 +831,7 @@ str8_from_u64(Arena *arena, U64 u64, U32 radix, U8 min_digits, U8 digit_group_se
         }
       }
       result.size = prefix.size + needed_leading_0s + needed_separators + needed_digits;
-      result.str = push_array_no_zero(arena, U8, result.size + 1);
+      result.str = new U8[result.size + 1] /* no zero */;
       result.str[result.size] = 0;
     }
     
@@ -976,7 +976,7 @@ str8_list_push_node_front_set_string(String8List *list, String8Node *node, Strin
 
 internal String8Node*
 str8_list_push(Arena *arena, String8List *list, String8 string){
-  String8Node *node = push_array_no_zero(arena, String8Node, 1);
+  String8Node *node = new String8Node[1] /* no zero */;
   str8_list_push_node_set_string(list, node, string);
   return(node);
 }
@@ -992,7 +992,7 @@ str8_list_push_cstr(Arena *arena, String8List *list, String8 string)
 
 internal String8Node*
 str8_list_push_front(Arena *arena, String8List *list, String8 string){
-  String8Node *node = push_array_no_zero(arena, String8Node, 1);
+  String8Node *node = new String8Node[1] /* no zero */;
   str8_list_push_node_front_set_string(list, node, string);
   return(node);
 }
@@ -1015,7 +1015,7 @@ str8_list_concat_in_place(String8List *list, String8List *to_push){
 
 internal String8Node*
 str8_list_push_aligner(Arena *arena, String8List *list, U64 min, U64 align){
-  String8Node *node = push_array_no_zero(arena, String8Node, 1);
+  String8Node *node = new String8Node[1] /* no zero */;
   U64 new_size = list->total_size + min;
   U64 increase_size = 0;
   if (align > 1){
@@ -1062,7 +1062,7 @@ str8_list_copy(Arena *arena, String8List *list){
   for (String8Node *node = list->first;
        node != 0;
        node = node->next){
-    String8Node *new_node = push_array_no_zero(arena, String8Node, 1);
+    String8Node *new_node = new String8Node[1] /* no zero */;
     String8 new_string = push_str8_copy(arena, node->string);
     str8_list_push_node_set_string(&result, new_node, new_string);
   }
@@ -1133,7 +1133,7 @@ str8_list_join(Arena *arena, String8List *list, StringJoin *optional_params){
   
   String8 result;
   result.size = join.pre.size + join.post.size + sep_count*join.sep.size + list->total_size;
-  U8 *ptr = result.str = push_array_no_zero(arena, U8, result.size + 1);
+  U8 *ptr = result.str = new U8[result.size + 1] /* no zero */;
   
   MemoryCopy(ptr, join.pre.str, join.pre.size);
   ptr += join.pre.size;
@@ -1198,7 +1198,7 @@ str8_array_from_list(Arena *arena, String8List *list)
 {
   String8Array array;
   array.count   = list->node_count;
-  array.v = push_array_no_zero(arena, String8, array.count);
+  array.v = new String8[array.count] /* no zero */;
   U64 idx = 0;
   for(String8Node *n = list->first; n != 0; n = n->next, idx += 1)
   {
@@ -1435,7 +1435,7 @@ str8_path_list_resolve_dots_in_place(String8List *path, PathStyle style)
       }
       else
       {
-        stack_node = push_array_no_zero(scratch.arena, String8MetaNode, 1);
+        stack_node = /* no zero */ push_array(scratch.arena, String8MetaNode, 1);
       }
       SLLStackPush(stack, stack_node);
       stack_node->node = node;
@@ -1909,7 +1909,7 @@ str8_from_16(Arena *arena, String16 in)
   if(in.size)
   {
     U64 cap = in.size*3;
-    U8 *str = push_array_no_zero(arena, U8, cap + 1);
+    U8 *str = new U8[cap + 1] /* no zero */;
     U16 *ptr = in.str;
     U16 *opl = ptr + in.size;
     U64 size = 0;
@@ -1933,7 +1933,7 @@ str16_from_8(Arena *arena, String8 in)
   if(in.size)
   {
     U64 cap = in.size*2;
-    U16 *str = push_array_no_zero(arena, U16, cap + 1);
+    U16 *str = new U16[cap + 1] /* no zero */;
     U8 *ptr = in.str;
     U8 *opl = ptr + in.size;
     U64 size = 0;
@@ -1957,7 +1957,7 @@ str8_from_32(Arena *arena, String32 in)
   if(in.size)
   {
     U64 cap = in.size*4;
-    U8 *str = push_array_no_zero(arena, U8, cap + 1);
+    U8 *str = new U8[cap + 1] /* no zero */;
     U32 *ptr = in.str;
     U32 *opl = ptr + in.size;
     U64 size = 0;
@@ -1979,7 +1979,7 @@ str32_from_8(Arena *arena, String8 in)
   if(in.size)
   {
     U64 cap = in.size;
-    U32 *str = push_array_no_zero(arena, U32, cap + 1);
+    U32 *str = new U32[cap + 1] /* no zero */;
     U8 *ptr = in.str;
     U8 *opl = ptr + in.size;
     U64 size = 0;
@@ -2539,7 +2539,7 @@ fuzzy_match_range_list_copy(Arena *arena, FuzzyMatchRangeList *src)
 internal void
 str8_serial_begin(Arena *arena, String8List *srl){
   String8Node *node = push_array(arena, String8Node, 1);
-  node->string.str = push_array_no_zero(arena, U8, 0);
+  node->string.str = new U8[0] /* no zero */;
   srl->first = srl->last = node;
   srl->node_count = 1;
   srl->total_size = 0;
@@ -2548,7 +2548,7 @@ str8_serial_begin(Arena *arena, String8List *srl){
 internal String8
 str8_serial_end(Arena *arena, String8List *srl){
   U64 size = srl->total_size;
-  U8 *out = push_array_no_zero(arena, U8, size);
+  U8 *out = new U8[size] /* no zero */;
   str8_serial_write_to_dst(srl, out);
   String8 result = str8(out, size);
   return result;
@@ -2596,7 +2596,7 @@ str8_serial_push_size(Arena *arena, String8List *srl, U64 size)
   void *result = 0;
   if(size != 0)
   {
-    U8 *buf = push_array_no_zero(arena, U8, size);
+    U8 *buf = new U8[size] /* no zero */;
     String8 *str = &srl->last->string;
     if (str->str + str->size == buf){
       srl->last->string.size += size;
@@ -2631,7 +2631,7 @@ str8_serial_push_data_list(Arena *arena, String8List *srl, String8Node *first){
 
 internal void
 str8_serial_push_u64(Arena *arena, String8List *srl, U64 x){
-  U8 *buf = push_array_no_zero(arena, U8, 8);
+  U8 *buf = new U8[8] /* no zero */;
   MemoryCopy(buf, &x, 8);
   String8 *str = &srl->last->string;
   if (str->str + str->size == buf){
@@ -2645,7 +2645,7 @@ str8_serial_push_u64(Arena *arena, String8List *srl, U64 x){
 
 internal void
 str8_serial_push_u32(Arena *arena, String8List *srl, U32 x){
-  U8 *buf = push_array_no_zero(arena, U8, 4);
+  U8 *buf = new U8[4] /* no zero */;
   MemoryCopy(buf, &x, 4);
   String8 *str = &srl->last->string;
   if (str->str + str->size == buf){

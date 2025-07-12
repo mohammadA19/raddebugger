@@ -34,7 +34,7 @@ dmn_trap_chunk_list_push(Arena *arena, DMN_TrapChunkList *list, U64 cap, DMN_Tra
   {
     node = push_array(arena, DMN_TrapChunkNode, 1);
     node->cap = cap;
-    node->v = push_array_no_zero(arena, DMN_Trap, node->cap);
+    node->v = new DMN_Trap[node->cap] /* no zero */;
     SLLQueuePush(list->first, list->last, node);
     list->node_count += 1;
   }
@@ -91,7 +91,7 @@ dmn_handle_array_from_list(Arena *arena, DMN_HandleList *list)
 {
   DMN_HandleArray array = {0};
   array.count = list->count;
-  array.handles = push_array_no_zero(arena, DMN_Handle, array.count);
+  array.handles = new DMN_Handle[array.count] /* no zero */;
   U64 idx = 0;
   for(DMN_HandleNode *n = list->first; n != 0; n = n->next, idx += 1)
   {
@@ -105,7 +105,7 @@ dmn_handle_array_copy(Arena *arena, DMN_HandleArray *src)
 {
   DMN_HandleArray dst = {0};
   dst.count = src->count;
-  dst.handles = push_array_no_zero(arena, DMN_Handle, dst.count);
+  dst.handles = new DMN_Handle[dst.count] /* no zero */;
   MemoryCopy(dst.handles, src->handles, sizeof(DMN_Handle)*dst.count);
   return dst;
 }
@@ -167,7 +167,7 @@ dmn_process_read_cstring(Arena *arena, DMN_Handle process, U64 addr)
   String8List block_list = {0};
   for(U64 cursor = addr, stride = 256; ; cursor += stride)
   {
-    U8      *raw_block = push_array_no_zero(scratch.arena, U8, stride);
+    U8      *raw_block = /* no zero */ push_array(scratch.arena, U8, stride);
     U64      read_size = dmn_process_read(process, r1u64(cursor, cursor + stride), raw_block);
     String8  block     = str8_cstring_capped(raw_block, raw_block + read_size);
     str8_list_push(scratch.arena, &block_list, block);

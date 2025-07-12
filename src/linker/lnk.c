@@ -3849,7 +3849,7 @@ lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, U6
   LNK_BaseRelocPageArray page_arr;
   {
     LNK_BaseRelocPageList  *page_list_arr = push_array(scratch.arena, LNK_BaseRelocPageList, tp->worker_count);
-    HashTable             **page_ht_arr   = push_array_no_zero(scratch.arena, HashTable *, tp->worker_count);
+    HashTable             **page_ht_arr   = /* no zero */ push_array(scratch.arena, HashTable *, tp->worker_count);
     for (U64 i = 0; i < tp->worker_count; ++i) {
       page_ht_arr[i] = hash_table_init(scratch.arena, 1024);
     }
@@ -3899,7 +3899,7 @@ lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, U6
 
     ProfBegin("Page List -> Array");
     page_arr.count = 0;
-    page_arr.v     = push_array_no_zero(scratch.arena, LNK_BaseRelocPage, main_page_list->count);
+    page_arr.v     = /* no zero */ push_array(scratch.arena, LNK_BaseRelocPage, main_page_list->count);
     for (LNK_BaseRelocPageNode* n = main_page_list->first; n != 0; n = n->next) {
       page_arr.v[page_arr.count++] = n->v;
     }
@@ -3928,7 +3928,7 @@ lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, U6
       
       // push buffer
       U64   buf_size = AlignPow2(sizeof(*page_voff_ptr) + sizeof(*block_size_ptr) + sizeof(*reloc_arr_base)*total_entry_count, sizeof(U32));
-      void *buf      = push_array_no_zero(arena, U8, buf_size);
+      void *buf      = new U8[buf_size] /* no zero */;
       
       // setup pointers into buffer
       page_voff_ptr  = buf;
@@ -4046,7 +4046,7 @@ lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config
   // COFF file header
   //
   {
-    COFF_FileHeader *file_header      = push_array_no_zero(arena, COFF_FileHeader, 1);
+    COFF_FileHeader *file_header      = new COFF_FileHeader[1] /* no zero */;
     file_header->machine              = config->machine;
     file_header->time_stamp           = config->time_stamp;
     file_header->symbol_table_foff    = 0;
@@ -4103,7 +4103,7 @@ lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config
   U32 *entry_point_va;
   U32 *check_sum;
   if (has_pe_plus_header) {
-    PE_OptionalHeader32Plus *opt_header = push_array_no_zero(arena, PE_OptionalHeader32Plus, 1);
+    PE_OptionalHeader32Plus *opt_header = new PE_OptionalHeader32Plus[1] /* no zero */;
     opt_header->magic                   = PE_PE32PLUS_MAGIC;
     opt_header->major_linker_version    = config->link_ver.major;
     opt_header->minor_linker_version    = config->link_ver.minor;
@@ -4655,7 +4655,7 @@ lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolT
     }
 
     image_data.size = image_size;
-    image_data.str  = push_array_no_zero(arena->v[0], U8, image_size);
+    image_data.str  = /* no zero */ push_array(arena->v[0], U8, image_size);
 
     for (U64 sect_idx = 0; sect_idx < sects.count; sect_idx += 1) {
       LNK_Section *sect = sects.v[sect_idx];

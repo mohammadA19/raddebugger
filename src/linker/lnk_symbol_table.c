@@ -65,7 +65,7 @@ internal LNK_SymbolList
 lnk_symbol_list_from_array(Arena *arena, LNK_SymbolArray arr)
 {
   LNK_SymbolList list = {0};
-  LNK_SymbolNode *node_arr = push_array_no_zero(arena, LNK_SymbolNode, arr.count);
+  LNK_SymbolNode *node_arr = new LNK_SymbolNode[arr.count] /* no zero */;
   for (U64 i = 0; i < arr.count; i += 1) {
     LNK_SymbolNode *node = &node_arr[i];
     node->next           = 0;
@@ -80,7 +80,7 @@ lnk_symbol_node_array_from_list(Arena *arena, LNK_SymbolList list)
 {
   LNK_SymbolNodeArray result = {0};
   result.count               = 0;
-  result.v                   = push_array_no_zero(arena, LNK_SymbolNode *, list.count);
+  result.v                   = /* no zero */ push_array(arena, LNK_SymbolNode *, list.count);
   for (LNK_SymbolNode *i = list.first; i != 0; i = i->next, ++result.count) {
     result.v[result.count] = i;
   }
@@ -92,7 +92,7 @@ lnk_symbol_array_from_list(Arena *arena, LNK_SymbolList list)
 {
   LNK_SymbolArray arr = {0};
   arr.count           = 0;
-  arr.v               = push_array_no_zero(arena, LNK_Symbol, list.count);
+  arr.v               = new LNK_Symbol[list.count] /* no zero */;
   for (LNK_SymbolNode *node = list.first; node != 0; node = node->next) {
     arr.v[arr.count++] = *node->data;
   }
@@ -105,7 +105,7 @@ lnk_symbol_hash_trie_chunk_list_push(Arena *arena, LNK_SymbolHashTrieChunkList *
   if (list->last == 0 || list->last->count >= list->last->cap) {
     LNK_SymbolHashTrieChunk *chunk = push_array(arena, LNK_SymbolHashTrieChunk, 1);
     chunk->cap                     = cap;
-    chunk->v                       = push_array_no_zero(arena, LNK_SymbolHashTrie, cap);
+    chunk->v                       = new LNK_SymbolHashTrie[cap] /* no zero */;
     SLLQueuePush(list->first, list->last, chunk);
     ++list->count;
   }

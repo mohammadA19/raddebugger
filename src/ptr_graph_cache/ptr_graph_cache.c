@@ -21,7 +21,7 @@ ptg_init(void)
     ptg_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
   ptg_shared->u2b_ring_size = KB(64);
-  ptg_shared->u2b_ring_base = push_array_no_zero(arena, U8, ptg_shared->u2b_ring_size);
+  ptg_shared->u2b_ring_base = new U8[ptg_shared->u2b_ring_size] /* no zero */;
   ptg_shared->u2b_ring_cv = os_condition_variable_alloc();
   ptg_shared->u2b_ring_mutex = os_mutex_alloc();
   ptg_shared->builder_thread_count = Clamp(1, os_get_system_info()->logical_processor_count-1, 4);
@@ -67,7 +67,7 @@ ptg_scope_open(void)
   }
   else
   {
-    scope = push_array_no_zero(ptg_tctx->arena, PTG_Scope, 1);
+    scope = /* no zero */ push_array(ptg_tctx->arena, PTG_Scope, 1);
   }
   MemoryZeroStruct(scope);
   return scope;
@@ -98,7 +98,7 @@ ptg_scope_touch_node__stripe_r_guarded(PTG_Scope *scope, PTG_GraphNode *node)
   }
   else
   {
-    touch = push_array_no_zero(ptg_tctx->arena, PTG_Touch, 1);
+    touch = /* no zero */ push_array(ptg_tctx->arena, PTG_Touch, 1);
   }
   MemoryZeroStruct(touch);
   touch->node = node;

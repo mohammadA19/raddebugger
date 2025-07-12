@@ -118,7 +118,7 @@ os_w32_entity_alloc(OS_W32_EntityKind kind)
     }
     else
     {
-      result = push_array_no_zero(os_w32_state.entity_arena, OS_W32_Entity, 1);
+      result = /* no zero */ push_array(os_w32_state.entity_arena, OS_W32_Entity, 1);
     }
     MemoryZeroStruct(result);
   }
@@ -172,7 +172,7 @@ os_get_current_path(Arena *arena)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DWORD length = GetCurrentDirectoryW(0, 0);
-  U16 *memory = push_array_no_zero(scratch.arena, U16, length + 1);
+  U16 *memory = /* no zero */ push_array(scratch.arena, U16, length + 1);
   length = GetCurrentDirectoryW(length + 1, (WCHAR*)memory);
   String8 name = str8_from_16(arena, str16(memory, length));
   scratch_end(scratch);
@@ -520,13 +520,13 @@ os_full_path_from_path(Arena *arena, String8 path)
   Temp scratch = scratch_begin(&arena, 1);
   DWORD     buffer_size = Max(MAX_PATH, path.size * 2) + 1;
   String16  path16      = str16_from_8(scratch.arena, path);
-  WCHAR    *buffer      = push_array_no_zero(scratch.arena, WCHAR, buffer_size);
+  WCHAR    *buffer      = /* no zero */ push_array(scratch.arena, WCHAR, buffer_size);
   DWORD     path16_size = GetFullPathNameW((WCHAR*)path16.str, buffer_size, buffer, NULL);
   if(path16_size > buffer_size)
   {
     arena_pop(scratch.arena, buffer_size);
     buffer_size = path16_size + 1;
-    buffer      = push_array_no_zero(scratch.arena, WCHAR, buffer_size);
+    buffer      = /* no zero */ push_array(scratch.arena, WCHAR, buffer_size);
     path16_size = GetFullPathNameW((WCHAR*)path16.str, buffer_size, buffer, NULL);
   }
   String8 full_path = str8_from_16(arena, str16((U16*)buffer, path16_size));
@@ -1721,7 +1721,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
     {
       Temp scratch = scratch_begin(0, 0);
       DWORD size = KB(32);
-      U16 *buffer = push_array_no_zero(scratch.arena, U16, size);
+      U16 *buffer = /* no zero */ push_array(scratch.arena, U16, size);
       DWORD length = GetModuleFileNameW(0, (WCHAR*)buffer, size);
       String8 name8 = str8_from_16(scratch.arena, str16(buffer, length));
       String8 name_chopped = str8_chop_last_slash(name8);
@@ -1732,7 +1732,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
     {
       Temp scratch = scratch_begin(0, 0);
       U64 size = KB(32);
-      U16 *buffer = push_array_no_zero(scratch.arena, U16, size);
+      U16 *buffer = /* no zero */ push_array(scratch.arena, U16, size);
       if(SUCCEEDED(SHGetFolderPathW(0, CSIDL_APPDATA, 0, 0, (WCHAR*)buffer)))
       {
         info->user_program_data_path = str8_from_16(arena, str16_cstring(buffer));

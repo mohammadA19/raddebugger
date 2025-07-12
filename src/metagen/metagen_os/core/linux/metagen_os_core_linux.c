@@ -96,7 +96,7 @@ os_lnx_entity_alloc(OS_LNX_EntityKind kind)
     }
     else
     {
-      entity = push_array_no_zero(os_lnx_state.entity_arena, OS_LNX_Entity, 1);
+      entity = /* no zero */ push_array(os_lnx_state.entity_arena, OS_LNX_Entity, 1);
     }
   }
   MemoryZeroStruct(entity);
@@ -1264,7 +1264,7 @@ main(int argc, char **argv)
       for(S64 cap = 4096, r = 0; r < 4; cap *= 2, r += 1)
       {
         scratch_end(scratch);
-        buffer = push_array_no_zero(scratch.arena, U8, cap);
+        buffer = /* no zero */ push_array(scratch.arena, U8, cap);
         size = gethostname((char*)buffer, cap);
         if(size < cap)
         {
@@ -1277,7 +1277,7 @@ main(int argc, char **argv)
       if(got_final_result && size > 0)
       {
         info->machine_name.size = size;
-        info->machine_name.str = push_array_no_zero(os_lnx_state.arena, U8, info->machine_name.size + 1);
+        info->machine_name.str = /* no zero */ push_array(os_lnx_state.arena, U8, info->machine_name.size + 1);
         MemoryCopy(info->machine_name.str, buffer, info->machine_name.size);
         info->machine_name.str[info->machine_name.size] = 0;
       }
@@ -1299,7 +1299,7 @@ main(int argc, char **argv)
         for(S64 cap = PATH_MAX, r = 0; r < 4; cap *= 2, r += 1)
         {
           scratch_end(scratch);
-          buffer = push_array_no_zero(scratch.arena, U8, cap);
+          buffer = /* no zero */ push_array(scratch.arena, U8, cap);
           size = readlink("/proc/self/exe", (char*)buffer, cap);
           if(size < cap)
           {

@@ -506,7 +506,7 @@ internal RDIB_UnitChunk **
 rdib_array_from_unit_chunk_list(Arena *arena, RDIB_UnitChunkList list)
 {
   ProfBeginFunction();
-  RDIB_UnitChunk **result = push_array_no_zero(arena, RDIB_UnitChunk *, list.count);
+  RDIB_UnitChunk **result = /* no zero */ push_array(arena, RDIB_UnitChunk *, list.count);
   U64 chunk_idx = 0;
   for (RDIB_UnitChunk *chunk = list.first; chunk != 0; chunk = chunk->next, ++chunk_idx) {
     result[chunk_idx] = chunk;
@@ -519,7 +519,7 @@ internal RDIB_ScopeChunk **
 rdib_array_from_scope_chunk_list(Arena *arena, RDIB_ScopeChunkList list)
 {
   ProfBeginFunction();
-  RDIB_ScopeChunk **result = push_array_no_zero(arena, RDIB_ScopeChunk *, list.count);
+  RDIB_ScopeChunk **result = /* no zero */ push_array(arena, RDIB_ScopeChunk *, list.count);
   U64 chunk_idx = 0;
   for (RDIB_ScopeChunk *chunk = list.first; chunk != 0; chunk = chunk->next, ++chunk_idx) {
     result[chunk_idx] = chunk;
@@ -532,7 +532,7 @@ internal RDIB_VariableChunk **
 rdib_array_from_variable_chunk_list(Arena *arena, RDIB_VariableChunkList list)
 {
   ProfBeginFunction();
-  RDIB_VariableChunk **result = push_array_no_zero(arena, RDIB_VariableChunk *, list.count);
+  RDIB_VariableChunk **result = /* no zero */ push_array(arena, RDIB_VariableChunk *, list.count);
   U64 chunk_idx = 0;
   for (RDIB_VariableChunk *chunk = list.first; chunk != 0; chunk = chunk->next, ++chunk_idx) {
     result[chunk_idx] = chunk;
@@ -545,7 +545,7 @@ internal RDIB_LineTableChunk **
 rdib_array_from_line_table_chunk_list(Arena *arena, RDIB_LineTableChunkList list)
 {
   ProfBeginFunction();
-  RDIB_LineTableChunk **result = push_array_no_zero(arena, RDIB_LineTableChunk *, list.count);
+  RDIB_LineTableChunk **result = /* no zero */ push_array(arena, RDIB_LineTableChunk *, list.count);
   U64 chunk_idx = 0;
   for (RDIB_LineTableChunk *chunk = list.first; chunk != 0; chunk = chunk->next, ++chunk_idx) {
     result[chunk_idx] = chunk;
@@ -558,7 +558,7 @@ internal RDIB_ProcedureChunk **
 rdib_array_from_procedure_chunk_list(Arena *arena, RDIB_ProcedureChunkList list)
 {
   ProfBeginFunction();
-  RDIB_ProcedureChunk **result = push_array_no_zero(arena, RDIB_ProcedureChunk *, list.count);
+  RDIB_ProcedureChunk **result = /* no zero */ push_array(arena, RDIB_ProcedureChunk *, list.count);
   U64 chunk_idx = 0;
   for (RDIB_ProcedureChunk *chunk = list.first; chunk != 0; chunk = chunk->next, ++chunk_idx) {
     result[chunk_idx] = chunk;
@@ -571,7 +571,7 @@ internal RDIB_InlineSiteChunk **
 rdib_array_from_inline_site_chunk_list(Arena *arena, RDIB_InlineSiteChunkList list)
 {
   ProfBeginFunction();
-  RDIB_InlineSiteChunk **result = push_array_no_zero(arena, RDIB_InlineSiteChunk *, list.count);
+  RDIB_InlineSiteChunk **result = /* no zero */ push_array(arena, RDIB_InlineSiteChunk *, list.count);
   U64 chunk_idx = 0;
   for (RDIB_InlineSiteChunk *chunk = list.first; chunk != 0; chunk = chunk->next, ++chunk_idx) {
     result[chunk_idx] = chunk;
@@ -584,7 +584,7 @@ internal RDIB_UDTMemberChunk **
 rdib_array_from_udt_member_chunk_list(Arena *arena, RDIB_UDTMemberChunkList list)
 {
   ProfBeginFunction();
-  RDIB_UDTMemberChunk **result = push_array_no_zero(arena, RDIB_UDTMemberChunk *, list.count);
+  RDIB_UDTMemberChunk **result = /* no zero */ push_array(arena, RDIB_UDTMemberChunk *, list.count);
   U64 chunk_idx = 0;
   for (RDIB_UDTMemberChunk *chunk = list.first; chunk != 0; chunk = chunk->next, ++chunk_idx) {
     result[chunk_idx] = chunk;
@@ -597,7 +597,7 @@ internal RDIB_TypeChunk **
 rdib_array_from_type_chunk_list(Arena *arena, RDIB_TypeChunkList list)
 {
   ProfBeginFunction();
-  RDIB_TypeChunk **result = push_array_no_zero(arena, RDIB_TypeChunk *, list.count);
+  RDIB_TypeChunk **result = /* no zero */ push_array(arena, RDIB_TypeChunk *, list.count);
   U64 chunk_idx = 0;
   for (RDIB_TypeChunk *chunk = list.first; chunk != 0; chunk = chunk->next, ++chunk_idx) {
     result[chunk_idx] = chunk;
@@ -610,7 +610,7 @@ internal RDIB_SourceFileChunk **
 rdib_array_from_source_file_chunk_list(Arena *arena, RDIB_SourceFileChunkList list)
 {
   ProfBeginFunction();
-  RDIB_SourceFileChunk **result = push_array_no_zero(arena, RDIB_SourceFileChunk *, list.count);
+  RDIB_SourceFileChunk **result = /* no zero */ push_array(arena, RDIB_SourceFileChunk *, list.count);
   U64 chunk_idx = 0;
   for (RDIB_SourceFileChunk *chunk = list.first; chunk != 0; chunk = chunk->next) {
     result[chunk_idx++] = chunk;
@@ -1606,7 +1606,7 @@ rdib_data_sections_from_types(TP_Context            *tp,
     ProfEnd();
 
     udt_member_count_rdi = sum_array_u64(tp->worker_count, task.counts);
-    udt_members_rdi      = push_array_no_zero(arena, RDI_Member, udt_member_count_rdi);
+    udt_members_rdi      = new RDI_Member[udt_member_count_rdi] /* no zero */;
 
     ProfBegin("Fill");
     task.string_map      = string_map;
@@ -1639,7 +1639,7 @@ rdib_data_sections_from_types(TP_Context            *tp,
     ProfEnd();
 
     enum_member_count_rdi = sum_array_u64(tp->worker_count, task.counts);
-    enum_members_rdi      = push_array_no_zero(arena, RDI_EnumMember, enum_member_count_rdi);
+    enum_members_rdi      = new RDI_EnumMember[enum_member_count_rdi] /* no zero */;
 
     ProfBegin("Fill");
     task.string_map       = string_map;
@@ -1654,8 +1654,8 @@ rdib_data_sections_from_types(TP_Context            *tp,
   ProfEnd();
 
   ProfBegin("Up front pushes");
-  RDI_UDT      *udts       = push_array_no_zero(arena, RDI_UDT,      total_udt_count      );
-  RDI_TypeNode *type_nodes = push_array_no_zero(arena, RDI_TypeNode, total_type_node_count);
+  RDI_UDT      *udts       = /* no zero */ push_array(arena, RDI_UDT,      total_udt_count      );
+  RDI_TypeNode *type_nodes = new RDI_TypeNode[total_type_node_count] /* no zero */;
   ProfEnd();
 
   ProfBegin("Fill out UDTs");
@@ -2124,7 +2124,7 @@ rdib_string_map_sort_buckets(TP_Context *tp, RDIB_StringMapBucket **buckets, U64
   task.chunk_idx_opl = chunk_idx_opl;
   task.ranges        = tp_divide_work(scratch.arena, bucket_count, tp->worker_count);
   task.src           = buckets;
-  task.dst           = push_array_no_zero(scratch.arena, RDIB_StringMapBucket *, bucket_count);
+  task.dst           = /* no zero */ push_array(scratch.arena, RDIB_StringMapBucket *, bucket_count);
 
   ProfBegin("Chunk Index Histogram");
   task.chunk_histo = push_array(scratch.arena, U32, chunk_idx_opl);
@@ -2748,7 +2748,7 @@ rdib_index_run_map_sort_buckets(TP_Context *tp, RDIB_IndexRunBucket **buckets, U
   task.chunk_idx_opl = chunk_idx_opl;
   task.ranges        = tp_divide_work(scratch.arena, bucket_count, tp->worker_count);
   task.src           = buckets;
-  task.dst           = push_array_no_zero(scratch.arena, RDIB_IndexRunBucket *, bucket_count);
+  task.dst           = /* no zero */ push_array(scratch.arena, RDIB_IndexRunBucket *, bucket_count);
 
   ProfBegin("Chunk Index Histogram");
   task.chunk_histo = push_array(scratch.arena, U32, chunk_idx_opl);
@@ -2861,7 +2861,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_idx_runs_params_task)
 
       // pack params
       U64  type_index_count = params->params.count;
-      U32 *type_indices     = push_array_no_zero(arena, U32, type_index_count);
+      U32 *type_indices     = new U32[type_index_count] /* no zero */;
       for (U64 param_idx = 0; param_idx < params->params.count; ++param_idx) {
         type_indices[param_idx] = rdib_idx_from_type(params->params.types[param_idx]);
       }
@@ -2873,7 +2873,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_idx_runs_params_task)
       RDIB_Type *params = type->method.params_type;
 
       U64  type_index_count = params->params.count + 1;
-      U32 *type_indices     = push_array_no_zero(arena, U32, type_index_count);
+      U32 *type_indices     = new U32[type_index_count] /* no zero */;
       U64  type_idx_cursor  = 0;
 
       // pack 'this' type
@@ -2891,7 +2891,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_idx_runs_params_task)
       RDIB_Type *params = type->static_method.params_type;
 
       U64  type_index_count = params->params.count + 1;
-      U32 *type_indices     = push_array_no_zero(arena, U32, type_index_count);
+      U32 *type_indices     = new U32[type_index_count] /* no zero */;
       U64  type_idx_cursor  = 0;
 
       // static methods don't have 'this'
@@ -2942,7 +2942,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_idx_runs_name_map_buckets_task)
 
     if (count > 1) {
       // build array of indices that point to name map respective arrays
-      U32 *idxs = push_array_no_zero(arena, U32, count);
+      U32 *idxs = new U32[count] /* no zero */;
       {
         U64 curr_idx = 0;
         for (VoidNode *curr = bucket->raw_values; curr != 0; curr = curr->next, ++curr_idx) {
@@ -3229,7 +3229,7 @@ rdib_sort_procs_radix_32(RDIB_Procedure **v, U64 count)
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
 
-  RDIB_Procedure **temp = push_array_no_zero(scratch.arena, RDIB_Procedure *, count);
+  RDIB_Procedure **temp = /* no zero */ push_array(scratch.arena, RDIB_Procedure *, count);
   RDIB_Procedure **src  = v;
   RDIB_Procedure **dst  = temp;
 
@@ -3307,7 +3307,7 @@ rdib_data_from_vmap(Arena *arena, U64 range_count, RDIB_VMapRange *ranges)
   U64 radix_memory_size = sizeof(RDIB_VMapRange) * range_count +
                           sizeof(U32) * ((1 << size_bit_count0) + (1 << size_bit_count1) + (1 << size_bit_count2)) +
                           sizeof(U32) * ((1 << voff_bit_count0) + (1 << voff_bit_count1) + (1 << voff_bit_count2));
-  U8 *radix_memory      = push_array_no_zero(arena, U8, radix_memory_size);
+  U8 *radix_memory      = new U8[radix_memory_size] /* no zero */;
   ProfEnd();
 
   // TODO: windows caps images at 4GiB so we use 32-bit radix sort, but on linux
@@ -3585,7 +3585,7 @@ rdib_data_sections_from_unit_gvar_scope_vmaps(TP_Context           *tp,
 
     ProfBegin("Push");
     unit_vmap_count = sum_array_u64(tp->worker_count, task.counts);
-    unit_vmaps      = push_array_no_zero(scratch.arena, RDIB_VMapRange, unit_vmap_count);
+    unit_vmaps      = /* no zero */ push_array(scratch.arena, RDIB_VMapRange, unit_vmap_count);
     ProfEnd();
 
     ProfBegin("Fill");
@@ -3610,7 +3610,7 @@ rdib_data_sections_from_unit_gvar_scope_vmaps(TP_Context           *tp,
 
     ProfBegin("Push");
     gvar_vmap_count = sum_array_u64(tp->worker_count, task.counts);
-    gvar_vmaps      = push_array_no_zero(scratch.arena, RDIB_VMapRange, gvar_vmap_count);
+    gvar_vmaps      = /* no zero */ push_array(scratch.arena, RDIB_VMapRange, gvar_vmap_count);
     ProfEnd();
 
     ProfBegin("Fill");
@@ -3635,7 +3635,7 @@ rdib_data_sections_from_unit_gvar_scope_vmaps(TP_Context           *tp,
 
     ProfBegin("Push");
     scope_vmap_count = sum_array_u64(tp->worker_count, task.counts);
-    scope_vmaps      = push_array_no_zero(scratch.arena, RDIB_VMapRange, scope_vmap_count);
+    scope_vmaps      = /* no zero */ push_array(scratch.arena, RDIB_VMapRange, scope_vmap_count);
     ProfEnd();
 
     ProfBegin("Fill");
@@ -3690,7 +3690,7 @@ rdib_data_sections_from_string_map(TP_Context *tp, Arena *arena, RDIB_DataSectio
 
   // assign string table offset for each bucket
   U64  cursor       = 0;
-  U32 *string_table = push_array_no_zero(arena, U32, bucket_count);
+  U32 *string_table = new U32[bucket_count] /* no zero */;
   for (U64 bucket_idx = 0; bucket_idx < bucket_count; ++bucket_idx) {
     string_table[bucket_idx] = cursor;
     cursor += buckets[bucket_idx]->string.size;
@@ -3700,7 +3700,7 @@ rdib_data_sections_from_string_map(TP_Context *tp, Arena *arena, RDIB_DataSectio
   RDIB_CopyStringDataTask task = {0};
   task.string_table     = string_table;
   task.string_data_size = cursor;
-  task.string_data      = push_array_no_zero(arena, U8, task.string_data_size);
+  task.string_data      = new U8[task.string_data_size] /* no zero */;
   task.buckets          = buckets;
   task.ranges           = tp_divide_work(scratch.arena, bucket_count, tp->worker_count);
   tp_for_parallel(tp, 0, tp->worker_count, rdib_copy_string_data_task, &task);
@@ -3745,7 +3745,7 @@ rdib_data_sections_from_index_runs(TP_Context *tp, Arena *arena, RDIB_DataSectio
   }
   ProfEnd();
 
-  U32 *output_array = push_array_no_zero(arena, U32, total_index_count);
+  U32 *output_array = new U32[total_index_count] /* no zero */;
 
   RDIB_IdxRunCopyTask task = {0};
   task.buckets             = buckets;
@@ -3799,7 +3799,7 @@ internal void
 rdib_data_sections_from_path_tree(TP_Context *tp, Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMap *string_map, RDIB_PathTree *path_tree)
 {
   ProfBeginFunction();
-  RDI_FilePathNode *nodes_dst = push_array_no_zero(arena, RDI_FilePathNode, path_tree->node_count);
+  RDI_FilePathNode *nodes_dst = new RDI_FilePathNode[path_tree->node_count] /* no zero */;
 
   RDIB_BuildFilePathNodesTask task = {0};
   task.path_tree  = path_tree;
@@ -3866,7 +3866,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_var_section_task)
 
   for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_VariableChunk *chunk = task->gvars_rdib[chunk_idx];
-    RDI_GlobalVariable *vars  = push_array_no_zero(arena, RDI_GlobalVariable, chunk->count);
+    RDI_GlobalVariable *vars  = new RDI_GlobalVariable[chunk->count] /* no zero */;
 
     for (U64 i = 0; i < chunk->count; ++i) {
       RDIB_Variable      *src = &chunk->v[i];
@@ -3940,7 +3940,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_tvar_section_task)
 
   for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_VariableChunk *chunk = task->tvars_rdib[chunk_idx];
-    RDI_ThreadVariable *vars  = push_array_no_zero(arena, RDI_ThreadVariable, chunk->count);
+    RDI_ThreadVariable *vars  = new RDI_ThreadVariable[chunk->count] /* no zero */;
 
     for (U64 i = 0; i < chunk->count; ++i) {
       RDIB_Variable      *src = &chunk->v[i];
@@ -4012,7 +4012,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_procs_section_task)
 
   for (U64 chunk_idx = task->ranges[task_id].min; chunk_idx < task->ranges[task_id].max; ++chunk_idx) {
     RDIB_ProcedureChunk *chunk = task->procs_rdib[chunk_idx];
-    RDI_Procedure       *procs = push_array_no_zero(arena, RDI_Procedure, chunk->count);
+    RDI_Procedure       *procs = new RDI_Procedure[chunk->count] /* no zero */;
 
     for (U64 i = 0; i < chunk->count; ++i) {
       RDIB_Procedure *src = &chunk->v[i];
@@ -4297,11 +4297,11 @@ rdib_data_sections_from_scopes(TP_Context            *tp,
   task.loc_data_offsets   = offsets_from_counts_array_u64(scratch.arena, task.loc_data_sizes,    tp->worker_count);
 
   ProfBegin("Push");
-  task.scope_voffs_rdi = push_array_no_zero(arena->v[0], U64,               total_scope_voff_count);
-  task.scopes_rdi      = push_array_no_zero(arena->v[0], RDI_Scope,         total_scope_count     );
-  task.locals_rdi      = push_array_no_zero(arena->v[0], RDI_Local,         total_local_count     );
-  task.loc_blocks_rdi  = push_array_no_zero(arena->v[0], RDI_LocationBlock, total_loc_block_count );
-  task.loc_data_rdi    = push_array_no_zero(arena->v[0], U8,                total_loc_data_size   );
+  task.scope_voffs_rdi = /* no zero */ push_array(arena->v[0], U64,               total_scope_voff_count);
+  task.scopes_rdi      = /* no zero */ push_array(arena->v[0], RDI_Scope,         total_scope_count     );
+  task.locals_rdi      = /* no zero */ push_array(arena->v[0], RDI_Local,         total_local_count     );
+  task.loc_blocks_rdi  = /* no zero */ push_array(arena->v[0], RDI_LocationBlock, total_loc_block_count );
+  task.loc_data_rdi    = /* no zero */ push_array(arena->v[0], U8,                total_loc_data_size   );
   ProfEnd();
 
   tp_for_parallel(tp, 0, tp->worker_count, rdib_build_scopes_task, &task);
@@ -4353,7 +4353,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_name_map_task)
     U64          node_count;
   };
   struct NodeList *temp_map   = push_array(scratch.arena,         struct NodeList, out_bucket_count);
-  struct Node     *temp_nodes = push_array_no_zero(scratch.arena, struct Node,     out_node_count);
+  struct Node     *temp_nodes = /* no zero */ push_array(scratch.arena, struct Node,     out_node_count);
   for (U64 i = 0; i < task->in_bucket_counts[name_map_idx]; ++i) {
     RDIB_StringMapBucket *src_bucket = task->in_buckets[name_map_idx][i];
 
@@ -4370,8 +4370,8 @@ THREAD_POOL_TASK_FUNC(rdib_build_name_map_task)
   ProfEnd();
 
   ProfBegin("Push buckets and nodes");
-  RDI_NameMapBucket *out_buckets = push_array_no_zero(arena, RDI_NameMapBucket, out_bucket_count);
-  RDI_NameMapNode   *out_nodes   = push_array_no_zero(arena, RDI_NameMapNode,   out_node_count);
+  RDI_NameMapBucket *out_buckets = new RDI_NameMapBucket[out_bucket_count] /* no zero */;
+  RDI_NameMapNode   *out_nodes   = /* no zero */ push_array(arena, RDI_NameMapNode,   out_node_count);
   ProfEnd();
 
   ProfBegin("Fill out buckets");
@@ -4492,7 +4492,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_src_line_map_task)
   ProfEnd();
 
   ProfBegin("Push ln_voff_arr");
-  PairU32 *ln_voff_arr = push_array_no_zero(scratch.arena, PairU32, ln_voff_count);
+  PairU32 *ln_voff_arr = /* no zero */ push_array(scratch.arena, PairU32, ln_voff_count);
   ProfEnd();
 
   ProfBegin("Fill out ln_voff_arr");
@@ -4522,9 +4522,9 @@ THREAD_POOL_TASK_FUNC(rdib_build_src_line_map_task)
   ProfEnd();
 
   // TODO: leak, precompute unique line number count and push exact array lengths
-  U32 *line_nums   = push_array_no_zero(arena, U32, ln_voff_count);
-  U32 *line_ranges = push_array_no_zero(arena, U32, ln_voff_count + 1);
-  U64 *voffs       = push_array_no_zero(arena, U64, ln_voff_count);
+  U32 *line_nums   = new U32[ln_voff_count] /* no zero */;
+  U32 *line_ranges = new U32[ln_voff_count + 1] /* no zero */;
+  U64 *voffs       = new U64[ln_voff_count] /* no zero */;
 
   U64 voff_cursor     = 0;
   U64 line_num_cursor = 0;
@@ -4578,7 +4578,7 @@ rdib_data_sections_from_source_line_maps(TP_Context            *tp,
   Temp scratch = scratch_begin(arena->v, arena->count);
 
   ProfBegin("Prepare Source File Array");
-  RDIB_SourceFile **src_file_arr = push_array_no_zero(scratch.arena, RDIB_SourceFile *, total_src_file_count);
+  RDIB_SourceFile **src_file_arr = /* no zero */ push_array(scratch.arena, RDIB_SourceFile *, total_src_file_count);
   for (U64 chunk_idx = 0, cursor = 0; chunk_idx < src_file_chunk_count; ++chunk_idx) {
     RDIB_SourceFileChunk *chunk = src_file_chunks[chunk_idx];  
     for (U64 i = 0; i < chunk->count; ++i) {
@@ -4590,11 +4590,11 @@ rdib_data_sections_from_source_line_maps(TP_Context            *tp,
   ProfBegin("Init Task Context");
   RDIB_SrcLineMapsTask task = {0};
   task.src_file_arr    = src_file_arr;
-  task.out_line_counts = push_array_no_zero(scratch.arena, U32,   total_src_file_count);
-  task.out_voff_counts = push_array_no_zero(scratch.arena, U32,   total_src_file_count);
-  task.out_line_nums   = push_array_no_zero(scratch.arena, U32 *, total_src_file_count);
-  task.out_line_ranges = push_array_no_zero(scratch.arena, U32 *, total_src_file_count);
-  task.out_voffs       = push_array_no_zero(scratch.arena, U64 *, total_src_file_count);
+  task.out_line_counts = /* no zero */ push_array(scratch.arena, U32,   total_src_file_count);
+  task.out_voff_counts = /* no zero */ push_array(scratch.arena, U32,   total_src_file_count);
+  task.out_line_nums   = /* no zero */ push_array(scratch.arena, U32 *, total_src_file_count);
+  task.out_line_ranges = /* no zero */ push_array(scratch.arena, U32 *, total_src_file_count);
+  task.out_voffs       = /* no zero */ push_array(scratch.arena, U64 *, total_src_file_count);
   ProfEnd();
 
   ProfBegin("Build Source Line Maps");
@@ -4608,7 +4608,7 @@ rdib_data_sections_from_source_line_maps(TP_Context            *tp,
   RDIB_DataSection src_line_voffs_sect  = { .tag = RDI_SectionKind_SourceLineMapVOffs   };
 
   ProfBegin("Push");
-  RDI_SourceLineMap *src_line_maps = push_array_no_zero(arena->v[0], RDI_SourceLineMap, total_src_file_count + 1);
+  RDI_SourceLineMap *src_line_maps = /* no zero */ push_array(arena->v[0], RDI_SourceLineMap, total_src_file_count + 1);
   ProfEnd();
 
   U64 src_line_map_cursor = 0;
@@ -4687,8 +4687,8 @@ THREAD_POOL_TASK_FUNC(rdib_build_line_tables_task)
           U16 col_first;
           U16 col_opl;
         };
-        KeyValuePair *pairs       = push_array_no_zero(scratch.arena, KeyValuePair, total_line_count);
-        struct Value *values      = push_array_no_zero(scratch.arena, struct Value, total_line_count);
+        KeyValuePair *pairs       = /* no zero */ push_array(scratch.arena, KeyValuePair, total_line_count);
+        struct Value *values      = /* no zero */ push_array(scratch.arena, struct Value, total_line_count);
         U64           pair_cursor = 0;
 
         for (RDIB_LineTableFragment *frag = line_table->first; frag != 0; frag = frag->next_line_table) {
@@ -4731,8 +4731,8 @@ THREAD_POOL_TASK_FUNC(rdib_build_line_tables_task)
 
         // fill out RDI_Line output
         U64       line_count = pair_cursor + 1;
-        U64      *voffs      = push_array_no_zero(arena, U64,      line_count);
-        RDI_Line *lines      = push_array_no_zero(arena, RDI_Line, line_count);
+        U64      *voffs      = /* no zero */ push_array(arena, U64,      line_count);
+        RDI_Line *lines      = new RDI_Line[line_count] /* no zero */;
 
         U64 line_cursor = 0;
         for (U64 line_idx = 0; line_idx < pair_cursor; ++line_idx) {
@@ -4783,9 +4783,9 @@ rdib_data_sections_from_line_tables(TP_Context            *tp,
   RDIB_BuildLineTablesTask task = {0};
   task.chunks                   = chunks;
   task.ranges                   = tp_divide_work(scratch.arena, chunk_count, tp->worker_count);
-  task.out_line_table_counts    = push_array_no_zero(scratch.arena, U64,        total_line_table_count);
-  task.out_line_table_voffs     = push_array_no_zero(scratch.arena, U64 *,      total_line_table_count);
-  task.out_line_table_lines     = push_array_no_zero(scratch.arena, RDI_Line *, total_line_table_count);
+  task.out_line_table_counts    = /* no zero */ push_array(scratch.arena, U64,        total_line_table_count);
+  task.out_line_table_voffs     = /* no zero */ push_array(scratch.arena, U64 *,      total_line_table_count);
+  task.out_line_table_lines     = /* no zero */ push_array(scratch.arena, RDI_Line *, total_line_table_count);
   tp_for_parallel(tp, arena, tp->worker_count, rdib_build_line_tables_task, &task);
   ProfEnd();
 
@@ -4797,7 +4797,7 @@ rdib_data_sections_from_line_tables(TP_Context            *tp,
   ProfBegin("Fill out Line Tables");
 
   ProfBegin("Push");
-  RDI_LineTable *line_tables_rdi = push_array_no_zero(arena->v[0], RDI_LineTable, total_line_table_count);
+  RDI_LineTable *line_tables_rdi = /* no zero */ push_array(arena->v[0], RDI_LineTable, total_line_table_count);
   ProfEnd();
 
   U64 line_table_cursor      = 0;
@@ -4883,7 +4883,7 @@ rdib_data_sections_from_source_files(TP_Context            *tp,
   task.string_map      = string_map;
   task.path_tree       = path_tree;
   task.src_file_chunks = src_file_chunks;
-  task.src_files_dst   = push_array_no_zero(arena->v[0], RDI_SourceFile, total_src_file_count);
+  task.src_files_dst   = /* no zero */ push_array(arena->v[0], RDI_SourceFile, total_src_file_count);
   tp_for_parallel(tp, 0, tp->worker_count, rdib_fill_src_files_task, &task);
 
   RDIB_DataSection src_files_sect = { .tag = RDI_SectionKind_SourceFiles };

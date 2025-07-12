@@ -31,7 +31,7 @@ os_handle_array_from_list(Arena *arena, OS_HandleList *list)
 {
   OS_HandleArray result = {0};
   result.count = list->count;
-  result.v = push_array_no_zero(arena, OS_Handle, result.count);
+  result.v = new OS_Handle[result.count] /* no zero */;
   U64 idx = 0;
   for(OS_HandleNode *n = list->first; n != 0; n = n->next, idx += 1)
   {
@@ -141,7 +141,7 @@ os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
   U64 pre_pos = arena_pos(arena);
   String8 result;
   result.size = dim_1u64(range);
-  result.str = push_array_no_zero(arena, U8, result.size);
+  result.str = new U8[result.size] /* no zero */;
   U64 actual_read_size = os_file_read(file, range, result.str);
   if(actual_read_size < result.size)
   {

@@ -452,7 +452,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       
       // rjf: read path string
       read_off += str8_deserial_read_struct(string, read_off, &msg->path.size);
-      msg->path.str = push_array_no_zero(arena, U8, msg->path.size);
+      msg->path.str = /* no zero */ push_array(arena, U8, msg->path.size);
       read_off += str8_deserial_read(string, read_off, msg->path.str, msg->path.size, 1);
       
       // rjf: read entry point string list
@@ -462,7 +462,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       {
         String8 str = {0};
         read_off += str8_deserial_read_struct(string, read_off, &str.size);
-        str.str = push_array_no_zero(arena, U8, str.size);
+        str.str = new U8[str.size] /* no zero */;
         read_off += str8_deserial_read(string, read_off, str.str, str.size, 1);
         str8_list_push(arena, &msg->entry_points, str);
       }
@@ -474,7 +474,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       {
         String8 cmd_line_str = {0};
         read_off += str8_deserial_read_struct(string, read_off, &cmd_line_str.size);
-        cmd_line_str.str = push_array_no_zero(arena, U8, cmd_line_str.size);
+        cmd_line_str.str = new U8[cmd_line_str.size] /* no zero */;
         read_off += str8_deserial_read(string, read_off, cmd_line_str.str, cmd_line_str.size, 1);
         str8_list_push(arena, &msg->cmd_line_string_list, cmd_line_str);
       }
@@ -486,7 +486,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       {
         String8 env_str = {0};
         read_off += str8_deserial_read_struct(string, read_off, &env_str.size);
-        env_str.str = push_array_no_zero(arena, U8, env_str.size);
+        env_str.str = new U8[env_str.size] /* no zero */;
         read_off += str8_deserial_read(string, read_off, env_str.str, env_str.size, 1);
         str8_list_push(arena, &msg->env_string_list, env_str);
       }
@@ -528,12 +528,12 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
         read_off += str8_deserial_read_struct(string, read_off, &bp->flags);
         read_off += str8_deserial_read_struct(string, read_off, &bp->id);
         read_off += str8_deserial_read_struct(string, read_off, &bp->string.size);
-        bp->string.str = push_array_no_zero(arena, U8, bp->string.size);
+        bp->string.str = /* no zero */ push_array(arena, U8, bp->string.size);
         read_off += str8_deserial_read(string, read_off, bp->string.str, bp->string.size, 1);
         read_off += str8_deserial_read_struct(string, read_off, &bp->pt);
         read_off += str8_deserial_read_struct(string, read_off, &bp->size);
         read_off += str8_deserial_read_struct(string, read_off, &bp->condition.size);
-        bp->condition.str = push_array_no_zero(arena, U8, bp->condition.size);
+        bp->condition.str = /* no zero */ push_array(arena, U8, bp->condition.size);
         read_off += str8_deserial_read(string, read_off, bp->condition.str, bp->condition.size, 1);
       }
     }
@@ -632,7 +632,7 @@ ctrl_event_from_serialized_string(Arena *arena, String8 string)
     read_off += str8_deserial_read_struct(string, read_off, &event.rgba);
     read_off += str8_deserial_read_struct(string, read_off, &event.bp_flags);
     read_off += str8_deserial_read_struct(string, read_off, &event.string.size);
-    event.string.str = push_array_no_zero(arena, U8, event.string.size);
+    event.string.str = /* no zero */ push_array(arena, U8, event.string.size);
     read_off += str8_deserial_read(string, read_off, event.string.str, event.string.size, 1);
   }
   return event;
@@ -671,7 +671,7 @@ ctrl_entity_array_from_list(Arena *arena, CTRL_EntityList *list)
 {
   CTRL_EntityArray result = {0};
   result.count = list->count;
-  result.v = push_array_no_zero(arena, CTRL_Entity *, result.count);
+  result.v = /* no zero */ push_array(arena, CTRL_Entity *, result.count);
   U64 idx = 0;
   for(CTRL_EntityNode *n = list->first; n != 0; n = n->next, idx += 1)
   {
@@ -986,7 +986,7 @@ ctrl_entity_alloc(CTRL_EntityCtxRWStore *store, CTRL_Entity *parent, CTRL_Entity
       }
       else
       {
-        entity = push_array_no_zero(store->arena, CTRL_Entity, 1);
+        entity = /* no zero */ push_array(store->arena, CTRL_Entity, 1);
       }
       MemoryZeroStruct(entity);
     }
@@ -1028,7 +1028,7 @@ ctrl_entity_alloc(CTRL_EntityCtxRWStore *store, CTRL_Entity *parent, CTRL_Entity
         }
         else
         {
-          node = push_array_no_zero(store->arena, CTRL_EntityHashNode, 1);
+          node = /* no zero */ push_array(store->arena, CTRL_EntityHashNode, 1);
         }
         MemoryZeroStruct(node);
         DLLPushBack(slot->first, slot->last, node);
@@ -1433,7 +1433,7 @@ ctrl_scope_open(void)
   }
   else
   {
-    scope = push_array_no_zero(ctrl_tctx->arena, CTRL_Scope, 1);
+    scope = /* no zero */ push_array(ctrl_tctx->arena, CTRL_Scope, 1);
   }
   MemoryZeroStruct(scope);
   return scope;
@@ -1534,12 +1534,12 @@ ctrl_init(void)
     ctrl_state->module_image_info_cache.stripes[idx].rw_mutex = os_rw_mutex_alloc();
   }
   ctrl_state->u2c_ring_size = KB(64);
-  ctrl_state->u2c_ring_base = push_array_no_zero(arena, U8, ctrl_state->u2c_ring_size);
+  ctrl_state->u2c_ring_base = new U8[ctrl_state->u2c_ring_size] /* no zero */;
   ctrl_state->u2c_ring_mutex = os_mutex_alloc();
   ctrl_state->u2c_ring_cv = os_condition_variable_alloc();
   ctrl_state->c2u_ring_size = KB(64);
   ctrl_state->c2u_ring_max_string_size = ctrl_state->c2u_ring_size/2;
-  ctrl_state->c2u_ring_base = push_array_no_zero(arena, U8, ctrl_state->c2u_ring_size);
+  ctrl_state->c2u_ring_base = new U8[ctrl_state->c2u_ring_size] /* no zero */;
   ctrl_state->c2u_ring_mutex = os_mutex_alloc();
   ctrl_state->c2u_ring_cv = os_condition_variable_alloc();
   {
@@ -2328,7 +2328,7 @@ ctrl_unwind_deep_copy(Arena *arena, Arch arch, CTRL_Unwind *src)
     U64 block_size = regs_block_size_from_arch(arch);
     for(U64 idx = 0; idx < dst.frames.count; idx += 1)
     {
-      dst.frames.v[idx].regs = push_array_no_zero(arena, U8, block_size);
+      dst.frames.v[idx].regs = new U8[block_size] /* no zero */;
       MemoryCopy(dst.frames.v[idx].regs, src->frames.v[idx].regs, block_size);
     }
   }
@@ -3243,7 +3243,7 @@ ctrl_unwind_from_thread(Arena *arena, CTRL_EntityCtx *ctx, CTRL_Handle thread, U
       // rjf: valid step -> push frame
       CTRL_UnwindFrameNode *frame_node = push_array(scratch.arena, CTRL_UnwindFrameNode, 1);
       CTRL_UnwindFrame *frame = &frame_node->v;
-      frame->regs = push_array_no_zero(arena, U8, arch_reg_block_size);
+      frame->regs = new U8[arch_reg_block_size] /* no zero */;
       MemoryCopy(frame->regs, regs_block, arch_reg_block_size);
       DLLPushBack(first_frame_node, last_frame_node, frame_node);
       frame_node_count += 1;
@@ -3611,7 +3611,7 @@ ctrl_u2c_pop_msgs(Arena *arena)
       U64 size_to_decode = 0;
       ctrl_state->u2c_ring_read_pos += ring_read_struct(ctrl_state->u2c_ring_base, ctrl_state->u2c_ring_size, ctrl_state->u2c_ring_read_pos, &size_to_decode);
       msgs_srlzed_baked.size = size_to_decode;
-      msgs_srlzed_baked.str = push_array_no_zero(scratch.arena, U8, msgs_srlzed_baked.size);
+      msgs_srlzed_baked.str = /* no zero */ push_array(scratch.arena, U8, msgs_srlzed_baked.size);
       ctrl_state->u2c_ring_read_pos += ring_read(ctrl_state->u2c_ring_base, ctrl_state->u2c_ring_size, ctrl_state->u2c_ring_read_pos, msgs_srlzed_baked.str, size_to_decode);
       break;
     }
@@ -3676,7 +3676,7 @@ ctrl_c2u_pop_events(Arena *arena)
       ctrl_state->c2u_ring_read_pos += ring_read_struct(ctrl_state->c2u_ring_base, ctrl_state->c2u_ring_size, ctrl_state->c2u_ring_read_pos, &size_to_decode);
       String8 event_srlzed = {0};
       event_srlzed.size = size_to_decode;
-      event_srlzed.str = push_array_no_zero(scratch.arena, U8, event_srlzed.size);
+      event_srlzed.str = /* no zero */ push_array(scratch.arena, U8, event_srlzed.size);
       ctrl_state->c2u_ring_read_pos += ring_read(ctrl_state->c2u_ring_base, ctrl_state->c2u_ring_size, ctrl_state->c2u_ring_read_pos, event_srlzed.str, event_srlzed.size);
       CTRL_Event *new_event = ctrl_event_list_push(arena, &events);
       *new_event = ctrl_event_from_serialized_string(arena, event_srlzed);
@@ -6869,7 +6869,7 @@ ASYNC_WORK_DEF(ctrl_mem_stream_work)
     }
     else
     {
-      range_base = push_array_no_zero(range_arena, U8, range_size);
+      range_base = new U8[range_size] /* no zero */;
       U64 bytes_read = 0;
       U64 retry_count = 0;
       U64 retry_limit = range_size > page_size ? 64 : 0;

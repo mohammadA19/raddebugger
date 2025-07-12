@@ -312,7 +312,7 @@ entry_point(CmdLine *cmdl)
         temp_end(temp);
       }
       
-      c13_lines = push_array_no_zero(arena, CV_LineArray, c13_lines_count);
+      c13_lines = new CV_LineArray[c13_lines_count] /* no zero */;
       
       U64 c13_lines_idx = 0;
       for (String8Node *raw_lines_node = raw_lines_list.first; raw_lines_node != 0; raw_lines_node = raw_lines_node->next) {

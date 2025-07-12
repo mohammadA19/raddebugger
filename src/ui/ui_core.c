@@ -2450,7 +2450,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     }
     else
     {
-      box = push_array_no_zero(box_is_transient ? ui_build_arena() : ui_state->arena, UI_Box, 1);
+      box = /* no zero */ push_array(box_is_transient ? ui_build_arena() : ui_state->arena, UI_Box, 1);
     }
     MemoryZeroStruct(box);
   }

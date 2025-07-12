@@ -70,7 +70,7 @@ fp_dwrite_font_file_stream_node_alloc(String8 *data_ptr)
     }
     else
     {
-      node = push_array_no_zero(fp_dwrite_state->arena, FP_DWrite_FontFileStreamNode, 1);
+      node = /* no zero */ push_array(fp_dwrite_state->arena, FP_DWrite_FontFileStreamNode, 1);
     }
     MemoryZeroStruct(node);
     node->stream.lpVtbl = &fp_dwrite_static_data_font_file_stream__vtable;
@@ -467,7 +467,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   F32 design_units_per_em = (F32)font_metrics.designUnitsPerEm;
   
   //- rjf: get glyph indices
-  U16 *glyph_indices = push_array_no_zero(scratch.arena, U16, string32.size);
+  U16 *glyph_indices = /* no zero */ push_array(scratch.arena, U16, string32.size);
   if(font.face != 0)
   {
     error = IDWriteFontFace_GetGlyphIndices(font.face, string32.str, string32.size, glyph_indices);
@@ -475,7 +475,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   
   //- rjf: get metrics info
   U64 glyphs_count = string32.size;
-  DWRITE_GLYPH_METRICS *glyphs_metrics = push_array_no_zero(scratch.arena, DWRITE_GLYPH_METRICS, glyphs_count);
+  DWRITE_GLYPH_METRICS *glyphs_metrics = /* no zero */ push_array(scratch.arena, DWRITE_GLYPH_METRICS, glyphs_count);
   if(font.face != 0)
   {
     error = IDWriteFontFace_GetGdiCompatibleGlyphMetrics(font.face, (96.f/72.f)*size, 1.f, 0, 1, glyph_indices, glyphs_count, glyphs_metrics, 0);
@@ -582,7 +582,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   {
     // rjf: fill basics
     result.atlas_dim    = atlas_dim;
-    result.atlas        = push_array_no_zero(arena, U8, atlas_dim.x*atlas_dim.y*4);
+    result.atlas        = /* no zero */ push_array(arena, U8, atlas_dim.x*atlas_dim.y*4);
     result.advance      = floor_f32(advance);
     
     // rjf: fill atlas

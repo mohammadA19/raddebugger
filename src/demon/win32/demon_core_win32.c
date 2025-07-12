@@ -64,7 +64,7 @@ dmn_w32_entity_alloc(DMN_W32_Entity *parent, DMN_W32_EntityKind kind, U64 id)
     }
     else
     {
-      e = push_array_no_zero(dmn_w32_shared->entities_arena, DMN_W32_Entity, 1);
+      e = /* no zero */ push_array(dmn_w32_shared->entities_arena, DMN_W32_Entity, 1);
       dmn_w32_shared->entities_count += 1;
     }
     MemoryZeroStruct(e);
@@ -221,7 +221,7 @@ dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module)
     if(module->handle != 0)
     {
       DWORD cap16 = GetFinalPathNameByHandleW(module->handle, 0, 0, VOLUME_NAME_DOS);
-      U16 *buffer16 = push_array_no_zero(scratch.arena, U16, cap16);
+      U16 *buffer16 = /* no zero */ push_array(scratch.arena, U16, cap16);
       DWORD size16 = GetFinalPathNameByHandleW(module->handle, (WCHAR*)buffer16, cap16, VOLUME_NAME_DOS);
       path16 = str16(buffer16, size16);
     }
@@ -231,7 +231,7 @@ dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module)
     {
       DMN_W32_Entity *process = module->parent;
       DWORD size = KB(4);
-      U16 *buf = push_array_no_zero(scratch.arena, U16, size);
+      U16 *buf = /* no zero */ push_array(scratch.arena, U16, size);
       if(QueryFullProcessImageNameW(process->handle, 0, (WCHAR*)buf, &size))
       {
         path16 = str16(buf, size);
@@ -1550,7 +1550,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
       //////////////////////////
       //- rjf: write all traps into memory
       //
-      U8 *trap_swap_bytes = push_array_no_zero(scratch.arena, U8, ctrls->traps.trap_count);
+      U8 *trap_swap_bytes = /* no zero */ push_array(scratch.arena, U8, ctrls->traps.trap_count);
       ProfScope("write all traps into memory")
       {
         U64 trap_idx = 0;
@@ -2593,7 +2593,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
               U64 string_size = (U64)evt.u.DebugString.nDebugStringLength;
               
               // rjf: read memory
-              U8 *buffer = push_array_no_zero(scratch.arena, U8, string_size + 1);
+              U8 *buffer = /* no zero */ push_array(scratch.arena, U8, string_size + 1);
               dmn_w32_process_read(process->handle, r1u64(string_address, string_address+string_size), buffer);
               buffer[string_size] = 0;
               

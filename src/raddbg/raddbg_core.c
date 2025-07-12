@@ -286,7 +286,7 @@ rd_cfg_alloc(void)
     }
     else
     {
-      result = push_array_no_zero(rd_state->arena, RD_Cfg, 1);
+      result = /* no zero */ push_array(rd_state->arena, RD_Cfg, 1);
     }
   }
   
@@ -597,7 +597,7 @@ rd_cfg_array_from_list(Arena *arena, RD_CfgList *list)
 {
   RD_CfgArray array = {0};
   array.count = list->count;
-  array.v = push_array_no_zero(arena, RD_Cfg *, array.count);
+  array.v = /* no zero */ push_array(arena, RD_Cfg *, array.count);
   U64 idx = 0;
   for(RD_CfgNode *n = list->first; n != 0; n = n->next, idx += 1)
   {
@@ -5849,7 +5849,7 @@ rd_window_state_from_cfg(RD_Cfg *cfg)
     }
     else
     {
-      ws = push_array_no_zero(rd_state->arena, RD_WindowState, 1);
+      ws = /* no zero */ push_array(rd_state->arena, RD_WindowState, 1);
     }
     MemoryZeroStruct(ws);
     
