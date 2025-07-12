@@ -195,7 +195,7 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
   
   // put input task onto the list
   {
-    DW_ExprAnalysisTask *new_task = push_array(DW_ExprAnalysisTask, 1);
+    DW_ExprAnalysisTask *new_task = new DW_ExprAnalysisTask[1];
     new_task->p                   = max_U64;
     new_task->data                = in_data;
     SLLStackPush(unfinished_tasks, new_task);
@@ -440,7 +440,7 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
                 existing = dw_expr__analysis_task_from_p(finished_tasks, p);;
               }
               if (existing == 0) {
-                DW_ExprAnalysisTask *new_task = push_array(DW_ExprAnalysisTask, 1);
+                DW_ExprAnalysisTask *new_task = new DW_ExprAnalysisTask[1];
                 new_task->p                   = p;
                 new_task->data                = call_config->func(call_config->user_ptr, p);
                 SLLStackPush(unfinished_tasks, new_task);
@@ -1244,7 +1244,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
             }
             
             // push the piece
-            DW_Piece *piece = push_array(DW_Piece, 1);
+            DW_Piece *piece = new DW_Piece[1];
             SLLQueuePush(result.first_piece, result.last_piece, piece);
             piece->loc = piece_loc;
             piece->bit_size = bit_size;
@@ -1349,7 +1349,7 @@ dw_expr__stack_push(Arena *arena, DW_ExprStack *stack, U64 x)
   if (node == 0) {
     SLLStackPop(stack->free_nodes);
   } else {
-    node = push_array(DW_ExprStackNode, 1);
+    node = new DW_ExprStackNode[1];
   }
   SLLStackPush(stack->stack, node);
   node->val = x;
@@ -1407,7 +1407,7 @@ dw_expr__call_push(Arena *arena, DW_ExprCallStack *stack, void *ptr, U64 size)
   if (call != 0) {
     SLLStackPop(stack->free_calls);
   } else {
-    call = push_array(DW_ExprCall, 1);
+    call = new DW_ExprCall[1];
   }
   MemoryZeroStruct(call);
   SLLStackPush(stack->stack, call);

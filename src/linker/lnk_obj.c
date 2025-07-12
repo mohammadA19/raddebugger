@@ -14,7 +14,7 @@ lnk_error_obj(LNK_ErrorCode code, LNK_Obj *obj, char *fmt, ...)
 internal LNK_Obj **
 lnk_array_from_obj_list(Arena *arena, LNK_ObjList list)
 {
-  LNK_Obj **arr = /* no zero */ push_array(LNK_Obj *, list.count);
+  LNK_Obj **arr = /* no zero */ new LNK_Obj *[list.count];
   U64 idx = 0;
   for (LNK_ObjNode *node = list.first; node != 0; node = node->next, ++idx) {
     arr[idx] = &node->data;
@@ -295,7 +295,7 @@ lnk_obj_list_push_parallel(TP_Context        *tp,
   LNK_ObjNodeArray objs = {0};
   if (input_count > 0) {
     objs.count = input_count;
-    objs.v = push_array(LNK_ObjNode, input_count);
+    objs.v = new LNK_ObjNode[input_count];
     for (LNK_ObjNode *ptr = objs.v, *opl = objs.v + input_count; ptr < opl; ++ptr) {
       SLLQueuePush(list->first, list->last, ptr);
     }
@@ -395,8 +395,8 @@ lnk_input_obj_symbols(TP_Context *tp, TP_Arena *arena, LNK_SymbolTable *symtab, 
   LNK_InputCoffSymbolTable task = {0};
   task.symtab                   = symtab;
   task.objs                     = objs;
-  task.weak_lists               = push_array(LNK_SymbolList, tp->worker_count);
-  task.undef_lists              = push_array(LNK_SymbolList, tp->worker_count);
+  task.weak_lists               = new LNK_SymbolList[tp->worker_count];
+  task.undef_lists              = new LNK_SymbolList[tp->worker_count];
   tp_for_parallel(tp, arena, objs.count, lnk_input_coff_symbol_table, &task);
 
   LNK_SymbolInputResult result = {0};
@@ -528,7 +528,7 @@ lnk_collect_obj_sections(TP_Context *tp, TP_Arena *arena, U64 objs_count, LNK_Ob
   task.objs              = objs;
   task.name              = name;
   task.collect_discarded = collect_discarded;
-  task.out_lists         = push_array(String8List, objs_count);
+  task.out_lists         = new String8List[objs_count];
   tp_for_parallel(tp, arena, objs_count, lnk_collect_obj_chunks_task, &task);
   return task.out_lists;
 }

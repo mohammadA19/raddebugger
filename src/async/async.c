@@ -11,7 +11,7 @@ internal void
 async_init(CmdLine *cmdline)
 {
   Arena *arena = arena_alloc();
-  async_shared = push_array(ASYNC_Shared, 1);
+  async_shared = new ASYNC_Shared[1];
   async_shared->arena = arena;
   for EachEnumVal(ASYNC_Priority, p)
   {
@@ -29,7 +29,7 @@ async_init(CmdLine *cmdline)
     async_shared->work_threads_count = Max(4, os_get_system_info()->logical_processor_count-1);
   }
   async_shared->work_threads_count = Max(4, async_shared->work_threads_count);
-  async_shared->work_threads = push_array(OS_Handle, async_shared->work_threads_count);
+  async_shared->work_threads = new OS_Handle[async_shared->work_threads_count];
   for EachIndex(idx, async_shared->work_threads_count)
   {
     async_shared->work_threads[idx] = os_thread_launch(async_work_thread__entry_point, (void *)idx, 0);
@@ -121,7 +121,7 @@ async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params
 internal void
 async_task_list_push(Arena *arena, ASYNC_TaskList *list, ASYNC_Task *t)
 {
-  ASYNC_TaskNode *n = push_array(ASYNC_TaskNode, 1);
+  ASYNC_TaskNode *n = new ASYNC_TaskNode[1];
   SLLQueuePush(list->first, list->last, n);
   n->v = t;
   list->count += 1;
@@ -130,7 +130,7 @@ async_task_list_push(Arena *arena, ASYNC_TaskList *list, ASYNC_Task *t)
 internal ASYNC_Task *
 async_task_launch_(Arena *arena, ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params)
 {
-  ASYNC_Task *task = push_array(ASYNC_Task, 1);
+  ASYNC_Task *task = new ASYNC_Task[1];
   task->semaphore = os_semaphore_alloc(1, 1, str8_zero());
   ASYNC_WorkParams params_refined = {0};
   MemoryCopyStruct(&params_refined, params);
@@ -241,8 +241,8 @@ internal ASYNC_Root *
 async_root_alloc(void)
 {
   Arena *arena = arena_alloc();
-  ASYNC_Root *root = push_array(ASYNC_Root, 1);
-  root->arenas = push_array(Arena *, async_thread_count());
+  ASYNC_Root *root = new ASYNC_Root[1];
+  root->arenas = new Arena *[async_thread_count()];
   root->arenas[0] = arena;
   for(U64 idx = 1; idx < async_thread_count(); idx += 1)
   {

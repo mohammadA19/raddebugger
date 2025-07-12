@@ -205,12 +205,12 @@ internal EV_View *
 ev_view_alloc(void)
 {
   Arena *arena = arena_alloc();
-  EV_View *view = push_array(EV_View, 1);
+  EV_View *view = new EV_View[1];
   view->arena = arena;
   view->expand_slots_count = 256;
-  view->expand_slots = push_array(EV_ExpandSlot, view->expand_slots_count);
+  view->expand_slots = new EV_ExpandSlot[view->expand_slots_count];
   view->key_view_rule_slots_count = 256;
-  view->key_view_rule_slots = push_array(EV_KeyViewRuleSlot, view->key_view_rule_slots_count);
+  view->key_view_rule_slots = new EV_KeyViewRuleSlot[view->key_view_rule_slots_count];
   return view;
 }
 
@@ -295,7 +295,7 @@ ev_key_set_expansion(EV_View *view, EV_Key parent_key, EV_Key key, B32 expanded)
     }
     else
     {
-      node = push_array(EV_ExpandNode, 1);
+      node = new EV_ExpandNode[1];
     }
     
     // rjf: link into table
@@ -372,11 +372,11 @@ ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_string)
   EV_KeyViewRuleNode *node = existing_node;
   if(node == 0)
   {
-    node = push_array(EV_KeyViewRuleNode, 1);
+    node = new EV_KeyViewRuleNode[1];
     DLLPushBack_NP(slot->first, slot->last, node, hash_next, hash_prev);
     node->key = key;
     node->buffer_cap = 512;
-    node->buffer = push_array(U8, node->buffer_cap);
+    node->buffer = new U8[node->buffer_cap];
   }
   
   //- rjf: mutate node
@@ -396,12 +396,12 @@ ev_expand_rule_table_push(Arena *arena, EV_ExpandRuleTable *table, EV_ExpandRule
   if(table->slots_count == 0)
   {
     table->slots_count = 512;
-    table->slots = push_array(EV_ExpandRuleSlot, table->slots_count);
+    table->slots = new EV_ExpandRuleSlot[table->slots_count];
   }
   U64 hash = ev_hash_from_seed_string(5381, info->string);
   U64 slot_idx = hash%table->slots_count;
   EV_ExpandRuleSlot *slot = &table->slots[slot_idx];
-  EV_ExpandRuleNode *n = push_array(EV_ExpandRuleNode, 1);
+  EV_ExpandRuleNode *n = new EV_ExpandRuleNode[1];
   SLLQueuePush(slot->first, slot->last, n);
   MemoryCopyStruct(&n->v, info);
   n->v.string = push_str8_copy(arena, n->v.string);
@@ -476,7 +476,7 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
     EV_Key root_row_key = ev_key_make(ev_hash_from_key(root_key), 1);
     
     //- rjf: generate root block
-    tree.root = push_array(EV_Block, 1);
+    tree.root = new EV_Block[1];
     MemoryCopyStruct(tree.root, &ev_nil_block);
     tree.root->key              = root_key;
     tree.root->string           = str8_zero();
@@ -571,7 +571,7 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
       EV_Block *expansion_block = &ev_nil_block;
       if(expansion_row_count != 0)
       {
-        expansion_block = push_array(EV_Block, 1);
+        expansion_block = new EV_Block[1];
         MemoryCopyStruct(expansion_block, &ev_nil_block);
         DLLPushBack_NPZ(&ev_nil_block, t->parent_block->first, t->parent_block->last, expansion_block, next, prev);
         expansion_block->parent                   = t->parent_block;
@@ -599,8 +599,8 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
         
         // rjf: gather children keys & numbers
         B32 needs_sort = 0;
-        child_keys = push_array(EV_Key, child_count);
-        child_nums = push_array(U64, child_count);
+        child_keys = new EV_Key[child_count];
+        child_nums = new U64[child_count];
         {
           U64 idx = 0;
           for(EV_ExpandNode *child = expand_node->first; child != 0; child = child->next, idx += 1)
@@ -642,8 +642,8 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
       if(allow_child_expansions && !child_count && (viz_expand_info.rows_default_expanded || (expand_node == 0 && !viz_expand_info.rows_default_expanded)))
       {
         child_count = viz_expand_info.row_count;
-        child_keys  = push_array(EV_Key, child_count);
-        child_nums  = push_array(U64,    child_count);
+        child_keys  = new EV_Key[child_count];
+        child_nums  = new U64[child_count];
         for(U64 idx = 0; idx < child_count; idx += 1)
         {
           U64 child_id = type_expand_rule->id_from_num(type_expand_info.user_data, idx+1);
@@ -667,7 +667,7 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
           E_Eval child_eval = {0};
           type_expand_rule->range(arena, type_expand_info.user_data, eval, task_filter, r1u64(split_relative_idx, split_relative_idx+1), &child_eval);
           EV_Key child_key = child_keys[idx];
-          BlockTreeBuildTask *task = push_array(BlockTreeBuildTask, 1);
+          BlockTreeBuildTask *task = new BlockTreeBuildTask[1];
           SLLQueuePush(first_task, last_task, task);
           task->parent_block       = expansion_block;
           task->eval               = child_eval;
@@ -682,7 +682,7 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
       // rjf: if this expr has a sibling, push another task to continue the chain
       if(t->next_expr != &e_expr_nil)
       {
-        BlockTreeBuildTask *task = push_array(BlockTreeBuildTask, 1);
+        BlockTreeBuildTask *task = new BlockTreeBuildTask[1];
         task->next = t->next;
         t->next = task;
         task->parent_block       = t->parent_block;
@@ -757,7 +757,7 @@ ev_block_range_list_from_tree(Arena *arena, EV_BlockTree *block_tree)
       // rjf: generate range node 
       if(block_num_visual_rows != 0)
       {
-        EV_BlockRangeNode *n = push_array(EV_BlockRangeNode, 1);
+        EV_BlockRangeNode *n = new EV_BlockRangeNode[1];
         n->v.block = t->block;
         n->v.range = block_relative_range;
         SLLQueuePush(list.first, list.last, n);
@@ -768,7 +768,7 @@ ev_block_range_list_from_tree(Arena *arena, EV_BlockTree *block_tree)
       if(t->next_child != &ev_nil_block)
       {
         // rjf: generate task for child - do *before* remainder (descend block tree depth first)
-        BlockTask *child_task = push_array(BlockTask, 1);
+        BlockTask *child_task = new BlockTask[1];
         child_task->next = t->next;
         t->next = child_task;
         child_task->block = t->next_child;
@@ -779,7 +779,7 @@ ev_block_range_list_from_tree(Arena *arena, EV_BlockTree *block_tree)
         Rng1U64 remainder_range = r1u64(t->next_child->split_relative_idx+1, t->block_relative_range.max);
         if(remainder_range.max >= remainder_range.min)
         {
-          BlockTask *remainder_task = push_array(BlockTask, 1);
+          BlockTask *remainder_task = new BlockTask[1];
           remainder_task->next = child_task->next;
           child_task->next = remainder_task;
           remainder_task->block = t->block;
@@ -972,7 +972,7 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
         // rjf: get info about expansion range
         B32 is_standalone_row = 0;
         U64 range_exprs_count = dim_1u64(block_relative_range__windowed);
-        E_Eval *range_evals = push_array(E_Eval, range_exprs_count);
+        E_Eval *range_evals = new E_Eval[range_exprs_count];
         for EachIndex(idx, range_exprs_count)
         {
           range_evals[idx] = e_eval_nil;
@@ -989,7 +989,7 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
         // rjf: no expansion operator applied -> push row for block expression; pass through block info
         if(is_standalone_row)
         {
-          EV_WindowedRowNode *row_node = push_array(EV_WindowedRowNode, 1);
+          EV_WindowedRowNode *row_node = new EV_WindowedRowNode[1];
           SLLQueuePush(rows.first, rows.last, row_node);
           rows.count += 1;
           row_node->visual_size_skipped = num_skipped;
@@ -1009,7 +1009,7 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
           U64 child_id = ev_block_id_from_num(n->v.block, child_num);
           EV_Key row_key = ev_key_make(ev_hash_from_key(n->v.block->key), child_id);
           E_Eval row_eval = range_evals[idx];
-          EV_WindowedRowNode *row_node = push_array(EV_WindowedRowNode, 1);
+          EV_WindowedRowNode *row_node = new EV_WindowedRowNode[1];
           SLLQueuePush(rows.first, rows.last, row_node);
           rows.count += 1;
           EV_Row *row = &row_node->row;
@@ -1037,7 +1037,7 @@ ev_row_from_num(Arena *arena, EV_View *view, EV_BlockRangeList *block_ranges, U6
   }
   else
   {
-    result = push_array(EV_Row, 1);
+    result = new EV_Row[1];
     result->block = &ev_nil_block;
     result->eval = e_eval_nil;
   }
@@ -1467,8 +1467,8 @@ ev_escaped_from_raw_string(Arena *arena, String8 raw)
 internal EV_StringIter *
 ev_string_iter_begin(Arena *arena, E_Eval eval, EV_StringParams *params)
 {
-  EV_StringIter *it = push_array(EV_StringIter, 1);
-  it->top_task = push_array(EV_StringIterTask, 1);
+  EV_StringIter *it = new EV_StringIter[1];
+  it->top_task = new EV_StringIterTask[1];
   it->top_task->eval = eval;
   MemoryCopyStruct(&it->top_task->params, params);
   return it;
@@ -1782,7 +1782,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
         EV_StringPtrData *ptr_data = it->top_task->user_data;
         if(ptr_data == 0)
         {
-          ptr_data = it->top_task->user_data = push_array(EV_StringPtrData, 1);
+          ptr_data = it->top_task->user_data = new EV_StringPtrData[1];
           ptr_data->value_eval = e_value_eval_from_eval(eval);
           ptr_data->type = e_type_from_key(type_key);
           ptr_data->direct_type = e_type_from_key(e_type_key_unwrap(type_key, E_TypeUnwrapFlag_All));
@@ -1815,7 +1815,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
               // rjf: read string data
 #define EV_STRING_ITER_STRING_BUFFER_CAPACITY 4096
               U64 string_buffer_size = EV_STRING_ITER_STRING_BUFFER_CAPACITY;
-              U8 *string_buffer = push_array(U8, string_buffer_size);
+              U8 *string_buffer = new U8[string_buffer_size];
               if(type_kind == E_TypeKind_Array && eval.irtree.mode == E_Mode_Value)
               {
                 StaticAssert(sizeof(eval.value.u512.u8) <= EV_STRING_ITER_STRING_BUFFER_CAPACITY, ev_string_iter_value_string_buffer_size_check);
@@ -2111,7 +2111,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
         EV_ExpandedTypeData *expand_data = (EV_ExpandedTypeData *)it->top_task->user_data;
         if(expand_data == 0)
         {
-          expand_data = it->top_task->user_data = push_array(EV_ExpandedTypeData, 1);
+          expand_data = it->top_task->user_data = new EV_ExpandedTypeData[1];
           expand_data->type = e_type_from_key(type_key);
         }
         switch(task_idx)
@@ -2189,7 +2189,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
     }
     else
     {
-      new_t = push_array(EV_StringIterTask, 1);
+      new_t = new EV_StringIterTask[1];
     }
     MemoryCopyStruct(new_t, &new_task);
     new_t->depth = top_task_depth + 1*(!need_pop);

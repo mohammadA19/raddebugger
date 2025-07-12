@@ -179,11 +179,11 @@ entry_point(CmdLine *cmdline)
   Arena *arena = arena_alloc();
   
   // make indent
-  String8List *out = push_array(String8List, 1);
+  String8List *out = new String8List[1];
   String8      indent;
   {
     U64 indent_buffer_size = RD_INDENT_WIDTH * RD_INDENT_MAX;
-    U8 *indent_buffer      = push_array(U8, indent_buffer_size);
+    U8 *indent_buffer      = new U8[indent_buffer_size];
     MemorySet(indent_buffer, ' ', indent_buffer_size);
     indent = str8(indent_buffer, 0);
   }

@@ -1393,8 +1393,8 @@ RDI_PROC RDI_U64 rdim_arena_pos_fallback(RDIM_Arena *arena);
 RDI_PROC void *rdim_arena_push_fallback(RDIM_Arena *arena, RDI_U64 align, RDI_U64 size);
 RDI_PROC void rdim_arena_pop_to_fallback(RDIM_Arena *arena, RDI_U64 pos);
 #endif
-#define rdim_/* no zero */ push_array(T,c) (T*)rdim_arena_push((a), sizeof(T)*(c), RDIM_AlignOf(T))
-#define rdim_push_array(a,T,c) (T*)rdim_memzero(rdim_/* no zero */ push_array(T,c), sizeof(T)*(c))
+#define rdim_/* no zero */ new T[c) (T*)rdim_arena_push((a), sizeof(T)*(c), RDIM_AlignOf(T)]
+#define rdim_push_array(a,T,c) (T*)rdim_memzero(rdim_/* no zero */ new T[c), sizeof(T)*(c)]
 
 //- rjf: thread-local scratch arenas
 #if !defined (RDIM_SCRATCH_OVERRIDE)

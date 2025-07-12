@@ -23,7 +23,7 @@ fs_big_hash_from_string_range(String8 string, Rng1U64 range)
 {
   Temp scratch = scratch_begin(0, 0);
   U64 buffer_size = string.size + sizeof(U64)*2;
-  U8 *buffer = /* no zero */ push_array(U8, buffer_size);
+  U8 *buffer = /* no zero */ new U8[buffer_size];
   MemoryCopy(buffer, string.str, string.size);
   MemoryCopy(buffer + string.size, &range.min, sizeof(range.min));
   MemoryCopy(buffer + string.size + sizeof(range.min), &range.max, sizeof(range.max));
@@ -39,13 +39,13 @@ internal void
 fs_init(void)
 {
   Arena *arena = arena_alloc();
-  fs_shared = push_array(FS_Shared, 1);
+  fs_shared = new FS_Shared[1];
   fs_shared->arena = arena;
   fs_shared->change_gen = 1;
   fs_shared->slots_count = 1024;
   fs_shared->stripes_count = os_get_system_info()->logical_processor_count;
-  fs_shared->slots = push_array(FS_Slot, fs_shared->slots_count);
-  fs_shared->stripes = push_array(FS_Stripe, fs_shared->stripes_count);
+  fs_shared->slots = new FS_Slot[fs_shared->slots_count];
+  fs_shared->stripes = new FS_Stripe[fs_shared->stripes_count];
   for(U64 idx = 0; idx < fs_shared->stripes_count; idx += 1)
   {
     fs_shared->stripes[idx].arena = arena_alloc();
@@ -112,12 +112,12 @@ fs_key_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
       }
       if(!node_found)
       {
-        FS_Node *node = push_array(FS_Node, 1);
+        FS_Node *node = new FS_Node[1];
         SLLQueuePush(path_slot->first, path_slot->last, node);
         node->path = push_str8_copy(path_stripe->arena, path);
         node->root = hs_root_alloc();
         node->slots_count = 64;
-        node->slots = push_array(FS_RangeSlot, node->slots_count);
+        node->slots = new FS_RangeSlot[node->slots_count];
         root = node->root;
       }
     }
@@ -167,7 +167,7 @@ fs_key_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
       // rjf: range node does not exist? create & store
       if(range_node == 0)
       {
-        range_node = push_array(FS_RangeNode, 1);
+        range_node = new FS_RangeNode[1];
         SLLQueuePush(range_slot->first, range_slot->last, range_node);
         range_node->id = key.id;
       }
@@ -288,7 +288,7 @@ fs_u2s_dequeue_req(Arena *arena, HS_Key *key_out, Rng1U64 *range_out, String8 *p
       fs_shared->u2s_ring_read_pos += ring_read_struct(fs_shared->u2s_ring_base, fs_shared->u2s_ring_size, fs_shared->u2s_ring_read_pos, &range_out->min);
       fs_shared->u2s_ring_read_pos += ring_read_struct(fs_shared->u2s_ring_base, fs_shared->u2s_ring_size, fs_shared->u2s_ring_read_pos, &range_out->max);
       fs_shared->u2s_ring_read_pos += ring_read_struct(fs_shared->u2s_ring_base, fs_shared->u2s_ring_size, fs_shared->u2s_ring_read_pos, &path_out->size);
-      path_out->str = push_array(U8, path_out->size);
+      path_out->str = new U8[path_out->size];
       fs_shared->u2s_ring_read_pos += ring_read(fs_shared->u2s_ring_base, fs_shared->u2s_ring_size, fs_shared->u2s_ring_read_pos, path_out->str, path_out->size);
       break;
     }

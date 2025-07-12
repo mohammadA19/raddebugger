@@ -20,7 +20,7 @@ os_handle_match(OS_Handle a, OS_Handle b)
 internal void
 os_handle_list_push(Arena *arena, OS_HandleList *handles, OS_Handle handle)
 {
-  OS_HandleNode *n = push_array(OS_HandleNode, 1);
+  OS_HandleNode *n = new OS_HandleNode[1];
   n->v = handle;
   SLLQueuePush(handles->first, handles->last, n);
   handles->count += 1;

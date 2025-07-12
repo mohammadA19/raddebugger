@@ -32,9 +32,9 @@ entry_point(CmdLine *cmdline)
   //
   MG_MsgList msgs = {0};
   mg_arena = arena_alloc(.reserve_size = GB(64), .commit_size = MB(64));
-  mg_state = push_array(MG_State, 1);
+  mg_state = new MG_State[1];
   mg_state->slots_count = 256;
-  mg_state->slots = push_array(MG_LayerSlot, mg_state->slots_count);
+  mg_state->slots = new MG_LayerSlot[mg_state->slots_count];
   
   //////////////////////////////
   //- rjf: extract paths
@@ -66,7 +66,7 @@ entry_point(CmdLine *cmdline)
         String8 file_path = push_str8f(mg_arena, "%S/%S", task->path, info.name);
         if(info.props.flags & FilePropertyFlag_IsFolder)
         {
-          Task *next_task = push_array(Task, 1);
+          Task *next_task = new Task[1];
           SLLQueuePush(first_task, last_task, next_task);
           next_task->path = file_path;
         }
@@ -110,7 +110,7 @@ entry_point(CmdLine *cmdline)
           MG_Msg dst_m = {location, msg_kind_string, m->string};
           mg_msg_list_push(mg_arena, &msgs, &dst_m);
         }
-        MG_FileParseNode *parse_n = push_array(MG_FileParseNode, 1);
+        MG_FileParseNode *parse_n = new MG_FileParseNode[1];
         SLLQueuePush(parses.first, parses.last, parse_n);
         parse_n->v.root = parse.root;
         parses.count += 1;
@@ -134,8 +134,8 @@ entry_point(CmdLine *cmdline)
         MD_Node *table_tag = md_tag_from_string(node, str8_lit("table"), 0);
         if(!md_node_is_nil(table_tag))
         {
-          MG_NodeGrid *table = push_array(MG_NodeGrid, 1);
-          MG_ColumnDescArray *col_descs = push_array(MG_ColumnDescArray, 1);
+          MG_NodeGrid *table = new MG_NodeGrid[1];
+          MG_ColumnDescArray *col_descs = new MG_ColumnDescArray[1];
           *table = mg_node_grid_make_from_node(mg_arena, node);
           *col_descs = mg_column_desc_array_from_tag(mg_arena, table_tag);
           mg_map_insert_ptr(mg_arena, &table_grid_map, node->string, table);

@@ -142,7 +142,7 @@ rb_entry_point(CmdLine *cmdline)
           {
             if(props.size >= section_hdr_opl_off)
             {
-              COFF_SectionHeader *section_hdrs = push_array(COFF_SectionHeader, section_count);
+              COFF_SectionHeader *section_hdrs = new COFF_SectionHeader[section_count];
               os_file_read(file, r1u64(sizeof(header_maybe), sizeof(header_maybe) + section_count*sizeof(COFF_SectionHeader)), section_hdrs);
               B32 section_ranges_valid = 1;
               for EachIndex(section_hdr_idx, section_count)
@@ -310,12 +310,12 @@ rb_entry_point(CmdLine *cmdline)
       //- rjf: push to list
       //
       {
-        RB_File *f = push_array(RB_File, 1);
+        RB_File *f = new RB_File[1];
         f->format       = file_format;
         f->format_flags = file_format_flags;
         f->path         = n->string;
         f->data         = file_data;
-        RB_FileNode *file_n = push_array(RB_FileNode, 1);
+        RB_FileNode *file_n = new RB_FileNode[1];
         file_n->v = f;
         SLLQueuePush(input_files.first, input_files.last, file_n);
         input_files.count += 1;
@@ -329,7 +329,7 @@ rb_entry_point(CmdLine *cmdline)
   RB_FileList input_files_from_format_table[RB_FileFormat_COUNT] = {0};
   for(RB_FileNode *n = input_files.first; n != 0; n = n->next)
   {
-    RB_FileNode *file_n = push_array(RB_FileNode, 1);
+    RB_FileNode *file_n = new RB_FileNode[1];
     file_n->v = n->v;
     SLLQueuePush(input_files_from_format_table[n->v->format].first, input_files_from_format_table[n->v->format].last, file_n);
     input_files_from_format_table[n->v->format].count += 1;
@@ -739,7 +739,7 @@ rb_entry_point(CmdLine *cmdline)
           
           //- rjf: build unit -> line table idx array
           U64 unit_count = bake_params.units.total_count;
-          U32 *unit_line_table_idxs = push_array(U32, unit_count+1);
+          U32 *unit_line_table_idxs = new U32[unit_count+1];
           {
             U64 dst_idx = 1;
             for(RDIM_UnitChunkNode *n = bake_params.units.first; n != 0; n = n->next)
@@ -781,8 +781,8 @@ rb_entry_point(CmdLine *cmdline)
           ProfEnd();
           
           //- rjf: kick off FUNC & line record dump tasks
-          P2B_DumpProcChunkIn *dump_proc_chunk_in = push_array(P2B_DumpProcChunkIn, bake_params.procedures.chunk_count);
-          ASYNC_Task **dump_proc_chunk_tasks = push_array(ASYNC_Task *, bake_params.procedures.chunk_count);
+          P2B_DumpProcChunkIn *dump_proc_chunk_in = new P2B_DumpProcChunkIn[bake_params.procedures.chunk_count];
+          ASYNC_Task **dump_proc_chunk_tasks = new ASYNC_Task *[bake_params.procedures.chunk_count];
           ProfScope("kick off FUNC & line record dump tasks")
           {
             U64 task_idx = 0;

@@ -27,7 +27,7 @@ os_gfx_init(void)
 {
   //- rjf: initialize basics
   Arena *arena = arena_alloc();
-  os_lnx_gfx_state = push_array(OS_LNX_GfxState, 1);
+  os_lnx_gfx_state = new OS_LNX_GfxState[1];
   os_lnx_gfx_state->arena = arena;
   os_lnx_gfx_state->display = XOpenDisplay(0);
   
@@ -111,7 +111,7 @@ os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title)
   }
   else
   {
-    w = /* no zero */ push_array(OS_LNX_Window, 1);
+    w = /* no zero */ new OS_LNX_Window[1];
   }
   MemoryZeroStruct(w);
   DLLPushBack(os_lnx_gfx_state->first_window, os_lnx_gfx_state->last_window, w);

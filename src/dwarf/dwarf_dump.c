@@ -651,12 +651,12 @@ dw_print_debug_loc(Arena *arena, String8List *out, String8 indent, DW_Input *inp
   Rng1U64List cu_range_list = dw_comp_unit_ranges_from_info(scratch.arena, info);
   
   // parse debug_info for attributes with LOCLIST and store .debug_loc offsets 
-  U64List    *loc_lists     = push_array(U64List,    cu_range_list.count);
-  U64        *address_sizes = push_array(U64,        cu_range_list.count);
-  U64        *address_bases = push_array(U64,        cu_range_list.count);
-  U64        *cu_bases      = push_array(U64,        cu_range_list.count);
-  DW_Version *ver_arr       = push_array(DW_Version, cu_range_list.count);
-  DW_Ext     *ext_arr       = push_array(DW_Ext,     cu_range_list.count);
+  U64List    *loc_lists     = new U64List[cu_range_list.count];
+  U64        *address_sizes = new U64[cu_range_list.count];
+  U64        *address_bases = new U64[cu_range_list.count];
+  U64        *cu_bases      = new U64[cu_range_list.count];
+  DW_Version *ver_arr       = new DW_Version[cu_range_list.count];
+  DW_Ext     *ext_arr       = new DW_Ext[cu_range_list.count];
   
   U64 comp_idx = 0;
   for (Rng1U64Node *cu_range_n = cu_range_list.first; cu_range_n != 0; cu_range_n = cu_range_n->next, ++comp_idx) {
@@ -795,9 +795,9 @@ dw_print_debug_ranges(Arena *arena, String8List *out, String8 indent, DW_Input *
   Rng1U64List  cu_range_list = dw_comp_unit_ranges_from_info(scratch.arena, sections->v[DW_Section_Info]);
   
   // parse debug_info for attributes with LOCLIST and store .debug_loc offsets 
-  U64List *loc_lists     = push_array(U64List, cu_range_list.count);
-  U64     *address_sizes = push_array(U64,     cu_range_list.count);
-  U64     *address_bases = push_array(U64,     cu_range_list.count);
+  U64List *loc_lists     = new U64List[cu_range_list.count];
+  U64     *address_sizes = new U64[cu_range_list.count];
+  U64     *address_bases = new U64[cu_range_list.count];
   
   {
     U64 comp_idx = 0;

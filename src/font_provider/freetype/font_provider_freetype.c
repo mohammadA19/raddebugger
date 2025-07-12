@@ -25,7 +25,7 @@ fp_hook void
 fp_init(void)
 {
   Arena *arena = arena_alloc();
-  fp_ft_state = push_array(FP_FT_State, 1);
+  fp_ft_state = new FP_FT_State[1];
   fp_ft_state->arena = arena;
   FT_Init_FreeType(&fp_ft_state->library);
 }
@@ -108,7 +108,7 @@ fp_raster(Arena *arena, FP_Handle handle, F32 size, FP_RasterFlags flags, String
     //- rjf: allocate & fill atlas w/ rasterization
     Vec2S16 dim = {(S16)total_width+1, height+1};
     U64 atlas_size = dim.x * dim.y * 4;
-    U8 *atlas = push_array(U8, atlas_size);
+    U8 *atlas = new U8[atlas_size];
     S32 baseline = ascent;
     S32 atlas_write_x = 0;
     for EachIndex(idx, string32.size)

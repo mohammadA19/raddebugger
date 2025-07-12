@@ -354,7 +354,7 @@ demon_lnx_module_list_from_process(Arena *arena, DEMON_Entity *process){
   
   // main module
   {
-    DEMON_LNX_ModuleNode *node = push_array(DEMON_LNX_ModuleNode, 1);
+    DEMON_LNX_ModuleNode *node = new DEMON_LNX_ModuleNode[1];
     SLLQueuePush(first, last, node);
     node->vaddr = phdr_info.range.min;
     node->size = phdr_info.range.max - phdr_info.range.min;
@@ -406,7 +406,7 @@ demon_lnx_module_list_from_process(Arena *arena, DEMON_Entity *process){
                                                                               phvaddr, phentsize, phcount);
         
         // save module node
-        DEMON_LNX_ModuleNode *node = push_array(DEMON_LNX_ModuleNode, 1);
+        DEMON_LNX_ModuleNode *node = new DEMON_LNX_ModuleNode[1];
         SLLQueuePush(first, last, node);
         node->vaddr = linkmap.base;
         node->size = module_phdr_info.range.max - module_phdr_info.range.min;
@@ -474,7 +474,7 @@ demon_lnx_read_memory_str(Arena *arena, int memory_fd, U64 address){
   U64 cap = max_cap;
   U64 read_p = address;
   for (;;){
-    U8 *block = push_array(U8, cap);
+    U8 *block = new U8[cap];
     for (;cap > 0;){
       if (demon_lnx_read_memory(memory_fd, block, read_p, cap)){
         break;
@@ -864,7 +864,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
       }
       
       // TODO(allen): per-Arch implementation of traps
-      trap_swap_bytes = /* no zero */ push_array(U8, controls->trap_count);
+      trap_swap_bytes = /* no zero */ new U8[controls->trap_count];
       
       {
         DEMON_OS_Trap *trap = controls->traps;
@@ -937,7 +937,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
               if (!is_frozen){
                 errno = 0;
                 ptrace(PTRACE_CONT, (pid_t)thread->id, 0, 0);
-                DEMON_LNX_EntityNode *thread_node = /* no zero */ push_array(DEMON_LNX_EntityNode, 1);
+                DEMON_LNX_EntityNode *thread_node = /* no zero */ new DEMON_LNX_EntityNode[1];
                 SLLStackPush(resume_threads, thread_node);
                 thread_node->entity = thread;
               }
@@ -1240,7 +1240,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
                 }
               }
               if (!still_exists){
-                DEMON_LNX_EntityNode *node = /* no zero */ push_array(DEMON_LNX_EntityNode, 1);
+                DEMON_LNX_EntityNode *node = /* no zero */ new DEMON_LNX_EntityNode[1];
                 SLLQueuePush(first_unloaded, last_unloaded, node);
                 node->entity = entity;
               }
@@ -1433,7 +1433,7 @@ demon_os_launch_process(OS_LaunchOptions *options){
   char *binary = 0;
   char **args = 0;
   if (options->cmd_line.node_count > 0){
-    args = /* no zero */ push_array(char*, options->cmd_line.node_count + 1);
+    args = /* no zero */ new char*[options->cmd_line.node_count + 1];
     char **arg_ptr = args;
     for (String8Node *node = options->cmd_line.first;
          node != 0;
@@ -1453,7 +1453,7 @@ demon_os_launch_process(OS_LaunchOptions *options){
   
   char **env = 0;
   if (options->env.node_count > 0){
-    env = /* no zero */ push_array(char*, options->env.node_count + 1);
+    env = /* no zero */ new char*[options->env.node_count + 1];
     char **env_ptr = env;
     for (String8Node *node = options->env.first;
          node != 0;

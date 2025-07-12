@@ -90,8 +90,8 @@
 
 #define SLLChunkListPush(_arena, _list, _cap, _value_type) do {                      \
   if ((_list)->last == 0 || (_list)->last->count >= (_list)->last->cap) {            \
-    _value_type##Chunk *new_chunk = push_array(_value_type##Chunk, 1);       \
-    new_chunk->v     = push_array(_value_type, _cap);                \
+    _value_type##Chunk *new_chunk = new _value_type##Chunk[1];       \
+    new_chunk->v     = new _value_type[_cap];                \
     new_chunk->cap   = _cap;                                                         \
     new_chunk->base  = (_list)->last ? (_list)->last->base + (_list)->last->cap : 0; \
     SLLQueuePushCount(_list, new_chunk);                                             \

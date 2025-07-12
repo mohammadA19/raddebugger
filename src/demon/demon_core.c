@@ -32,7 +32,7 @@ dmn_trap_chunk_list_push(Arena *arena, DMN_TrapChunkList *list, U64 cap, DMN_Tra
   DMN_TrapChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
   {
-    node = push_array(DMN_TrapChunkNode, 1);
+    node = new DMN_TrapChunkNode[1];
     node->cap = cap;
     node->v = new DMN_Trap[node->cap] /* no zero */;
     SLLQueuePush(list->first, list->last, node);
@@ -65,7 +65,7 @@ dmn_trap_chunk_list_concat_shallow_copy(Arena *arena, DMN_TrapChunkList *dst, DM
 {
   for(DMN_TrapChunkNode *src_n = to_push->first; src_n != 0; src_n = src_n->next)
   {
-    DMN_TrapChunkNode *dst_n = push_array(DMN_TrapChunkNode, 1);
+    DMN_TrapChunkNode *dst_n = new DMN_TrapChunkNode[1];
     dst_n->v     = src_n->v;
     dst_n->cap   = src_n->cap;
     dst_n->count = src_n->count;
@@ -80,7 +80,7 @@ dmn_trap_chunk_list_concat_shallow_copy(Arena *arena, DMN_TrapChunkList *dst, DM
 internal void
 dmn_handle_list_push(Arena *arena, DMN_HandleList *list, DMN_Handle handle)
 {
-  DMN_HandleNode *node = push_array(DMN_HandleNode, 1);
+  DMN_HandleNode *node = new DMN_HandleNode[1];
   SLLQueuePush(list->first, list->last, node);
   node->v = handle;
   list->count += 1;
@@ -115,7 +115,7 @@ dmn_handle_array_copy(Arena *arena, DMN_HandleArray *src)
 internal DMN_Event *
 dmn_event_list_push(Arena *arena, DMN_EventList *list)
 {
-  DMN_EventNode *n = push_array(DMN_EventNode, 1);
+  DMN_EventNode *n = new DMN_EventNode[1];
   SLLQueuePush(list->first, list->last, n);
   list->count += 1;
   DMN_Event *result = &n->v;
@@ -133,7 +133,7 @@ dmn_rip_from_thread(DMN_Handle thread)
   {
     Arch arch = dmn_arch_from_thread(thread);
     U64 reg_block_size = regs_block_size_from_arch(arch);
-    void *reg_block = push_array(U8, reg_block_size);
+    void *reg_block = new U8[reg_block_size];
     dmn_thread_read_reg_block(thread, reg_block);
     result = regs_rip_from_arch_block(arch, reg_block);
   }
@@ -149,7 +149,7 @@ dmn_rsp_from_thread(DMN_Handle thread)
   {
     Arch arch = dmn_arch_from_thread(thread);
     U64 reg_block_size = regs_block_size_from_arch(arch);
-    void *reg_block = push_array(U8, reg_block_size);
+    void *reg_block = new U8[reg_block_size];
     dmn_thread_read_reg_block(thread, reg_block);
     result = regs_rsp_from_arch_block(arch, reg_block);
   }
@@ -167,7 +167,7 @@ dmn_process_read_cstring(Arena *arena, DMN_Handle process, U64 addr)
   String8List block_list = {0};
   for(U64 cursor = addr, stride = 256; ; cursor += stride)
   {
-    U8      *raw_block = /* no zero */ push_array(U8, stride);
+    U8      *raw_block = /* no zero */ new U8[stride];
     U64      read_size = dmn_process_read(process, r1u64(cursor, cursor + stride), raw_block);
     String8  block     = str8_cstring_capped(raw_block, raw_block + read_size);
     str8_list_push(scratch.arena, &block_list, block);

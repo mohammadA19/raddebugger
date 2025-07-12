@@ -118,7 +118,7 @@ mg_txt_pt_from_string_off(String8 string, U64 off)
 internal void
 mg_msg_list_push(Arena *arena, MG_MsgList *msgs, MG_Msg *msg)
 {
-  MG_MsgNode *n = push_array(MG_MsgNode, 1);
+  MG_MsgNode *n = new MG_MsgNode[1];
   MemoryCopyStruct(&n->v, msg);
   SLLQueuePush(msgs->first, msgs->last, n);
   msgs->count += 1;
@@ -290,7 +290,7 @@ mg_c_array_literal_contents_from_data(String8 data)
       U8 *chunk_bytes = data.str+off;
       String8 chunk_text_string = {0};
       chunk_text_string.size = chunk_size*5;
-      chunk_text_string.str = push_array(U8, chunk_text_string.size);
+      chunk_text_string.str = new U8[chunk_text_string.size];
       for(U64 byte_idx = 0; byte_idx < chunk_size; byte_idx += 1)
       {
         String8 byte_str = push_str8f(scratch.arena, "0x%02x,", chunk_bytes[byte_idx]);
@@ -314,7 +314,7 @@ mg_push_map(Arena *arena, U64 slot_count)
 {
   MG_Map map = {0};
   map.slots_count = slot_count;
-  map.slots = push_array(MG_MapSlot, map.slots_count);
+  map.slots = new MG_MapSlot[map.slots_count];
   return map;
 }
 
@@ -344,7 +344,7 @@ mg_map_insert_ptr(Arena *arena, MG_Map *map, String8 string, void *val)
   U64 hash = mg_hash_from_string(string);
   U64 slot_idx = hash%map->slots_count;
   MG_MapSlot *slot = &map->slots[slot_idx];
-  MG_MapNode *n = push_array(MG_MapNode, 1);
+  MG_MapNode *n = new MG_MapNode[1];
   n->key = push_str8_copy(arena, string);
   n->val = val;
   SLLQueuePush(slot->first, slot->last, n);
@@ -356,7 +356,7 @@ mg_map_insert_ptr(Arena *arena, MG_Map *map, String8 string, void *val)
 internal MG_StrExpr *
 mg_push_str_expr(Arena *arena, MG_StrExprOp op, MD_Node *node)
 {
-  MG_StrExpr *expr = push_array(MG_StrExpr, 1);
+  MG_StrExpr *expr = new MG_StrExpr[1];
   MemoryCopyStruct(expr, &mg_str_expr_nil);
   expr->op = op;
   expr->node = node;
@@ -504,7 +504,7 @@ mg_node_array_make(Arena *arena, U64 count)
 {
   MG_NodeArray result = {0};
   result.count = count;
-  result.v = push_array(MD_Node *, result.count);
+  result.v = new MD_Node *[result.count];
   for(U64 idx = 0; idx < result.count; idx += 1)
   {
     result.v[idx] = &md_nil_node;
@@ -610,7 +610,7 @@ mg_column_desc_array_make(Arena *arena, U64 count, MG_ColumnDesc *descs)
 {
   MG_ColumnDescArray result = {0};
   result.count = count;
-  result.v = push_array(MG_ColumnDesc, result.count);
+  result.v = new MG_ColumnDesc[result.count];
   MemoryCopy(result.v, descs, sizeof(*result.v)*result.count);
   return result;
 }
@@ -620,7 +620,7 @@ mg_column_desc_array_from_tag(Arena *arena, MD_Node *tag)
 {
   MG_ColumnDescArray result = {0};
   result.count = md_child_count_from_node(tag);
-  result.v = push_array(MG_ColumnDesc, result.count);
+  result.v = new MG_ColumnDesc[result.count];
   U64 idx = 0;
   for MD_EachNode(hdr, tag->first)
   {
@@ -936,7 +936,7 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
       {
         String8 str = {0};
         str.size = spaces_to_push;
-        str.str = push_array(U8, spaces_to_push);
+        str.str = new U8[spaces_to_push];
         for(S64 idx = 0; idx < spaces_to_push; idx += 1)
         {
           str.str[idx] = ' ';
@@ -1068,7 +1068,7 @@ mg_string_list_from_table_gen(Arena *arena, MG_Map grid_name_map, MG_Map grid_co
         // rjf: push task for this expansion
         if(grid != 0)
         {
-          MG_TableExpandTask *task = push_array(MG_TableExpandTask, 1);
+          MG_TableExpandTask *task = new MG_TableExpandTask[1];
           task->expansion_label = expand_label;
           task->grid = grid;
           task->column_descs = *column_descs;
@@ -1135,7 +1135,7 @@ mg_layer_from_key(String8 key)
   }
   if(layer == 0)
   {
-    MG_LayerNode *n = push_array(MG_LayerNode, 1);
+    MG_LayerNode *n = new MG_LayerNode[1];
     SLLQueuePush(slot->first, slot->last, n);
     n->v.key = push_str8_copy(mg_arena, key);
     layer = &n->v;

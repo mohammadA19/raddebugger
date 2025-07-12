@@ -389,7 +389,7 @@ ASYNC_WORK_DEF(p2r_exe_hash_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(p2r_async_root);
   P2R_EXEHashIn *in = (P2R_EXEHashIn *)input;
-  U64 *out = push_array(U64, 1);
+  U64 *out = new U64[1];
   ProfScope("hash exe") *out = rdi_hash(in->exe_data.str, in->exe_data.size);
   ProfEnd();
   return out;
@@ -466,9 +466,9 @@ ASYNC_WORK_DEF(p2r_comp_unit_contributions_bucket_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(p2r_async_root);
   P2R_CompUnitContributionsBucketIn *in = (P2R_CompUnitContributionsBucketIn *)input;
-  P2R_CompUnitContributionsBucketOut *out = push_array(P2R_CompUnitContributionsBucketOut, 1);
+  P2R_CompUnitContributionsBucketOut *out = new P2R_CompUnitContributionsBucketOut[1];
   {
-    out->unit_ranges = push_array(RDIM_Rng1U64ChunkList, in->comp_unit_count);
+    out->unit_ranges = new RDIM_Rng1U64ChunkList[in->comp_unit_count];
     for(U64 idx = 0; idx < in->contributions.count; idx += 1)
     {
       PDB_CompUnitContribution *contribution = &in->contributions.contributions[idx];
@@ -492,7 +492,7 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
   Arena *arena = async_root_thread_arena(p2r_async_root);
   Temp scratch = scratch_begin(&arena, 1);
   P2R_GatherUnitSrcFilesIn *in = (P2R_GatherUnitSrcFilesIn *)input;
-  P2R_GatherUnitSrcFilesOut *out = push_array(P2R_GatherUnitSrcFilesOut, 1);
+  P2R_GatherUnitSrcFilesOut *out = new P2R_GatherUnitSrcFilesOut[1];
   PDB_CompUnit *pdb_unit     = in->comp_unit;
   CV_SymParsed *pdb_unit_sym = in->comp_unit_syms;
   CV_C13Parsed *pdb_unit_c13 = in->comp_unit_c13s;
@@ -502,7 +502,7 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
   {
     //- rjf: build local hash table to dedup files within this unit
     U64 hit_path_slots_count = 4096;
-    String8Node **hit_path_slots = push_array(String8Node *, hit_path_slots_count);
+    String8Node **hit_path_slots = new String8Node *[hit_path_slots_count];
     
     //- rjf: produce obj name/path
     String8 obj_name = pdb_unit->obj_name;
@@ -556,7 +556,7 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
           }
           if(hit_path_node == 0)
           {
-            hit_path_node = push_array(String8Node, 1);
+            hit_path_node = new String8Node[1];
             SLLStackPush(hit_path_slots[hit_path_slot], hit_path_node);
             hit_path_node->string = file_path_normalized;
             str8_list_push(scratch.arena, &src_file_paths, push_str8_copy(arena, file_path_normalized));
@@ -702,7 +702,7 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
                   }
                   if(hit_path_node == 0)
                   {
-                    hit_path_node = push_array(String8Node, 1);
+                    hit_path_node = new String8Node[1];
                     SLLStackPush(hit_path_slots[hit_path_slot], hit_path_node);
                     hit_path_node->string = file_path_normalized;
                     str8_list_push(scratch.arena, &src_file_paths, push_str8_copy(arena, file_path_normalized));
@@ -743,7 +743,7 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
   Arena *arena = async_root_thread_arena(p2r_async_root);
   Temp scratch = scratch_begin(&arena, 1);
   P2R_UnitConvertIn *in = (P2R_UnitConvertIn *)input;
-  P2R_UnitConvertOut *out = push_array(P2R_UnitConvertOut, 1);
+  P2R_UnitConvertOut *out = new P2R_UnitConvertOut[1];
   
   ////////////////////////////
   //- rjf: pass 1: build per-unit info & per-unit line table
@@ -1057,11 +1057,11 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
                 LineChunk *chunk = last_line_chunk;
                 if(chunk == 0 || chunk->count+1 >= chunk->cap)
                 {
-                  chunk = push_array(LineChunk, 1);
+                  chunk = new LineChunk[1];
                   SLLQueuePush(first_line_chunk, last_line_chunk, chunk);
                   chunk->cap       = 8;
-                  chunk->voffs     = /* no zero */ push_array(U64, chunk->cap);
-                  chunk->line_nums = /* no zero */ push_array(U32, chunk->cap);
+                  chunk->voffs     = /* no zero */ new U64[chunk->cap];
+                  chunk->line_nums = /* no zero */ new U32[chunk->cap];
                 }
                 chunk->voffs[chunk->count]     = step.line_voff;
                 chunk->voffs[chunk->count+1]   = step.line_voff_end;
@@ -1154,7 +1154,7 @@ ASYNC_WORK_DEF(p2r_link_name_map_build_work)
         // rjf: commit to link name map
         U64 hash = p2r_hash_from_voff(voff);
         U64 bucket_idx = hash%in->link_name_map->buckets_count;
-        P2R_LinkNameNode *node = push_array(P2R_LinkNameNode, 1);
+        P2R_LinkNameNode *node = new P2R_LinkNameNode[1];
         SLLStackPush(in->link_name_map->buckets[bucket_idx], node);
         node->voff = voff;
         node->name = name;
@@ -1312,7 +1312,7 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
     {
       //- rjf: push initial itype - should be final-visited-itype for this itype
       {
-        P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+        P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
         c->itype = itype;
         SLLStackPush(in->itype_chains[itype], c);
       }
@@ -1356,14 +1356,14 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               
               // rjf: push dependent itype to chain
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->itype;
                 SLLStackPush(in->itype_chains[itype], c);
               }
               
               // rjf: push task to walk dependency itype
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->itype;
                 SLLQueuePush(first_walk_task, last_walk_task, c);
               }
@@ -1376,14 +1376,14 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               
               // rjf: push dependent itype to chain
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->itype;
                 SLLStackPush(in->itype_chains[itype], c);
               }
               
               // rjf: push task to walk dependency itype
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->itype;
                 SLLQueuePush(first_walk_task, last_walk_task, c);
               }
@@ -1396,14 +1396,14 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               
               // rjf: push return itypes to chain
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->ret_itype;
                 SLLStackPush(in->itype_chains[itype], c);
               }
               
               // rjf: push task to walk return itype
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->ret_itype;
                 SLLQueuePush(first_walk_task, last_walk_task, c);
               }
@@ -1431,7 +1431,7 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               // rjf: push arg types to chain
               for(U32 idx = 0; idx < arglist_itypes_count; idx += 1)
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = arglist_itypes_base[idx];
                 SLLStackPush(in->itype_chains[itype], c);
               }
@@ -1439,7 +1439,7 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               // rjf: push task to walk arg types
               for(U32 idx = 0; idx < arglist_itypes_count; idx += 1)
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = arglist_itypes_base[idx];
                 SLLQueuePush(first_walk_task, last_walk_task, c);
               }
@@ -1452,34 +1452,34 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               
               // rjf: push dependent itypes to chain
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->ret_itype;
                 SLLStackPush(in->itype_chains[itype], c);
               }
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->arg_itype;
                 SLLStackPush(in->itype_chains[itype], c);
               }
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->this_itype;
                 SLLStackPush(in->itype_chains[itype], c);
               }
               
               // rjf: push task to walk dependency itypes
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->ret_itype;
                 SLLQueuePush(first_walk_task, last_walk_task, c);
               }
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->arg_itype;
                 SLLQueuePush(first_walk_task, last_walk_task, c);
               }
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->this_itype;
                 SLLQueuePush(first_walk_task, last_walk_task, c);
               }
@@ -1507,7 +1507,7 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               // rjf: push arg types to chain
               for(U32 idx = 0; idx < arglist_itypes_count; idx += 1)
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = arglist_itypes_base[idx];
                 SLLStackPush(in->itype_chains[itype], c);
               }
@@ -1515,7 +1515,7 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               // rjf: push task to walk arg types
               for(U32 idx = 0; idx < arglist_itypes_count; idx += 1)
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = arglist_itypes_base[idx];
                 SLLQueuePush(first_walk_task, last_walk_task, c);
               }
@@ -1528,14 +1528,14 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               
               // rjf: push dependent itype to chain
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->itype;
                 SLLStackPush(in->itype_chains[itype], c);
               }
               
               // rjf: push task to walk dependency itype
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->itype;
                 SLLQueuePush(first_walk_task, last_walk_task, c);
               }
@@ -1548,24 +1548,24 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               
               // rjf: push dependent itypes to chain
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->entry_itype;
                 SLLStackPush(in->itype_chains[itype], c);
               }
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->index_itype;
                 SLLStackPush(in->itype_chains[itype], c);
               }
               
               // rjf: push task to walk dependency itypes
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->entry_itype;
                 SLLQueuePush(first_walk_task, last_walk_task, c);
               }
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->index_itype;
                 SLLQueuePush(first_walk_task, last_walk_task, c);
               }
@@ -1578,14 +1578,14 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               
               // rjf: push dependent itypes to chain
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->base_itype;
                 SLLStackPush(in->itype_chains[itype], c);
               }
               
               // rjf: push task to walk dependency itypes
               {
-                P2R_TypeIdChain *c = push_array(P2R_TypeIdChain, 1);
+                P2R_TypeIdChain *c = new P2R_TypeIdChain[1];
                 c->itype = lf->base_itype;
                 SLLQueuePush(first_walk_task, last_walk_task, c);
               }
@@ -1609,7 +1609,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
   Arena *arena = async_root_thread_arena(p2r_async_root);
   P2R_UDTConvertIn *in = (P2R_UDTConvertIn *)input;
 #define p2r_type_ptr_from_itype(itype) ((in->itype_type_ptrs && (itype) < in->tpi_leaf->itype_opl) ? (in->itype_type_ptrs[(in->itype_fwd_map[(itype)] ? in->itype_fwd_map[(itype)] : (itype))]) : 0)
-  RDIM_UDTChunkList *udts = push_array(RDIM_UDTChunkList, 1);
+  RDIM_UDTChunkList *udts = new RDIM_UDTChunkList[1];
   RDI_U64 udts_chunk_cap = 1024;
   ProfScope("convert UDT info")
   {
@@ -1774,7 +1774,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     // rjf: if new -> push task to follow new itype
                     if(is_new)
                     {
-                      FieldListTask *new_task = push_array(FieldListTask, 1);
+                      FieldListTask *new_task = new FieldListTask[1];
                       SLLStackPush(fl_todo_stack, new_task);
                       new_task->itype = new_itype;
                     }
@@ -2192,7 +2192,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     // rjf: if new -> push task to follow new itype
                     if(is_new)
                     {
-                      FieldListTask *new_task = push_array(FieldListTask, 1);
+                      FieldListTask *new_task = new FieldListTask[1];
                       SLLStackPush(fl_todo_stack, new_task);
                       new_task->itype = new_itype;
                     }
@@ -2270,7 +2270,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
   //
   U64 procedure_frameprocs_count = 0;
   U64 procedure_frameprocs_cap   = (in->sym_ranges_opl - in->sym_ranges_first);
-  CV_SymFrameproc **procedure_frameprocs = /* no zero */ push_array(CV_SymFrameproc *, procedure_frameprocs_cap);
+  CV_SymFrameproc **procedure_frameprocs = /* no zero */ new CV_SymFrameproc *[procedure_frameprocs_cap];
   ProfScope("symbols pass 1: produce procedure frame info map (procedure -> frame info)")
   {
     U64 procedure_num = 0;
@@ -2426,7 +2426,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           {
             P2R_ScopeNode *node = free_scope_node;
             if(node != 0) { SLLStackPop(free_scope_node); }
-            else { node = /* no zero */ push_array(P2R_ScopeNode, 1); }
+            else { node = /* no zero */ new P2R_ScopeNode[1]; }
             node->scope = scope;
             SLLStackPush(top_scope_node, node);
           }
@@ -2584,7 +2584,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           {
             P2R_ScopeNode *node = free_scope_node;
             if(node != 0) { SLLStackPop(free_scope_node); }
-            else { node = /* no zero */ push_array(P2R_ScopeNode, 1); }
+            else { node = /* no zero */ new P2R_ScopeNode[1]; }
             node->scope = procedure_root_scope;
             SLLStackPush(top_scope_node, node);
           }
@@ -3050,7 +3050,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           {
             P2R_ScopeNode *node = free_scope_node;
             if(node != 0) { SLLStackPop(free_scope_node); }
-            else { node = /* no zero */ push_array(P2R_ScopeNode, 1); }
+            else { node = /* no zero */ new P2R_ScopeNode[1]; }
             node->scope = scope;
             SLLStackPush(top_scope_node, node);
           }
@@ -3137,7 +3137,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
   //////////////////////////
   //- rjf: allocate & fill output
   //
-  P2R_SymbolStreamConvertOut *out = push_array(P2R_SymbolStreamConvertOut, 1);
+  P2R_SymbolStreamConvertOut *out = new P2R_SymbolStreamConvertOut[1];
   {
     out->procedures       = sym_procedures;
     out->global_variables = sym_global_variables;
@@ -3370,15 +3370,15 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   //////////////////////////////////////////////////////////////
   //- rjf: parse syms & line info for each compilation unit
   //
-  CV_SymParsed **sym_for_unit = push_array(CV_SymParsed *, comp_unit_count);
-  CV_C13Parsed **c13_for_unit = push_array(CV_C13Parsed *, comp_unit_count);
+  CV_SymParsed **sym_for_unit = new CV_SymParsed *[comp_unit_count];
+  CV_C13Parsed **c13_for_unit = new CV_C13Parsed *[comp_unit_count];
   if(comp_units != 0) ProfScope("parse syms & line info for each compilation unit")
   {
     //- rjf: kick off tasks
-    P2R_SymbolStreamParseIn *sym_tasks_inputs = push_array(P2R_SymbolStreamParseIn, comp_unit_count);
-    ASYNC_Task **sym_tasks = push_array(ASYNC_Task *, comp_unit_count);
-    P2R_C13StreamParseIn *c13_tasks_inputs = push_array(P2R_C13StreamParseIn, comp_unit_count);
-    ASYNC_Task **c13_tasks = push_array(ASYNC_Task *, comp_unit_count);
+    P2R_SymbolStreamParseIn *sym_tasks_inputs = new P2R_SymbolStreamParseIn[comp_unit_count];
+    ASYNC_Task **sym_tasks = new ASYNC_Task *[comp_unit_count];
+    P2R_C13StreamParseIn *c13_tasks_inputs = new P2R_C13StreamParseIn[comp_unit_count];
+    ASYNC_Task **c13_tasks = new ASYNC_Task *[comp_unit_count];
     for(U64 idx = 0; idx < comp_unit_count; idx += 1)
     {
       PDB_CompUnit *unit = comp_units->units[idx];
@@ -3494,9 +3494,9 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   ProfScope("gather all source file paths; build nodes")
   {
     U64 tasks_count = comp_unit_count;
-    P2R_GatherUnitSrcFilesIn *tasks_inputs = push_array(P2R_GatherUnitSrcFilesIn, tasks_count);
-    P2R_GatherUnitSrcFilesOut *tasks_outputs = push_array(P2R_GatherUnitSrcFilesOut, tasks_count);
-    ASYNC_Task **tasks = push_array(ASYNC_Task *, tasks_count);
+    P2R_GatherUnitSrcFilesIn *tasks_inputs = new P2R_GatherUnitSrcFilesIn[tasks_count];
+    P2R_GatherUnitSrcFilesOut *tasks_outputs = new P2R_GatherUnitSrcFilesOut[tasks_count];
+    ASYNC_Task **tasks = new ASYNC_Task *[tasks_count];
     for EachIndex(idx, tasks_count)
     {
       tasks_inputs[idx].pdb_strtbl     = strtbl;
@@ -3513,7 +3513,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
       total_path_count += tasks_outputs[idx].src_file_paths.count;
     }
     src_file_map.slots_count = total_path_count + total_path_count/2 + 1;
-    src_file_map.slots = push_array(P2R_SrcFileNode *, src_file_map.slots_count);
+    src_file_map.slots = new P2R_SrcFileNode *[src_file_map.slots_count];
     for EachIndex(idx, tasks_count)
     {
       for EachIndex(path_idx, tasks_outputs[idx].src_file_paths.count)
@@ -3532,7 +3532,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
         }
         if(src_file_node == 0)
         {
-          src_file_node = push_array(P2R_SrcFileNode, 1);
+          src_file_node = new P2R_SrcFileNode[1];
           SLLStackPush(src_file_map.slots[src_file_slot], src_file_node);
           src_file_node->src_file = rdim_src_file_chunk_list_push(arena, &all_src_files__sequenceless, total_path_count);
           src_file_node->src_file->normal_full_path = push_str8_copy(arena, file_path_normalized);
@@ -3545,8 +3545,8 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   //- rjf: kick off unit conversion tasks
   //
   U64 unit_convert_tasks_count = comp_unit_count;
-  P2R_UnitConvertIn *unit_convert_tasks_ins = push_array(P2R_UnitConvertIn, unit_convert_tasks_count);
-  ASYNC_Task **unit_convert_tasks = push_array(ASYNC_Task *, unit_convert_tasks_count);
+  P2R_UnitConvertIn *unit_convert_tasks_ins = new P2R_UnitConvertIn[unit_convert_tasks_count];
+  ASYNC_Task **unit_convert_tasks = new ASYNC_Task *[unit_convert_tasks_count];
   for EachIndex(idx, unit_convert_tasks_count)
   {
     P2R_UnitConvertIn *in = &unit_convert_tasks_ins[idx];
@@ -3598,7 +3598,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   if(sym != 0) ProfScope("kick off link name map build task")
   {
     link_name_map__in_progress.buckets_count = symbol_count_prediction;
-    link_name_map__in_progress.buckets       = push_array(P2R_LinkNameNode *, link_name_map__in_progress.buckets_count);
+    link_name_map__in_progress.buckets       = new P2R_LinkNameNode *[link_name_map__in_progress.buckets_count];
     link_name_map_build_in.sym = sym;
     link_name_map_build_in.coff_sections = coff_sections;
     link_name_map_build_in.link_name_map = &link_name_map__in_progress;
@@ -3636,13 +3636,13 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
     //- rjf: allocate forward resolution map
     itype_first = tpi_leaf->itype_first;
     itype_opl = tpi_leaf->itype_opl;
-    itype_fwd_map = push_array(CV_TypeId, (U64)itype_opl);
+    itype_fwd_map = new CV_TypeId[(U64)itype_opl];
     
     //- rjf: kick off tasks to fill forward resolution map
     U64 task_size_itypes = 1024;
     U64 tasks_count = ((U64)itype_opl+(task_size_itypes-1))/task_size_itypes;
-    P2R_ITypeFwdMapFillIn *tasks_inputs = push_array(P2R_ITypeFwdMapFillIn, tasks_count);
-    ASYNC_Task **tasks = push_array(ASYNC_Task *, tasks_count);
+    P2R_ITypeFwdMapFillIn *tasks_inputs = new P2R_ITypeFwdMapFillIn[tasks_count];
+    ASYNC_Task **tasks = new ASYNC_Task *[tasks_count];
     for(U64 idx = 0; idx < tasks_count; idx += 1)
     {
       tasks_inputs[idx].tpi_hash      = tpi_hash;
@@ -3675,13 +3675,13 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   if(tpi_leaf != 0 && in->subset_flags & RDIM_SubsetFlag_Types) ProfScope("types pass 2: produce per-itype itype chain (for producing dependent types first)")
   {
     //- rjf: allocate itype chain table
-    itype_chains = push_array(P2R_TypeIdChain *, (U64)itype_opl);
+    itype_chains = new P2R_TypeIdChain *[(U64)itype_opl];
     
     //- rjf: kick off tasks to fill itype chain table
     U64 task_size_itypes = 1024;
     U64 tasks_count = ((U64)itype_opl+(task_size_itypes-1))/task_size_itypes;
-    P2R_ITypeChainBuildIn *tasks_inputs = push_array(P2R_ITypeChainBuildIn, tasks_count);
-    ASYNC_Task **tasks = push_array(ASYNC_Task *, tasks_count);
+    P2R_ITypeChainBuildIn *tasks_inputs = new P2R_ITypeChainBuildIn[tasks_count];
+    ASYNC_Task **tasks = new ASYNC_Task *[tasks_count];
     for(U64 idx = 0; idx < tasks_count; idx += 1)
     {
       tasks_inputs[idx].tpi_leaf      = tpi_leaf;
@@ -3712,7 +3712,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
 #define p2r_type_ptr_from_itype(itype) ((itype_type_ptrs && (itype) < itype_opl) ? (itype_type_ptrs[(itype_fwd_map[(itype)] ? itype_fwd_map[(itype)] : (itype))]) : 0)
   if(in->subset_flags & RDIM_SubsetFlag_Types) ProfScope("types pass 3: construct all root/stub types from TPI")
   {
-    itype_type_ptrs = push_array(RDIM_Type *, (U64)(itype_opl));
+    itype_type_ptrs = new RDIM_Type *[(U64)(itype_opl)];
     
     //////////////////////////
     //- basic type aliases
@@ -3999,7 +3999,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 U32 arglist_itypes_count = arglist->count;
                 
                 // rjf: build param type array
-                RDIM_Type **params = push_array(RDIM_Type *, arglist_itypes_count);
+                RDIM_Type **params = new RDIM_Type *[arglist_itypes_count];
                 for(U32 idx = 0; idx < arglist_itypes_count; idx += 1)
                 {
                   params[idx] = p2r_type_ptr_from_itype(arglist_itypes_base[idx]);
@@ -4052,7 +4052,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 {
                   num_this_extras = 0;
                 }
-                RDIM_Type **params = push_array(RDIM_Type *, arglist_itypes_count+num_this_extras);
+                RDIM_Type **params = new RDIM_Type *[arglist_itypes_count+num_this_extras];
                 for(U32 idx = 0; idx < arglist_itypes_count; idx += 1)
                 {
                   params[idx+num_this_extras] = p2r_type_ptr_from_itype(arglist_itypes_base[idx]);
@@ -4228,8 +4228,8 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   //
   U64 udt_task_size_itypes = 4096;
   U64 udt_tasks_count = ((U64)itype_opl+(udt_task_size_itypes-1))/udt_task_size_itypes;
-  P2R_UDTConvertIn *udt_tasks_inputs = push_array(P2R_UDTConvertIn, udt_tasks_count);
-  ASYNC_Task **udt_tasks = push_array(ASYNC_Task *, udt_tasks_count);
+  P2R_UDTConvertIn *udt_tasks_inputs = new P2R_UDTConvertIn[udt_tasks_count];
+  ASYNC_Task **udt_tasks = new ASYNC_Task *[udt_tasks_count];
   if(in->subset_flags & RDIM_SubsetFlag_UDTs) ProfScope("types pass 4: kick off UDT build")
   {
     for(U64 idx = 0; idx < udt_tasks_count; idx += 1)
@@ -4259,7 +4259,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   //
   RDIM_UnitChunkList all_units = {0};
   RDIM_LineTableChunkList all_line_tables = {0};
-  RDIM_LineTable **units_first_inline_site_line_tables = push_array(RDIM_LineTable *, unit_convert_tasks_count);
+  RDIM_LineTable **units_first_inline_site_line_tables = new RDIM_LineTable *[unit_convert_tasks_count];
   ProfScope("join unit conversion & src file tasks")
   {
     for EachIndex(idx, unit_convert_tasks_count)
@@ -4299,8 +4299,8 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
     U64 global_stream_subdivision_tasks_count = sym ? (sym->sym_ranges.count+16383)/16384 : 0;
     U64 global_stream_syms_per_task = sym ? sym->sym_ranges.count/global_stream_subdivision_tasks_count : 0;
     U64 tasks_count = comp_unit_count + global_stream_subdivision_tasks_count;
-    P2R_SymbolStreamConvertIn *tasks_inputs = push_array(P2R_SymbolStreamConvertIn, tasks_count);
-    ASYNC_Task **tasks = push_array(ASYNC_Task *, tasks_count);
+    P2R_SymbolStreamConvertIn *tasks_inputs = new P2R_SymbolStreamConvertIn[tasks_count];
+    ASYNC_Task **tasks = new ASYNC_Task *[tasks_count];
     ProfScope("kick off all symbol conversion tasks")
     {
       for(U64 idx = 0; idx < tasks_count; idx += 1)

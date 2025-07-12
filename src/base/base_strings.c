@@ -1210,7 +1210,7 @@ str8_array_from_list(Arena *arena, String8List *list)
 internal String8Array *
 str8_array_from_list_arr(Arena *arena, String8List *lists, U64 count)
 {
-  String8Array *result = push_array(String8Array, count);
+  String8Array *result = new String8Array[count];
   for (U64 idx = 0; idx < count; idx += 1) {
     result[idx] = str8_array_from_list(arena, &lists[idx]);
   }
@@ -1222,7 +1222,7 @@ str8_array_reserve(Arena *arena, U64 count)
 {
   String8Array arr;
   arr.count = 0;
-  arr.v = push_array(String8, count);
+  arr.v = new String8[count];
   return arr;
 }
 
@@ -1231,7 +1231,7 @@ str8_array_copy(Arena *arena, String8Array array)
 {
   String8Array result = {0};
   result.count = array.count;
-  result.v = push_array(String8, result.count);
+  result.v = new String8[result.count];
   for EachIndex(idx, result.count)
   {
     result.v[idx] = push_str8_copy(arena, array.v[idx]);
@@ -1435,7 +1435,7 @@ str8_path_list_resolve_dots_in_place(String8List *path, PathStyle style)
       }
       else
       {
-        stack_node = /* no zero */ push_array(String8MetaNode, 1);
+        stack_node = /* no zero */ new String8MetaNode[1];
       }
       SLLStackPush(stack, stack_node);
       stack_node->node = node;
@@ -2506,7 +2506,7 @@ fuzzy_match_find(Arena *arena, String8 needle, String8 haystack)
     if(find_pos < haystack.size)
     {
       Rng1U64 range = r1u64(find_pos, find_pos+needle_n->string.size);
-      FuzzyMatchRangeNode *n = push_array(FuzzyMatchRangeNode, 1);
+      FuzzyMatchRangeNode *n = new FuzzyMatchRangeNode[1];
       n->range = range;
       SLLQueuePush(result.first, result.last, n);
       result.count += 1;
@@ -2523,7 +2523,7 @@ fuzzy_match_range_list_copy(Arena *arena, FuzzyMatchRangeList *src)
   FuzzyMatchRangeList dst = {0};
   for(FuzzyMatchRangeNode *src_n = src->first; src_n != 0; src_n = src_n->next)
   {
-    FuzzyMatchRangeNode *dst_n = push_array(FuzzyMatchRangeNode, 1);
+    FuzzyMatchRangeNode *dst_n = new FuzzyMatchRangeNode[1];
     SLLQueuePush(dst.first, dst.last, dst_n);
     dst_n->range = src_n->range;
   }
@@ -2538,7 +2538,7 @@ fuzzy_match_range_list_copy(Arena *arena, FuzzyMatchRangeList *src)
 
 internal void
 str8_serial_begin(Arena *arena, String8List *srl){
-  String8Node *node = push_array(String8Node, 1);
+  String8Node *node = new String8Node[1];
   node->string.str = new U8[0] /* no zero */;
   srl->first = srl->last = node;
   srl->node_count = 1;
@@ -2576,7 +2576,7 @@ str8_serial_push_align(Arena *arena, String8List *srl, U64 align){
   
   if(size != 0)
   {
-    U8 *buf = push_array(U8, size);
+    U8 *buf = new U8[size];
     
     String8 *str = &srl->last->string;
     if (str->str + str->size == buf){

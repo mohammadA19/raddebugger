@@ -242,7 +242,7 @@ internal String8
 cv_serialize_symbol(Arena *arena, CV_Symbol *symbol, U64 align)
 {
   U64 buffer_size = cv_compute_symbol_record_size(symbol, align);
-  U8 *buffer = push_array(U8, buffer_size);
+  U8 *buffer = new U8[buffer_size];
   cv_serialize_symbol_to_buffer(buffer, 0, buffer_size, symbol, align);
   String8 result = str8(buffer, buffer_size);
   return result;
@@ -764,7 +764,7 @@ cv_dedup_string_tables(TP_Arena *arena, TP_Context *tp, U64 count, CV_DebugS *ar
   U64                   per_task_weight = CeilIntegerDiv(total_weight, tp->worker_count);
   U64                   task_weight     = 0;
   U64                   task_id         = 0;
-  CV_StringTableRange **range_lists     = push_array(CV_StringTableRange *, tp->worker_count);
+  CV_StringTableRange **range_lists     = new CV_StringTableRange *[tp->worker_count];
 
   ProfBegin("Divide Work");
   for (U64 debug_s_idx = 0; debug_s_idx < count; ++debug_s_idx) {
@@ -778,7 +778,7 @@ cv_dedup_string_tables(TP_Arena *arena, TP_Context *tp, U64 count, CV_DebugS *ar
 
       U64 max_range_weight = Min(per_task_weight, string_table.size - cursor);
 
-      CV_StringTableRange *node = push_array(CV_StringTableRange, 1);
+      CV_StringTableRange *node = new CV_StringTableRange[1];
       node->range               = rng_1u64(cursor, cursor + max_range_weight);
       node->debug_s_idx         = debug_s_idx;
 
@@ -792,14 +792,14 @@ cv_dedup_string_tables(TP_Arena *arena, TP_Context *tp, U64 count, CV_DebugS *ar
   CV_DedupStringTablesTask task = {0};
   task.arr                      = arr;
   task.range_lists              = range_lists;
-  task.string_counts            = push_array(U64, count);
+  task.string_counts            = new U64[count];
   tp_for_parallel(tp, 0, tp->worker_count, cv_count_strings_in_debug_s_arr_task, &task);
   ProfEnd();
 
   ProfBegin("Dedup");
   U64 total_string_count = sum_array_u64(count, task.string_counts);
   task.bucket_cap = (U64)((F64)total_string_count * 1.3);
-  task.buckets    = push_array(CV_StringBucket *, task.bucket_cap);
+  task.buckets    = new CV_StringBucket *[task.bucket_cap];
   tp_for_parallel(tp, arena, count, cv_dedup_strings_in_debug_s_arr_task, &task);
   ProfEnd();
 
@@ -830,7 +830,7 @@ cv_string_hash_table_assign_buffer_offsets(TP_Context *tp, CV_StringHashTable st
   ProfEnd();
 
   ProfBegin("Push");
-  CV_StringBucket **strings = /* no zero */ push_array(CV_StringBucket *, string_count);
+  CV_StringBucket **strings = /* no zero */ new CV_StringBucket *[string_count];
   ProfEnd();
 
   ProfBegin("Copy Present Buckets");
@@ -1023,7 +1023,7 @@ cv_dedup_symbol_ptr_array(TP_Context *tp, CV_SymbolPtrArray *symbols)
   CV_SymbolDeduperTask task = {0};
   task.symbols              = symbols->v;
   task.cap                  = (U64)((F64)symbols->count * 1.3);
-  task.u.buckets            = push_array(CV_SymbolNode **, task.cap);
+  task.u.buckets            = new CV_SymbolNode **[task.cap];
   ProfEnd();
 
   ProfBegin("Dedup");
@@ -1075,7 +1075,7 @@ cv_debug_t_from_data_arr(Arena *arena, String8Array data_arr, U64 align)
   }
   ProfEnd();
 
-  U8 **leaf_arr   = /* no zero */ push_array(U8 *, max_leaf_count);
+  U8 **leaf_arr   = /* no zero */ new U8 *[max_leaf_count];
   U64  leaf_count = 0;
   for (U64 data_idx = 0; data_idx < data_arr.count; data_idx += 1) {
     String8 data = data_arr.v[data_idx];
@@ -1195,7 +1195,7 @@ cv_str8_list_from_debug_t_parallel(TP_Context *tp, Arena *arena, CV_DebugT debug
   CV_Str8ListFromDebugT task = {0};
   task.debug_t = debug_t;
   task.ranges  = tp_divide_work(scratch.arena, debug_t.count, tp->worker_count);
-  task.lists   = push_array(String8List, tp->worker_count);
+  task.lists   = new String8List[tp->worker_count];
   task.nodes   = new String8Node[debug_t.count] /* no zero */;
   tp_for_parallel(tp, 0, tp->worker_count, cv_str8_list_from_debug_t_task, &task);
 
@@ -1279,7 +1279,7 @@ cv_symbol_list_push_node(CV_SymbolList *list, CV_SymbolNode *node)
 internal CV_SymbolNode *
 cv_symbol_list_push(Arena *arena, CV_SymbolList *list)
 {
-  CV_SymbolNode *node = push_array(CV_SymbolNode, 1);
+  CV_SymbolNode *node = new CV_SymbolNode[1];
   cv_symbol_list_push_node(list, node);
   return node;
 }
@@ -1378,8 +1378,8 @@ cv_symbol_ptr_array_from_list(Arena *arena, TP_Context *tp, U64 count, CV_Symbol
 
   CV_SymbolListSyncer task = {0};
   task.list_arr            = list_arr;
-  task.symbol_arr          = /* no zero */ push_array(CV_SymbolNode *, total_count);
-  task.symbol_base_arr     = /* no zero */ push_array(U64, tp->worker_count);
+  task.symbol_arr          = /* no zero */ new CV_SymbolNode *[total_count];
+  task.symbol_base_arr     = /* no zero */ new U64[tp->worker_count];
   task.list_range_arr      = tp_divide_work(scratch.arena, count, tp->worker_count);
 
   for (U64 thread_idx = 0, symbol_base = 0; thread_idx < tp->worker_count; thread_idx += 1) {
@@ -1404,7 +1404,7 @@ cv_symbol_ptr_array_from_list(Arena *arena, TP_Context *tp, U64 count, CV_Symbol
 internal CV_Scope *
 cv_scope_list_push(Arena *arena, CV_ScopeList *list)
 {
-  CV_Scope *node = push_array(CV_Scope, 1);
+  CV_Scope *node = new CV_Scope[1];
   SLLQueuePush(list->first, list->last, node);
   return node;
 }
@@ -1438,7 +1438,7 @@ cv_symbol_tree_from_symbol_list(Arena *arena, CV_SymbolList list)
   CV_ScopeList root = {0};
   
   // setup root frame
-  CV_ScopeFrame *stack = push_array(CV_ScopeFrame, 1);
+  CV_ScopeFrame *stack = new CV_ScopeFrame[1];
   stack->list = &root;
   
   for (CV_SymbolNode *symbol_node = list.first; symbol_node != 0; symbol_node = symbol_node->next) {
@@ -1448,8 +1448,8 @@ cv_symbol_tree_from_symbol_list(Arena *arena, CV_SymbolList list)
     
     // does this symbol define a new scope?
     if (cv_is_scope_symbol(symbol_node->data.kind)) {
-      CV_ScopeFrame *frame = push_array(CV_ScopeFrame, 1);
-      frame->list = push_array(CV_ScopeList, 1);
+      CV_ScopeFrame *frame = new CV_ScopeFrame[1];
+      frame->list = new CV_ScopeList[1];
       SLLStackPush(stack, frame);
     }
     // does this symbol end current scope?
@@ -1505,7 +1505,7 @@ cv_patch_symbol_tree_offsets(CV_SymbolList list, U64 base_offset, U64 align)
         frame = free_list;
         SLLStackPop(free_list);
       } else {
-        frame = /* no zero */ push_array(struct Stack, 1);
+        frame = /* no zero */ new struct Stack[1];
       }
 
       // push frame to the stack
@@ -1553,7 +1553,7 @@ cv_parse_checksum_data(Arena *arena, CV_ChecksumList *list, String8 checksum_dat
     cursor += str8_deserial_read_block(checksum_data, cursor, header->len, &value);
     cursor = AlignPow2(cursor, 4);
     
-    CV_ChecksumNode *node = push_array(CV_ChecksumNode, 1);
+    CV_ChecksumNode *node = new CV_ChecksumNode[1];
     node->next = 0;
     
     CV_Checksum *data = &node->data;
@@ -1831,7 +1831,7 @@ cv_c13_make_lines_accel(Arena *arena, U64 lines_count, CV_LineArray *lines)
 
   qsort(map, total_voff_count, sizeof(map[0]), cv_c13_voff_map_compar);
 
-  CV_LinesAccel *accel = push_array(CV_LinesAccel, 1);
+  CV_LinesAccel *accel = new CV_LinesAccel[1];
   accel->map_count = total_voff_count;
   accel->map       = map;
 
@@ -1942,10 +1942,10 @@ cv_c13_make_inlinee_lines_accel(Arena *arena, CV_C13InlineeLinesParsedList inlin
   ProfBeginFunction();
 
   // alloc hash table
-  CV_InlineeLinesAccel *accel = push_array(CV_InlineeLinesAccel, 1);
+  CV_InlineeLinesAccel *accel = new CV_InlineeLinesAccel[1];
   accel->bucket_count = 0;
   accel->bucket_max   = (U64)((F64)inlinee_lines.count * 2.5);
-  accel->buckets      = push_array(CV_C13InlineeLinesParsed *, accel->bucket_max);
+  accel->buckets      = new CV_C13InlineeLinesParsed *[accel->bucket_max];
 
   // push parsed inlinees
   for(CV_C13InlineeLinesParsedNode *inlinee = inlinee_lines.first; inlinee != 0; inlinee = inlinee->next) {
@@ -2007,13 +2007,13 @@ cv_c13_parse_inline_binary_annots(Arena                    *arena,
       }
     }
     if (step.flags & CV_C13InlineSiteDecoderStepFlag_EmitFile) {
-      struct SourceFile *file = push_array(struct SourceFile, 1);
+      struct SourceFile *file = new struct SourceFile[1];
       file->checksum_off      = step.file_off;
       SLLQueuePush(file_first, file_last, file);
       ++file_count;
     }
     if (step.flags & CV_C13InlineSiteDecoderStepFlag_EmitLine) {
-      struct SourceLine *line = push_array(struct SourceLine, 1);
+      struct SourceLine *line = new struct SourceLine[1];
       line->voff              = step.line_voff;
       line->ln                = step.ln;
       line->cn                = step.cn;
@@ -2022,7 +2022,7 @@ cv_c13_parse_inline_binary_annots(Arena                    *arena,
     }
   }
 
-  CV_LineArray *lines = push_array(CV_LineArray, file_count);
+  CV_LineArray *lines = new CV_LineArray[file_count];
   {
     U64 lines_idx = 0;
     for (struct SourceFile *file = file_first; file != 0; file = file->next, lines_idx += 1) {
@@ -2033,7 +2033,7 @@ cv_c13_parse_inline_binary_annots(Arena                    *arena,
       l->col_count  = 0;
 
       if (file->line_count > 0) {
-        l->voffs     = /* no zero */ push_array(U64, file->line_count + 1);
+        l->voffs     = /* no zero */ new U64[file->line_count + 1];
         l->line_nums = new U32[file->line_count] /* no zero */;
         l->col_nums  = 0; // TODO: column info 
 

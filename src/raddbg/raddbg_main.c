@@ -626,7 +626,7 @@ entry_point(CmdLine *cmd_line)
                 ipc_command_frame = 1;
                 ipc_s2m_ring_read_pos += ring_read_struct(ipc_s2m_ring_buffer, sizeof(ipc_s2m_ring_buffer), ipc_s2m_ring_read_pos, &msg.size);
                 msg.size = Min(msg.size, unconsumed_size);
-                msg.str = push_array(U8, msg.size);
+                msg.str = new U8[msg.size];
                 ipc_s2m_ring_read_pos += ring_read(ipc_s2m_ring_buffer, sizeof(ipc_s2m_ring_buffer), ipc_s2m_ring_read_pos, msg.str, msg.size);
               }
             }

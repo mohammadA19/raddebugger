@@ -72,7 +72,7 @@ msf_set_page_data_list(Arena *arena, MSF_PageDataList *list, MSF_UInt page_size,
   
   U64 node_idx;
   for (node_idx = 0; node_idx < node_count - 1; node_idx += 1) {
-    MSF_PageDataNode *node = push_array(MSF_PageDataNode, 1);
+    MSF_PageDataNode *node = new MSF_PageDataNode[1];
     node->data = data.str + node_idx * node_size;
     SLLQueuePush(list->first, list->last, node);
     list->count += 1;
@@ -90,7 +90,7 @@ msf_set_page_data_list(Arena *arena, MSF_PageDataList *list, MSF_UInt page_size,
   }
   ProfEnd();
   
-  MSF_PageDataNode *last_node = push_array(MSF_PageDataNode, 1);
+  MSF_PageDataNode *last_node = new MSF_PageDataNode[1];
   last_node->data = last_node_data;
   SLLQueuePush(list->first, list->last, last_node);
   list->count += 1;
@@ -119,7 +119,7 @@ msf_data_from_pn(MSF_PageDataList list, MSF_UInt page_size, MSF_PageNumber pn)
 internal MSF_StreamNode *
 msf_stream_list_push(Arena *arena, MSF_StreamList *list)
 {
-  MSF_StreamNode *n = push_array(MSF_StreamNode, 1);
+  MSF_StreamNode *n = new MSF_StreamNode[1];
   DLLPushBack(list->first, list->last, n);
   list->count += 1;
   return n;
@@ -145,7 +145,7 @@ msf_page_list_push_node(MSF_PageList *list, MSF_PageNode *node)
 internal MSF_PageNode *
 msf_page_list_push(Arena *arena, MSF_PageList *list)
 {
-  MSF_PageNode *node = push_array(MSF_PageNode, 1);
+  MSF_PageNode *node = new MSF_PageNode[1];
   msf_page_list_push_node(list, node);
   return node;
 }
@@ -171,7 +171,7 @@ msf_page_list_concat_in_place(MSF_PageList *list, MSF_PageList *to_concat)
 internal MSF_PageNumber *
 msf_page_list_to_arr(Arena *arena, MSF_PageList list)
 {
-  MSF_PageNumber *arr = push_array(MSF_PageNumber, list.count);
+  MSF_PageNumber *arr = new MSF_PageNumber[list.count];
   MSF_UInt i = 0;
   for (MSF_PageNode *node = list.first; node != 0; node = node->next, i += 1) {
     arr[i] = node->pn;
@@ -312,7 +312,7 @@ msf_get_fpm_page_arr(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt pag
   MSF_UInt page_count = msf_get_page_count_cap(page_data_list, page_size);
   MSF_PageNumberArray arr;
   arr.count = CeilIntegerDiv(page_count, fpm_interval_correct);
-  arr.v = push_array(MSF_PageNumber, arr.count);
+  arr.v = new MSF_PageNumber[arr.count];
   for (MSF_UInt interval_idx = 0; interval_idx < arr.count; interval_idx += 1) {
     arr.v[interval_idx] = active_fpm + interval_idx * fpm_interval_wrong;
   }
@@ -503,7 +503,7 @@ msf_alloc_pn_arr(Arena *arena, MSF_Context *msf, MSF_UInt alloc_count)
   Temp scratch = scratch_begin(&arena, 1);
 
   // reserve memory for page numbers
-  MSF_PageNumber *pn_arr = push_array(MSF_PageNumber, alloc_count);
+  MSF_PageNumber *pn_arr = new MSF_PageNumber[alloc_count];
   
   MSF_UInt fpm_interval_correct = msf_get_fpm_interval_correct(msf->page_size);
   MSF_UInt fpm_interval_wrong = msf_get_fpm_interval_wrong(msf->page_size);
@@ -1306,7 +1306,7 @@ msf_stream_read_u64(MSF_Context *msf, MSF_StreamNumber sn)
 internal String8
 msf_stream_read_block(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U64 block_size)
 {
-  U8 *block_buffer = push_array(U8, block_size);
+  U8 *block_buffer = new U8[block_size];
   MSF_UInt block_read = msf_stream_read(msf, sn, block_buffer, block_size);
   Assert((U64)block_read == block_size);
   String8 block = str8(block_buffer, block_size);
@@ -1351,7 +1351,7 @@ msf_alloc__(MSF_UInt page_size, MSF_PageNumber active_fpm)
   
   Arena *arena = arena_alloc();
   
-  MSF_Context *msf = push_array(MSF_Context, 1);
+  MSF_Context *msf = new MSF_Context[1];
   msf->arena = arena;
   msf->page_size = page_size;
   msf->active_fpm = active_fpm;
@@ -1418,7 +1418,7 @@ msf_open_root(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt page_size,
   MSF_PageNumber st_page_count = msf_count_pages(page_size, stream_table_size);
   MSF_UInt st_pn_size = sizeof(MSF_PageNumber) * st_page_count;
   MSF_PageNumber root_pn_count = msf_count_pages(page_size, st_pn_size);
-  MSF_PageNumber *root_pn_arr = push_array(MSF_PageNumber, root_pn_count);
+  MSF_PageNumber *root_pn_arr = new MSF_PageNumber[root_pn_count];
   for (MSF_UInt i = 0; i < root_pn_count; i += 1) {
     root_pn_arr[i] = root_pn + i;
   }
@@ -1436,7 +1436,7 @@ msf_open_stream_table_page_list(Arena *arena, MSF_PageDataList page_data_list, M
   MSF_Error error = MSF_Error_OK; 
   MSF_UInt st_pn_count = msf_count_pages(page_size, stream_table_size);
   MSF_UInt st_pn_size = st_pn_count * sizeof(MSF_PageNumber);
-  MSF_PageNumber *st_pn_arr = push_array(MSF_PageNumber, st_pn_count);
+  MSF_PageNumber *st_pn_arr = new MSF_PageNumber[st_pn_count];
   MSF_UInt st_pn_read_size = msf_read(page_data_list, page_size, root_page_list, 0, st_pn_arr, st_pn_size);
   if (st_pn_read_size == st_pn_size) {
     msf_page_list_push_extant_page_arr(arena, page_list, page_data_list, page_size, st_pn_arr, st_pn_count);
@@ -1456,7 +1456,7 @@ msf_open_stream_table(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt pa
   MSF_Error error = MSF_Error_OK;
   
   // read out entire stream table
-  U8 *st_buffer = push_array(U8, stream_table_size);
+  U8 *st_buffer = new U8[stream_table_size];
   MSF_UInt st_read_size = msf_read(page_data_list, page_size, st_page_list, 0, st_buffer, stream_table_size);
   if (st_read_size != stream_table_size) {
     error = MSF_OpenError_INVALID_STREAM_TABLE;
@@ -1682,13 +1682,13 @@ msf_build_stream_table_data(Arena *arena, MSF_StreamList *sectab, MSF_UInt page_
 {
   ProfBeginFunction();
   
-  MSF_UInt *stream_count_ptr = push_array(MSF_UInt, 1);
+  MSF_UInt *stream_count_ptr = new MSF_UInt[1];
   *stream_count_ptr = sectab->count;
 
-  MSF_UInt *stream_size_arr = push_array(MSF_UInt, sectab->count);
+  MSF_UInt *stream_size_arr = new MSF_UInt[sectab->count];
   MSF_UInt stream_page_count = 0;
 
-  MSF_PageNumber *stream_pages_arr = push_array(MSF_PageNumber, page_count);
+  MSF_PageNumber *stream_pages_arr = new MSF_PageNumber[page_count];
 
   for (MSF_StreamNode *stream_node = sectab->first; stream_node != 0; stream_node = stream_node->next) {
     MSF_Stream *stream = &stream_node->data;
@@ -1787,7 +1787,7 @@ msf_build_root_directory(MSF_Context *msf)
   }
   
   // collect stream table page numbers
-  MSF_PageNumber *pn_arr = push_array(MSF_PageNumber, msf->st_page_list.count);
+  MSF_PageNumber *pn_arr = new MSF_PageNumber[msf->st_page_list.count];
   MSF_UInt pn_count = 0;
   for (MSF_PageNode *page = msf->st_page_list.first; page != 0; page = page->next) {
     pn_arr[pn_count++] = page->pn;
@@ -1938,7 +1938,7 @@ msf_save_arena(Arena *arena, MSF_Context *msf, String8 *data_out)
   MSF_Error err = msf_build(msf);
   if (err == MSF_Error_OK) {
     U64 buffer_size = msf_get_save_size(msf);
-    U8 *buffer = push_array(U8, buffer_size);
+    U8 *buffer = new U8[buffer_size];
     B32 is_saved = msf_save(msf, buffer, buffer_size);
     if (is_saved) {
       *data_out = str8(buffer, buffer_size);
@@ -2029,7 +2029,7 @@ msf_bytedump_stream(char *file_name, MSF_Context *msf, MSF_StreamNumber sn, U64 
   U64 pos = msf_stream_get_pos(msf, sn);
   msf_stream_seek(msf, sn, start);
   U64 buffer_size = byte_count;
-  U8 *buffer = push_array(U8, buffer_size);
+  U8 *buffer = new U8[buffer_size];
   MSF_UInt read_size = msf_stream_read(msf, sn, buffer, buffer_size);
   os_write_file(str8_cstring(file_name), str8(buffer, read_size));
   msf_stream_seek(msf, sn, pos);
@@ -2040,7 +2040,7 @@ internal void
 msf_hexdump_stream(FILE *file, MSF_Context *msf, MSF_StreamNumber sn, U64 start, U64 byte_count, U64 stride)
 {
   Temp scratch = scratch_begin(0, 0);
-  U8 *row_buffer = push_array(U8, stride);
+  U8 *row_buffer = new U8[stride];
   U64 stream_size = msf_stream_get_size(msf, sn);
   U64 cursor = start;
   U64 end = Min(start + byte_count, stream_size);
@@ -2147,7 +2147,7 @@ test_size_limit(void)
   U64 stream_count = 8;
   
   U64 data_size = msf->page_size;
-  U8 *data = push_array(U8, data_size);
+  U8 *data = new U8[data_size];
   
   for (U64 stream_idx = 0; stream_idx < stream_count; stream_idx += 1) {
     MSF_StreamNumber stream = msf_stream_alloc(msf);
@@ -2181,7 +2181,7 @@ test_size_limit(void)
   Assert(err == MSF_Error_OK);
   
 #if 1
-  U8 *buffer = push_array(U8, data_size);
+  U8 *buffer = new U8[data_size];
   for (U64 stream_idx = 0; stream_idx < stream_count; stream_idx += 1) {
     MSF_StreamNumber sn = (MSF_StreamNumber)stream_idx;
     

@@ -199,14 +199,14 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
       code_slice_params.flags |= RD_CodeSliceFlag_PriorityMargin|RD_CodeSliceFlag_CatchallMargin;
     }
     code_slice_params.line_num_range            = visible_line_num_range;
-    code_slice_params.line_text                 = push_array(String8, visible_line_count);
-    code_slice_params.line_ranges               = push_array(Rng1U64, visible_line_count);
-    code_slice_params.line_tokens               = push_array(TXT_TokenArray, visible_line_count);
-    code_slice_params.line_bps                  = push_array(RD_CfgList, visible_line_count);
-    code_slice_params.line_ips                  = push_array(CTRL_EntityList, visible_line_count);
-    code_slice_params.line_pins                 = push_array(RD_CfgList, visible_line_count);
-    code_slice_params.line_vaddrs               = push_array(U64, visible_line_count);
-    code_slice_params.line_infos                = push_array(D_LineList, visible_line_count);
+    code_slice_params.line_text                 = new String8[visible_line_count];
+    code_slice_params.line_ranges               = new Rng1U64[visible_line_count];
+    code_slice_params.line_tokens               = new TXT_TokenArray[visible_line_count];
+    code_slice_params.line_bps                  = new RD_CfgList[visible_line_count];
+    code_slice_params.line_ips                  = new CTRL_EntityList[visible_line_count];
+    code_slice_params.line_pins                 = new RD_CfgList[visible_line_count];
+    code_slice_params.line_vaddrs               = new U64[visible_line_count];
+    code_slice_params.line_infos                = new D_LineList[visible_line_count];
     code_slice_params.font                      = code_font;
     code_slice_params.font_size                 = code_font_size;
     code_slice_params.tab_size                  = code_tab_size;
@@ -835,7 +835,7 @@ rd_id_from_watch_cell(RD_WatchCell *cell)
 internal RD_WatchCell *
 rd_watch_cell_list_push(Arena *arena, RD_WatchCellList *list)
 {
-  RD_WatchCell *cell = push_array(RD_WatchCell, 1);
+  RD_WatchCell *cell = new RD_WatchCell[1];
   cell->index = list->count;
   SLLQueuePush(list->first, list->last, cell);
   list->count += 1;
@@ -2885,9 +2885,9 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
   //- rjf: grab windowed memory
   //
   U64 visible_memory_size = dim_1u64(viz_range_bytes);
-  U8 *visible_memory = push_array(U8, visible_memory_size);
-  U64 *visible_memory_change_flags = push_array(U64, (visible_memory_size+63)/64);
-  U64 *visible_memory_bad_flags = push_array(U64, (visible_memory_size+63)/64);
+  U8 *visible_memory = new U8[visible_memory_size];
+  U64 *visible_memory_change_flags = new U64[(visible_memory_size+63)/64];
+  U64 *visible_memory_bad_flags = new U64[(visible_memory_size+63)/64];
   {
     e_space_read(eval.space, visible_memory, viz_range_bytes);
   }
@@ -2926,7 +2926,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
     AnnotationNode *first;
     AnnotationNode *last;
   };
-  AnnotationList *visible_memory_annotations = push_array(AnnotationList, visible_memory_size);
+  AnnotationList *visible_memory_annotations = new AnnotationList[visible_memory_size];
   {
     CTRL_Scope *ctrl_scope = ctrl_scope_open();
     CTRL_Entity *selected_thread = ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, rd_regs()->thread);
@@ -2963,7 +2963,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
           di_scope_close(scope);
           if(procedure_name.size != 0)
           {
-            Annotation *annotation = push_array(Annotation, 1);
+            Annotation *annotation = new Annotation[1];
             annotation->name_string = push_str8_copy(scratch.arena, procedure_name);
             annotation->kind_string = str8_lit("Call Stack Frame");
             annotation->color = v4f32(0, 0, 0, 0);
@@ -2971,7 +2971,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
             for(U64 vaddr = frame_vaddr_range_in_viz.min; vaddr < frame_vaddr_range_in_viz.max; vaddr += 1)
             {
               U64 visible_byte_idx = vaddr - viz_range_bytes.min;
-              AnnotationNode *n = push_array(AnnotationNode, 1);
+              AnnotationNode *n = new AnnotationNode[1];
               n->v = annotation;
               SLLQueuePush(visible_memory_annotations[visible_byte_idx].first, visible_memory_annotations[visible_byte_idx].last, n);
             }
@@ -2989,7 +2989,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
       Rng1U64 stack_vaddr_range_in_viz = intersect_1u64(stack_vaddr_range, viz_range_bytes);
       if(dim_1u64(stack_vaddr_range_in_viz) != 0)
       {
-        Annotation *annotation = push_array(Annotation, 1);
+        Annotation *annotation = new Annotation[1];
         annotation->name_string = selected_thread->string.size ? selected_thread->string : push_str8f(scratch.arena, "TID: %I64u", selected_thread->id);
         annotation->kind_string = str8_lit("Stack");
         annotation->color = rd_color_from_ctrl_entity(selected_thread);
@@ -2997,7 +2997,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
         for(U64 vaddr = stack_vaddr_range_in_viz.min; vaddr < stack_vaddr_range_in_viz.max; vaddr += 1)
         {
           U64 visible_byte_idx = vaddr - viz_range_bytes.min;
-          AnnotationNode *n = push_array(AnnotationNode, 1);
+          AnnotationNode *n = new AnnotationNode[1];
           n->v = annotation;
           SLLQueuePush(visible_memory_annotations[visible_byte_idx].first, visible_memory_annotations[visible_byte_idx].last, n);
         }
@@ -3029,7 +3029,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
           Rng1U64 vaddr_rng_in_visible = intersect_1u64(viz_range_bytes, vaddr_rng);
           if(vaddr_rng_in_visible.max != vaddr_rng_in_visible.min)
           {
-            Annotation *annotation = push_array(Annotation, 1);
+            Annotation *annotation = new Annotation[1];
             {
               annotation->name_string = push_str8_copy(scratch.arena, local_name);
               annotation->kind_string = str8_lit("Local");
@@ -3039,7 +3039,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
             }
             for(U64 vaddr = vaddr_rng_in_visible.min; vaddr < vaddr_rng_in_visible.max; vaddr += 1)
             {
-              AnnotationNode *n = push_array(AnnotationNode, 1);
+              AnnotationNode *n = new AnnotationNode[1];
               n->v = annotation;
               SLLQueuePushFront(visible_memory_annotations[vaddr-viz_range_bytes.min].first, visible_memory_annotations[vaddr-viz_range_bytes.min].last, n);
             }
@@ -3086,7 +3086,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
             {
               String8 procedure_name = {0};
               procedure_name.str = rdi_string_from_idx(rdi, procedure->name_string_idx, &procedure_name.size);
-              Annotation *annotation = push_array(Annotation, 1);
+              Annotation *annotation = new Annotation[1];
               {
                 annotation->name_string = push_str8_copy(scratch.arena, procedure_name);
                 annotation->kind_string = str8_lit("Procedure");
@@ -3095,7 +3095,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
               }
               for(U64 vaddr = vaddr_range_in_visible.min; vaddr < vaddr_range_in_visible.max; vaddr += 1)
               {
-                AnnotationNode *n = push_array(AnnotationNode, 1);
+                AnnotationNode *n = new AnnotationNode[1];
                 n->v = annotation;
                 SLLQueuePushFront(visible_memory_annotations[vaddr-viz_range_bytes.min].first, visible_memory_annotations[vaddr-viz_range_bytes.min].last, n);
               }
@@ -3142,7 +3142,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
             {
               String8 gvar_name = {0};
               gvar_name.str = rdi_string_from_idx(rdi, gvar->name_string_idx, &gvar_name.size);
-              Annotation *annotation = push_array(Annotation, 1);
+              Annotation *annotation = new Annotation[1];
               {
                 annotation->name_string = push_str8_copy(scratch.arena, gvar_name);
                 annotation->kind_string = str8_lit("Global");
@@ -3151,7 +3151,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
               }
               for(U64 vaddr = vaddr_range_in_visible.min; vaddr < vaddr_range_in_visible.max; vaddr += 1)
               {
-                AnnotationNode *n = push_array(AnnotationNode, 1);
+                AnnotationNode *n = new AnnotationNode[1];
                 n->v = annotation;
                 SLLQueuePushFront(visible_memory_annotations[vaddr-viz_range_bytes.min].first, visible_memory_annotations[vaddr-viz_range_bytes.min].last, n);
               }
@@ -3184,7 +3184,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
         Rng1U64 vaddr_range_in_visible = intersect_1u64(vaddr_range, viz_range_bytes);
         if(vaddr_range_in_visible.max > vaddr_range_in_visible.min)
         {
-          Annotation *annotation = push_array(Annotation, 1);
+          Annotation *annotation = new Annotation[1];
           {
             annotation->name_string = push_str8_copy(scratch.arena, name);
             annotation->kind_string = str8_lit("Annotation");
@@ -3193,7 +3193,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
           }
           for(U64 vaddr = vaddr_range_in_visible.min; vaddr < vaddr_range_in_visible.max; vaddr += 1)
           {
-            AnnotationNode *n = push_array(AnnotationNode, 1);
+            AnnotationNode *n = new AnnotationNode[1];
             n->v = annotation;
             SLLQueuePushFront(visible_memory_annotations[vaddr-viz_range_bytes.min].first, visible_memory_annotations[vaddr-viz_range_bytes.min].last, n);
           }
@@ -3435,7 +3435,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
   //
   UI_Parent(row_container_box) RD_Font(RD_FontSlot_Code) UI_FontSize(font_size)
   {
-    U8 *row_ascii_buffer = push_array(U8, num_columns);
+    U8 *row_ascii_buffer = new U8[num_columns];
     UI_WidthFill UI_PrefHeight(ui_px(row_height_px, 1.f))
       for(S64 row_idx = viz_range_rows.min; row_idx <= viz_range_rows.max; row_idx += 1)
     {
@@ -3936,7 +3936,7 @@ RD_VIEW_UI_FUNCTION_DEF(bitmap)
   //- rjf: equip canvas draw info
   //
   {
-    RD_BitmapCanvasBoxDrawData *draw_data = push_array(RD_BitmapCanvasBoxDrawData, 1);
+    RD_BitmapCanvasBoxDrawData *draw_data = new RD_BitmapCanvasBoxDrawData[1];
     draw_data->view_center_pos = view_center_pos;
     draw_data->zoom = zoom;
     ui_box_equip_custom_draw(canvas_box, rd_bitmap_view_canvas_box_draw, draw_data);
@@ -4422,7 +4422,7 @@ RD_VIEW_UI_FUNCTION_DEF(geo3d)
     zoom_target += sig.scroll.y;
     zoom_target = Clamp(0.1f, zoom_target, 100.f);
     pitch_target = Clamp(-0.49f, pitch_target, -0.01f);
-    RD_Geo3DBoxDrawData *draw_data = push_array(RD_Geo3DBoxDrawData, 1);
+    RD_Geo3DBoxDrawData *draw_data = new RD_Geo3DBoxDrawData[1];
     draw_data->yaw   = state->yaw;
     draw_data->pitch = state->pitch;
     draw_data->zoom  = state->zoom;

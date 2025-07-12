@@ -12,7 +12,7 @@ pe_make_debug_directory_pdb_obj(Arena *arena, COFF_MachineType machine, Guid gui
   coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("RAD_LINK_PE_DEBUG_PDB"), 0, debug_sect);
   coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("RAD_LINK_PE_DEBUG_GUID_PDB"), OffsetOf(PE_CvHeaderPDB70, guid), debug_sect);
 
-  PE_DebugDirectory *dir = push_array(PE_DebugDirectory, 1);
+  PE_DebugDirectory *dir = new PE_DebugDirectory[1];
   dir->time_stamp        = time_stamp;
   dir->type              = PE_DebugDirectoryType_CODEVIEW;
   dir->size              = debug_data.size;
@@ -34,7 +34,7 @@ pe_make_debug_directory_rdi_obj(Arena *arena, COFF_MachineType machine, Guid gui
   coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("RAD_LINK_PE_DEBUG_RDI"), 0, debug_sect);
   coff_obj_writer_push_symbol_extern(obj_writer, str8_lit("RAD_LINK_PE_DEBUG_GUID_RDI"), OffsetOf(PE_CvHeaderRDI, guid), debug_sect);
 
-  PE_DebugDirectory *dir = push_array(PE_DebugDirectory, 1);
+  PE_DebugDirectory *dir = new PE_DebugDirectory[1];
   dir->time_stamp = time_stamp;
   dir->type       = PE_DebugDirectoryType_CODEVIEW;
   dir->size       = debug_data.size;

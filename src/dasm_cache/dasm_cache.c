@@ -164,7 +164,7 @@ dasm_ctrl_flow_info_from_arch_vaddr_code(Arena *arena, DASM_InstFlags exit_point
       point.inst_flags = inst.flags;
       point.vaddr = inst_vaddr;
       point.jump_dest_vaddr = inst.jump_dest_vaddr;
-      DASM_CtrlFlowPointNode *node = push_array(DASM_CtrlFlowPointNode, 1);
+      DASM_CtrlFlowPointNode *node = new DASM_CtrlFlowPointNode[1];
       node->v = point;
       SLLQueuePush(info.exit_points.first, info.exit_points.last, node);
       info.exit_points.count += 1;
@@ -198,7 +198,7 @@ dasm_line_chunk_list_push(Arena *arena, DASM_LineChunkList *list, U64 cap, DASM_
   DASM_LineChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
   {
-    node = push_array(DASM_LineChunkNode, 1);
+    node = new DASM_LineChunkNode[1];
     node->v = new DASM_Line[cap] /* no zero */;
     node->cap = cap;
     SLLQueuePush(list->first, list->last, node);
@@ -261,12 +261,12 @@ internal void
 dasm_init(void)
 {
   Arena *arena = arena_alloc();
-  dasm_shared = push_array(DASM_Shared, 1);
+  dasm_shared = new DASM_Shared[1];
   dasm_shared->arena = arena;
   dasm_shared->slots_count = 1024;
   dasm_shared->stripes_count = Min(dasm_shared->slots_count, os_get_system_info()->logical_processor_count);
-  dasm_shared->slots = push_array(DASM_Slot, dasm_shared->slots_count);
-  dasm_shared->stripes = push_array(DASM_Stripe, dasm_shared->stripes_count);
+  dasm_shared->slots = new DASM_Slot[dasm_shared->slots_count];
+  dasm_shared->stripes = new DASM_Stripe[dasm_shared->stripes_count];
   for(U64 idx = 0; idx < dasm_shared->stripes_count; idx += 1)
   {
     dasm_shared->stripes[idx].arena = arena_alloc();
@@ -289,11 +289,11 @@ dasm_scope_open(void)
   if(dasm_tctx == 0)
   {
     Arena *arena = arena_alloc();
-    dasm_tctx = push_array(DASM_TCTX, 1);
+    dasm_tctx = new DASM_TCTX[1];
     dasm_tctx->arena = arena;
   }
   U64 base_pos = arena_pos(dasm_tctx->arena);
-  DASM_Scope *scope = push_array(DASM_Scope, 1);
+  DASM_Scope *scope = new DASM_Scope[1];
   scope->base_pos = base_pos;
   return scope;
 }
@@ -326,7 +326,7 @@ dasm_scope_close(DASM_Scope *scope)
 internal void
 dasm_scope_touch_node__stripe_r_guarded(DASM_Scope *scope, DASM_Node *node)
 {
-  DASM_Touch *touch = push_array(DASM_Touch, 1);
+  DASM_Touch *touch = new DASM_Touch[1];
   ins_atomic_u64_inc_eval(&node->scope_ref_count);
   ins_atomic_u64_eval_assign(&node->last_time_touched_us, os_now_microseconds());
   ins_atomic_u64_eval_assign(&node->last_user_clock_idx_touched, update_tick_idx());
@@ -394,7 +394,7 @@ dasm_info_from_hash_params(DASM_Scope *scope, U128 hash, DASM_Params *params)
           }
           else
           {
-            node = /* no zero */ push_array(DASM_Node, 1);
+            node = /* no zero */ new DASM_Node[1];
           }
           MemoryZeroStruct(node);
           
@@ -498,7 +498,7 @@ dasm_u2p_dequeue_req(Arena *arena, HS_Root *root_out, U128 *hash_out, DASM_Param
       dasm_shared->u2p_ring_read_pos += ring_read_struct(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, &params_out->syntax);
       dasm_shared->u2p_ring_read_pos += ring_read_struct(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, &params_out->base_vaddr);
       dasm_shared->u2p_ring_read_pos += ring_read_struct(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, &params_out->dbgi_key.path.size);
-      params_out->dbgi_key.path.str = push_array(U8, params_out->dbgi_key.path.size);
+      params_out->dbgi_key.path.str = new U8[params_out->dbgi_key.path.size];
       dasm_shared->u2p_ring_read_pos += ring_read(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, params_out->dbgi_key.path.str, params_out->dbgi_key.path.size);
       dasm_shared->u2p_ring_read_pos += ring_read_struct(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, &params_out->dbgi_key.min_timestamp);
       break;

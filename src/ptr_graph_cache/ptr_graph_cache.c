@@ -8,12 +8,12 @@ internal void
 ptg_init(void)
 {
   Arena *arena = arena_alloc();
-  ptg_shared = push_array(PTG_Shared, 1);
+  ptg_shared = new PTG_Shared[1];
   ptg_shared->arena = arena;
   ptg_shared->slots_count = 1024;
   ptg_shared->stripes_count = Min(ptg_shared->slots_count, os_get_system_info()->logical_processor_count);
-  ptg_shared->slots = push_array(PTG_GraphSlot, ptg_shared->slots_count);
-  ptg_shared->stripes = push_array(PTG_GraphStripe, ptg_shared->stripes_count);
+  ptg_shared->slots = new PTG_GraphSlot[ptg_shared->slots_count];
+  ptg_shared->stripes = new PTG_GraphStripe[ptg_shared->stripes_count];
   for(U64 idx = 0; idx < ptg_shared->stripes_count; idx += 1)
   {
     ptg_shared->stripes[idx].arena = arena_alloc();
@@ -25,7 +25,7 @@ ptg_init(void)
   ptg_shared->u2b_ring_cv = os_condition_variable_alloc();
   ptg_shared->u2b_ring_mutex = os_mutex_alloc();
   ptg_shared->builder_thread_count = Clamp(1, os_get_system_info()->logical_processor_count-1, 4);
-  ptg_shared->builder_threads = push_array(OS_Handle, ptg_shared->builder_thread_count);
+  ptg_shared->builder_threads = new OS_Handle[ptg_shared->builder_thread_count];
   for(U64 idx = 0; idx < ptg_shared->builder_thread_count; idx += 1)
   {
     ptg_shared->builder_threads[idx] = os_thread_launch(ptg_builder_thread__entry_point, (void *)idx, 0);
@@ -57,7 +57,7 @@ ptg_scope_open(void)
   if(ptg_tctx == 0)
   {
     Arena *arena = arena_alloc();
-    ptg_tctx = push_array(PTG_TCTX, 1);
+    ptg_tctx = new PTG_TCTX[1];
     ptg_tctx->arena = arena;
   }
   PTG_Scope *scope = ptg_tctx->free_scope;
@@ -67,7 +67,7 @@ ptg_scope_open(void)
   }
   else
   {
-    scope = /* no zero */ push_array(PTG_Scope, 1);
+    scope = /* no zero */ new PTG_Scope[1];
   }
   MemoryZeroStruct(scope);
   return scope;
@@ -98,7 +98,7 @@ ptg_scope_touch_node__stripe_r_guarded(PTG_Scope *scope, PTG_GraphNode *node)
   }
   else
   {
-    touch = /* no zero */ push_array(PTG_Touch, 1);
+    touch = /* no zero */ new PTG_Touch[1];
   }
   MemoryZeroStruct(touch);
   touch->node = node;

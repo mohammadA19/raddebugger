@@ -145,7 +145,7 @@ lnk_file_rename(OS_Handle handle, String8 new_name)
 
   U64 file_rename_info_size = sizeof(FILE_RENAME_INFO);
   U64 buffer_size           = file_rename_info_size + sizeof(new_name16.str)*new_name16.size;
-  U8 *buffer                = push_array(U8, buffer_size);
+  U8 *buffer                = new U8[buffer_size];
 
   FILE_RENAME_INFO *rename_info = (FILE_RENAME_INFO *)buffer;
   rename_info->ReplaceIfExists  = 1;
@@ -247,14 +247,14 @@ lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, LNK_IO_Flags
     reader.io_flags       = io_flags;
     reader.path_arr       = path_arr;
     reader.data_arr.count = path_arr.count;
-    reader.data_arr.v     = push_array(String8, path_arr.count);
+    reader.data_arr.v     = new String8[path_arr.count];
     tp_for_parallel(tp, 0, path_arr.count, lnk_memory_map_file_task, &reader);
   } else {
     Temp scratch = scratch_begin(&arena,1);
 
     reader.path_arr       = path_arr;
-    reader.handle_arr     = /* no zero */ push_array(OS_Handle, path_arr.count);
-    reader.size_arr       = /* no zero */ push_array(U64, path_arr.count);
+    reader.handle_arr     = /* no zero */ new OS_Handle[path_arr.count];
+    reader.size_arr       = /* no zero */ new U64[path_arr.count];
 
     // open handles and get sizes
     tp_for_parallel(tp, 0, path_arr.count, lnk_data_size_from_file_path_task, &reader);
@@ -263,7 +263,7 @@ lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, LNK_IO_Flags
     U64 total_data_size = sum_array_u64(path_arr.count, reader.size_arr);
 
     // assign offsets into file buffer
-    U64 *off_arr = /* no zero */ push_array(U64, path_arr.count);
+    U64 *off_arr = /* no zero */ new U64[path_arr.count];
     MemoryCopyTyped(off_arr, reader.size_arr, path_arr.count);
     counts_to_offsets_array_u64(path_arr.count, off_arr);
 

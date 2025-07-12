@@ -1097,7 +1097,7 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
       if (lnk_parse_alt_name_directive(value_strings.first->string, &alt_name)) {
         alt_name.from = push_str8_copy(arena, alt_name.from);
         alt_name.to = push_str8_copy(arena, alt_name.to);
-        LNK_AltNameNode *alt_name_n = push_array(LNK_AltNameNode, 1);
+        LNK_AltNameNode *alt_name_n = new LNK_AltNameNode[1];
         alt_name_n->data = alt_name;
         SLLQueuePush(config->alt_name_list.first, config->alt_name_list.last, alt_name_n);
         config->alt_name_list.count += 1;
@@ -1928,7 +1928,7 @@ lnk_config_from_cmd_line(Arena *arena, String8List raw_cmd_line, LNK_CmdLine cmd
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
   
-  LNK_Config *config                = push_array(LNK_Config, 1);
+  LNK_Config *config                = new LNK_Config[1];
   config->raw_cmd_line              = str8_list_copy(arena, &raw_cmd_line);
   config->work_dir                  = os_get_current_path(arena);
   config->build_imp_lib             = 1;

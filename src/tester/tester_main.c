@@ -40,11 +40,11 @@ entry_point(CmdLine *cmdline)
   Arena *arena = arena_alloc();
   E_Cache *eval_cache = e_cache_alloc();
   e_select_cache(eval_cache);
-  E_BaseCtx *base_ctx = push_array(E_BaseCtx, 1);
+  E_BaseCtx *base_ctx = new E_BaseCtx[1];
   e_select_base_ctx(base_ctx);
-  E_IRCtx *ir_ctx = push_array(E_IRCtx, 1);
+  E_IRCtx *ir_ctx = new E_IRCtx[1];
   e_select_ir_ctx(ir_ctx);
-  E_InterpretCtx *interpret_ctx = push_array(E_InterpretCtx, 1);
+  E_InterpretCtx *interpret_ctx = new E_InterpretCtx[1];
   e_select_interpret_ctx(interpret_ctx, 0, 0);
   
   //////////////////////////////
@@ -77,7 +77,7 @@ entry_point(CmdLine *cmdline)
   Test *first_test = 0;
   Test *last_test = 0;
 #define Test(name_identifier) \
-Test *test_##name_identifier = push_array(Test, 1);\
+Test *test_##name_identifier = new Test[1];\
 test_##name_identifier->name = str8_lit(#name_identifier);\
 test_##name_identifier->good = 1;\
 SLLQueuePush(first_test, last_test, test_##name_identifier);\
@@ -136,11 +136,11 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
       
       // rjf: gather all hashes/paths
       U64 rdi_hashes_count = rdi_paths.node_count;
-      U128 *rdi_hashes = push_array(U128, rdi_hashes_count);
-      String8 *rdi_paths_array = push_array(String8, rdi_hashes_count);
+      U128 *rdi_hashes = new U128[rdi_hashes_count];
+      String8 *rdi_paths_array = new String8[rdi_hashes_count];
       U64 dump_hashes_count = dump_paths.node_count;
-      U128 *dump_hashes = push_array(U128, dump_hashes_count);
-      String8 *dump_paths_array = push_array(String8, dump_hashes_count);
+      U128 *dump_hashes = new U128[dump_hashes_count];
+      String8 *dump_paths_array = new String8[dump_hashes_count];
       {
         U64 idx = 0;
         for(String8Node *n = rdi_paths.first; n != 0; n = n->next, idx += 1)

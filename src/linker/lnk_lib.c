@@ -39,7 +39,7 @@ internal LNK_LibList
 lnk_lib_list_reserve(Arena *arena, U64 count)
 {
   LNK_LibList result = {0};
-  LNK_LibNode *nodes = push_array(LNK_LibNode, count);
+  LNK_LibNode *nodes = new LNK_LibNode[count];
   for (U64 i = 0; i < count; i += 1) { lnk_lib_list_push_node(&result, &nodes[i]); }
   return result;
 }
@@ -48,7 +48,7 @@ internal LNK_LibNodeArray
 lnk_array_from_lib_list(Arena *arena, LNK_LibList list)
 {
   LNK_LibNodeArray result = {0};
-  result.v = push_array(LNK_LibNode, list.count);
+  result.v = new LNK_LibNode[list.count];
   for (LNK_LibNode *n = list.first; n != 0; n = n->next) { result.v[result.count++] = *n; }
   return result;
 }

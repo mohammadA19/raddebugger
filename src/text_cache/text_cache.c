@@ -107,7 +107,7 @@ txt_token_chunk_list_push(Arena *arena, TXT_TokenChunkList *list, U64 cap, TXT_T
   TXT_TokenChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
   {
-    node = push_array(TXT_TokenChunkNode, 1);
+    node = new TXT_TokenChunkNode[1];
     SLLQueuePush(list->first, list->last, node);
     node->cap = cap;
     node->v = new TXT_Token[node->cap] /* no zero */;
@@ -121,7 +121,7 @@ txt_token_chunk_list_push(Arena *arena, TXT_TokenChunkList *list, U64 cap, TXT_T
 internal void
 txt_token_list_push(Arena *arena, TXT_TokenList *list, TXT_Token *token)
 {
-  TXT_TokenNode *node = push_array(TXT_TokenNode, 1);
+  TXT_TokenNode *node = new TXT_TokenNode[1];
   MemoryCopyStruct(&node->v, token);
   SLLQueuePush(list->first, list->last, node);
   list->count += 1;
@@ -1597,13 +1597,13 @@ internal void
 txt_init(void)
 {
   Arena *arena = arena_alloc();
-  txt_shared = push_array(TXT_Shared, 1);
+  txt_shared = new TXT_Shared[1];
   txt_shared->arena = arena;
   txt_shared->slots_count = 1024;
-  txt_shared->slots = push_array(TXT_Slot, txt_shared->slots_count);
+  txt_shared->slots = new TXT_Slot[txt_shared->slots_count];
   txt_shared->stripes_count = Min(txt_shared->slots_count, os_get_system_info()->logical_processor_count);
-  txt_shared->stripes = push_array(TXT_Stripe, txt_shared->stripes_count);
-  txt_shared->stripes_free_nodes = push_array(TXT_Node *, txt_shared->stripes_count);
+  txt_shared->stripes = new TXT_Stripe[txt_shared->stripes_count];
+  txt_shared->stripes_free_nodes = new TXT_Node *[txt_shared->stripes_count];
   for(U64 idx = 0; idx < txt_shared->stripes_count; idx += 1)
   {
     txt_shared->stripes[idx].arena = arena_alloc();
@@ -1626,7 +1626,7 @@ txt_tctx_ensure_inited(void)
   if(txt_tctx == 0)
   {
     Arena *arena = arena_alloc();
-    txt_tctx = push_array(TXT_TCTX, 1);
+    txt_tctx = new TXT_TCTX[1];
     txt_tctx->arena = arena;
   }
 }
@@ -1645,7 +1645,7 @@ txt_scope_open(void)
   }
   else
   {
-    scope = /* no zero */ push_array(TXT_Scope, 1);
+    scope = /* no zero */ new TXT_Scope[1];
   }
   MemoryZeroStruct(scope);
   return scope;
@@ -1691,7 +1691,7 @@ txt_scope_touch_node__stripe_r_guarded(TXT_Scope *scope, TXT_Node *node)
   }
   else
   {
-    touch = /* no zero */ push_array(TXT_Touch, 1);
+    touch = /* no zero */ new TXT_Touch[1];
   }
   MemoryZeroStruct(touch);
   touch->hash = node->hash;
@@ -1751,7 +1751,7 @@ txt_text_info_from_hash_lang(TXT_Scope *scope, U128 hash, TXT_LangKind lang)
           }
           else
           {
-            node = /* no zero */ push_array(TXT_Node, 1);
+            node = /* no zero */ new TXT_Node[1];
           }
           MemoryZeroStruct(node);
           DLLPushBack(slot->first, slot->last, node);
@@ -2005,7 +2005,7 @@ txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info
     U64 line_count = (U64)dim_1s64(line_range_clamped)+1;
     
     // rjf: allocate output arrays
-    result.line_tokens = push_array(TXT_TokenArray, line_count);
+    result.line_tokens = new TXT_TokenArray[line_count];
     
     // rjf: binary search to find first token
     TXT_Token *tokens_first = 0;
@@ -2043,7 +2043,7 @@ txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info
     }
     
     // rjf: grab per-line tokens
-    TXT_TokenList *line_tokens_lists = push_array(TXT_TokenList, line_count);
+    TXT_TokenList *line_tokens_lists = new TXT_TokenList[line_count];
     if(tokens_first != 0) ProfScope("grab per-line tokens")
     {
       TXT_Token *tokens_opl = info->tokens.v+info->tokens.count;

@@ -20,7 +20,7 @@ os_handle_match(OS_Handle a, OS_Handle b)
 internal void
 os_handle_list_push(Arena *arena, OS_HandleList *handles, OS_Handle handle)
 {
-  OS_HandleNode *n = push_array(OS_HandleNode, 1);
+  OS_HandleNode *n = new OS_HandleNode[1];
   n->v = handle;
   SLLQueuePush(handles->first, handles->last, n);
   handles->count += 1;
@@ -92,7 +92,7 @@ os_write_data_list_to_file_path(String8 path, String8List list)
     good = 1;
     Temp scratch = scratch_begin(0, 0);
     U64 write_buffer_size = KB(64);
-    U8 *write_buffer = /* no zero */ push_array(U8, write_buffer_size);
+    U8 *write_buffer = /* no zero */ new U8[write_buffer_size];
     U64 write_buffer_write_pos = 0;
     U64 write_buffer_read_pos = 0;
     U64 file_off = 0;
@@ -185,7 +185,7 @@ os_file_read_cstring(Arena *arena, OS_Handle file, U64 off)
   String8List block_list = {0};
   for(U64 cursor = off, stride = 256;; cursor += stride)
   {
-    U8      *raw_block = /* no zero */ push_array(U8, stride);
+    U8      *raw_block = /* no zero */ new U8[stride];
     U64      read_size = os_file_read(file, r1u64(cursor, cursor + stride), raw_block);
     String8  block     = str8_cstring_capped(raw_block, raw_block+read_size);
     str8_list_push(scratch.arena, &block_list, block);

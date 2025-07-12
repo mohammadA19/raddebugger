@@ -68,9 +68,9 @@ r_batch_list_push_inst(Arena *arena, R_BatchList *list, U64 batch_inst_cap)
     R_BatchNode *n = list->last;
     if(n == 0 || n->v.byte_count+list->bytes_per_inst > n->v.byte_cap)
     {
-      n = push_array(R_BatchNode, 1);
+      n = new R_BatchNode[1];
       n->v.byte_cap = batch_inst_cap*list->bytes_per_inst;
-      n->v.v = /* no zero */ push_array(U8, n->v.byte_cap); 
+      n->v.v = /* no zero */ new U8[n->v.byte_cap]; 
       SLLQueuePush(list->first, list->last, n);
       list->batch_count += 1;
     }
@@ -94,11 +94,11 @@ r_pass_from_kind(Arena *arena, R_PassList *list, R_PassKind kind)
   }
   if(n == 0 || n->v.kind != kind)
   {
-    n = push_array(R_PassNode, 1);
+    n = new R_PassNode[1];
     SLLQueuePush(list->first, list->last, n);
     list->count += 1;
     n->v.kind = kind;
-    n->v.params = push_array(U8, r_pass_kind_params_size_table[kind]);
+    n->v.params = new U8[r_pass_kind_params_size_table[kind]];
   }
   return &n->v;
 }

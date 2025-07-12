@@ -33,7 +33,7 @@ internal PE_ExportParsePtrArray
 pe_array_from_export_list(Arena *arena, PE_ExportParseList list)
 {
   PE_ExportParsePtrArray result = {0};
-  result.v = /* no zero */ push_array(PE_ExportParse *, list.count);
+  result.v = /* no zero */ new PE_ExportParse *[list.count];
   for (PE_ExportParseNode *exp = list.first; exp != 0; exp = exp->next) {
     result.v[result.count++] = &exp->data;
   }
@@ -50,7 +50,7 @@ pe_export_parse_list_push_node(PE_ExportParseList *list, PE_ExportParseNode *nod
 internal PE_ExportParseNode *
 pe_export_parse_list_push(Arena *arena, PE_ExportParseList *list, PE_ExportParse data)
 {
-  PE_ExportParseNode *node = push_array(PE_ExportParseNode, 1);
+  PE_ExportParseNode *node = new PE_ExportParseNode[1];
   node->data = data;
   pe_export_parse_list_push_node(list, node);
   return node;
@@ -130,7 +130,7 @@ pe_finalize_export_list(Arena *arena, PE_ExportParseList export_list)
 
   // compute max ordinal and used ordinal flag array
   U64 ordinal_low = max_U64;
-  B8 *is_ordinal_used = push_array(B8, max_U16);
+  B8 *is_ordinal_used = new B8[max_U16];
   for (PE_ExportParseNode *exp_n = export_list.first; exp_n != 0; exp_n = exp_n->next) {
     PE_ExportParse *exp = &exp_n->data;
     if (exp->is_ordinal_assigned) {
@@ -213,7 +213,7 @@ pe_make_edata_obj(Arena               *arena,
 
   ProfBegin("Virtual Offset Table");
   {
-    B8 *is_ordinal_bound = push_array(B8, max_U16);
+    B8 *is_ordinal_bound = new B8[max_U16];
 
     for (U64 arr_idx = 0; arr_idx < ArrayCount(finalized_exports.all); arr_idx += 1) {
       for (U64 exp_idx = 0; exp_idx < finalized_exports.all[arr_idx].count; exp_idx += 1) {
@@ -224,7 +224,7 @@ pe_make_edata_obj(Arena               *arena,
 
           // create slot for the ordinal virtual offset
           U64  voff_offset = voff_table_sect->data.total_size;
-          U32 *voff        = push_array(U32, 1);
+          U32 *voff        = new U32[1];
           str8_list_push(obj_writer->arena, &voff_table_sect->data, str8_struct(voff));
 
           COFF_ObjSymbol *exp_symbol;
@@ -267,14 +267,14 @@ pe_make_edata_obj(Arena               *arena,
 
         // create slot for export virtual offset
         U64 export_name_voff_offset = name_voff_table_sect->data.total_size;
-        U8 *export_name_voff        = push_array(U8, sizeof(U32));
+        U8 *export_name_voff        = new U8[sizeof(U32)];
         str8_list_push(obj_writer->arena, &name_voff_table_sect->data, str8_array(export_name_voff, sizeof(U32)));
 
         // write string's virtual offset
         coff_obj_writer_section_push_reloc_voff(obj_writer, name_voff_table_sect, export_name_voff_offset, export_name_symbol);
 
         // create and store export's ordinal
-        U16 *ordinal = push_array(U16, 1);
+        U16 *ordinal = new U16[1];
         *ordinal = exp->ordinal - finalized_exports.ordinal_low;
         str8_list_push(obj_writer->arena, &ordinal_table_sect->data, str8_struct(ordinal));
       }
@@ -287,7 +287,7 @@ pe_make_edata_obj(Arena               *arena,
     for (U64 exp_idx = 0; exp_idx < finalized_exports.ordinal_exports.count; exp_idx += 1) {
       // create and store export's ordinal
       PE_ExportParse *exp = finalized_exports.ordinal_exports.v[exp_idx];
-      U16 *ordinal = push_array(U16, 1);
+      U16 *ordinal = new U16[1];
       *ordinal = exp->ordinal - finalized_exports.ordinal_low;
       str8_list_push(obj_writer->arena, &ordinal_table_sect->data, str8_struct(ordinal));
     }
@@ -295,7 +295,7 @@ pe_make_edata_obj(Arena               *arena,
   ProfEnd();
 
   // fill out export table header
-  PE_ExportTableHeader *header       = push_array(PE_ExportTableHeader, 1);
+  PE_ExportTableHeader *header       = new PE_ExportTableHeader[1];
   header->time_stamp                 = time_stamp;
   header->ordinal_base               = safe_cast_u16(finalized_exports.ordinal_low);
   header->export_address_table_count = safe_cast_u32(voff_table_sect->data.node_count);

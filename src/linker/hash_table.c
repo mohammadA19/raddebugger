@@ -40,9 +40,9 @@ hash_table_hasher(String8 string)
 internal HashTable *
 hash_table_init(Arena *arena, U64 cap)
 {
-  HashTable *ht = push_array(HashTable, 1);
+  HashTable *ht = new HashTable[1];
   ht->cap       = cap;
-  ht->buckets   = push_array(BucketList, cap);
+  ht->buckets   = new BucketList[cap];
   return ht;
 }
 
@@ -65,7 +65,7 @@ hash_table_push(Arena *arena, HashTable *ht, U64 hash, KeyValuePair v)
   if (ht->free_buckets.first != 0) {
     node = bucket_list_pop(&ht->free_buckets);
   } else {
-    node = push_array(BucketNode, 1);
+    node = new BucketNode[1];
   }
   node->next = 0;
   node->v    = v;
@@ -364,7 +364,7 @@ key_value_pairs_from_hash_table(Arena *arena, HashTable *ht)
 internal void *
 values_from_hash_table_raw(Arena *arena, HashTable *ht)
 {
-  void **result = push_array(void *, ht->count);
+  void **result = new void *[ht->count];
   for (U64 bucket_idx = 0, cursor = 0; bucket_idx < ht->cap; ++bucket_idx) {
     for (BucketNode *n = ht->buckets[bucket_idx].first; n != 0; n = n->next) {
       Assert(cursor < ht->count);

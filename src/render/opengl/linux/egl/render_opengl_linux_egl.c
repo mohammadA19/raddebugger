@@ -14,7 +14,7 @@ r_ogl_os_init(CmdLine *cmdln)
   //- rjf: set up state
   {
     Arena *arena = arena_alloc();
-    r_ogl_lnx_state = push_array(R_OGL_LNX_State, 1);
+    r_ogl_lnx_state = new R_OGL_LNX_State[1];
     r_ogl_lnx_state->arena = arena;
   }
   
@@ -89,7 +89,7 @@ r_ogl_os_window_equip(OS_Handle window)
   }
   else
   {
-    w = push_array(R_OGL_LNX_Window, 1);
+    w = new R_OGL_LNX_Window[1];
   }
   {
     EGLint surface_options[] =

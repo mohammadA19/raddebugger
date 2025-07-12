@@ -120,7 +120,7 @@ str8_deserial_read_uleb128_array(Arena *arena, String8 string, U64 off, U64 coun
 {
   Temp temp = temp_begin(arena);
   
-  U64 *arr = push_array(U64, count);
+  U64 *arr = new U64[count];
   U64 i, cursor;
   for (i = 0, cursor = off; i < count; ++i) {
     U64 read_size = str8_deserial_read_uleb128(string, cursor, &arr[i]);
@@ -147,7 +147,7 @@ str8_deserial_read_sleb128_array(Arena *arena, String8 string, U64 off, U64 coun
 {
   Temp temp = temp_begin(arena);
   
-  S64 *arr = push_array(S64, count);
+  S64 *arr = new S64[count];
   U64 i, cursor;
   for (i = 0, cursor = off; i < count; ++i) {
     U64 read_size = str8_deserial_read_sleb128(string, cursor, &arr[i]);
@@ -347,7 +347,7 @@ dw_list_unit_input_from_input(Arena *arena, DW_Input *input)
     
     result.addr_ranges = rng1u64_array_from_list(arena, &unit_ranges);
     result.addr_count  = unit_ranges.count;
-    result.addrs       = push_array(DW_ListUnit, unit_ranges.count);
+    result.addrs       = new DW_ListUnit[unit_ranges.count];
     
     for (U64 unit_idx = 0; unit_idx < result.addr_ranges.count; ++unit_idx) {
       String8 unit_data = str8_substr(debug_addr.data, result.addr_ranges.v[unit_idx]);
@@ -362,7 +362,7 @@ dw_list_unit_input_from_input(Arena *arena, DW_Input *input)
     
     result.str_offset_ranges = rng1u64_array_from_list(arena, &unit_ranges);
     result.str_offset_count  = unit_ranges.count;
-    result.str_offsets       = push_array(DW_ListUnit, unit_ranges.count);
+    result.str_offsets       = new DW_ListUnit[unit_ranges.count];
     
     for (U64 unit_idx = 0; unit_idx < result.str_offset_ranges.count; ++unit_idx) {
       String8 unit_data = str8_substr(data, result.str_offset_ranges.v[unit_idx]);
@@ -377,7 +377,7 @@ dw_list_unit_input_from_input(Arena *arena, DW_Input *input)
     
     result.rnglist_ranges = rng1u64_array_from_list(arena, &unit_ranges);
     result.rnglist_count  = unit_ranges.count;
-    result.rnglists       = push_array(DW_ListUnit, unit_ranges.count);
+    result.rnglists       = new DW_ListUnit[unit_ranges.count];
     
     for (U64 unit_idx = 0; unit_idx < result.rnglist_ranges.count; ++unit_idx) {
       String8 unit_data = str8_substr(data, result.rnglist_ranges.v[unit_idx]);
@@ -392,7 +392,7 @@ dw_list_unit_input_from_input(Arena *arena, DW_Input *input)
     
     result.loclist_ranges = rng1u64_array_from_list(arena, &unit_ranges);
     result.loclist_count  = unit_ranges.count;
-    result.loclists       = push_array(DW_ListUnit, unit_ranges.count);
+    result.loclists       = new DW_ListUnit[unit_ranges.count];
     
     for (U64 unit_idx = 0; unit_idx < result.loclist_ranges.count; ++unit_idx) {
       String8 unit_data = str8_substr(data, result.loclist_ranges.v[unit_idx]);
@@ -568,7 +568,7 @@ dw_make_abbrev_table(Arena *arena, String8 abbrev_data, U64 abbrev_offset)
   //- rjf: build table
   DW_AbbrevTable table = {0};
   table.count          = tag_count;
-  table.entries        = push_array(DW_AbbrevTableEntry, table.count);
+  table.entries        = new DW_AbbrevTableEntry[table.count];
   MemorySet(table.entries, 0, sizeof(DW_AbbrevTableEntry)*table.count);
   
   U64 tag_idx = 0;
@@ -883,7 +883,7 @@ dw_read_tag(Arena          *arena,
       tag_cursor += dw_read_form(tag_data, tag_cursor, version, unit_format, address_size, form_kind, attrib_abbrev.const_value, &form);
       
       // fill out node
-      DW_AttribNode *attrib_n  = push_array(DW_AttribNode, 1);
+      DW_AttribNode *attrib_n  = new DW_AttribNode[1];
       attrib_n->v.info_off     = tag_base + attrib_tag_cursor;
       attrib_n->v.abbrev_off   = attrib_abbrev_off;
       attrib_n->v.abbrev_id    = attrib_abbrev.id;
@@ -1210,7 +1210,7 @@ dw_interp_loclist(Arena *arena, DW_Input *input, DW_CompUnit *cu, DW_FormKind fo
           Assert(cursor + expr_size <= sec.size);
           Rng1U64 expr_range = rng_1u64(cursor, ClampTop(cursor + expr_size, sec.size));
           
-          DW_LocNode *loc_n = push_array(DW_LocNode, 1);
+          DW_LocNode *loc_n = new DW_LocNode[1];
           loc_n->v.range    = rng_1u64(base_addr + range_min, base_addr + range_max);
           loc_n->v.expr     = str8_substr(sec, expr_range);
           
@@ -1414,7 +1414,7 @@ dw_interp_loclist(Arena *arena, DW_Input *input, DW_CompUnit *cu, DW_FormKind fo
         cursor += expr_size_size;
         cursor += expr_size;
         
-        DW_LocNode *loc_n = push_array(DW_LocNode, 1);
+        DW_LocNode *loc_n = new DW_LocNode[1];
         loc_n->v.range    = range;
         loc_n->v.expr     = expr;
         
@@ -2200,7 +2200,7 @@ dw_tag_tree_from_data(Arena *arena, String8 info_data, String8 abbrev_data, DW_C
     }
     
     // normal tag
-    DW_TagNode *tag_n = push_array(DW_TagNode, 1);
+    DW_TagNode *tag_n = new DW_TagNode[1];
     tag_n->tag        = tag;
     
     SLLQueuePush_N(parent->first_child, parent->last_child, tag_n, sibling);
@@ -2242,7 +2242,7 @@ dw_make_tag_hash_table(Arena *arena, DW_TagTree tag_tree)
   };
   
   struct Frame *free_frames = 0;
-  struct Frame *stack       = push_array(struct Frame, 1);
+  struct Frame *stack       = new struct Frame[1];
   stack->node               = tag_tree.root;
   
   HashTable *ht = hash_table_init(arena, (U64)((F64)tag_tree.tag_count * 1.3));
@@ -2257,7 +2257,7 @@ dw_make_tag_hash_table(Arena *arena, DW_TagTree tag_tree)
           SLLStackPop(free_frames);
           MemoryZeroStruct(frame);
         } else {
-          frame = push_array(struct Frame, 1);
+          frame = new struct Frame[1];
         }
         frame->node = stack->node->first_child;
         SLLStackPush(stack, frame);
@@ -2292,7 +2292,7 @@ dw_line_vm_file_array_from_list(Arena *arena, DW_LineVMFileList list)
 {
   DW_LineVMFileArray result = {0};
   result.count              = 0;
-  result.v                  = push_array(DW_LineFile, list.node_count);
+  result.v                  = new DW_LineFile[list.node_count];
   
   for (DW_LineVMFileNode *src = list.first; src != 0; src = src->next) {
     DW_LineFile *dst = &result.v[result.count++];
@@ -2384,7 +2384,7 @@ dw_read_line_file_array(Arena              *arena,
   Temp temp = temp_begin(arena);
   
   table_out->count = table_count;
-  table_out->v     = push_array(DW_LineFile, table_count);
+  table_out->v     = new DW_LineFile[table_count];
   
   U64 i, cursor;
   for (i = 0, cursor = off; i < table_count; ++i) {
@@ -2538,7 +2538,7 @@ dw_read_line_vm_header(Arena           *arena,
     DW_LineVMFileList dir_list = {0};
     {
       // compile directory is always first in the table
-      DW_LineVMFileNode *node = push_array(DW_LineVMFileNode, 1);
+      DW_LineVMFileNode *node = new DW_LineVMFileNode[1];
       node->file.file_name    = cu_dir;
       SLLQueuePush(dir_list.first, dir_list.last, node);
       ++dir_list.node_count;
@@ -2552,7 +2552,7 @@ dw_read_line_vm_header(Arena           *arena,
         break;
       }
       
-      DW_LineVMFileNode *node = push_array(DW_LineVMFileNode, 1);
+      DW_LineVMFileNode *node = new DW_LineVMFileNode[1];
       node->file.file_name    = dir;
       SLLQueuePush(dir_list.first, dir_list.last, node);
       ++dir_list.node_count;
@@ -2562,7 +2562,7 @@ dw_read_line_vm_header(Arena           *arena,
     {
       // compile unit name is always first in the file table
       {
-        DW_LineVMFileNode *node = push_array(DW_LineVMFileNode, 1);
+        DW_LineVMFileNode *node = new DW_LineVMFileNode[1];
         node->file.file_name    = cu_name;
         SLLQueuePush(file_list.first, file_list.last, node);
         ++file_list.node_count;
@@ -2597,7 +2597,7 @@ dw_read_line_vm_header(Arena           *arena,
         }
         unit_cursor += file_size_size;
         
-        DW_LineVMFileNode *node = push_array(DW_LineVMFileNode, 1);
+        DW_LineVMFileNode *node = new DW_LineVMFileNode[1];
         node->file.file_name    = file_name;
         node->file.dir_idx      = dir_index;
         node->file.modify_time  = modify_time;
@@ -2759,7 +2759,7 @@ dw_line_vm_advance(DW_LineVMState *state, U64 advance, U64 min_inst_len, U64 max
 internal DW_LineSeqNode *
 dw_push_line_seq(Arena* arena, DW_LineTableParseResult *parsed_tbl)
 {
-  DW_LineSeqNode *new_seq = push_array(DW_LineSeqNode, 1);
+  DW_LineSeqNode *new_seq = new DW_LineSeqNode[1];
   SLLQueuePush(parsed_tbl->first_seq, parsed_tbl->last_seq, new_seq);
   parsed_tbl->seq_count += 1;
   return new_seq;
@@ -2774,7 +2774,7 @@ dw_push_line(Arena *arena, DW_LineTableParseResult *tbl, DW_LineVMState *vm_stat
     seq = dw_push_line_seq(arena, tbl);
   }
   
-  DW_LineNode *n  = push_array(DW_LineNode, 1);
+  DW_LineNode *n  = new DW_LineNode[1];
   n->v.file_index = vm_state->file_index;
   n->v.line       = vm_state->line;
   n->v.column     = vm_state->column;
@@ -3044,7 +3044,7 @@ dw_v4_pub_strings_table_from_section_kind(Arena *arena, DW_Input *input, DW_Sect
   
   DW_PubStringsTable names_table = {0};
   names_table.size               = 16384;
-  names_table.buckets            = push_array(DW_PubStringsBucket*, names_table.size);
+  names_table.buckets            = new DW_PubStringsBucket*[names_table.size];
   
   String8 section_data = input->sec[section_kind].data;
   for(U64 cursor = 0; cursor < section_data.size; ) {
@@ -3097,7 +3097,7 @@ dw_v4_pub_strings_table_from_section_kind(Arena *arena, DW_Input *input, DW_Sect
       U64 hash       = dw_hash_from_string(string);
       U64 bucket_idx = hash % names_table.size;
       
-      DW_PubStringsBucket *bucket = push_array(DW_PubStringsBucket, 1);
+      DW_PubStringsBucket *bucket = new DW_PubStringsBucket[1];
       bucket->next                = names_table.buckets[bucket_idx];
       bucket->string              = string;
       bucket->info_off            = info_off;

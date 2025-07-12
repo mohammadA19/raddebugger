@@ -29,7 +29,7 @@ void_node_concat_atomic(VoidNode **head, VoidNode *node)
 internal U64Node *
 u64_list_push(Arena *arena, U64List *list, U64 data)
 {
-  U64Node *n = push_array(U64Node, 1);
+  U64Node *n = new U64Node[1];
   n->next = 0;
   n->data = data;
   
@@ -50,7 +50,7 @@ u64_array_from_list(Arena *arena, U64List *list)
 {
   U64Array result;
   result.count = 0;
-  result.v = push_array(U64, list->count);
+  result.v = new U64[list->count];
   for (U64Node *n = list->first; n != NULL; n = n->next) {
     result.v[result.count++] = n->data;
   }
@@ -74,15 +74,15 @@ u32_pair_radix_sort(U64 count, PairU32 *arr)
 {
   Temp scratch = scratch_begin(0,0);
 
-  PairU32 *temp = push_array(PairU32, count);
+  PairU32 *temp = new PairU32[count];
 
   const U64 bit_count0 = 11;
   const U64 bit_count1 = 11;
   const U64 bit_count2 = 10;
   
-  U32 *count0 = push_array(U32, (1 << bit_count0));
-  U32 *count1 = push_array(U32, (1 << bit_count1));
-  U32 *count2 = push_array(U32, (1 << bit_count2));
+  U32 *count0 = new U32[(1 << bit_count0)];
+  U32 *count1 = new U32[(1 << bit_count1)];
+  U32 *count2 = new U32[(1 << bit_count2)];
 
   for (U64 i = 0; i < count; ++i) {
     U32 digit0 = (arr[i].v0 >> 0         ) % (1 << bit_count0);
@@ -134,7 +134,7 @@ u64_array_remove_duplicates(Arena *arena, U64Array in)
 {
   U64Array result;
   result.count = 0;
-  result.v = push_array(U64, in.count);
+  result.v = new U64[in.count];
   
   for (U64 i = 1; i < in.count; ++i) {
     B32 is_unique = in.v[i - 1] != in.v[i];

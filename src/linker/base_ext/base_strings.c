@@ -13,7 +13,7 @@ internal U64
 str8_list_push_pad(Arena *arena, String8List *list, U64 offset, U64 align)
 {
   U64 pad_size = AlignPow2(offset, align) - offset;
-  U8 *pad = push_array(U8, pad_size);
+  U8 *pad = new U8[pad_size];
   MemorySet(pad, 0, pad_size);
   str8_list_push(arena, list, str8(pad, pad_size));
   return pad_size;
@@ -23,7 +23,7 @@ internal U64
 str8_list_push_pad_front(Arena *arena, String8List *list, U64 offset, U64 align)
 {
   U64 pad_size = AlignPow2(offset, align) - offset;
-  U8 *pad = push_array(U8, pad_size);
+  U8 *pad = new U8[pad_size];
   MemorySet(pad, 0, pad_size);
   str8_list_push_front(arena, list, str8(pad, pad_size));
   return pad_size;
@@ -42,7 +42,7 @@ str8_list_arr_concat(String8List *v, U64 count)
 internal String8Node *
 str8_list_push_many(Arena *arena, String8List *list, U64 count)
 {
-  String8Node *arr = push_array(String8Node, count);
+  String8Node *arr = new String8Node[count];
   for (U64 i = 0; i < count; ++i) {
     str8_list_push_node(list, arr + i);
   }

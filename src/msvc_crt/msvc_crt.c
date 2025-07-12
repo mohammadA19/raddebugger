@@ -25,17 +25,17 @@ mscrt_parse_func_info(Arena              *arena,
   str8_deserial_read_struct(raw_data, handler_data_foff, &func_info32);
   
   // unwind map
-  MSCRT_UnwindMap32 *unwind_map      = push_array(MSCRT_UnwindMap32, func_info32.max_state);
+  MSCRT_UnwindMap32 *unwind_map      = new MSCRT_UnwindMap32[func_info32.max_state];
   U64                unwind_map_foff = coff_foff_from_voff(sections, section_count, func_info32.unwind_map_voff);
   cursor += str8_deserial_read_array(raw_data, unwind_map_foff, &unwind_map[0], func_info32.max_state);
   
   // read ip states
-  MSCRT_IPState32 *ip_map      = push_array(MSCRT_IPState32, func_info32.ip_map_count);
+  MSCRT_IPState32 *ip_map      = new MSCRT_IPState32[func_info32.ip_map_count];
   U64              ip_map_foff = coff_foff_from_voff(sections, section_count, func_info32.ip_map_voff);
   str8_deserial_read_array(raw_data, ip_map_foff, &ip_map[0], func_info32.ip_map_count);
   
   // read try map
-  MSCRT_TryMapBlock *try_block_map = push_array(MSCRT_TryMapBlock, func_info32.try_block_map_count);
+  MSCRT_TryMapBlock *try_block_map = new MSCRT_TryMapBlock[func_info32.try_block_map_count];
   U64                try_map_foff  = coff_foff_from_voff(sections, section_count, func_info32.try_block_map_voff);
   for (U32 imap = 0; imap < func_info32.try_block_map_count; ++imap) {
     MSCRT_TryMapBlock32 map32 = {0};
@@ -47,7 +47,7 @@ mscrt_parse_func_info(Arena              *arena,
     map->try_high             = map32.try_high;
     map->catch_high           = map32.catch_high;
     map->catch_handlers_count = map32.catch_handlers_count;
-    map->catch_handlers       = push_array(MSCRT_EhHandlerType32, map32.catch_handlers_count);
+    map->catch_handlers       = new MSCRT_EhHandlerType32[map32.catch_handlers_count];
     
     // read handlers
     U64 catch_handlers_foff = coff_foff_from_voff(sections, section_count, map32.catch_handlers_voff);
@@ -62,7 +62,7 @@ mscrt_parse_func_info(Arena              *arena,
     str8_deserial_read_struct(raw_data, es_list_foff, &es_list32);
     
     es_type_list.count    = es_list32.count;
-    es_type_list.handlers = push_array(MSCRT_EhHandlerType32, es_list32.count);
+    es_type_list.handlers = new MSCRT_EhHandlerType32[es_list32.count];
     
     U64 handlers_foff = coff_foff_from_voff(sections, section_count, es_list32.handlers_voff);
     str8_deserial_read_array(raw_data, handlers_foff, &es_type_list.handlers[0], es_type_list.count);
@@ -204,7 +204,7 @@ mscrt_parse_handler_type_v4_array(Arena                      *arena,
   
   MSCRT_EhHandlerTypeV4 *handlers = 0;
   if (count) {
-    handlers = push_array(MSCRT_EhHandlerTypeV4, count);
+    handlers = new MSCRT_EhHandlerTypeV4[count];
     for (U32 i = 0; i < count; ++i) {
       cursor += mscrt_parse_handler_type_v4(raw_data, cursor, func_voff, &handlers[i]);
     }
@@ -254,7 +254,7 @@ mscrt_parse_unwind_map_v4(Arena *arena, String8 raw_data, U64 off, MSCRT_UnwindM
 {
   U64 cursor = off;
   cursor += mscrt_v4_parse_u32(raw_data, cursor, &map_out->count);
-  map_out->v = push_array(MSCRT_UnwindEntryV4, map_out->count);
+  map_out->v = new MSCRT_UnwindEntryV4[map_out->count];
   for (U32 i = 0; i < map_out->count; ++i) {
     cursor += mscrt_parse_unwind_v4_entry(raw_data, cursor, &map_out->v[i]);
   }
@@ -276,7 +276,7 @@ mscrt_parse_try_block_map_array_v4(Arena                   *arena,
   U32 try_block_map_count = 0;
   cursor += mscrt_v4_parse_u32(raw_data, cursor, &try_block_map_count);
   
-  MSCRT_TryBlockMapV4 *try_block_map = push_array(MSCRT_TryBlockMapV4, try_block_map_count);
+  MSCRT_TryBlockMapV4 *try_block_map = new MSCRT_TryBlockMapV4[try_block_map_count];
   for (U32 itry = 0; itry < try_block_map_count; ++itry) {
     MSCRT_TryBlockMapV4 *try_block = &try_block_map[itry];
     cursor += mscrt_v4_parse_u32(raw_data, cursor, &try_block->try_low);
@@ -309,8 +309,8 @@ mscrt_parse_ip2state_map_v4(Arena              *arena,
   U32 count = 0;
   cursor += mscrt_v4_parse_u32(raw_data, cursor, &count);
   
-  U32 *voffs  = push_array(U32, count);
-  S32 *states = push_array(S32, count);
+  U32 *voffs  = new U32[count];
+  S32 *states = new S32[count];
   
   U32 prev_voff = func_voff;
   for (U32 i = 0; i < count; ++i) {

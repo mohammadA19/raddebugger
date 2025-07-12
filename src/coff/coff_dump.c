@@ -29,7 +29,7 @@ coff_print_section_table(Arena               *arena,
 {
   Temp scratch = scratch_begin(&arena, 1);
   
-  String8 *symlinks = push_array(String8, section_count);
+  String8 *symlinks = new String8[section_count];
   for (U64 i = 0; i < symbol_table.count; ++i) {
     COFF_Symbol32              *symbol = symbol_table.v+i;
     COFF_SymbolValueInterpType  interp = coff_interp_symbol(symbol->section_number, symbol->value, symbol->storage_class);

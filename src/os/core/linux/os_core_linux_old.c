@@ -927,7 +927,7 @@ os_machine_name(void){
          r < 4;
          cap *= 2, r += 1){
       scratch.restore();
-      buffer = /* no zero */ push_array(U8, cap);
+      buffer = /* no zero */ new U8[cap];
       size = gethostname((char*)buffer, cap);
       if (size < cap){
         got_final_result = true;
@@ -1028,7 +1028,7 @@ os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *o
              r < 4;
              cap *= 2, r += 1){
           scratch.restore();
-          buffer = /* no zero */ push_array(U8, cap);
+          buffer = /* no zero */ new U8[cap];
           size = readlink("/proc/self/exe", (char*)buffer, cap);
           if (size < cap){
             got_final_result = true;

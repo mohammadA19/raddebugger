@@ -112,7 +112,7 @@ r_d3d11_instance_buffer_from_size(U64 size)
     }
     
     // rjf: push buffer to flush list
-    R_D3D11_FlushBuffer *n = push_array(R_D3D11_FlushBuffer, 1);
+    R_D3D11_FlushBuffer *n = new R_D3D11_FlushBuffer[1];
     n->buffer = buffer;
     SLLQueuePush(r_d3d11_state->first_buffer_to_flush, r_d3d11_state->last_buffer_to_flush, n);
   }
@@ -157,7 +157,7 @@ r_init(CmdLine *cmdln)
   ProfBeginFunction();
   HRESULT error = 0;
   Arena *arena = arena_alloc();
-  r_d3d11_state = push_array(R_D3D11_State, 1);
+  r_d3d11_state = new R_D3D11_State[1];
   r_d3d11_state->arena = arena;
   r_d3d11_state->device_rw_mutex = os_rw_mutex_alloc();
   
@@ -493,7 +493,7 @@ r_window_equip(OS_Handle handle)
     {
       if(window == 0)
       {
-        window = push_array(R_D3D11_Window, 1);
+        window = new R_D3D11_Window[1];
       }
       else
       {
@@ -588,7 +588,7 @@ r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void *dat
     texture = r_d3d11_state->first_free_tex2d;
     if(texture == 0)
     {
-      texture = push_array(R_D3D11_Tex2D, 1);
+      texture = new R_D3D11_Tex2D[1];
     }
     else
     {
@@ -739,7 +739,7 @@ r_buffer_alloc(R_ResourceKind kind, U64 size, void *data)
     buffer = r_d3d11_state->first_free_buffer;
     if(buffer == 0)
     {
-      buffer = push_array(R_D3D11_Buffer, 1);
+      buffer = new R_D3D11_Buffer[1];
     }
     else
     {

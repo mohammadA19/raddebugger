@@ -24,13 +24,13 @@ internal void
 tex_init(void)
 {
   Arena *arena = arena_alloc();
-  tex_shared = push_array(TEX_Shared, 1);
+  tex_shared = new TEX_Shared[1];
   tex_shared->arena = arena;
   tex_shared->slots_count = 1024;
   tex_shared->stripes_count = Min(tex_shared->slots_count, os_get_system_info()->logical_processor_count);
-  tex_shared->slots = push_array(TEX_Slot, tex_shared->slots_count);
-  tex_shared->stripes = push_array(TEX_Stripe, tex_shared->stripes_count);
-  tex_shared->stripes_free_nodes = push_array(TEX_Node *, tex_shared->stripes_count);
+  tex_shared->slots = new TEX_Slot[tex_shared->slots_count];
+  tex_shared->stripes = new TEX_Stripe[tex_shared->stripes_count];
+  tex_shared->stripes_free_nodes = new TEX_Node *[tex_shared->stripes_count];
   for(U64 idx = 0; idx < tex_shared->stripes_count; idx += 1)
   {
     tex_shared->stripes[idx].arena = arena_alloc();
@@ -53,7 +53,7 @@ tex_tctx_ensure_inited(void)
   if(tex_tctx == 0)
   {
     Arena *arena = arena_alloc();
-    tex_tctx = push_array(TEX_TCTX, 1);
+    tex_tctx = new TEX_TCTX[1];
     tex_tctx->arena = arena;
   }
 }
@@ -72,7 +72,7 @@ tex_scope_open(void)
   }
   else
   {
-    scope = /* no zero */ push_array(TEX_Scope, 1);
+    scope = /* no zero */ new TEX_Scope[1];
   }
   MemoryZeroStruct(scope);
   return scope;
@@ -118,7 +118,7 @@ tex_scope_touch_node__stripe_r_guarded(TEX_Scope *scope, TEX_Node *node)
   }
   else
   {
-    touch = /* no zero */ push_array(TEX_Touch, 1);
+    touch = /* no zero */ new TEX_Touch[1];
   }
   MemoryZeroStruct(touch);
   touch->hash = node->hash;
@@ -176,7 +176,7 @@ tex_texture_from_hash_topology(TEX_Scope *scope, U128 hash, TEX_Topology topolog
           }
           else
           {
-            node = /* no zero */ push_array(TEX_Node, 1);
+            node = /* no zero */ new TEX_Node[1];
           }
           MemoryZeroStruct(node);
           DLLPushBack(slot->first, slot->last, node);

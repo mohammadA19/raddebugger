@@ -92,7 +92,7 @@ ui_key_match(UI_Key a, UI_Key b)
 internal UI_EventNode *
 ui_event_list_push(Arena *arena, UI_EventList *list, UI_Event *v)
 {
-  UI_EventNode *n = push_array(UI_EventNode, 1);
+  UI_EventNode *n = new UI_EventNode[1];
   MemoryCopyStruct(&n->v, v);
   n->v.string = push_str8_copy(arena, n->v.string);
   DLLPushBack(list->first, list->last, n);
@@ -316,7 +316,7 @@ ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 col_range, St
   U64 new_size = old_size - (range.max - range.min) + replace.size;
   
   //- rjf: push+fill new string storage
-  U8 *push_base = push_array(U8, new_size);
+  U8 *push_base = new U8[new_size];
   {
     MemoryCopy(push_base+0, string.str, range.min);
     MemoryCopy(push_base+range.min+replace.size, string.str+range.max, string.size-range.max);
@@ -401,7 +401,7 @@ ui_box_rec_df(UI_Box *box, UI_Box *root, U64 sib_member_off, U64 child_member_of
 internal void
 ui_box_list_push(Arena *arena, UI_BoxList *list, UI_Box *box)
 {
-  UI_BoxNode *n = push_array(UI_BoxNode, 1);
+  UI_BoxNode *n = new UI_BoxNode[1];
   n->box = box;
   SLLQueuePush(list->first, list->last, n);
   list->count += 1;
@@ -414,7 +414,7 @@ internal UI_State *
 ui_state_alloc(void)
 {
   Arena *arena = arena_alloc();
-  UI_State *ui = push_array(UI_State, 1);
+  UI_State *ui = new UI_State[1];
   ui->arena = arena;
   ui->external_key = ui_key_from_string(ui_key_zero(), str8_lit("###external_interaction_key###"));
   ui->build_arenas[0] = arena_alloc();
@@ -422,11 +422,11 @@ ui_state_alloc(void)
   ui->drag_state_arena = arena_alloc();
   ui->string_hover_arena = arena_alloc();
   ui->box_table_size = 4096;
-  ui->box_table = push_array(UI_BoxHashSlot, ui->box_table_size);
+  ui->box_table = new UI_BoxHashSlot[ui->box_table_size];
   ui->anim_slots_count = 4096;
-  ui->anim_slots = push_array(UI_AnimSlot, ui->anim_slots_count);
+  ui->anim_slots = new UI_AnimSlot[ui->anim_slots_count];
   ui->theme_pattern_cache_slots_count = 1024;
-  ui->theme_pattern_cache_slots = push_array(UI_ThemePatternCacheSlot, ui->theme_pattern_cache_slots_count);
+  ui->theme_pattern_cache_slots = new UI_ThemePatternCacheSlot[ui->theme_pattern_cache_slots_count];
   UI_InitStackNils(ui);
   return ui;
 }
@@ -717,7 +717,7 @@ ui_get_drag_data(U64 min_required_size)
   if(ui_state->drag_state_data.size < min_required_size)
   {
     Temp scratch = scratch_begin(0, 0);
-    String8 str = {push_array(U8, min_required_size), min_required_size};
+    String8 str = {new U8[min_required_size], min_required_size};
     ui_store_drag_data(str);
     scratch_end(scratch);
   }
@@ -822,7 +822,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
     ui_state->tooltip_anchor_key = ui_key_zero();
     ui_state->tags_key_stack_top = ui_state->tags_key_stack_free = 0;
     ui_state->tags_cache_slots_count = 512;
-    ui_state->tags_cache_slots = push_array(UI_TagsCacheSlot, ui_state->tags_cache_slots_count);
+    ui_state->tags_cache_slots = new UI_TagsCacheSlot[ui_state->tags_cache_slots_count];
     ui_state->autocomplete_string = str8_zero();
   }
   
@@ -1835,7 +1835,7 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
         
         // rjf: figure out how much we can take in totality
         F32 child_fixup_sum = 0;
-        F32 *child_fixups = push_array(F32, box->child_count);
+        F32 *child_fixups = new F32[box->child_count];
         {
           U64 child_idx = 0;
           for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next, child_idx += 1)
@@ -2368,7 +2368,7 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
         }
         else
         {
-          node = push_array(UI_ThemePatternCacheNode, 1);
+          node = new UI_ThemePatternCacheNode[1];
         }
         DLLPushBack_NP(slot->first, slot->last, node, slot_next, slot_prev);
         DLLPushBack_NP(ui_state->lru_theme_pattern_cache_node, ui_state->mru_theme_pattern_cache_node, node, lru_next, lru_prev);
@@ -2450,7 +2450,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     }
     else
     {
-      box = /* no zero */ push_array(UI_Box, 1);
+      box = /* no zero */ new UI_Box[1];
     }
     MemoryZeroStruct(box);
   }
@@ -3263,7 +3263,7 @@ ui_anim_(UI_Key key, UI_AnimParams *params)
       }
       else
       {
-        node = push_array(UI_AnimNode, 1);
+        node = new UI_AnimNode[1];
       }
       node->first_touched_build_index = ui_state->build_index;
       node->key = key;
@@ -3311,7 +3311,7 @@ return state->name_lower##_stack.bottom_val;
 #define UI_StackPushImpl(state, name_upper, name_lower, type, new_value) \
 UI_##name_upper##Node *node = state->name_lower##_stack.free;\
 if(node != 0) {SLLStackPop(state->name_lower##_stack.free);}\
-else {node = push_array(UI_##name_upper##Node, 1);}\
+else {node = new UI_##name_upper##Node[1];}\
 type old_value = state->name_lower##_stack.top->v;\
 node->v = new_value;\
 SLLStackPush(state->name_lower##_stack.top, node);\
@@ -3337,7 +3337,7 @@ return popped->v;\
 #define UI_StackSetNextImpl(state, name_upper, name_lower, type, new_value) \
 UI_##name_upper##Node *node = state->name_lower##_stack.free;\
 if(node != 0) {SLLStackPop(state->name_lower##_stack.free);}\
-else {node = push_array(UI_##name_upper##Node, 1);}\
+else {node = new UI_##name_upper##Node[1];}\
 type old_value = state->name_lower##_stack.top->v;\
 node->v = new_value;\
 SLLStackPush(state->name_lower##_stack.top, node);\
@@ -3372,7 +3372,7 @@ ui__push_tags_key_from_appended_string(String8 string)
     }
     else
     {
-      node = push_array(UI_TagsKeyStackNode, 1);
+      node = new UI_TagsKeyStackNode[1];
     }
     SLLStackPush(ui_state->tags_key_stack_top, node);
     node->key = key;
@@ -3411,7 +3411,7 @@ ui__push_tags_key_from_appended_string(String8 string)
           str8_list_push(scratch.arena, &tags, push_str8_copy(ui_build_arena(), n->v));
         }
       }
-      node = push_array(UI_TagsCacheNode, 1);
+      node = new UI_TagsCacheNode[1];
       SLLQueuePush(slot->first, slot->last, node);
       node->key = key;
       node->tags = str8_array_from_list(ui_build_arena(), &tags);

@@ -65,13 +65,13 @@ internal void
 hs_init(void)
 {
   Arena *arena = arena_alloc();
-  hs_shared = push_array(HS_Shared, 1);
+  hs_shared = new HS_Shared[1];
   hs_shared->arena = arena;
   hs_shared->slots_count = 4096;
   hs_shared->stripes_count = Min(hs_shared->slots_count, os_get_system_info()->logical_processor_count);
-  hs_shared->slots = push_array(HS_Slot, hs_shared->slots_count);
-  hs_shared->stripes = push_array(HS_Stripe, hs_shared->stripes_count);
-  hs_shared->stripes_free_nodes = push_array(HS_Node *, hs_shared->stripes_count);
+  hs_shared->slots = new HS_Slot[hs_shared->slots_count];
+  hs_shared->stripes = new HS_Stripe[hs_shared->stripes_count];
+  hs_shared->stripes_free_nodes = new HS_Node *[hs_shared->stripes_count];
   for(U64 idx = 0; idx < hs_shared->stripes_count; idx += 1)
   {
     HS_Stripe *stripe = &hs_shared->stripes[idx];
@@ -81,9 +81,9 @@ hs_init(void)
   }
   hs_shared->key_slots_count = 4096;
   hs_shared->key_stripes_count = Min(hs_shared->key_slots_count, os_get_system_info()->logical_processor_count);
-  hs_shared->key_slots = push_array(HS_KeySlot, hs_shared->key_slots_count);
-  hs_shared->key_stripes = push_array(HS_Stripe, hs_shared->key_stripes_count);
-  hs_shared->key_stripes_free_nodes = push_array(HS_KeyNode *, hs_shared->key_stripes_count);
+  hs_shared->key_slots = new HS_KeySlot[hs_shared->key_slots_count];
+  hs_shared->key_stripes = new HS_Stripe[hs_shared->key_stripes_count];
+  hs_shared->key_stripes_free_nodes = new HS_KeyNode *[hs_shared->key_stripes_count];
   for(U64 idx = 0; idx < hs_shared->key_stripes_count; idx += 1)
   {
     HS_Stripe *stripe = &hs_shared->key_stripes[idx];
@@ -93,9 +93,9 @@ hs_init(void)
   }
   hs_shared->root_slots_count = 4096;
   hs_shared->root_stripes_count = Min(hs_shared->root_slots_count, os_get_system_info()->logical_processor_count);
-  hs_shared->root_slots = push_array(HS_RootSlot, hs_shared->root_slots_count);
-  hs_shared->root_stripes = push_array(HS_Stripe, hs_shared->root_stripes_count);
-  hs_shared->root_stripes_free_nodes = push_array(HS_RootNode *, hs_shared->root_stripes_count);
+  hs_shared->root_slots = new HS_RootSlot[hs_shared->root_slots_count];
+  hs_shared->root_stripes = new HS_Stripe[hs_shared->root_stripes_count];
+  hs_shared->root_stripes_free_nodes = new HS_RootNode *[hs_shared->root_stripes_count];
   for(U64 idx = 0; idx < hs_shared->root_stripes_count; idx += 1)
   {
     HS_Stripe *stripe = &hs_shared->root_stripes[idx];
@@ -127,7 +127,7 @@ hs_root_alloc(void)
     }
     else
     {
-      node = push_array(HS_RootNode, 1);
+      node = new HS_RootNode[1];
     }
     DLLPushBack(slot->first, slot->last, node);
     node->root = root;
@@ -251,7 +251,7 @@ hs_submit_data(HS_Key key, Arena **data_arena, String8 data)
       }
       else
       {
-        node = push_array(HS_Node, 1);
+        node = new HS_Node[1];
       }
       node->hash = hash;
       if(data_arena != 0)
@@ -304,7 +304,7 @@ hs_submit_data(HS_Key key, Arena **data_arena, String8 data)
       }
       else
       {
-        key_node = push_array(HS_KeyNode, 1);
+        key_node = new HS_KeyNode[1];
       }
       key_node->key = key;
       DLLPushBack(key_slot->first, key_slot->last, key_node);
@@ -338,11 +338,11 @@ hs_submit_data(HS_Key key, Arena **data_arena, String8 data)
             HS_RootIDChunkNode *chunk = n->ids.last;
             if(chunk == 0 || chunk->count >= chunk->cap)
             {
-              chunk = push_array(HS_RootIDChunkNode, 1);
+              chunk = new HS_RootIDChunkNode[1];
               SLLQueuePush(n->ids.first, n->ids.last, chunk);
               n->ids.chunk_count += 1;
               chunk->cap = 1024;
-              chunk->v = /* no zero */ push_array(HS_ID, chunk->cap);
+              chunk->v = /* no zero */ new HS_ID[chunk->cap];
             }
             chunk->v[chunk->count] = key.id;
             chunk->count += 1;
@@ -387,7 +387,7 @@ hs_scope_open(void)
   if(hs_tctx == 0)
   {
     Arena *arena = arena_alloc();
-    hs_tctx = push_array(HS_TCTX, 1);
+    hs_tctx = new HS_TCTX[1];
     hs_tctx->arena = arena;
   }
   HS_Scope *scope = hs_tctx->free_scope;
@@ -397,7 +397,7 @@ hs_scope_open(void)
   }
   else
   {
-    scope = /* no zero */ push_array(HS_Scope, 1);
+    scope = /* no zero */ new HS_Scope[1];
   }
   MemoryZeroStruct(scope);
   return scope;
@@ -441,7 +441,7 @@ hs_scope_touch_node__stripe_r_guarded(HS_Scope *scope, HS_Node *node)
   }
   else
   {
-    touch = /* no zero */ push_array(HS_Touch, 1);
+    touch = /* no zero */ new HS_Touch[1];
   }
   MemoryZeroStruct(touch);
   touch->hash = node->hash;

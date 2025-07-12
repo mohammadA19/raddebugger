@@ -16,7 +16,7 @@ internal Log *
 log_alloc(void)
 {
   Arena *arena = arena_alloc();
-  Log *log = push_array(Log, 1);
+  Log *log = new Log[1];
   log->arena = arena;
   return log;
 }
@@ -70,7 +70,7 @@ log_scope_begin(void)
   if(log_active != 0)
   {
     U64 pos = arena_pos(log_active->arena);
-    LogScope *scope = push_array(LogScope, 1);
+    LogScope *scope = new LogScope[1];
     scope->pos = pos;
     SLLStackPush(log_active->top_scope, scope);
   }

@@ -275,7 +275,7 @@ internal String8
 coff_make_import_lookup(Arena *arena, U16 hint, String8 name)
 {
   U64 buffer_size = sizeof(hint) + (name.size + 1);
-  U8 *buffer = push_array(U8, buffer_size);
+  U8 *buffer = new U8[buffer_size];
   *(U16*)buffer = hint;
   MemoryCopy(buffer + sizeof(hint), name.str, name.size);
   buffer[buffer_size - 1] = 0;
@@ -304,12 +304,12 @@ coff_ordinal_data_from_hint(Arena *arena, COFF_MachineType machine, U16 hint)
   switch (machine) {
   case COFF_MachineType_Unknown: break;
   case COFF_MachineType_X64: {
-    U64 *ordinal = push_array(U64, 1);
+    U64 *ordinal = new U64[1];
     *ordinal     = coff_make_ordinal64(hint);
     ordinal_data = str8_struct(ordinal);
   } break;
   case COFF_MachineType_X86: {
-    U32 *ordinal = push_array(U32, 1);
+    U32 *ordinal = new U32[1];
     *ordinal     = coff_make_ordinal32(hint);
     ordinal_data = str8_struct(ordinal);
   } break;

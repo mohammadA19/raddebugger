@@ -145,7 +145,7 @@ fnt_tag_from_path(String8 path)
   {
     FP_Handle handle = fp_font_open(path);
     FNT_FontHashSlot *slot = &fnt_state->font_hash_table[slot_idx];
-    existing_node = push_array(FNT_FontHashNode, 1);
+    existing_node = new FNT_FontHashNode[1];
     existing_node->tag = result;
     existing_node->handle = handle;
     existing_node->metrics = fp_metrics_from_font(existing_node->handle);
@@ -198,7 +198,7 @@ fnt_tag_from_static_data_string(String8 *data_ptr)
   if(existing_node == 0)
   {
     FNT_FontHashSlot *slot = &fnt_state->font_hash_table[slot_idx];
-    new_node = push_array(FNT_FontHashNode, 1);
+    new_node = new FNT_FontHashNode[1];
     new_node->tag = result;
     new_node->handle = fp_font_open_from_static_data_string(data_ptr);
     new_node->metrics = fp_metrics_from_font(new_node->handle);
@@ -283,7 +283,7 @@ fnt_atlas_region_alloc(Arena *arena, FNT_Atlas *atlas, Vec2S16 needed_size)
         {
           if(n->children[corner] == 0)
           {
-            n->children[corner] = push_array(FNT_AtlasRegionNode, 1);
+            n->children[corner] = new FNT_AtlasRegionNode[1];
             n->children[corner]->parent = n;
             n->children[corner]->max_free_size[Corner_00] = 
               n->children[corner]->max_free_size[Corner_01] = 
@@ -475,7 +475,7 @@ fnt_piece_chunk_list_push_new(Arena *arena, FNT_PieceChunkList *list, U64 cap)
   FNT_PieceChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
   {
-    node = push_array(FNT_PieceChunkNode, 1);
+    node = new FNT_PieceChunkNode[1];
     node->v = new FNT_Piece[cap] /* no zero */;
     node->cap = cap;
     SLLQueuePush(list->first, list->last, node);
@@ -558,14 +558,14 @@ fnt_hash2style_from_tag_size_flags(FNT_Tag tag, F32 size, FNT_RasterFlags flags)
     if(Unlikely(hash2style_node == 0))
     {
       FNT_Metrics metrics = fnt_metrics_from_tag_size(tag, size);
-      hash2style_node = push_array(FNT_Hash2StyleRasterCacheNode, 1);
+      hash2style_node = new FNT_Hash2StyleRasterCacheNode[1];
       DLLPushBack_NP(slot->first, slot->last, hash2style_node, hash_next, hash_prev);
       hash2style_node->style_hash = style_hash;
       hash2style_node->ascent   = metrics.ascent;
       hash2style_node->descent  = metrics.descent;
-      hash2style_node->utf8_class1_direct_map = /* no zero */ push_array(FNT_RasterCacheInfo, 256);
+      hash2style_node->utf8_class1_direct_map = /* no zero */ new FNT_RasterCacheInfo[256];
       hash2style_node->hash2info_slots_count = 1024;
-      hash2style_node->hash2info_slots = push_array(FNT_Hash2InfoRasterCacheSlot, hash2style_node->hash2info_slots_count);
+      hash2style_node->hash2info_slots = new FNT_Hash2InfoRasterCacheSlot[hash2style_node->hash2info_slots_count];
     }
     ProfEnd();
   }
@@ -585,7 +585,7 @@ fnt_run_from_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, F
   if(hash2style_node->run_slots_frame_index != fnt_state->frame_index)
   {
     hash2style_node->run_slots_count = 1024;
-    hash2style_node->run_slots = push_array(FNT_RunCacheSlot, hash2style_node->run_slots_count);
+    hash2style_node->run_slots = new FNT_RunCacheSlot[hash2style_node->run_slots_count];
     hash2style_node->run_slots_frame_index = fnt_state->frame_index;
   }
   
@@ -753,10 +753,10 @@ fnt_run_from_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, F
             // rjf: create atlas if needed
             if(atlas == 0 && num_atlases < 64)
             {
-              atlas = push_array(FNT_Atlas, 1);
+              atlas = new FNT_Atlas[1];
               DLLPushBack(fnt_state->first_atlas, fnt_state->last_atlas, atlas);
               atlas->root_dim = v2s16(1024, 1024);
-              atlas->root = push_array(FNT_AtlasRegionNode, 1);
+              atlas->root = new FNT_AtlasRegionNode[1];
               atlas->root->max_free_size[Corner_00] =
                 atlas->root->max_free_size[Corner_01] =
                 atlas->root->max_free_size[Corner_10] =
@@ -807,7 +807,7 @@ fnt_run_from_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, F
           {
             U64 slot_idx = piece_hash%hash2style_node->hash2info_slots_count;
             FNT_Hash2InfoRasterCacheSlot *slot = &hash2style_node->hash2info_slots[slot_idx];
-            FNT_Hash2InfoRasterCacheNode *node = /* no zero */ push_array(FNT_Hash2InfoRasterCacheNode, 1);
+            FNT_Hash2InfoRasterCacheNode *node = /* no zero */ new FNT_Hash2InfoRasterCacheNode[1];
             DLLPushBack_NP(slot->first, slot->last, node, hash_next, hash_prev);
             node->hash = piece_hash;
             info = &node->info;
@@ -892,7 +892,7 @@ fnt_run_from_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, F
   //- rjf: build node for cacheable runs
   if(run_is_cacheable)
   {
-    run_node = push_array(FNT_RunCacheNode, 1);
+    run_node = new FNT_RunCacheNode[1];
     SLLQueuePush(run_slot->first, run_slot->last, run_node);
     run_node->string = push_str8_copy(fnt_state->frame_arena, string);
     run_node->run = run;
@@ -1110,12 +1110,12 @@ internal void
 fnt_init(void)
 {
   Arena *arena = arena_alloc();
-  fnt_state = push_array(FNT_State, 1);
+  fnt_state = new FNT_State[1];
   fnt_state->permanent_arena = arena;
   fnt_state->raster_arena = arena_alloc();
   fnt_state->frame_arena = arena_alloc();
   fnt_state->font_hash_table_size = 64;
-  fnt_state->font_hash_table = push_array(FNT_FontHashSlot, fnt_state->font_hash_table_size);
+  fnt_state->font_hash_table = new FNT_FontHashSlot[fnt_state->font_hash_table_size];
   fnt_reset();
 }
 
@@ -1129,7 +1129,7 @@ fnt_reset(void)
   fnt_state->first_atlas = fnt_state->last_atlas = 0;
   arena_clear(fnt_state->raster_arena);
   fnt_state->hash2style_slots_count = 1024;
-  fnt_state->hash2style_slots = push_array(FNT_Hash2StyleRasterCacheSlot, fnt_state->hash2style_slots_count);
+  fnt_state->hash2style_slots = new FNT_Hash2StyleRasterCacheSlot[fnt_state->hash2style_slots_count];
 }
 
 internal void

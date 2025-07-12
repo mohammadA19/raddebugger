@@ -73,7 +73,7 @@ sld_main(CmdLine *cmdl)
 
   // convert big endian offsets
   U32  member_offsets_count = parse.first_member.symbol_count;
-  U32 *member_offsets       = push_array(U32, parse.first_member.member_offset_count);
+  U32 *member_offsets       = new U32[parse.first_member.member_offset_count];
   for (U32 offset_idx = 0; offset_idx < member_offsets_count; offset_idx += 1) {
     member_offsets[offset_idx] = from_be_u32(parse.first_member.member_offsets[offset_idx]);
   }

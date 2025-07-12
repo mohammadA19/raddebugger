@@ -208,7 +208,7 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
           String8Array collisions = str8_array_from_list(scratch.arena, &node->paths);
           
           // rjf: get all reversed path parts for each collision
-          String8List *collision_parts_reversed = push_array(String8List, collisions.count);
+          String8List *collision_parts_reversed = new String8List[collisions.count];
           for EachIndex(idx, collisions.count)
           {
             String8List parts = str8_split_path(scratch.arena, collisions.v[idx]);
@@ -231,7 +231,7 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
           // qualifiers
           {
             U64 num_collisions_left = collisions.count;
-            String8Node **collision_nodes = push_array(String8Node *, collisions.count);
+            String8Node **collision_nodes = new String8Node *[collisions.count];
             for EachIndex(idx, collisions.count)
             {
               collision_nodes[idx] = collision_parts_reversed[idx].first;
@@ -1283,7 +1283,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: produce fancy strings for each line
   //
-  DR_FStrList *lines_fstrs = push_array(DR_FStrList, dim_1s64(params->line_num_range)+1);
+  DR_FStrList *lines_fstrs = new DR_FStrList[dim_1s64(params->line_num_range)+1];
   {
     DR_FStrParams fstr_params =
     {
@@ -1414,7 +1414,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: build per-line background colors
   //
-  Vec4F32 *line_bg_colors = push_array(Vec4F32, dim_1s64(params->line_num_range)+1);
+  Vec4F32 *line_bg_colors = new Vec4F32[dim_1s64(params->line_num_range)+1];
   {
     //- rjf: color line with stopper-thread red
     UI_TagF("bad_pop")
@@ -1531,7 +1531,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
               RD_Regs *hover_regs = rd_get_hover_regs();
               B32 is_hovering = (ctrl_handle_match(hover_regs->ctrl_entity, thread->handle) &&
                                  rd_state->hover_regs_slot == RD_RegSlot_CtrlEntity);
-              RD_ThreadBoxDrawExtData *u = push_array(RD_ThreadBoxDrawExtData, 1);
+              RD_ThreadBoxDrawExtData *u = new RD_ThreadBoxDrawExtData[1];
               u->thread_color = color;
               u->alive_t      = ui_anim(ui_key_from_stringf(top_container_box->key, "###entity_alive_t_%p", thread), 1.f, .rate = entity_alive_t_rate);
               u->hover_t      = ui_anim(ui_key_from_stringf(top_container_box->key, "###entity_hover_t_%p", thread), (F32)!!is_hovering, .rate = entity_hover_t_rate);
@@ -1687,7 +1687,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
               RD_Regs *hover_regs = rd_get_hover_regs();
               B32 is_hovering = (ctrl_handle_match(hover_regs->ctrl_entity, thread->handle) &&
                                  rd_state->hover_regs_slot == RD_RegSlot_CtrlEntity);
-              RD_ThreadBoxDrawExtData *u = push_array(RD_ThreadBoxDrawExtData, 1);
+              RD_ThreadBoxDrawExtData *u = new RD_ThreadBoxDrawExtData[1];
               u->thread_color = color;
               u->alive_t      = ui_anim(ui_key_from_stringf(top_container_box->key, "###entity_alive_t_%p", thread), 1.f, .rate = entity_alive_t_rate);
               u->hover_t      = ui_anim(ui_key_from_stringf(top_container_box->key, "###entity_hover_t_%p", thread), (F32)!!is_hovering, .rate = entity_hover_t_rate);
@@ -1759,7 +1759,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
             }
             
             // rjf: prep custom rendering data
-            RD_BreakpointBoxDrawExtData *bp_draw = push_array(RD_BreakpointBoxDrawExtData, 1);
+            RD_BreakpointBoxDrawExtData *bp_draw = new RD_BreakpointBoxDrawExtData[1];
             {
               RD_Regs *hover_regs = rd_get_hover_regs();
               B32 is_hovering = (rd_cfg_from_id(hover_regs->cfg) == bp && rd_state->hover_regs_slot == RD_RegSlot_Cfg);
@@ -1982,7 +1982,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: determine starting offset for each at line, at which we can begin placing extra info to the right
   //
-  F32 *line_extras_off = push_array(F32, dim_1s64(params->line_num_range)+1);
+  F32 *line_extras_off = new F32[dim_1s64(params->line_num_range)+1];
   {
     U64 line_idx = 0;
     for(S64 line_num = params->line_num_range.min;
@@ -1998,7 +1998,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: produce per-line extra annotation containers
   //
-  UI_Box **line_extras_boxes = push_array(UI_Box *, dim_1s64(params->line_num_range)+1);
+  UI_Box **line_extras_boxes = new UI_Box *[dim_1s64(params->line_num_range)+1];
   UI_PrefWidth(ui_children_sum(1)) UI_PrefHeight(ui_px(params->line_height_px, 1.f)) UI_Parent(text_container_box) UI_Focus(UI_FocusKind_Off)
   {
     U64 line_idx = 0;
@@ -2496,7 +2496,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   {
     // rjf: push initial for cursor/mark
     {
-      TxtRngColorPairNode *n = push_array(TxtRngColorPairNode, 1);
+      TxtRngColorPairNode *n = new TxtRngColorPairNode[1];
       n->rng = txt_rng(*cursor, *mark);
       n->color = ui_color_from_name(str8_lit("selection"));
       SLLQueuePush(first_txt_rng_color_pair, last_txt_rng_color_pair, n);
@@ -2505,7 +2505,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     // rjf: push for ctrlified mouse expr
     if(ctrlified && !txt_pt_match(result.mouse_expr_rng.max, result.mouse_expr_rng.min)) UI_Tag(str8_lit("pop"))
     {
-      TxtRngColorPairNode *n = push_array(TxtRngColorPairNode, 1);
+      TxtRngColorPairNode *n = new TxtRngColorPairNode[1];
       n->rng = result.mouse_expr_rng;
       n->color = ui_color_from_name(str8_lit("background"));
       n->color.w *= 0.2f;
@@ -2935,14 +2935,14 @@ rd_fstrs_from_rich_string(Arena *arena, String8 string)
   {
     if(idx == string.size)
     {
-      StringPart *p = push_array(StringPart, 1);
+      StringPart *p = new StringPart[1];
       p->flags = active_part_flags;
       p->string = str8_substr(string, r1u64(active_part_start_idx, idx));
       SLLQueuePush(first_part, last_part, p);
     }
     else if(string.str[idx] == '`')
     {
-      StringPart *p = push_array(StringPart, 1);
+      StringPart *p = new StringPart[1];
       p->flags = active_part_flags;
       p->string = str8_substr(string, r1u64(active_part_start_idx, idx));
       SLLQueuePush(first_part, last_part, p);
@@ -3592,7 +3592,7 @@ rd_cell(RD_CellParams *params, String8 string)
           if(!key_is_touched)
           {
             params->toggled_out[0] ^= 1;
-            UI_Key *new_keys = push_array(UI_Key, keys_count+1);
+            UI_Key *new_keys = new UI_Key[keys_count+1];
             MemoryCopy(new_keys, keys, sizeof(UI_Key)*keys_count);
             new_keys[keys_count] = switch_box->key;
             ui_store_drag_data(str8((U8 *)new_keys, sizeof(UI_Key) * (keys_count+1)));
@@ -3904,7 +3904,7 @@ rd_cell(RD_CellParams *params, String8 string)
           off += n->v.string.size;
         }
         {
-          DR_FStrNode *autocomp_fstr_n = push_array(DR_FStrNode, 1);
+          DR_FStrNode *autocomp_fstr_n = new DR_FStrNode[1];
           DR_FStr *fstr = &autocomp_fstr_n->v;
           fstr->string = autocomplete_append_string;
           fstr->params.font = ui_top_font();
@@ -3936,7 +3936,7 @@ rd_cell(RD_CellParams *params, String8 string)
             if(chop_amt != 0)
             {
               String8 post_cursor = str8_skip(full_string, cursor_off - off);
-              DR_FStrNode *post_fstr_n = push_array(DR_FStrNode, 1);
+              DR_FStrNode *post_fstr_n = new DR_FStrNode[1];
               DR_FStr *post_fstr = &post_fstr_n->v;
               MemoryCopyStruct(post_fstr, &prev_n->v);
               post_fstr->string   = post_cursor;
@@ -3983,7 +3983,7 @@ rd_cell(RD_CellParams *params, String8 string)
     if(is_focus_active || is_focus_active_disabled)
     {
       String8 edit_string = str8(params->edit_buffer, params->edit_string_size_out[0]);
-      UI_LineEditDrawData *draw_data = push_array(UI_LineEditDrawData, 1);
+      UI_LineEditDrawData *draw_data = new UI_LineEditDrawData[1];
       draw_data->edited_string = push_str8_copy(ui_build_arena(), edit_string);
       draw_data->cursor = params->cursor[0];
       draw_data->mark = params->mark[0];

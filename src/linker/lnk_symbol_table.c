@@ -4,7 +4,7 @@
 internal LNK_Symbol *
 lnk_make_defined_symbol(Arena *arena, String8 name, struct LNK_Obj *obj, U32 symbol_idx)
 {
-  LNK_Symbol *symbol = push_array(LNK_Symbol, 1);
+  LNK_Symbol *symbol = new LNK_Symbol[1];
   symbol->name                 = name;
   symbol->u.defined.obj        = obj;
   symbol->u.defined.symbol_idx = symbol_idx;
@@ -14,7 +14,7 @@ lnk_make_defined_symbol(Arena *arena, String8 name, struct LNK_Obj *obj, U32 sym
 internal LNK_Symbol *
 lnk_make_lib_symbol(Arena *arena, String8 name, struct LNK_Lib *lib, U64 member_offset)
 {
-  LNK_Symbol *symbol = push_array(LNK_Symbol, 1);
+  LNK_Symbol *symbol = new LNK_Symbol[1];
   symbol->name                = name;
   symbol->u.lib.lib           = lib;
   symbol->u.lib.member_offset = member_offset;
@@ -24,7 +24,7 @@ lnk_make_lib_symbol(Arena *arena, String8 name, struct LNK_Lib *lib, U64 member_
 internal LNK_Symbol *
 lnk_make_import_symbol(Arena *arena, String8 name, String8 import_header)
 {
-  LNK_Symbol *symbol = push_array(LNK_Symbol, 1);
+  LNK_Symbol *symbol = new LNK_Symbol[1];
   symbol->name                = name;
   symbol->u.imp.import_header = import_header;
   return symbol;
@@ -33,7 +33,7 @@ lnk_make_import_symbol(Arena *arena, String8 name, String8 import_header)
 internal LNK_Symbol *
 lnk_make_undefined_symbol(Arena *arena, String8 name, struct LNK_Obj *obj)
 {
-  LNK_Symbol *symbol = push_array(LNK_Symbol, 1);
+  LNK_Symbol *symbol = new LNK_Symbol[1];
   symbol->name        = name;
   symbol->u.undef.obj = obj;
   return symbol;
@@ -49,7 +49,7 @@ lnk_symbol_list_push_node(LNK_SymbolList *list, LNK_SymbolNode *node)
 internal LNK_SymbolNode *
 lnk_symbol_list_push(Arena *arena, LNK_SymbolList *list, LNK_Symbol *symbol)
 {
-  LNK_SymbolNode *node = push_array(LNK_SymbolNode, 1);
+  LNK_SymbolNode *node = new LNK_SymbolNode[1];
   node->data           = symbol;
   lnk_symbol_list_push_node(list, node);
   return node;
@@ -80,7 +80,7 @@ lnk_symbol_node_array_from_list(Arena *arena, LNK_SymbolList list)
 {
   LNK_SymbolNodeArray result = {0};
   result.count               = 0;
-  result.v                   = /* no zero */ push_array(LNK_SymbolNode *, list.count);
+  result.v                   = /* no zero */ new LNK_SymbolNode *[list.count];
   for (LNK_SymbolNode *i = list.first; i != 0; i = i->next, ++result.count) {
     result.v[result.count] = i;
   }
@@ -103,7 +103,7 @@ internal LNK_SymbolHashTrie *
 lnk_symbol_hash_trie_chunk_list_push(Arena *arena, LNK_SymbolHashTrieChunkList *list, U64 cap)
 {
   if (list->last == 0 || list->last->count >= list->last->cap) {
-    LNK_SymbolHashTrieChunk *chunk = push_array(LNK_SymbolHashTrieChunk, 1);
+    LNK_SymbolHashTrieChunk *chunk = new LNK_SymbolHashTrieChunk[1];
     chunk->cap                     = cap;
     chunk->v                       = new LNK_SymbolHashTrie[cap] /* no zero */;
     SLLQueuePush(list->first, list->last, chunk);
@@ -455,10 +455,10 @@ lnk_symbol_hash(String8 string)
 internal LNK_SymbolTable *
 lnk_symbol_table_init(TP_Arena *arena)
 {
-  LNK_SymbolTable *symtab = push_array(LNK_SymbolTable, 1);
+  LNK_SymbolTable *symtab = new LNK_SymbolTable[1];
   symtab->arena           = arena;
   for (U64 i = 0; i < LNK_SymbolScope_Count; ++i) {
-    symtab->chunk_lists[i] = push_array(LNK_SymbolHashTrieChunkList, arena->count);
+    symtab->chunk_lists[i] = new LNK_SymbolHashTrieChunkList[arena->count];
   }
   symtab->alt_names = hash_table_init(arena->v[0], 1024);
   return symtab;
