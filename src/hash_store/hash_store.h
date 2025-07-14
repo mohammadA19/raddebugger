@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef HASH_STORE_H
-#define HASH_STORE_H
+#pragma once
 
 ////////////////////////////////
 //~ NOTE(rjf): Hash Store Notes (2025/05/18)
@@ -267,4 +266,3 @@ internal String8 hs_data_from_hash(HS_Scope *scope, U128 hash);
 
 internal void hs_evictor_thread__entry_point(void *p);
 
-#endif // HASH_STORE_H

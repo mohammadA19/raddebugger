@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_LOG_H
-#define BASE_LOG_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Log Types
@@ -62,4 +61,3 @@ internal void log_msgf(LogMsgKind kind, char *fmt, ...);
 internal void log_scope_begin(void);
 internal LogScopeResult log_scope_end(Arena *arena);
 
-#endif // BASE_LOG_H

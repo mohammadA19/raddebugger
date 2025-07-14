@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DWARF_DUMP_H
-#define DWARF_DUMP_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Dump Subset Types
@@ -83,4 +82,3 @@ internal void dw_print_debug_str_offsets(Arena *arena, String8List *out, String8
 
 internal String8List dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubsetFlags subset_flags);
 
-#endif // DWARF_DUMP_H

@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RDI_MAKE_LOCAL_H
-#define RDI_MAKE_LOCAL_H
+#pragma once
 
 //- rjf: base layer memory ops
 #define RDIM_MEMSET_OVERRIDE
@@ -384,4 +383,3 @@ internal RDIM_TopLevelInfo rdim_make_top_level_info(String8 image_name, Arch arc
 internal RDIM_BakeResults             rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in);
 internal RDIM_SerializedSectionBundle rdim_compress(Arena *arena, RDIM_SerializedSectionBundle *in);
 
-#endif // RDI_MAKE_LOCAL_H

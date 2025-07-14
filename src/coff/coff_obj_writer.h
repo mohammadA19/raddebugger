@@ -1,5 +1,4 @@
-#ifndef COFF_OBJ_WRITER_H
-#define COFF_OBJ_WRITER_H
+#pragma once
 
 typedef enum
 {
@@ -121,5 +120,4 @@ internal COFF_ObjReloc * coff_obj_writer_section_push_reloc_voff(COFF_ObjWriter 
 
 internal void coff_obj_writer_push_directive(COFF_ObjWriter *obj_writer, String8 directive);
 
-#endif // COFF_OBJ_WRITER_H
 

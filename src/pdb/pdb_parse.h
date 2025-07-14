@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef PDB_PARSE_H
-#define PDB_PARSE_H
+#pragma once
 
 ////////////////////////////////
 //~ PDB Parser String Table Types
@@ -249,4 +248,3 @@ internal B32 pdb_has_symbol_ref(String8 msf_data, String8List symbol_list, MSF_R
 internal B32 pdb_has_file_ref(String8 msf_data, String8List file_list, MSF_RawStreamTable *st);
 internal B32 pdb_has_symbol_or_file_ref(String8 msf_data, String8List symbol_list, String8List file_list);
 
-#endif // PDB_PARSE_H

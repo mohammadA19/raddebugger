@@ -1,8 +1,7 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef ELF_PARSE_H
-#define ELF_PARSE_H
+#pragma once
 
 ////////////////////////////////
 
@@ -33,4 +32,3 @@ internal ELF_Shdr64Array elf_shdr64_array_from_bin(Arena *arena, String8 raw_dat
 internal String8         elf_name_from_shdr64(String8 raw_data, ELF_Hdr64 *hdr, Rng1U64 sh_name_range, ELF_Shdr64 *shdr);
 internal U64             elf_base_addr_from_bin(ELF_Hdr64 *hdr);
 
-#endif // ELF_PARSE_H

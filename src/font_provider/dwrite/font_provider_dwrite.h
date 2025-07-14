@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef FONT_PROVIDER_DWRITE_H
-#define FONT_PROVIDER_DWRITE_H
+#pragma once
 
 #pragma comment(lib, "gdi32.lib")
 #pragma comment(lib, "dwrite.lib")
@@ -299,4 +298,3 @@ internal HRESULT fp_dwrite_static_font_file_stream__release_file_fragment(FP_DWr
 internal HRESULT fp_dwrite_static_font_file_stream__get_file_size(FP_DWrite_FontFileStream *obj, UINT64 *size_out);
 internal HRESULT fp_dwrite_static_font_file_stream__get_last_write_time(FP_DWrite_FontFileStream *obj, UINT64 *time_out);
 
-#endif // FONT_PROVIDER_DWRITE_H

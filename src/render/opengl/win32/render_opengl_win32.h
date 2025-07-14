@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RENDER_OPENGL_WIN32_H
-#define RENDER_OPENGL_WIN32_H
+#pragma once
 
 #include <GL/gl.h>
 #pragma comment(lib, "opengl32")
@@ -31,4 +30,3 @@ FNWGLSWAPINTERVALEXTPROC *wglSwapIntervalEXT;
 
 global HGLRC r_ogl_w32_hglrc = 0;
 
-#endif // RENDER_OPENGL_WIN32_H

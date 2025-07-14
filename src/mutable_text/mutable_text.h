@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef MUTABLE_TEXT_H
-#define MUTABLE_TEXT_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Cache Types
@@ -93,4 +92,3 @@ internal void mtx_enqueue_op(MTX_MutThread *thread, HS_Key buffer_key, MTX_Op op
 internal void mtx_dequeue_op(Arena *arena, MTX_MutThread *thread, HS_Key *buffer_key_out, MTX_Op *op_out);
 internal void mtx_mut_thread__entry_point(void *p);
 
-#endif // MUTABLE_TEXT_H

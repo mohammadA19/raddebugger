@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_CORE_H
-#define BASE_CORE_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Foreign Includes
@@ -929,4 +928,3 @@ internal U64 u64_array_bsearch(U64 *arr, U64 count, U64 value);
 internal U64 index_of_zero_u32(U32 *ptr, U64 count);
 internal U64 index_of_zero_u64(U64 *ptr, U64 count);
 
-#endif // BASE_CORE_H

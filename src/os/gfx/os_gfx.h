@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef OS_GFX_H
-#define OS_GFX_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Graphics System Info
@@ -199,4 +198,3 @@ internal String8        os_graphical_pick_file(Arena *arena, String8 initial_pat
 internal void           os_show_in_filesystem_ui(String8 path);
 internal void           os_open_in_browser(String8 url);
 
-#endif // OS_GFX_H

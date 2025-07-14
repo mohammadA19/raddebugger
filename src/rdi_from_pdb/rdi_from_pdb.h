@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RDI_FROM_PDB_H
-#define RDI_FROM_PDB_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Conversion Stage Inputs/Outputs
@@ -356,4 +355,3 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work);
 
 internal RDIM_BakeParams p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in);
 
-#endif // RDI_FROM_PDB_H

@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef EVAL_INTERPRET_H
-#define EVAL_INTERPRET_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Interpretation Context
@@ -44,4 +43,3 @@ internal B32 e_space_write(E_Space space, void *in, Rng1U64 range);
 
 internal E_Interpretation e_interpret(String8 bytecode);
 
-#endif // EVAL_INTERPRET_H

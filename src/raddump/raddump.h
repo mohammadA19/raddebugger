@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RADDUMP_H
-#define RADDUMP_H
+#pragma once
 
 #define RD_INDENT_WIDTH 2
 #define RD_INDENT_MAX   4096
@@ -225,5 +224,4 @@ internal void pe_print_exceptions           (Arena *arena, String8List *out, Str
 internal void pe_print_base_relocs          (Arena *arena, String8List *out, String8 indent, COFF_MachineType machine, U64 image_base, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 base_reloc_franges, RDI_Parsed *rdi);
 internal void pe_print                      (Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Option opts, RDI_Parsed *rdi);
 
-#endif // RADDUMP_H
 

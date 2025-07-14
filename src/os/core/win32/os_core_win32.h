@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef OS_CORE_WIN32_H
-#define OS_CORE_WIN32_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Includes / Libraries
@@ -118,4 +117,3 @@ internal void os_w32_entity_release(OS_W32_Entity *entity);
 
 internal DWORD os_w32_thread_entry_point(void *ptr);
 
-#endif // OS_CORE_WIN32_H

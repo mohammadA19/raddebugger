@@ -3,8 +3,7 @@
 
 //- GENERATED CODE
 
-#ifndef UI_META_H
-#define UI_META_H
+#pragma once
 
 typedef struct UI_ParentNode UI_ParentNode; struct UI_ParentNode{UI_ParentNode *next; UI_Box * v;};
 typedef struct UI_ChildLayoutAxisNode UI_ChildLayoutAxisNode; struct UI_ChildLayoutAxisNode{UI_ChildLayoutAxisNode *next; Axis2 v;};
@@ -405,4 +404,3 @@ internal F32                        ui_set_next_corner_radius_11(F32 v);
 internal F32                        ui_set_next_blur_size(F32 v);
 internal F32                        ui_set_next_text_padding(F32 v);
 internal UI_TextAlign               ui_set_next_text_alignment(UI_TextAlign v);
-#endif // UI_META_H

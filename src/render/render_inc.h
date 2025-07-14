@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RENDER_INC_H
-#define RENDER_INC_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Backend Constants
@@ -38,4 +37,3 @@
 # error Renderer backend not specified.
 #endif
 
-#endif // RENDER_INC_H

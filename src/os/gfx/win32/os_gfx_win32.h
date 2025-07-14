@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef OS_GFX_WIN32_H
-#define OS_GFX_WIN32_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Includes / Libraries
@@ -113,4 +112,3 @@ internal LRESULT         os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LP
 
 internal BOOL os_w32_monitor_gather_enum_proc(HMONITOR monitor, HDC hdc, LPRECT rect, LPARAM bundle_ptr);
 
-#endif // OS_GFX_WIN32_H

@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RADDBG_WIDGETS_H
-#define RADDBG_WIDGETS_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Cell Types
@@ -181,4 +180,3 @@ internal UI_Box *rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 b
 internal UI_Signal rd_cell(RD_CellParams *params, String8 string);
 internal UI_Signal rd_cellf(RD_CellParams *params, char *fmt, ...);
 
-#endif // RADDBG_WIDGETS_H

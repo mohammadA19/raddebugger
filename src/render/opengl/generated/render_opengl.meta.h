@@ -3,8 +3,7 @@
 
 //- GENERATED CODE
 
-#ifndef RENDER_OPENGL_META_H
-#define RENDER_OPENGL_META_H
+#pragma once
 
 typedef enum R_OGL_ShaderKind
 {
@@ -273,4 +272,3 @@ str8_lit_comp(
 
 C_LINKAGE_END
 
-#endif // RENDER_OPENGL_META_H

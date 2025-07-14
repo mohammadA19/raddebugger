@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef EVAL_TYPES_H
-#define EVAL_TYPES_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Type Unwrapping
@@ -189,4 +188,3 @@ E_TYPE_ACCESS_FUNCTION_DEF(file);
 E_TYPE_EXPAND_INFO_FUNCTION_DEF(file);
 E_TYPE_EXPAND_RANGE_FUNCTION_DEF(file);
 
-#endif // EVAL_TYPES_H

@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RENDER_OPENGL_LINUX_EGL_H
-#define RENDER_OPENGL_LINUX_EGL_H
+#pragma once
 
 #define glTexImage3D glTexImage3D__static
 #define glTexSubImage3D glTexSubImage3D__static
@@ -32,4 +31,3 @@ struct R_OGL_LNX_State
 
 global R_OGL_LNX_State *r_ogl_lnx_state = 0;
 
-#endif // RENDER_OPENGL_LINUX_EGL_H

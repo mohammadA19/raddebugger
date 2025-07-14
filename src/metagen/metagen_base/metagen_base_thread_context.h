@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_THREAD_CONTEXT_H
-#define BASE_THREAD_CONTEXT_H
+#pragma once
 
 ////////////////////////////////
 // NOTE(allen): Thread Context
@@ -38,4 +37,3 @@ internal void      tctx_read_srcloc(char **file_name, U64 *line_number);
 #define scratch_begin(conflicts, count) temp_begin(tctx_get_scratch((conflicts), (count)))
 #define scratch_end(scratch) temp_end(scratch)
 
-#endif // BASE_THREAD_CONTEXT_H

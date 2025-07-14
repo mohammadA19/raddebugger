@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef CTRL_CORE_H
-#define CTRL_CORE_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: ID Types
@@ -1156,4 +1155,3 @@ internal void ctrl_u2csb_dequeue_req(CTRL_Handle *out_thread);
 //- rjf: entry point
 ASYNC_WORK_DEF(ctrl_call_stack_build_work);
 
-#endif // CTRL_CORE_H

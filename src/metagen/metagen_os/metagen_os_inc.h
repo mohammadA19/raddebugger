@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef OS_INC_H
-#define OS_INC_H
+#pragma once
 
 #if !defined(OS_FEATURE_GRAPHICAL)
 # define OS_FEATURE_GRAPHICAL 0
@@ -18,4 +17,3 @@
 # error OS core layer not implemented for this operating system.
 #endif
 
-#endif // OS_INC_H

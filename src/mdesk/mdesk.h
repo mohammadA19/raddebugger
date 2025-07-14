@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef MDESK_H
-#define MDESK_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Messages
@@ -343,4 +342,3 @@ internal String8List md_debug_string_list_from_tree(Arena *arena, MD_Node *root)
 internal void md_node_ptr_list_push(Arena *arena, MD_NodePtrList *list, MD_Node *node);
 internal void md_node_ptr_list_push_front(Arena *arena, MD_NodePtrList *list, MD_Node *node);
 
-#endif // MDESK_H

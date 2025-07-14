@@ -1,8 +1,7 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_CORE_H
-#define BASE_CORE_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Foreign Includes
@@ -885,4 +884,3 @@ internal U64 ring_read(U8 *ring_base, U64 ring_size, U64 ring_pos, void *dst_dat
 
 #define quick_sort(ptr, count, element_size, cmp_function) qsort((ptr), (count), (element_size), (int (*)(const void *, const void *))(cmp_function))
 
-#endif // BASE_CORE_H

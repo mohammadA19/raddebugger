@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DASM_CACHE_H
-#define DASM_CACHE_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Disassembly Syntax Types
@@ -325,4 +324,3 @@ ASYNC_WORK_DEF(dasm_parse_work);
 
 internal void dasm_evictor_detector_thread__entry_point(void *p);
 
-#endif // DASM_CACHE_H

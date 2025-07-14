@@ -3,8 +3,7 @@
 
 //- GENERATED CODE
 
-#ifndef RENDER_META_H
-#define RENDER_META_H
+#pragma once
 
 typedef enum R_Tex2DFormat
 {
@@ -62,4 +61,3 @@ extern U8 r_pass_kind_batch_table[3];
 
 C_LINKAGE_END
 
-#endif // RENDER_META_H

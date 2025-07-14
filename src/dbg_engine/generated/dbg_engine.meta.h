@@ -3,8 +3,7 @@
 
 //- GENERATED CODE
 
-#ifndef DBG_ENGINE_META_H
-#define DBG_ENGINE_META_H
+#pragma once
 
 typedef enum D_CmdKind
 {
@@ -65,4 +64,3 @@ struct {B32 *value_ptr; String8 name;} DEV_toggle_table[] =
 {&DEV_cmd_context_tooltips, str8_lit_comp("cmd_context_tooltips")},
 {&DEV_updating_indicator, str8_lit_comp("updating_indicator")},
 };
-#endif // DBG_ENGINE_META_H

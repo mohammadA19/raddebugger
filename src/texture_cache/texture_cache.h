@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef TEXTURE_CACHE_H
-#define TEXTURE_CACHE_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Texture Topology

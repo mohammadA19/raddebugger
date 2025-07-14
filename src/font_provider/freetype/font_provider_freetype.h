@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef FONT_PROVIDER_FREETYPE_H
-#define FONT_PROVIDER_FREETYPE_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Freetype Includes
@@ -40,4 +39,3 @@ global FP_FT_State *fp_ft_state = 0;
 internal FP_FT_Font fp_ft_font_from_handle(FP_Handle handle);
 internal FP_Handle fp_ft_handle_from_font(FP_FT_Font font);
 
-#endif // FONT_PROVIDER_FREETYPE_H

@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef REGS_H
-#define REGS_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Register Usage Kinds
@@ -122,4 +121,3 @@ internal U64 regs_rsp_from_arch_block(Arch arch, void *block);
 internal void regs_arch_block_write_rip(Arch arch, void *block, U64 rip);
 internal void regs_arch_block_write_rsp(Arch arch, void *block, U64 rsp);
 
-#endif // REGS_H

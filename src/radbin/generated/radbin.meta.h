@@ -3,8 +3,7 @@
 
 //- GENERATED CODE
 
-#ifndef RADBIN_META_H
-#define RADBIN_META_H
+#pragma once
 
 typedef enum RB_FileFormat
 {
@@ -26,4 +25,3 @@ extern String8 rb_file_format_display_name_table[10];
 
 C_LINKAGE_END
 
-#endif // RADBIN_META_H

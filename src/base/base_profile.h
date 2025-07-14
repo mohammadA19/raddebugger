@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_PROFILE_H
-#define BASE_PROFILE_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Zero Settings
@@ -122,4 +121,3 @@ internal inline void spall_begin(char *fmt, ...);
 #define ProfBeginFunction(...) ProfBegin(this_function_name)
 #define ProfScope(...) DeferLoop(ProfBeginDynamic(__VA_ARGS__), ProfEnd())
 
-#endif // BASE_PROFILE_H

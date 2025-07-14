@@ -1,8 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef METAGEN_H
-#define METAGEN_H
+#pragma once
 
 ////////////////////////////////
 //~ rjf: Message Type
