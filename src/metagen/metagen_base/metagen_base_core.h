@@ -97,19 +97,6 @@
 #define Clamp(A,X,B) (((X)<(A))?(A):((X)>(B))?(B):(X))
 
 ////////////////////////////////
-//~ rjf: Type -> Alignment
-
-#if COMPILER_MSVC
-# define AlignOf(T) __alignof(T)
-#elif COMPILER_CLANG
-# define AlignOf(T) __alignof(T)
-#elif COMPILER_GCC
-# define AlignOf(T) __alignof__(T)
-#else
-# error AlignOf not defined for this compiler.
-#endif
-
-////////////////////////////////
 //~ rjf: Member Offsets
 
 #define Member(T,m)                 (((T*)0)->m)
