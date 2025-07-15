@@ -1821,7 +1821,7 @@ dw_rnglist_from_attrib(Arena *arena, DW_Input *input, DW_CompUnit *cu, DW_Attrib
 static DW_Attrib *
 dw_attrib_from_tag_(DW_Tag tag, DW_AttribKind kind)
 {
-  local_persist read_only DW_Attrib null_attrib;
+  static read_only DW_Attrib null_attrib;
   DW_Attrib *attrib = &null_attrib;
   for (DW_AttribNode *attrib_n = tag.attribs.first; attrib_n != 0; attrib_n = attrib_n->next) {
     if (attrib_n->v.attrib_kind == kind) {

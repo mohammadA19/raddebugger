@@ -228,7 +228,7 @@ lnk_section_table_merge(LNK_SectionTable *sectab, LNK_MergeDirectiveList merge_l
 
     // guard against illegal merges
     {
-      local_persist String8 illegal_merge_sections[] = {
+      static String8 illegal_merge_sections[] = {
         str8_lit_comp(".rsrc"),
         str8_lit_comp(".reloc"),
       };

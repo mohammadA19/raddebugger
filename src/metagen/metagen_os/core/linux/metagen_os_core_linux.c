@@ -1244,7 +1244,7 @@ main(int argc, char **argv)
     }
     
     //- rjf: set up thread context
-    local_persist TCTX tctx;
+    static TCTX tctx;
     tctx_init_and_equip(&tctx);
     
     //- rjf: set up dynamically allocated state

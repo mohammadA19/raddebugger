@@ -971,7 +971,7 @@ str8_list_push_aligner(Arena *arena, String8List *list, U64 min, U64 align){
     new_size &= (~mask);
     increase_size = new_size - list->total_size;
   }
-  local_persist const U8 zeroes_buffer[64] = {0};
+  static const U8 zeroes_buffer[64] = {0};
   Assert(increase_size <= ArrayCount(zeroes_buffer));
   SLLQueuePush(list->first, list->last, node);
   list->node_count += 1;
@@ -1648,7 +1648,7 @@ operating_system_from_string(String8 string)
 
 static String8
 string_from_dimension(Dimension dimension){
-  local_persist String8 strings[] = {
+  static String8 strings[] = {
     str8_lit_comp("X"),
     str8_lit_comp("Y"),
     str8_lit_comp("Z"),
@@ -1663,7 +1663,7 @@ string_from_dimension(Dimension dimension){
 
 static String8
 string_from_side(Side side){
-  local_persist String8 strings[] = {
+  static String8 strings[] = {
     str8_lit_comp("Min"),
     str8_lit_comp("Max"),
   };
@@ -1687,7 +1687,7 @@ string_from_operating_system(OperatingSystem os)
 
 static String8
 string_from_arch(Arch arch){
-  local_persist String8 strings[] = {
+  static String8 strings[] = {
     str8_lit_comp("Null"),
     str8_lit_comp("x64"),
     str8_lit_comp("x86"),
@@ -1706,7 +1706,7 @@ string_from_arch(Arch arch){
 
 static String8
 string_from_week_day(WeekDay week_day){
-  local_persist String8 strings[] = {
+  static String8 strings[] = {
     str8_lit_comp("Sun"),
     str8_lit_comp("Mon"),
     str8_lit_comp("Tue"),
@@ -1724,7 +1724,7 @@ string_from_week_day(WeekDay week_day){
 
 static String8
 string_from_month(Month month){
-  local_persist String8 strings[] = {
+  static String8 strings[] = {
     str8_lit_comp("Jan"),
     str8_lit_comp("Feb"),
     str8_lit_comp("Mar"),

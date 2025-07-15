@@ -910,8 +910,8 @@ os_large_page_size(void)
 
 static String8
 os_machine_name(void){
-  local_persist B32 first = true;
-  local_persist String8 name = {0};
+  static B32 first = true;
+  static String8 name = {0};
   
   // TODO(allen): let's just pre-compute this at init and skip the complexity
   pthread_mutex_lock(&lnx_mutex);
@@ -1011,8 +1011,8 @@ os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *o
   switch (path){
     case OS_SystemPath_Binary:
     {
-      local_persist B32 first = true;
-      local_persist String8 name = {0};
+      static B32 first = true;
+      static String8 name = {0};
       
       // TODO(allen): let's just pre-compute this at init and skip the complexity
       pthread_mutex_lock(&lnx_mutex);

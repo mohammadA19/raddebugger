@@ -11,7 +11,7 @@ main_thread_base_entry_point(int arguments_count, char **arguments)
   
   //- rjf: set up telemetry
 #if PROFILE_TELEMETRY
-  local_persist char tm_data[MB(64)];
+  static char tm_data[MB(64)];
   tmLoadLibrary(TM_RELEASE);
   tmSetMaxThreadCount(256);
   tmInitialize(sizeof(tm_data), tm_data);

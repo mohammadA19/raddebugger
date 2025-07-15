@@ -4139,7 +4139,7 @@ elf_print_dwarf_expressions(Arena *arena, String8List *out, String8 indent, Stri
           }
         } else if (tag.kind == DW_Tag_VariaKindble || tag.kind == DW_Tag_FormalParameter) {
 #if 0
-          local_persist B32 is_global_var = 0;
+          static B32 is_global_var = 0;
           String8         name            = dw_string_from_tag_attrib_kind(&dwarf_input, &cu, tag, DW_AttribKind_Name);
           DW_Attrib      *location_attrib = dw_attrib_from_tag(&dwarf_input, &cu, tag, DW_AttribKind_Location);
           DW_AttribClass  value_class     = dw_value_class_from_attrib(&cu, location_attrib);
