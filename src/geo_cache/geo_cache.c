@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void
+static void
 geo_init(void)
 {
   Arena *arena = arena_alloc();
@@ -34,7 +34,7 @@ geo_init(void)
 ////////////////////////////////
 //~ rjf: Thread Context Initialization
 
-internal void
+static void
 geo_tctx_ensure_inited(void)
 {
   if(geo_tctx == 0)
@@ -48,7 +48,7 @@ geo_tctx_ensure_inited(void)
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-internal GEO_Scope *
+static GEO_Scope *
 geo_scope_open(void)
 {
   geo_tctx_ensure_inited();
@@ -65,7 +65,7 @@ geo_scope_open(void)
   return scope;
 }
 
-internal void
+static void
 geo_scope_close(GEO_Scope *scope)
 {
   for(GEO_Touch *touch = scope->top_touch, *next = 0; touch != 0; touch = next)
@@ -92,7 +92,7 @@ geo_scope_close(GEO_Scope *scope)
   SLLStackPush(geo_tctx->free_scope, scope);
 }
 
-internal void
+static void
 geo_scope_touch_node__stripe_r_guarded(GEO_Scope *scope, GEO_Node *node)
 {
   GEO_Touch *touch = geo_tctx->free_touch;
@@ -115,7 +115,7 @@ geo_scope_touch_node__stripe_r_guarded(GEO_Scope *scope, GEO_Node *node)
 ////////////////////////////////
 //~ rjf: Cache Lookups
 
-internal R_Handle
+static R_Handle
 geo_buffer_from_hash(GEO_Scope *scope, U128 hash)
 {
   R_Handle handle = {0};
@@ -180,7 +180,7 @@ geo_buffer_from_hash(GEO_Scope *scope, U128 hash)
   return handle;
 }
 
-internal R_Handle
+static R_Handle
 geo_buffer_from_key(GEO_Scope *scope, HS_Key key)
 {
   R_Handle handle = {0};
@@ -199,7 +199,7 @@ geo_buffer_from_key(GEO_Scope *scope, HS_Key key)
 ////////////////////////////////
 //~ rjf: Transfer Threads
 
-internal B32
+static B32
 geo_u2x_enqueue_req(U128 hash, U64 endt_us)
 {
   B32 good = 0;
@@ -226,7 +226,7 @@ geo_u2x_enqueue_req(U128 hash, U64 endt_us)
   return good;
 }
 
-internal void
+static void
 geo_u2x_dequeue_req(U128 *hash_out)
 {
   OS_MutexScope(geo_shared->u2x_ring_mutex) for(;;)
@@ -308,7 +308,7 @@ ASYNC_WORK_DEF(geo_xfer_work)
 ////////////////////////////////
 //~ rjf: Evictor Threads
 
-internal void
+static void
 geo_evictor_thread__entry_point(void *p)
 {
   ThreadNameF("[geo] evictor thread");

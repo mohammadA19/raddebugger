@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: Type Info Lookups
 
-internal Member *
+static Member *
 member_from_name(Type *type, String8 name)
 {
   Member *member = &member_nil;
@@ -25,7 +25,7 @@ member_from_name(Type *type, String8 name)
 ////////////////////////////////
 //~ rjf: Type Info * Instance Operations
 
-internal void
+static void
 typed_data_rebase_ptrs(Type *type, String8 data, void *base_ptr)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -75,7 +75,7 @@ typed_data_rebase_ptrs(Type *type, String8 data, void *base_ptr)
   scratch_end(scratch);
 }
 
-internal String8
+static String8
 serialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerializeParams *params)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -236,7 +236,7 @@ serialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerialize
   return result;
 }
 
-internal String8
+static String8
 deserialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerializeParams *params)
 {
   String8 result = {0};
@@ -411,7 +411,7 @@ deserialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSeriali
   return result;
 }
 
-internal String8
+static String8
 deep_copy_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerializeParams *params)
 {
   Temp scratch = scratch_begin(&arena, 1);

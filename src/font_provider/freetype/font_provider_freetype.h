@@ -36,6 +36,6 @@ global FP_FT_State *fp_ft_state = 0;
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal FP_FT_Font fp_ft_font_from_handle(FP_Handle handle);
-internal FP_Handle fp_ft_handle_from_font(FP_FT_Font font);
+static FP_FT_Font fp_ft_font_from_handle(FP_Handle handle);
+static FP_Handle fp_ft_handle_from_font(FP_FT_Font font);
 

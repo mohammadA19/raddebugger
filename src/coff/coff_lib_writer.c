@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal COFF_LibWriterSymbolNode *
+static COFF_LibWriterSymbolNode *
 coff_lib_writer_symbol_list_push(Arena *arena, COFF_LibWriterSymbolList *list, COFF_LibWriterSymbol symbol)
 {
   COFF_LibWriterSymbolNode *node = push_array_no_zero(arena, COFF_LibWriterSymbolNode, 1);
@@ -12,7 +12,7 @@ coff_lib_writer_symbol_list_push(Arena *arena, COFF_LibWriterSymbolList *list, C
   return node;
 }
 
-internal COFF_LibWriterMemberNode *
+static COFF_LibWriterMemberNode *
 coff_lib_writer_member_list_push(Arena *arena, COFF_LibWriterMemberList *list, COFF_LibWriterMember member)
 {
   COFF_LibWriterMemberNode *node = push_array_no_zero(arena, COFF_LibWriterMemberNode, 1);
@@ -23,7 +23,7 @@ coff_lib_writer_member_list_push(Arena *arena, COFF_LibWriterMemberList *list, C
   return node;
 }
 
-internal COFF_LibWriterSymbol *
+static COFF_LibWriterSymbol *
 coff_lib_writer_symbol_array_from_list(Arena *arena, COFF_LibWriterSymbolList list)
 {
   COFF_LibWriterSymbol *arr = push_array_no_zero(arena, COFF_LibWriterSymbol, list.count + 2);
@@ -37,7 +37,7 @@ coff_lib_writer_symbol_array_from_list(Arena *arena, COFF_LibWriterSymbolList li
   return arr;
 }
 
-internal COFF_LibWriterMember *
+static COFF_LibWriterMember *
 coff_lib_writer_member_array_from_list(Arena *arena, COFF_LibWriterMemberList list)
 {
   COFF_LibWriterMember *arr = push_array_no_zero(arena, COFF_LibWriterMember, list.count);
@@ -49,7 +49,7 @@ coff_lib_writer_member_array_from_list(Arena *arena, COFF_LibWriterMemberList li
   return arr;
 }
 
-internal int
+static int
 coff_lib_writer_symbol_name_compar(const void *raw_a, const void *raw_b)
 {
   const COFF_LibWriterSymbol *sa = raw_a;
@@ -57,21 +57,21 @@ coff_lib_writer_symbol_name_compar(const void *raw_a, const void *raw_b)
   return str8_compar_case_sensitive(&sa->name, &sb->name);
 }
 
-internal int
+static int
 coff_lib_writer_symbol_is_before(void *raw_a, void *raw_b)
 {
   int compar = coff_lib_writer_symbol_name_compar(raw_a, raw_b);
   return compar < 0;
 }
 
-internal void
+static void
 coff_lib_writer_symbol_array_sort(COFF_LibWriterSymbol *arr, U64 count)
 {
   Assert(count >= 2);
   radsort(arr + 1, count - 2, coff_lib_writer_symbol_is_before);
 }
 
-internal COFF_LibWriter *
+static COFF_LibWriter *
 coff_lib_writer_alloc(void)
 {
   Arena *arena = arena_alloc();
@@ -80,14 +80,14 @@ coff_lib_writer_alloc(void)
   return writer;
 }
 
-internal void
+static void
 coff_lib_writer_release(COFF_LibWriter **writer_ptr)
 {
   arena_release((*writer_ptr)->arena);
   *writer_ptr = 0;
 }
 
-internal U64
+static U64
 coff_lib_writer_push_obj(COFF_LibWriter *writer, String8 obj_path, String8 obj_data)
 {
   U64 member_idx = writer->member_list.count;
@@ -130,7 +130,7 @@ coff_lib_writer_push_obj(COFF_LibWriter *writer, String8 obj_path, String8 obj_d
   return member_idx;
 }
 
-internal void
+static void
 coff_lib_writer_push_import(COFF_LibWriter *lib_writer, COFF_MachineType machine, COFF_TimeStamp time_stamp, String8 dll_name, COFF_ImportByType import_by, String8 name, U16 hint_or_ordinal, COFF_ImportType import_type)
 {
   // push import member
@@ -165,7 +165,7 @@ coff_lib_writer_push_import(COFF_LibWriter *lib_writer, COFF_MachineType machine
   }
 }
 
-internal String8List
+static String8List
 coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeStamp time_stamp, U16 mode, B32 emit_second_member)
 {
   Temp scratch = scratch_begin(&arena, 1);

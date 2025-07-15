@@ -3,5 +3,5 @@
 
 #pragma once
 
-internal String8 cv_string_from_numeric(Arena *arena, CV_NumericParsed num);
+static String8 cv_string_from_numeric(Arena *arena, CV_NumericParsed num);
 

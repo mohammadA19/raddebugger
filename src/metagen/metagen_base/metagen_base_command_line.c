@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ NOTE(rjf): Command Line Option Parsing
 
-internal U64
+static U64
 cmd_line_hash_from_string(String8 string)
 {
   U64 result = 5381;
@@ -15,7 +15,7 @@ cmd_line_hash_from_string(String8 string)
   return result;
 }
 
-internal CmdLineOpt **
+static CmdLineOpt **
 cmd_line_slot_from_string(CmdLine *cmd_line, String8 string)
 {
   CmdLineOpt **slot = 0;
@@ -28,7 +28,7 @@ cmd_line_slot_from_string(CmdLine *cmd_line, String8 string)
   return slot;
 }
 
-internal CmdLineOpt *
+static CmdLineOpt *
 cmd_line_opt_from_slot(CmdLineOpt **slot, String8 string)
 {
   CmdLineOpt *result = 0;
@@ -43,14 +43,14 @@ cmd_line_opt_from_slot(CmdLineOpt **slot, String8 string)
   return result;
 }
 
-internal void
+static void
 cmd_line_push_opt(CmdLineOptList *list, CmdLineOpt *var)
 {
   SLLQueuePush(list->first, list->last, var);
   list->count += 1;
 }
 
-internal CmdLineOpt *
+static CmdLineOpt *
 cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line, String8 string, String8List values)
 {
   CmdLineOpt *var = 0;
@@ -78,7 +78,7 @@ cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line, String8 string, String8List
   return var;
 }
 
-internal CmdLine
+static CmdLine
 cmd_line_from_string_list(Arena *arena, String8List command_line)
 {
   CmdLine parsed = {0};
@@ -205,13 +205,13 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
   return parsed;
 }
 
-internal CmdLineOpt *
+static CmdLineOpt *
 cmd_line_opt_from_string(CmdLine *cmd_line, String8 name)
 {
   return cmd_line_opt_from_slot(cmd_line_slot_from_string(cmd_line, name), name);
 }
 
-internal String8List 
+static String8List 
 cmd_line_strings(CmdLine *cmd_line, String8 name)
 {
   String8List result = {0};
@@ -223,7 +223,7 @@ cmd_line_strings(CmdLine *cmd_line, String8 name)
   return result;
 }
 
-internal String8     
+static String8     
 cmd_line_string(CmdLine *cmd_line, String8 name)
 {
   String8 result = {0};
@@ -235,14 +235,14 @@ cmd_line_string(CmdLine *cmd_line, String8 name)
   return result;
 }
 
-internal B32
+static B32
 cmd_line_has_flag(CmdLine *cmd_line, String8 name)
 {
   CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
   return(var != 0);
 }
 
-internal B32
+static B32
 cmd_line_has_argument(CmdLine *cmd_line, String8 name)
 {
   CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);

@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_parse_debug_s_task)
 {
   U64                      obj_idx = task_id;
@@ -32,7 +32,7 @@ THREAD_POOL_TASK_FUNC(lnk_parse_debug_s_task)
   }
 }
 
-internal CV_DebugS *
+static CV_DebugS *
 lnk_parse_debug_s_sections(TP_Context *tp, TP_Arena *arena, U64 obj_count, LNK_Obj **obj_arr, String8List *sect_list_arr)
 {
   ProfBeginFunction();
@@ -48,7 +48,7 @@ lnk_parse_debug_s_sections(TP_Context *tp, TP_Arena *arena, U64 obj_count, LNK_O
   return task_data.debug_s_arr;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_check_debug_t_sig_and_get_data_task)
 {
   U64                         obj_idx = task_id;
@@ -95,7 +95,7 @@ THREAD_POOL_TASK_FUNC(lnk_check_debug_t_sig_and_get_data_task)
   }
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_parse_debug_t_task)
 {
   ProfBeginFunction();
@@ -107,7 +107,7 @@ THREAD_POOL_TASK_FUNC(lnk_parse_debug_t_task)
   ProfEnd();
 }
 
-internal CV_DebugT *
+static CV_DebugT *
 lnk_parse_debug_t_sections(TP_Context *tp, TP_Arena *arena, U64 obj_count, LNK_Obj **obj_arr, String8List *debug_t_list_arr)
 {
   ProfBeginFunction();
@@ -131,7 +131,7 @@ lnk_parse_debug_t_sections(TP_Context *tp, TP_Arena *arena, U64 obj_count, LNK_O
   return parse.debug_t_arr;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_parse_cv_symbols_task)
 {
   LNK_ParseCVSymbolsTaskData *task  = raw_task;
@@ -139,7 +139,7 @@ THREAD_POOL_TASK_FUNC(lnk_parse_cv_symbols_task)
   cv_parse_symbol_sub_section(arena, input->symbol_list, 0, input->raw_symbols, CV_SymbolAlign);
 }
 
-internal LNK_PchInfo *
+static LNK_PchInfo *
 lnk_setup_pch(Arena *arena, U64 obj_count, LNK_Obj *obj_arr, CV_DebugT *debug_t_arr, CV_DebugT *debug_p_arr, CV_SymbolListArray *parsed_symbols)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -256,7 +256,7 @@ lnk_setup_pch(Arena *arena, U64 obj_count, LNK_Obj *obj_arr, CV_DebugT *debug_t_
   return pch_arr;
 }
 
-internal void
+static void
 lnk_do_debug_info_discard(CV_DebugS *debug_s_arr, CV_SymbolListArray *parsed_symbols, U64 obj_idx)
 {
   // remove symbols
@@ -269,7 +269,7 @@ lnk_do_debug_info_discard(CV_DebugS *debug_s_arr, CV_SymbolListArray *parsed_sym
   MemoryZeroStruct(inlineelines_ptr);
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_msf_parsed_from_data_task)
 {
   ProfBeginFunction();
@@ -279,7 +279,7 @@ THREAD_POOL_TASK_FUNC(lnk_msf_parsed_from_data_task)
   ProfEnd();
 }
 
-internal MSF_Parsed **
+static MSF_Parsed **
 lnk_msf_parsed_from_data_parallel(TP_Arena *arena, TP_Context *tp, String8Array data_arr)
 {
   ProfBeginFunction();
@@ -291,7 +291,7 @@ lnk_msf_parsed_from_data_parallel(TP_Arena *arena, TP_Context *tp, String8Array 
   return task.msf_parse_arr;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_get_external_leaves_task)
 {
   ProfBeginFunction();
@@ -337,7 +337,7 @@ THREAD_POOL_TASK_FUNC(lnk_get_external_leaves_task)
   ProfEnd();
 }
 
-internal CV_DebugT *
+static CV_DebugT *
 lnk_merge_debug_t_and_debug_p(Arena *arena, U64 obj_count, CV_DebugT *debug_t_arr, CV_DebugT *debug_p_arr)
 {
   CV_DebugT *result = push_array_no_zero(arena, CV_DebugT, obj_count);
@@ -357,7 +357,7 @@ lnk_merge_debug_t_and_debug_p(Arena *arena, U64 obj_count, CV_DebugT *debug_t_ar
   return result;
 }
 
-internal LNK_CodeViewInput
+static LNK_CodeViewInput
 lnk_make_code_view_input(TP_Context *tp, TP_Arena *tp_arena, LNK_IO_Flags io_flags, String8List lib_dir_list, U64 obj_count, LNK_Obj **obj_arr)
 {
   ProfBegin("Extract CodeView");
@@ -800,7 +800,7 @@ lnk_make_code_view_input(TP_Context *tp, TP_Arena *tp_arena, LNK_IO_Flags io_fla
   return cv;
 }
 
-internal LNK_LeafRef
+static LNK_LeafRef
 lnk_leaf_ref(U32 enc_loc_idx, U32 enc_leaf_idx)
 {
   LNK_LeafRef ref;
@@ -809,13 +809,13 @@ lnk_leaf_ref(U32 enc_loc_idx, U32 enc_leaf_idx)
   return ref;
 }
 
-internal LNK_LeafRef
+static LNK_LeafRef
 lnk_obj_leaf_ref(U32 obj_idx, U32 leaf_idx)
 {
   return lnk_leaf_ref(obj_idx, leaf_idx);
 }
 
-internal LNK_LeafRef
+static LNK_LeafRef
 lnk_ts_leaf_ref(CV_TypeIndexSource ti_source, U32 ts_idx, U32 leaf_idx)
 {
   ts_idx |= LNK_LeafRefFlag_LocIdxExternal;
@@ -827,7 +827,7 @@ lnk_ts_leaf_ref(CV_TypeIndexSource ti_source, U32 ts_idx, U32 leaf_idx)
   return lnk_leaf_ref(ts_idx, leaf_idx);
 }
 
-internal int
+static int
 lnk_leaf_ref_compare(LNK_LeafRef a, LNK_LeafRef b)
 {
   int cmp = 0;
@@ -845,7 +845,7 @@ lnk_leaf_ref_compare(LNK_LeafRef a, LNK_LeafRef b)
   return cmp;
 }
 
-internal int
+static int
 lnk_leaf_ref_is_before(void *raw_a, void *raw_b)
 {
   LNK_LeafRef **a = raw_a;
@@ -859,7 +859,7 @@ lnk_leaf_ref_is_before(void *raw_a, void *raw_b)
   return is_before;
 }
 
-internal LNK_LeafLocType
+static LNK_LeafLocType
 lnk_loc_type_from_leaf_ref(LNK_LeafRef leaf_ref)
 {
   if (leaf_ref.enc_loc_idx & LNK_LeafRefFlag_LocIdxExternal) {
@@ -868,7 +868,7 @@ lnk_loc_type_from_leaf_ref(LNK_LeafRef leaf_ref)
   return LNK_LeafLocType_Internal;
 }
 
-internal LNK_LeafLocType
+static LNK_LeafLocType
 lnk_loc_type_from_obj_idx(LNK_CodeViewInput *input, U64 obj_idx)
 {
   if (input->external_obj_range.min <= obj_idx && obj_idx < input->external_obj_range.max) {
@@ -877,7 +877,7 @@ lnk_loc_type_from_obj_idx(LNK_CodeViewInput *input, U64 obj_idx)
   return LNK_LeafLocType_Internal;
 }
 
-internal U64
+static U64
 lnk_loc_idx_from_obj_idx(LNK_CodeViewInput *input, U64 obj_idx)
 {
   if (input->external_obj_range.min <= obj_idx && obj_idx < input->external_obj_range.max) {
@@ -886,7 +886,7 @@ lnk_loc_idx_from_obj_idx(LNK_CodeViewInput *input, U64 obj_idx)
   return obj_idx;
 }
 
-internal CV_TypeIndex
+static CV_TypeIndex
 lnk_ti_lo_from_leaf_ref(LNK_CodeViewInput *input, LNK_LeafRef leaf_ref)
 {
   CV_TypeIndex ti_lo;
@@ -907,7 +907,7 @@ lnk_ti_lo_from_leaf_ref(LNK_CodeViewInput *input, LNK_LeafRef leaf_ref)
   return ti_lo;
 }
 
-internal CV_TypeIndex
+static CV_TypeIndex
 lnk_ti_lo_from_loc(LNK_CodeViewInput *input, LNK_LeafLocType loc_type, U64 loc_idx, CV_TypeIndexSource ti_source)
 {
   CV_TypeIndex ti_lo = 0;
@@ -919,7 +919,7 @@ lnk_ti_lo_from_loc(LNK_CodeViewInput *input, LNK_LeafLocType loc_type, U64 loc_i
   return ti_lo;
 }
 
-internal String8
+static String8
 lnk_data_from_leaf_ref(LNK_CodeViewInput *input, LNK_LeafRef leaf_ref)
 {
   String8 data;
@@ -947,7 +947,7 @@ lnk_data_from_leaf_ref(LNK_CodeViewInput *input, LNK_LeafRef leaf_ref)
   return data;
 }
 
-internal CV_TypeIndex
+static CV_TypeIndex
 lnk_type_index_from_leaf_ref(LNK_CodeViewInput *input, LNK_LeafRef leaf_ref)
 {
   CV_TypeIndex type_index = 0;
@@ -966,7 +966,7 @@ lnk_type_index_from_leaf_ref(LNK_CodeViewInput *input, LNK_LeafRef leaf_ref)
   return type_index;
 }
 
-internal CV_Leaf
+static CV_Leaf
 lnk_cv_leaf_from_leaf_ref(LNK_CodeViewInput *input, LNK_LeafRef leaf_ref)
 {
   String8 raw_leaf = lnk_data_from_leaf_ref(input, leaf_ref);
@@ -975,7 +975,7 @@ lnk_cv_leaf_from_leaf_ref(LNK_CodeViewInput *input, LNK_LeafRef leaf_ref)
   return leaf;
 }
 
-internal U128
+static U128
 lnk_hash_from_leaf_ref(LNK_LeafHashes *hashes, LNK_LeafRef leaf_ref)
 {
   LNK_LeafLocType    loc_type;
@@ -995,7 +995,7 @@ lnk_hash_from_leaf_ref(LNK_LeafHashes *hashes, LNK_LeafRef leaf_ref)
   return hash;
 }
 
-internal LNK_LeafRef
+static LNK_LeafRef
 lnk_leaf_ref_from_loc_idx_and_ti(LNK_CodeViewInput  *input,
                                  LNK_LeafLocType     loc_type,
                                  CV_TypeIndexSource  ti_source,
@@ -1041,7 +1041,7 @@ lnk_leaf_ref_from_loc_idx_and_ti(LNK_CodeViewInput  *input,
   return leaf_ref;
 }
 
-internal B32
+static B32
 lnk_match_leaf_ref(LNK_CodeViewInput *input, LNK_LeafHashes *hashes, LNK_LeafRef a, LNK_LeafRef b)
 {
   B32 are_same = 0;
@@ -1073,7 +1073,7 @@ lnk_match_leaf_ref(LNK_CodeViewInput *input, LNK_LeafHashes *hashes, LNK_LeafRef
   return are_same;
 }
 
-internal B32
+static B32
 lnk_match_leaf_ref_deep(Arena *arena, LNK_CodeViewInput *input, LNK_LeafHashes *hashes, LNK_LeafRef a, LNK_LeafRef b)
 {
   B32 are_equal = 0;
@@ -1150,7 +1150,7 @@ skip_type_index_compare:;
   return are_equal;
 }
 
-internal U128
+static U128
 lnk_hash_cv_leaf(Arena               *arena,
                  LNK_CodeViewInput   *input,
                  LNK_LeafHashes      *hashes,
@@ -1243,7 +1243,7 @@ lnk_hash_cv_leaf(Arena               *arena,
   return hash;
 }
 
-internal void
+static void
 lnk_hash_cv_leaf_deep(Arena               *arena,
                       LNK_CodeViewInput   *input,
                       Rng1U64             *ti_ranges,
@@ -1358,7 +1358,7 @@ lnk_hash_cv_leaf_deep(Arena               *arena,
   temp_end(temp);
 }
 
-internal LNK_LeafBucket *
+static LNK_LeafBucket *
 lnk_leaf_hash_table_insert_or_update(LNK_LeafHashTable *leaf_ht, LNK_CodeViewInput *input, LNK_LeafHashes *hashes, U128 new_hash, LNK_LeafBucket *new_bucket)
 {
   LNK_LeafBucket *result                 = 0;
@@ -1418,7 +1418,7 @@ lnk_leaf_hash_table_insert_or_update(LNK_LeafHashTable *leaf_ht, LNK_CodeViewInp
   return result;
 }
 
-internal LNK_LeafBucket *
+static LNK_LeafBucket *
 lnk_leaf_hash_table_search(LNK_LeafHashTable *ht, LNK_CodeViewInput *input, LNK_LeafHashes *hashes, LNK_LeafRef leaf_ref)
 {
   LNK_LeafBucket *match = 0;
@@ -1445,7 +1445,7 @@ lnk_leaf_hash_table_search(LNK_LeafHashTable *ht, LNK_CodeViewInput *input, LNK_
   return match;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_count_per_source_leaf_task)
 {
   ProfBeginFunction();
@@ -1465,7 +1465,7 @@ THREAD_POOL_TASK_FUNC(lnk_count_per_source_leaf_task)
   ProfEnd();
 }
 
-internal void
+static void
 lnk_cv_debug_t_count_leaves_per_source(TP_Context *tp, U64 count, CV_DebugT *debug_t_arr, U64 per_source_count_arr[CV_TypeIndexSource_COUNT])
 {
   ProfBeginFunction();
@@ -1510,7 +1510,7 @@ lnk_cv_debug_t_count_leaves_per_source(TP_Context *tp, U64 count, CV_DebugT *deb
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_hash_debug_t_task)
 {
   ProfBeginFunction();
@@ -1553,7 +1553,7 @@ THREAD_POOL_TASK_FUNC(lnk_hash_debug_t_task)
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_hash_type_server_leaves_task)
 {
   ProfBeginFunction();
@@ -1593,7 +1593,7 @@ THREAD_POOL_TASK_FUNC(lnk_hash_type_server_leaves_task)
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_leaf_dedup_internal_task)
 {
   LNK_LeafDedupInternal *task    = raw_task;
@@ -1626,7 +1626,7 @@ THREAD_POOL_TASK_FUNC(lnk_leaf_dedup_internal_task)
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_leaf_dedup_external_task)
 {
   ProfBeginFunction();
@@ -1662,7 +1662,7 @@ THREAD_POOL_TASK_FUNC(lnk_leaf_dedup_external_task)
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_count_present_buckets_task)
 {
   ProfBeginFunction();
@@ -1675,7 +1675,7 @@ THREAD_POOL_TASK_FUNC(lnk_count_present_buckets_task)
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_get_present_buckets_task)
 {
   ProfBeginFunction();
@@ -1695,7 +1695,7 @@ THREAD_POOL_TASK_FUNC(lnk_get_present_buckets_task)
   ProfEnd();
 }
 
-internal LNK_LeafBucketArray
+static LNK_LeafBucketArray
 lnk_present_bucket_array_from_leaf_hash_table(TP_Context *tp, Arena *arena, LNK_LeafHashTable *ht)
 {
   ProfBeginFunction();
@@ -1720,7 +1720,7 @@ lnk_present_bucket_array_from_leaf_hash_table(TP_Context *tp, Arena *arena, LNK_
   return result;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_leaf_ref_histo_task)
 {
   ProfBeginFunction();
@@ -1789,7 +1789,7 @@ THREAD_POOL_TASK_FUNC(lnk_leaf_ref_histo_task)
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_loc_idx_radix_sort_task)
 {
   ProfBeginFunction();
@@ -1875,7 +1875,7 @@ THREAD_POOL_TASK_FUNC(lnk_loc_idx_radix_sort_task)
   ProfEnd();
 }
 
-internal void
+static void
 lnk_leaf_bucket_array_sort(TP_Context *tp, LNK_LeafBucketArray arr, U64 obj_count, U64 type_server_count)
 {
   Temp scratch = scratch_begin(0,0);
@@ -1971,7 +1971,7 @@ lnk_leaf_bucket_array_sort(TP_Context *tp, LNK_LeafBucketArray arr, U64 obj_coun
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_assign_type_indices_task)
 {
   LNK_AssignTypeIndicesTask *task  = raw_task;
@@ -1982,7 +1982,7 @@ THREAD_POOL_TASK_FUNC(lnk_assign_type_indices_task)
   }
 }
 
-internal void
+static void
 lnk_assign_type_indices(TP_Context *tp, LNK_LeafBucketArray bucket_arr, CV_TypeIndex min_type_index)
 {
   ProfBeginFunction();
@@ -1998,7 +1998,7 @@ lnk_assign_type_indices(TP_Context *tp, LNK_LeafBucketArray bucket_arr, CV_TypeI
   scratch_end(scratch);
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_patch_symbols_task)
 {
   LNK_PatchSymbolTypesTask *task         = raw_task;
@@ -2036,7 +2036,7 @@ THREAD_POOL_TASK_FUNC(lnk_patch_symbols_task)
   }
 }
 
-internal void
+static void
 lnk_patch_symbols(TP_Context         *tp,
                   LNK_CodeViewInput  *input,
                   LNK_LeafHashes     *hashes,
@@ -2058,7 +2058,7 @@ lnk_patch_symbols(TP_Context         *tp,
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_patch_inlines_task)
 {
   ProfBeginFunction();
@@ -2095,7 +2095,7 @@ THREAD_POOL_TASK_FUNC(lnk_patch_inlines_task)
   ProfEnd();
 }
 
-internal void
+static void
 lnk_patch_inlines(TP_Context         *tp,
                   LNK_CodeViewInput  *input,
                   LNK_LeafHashes     *hashes,
@@ -2115,7 +2115,7 @@ lnk_patch_inlines(TP_Context         *tp,
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_patch_leaves_task)
 {
   ProfBeginFunction();
@@ -2154,7 +2154,7 @@ THREAD_POOL_TASK_FUNC(lnk_patch_leaves_task)
   ProfEnd();
 }
 
-internal void
+static void
 lnk_patch_leaves(TP_Context *tp, LNK_CodeViewInput *input, LNK_LeafHashes *hashes, LNK_LeafHashTable *leaf_ht_arr, LNK_LeafBucketArray bucket_arr)
 {
   ProfBeginFunction();
@@ -2173,7 +2173,7 @@ lnk_patch_leaves(TP_Context *tp, LNK_CodeViewInput *input, LNK_LeafHashes *hashe
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_unbucket_raw_leaves_task)
 {
   LNK_UnbucketRawLeavesTask *task  = raw_task;
@@ -2184,7 +2184,7 @@ THREAD_POOL_TASK_FUNC(lnk_unbucket_raw_leaves_task)
   }
 }
 
-internal CV_DebugT
+static CV_DebugT
 lnk_unbucket_leaf_array(TP_Context *tp, Arena *arena, LNK_CodeViewInput *input, LNK_LeafBucketArray bucket_arr)
 {
   ProfBeginDynamic("Unbucket Leaves [Count %llu]", bucket_arr.count);
@@ -2206,7 +2206,7 @@ lnk_unbucket_leaf_array(TP_Context *tp, Arena *arena, LNK_CodeViewInput *input, 
   return debug_t;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_post_process_cv_symbols_task)
 {
   LNK_PostProcessCvSymbolsTask *task         = raw_task;
@@ -2259,7 +2259,7 @@ THREAD_POOL_TASK_FUNC(lnk_post_process_cv_symbols_task)
   }
 }
 
-internal CV_DebugT *
+static CV_DebugT *
 lnk_import_types(TP_Context *tp, TP_Arena *tp_temp, LNK_CodeViewInput *input)
 {
   ProfBegin("Import Types");
@@ -2453,7 +2453,7 @@ lnk_import_types(TP_Context *tp, TP_Arena *tp_temp, LNK_CodeViewInput *input)
   return types;
 }
 
-internal U64
+static U64
 lnk_format_u128(U8 *buf, U64 buf_max, U64 length, U128 v)
 {
   U64 size = 0;
@@ -2469,7 +2469,7 @@ lnk_format_u128(U8 *buf, U64 buf_max, U64 length, U128 v)
   return size;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_lenient_task)
 {
   ProfBeginFunction();
@@ -2554,7 +2554,7 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_lenient_task)
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_full_task)
 {
   ProfBeginFunction();
@@ -2622,7 +2622,7 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_full_task)
   ProfEnd();
 }
 
-internal void
+static void
 lnk_replace_type_names_with_hashes(TP_Context *tp, TP_Arena *arena, CV_DebugT debug_t, LNK_TypeNameHashMode mode, U64 hash_length, String8 map_name)
 {
   ProfBeginFunction();
@@ -2666,7 +2666,7 @@ lnk_replace_type_names_with_hashes(TP_Context *tp, TP_Arena *arena, CV_DebugT de
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_filter_out_gsi_symbols_task)
 {
   U64                         obj_idx        = task_id;
@@ -2715,7 +2715,7 @@ THREAD_POOL_TASK_FUNC(lnk_filter_out_gsi_symbols_task)
   cv_symbol_list_concat_in_place(gsi_list, &typedef_list);
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_make_proc_refs_task)
 {
   ProfBeginFunction();
@@ -2735,7 +2735,7 @@ THREAD_POOL_TASK_FUNC(lnk_make_proc_refs_task)
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_process_sym_data_task)
 {
   ProfBeginFunction();
@@ -2783,7 +2783,7 @@ THREAD_POOL_TASK_FUNC(lnk_process_sym_data_task)
   ProfEnd();
 }
 
-internal LNK_ProcessedCodeViewC11Data
+static LNK_ProcessedCodeViewC11Data
 lnk_process_c11_data(TP_Context *tp, TP_Arena *arena, U64 obj_count, CV_DebugS *debug_s_arr, U64 string_data_base_offset, CV_StringHashTable string_ht, MSF_Context *msf, PDB_DbiModule **mod_arr)
 {
   // TODO: handle c11 data
@@ -2793,7 +2793,7 @@ lnk_process_c11_data(TP_Context *tp, TP_Arena *arena, U64 obj_count, CV_DebugS *
   return result;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_process_c13_data_task)
 {
   ProfBeginFunction();
@@ -2847,7 +2847,7 @@ THREAD_POOL_TASK_FUNC(lnk_process_c13_data_task)
   ProfEnd();
 }
 
-internal LNK_ProcessedCodeViewC13Data
+static LNK_ProcessedCodeViewC13Data
 lnk_process_c13_data(TP_Context *tp, TP_Arena *arena, U64 obj_count, CV_DebugS *debug_s_arr, U64 string_data_base_offset, CV_StringHashTable string_ht, MSF_Context *msf, PDB_DbiModule **mod_arr)
 {
   ProfBeginFunction();
@@ -2871,7 +2871,7 @@ lnk_process_c13_data(TP_Context *tp, TP_Arena *arena, U64 obj_count, CV_DebugS *
   return result;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_write_module_data_task)
 {
   U64 obj_idx = task_id;
@@ -2920,7 +2920,7 @@ THREAD_POOL_TASK_FUNC(lnk_write_module_data_task)
   }
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_cv_symbol_ptr_array_hasher)
 {
   LNK_CvSymbolPtrArrayHasher *task  = raw_task;
@@ -2930,7 +2930,7 @@ THREAD_POOL_TASK_FUNC(lnk_cv_symbol_ptr_array_hasher)
   }
 }
 
-internal U64 *
+static U64 *
 lnk_hash_cv_symbol_ptr_arr(TP_Context *tp, Arena *arena, CV_SymbolPtrArray arr)
 {
   ProfBeginFunction();
@@ -2947,7 +2947,7 @@ lnk_hash_cv_symbol_ptr_arr(TP_Context *tp, Arena *arena, CV_SymbolPtrArray arr)
   return task.hash_arr;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_push_dbi_sec_contrib_task)
 {
   // TODO: use chunked lists for SC
@@ -3023,7 +3023,7 @@ THREAD_POOL_TASK_FUNC(lnk_push_dbi_sec_contrib_task)
   }
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_build_pdb_public_symbols_defined_task)
 {
   ProfBeginFunction();
@@ -3061,7 +3061,7 @@ THREAD_POOL_TASK_FUNC(lnk_build_pdb_public_symbols_defined_task)
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_gsi_hash_cv_list_task)
 {
   ProfBeginFunction();
@@ -3078,7 +3078,7 @@ THREAD_POOL_TASK_FUNC(lnk_gsi_hash_cv_list_task)
   ProfEnd();
 }
 
-internal void
+static void
 lnk_build_pdb_public_symbols(TP_Context            *tp,
                              TP_Arena              *arena,
                              LNK_SymbolTable       *symtab,
@@ -3104,7 +3104,7 @@ lnk_build_pdb_public_symbols(TP_Context            *tp,
   ProfEnd();
 }
 
-internal String8List
+static String8List
 lnk_build_pdb(TP_Context               *tp,
               TP_Arena                 *tp_arena,
               String8                   image_data,
@@ -3355,13 +3355,13 @@ lnk_build_pdb(TP_Context               *tp,
   return page_data_list;
 }
 
-internal U64
+static U64
 lnk_udt_name_hash_table_hash(String8 string)
 {
   return XXH3_64bits(string.str, string.size);
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_build_udt_name_hash_table_task)
 {
   LNK_BuildUDTNameHashTableTask *task = raw_task;
@@ -3433,7 +3433,7 @@ THREAD_POOL_TASK_FUNC(lnk_build_udt_name_hash_table_task)
 }
 
 
-internal LNK_UDTNameBucket **
+static LNK_UDTNameBucket **
 lnk_udt_name_hash_table_from_debug_t(TP_Context *tp,
                                      TP_Arena   *arena,
                                      CV_DebugT   debug_t,
@@ -3451,7 +3451,7 @@ lnk_udt_name_hash_table_from_debug_t(TP_Context *tp,
   return task.buckets;
 }
 
-internal LNK_UDTNameBucket *
+static LNK_UDTNameBucket *
 lnk_udt_name_hash_table_lookup(LNK_UDTNameBucket **buckets, U64 cap, String8 name)
 {
   U64 hash       = lnk_udt_name_hash_table_hash(name);
@@ -3469,7 +3469,7 @@ lnk_udt_name_hash_table_lookup(LNK_UDTNameBucket **buckets, U64 cap, String8 nam
   return 0;
 }
 
-internal CV_TypeIndex
+static CV_TypeIndex
 lnk_udt_name_hash_table_lookup_itype(LNK_UDTNameBucket **buckets, U64 cap, String8 name)
 {
   LNK_UDTNameBucket *bucket = lnk_udt_name_hash_table_lookup(buckets, cap, name);
@@ -3479,7 +3479,7 @@ lnk_udt_name_hash_table_lookup_itype(LNK_UDTNameBucket **buckets, U64 cap, Strin
   return 0;
 }
 
-internal RDIB_Type *
+static RDIB_Type *
 lnk_push_converted_codeview_type(Arena *arena, RDIB_TypeChunkList *list, RDIB_Type **itype_map, CV_TypeIndex itype)
 {
   RDIB_Type *type = rdib_type_chunk_list_push(arena, list, 8196);
@@ -3492,7 +3492,7 @@ lnk_push_converted_codeview_type(Arena *arena, RDIB_TypeChunkList *list, RDIB_Ty
   return type;
 }
 
-internal void
+static void
 lnk_push_basic_itypes(Arena *arena, RDIB_DataModel data_model, RDIB_Type **itype_map, RDIB_TypeChunkList *rdib_types_list)
 {
   RDI_TypeKind short_type      = rdib_short_type_from_data_model(data_model);
@@ -3612,7 +3612,7 @@ lnk_push_basic_itypes(Arena *arena, RDIB_DataModel data_model, RDIB_Type **itype
   }
 }
 
-internal RDIB_TypeRef
+static RDIB_TypeRef
 lnk_rdib_type_from_itype(LNK_ConvertTypesToRDI *task, CV_TypeIndex itype)
 {
   RDIB_TypeRef result    = &task->tpi_itype_map[0];
@@ -3651,7 +3651,7 @@ lnk_rdib_type_from_itype(LNK_ConvertTypesToRDI *task, CV_TypeIndex itype)
   return result;
 }
 
-internal RDI_MemberKind
+static RDI_MemberKind
 lnk_rdib_method_kind_from_cv_prop(CV_MethodProp prop)
 {
   switch (prop) {
@@ -3666,7 +3666,7 @@ lnk_rdib_method_kind_from_cv_prop(CV_MethodProp prop)
   return RDI_MemberKind_NULL;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
 {
   ProfBeginFunction();
@@ -4173,7 +4173,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
   ProfEnd();
 }
 
-internal U64
+static U64
 lnk_src_file_hash_cv(String8 normal_full_path, CV_C13ChecksumKind checksum_kind, String8 checksum)
 {
   XXH3_state_t state;
@@ -4186,7 +4186,7 @@ lnk_src_file_hash_cv(String8 normal_full_path, CV_C13ChecksumKind checksum_kind,
   return result;
 }
 
-internal String8
+static String8
 lnk_normalize_src_file_path(Arena *arena, String8 file_path)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -4198,7 +4198,7 @@ lnk_normalize_src_file_path(Arena *arena, String8 file_path)
   return result;
 }
 
-internal LNK_SourceFileBucket *
+static LNK_SourceFileBucket *
 lnk_src_file_hash_table_lookup_slot(LNK_SourceFileBucket **buckets,
                                     U64                    cap,
                                     U64                    hash,
@@ -4228,7 +4228,7 @@ lnk_src_file_hash_table_lookup_slot(LNK_SourceFileBucket **buckets,
 }
 
 
-internal LNK_SourceFileBucket *
+static LNK_SourceFileBucket *
 lnk_src_file_insert_or_update(LNK_SourceFileBucket **buckets, U64 cap, U64 hash, LNK_SourceFileBucket *new_bucket)
 {
   LNK_SourceFileBucket *result = 0;
@@ -4281,7 +4281,7 @@ lnk_src_file_insert_or_update(LNK_SourceFileBucket **buckets, U64 cap, U64 hash,
   return result;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_count_source_files_task)
 {
   U64                              unit_idx        = task_id;
@@ -4310,7 +4310,7 @@ THREAD_POOL_TASK_FUNC(lnk_count_source_files_task)
   ins_atomic_u64_add_eval(&task->total_src_file_count, count);
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_insert_src_files_task)
 {
   ProfBeginFunction();
@@ -4387,7 +4387,7 @@ THREAD_POOL_TASK_FUNC(lnk_insert_src_files_task)
   ProfEnd();
 }
 
-internal RDIB_Type *
+static RDIB_Type *
 lnk_find_container_type(String8 name, Rng1U64 tpi_itype_range, LNK_UDTNameBucket **udt_name_buckets, U64 udt_name_buckets_cap, RDIB_Type **tpi_itype_map)
 {
   CV_TypeIndex container_itype = 0;
@@ -4409,7 +4409,7 @@ lnk_find_container_type(String8 name, Rng1U64 tpi_itype_range, LNK_UDTNameBucket
   return container;
 }
 
-internal RDIB_Type *
+static RDIB_Type *
 lnk_type_from_itype(CV_TypeIndex itype, Rng1U64 tpi_itype_range, RDIB_Type **tpi_itype_map, LNK_Obj *obj, CV_SymKind symbol_kind, U64 symbol_offset)
 {
   RDIB_Type *type = 0;
@@ -4422,7 +4422,7 @@ lnk_type_from_itype(CV_TypeIndex itype, Rng1U64 tpi_itype_range, RDIB_Type **tpi
   return type;
 }
 
-internal U64
+static U64
 lnk_voff_from_sect_off(U64 sect_idx, U64 sect_off, COFF_SectionHeaderArray image_sects, LNK_Obj *obj, CV_SymKind symbol_kind, U64 symbol_offset)
 {
   U64 voff = 0;
@@ -4435,7 +4435,7 @@ lnk_voff_from_sect_off(U64 sect_idx, U64 sect_off, COFF_SectionHeaderArray image
   return voff;
 }
 
-internal Rng1U64
+static Rng1U64
 lnk_virt_range_from_sect_off_size(U64 sect_idx, U64 sect_off, U64 size, COFF_SectionHeaderArray image_sects, LNK_Obj *obj, CV_SymKind symbol_kind, U64 symbol_offset)
 {
   Rng1U64 virt_range = {0};
@@ -4449,21 +4449,21 @@ lnk_virt_range_from_sect_off_size(U64 sect_idx, U64 sect_off, U64 size, COFF_Sec
   return virt_range;
 }
 
-internal void
+static void
 lnk_error_on_invalid_defrange_symbol(LNK_Obj *obj, CV_Symbol symbol)
 {
   lnk_error_obj(LNK_Error_CvIllSymbolData, obj, "Unable to parse symbol stream, unexpected S_%S without preceding S_LOCAL @ 0x%llx.",
                 cv_string_from_sym_kind(symbol.kind), symbol.offset);
 }
 
-internal void
+static void
 lnk_error_on_missing_cv_frameproc(LNK_Obj *obj, CV_Symbol symbol)
 {
   lnk_error_obj(LNK_Error_CvIllSymbolData, obj, "Missing S_FRAMEPROC, unable to parse S_%S @ 0x%llx.",
                 cv_string_from_sym_kind(symbol.kind), symbol.offset);
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_find_obj_compiler_info_task)
 {
   ProfBeginFunction();
@@ -4526,7 +4526,7 @@ THREAD_POOL_TASK_FUNC(lnk_find_obj_compiler_info_task)
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_convert_line_tables_to_rdi_task)
 {
   ProfBeginFunction();
@@ -4604,7 +4604,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_line_tables_to_rdi_task)
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_build_inlinee_lines_accels_task)
 {
   ProfBeginFunction();
@@ -4623,7 +4623,7 @@ THREAD_POOL_TASK_FUNC(lnk_build_inlinee_lines_accels_task)
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
 {
   ProfBeginFunction();
@@ -5225,7 +5225,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_symbols_to_rdi_task)
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_convert_inline_site_line_tables_task)
 {
   ProfBeginFunction();
@@ -5299,7 +5299,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_inline_site_line_tables_task)
   ProfEnd();
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_collect_obj_virtual_ranges_task)
 {
   ProfBeginFunction();
@@ -5338,7 +5338,7 @@ THREAD_POOL_TASK_FUNC(lnk_collect_obj_virtual_ranges_task)
   ProfEnd();
 }
 
-internal String8List
+static String8List
 lnk_build_rad_debug_info(TP_Context               *tp,
                          TP_Arena                 *tp_arena,
                          OperatingSystem           os,

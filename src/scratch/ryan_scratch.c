@@ -35,7 +35,7 @@ global R_Handle window_r = {0};
 ////////////////////////////////
 //~ rjf: Entry Points
 
-internal B32
+static B32
 frame(void)
 {
   B32 quit = 0;
@@ -95,7 +95,7 @@ frame(void)
   return quit;
 }
 
-internal void
+static void
 entry_point(CmdLine *cmdline)
 {
   window_os = os_window_open(r2f32p(0, 0, 1280, 720), OS_WindowFlag_UseDefaultPosition, str8_lit("Window"));

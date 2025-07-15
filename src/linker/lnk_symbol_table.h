@@ -109,42 +109,42 @@ typedef struct LNK_SymbolTable
 
 // --- Symbol Make -------------------------------------------------------------
 
-internal LNK_Symbol * lnk_make_defined_symbol(Arena *arena, String8 name, struct LNK_Obj *obj, U32 symbol_idx);
-internal LNK_Symbol * lnk_make_lib_symbol(Arena *arena, String8 name, struct LNK_Lib *lib, U64 member_offset);
-internal LNK_Symbol * lnk_make_undefined_symbol(Arena *arena, String8 name, struct LNK_Obj *obj);
-internal LNK_Symbol * lnk_make_import_symbol(Arena *arena, String8 name, String8 import_header);
+static LNK_Symbol * lnk_make_defined_symbol(Arena *arena, String8 name, struct LNK_Obj *obj, U32 symbol_idx);
+static LNK_Symbol * lnk_make_lib_symbol(Arena *arena, String8 name, struct LNK_Lib *lib, U64 member_offset);
+static LNK_Symbol * lnk_make_undefined_symbol(Arena *arena, String8 name, struct LNK_Obj *obj);
+static LNK_Symbol * lnk_make_import_symbol(Arena *arena, String8 name, String8 import_header);
 
 // --- Symbol Containers ------------------------------------------------------
 
-internal void                lnk_symbol_list_push_node(LNK_SymbolList *list, LNK_SymbolNode *node);
-internal LNK_SymbolNode *    lnk_symbol_list_push(Arena *arena, LNK_SymbolList *list, LNK_Symbol *symbol);
-internal void                lnk_symbol_list_concat_in_place(LNK_SymbolList *list, LNK_SymbolList *to_concat);
-internal LNK_SymbolList      lnk_symbol_list_from_array(Arena *arena, LNK_SymbolArray arr);
-internal LNK_SymbolNodeArray lnk_symbol_node_array_from_list(Arena *arena, LNK_SymbolList list);
-internal LNK_SymbolArray     lnk_symbol_array_from_list(Arena *arena, LNK_SymbolList list);
+static void                lnk_symbol_list_push_node(LNK_SymbolList *list, LNK_SymbolNode *node);
+static LNK_SymbolNode *    lnk_symbol_list_push(Arena *arena, LNK_SymbolList *list, LNK_Symbol *symbol);
+static void                lnk_symbol_list_concat_in_place(LNK_SymbolList *list, LNK_SymbolList *to_concat);
+static LNK_SymbolList      lnk_symbol_list_from_array(Arena *arena, LNK_SymbolArray arr);
+static LNK_SymbolNodeArray lnk_symbol_node_array_from_list(Arena *arena, LNK_SymbolList list);
+static LNK_SymbolArray     lnk_symbol_array_from_list(Arena *arena, LNK_SymbolList list);
 
 // --- Symbol Hash Trie --------------------------------------------------------
 
-internal void                 lnk_symbol_hash_trie_insert_or_replace(Arena *arena, LNK_SymbolHashTrieChunkList *chunks, LNK_SymbolHashTrie **trie, U64 hash, LNK_SymbolScope scope, LNK_Symbol *symbol);
-internal LNK_SymbolHashTrie * lnk_symbol_hash_trie_search(LNK_SymbolHashTrie *trie, U64 hash, String8 name);
-internal void                 lnk_symbol_hash_trie_remove(LNK_SymbolHashTrie *trie);
+static void                 lnk_symbol_hash_trie_insert_or_replace(Arena *arena, LNK_SymbolHashTrieChunkList *chunks, LNK_SymbolHashTrie **trie, U64 hash, LNK_SymbolScope scope, LNK_Symbol *symbol);
+static LNK_SymbolHashTrie * lnk_symbol_hash_trie_search(LNK_SymbolHashTrie *trie, U64 hash, String8 name);
+static void                 lnk_symbol_hash_trie_remove(LNK_SymbolHashTrie *trie);
 
 // --- Symbol Table ------------------------------------------------------------
 
-internal U64 lnk_symbol_hash(String8 string);
+static U64 lnk_symbol_hash(String8 string);
 
-internal LNK_SymbolTable * lnk_symbol_table_init(TP_Arena *arena);
-internal void              lnk_symbol_table_push(LNK_SymbolTable *symtab, LNK_SymbolScope scope, LNK_Symbol *symbol);
-internal LNK_Symbol *      lnk_symbol_table_search(LNK_SymbolTable *symtab, LNK_SymbolScope scope, String8 name);
-internal LNK_Symbol *      lnk_symbol_table_searchf(LNK_SymbolTable *symtab, LNK_SymbolScope scope, char *fmt, ...);
+static LNK_SymbolTable * lnk_symbol_table_init(TP_Arena *arena);
+static void              lnk_symbol_table_push(LNK_SymbolTable *symtab, LNK_SymbolScope scope, LNK_Symbol *symbol);
+static LNK_Symbol *      lnk_symbol_table_search(LNK_SymbolTable *symtab, LNK_SymbolScope scope, String8 name);
+static LNK_Symbol *      lnk_symbol_table_searchf(LNK_SymbolTable *symtab, LNK_SymbolScope scope, char *fmt, ...);
 
-internal void lnk_symbol_table_push_alt_name(LNK_SymbolTable *symtab, struct LNK_Obj *obj, String8 from, String8 to);
+static void lnk_symbol_table_push_alt_name(LNK_SymbolTable *symtab, struct LNK_Obj *obj, String8 from, String8 to);
 
 // --- Symbol Contrib Helpers --------------------------------------------------
 
-internal ISectOff lnk_sc_from_symbol(LNK_Symbol *symbol);
-internal U64      lnk_isect_from_symbol(LNK_Symbol *symbol);
-internal U64      lnk_sect_off_from_symbol(LNK_Symbol *symbol);
-internal U64      lnk_virt_off_from_symbol(COFF_SectionHeader **section_table, LNK_Symbol *symbol);
-internal U64      lnk_file_off_from_symbol(COFF_SectionHeader **section_table, LNK_Symbol *symbol);
+static ISectOff lnk_sc_from_symbol(LNK_Symbol *symbol);
+static U64      lnk_isect_from_symbol(LNK_Symbol *symbol);
+static U64      lnk_sect_off_from_symbol(LNK_Symbol *symbol);
+static U64      lnk_virt_off_from_symbol(COFF_SectionHeader **section_table, LNK_Symbol *symbol);
+static U64      lnk_file_off_from_symbol(COFF_SectionHeader **section_table, LNK_Symbol *symbol);
 

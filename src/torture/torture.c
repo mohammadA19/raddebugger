@@ -49,7 +49,7 @@ typedef enum
 
 typedef T_Result (*T_Run)(void);
 
-internal char *
+static char *
 t_string_from_result(T_Result v)
 {
   switch (v) {
@@ -78,7 +78,7 @@ typedef enum
   T_Linker_LLVM
 } T_Linker;
 
-internal T_Linker
+static T_Linker
 t_ident_linker(void)
 {
   String8 name = g_linker;
@@ -96,7 +96,7 @@ t_ident_linker(void)
   return T_Linker_Null;
 }
 
-internal int
+static int
 t_invoke_linker_with_time_out(U64 time_out, String8 cmdline)
 {
   Temp scratch = scratch_begin(0,0);
@@ -153,13 +153,13 @@ t_invoke_linker_with_time_out(U64 time_out, String8 cmdline)
   return exit_code;
 }
 
-internal int
+static int
 t_invoke_linker(String8 cmdline)
 {
   return t_invoke_linker_with_time_out(max_U64, cmdline);
 }
 
-internal int
+static int
 t_invoke_linkerf(char *fmt, ...)
 {
   Temp scratch = scratch_begin(0,0);
@@ -172,7 +172,7 @@ t_invoke_linkerf(char *fmt, ...)
   return exit_code;
 }
 
-internal int
+static int
 t_invoke_linker_with_time_outf(U64 time_out, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0,0);
@@ -185,13 +185,13 @@ t_invoke_linker_with_time_outf(U64 time_out, char *fmt, ...)
   return exit_code;
 }
 
-internal String8
+static String8
 t_make_file_path(Arena *arena, String8 name)
 {
   return push_str8f(arena, "%S\\%S", g_wdir, name);
 }
 
-internal B32
+static B32
 t_write_file_list(String8 name, String8List data)
 {
   Temp scratch = scratch_begin(0,0);
@@ -201,7 +201,7 @@ t_write_file_list(String8 name, String8List data)
   return is_written;
 }
 
-internal B32
+static B32
 t_write_file(String8 name, String8 data)
 {
   String8Node temp_node = {0};
@@ -213,7 +213,7 @@ t_write_file(String8 name, String8 data)
   return t_write_file_list(name, temp_list);
 }
 
-internal String8
+static String8
 t_read_file(Arena *arena, String8 name)
 {
   Temp scratch = scratch_begin(&arena,1);
@@ -229,21 +229,21 @@ typedef struct
   T_Result result;
 } T_RunCtx;
 
-internal void
+static void
 t_run_caller(void *raw_ctx)
 {
   T_RunCtx *ctx = raw_ctx;
   ctx->result = ctx->run();
 }
 
-internal void
+static void
 t_run_fail_handler(void *raw_ctx)
 {
   T_RunCtx *ctx = raw_ctx;
   ctx->result = T_Result_Crash;
 }
 
-internal T_Result
+static T_Result
 t_run(T_Run run)
 {
   T_RunCtx ctx = {0};
@@ -252,7 +252,7 @@ t_run(T_Run run)
   return ctx.result;
 }
 
-internal COFF_SectionHeader *
+static COFF_SectionHeader *
 t_coff_section_header_from_name(String8 string_table, COFF_SectionHeader *section_table, U64 section_count, String8 name)
 {
   for (U64 sect_idx = 0; sect_idx < section_count; sect_idx += 1) {
@@ -265,7 +265,7 @@ t_coff_section_header_from_name(String8 string_table, COFF_SectionHeader *sectio
   return 0;
 }
 
-internal COFF_SectionHeaderArray
+static COFF_SectionHeaderArray
 t_coff_section_header_array_from_name(Arena *arena, String8 string_table, COFF_SectionHeader *section_table, U64 section_count, String8 name)
 {
   U64 match_count = 0;
@@ -302,25 +302,25 @@ typedef enum
   T_MsvcLinkExitCode_SectionsFoundWithDifferentAttributes = 4078,
 } T_MsvcLinkExitCode;
 
-internal COFF_ObjSection *
+static COFF_ObjSection *
 t_push_text_section(COFF_ObjWriter *obj_writer, String8 data)
 {
   return coff_obj_writer_push_section(obj_writer, str8_lit(".text"), PE_TEXT_SECTION_FLAGS | COFF_SectionFlag_Align1Bytes, data);
 }
 
-internal COFF_ObjSection *
+static COFF_ObjSection *
 t_push_data_section(COFF_ObjWriter *obj_writer, String8 data)
 {
   return coff_obj_writer_push_section(obj_writer, str8_lit(".data"), PE_DATA_SECTION_FLAGS, data);
 }
 
-internal COFF_ObjSection *
+static COFF_ObjSection *
 t_push_rdata_section(COFF_ObjWriter *obj_writer, String8 data)
 {
   return coff_obj_writer_push_section(obj_writer, str8_lit(".rdata"), PE_RDATA_SECTION_FLAGS, data);
 }
 
-internal void
+static void
 t_write_entry_obj(void)
 {
   COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
@@ -336,7 +336,7 @@ t_write_entry_obj(void)
 
 ////////////////////////////////
 
-internal T_Result
+static T_Result
 t_machine_compat_check(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -409,7 +409,7 @@ t_machine_compat_check(void)
   return result;
 }
 
-internal T_Result
+static T_Result
 t_out_of_bounds_section_number(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -459,7 +459,7 @@ t_out_of_bounds_section_number(void)
   return result;
 }
 
-internal T_Result
+static T_Result
 t_merge(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -587,7 +587,7 @@ t_merge(void)
   return result;
 }
 
-internal T_Result
+static T_Result
 t_simple_link_test(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -743,7 +743,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_abs_vs_weak(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -822,7 +822,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_abs_vs_regular(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -893,7 +893,7 @@ t_abs_vs_regular(void)
   return result;
 }
 
-internal T_Result
+static T_Result
 t_abs_vs_common(void)
 {
 
@@ -958,7 +958,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_undef_weak(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -1035,7 +1035,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_weak_cycle(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -1096,7 +1096,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_weak_tag(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -1161,7 +1161,7 @@ exit:;
   return result;
 }
 
-internal String8
+static String8
 t_make_sec_defn_obj(Arena *arena, String8 payload)
 {
   COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
@@ -1172,7 +1172,7 @@ t_make_sec_defn_obj(Arena *arena, String8 payload)
   return obj;
 }
 
-internal T_Result
+static T_Result
 t_undef_section(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -1226,7 +1226,7 @@ t_undef_section(void)
   return result;
 }
 
-internal T_Result
+static T_Result
 t_sect_symbol(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -1305,7 +1305,7 @@ t_sect_symbol(void)
   return result;
 }
 
-internal T_Result
+static T_Result
 t_undef_reloc_section(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -1351,7 +1351,7 @@ t_undef_reloc_section(void)
   return result;
 }
 
-internal T_Result
+static T_Result
 t_find_merged_pdata(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -1414,7 +1414,7 @@ t_find_merged_pdata(void)
   return result;
 }
 
-internal T_Result
+static T_Result
 t_section_sort(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -1480,7 +1480,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_flag_conf(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -1546,7 +1546,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_invalid_bss(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -1611,7 +1611,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_common_block(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -1684,7 +1684,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_base_relocs(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -1779,7 +1779,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_simple_lib_test(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -1864,7 +1864,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_import_export(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -2061,7 +2061,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_image_base(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -2124,7 +2124,7 @@ t_image_base(void)
   return result;
 }
 
-internal T_Result
+static T_Result
 t_comdat_any(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -2212,7 +2212,7 @@ t_comdat_any(void)
   return result;
 }
 
-internal T_Result
+static T_Result
 t_comdat_no_duplicates(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -2252,7 +2252,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_comdat_same_size(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -2329,7 +2329,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_comdat_exact_match(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -2405,7 +2405,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_comdat_largest(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -2494,7 +2494,7 @@ exit:;
  return result;
 }
 
-internal T_Result
+static T_Result
 t_comdat_associative(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -2574,7 +2574,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_comdat_associative_loop(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -2622,7 +2622,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_comdat_associative_non_comdat(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -2678,7 +2678,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_comdat_associative_out_of_bounds(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -2734,7 +2734,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_comdat_with_offset(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -2786,7 +2786,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_reloc_against_removed_comdat(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -2844,7 +2844,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_sect_align(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -2967,7 +2967,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_alt_name(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -3060,7 +3060,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_include(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -3124,7 +3124,7 @@ t_include(void)
   return result;
 }
 
-internal T_Result
+static T_Result
 t_communal_var_vs_regular(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -3191,7 +3191,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_communal_var_vs_regular_comdat(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -3260,7 +3260,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_import_kernel32(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -3331,7 +3331,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_delay_import(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -3489,7 +3489,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_delay_import_user32(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -3537,7 +3537,7 @@ exit:;
  return result;
 }
 
-internal T_Result
+static T_Result
 t_empty_section(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -3576,7 +3576,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_removed_section(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -3616,7 +3616,7 @@ exit:;
   return result;
 }
 
-internal T_Result
+static T_Result
 t_function_pad_min(void)
 {
   Temp scratch = scratch_begin(0,0);
@@ -3664,7 +3664,7 @@ exit:;
 
 ////////////////////////////////////////////////////////////////
 
-internal void
+static void
 entry_point(CmdLine *cmdline)
 {
   Temp scratch = scratch_begin(0,0);

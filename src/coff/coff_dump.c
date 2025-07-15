@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 #if 0
-internal void
+static void
 coff_print_archive_member_header(Arena *arena, String8List *out, String8 indent, COFF_ParsedArchiveMemberHeader header, String8 long_names)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -18,7 +18,7 @@ coff_print_archive_member_header(Arena *arena, String8List *out, String8 indent,
   scratch_end(scratch);
 }
 
-internal void
+static void
 coff_print_section_table(Arena               *arena,
                          String8List        *out,
                          String8             indent,
@@ -212,7 +212,7 @@ coff_print_section_table(Arena               *arena,
   scratch_end(scratch);
 }
 
-internal void
+static void
 coff_disasm_sections(Arena              *arena,
                      String8List        *out,
                      String8             indent,
@@ -243,7 +243,7 @@ coff_disasm_sections(Arena              *arena,
   }
 }
 
-internal void
+static void
 coff_raw_data_sections(Arena              *arena,
                        String8List        *out,
                        String8             indent,
@@ -271,7 +271,7 @@ coff_raw_data_sections(Arena              *arena,
   }
 }
 
-internal void
+static void
 coff_print_relocs(Arena              *arena,
                   String8List        *out,
                   String8             indent,
@@ -349,7 +349,7 @@ coff_print_relocs(Arena              *arena,
   scratch_end(scratch);
 }
 
-internal void
+static void
 coff_print_symbol_table(Arena              *arena,
                         String8List        *out,
                         String8             indent,
@@ -449,7 +449,7 @@ coff_print_symbol_table(Arena              *arena,
   scratch_end(scratch);
 }
 
-internal void
+static void
 coff_print_big_obj_header(Arena *arena, String8List *out, String8 indent, COFF_BigObjHeader *header)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -469,7 +469,7 @@ coff_print_big_obj_header(Arena *arena, String8List *out, String8 indent, COFF_B
   scratch_end(scratch);
 }
 
-internal void
+static void
 coff_print_file_header(Arena *arena, String8List *out, String8 indent, COFF_FileHeader *header)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -492,7 +492,7 @@ coff_print_file_header(Arena *arena, String8List *out, String8 indent, COFF_File
   scratch_end(scratch);
 }
 
-internal void
+static void
 coff_print_import(Arena *arena, String8List *out, String8 indent, COFF_ParsedArchiveImportHeader *header)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -516,7 +516,7 @@ coff_print_import(Arena *arena, String8List *out, String8 indent, COFF_ParsedArc
   scratch_end(scratch);
 }
 
-internal void
+static void
 coff_print_big_obj(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Option opts)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -574,7 +574,7 @@ coff_print_big_obj(Arena *arena, String8List *out, String8 indent, String8 raw_d
   scratch_end(scratch);
 }
 
-internal void
+static void
 coff_print_obj(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Option opts)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -656,7 +656,7 @@ coff_print_obj(Arena *arena, String8List *out, String8 indent, String8 raw_data,
   scratch_end(scratch);
 }
 
-internal void
+static void
 coff_print_archive(Arena *arena, String8List *out, String8 indent, String8 raw_archive, RD_Option opts)
 {
   Temp scratch = scratch_begin(&arena, 1);

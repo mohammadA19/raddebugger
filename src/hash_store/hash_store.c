@@ -13,14 +13,14 @@
 # include "third_party/xxHash/xxhash.h"
 #endif
 
-internal U64
+static U64
 hs_little_hash_from_data(String8 data)
 {
   U64 result = XXH3_64bits(data.str, data.size);
   return result;
 }
 
-internal U128
+static U128
 hs_hash_from_data(String8 data)
 {
   U128 u128 = {0};
@@ -29,7 +29,7 @@ hs_hash_from_data(String8 data)
   return u128;
 }
 
-internal HS_ID
+static HS_ID
 hs_id_make(U64 u64_0, U64 u64_1)
 {
   HS_ID id;
@@ -38,21 +38,21 @@ hs_id_make(U64 u64_0, U64 u64_1)
   return id;
 }
 
-internal B32
+static B32
 hs_id_match(HS_ID a, HS_ID b)
 {
   B32 result = MemoryMatchStruct(&a, &b);
   return result;
 }
 
-internal HS_Key
+static HS_Key
 hs_key_make(HS_Root root, HS_ID id)
 {
   HS_Key key = {root, 0, id};
   return key;
 }
 
-internal B32
+static B32
 hs_key_match(HS_Key a, HS_Key b)
 {
   return (MemoryMatchStruct(&a.root, &b.root) && hs_id_match(a.id, b.id));
@@ -61,7 +61,7 @@ hs_key_match(HS_Key a, HS_Key b)
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void
+static void
 hs_init(void)
 {
   Arena *arena = arena_alloc();
@@ -109,7 +109,7 @@ hs_init(void)
 ////////////////////////////////
 //~ rjf: Root Allocation/Deallocation
 
-internal HS_Root
+static HS_Root
 hs_root_alloc(void)
 {
   HS_Root root = {0};
@@ -136,7 +136,7 @@ hs_root_alloc(void)
   return root;
 }
 
-internal void
+static void
 hs_root_release(HS_Root root)
 {
   //- rjf: unpack root
@@ -216,7 +216,7 @@ hs_root_release(HS_Root root)
 ////////////////////////////////
 //~ rjf: Cache Submission
 
-internal U128
+static U128
 hs_submit_data(HS_Key key, Arena **data_arena, String8 data)
 {
   U64 key_hash = hs_little_hash_from_data(str8_struct(&key));
@@ -381,7 +381,7 @@ hs_submit_data(HS_Key key, Arena **data_arena, String8 data)
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-internal HS_Scope *
+static HS_Scope *
 hs_scope_open(void)
 {
   if(hs_tctx == 0)
@@ -403,7 +403,7 @@ hs_scope_open(void)
   return scope;
 }
 
-internal void
+static void
 hs_scope_close(HS_Scope *scope)
 {
   for(HS_Touch *touch = scope->top_touch, *next = 0; touch != 0; touch = next)
@@ -430,7 +430,7 @@ hs_scope_close(HS_Scope *scope)
   SLLStackPush(hs_tctx->free_scope, scope);
 }
 
-internal void
+static void
 hs_scope_touch_node__stripe_r_guarded(HS_Scope *scope, HS_Node *node)
 {
   HS_Touch *touch = hs_tctx->free_touch;
@@ -451,7 +451,7 @@ hs_scope_touch_node__stripe_r_guarded(HS_Scope *scope, HS_Node *node)
 ////////////////////////////////
 //~ rjf: Downstream Accesses
 
-internal void
+static void
 hs_hash_downstream_inc(U128 hash)
 {
   U64 slot_idx = hash.u64[1]%hs_shared->slots_count;
@@ -471,7 +471,7 @@ hs_hash_downstream_inc(U128 hash)
   }
 }
 
-internal void
+static void
 hs_hash_downstream_dec(U128 hash)
 {
   U64 slot_idx = hash.u64[1]%hs_shared->slots_count;
@@ -494,7 +494,7 @@ hs_hash_downstream_dec(U128 hash)
 ////////////////////////////////
 //~ rjf: Cache Lookup
 
-internal U128
+static U128
 hs_hash_from_key(HS_Key key, U64 rewind_count)
 {
   U128 result = {0};
@@ -517,7 +517,7 @@ hs_hash_from_key(HS_Key key, U64 rewind_count)
   return result;
 }
 
-internal String8
+static String8
 hs_data_from_hash(HS_Scope *scope, U128 hash)
 {
   ProfBeginFunction();
@@ -545,7 +545,7 @@ hs_data_from_hash(HS_Scope *scope, U128 hash)
 ////////////////////////////////
 //~ rjf: Evictor Thread
 
-internal void
+static void
 hs_evictor_thread__entry_point(void *p)
 {
   ThreadNameF("[hs] evictor thread");

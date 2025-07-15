@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal String8
+static String8
 pe_name_from_export_parse(PE_ExportParse *exp)
 {
   String8 name;
@@ -15,7 +15,7 @@ pe_name_from_export_parse(PE_ExportParse *exp)
   return name;
 }
 
-internal U16
+static U16
 pe_hint_or_ordinal_from_export_parse(PE_ExportParse *exp)
 {
   U16 hint_or_ordinal = max_U16;
@@ -29,7 +29,7 @@ pe_hint_or_ordinal_from_export_parse(PE_ExportParse *exp)
   return hint_or_ordinal;
 }
 
-internal PE_ExportParsePtrArray
+static PE_ExportParsePtrArray
 pe_array_from_export_list(Arena *arena, PE_ExportParseList list)
 {
   PE_ExportParsePtrArray result = {0};
@@ -40,14 +40,14 @@ pe_array_from_export_list(Arena *arena, PE_ExportParseList list)
   return result;
 }
 
-internal void
+static void
 pe_export_parse_list_push_node(PE_ExportParseList *list, PE_ExportParseNode *node)
 {
   SLLQueuePush(list->first, list->last, node);
   list->count += 1;
 }
 
-internal PE_ExportParseNode *
+static PE_ExportParseNode *
 pe_export_parse_list_push(Arena *arena, PE_ExportParseList *list, PE_ExportParse data)
 {
   PE_ExportParseNode *node = push_array(arena, PE_ExportParseNode, 1);
@@ -56,7 +56,7 @@ pe_export_parse_list_push(Arena *arena, PE_ExportParseList *list, PE_ExportParse
   return node;
 }
 
-internal void
+static void
 pe_export_parse_list_concat_in_place(PE_ExportParseList *list, PE_ExportParseList *to_concat)
 {
   if (to_concat->count) {
@@ -72,7 +72,7 @@ pe_export_parse_list_concat_in_place(PE_ExportParseList *list, PE_ExportParseLis
   }
 }
 
-internal int
+static int
 pe_named_export_is_before(void *raw_a, void *raw_b)
 {
   PE_ExportParse *a = *(PE_ExportParse **)raw_a;
@@ -81,7 +81,7 @@ pe_named_export_is_before(void *raw_a, void *raw_b)
   return cmp < 0;
 }
 
-internal int
+static int
 pe_ordinal_export_is_before(void *raw_a, void *raw_b)
 {
   PE_ExportParse *a = raw_a;
@@ -89,7 +89,7 @@ pe_ordinal_export_is_before(void *raw_a, void *raw_b)
   return a->ordinal < b->ordinal;
 }
 
-internal PE_FinalizedExports
+static PE_FinalizedExports
 pe_finalize_export_list(Arena *arena, PE_ExportParseList export_list)
 {
   PE_ExportParsePtrArray named_exports = {0};
@@ -193,7 +193,7 @@ pe_finalize_export_list(Arena *arena, PE_ExportParseList export_list)
   return result;
 }
 
-internal String8
+static String8
 pe_make_edata_obj(Arena               *arena,
                   String8              image_name,
                   COFF_TimeStamp       time_stamp,
@@ -324,7 +324,7 @@ pe_make_edata_obj(Arena               *arena,
   return obj;
 }
 
-internal String8List
+static String8List
 pe_make_import_lib(Arena *arena, COFF_MachineType machine, COFF_TimeStamp time_stamp, String8 dll_name, String8 debug_symbols, PE_ExportParseList export_list)
 {
   ProfBeginFunction();

@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal MD5Hash
+static MD5Hash
 md5_hash_from_string(String8 data)
 {
   MD5_CTX ctx; MD5_Init(&ctx);

@@ -1,20 +1,20 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal void
+static void
 lnk_set_log_status(LNK_LogType type, B32 is_enabled)
 {
   g_log_status[type] = is_enabled;
 }
 
-internal B32
+static B32
 lnk_get_log_status(LNK_LogType type)
 {
   B32 status = g_log_status[type];
   return status;
 }
 
-internal void
+static void
 lnk_log(LNK_LogType type, char *fmt, ...)
 {
   B32 is_log_enabled = g_log_status[type];
@@ -29,7 +29,7 @@ lnk_log(LNK_LogType type, char *fmt, ...)
   }
 }
 
-internal LNK_LogType
+static LNK_LogType
 lnk_log_type_from_string(String8 string)
 {
   static struct {

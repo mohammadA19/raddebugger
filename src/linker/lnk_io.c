@@ -48,7 +48,7 @@ lnk_write_file(void *raw_handle, uint64_t offset, void *buffer, uint64_t buffer_
   return write_size;
 }
 
-internal String8List
+static String8List
 lnk_file_search(Arena *arena, String8List dir_list, String8 file_path)
 {
   ProfBeginFunction();
@@ -95,7 +95,7 @@ lnk_file_search(Arena *arena, String8List dir_list, String8 file_path)
   return match_list;
 }
 
-internal OS_Handle
+static OS_Handle
 lnk_file_open_with_rename_permissions(String8 path)
 {
   OS_Handle file_handle = os_handle_zero();
@@ -123,7 +123,7 @@ lnk_file_open_with_rename_permissions(String8 path)
   return file_handle;
 }
 
-internal B32
+static B32
 lnk_file_set_delete_on_close(OS_Handle handle, B32 delete_file)
 {
 #if OS_WINDOWS
@@ -136,7 +136,7 @@ lnk_file_set_delete_on_close(OS_Handle handle, B32 delete_file)
   return is_set;
 }
 
-internal B32
+static B32
 lnk_file_rename(OS_Handle handle, String8 new_name)
 {
   Temp scratch = scratch_begin(0,0);
@@ -160,13 +160,13 @@ lnk_file_rename(OS_Handle handle, String8 new_name)
   return is_renamed;
 }
 
-internal void
+static void
 lnk_log_read(String8 path, U64 size)
 {
   lnk_log(LNK_Log_IO_Read, "Read from \"%S\" %M", path, size);
 }
 
-internal String8
+static String8
 lnk_read_data_from_file_path(Arena *arena, LNK_IO_Flags io_flags, String8 path)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -176,7 +176,7 @@ lnk_read_data_from_file_path(Arena *arena, LNK_IO_Flags io_flags, String8 path)
   return data_arr.v[0];
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_data_size_from_file_path_task)
 {
   LNK_DiskReader *task = raw_task;
@@ -194,7 +194,7 @@ THREAD_POOL_TASK_FUNC(lnk_data_size_from_file_path_task)
   task->size_arr[task_id]   = size;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_data_from_file_path_task)
 {
   LNK_DiskReader *task = raw_task;
@@ -209,7 +209,7 @@ THREAD_POOL_TASK_FUNC(lnk_data_from_file_path_task)
   task->data_arr.v[task_id] = str8(buffer, read_size);
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_memory_map_file_task)
 {
   LNK_DiskReader *task = raw_task;
@@ -238,7 +238,7 @@ THREAD_POOL_TASK_FUNC(lnk_memory_map_file_task)
 #endif
 }
 
-internal String8Array
+static String8Array
 lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, LNK_IO_Flags io_flags, String8Array path_arr)
 {
   LNK_DiskReader reader = {0};
@@ -291,7 +291,7 @@ lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, LNK_IO_Flags
   return result;
 }
 
-internal void
+static void
 lnk_write_data_list_to_file_path(String8 path, String8 temp_path, String8List data)
 {
   ProfBeginV("Write %M to %S", data.total_size, path);
@@ -363,7 +363,7 @@ lnk_write_data_list_to_file_path(String8 path, String8 temp_path, String8List da
   ProfEnd();
 }
 
-internal void
+static void
 lnk_write_data_to_file_path(String8 path, String8 temp_path, String8 data)
 {
   Temp scratch = scratch_begin(0,0);

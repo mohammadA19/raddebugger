@@ -209,11 +209,11 @@ global R_OGL_State *r_ogl_state = 0;
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal R_Handle r_ogl_handle_from_tex2d(R_OGL_Tex2D *t);
-internal R_OGL_Tex2D *r_ogl_tex2d_from_handle(R_Handle h);
-internal R_OGL_FormatInfo r_ogl_format_info_from_tex2dformat(R_Tex2DFormat fmt);
-internal GLuint r_ogl_instance_buffer_from_size(U64 size);
-internal void r_ogl_debug_message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
+static R_Handle r_ogl_handle_from_tex2d(R_OGL_Tex2D *t);
+static R_OGL_Tex2D *r_ogl_tex2d_from_handle(R_Handle h);
+static R_OGL_FormatInfo r_ogl_format_info_from_tex2dformat(R_Tex2DFormat fmt);
+static GLuint r_ogl_instance_buffer_from_size(U64 size);
+static void r_ogl_debug_message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
 
 #define glUseProgramScope(...) DeferLoop(glUseProgram(__VA_ARGS__), glUseProgram(0))
 #define glBindVertexArrayScope(...) DeferLoop(glBindVertexArray(__VA_ARGS__), glBindVertexArray(0))
@@ -221,10 +221,10 @@ internal void r_ogl_debug_message_callback(GLenum source, GLenum type, GLuint id
 ////////////////////////////////
 //~ rjf: OS-Specific Hooks
 
-internal VoidProc *r_ogl_os_load_procedure(char *name);
-internal void r_ogl_os_init(CmdLine *cmdln);
-internal R_Handle r_ogl_os_window_equip(OS_Handle window);
-internal void r_ogl_os_window_unequip(OS_Handle os, R_Handle r);
-internal void r_ogl_os_select_window(OS_Handle os, R_Handle r);
-internal void r_ogl_os_window_swap(OS_Handle os, R_Handle r);
+static VoidProc *r_ogl_os_load_procedure(char *name);
+static void r_ogl_os_init(CmdLine *cmdln);
+static R_Handle r_ogl_os_window_equip(OS_Handle window);
+static void r_ogl_os_window_unequip(OS_Handle os, R_Handle r);
+static void r_ogl_os_select_window(OS_Handle os, R_Handle r);
+static void r_ogl_os_window_swap(OS_Handle os, R_Handle r);
 

@@ -1029,7 +1029,7 @@ rdim_symbol_chunk_list_concat_in_place(RDIM_SymbolChunkList *dst, RDIM_SymbolChu
   rdim_memzero_struct(to_push);
 }
 
-internal void
+static void
 rdim_symbol_push_value_data(RDIM_Arena *arena, RDIM_SymbolChunkList *list, RDIM_Symbol *symbol, RDIM_String8 data)
 {
   symbol->value_data = rdim_str8_copy(arena, data);

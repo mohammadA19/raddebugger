@@ -40,21 +40,21 @@ global read_only R_OGL_Attribute r_ogl_single_color_output_attributes[] =
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal R_Handle
+static R_Handle
 r_ogl_handle_from_tex2d(R_OGL_Tex2D *t)
 {
   R_Handle h = {(U64)t};
   return h;
 }
 
-internal R_OGL_Tex2D *
+static R_OGL_Tex2D *
 r_ogl_tex2d_from_handle(R_Handle h)
 {
   R_OGL_Tex2D *t = (R_OGL_Tex2D *)h.u64[0];
   return t;
 }
 
-internal R_OGL_FormatInfo
+static R_OGL_FormatInfo
 r_ogl_format_info_from_tex2dformat(R_Tex2DFormat fmt)
 {
   R_OGL_FormatInfo result;
@@ -65,7 +65,7 @@ r_ogl_format_info_from_tex2dformat(R_Tex2DFormat fmt)
   return result;
 }
 
-internal GLuint
+static GLuint
 r_ogl_instance_buffer_from_size(U64 size)
 {
   GLuint buffer = r_ogl_state->scratch_buffer_64kb;
@@ -88,7 +88,7 @@ r_ogl_instance_buffer_from_size(U64 size)
   return buffer;
 }
 
-internal void
+static void
 r_ogl_debug_message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam)
 {
   raddbg_log("[OpenGL] %.*s\n", (int)length, message);

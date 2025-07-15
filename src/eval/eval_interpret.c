@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: Context Selection Functions (Selection Required For All Subsequent APIs)
 
-internal void
+static void
 e_select_interpret_ctx(E_InterpretCtx *ctx, RDI_Parsed *primary_rdi, U64 ip_voff)
 {
   e_interpret_ctx = ctx;
@@ -55,7 +55,7 @@ e_select_interpret_ctx(E_InterpretCtx *ctx, RDI_Parsed *primary_rdi, U64 ip_voff
 ////////////////////////////////
 //~ rjf: Space Reading Helpers
 
-internal U64
+static U64
 e_space_gen(E_Space space)
 {
   U64 result = 0;
@@ -66,7 +66,7 @@ e_space_gen(E_Space space)
   return result;
 }
 
-internal B32
+static B32
 e_space_read(E_Space space, void *out, Rng1U64 range)
 {
   ProfBeginFunction();
@@ -79,7 +79,7 @@ e_space_read(E_Space space, void *out, Rng1U64 range)
   return result;
 }
 
-internal B32
+static B32
 e_space_write(E_Space space, void *in, Rng1U64 range)
 {
   ProfBeginFunction();
@@ -95,7 +95,7 @@ e_space_write(E_Space space, void *in, Rng1U64 range)
 ////////////////////////////////
 //~ rjf: Interpretation Functions
 
-internal E_Interpretation
+static E_Interpretation
 e_interpret(String8 bytecode)
 {
   E_Interpretation result = {0};

@@ -17,9 +17,9 @@ typedef enum
   LNK_Log_Count
 } LNK_LogType;
 
-internal void set_log_level(LNK_LogType type, B32 is_enabled);
-internal B32  lnk_get_log_status(LNK_LogType type);
-internal void lnk_log(LNK_LogType type, char *fmt, ...);
+static void set_log_level(LNK_LogType type, B32 is_enabled);
+static B32  lnk_get_log_status(LNK_LogType type);
+static void lnk_log(LNK_LogType type, char *fmt, ...);
 
-internal LNK_LogType lnk_log_type_from_string(String8 string);
+static LNK_LogType lnk_log_type_from_string(String8 string);
 

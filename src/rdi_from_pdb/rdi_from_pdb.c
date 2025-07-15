@@ -9,7 +9,7 @@
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64
+static U64
 p2r_end_of_cplusplus_container_name(String8 str)
 {
   // NOTE: This finds the index one past the last "::" contained in str.
@@ -31,7 +31,7 @@ p2r_end_of_cplusplus_container_name(String8 str)
   return(result);
 }
 
-internal U64
+static U64
 p2r_hash_from_voff(U64 voff)
 {
   U64 hash = (voff >> 3) ^ ((7 & voff) << 6);
@@ -41,7 +41,7 @@ p2r_hash_from_voff(U64 voff)
 ////////////////////////////////
 //~ rjf: COFF <-> RDI Canonical Conversions
 
-internal RDI_BinarySectionFlags
+static RDI_BinarySectionFlags
 p2r_rdi_binary_section_flags_from_coff_section_flags(COFF_SectionFlags flags)
 {
   RDI_BinarySectionFlags result = 0;
@@ -63,7 +63,7 @@ p2r_rdi_binary_section_flags_from_coff_section_flags(COFF_SectionFlags flags)
 ////////////////////////////////
 //~ rjf: CodeView <-> RDI Canonical Conversions
 
-internal RDI_Arch
+static RDI_Arch
 p2r_rdi_arch_from_cv_arch(CV_Arch cv_arch)
 {
   RDI_Arch result = 0;
@@ -133,7 +133,7 @@ p2r_rdi_arch_from_cv_arch(CV_Arch cv_arch)
   return(result);
 }
 
-internal RDI_RegCode
+static RDI_RegCode
 p2r_rdi_reg_code_from_cv_reg_code(RDI_Arch arch, CV_Reg reg_code)
 {
   RDI_RegCode result = 0;
@@ -161,7 +161,7 @@ p2r_rdi_reg_code_from_cv_reg_code(RDI_Arch arch, CV_Reg reg_code)
   return(result);
 }
 
-internal RDI_Language
+static RDI_Language
 p2r_rdi_language_from_cv_language(CV_Language cv_language)
 {
   RDI_Language result = 0;
@@ -188,7 +188,7 @@ p2r_rdi_language_from_cv_language(CV_Language cv_language)
   return(result);
 }
 
-internal RDI_TypeKind
+static RDI_TypeKind
 p2r_rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
 {
   RDI_TypeKind result = RDI_TypeKind_NULL;
@@ -267,7 +267,7 @@ p2r_rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
 ////////////////////////////////
 //~ rjf: Location Info Building Helpers
 
-internal RDIM_Location *
+static RDIM_Location *
 p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 extra_indirection)
 {
   RDIM_Location *result = 0;
@@ -299,7 +299,7 @@ p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code
   return result;
 }
 
-internal RDI_RegCode
+static RDI_RegCode
 p2r_reg_code_from_arch_encoded_fp_reg(RDI_Arch arch, CV_EncodedFramePtrReg encoded_reg)
 {
   RDI_RegCode result = 0;
@@ -346,7 +346,7 @@ p2r_reg_code_from_arch_encoded_fp_reg(RDI_Arch arch, CV_EncodedFramePtrReg encod
   return(result);
 }
 
-internal void
+static void
 p2r_location_over_lvar_addr_range(Arena *arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Location *location, CV_LvarAddrRange *range, COFF_SectionHeader *section, CV_LvarAddrGap *gaps, U64 gap_count)
 {
   //- rjf: extract range info
@@ -3157,7 +3157,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
 ////////////////////////////////
 //~ rjf: Top-Level Conversion Entry Point
 
-internal RDIM_BakeParams
+static RDIM_BakeParams
 p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
 {
   Temp scratch = scratch_begin(&arena, 1);

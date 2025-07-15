@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: Code Views
 
-internal void
+static void
 rd_code_view_init(RD_CodeViewState *cv)
 {
   ProfBeginFunction();
@@ -19,7 +19,7 @@ rd_code_view_init(RD_CodeViewState *cv)
   ProfEnd();
 }
 
-internal RD_CodeViewBuildResult
+static RD_CodeViewBuildResult
 rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, String8 text_data, TXT_TextInfo *text_info, DASM_LineArray *dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key)
 {
   ProfBeginFunction();
@@ -819,7 +819,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
 
 //- rjf: cell list building
 
-internal U64
+static U64
 rd_id_from_watch_cell(RD_WatchCell *cell)
 {
   U64 result = 5381;
@@ -832,7 +832,7 @@ rd_id_from_watch_cell(RD_WatchCell *cell)
   return result;
 }
 
-internal RD_WatchCell *
+static RD_WatchCell *
 rd_watch_cell_list_push(Arena *arena, RD_WatchCellList *list)
 {
   RD_WatchCell *cell = push_array(arena, RD_WatchCell, 1);
@@ -842,7 +842,7 @@ rd_watch_cell_list_push(Arena *arena, RD_WatchCellList *list)
   return cell;
 }
 
-internal RD_WatchCell *
+static RD_WatchCell *
 rd_watch_cell_list_push_new_(Arena *arena, RD_WatchCellList *list, RD_WatchCell *params)
 {
   RD_WatchCell *cell = rd_watch_cell_list_push(arena, list);
@@ -859,7 +859,7 @@ rd_watch_cell_list_push_new_(Arena *arena, RD_WatchCellList *list, RD_WatchCell 
 
 //- rjf: watch view points <-> table coordinates
 
-internal B32
+static B32
 rd_watch_pt_match(RD_WatchPt a, RD_WatchPt b)
 {
   return (ev_key_match(a.parent_key, b.parent_key) &&
@@ -867,7 +867,7 @@ rd_watch_pt_match(RD_WatchPt a, RD_WatchPt b)
           a.cell_id == b.cell_id);
 }
 
-internal RD_WatchPt
+static RD_WatchPt
 rd_watch_pt_from_tbl(EV_BlockRangeList *block_ranges, Vec2S64 tbl)
 {
   RD_WatchPt pt = zero_struct;
@@ -893,7 +893,7 @@ rd_watch_pt_from_tbl(EV_BlockRangeList *block_ranges, Vec2S64 tbl)
   return pt;
 }
 
-internal Vec2S64
+static Vec2S64
 rd_tbl_from_watch_pt(EV_BlockRangeList *block_ranges, RD_WatchPt pt)
 {
   Vec2S64 tbl = {0};
@@ -923,7 +923,7 @@ rd_tbl_from_watch_pt(EV_BlockRangeList *block_ranges, RD_WatchPt pt)
 
 //- rjf: row -> info
 
-internal RD_WatchRowInfo
+static RD_WatchRowInfo
 rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
 {
   RD_WatchRowInfo info =
@@ -1525,7 +1525,7 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
 
 //- rjf: row * cell -> string
 
-internal RD_WatchRowCellInfo
+static RD_WatchRowCellInfo
 rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_flags, RD_WatchRowInfo *row_info, RD_WatchCell *cell, FNT_Tag font, F32 font_size, F32 max_size_px)
 {
   Temp scratch = scratch_begin(&arena ,1);
@@ -1954,7 +1954,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
 
 //- rjf: table coordinates -> text edit state
 
-internal RD_WatchViewTextEditState *
+static RD_WatchViewTextEditState *
 rd_watch_view_text_edit_state_from_pt(RD_WatchViewState *wv, RD_WatchPt pt)
 {
   RD_WatchViewTextEditState *result = &wv->dummy_text_edit_state;
@@ -3740,7 +3740,7 @@ struct RD_BitmapCanvasBoxDrawData
   F32 zoom;
 };
 
-internal Vec2F32
+static Vec2F32
 rd_bitmap_screen_from_canvas_pos(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect, Vec2F32 cvs)
 {
   Vec2F32 scr =
@@ -3751,14 +3751,14 @@ rd_bitmap_screen_from_canvas_pos(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect
   return scr;
 }
 
-internal Rng2F32
+static Rng2F32
 rd_bitmap_screen_from_canvas_rect(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect, Rng2F32 cvs)
 {
   Rng2F32 scr = r2f32(rd_bitmap_screen_from_canvas_pos(view_center_pos, zoom, rect, cvs.p0), rd_bitmap_screen_from_canvas_pos(view_center_pos, zoom, rect, cvs.p1));
   return scr;
 }
 
-internal Vec2F32
+static Vec2F32
 rd_bitmap_canvas_from_screen_pos(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect, Vec2F32 scr)
 {
   Vec2F32 cvs =
@@ -3769,14 +3769,14 @@ rd_bitmap_canvas_from_screen_pos(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect
   return cvs;
 }
 
-internal Rng2F32
+static Rng2F32
 rd_bitmap_canvas_from_screen_rect(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rect, Rng2F32 scr)
 {
   Rng2F32 cvs = r2f32(rd_bitmap_canvas_from_screen_pos(view_center_pos, zoom, rect, scr.p0), rd_bitmap_canvas_from_screen_pos(view_center_pos, zoom, rect, scr.p1));
   return cvs;
 }
 
-internal UI_BOX_CUSTOM_DRAW(rd_bitmap_view_canvas_box_draw)
+static UI_BOX_CUSTOM_DRAW(rd_bitmap_view_canvas_box_draw)
 {
   RD_BitmapCanvasBoxDrawData *draw_data = (RD_BitmapCanvasBoxDrawData *)user_data;
   Rng2F32 rect_scrn = box->rect;
@@ -4034,7 +4034,7 @@ struct RD_EvalColor
   E_Eval rgba_evals[4];
 };
 
-internal RD_EvalColor
+static RD_EvalColor
 rd_eval_color_from_eval(E_Eval eval)
 {
   Temp scratch = scratch_begin(0, 0);
@@ -4292,7 +4292,7 @@ struct RD_Geo3DBoxDrawData
   R_Handle index_buffer;
 };
 
-internal UI_BOX_CUSTOM_DRAW(rd_geo3d_box_draw)
+static UI_BOX_CUSTOM_DRAW(rd_geo3d_box_draw)
 {
   RD_Geo3DBoxDrawData *draw_data = (RD_Geo3DBoxDrawData *)user_data;
   

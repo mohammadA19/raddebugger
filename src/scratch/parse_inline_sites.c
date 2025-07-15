@@ -41,7 +41,7 @@
 #include "linker/thread_pool/thread_pool.c"
 #include "linker/codeview_ext/codeview.c"
 
-internal void
+static void
 print_inline_binary_annotations(String8 binary_annots)
 {
   U32 code_offset = 0;
@@ -141,7 +141,7 @@ print_inline_binary_annotations(String8 binary_annots)
   }
 }
 
-internal void
+static void
 entry_point(CmdLine *cmdl)
 {
   Arena *arena = arena_alloc();

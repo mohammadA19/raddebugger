@@ -1,4 +1,4 @@
-internal String8
+static String8
 rc_data_from_file_path(Arena *arena, String8 path)
 {
   String8 data = os_data_from_file_path(arena, path);
@@ -9,7 +9,7 @@ rc_data_from_file_path(Arena *arena, String8 path)
   return data;
 }
 
-internal RC_Context
+static RC_Context
 rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -383,7 +383,7 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
   return ctx;
 }
 
-internal String8List
+static String8List
 rc_run(Arena *arena, RC_Context *rc)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -425,7 +425,7 @@ rc_run(Arena *arena, RC_Context *rc)
   return raw_rdi;
 }
 
-internal String8
+static String8
 rc_rdi_from_cmd_line(Arena *arena, CmdLine *cmdl)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -436,7 +436,7 @@ rc_rdi_from_cmd_line(Arena *arena, CmdLine *cmdl)
   return result;
 }
 
-internal void
+static void
 rc_main(CmdLine *cmdl)
 {
   B32 do_help = (cmd_line_has_flag(cmdl, str8_lit("help")) ||

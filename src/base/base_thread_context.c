@@ -9,7 +9,7 @@ C_LINKAGE thread_static TCTX* tctx_thread_local;
 C_LINKAGE thread_static TCTX* tctx_thread_local = 0;
 #endif
 
-internal void
+static void
 tctx_init_and_equip(TCTX *tctx)
 {
   MemoryZeroStruct(tctx);
@@ -21,7 +21,7 @@ tctx_init_and_equip(TCTX *tctx)
   tctx_thread_local = tctx;
 }
 
-internal void
+static void
 tctx_release(void)
 {
   for(U64 i = 0; i < ArrayCount(tctx_thread_local->arenas); i += 1)
@@ -30,13 +30,13 @@ tctx_release(void)
   }
 }
 
-internal TCTX *
+static TCTX *
 tctx_get_equipped(void)
 {
   return tctx_thread_local;
 }
 
-internal Arena *
+static Arena *
 tctx_get_scratch(Arena **conflicts, U64 count)
 {
   TCTX *tctx = tctx_get_equipped();
@@ -63,7 +63,7 @@ tctx_get_scratch(Arena **conflicts, U64 count)
   return result;
 }
 
-internal void
+static void
 tctx_set_thread_name(String8 string)
 {
   TCTX *tctx = tctx_get_equipped();
@@ -72,7 +72,7 @@ tctx_set_thread_name(String8 string)
   tctx->thread_name_size = size;
 }
 
-internal String8
+static String8
 tctx_get_thread_name(void)
 {
   TCTX *tctx = tctx_get_equipped();
@@ -80,7 +80,7 @@ tctx_get_thread_name(void)
   return result;
 }
 
-internal void
+static void
 tctx_write_srcloc(char *file_name, U64 line_number)
 {
   TCTX *tctx = tctx_get_equipped();
@@ -88,7 +88,7 @@ tctx_write_srcloc(char *file_name, U64 line_number)
   tctx->line_number = line_number;
 }
 
-internal void
+static void
 tctx_read_srcloc(char **file_name, U64 *line_number)
 {
   TCTX *tctx = tctx_get_equipped();

@@ -2961,59 +2961,59 @@ struct CV_TypeIndexArray
 
 ////////////////////////////////
 
-internal CV_Arch               cv_arch_from_coff_machine(COFF_MachineType machine);
-internal U64                   cv_size_from_reg_x86(CV_Reg reg);
-internal U64                   cv_size_from_reg_x64(CV_Reg reg);
-internal U64                   cv_size_from_reg(CV_Arch arch, CV_Reg reg);
-internal B32                   cv_is_reg_sp(CV_Arch arch, CV_Reg reg);
-internal CV_EncodedFramePtrReg cv_pick_fp_encoding(CV_SymFrameproc *frameproc, B32 is_local_param);
-internal CV_Reg                cv_decode_fp_reg(CV_Arch arch, CV_EncodedFramePtrReg encoded_reg);
-internal U32                   cv_map_encoded_base_pointer(CV_Arch arch, U32 encoded_frame_reg);
+static CV_Arch               cv_arch_from_coff_machine(COFF_MachineType machine);
+static U64                   cv_size_from_reg_x86(CV_Reg reg);
+static U64                   cv_size_from_reg_x64(CV_Reg reg);
+static U64                   cv_size_from_reg(CV_Arch arch, CV_Reg reg);
+static B32                   cv_is_reg_sp(CV_Arch arch, CV_Reg reg);
+static CV_EncodedFramePtrReg cv_pick_fp_encoding(CV_SymFrameproc *frameproc, B32 is_local_param);
+static CV_Reg                cv_decode_fp_reg(CV_Arch arch, CV_EncodedFramePtrReg encoded_reg);
+static U32                   cv_map_encoded_base_pointer(CV_Arch arch, U32 encoded_frame_reg);
 
 
 ////////////////////////////////
 //~ rjf: Enum -> String
 
-internal String8 cv_string_from_inline_range_kind(CV_InlineRangeKind kind);
-internal String8 cv_string_from_type_index_source(CV_TypeIndexSource ti_source);
-internal String8 cv_string_from_language(CV_Language x);
-internal String8 cv_string_from_reg_id(Arena *arena, CV_Arch arch, U32 id);
-internal String8 cv_string_from_member_access(CV_MemberAccess x);
-internal String8 cv_string_from_method_prop(CV_MethodProp x);
-internal String8 cv_string_from_hfa(CV_HFAKind x);
-internal String8 cv_string_from_mcom(CV_MoComUDTKind x);
-internal String8 cv_string_from_binary_opcode(CV_InlineBinaryAnnotation x);
-internal String8 cv_string_from_thunk_ordinal(CV_ThunkOrdinal x);
-internal String8 cv_string_from_frame_cookie_kind(CV_FrameCookieKind x);
-internal String8 cv_string_from_generic_style(CV_GenericStyle x);
-internal String8 cv_string_from_trampoline_kind(CV_TrampolineKind x);
-internal String8 cv_string_from_virtual_table_shape_kind(CV_VirtualTableShape x);
-internal String8 cv_string_from_call_kind(CV_CallKind x);
-internal String8 cv_string_from_member_pointer_kind(CV_MemberPointerKind x);
-internal String8 cv_string_from_pointer_kind(CV_PointerKind x);
-internal String8 cv_string_from_pointer_mode(CV_PointerMode x);
-internal String8 cv_string_from_c13_checksum_kind(CV_C13ChecksumKind x);
-internal String8 cv_string_from_label_kind(Arena *arena, CV_LabelKind x);
-internal String8 cv_string_from_c13_subsection_kind(CV_C13SubSectionKind x);
-internal String8 cv_string_from_modifier_flags(Arena *arena, CV_ModifierFlags x);
-internal String8 cv_string_from_pointer_attribs(Arena *arena, CV_PointerAttribs x);
-internal String8 cv_string_from_function_attribs(Arena *arena, CV_FunctionAttribs x);
-internal String8 cv_string_from_export_flags(Arena *arena, CV_ExportFlags x);
-internal String8 cv_string_from_sepcode(Arena *arena, CV_SepcodeFlags x);
-internal String8 cv_string_from_pub32_flags(Arena *arena, CV_Pub32Flags x);
-internal String8 cv_string_from_generic_flags(Arena *arena, CV_GenericFlags x);
-internal String8 cv_string_from_frame_proc_flags(Arena *arena, CV_FrameprocFlags x);
-internal String8 cv_string_from_type_props(Arena *arena, CV_TypeProps32 x);
-internal String8 cv_string_from_local_flags(Arena *arena, CV_LocalFlags x);
-internal String8 cv_string_from_proc_flags(Arena *arena, CV_ProcFlags x);
-internal String8 cv_string_from_range_attribs(Arena *arena, CV_RangeAttribs x);
-internal String8 cv_string_from_defrange_register_rel_flags(Arena *arena, CV_DefrangeRegisterRelFlags x);
-internal String8 cv_string_from_field_attribs(Arena *arena, CV_FieldAttribs attribs);
-internal String8 cv_string_from_itype(Arena *arena, CV_TypeIndex min_itype, CV_TypeIndex itype);
-internal String8 cv_string_from_itemid(Arena *arena, CV_ItemId itemid);
-internal String8 cv_string_from_symbol_type(Arena *arena, CV_SymKind symbol_type);
-internal String8 cv_string_from_symbol_kind(Arena *arena, CV_SymKind kind);
-internal String8 cv_string_from_leaf_name(Arena *arena, U32 leaf_type);
-internal String8 cv_string_sec_off(Arena *arena, U32 sec, U32 off);
+static String8 cv_string_from_inline_range_kind(CV_InlineRangeKind kind);
+static String8 cv_string_from_type_index_source(CV_TypeIndexSource ti_source);
+static String8 cv_string_from_language(CV_Language x);
+static String8 cv_string_from_reg_id(Arena *arena, CV_Arch arch, U32 id);
+static String8 cv_string_from_member_access(CV_MemberAccess x);
+static String8 cv_string_from_method_prop(CV_MethodProp x);
+static String8 cv_string_from_hfa(CV_HFAKind x);
+static String8 cv_string_from_mcom(CV_MoComUDTKind x);
+static String8 cv_string_from_binary_opcode(CV_InlineBinaryAnnotation x);
+static String8 cv_string_from_thunk_ordinal(CV_ThunkOrdinal x);
+static String8 cv_string_from_frame_cookie_kind(CV_FrameCookieKind x);
+static String8 cv_string_from_generic_style(CV_GenericStyle x);
+static String8 cv_string_from_trampoline_kind(CV_TrampolineKind x);
+static String8 cv_string_from_virtual_table_shape_kind(CV_VirtualTableShape x);
+static String8 cv_string_from_call_kind(CV_CallKind x);
+static String8 cv_string_from_member_pointer_kind(CV_MemberPointerKind x);
+static String8 cv_string_from_pointer_kind(CV_PointerKind x);
+static String8 cv_string_from_pointer_mode(CV_PointerMode x);
+static String8 cv_string_from_c13_checksum_kind(CV_C13ChecksumKind x);
+static String8 cv_string_from_label_kind(Arena *arena, CV_LabelKind x);
+static String8 cv_string_from_c13_subsection_kind(CV_C13SubSectionKind x);
+static String8 cv_string_from_modifier_flags(Arena *arena, CV_ModifierFlags x);
+static String8 cv_string_from_pointer_attribs(Arena *arena, CV_PointerAttribs x);
+static String8 cv_string_from_function_attribs(Arena *arena, CV_FunctionAttribs x);
+static String8 cv_string_from_export_flags(Arena *arena, CV_ExportFlags x);
+static String8 cv_string_from_sepcode(Arena *arena, CV_SepcodeFlags x);
+static String8 cv_string_from_pub32_flags(Arena *arena, CV_Pub32Flags x);
+static String8 cv_string_from_generic_flags(Arena *arena, CV_GenericFlags x);
+static String8 cv_string_from_frame_proc_flags(Arena *arena, CV_FrameprocFlags x);
+static String8 cv_string_from_type_props(Arena *arena, CV_TypeProps32 x);
+static String8 cv_string_from_local_flags(Arena *arena, CV_LocalFlags x);
+static String8 cv_string_from_proc_flags(Arena *arena, CV_ProcFlags x);
+static String8 cv_string_from_range_attribs(Arena *arena, CV_RangeAttribs x);
+static String8 cv_string_from_defrange_register_rel_flags(Arena *arena, CV_DefrangeRegisterRelFlags x);
+static String8 cv_string_from_field_attribs(Arena *arena, CV_FieldAttribs attribs);
+static String8 cv_string_from_itype(Arena *arena, CV_TypeIndex min_itype, CV_TypeIndex itype);
+static String8 cv_string_from_itemid(Arena *arena, CV_ItemId itemid);
+static String8 cv_string_from_symbol_type(Arena *arena, CV_SymKind symbol_type);
+static String8 cv_string_from_symbol_kind(Arena *arena, CV_SymKind kind);
+static String8 cv_string_from_leaf_name(Arena *arena, U32 leaf_type);
+static String8 cv_string_sec_off(Arena *arena, U32 sec, U32 off);
 
 

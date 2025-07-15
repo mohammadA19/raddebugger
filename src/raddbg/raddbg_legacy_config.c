@@ -1,7 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal RD_CfgList
+static RD_CfgList
 rd_cfg_tree_list_from_string__pre_0_9_16(Arena *arena, String8 file_path, String8 data)
 {
   RD_CfgList result = {0};

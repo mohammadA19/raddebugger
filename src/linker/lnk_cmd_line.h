@@ -19,14 +19,14 @@ typedef struct LNK_CmdLine
   String8List    raw_cmd_line;
 } LNK_CmdLine;
 
-internal String8List     lnk_arg_list_parse_windows_rules(Arena *arena, String8 string);
-internal LNK_CmdLine     lnk_cmd_line_parse_windows_rules(Arena *arena, String8List arg_list);
-internal LNK_CmdOption * lnk_cmd_line_option_from_string(LNK_CmdLine cmd_line, String8 string);
-internal B32             lnk_cmd_line_has_option_string(LNK_CmdLine cmd_line, String8 string);
-internal B32             lnk_cmd_line_has_option(LNK_CmdLine cmd_line, char *string);
+static String8List     lnk_arg_list_parse_windows_rules(Arena *arena, String8 string);
+static LNK_CmdLine     lnk_cmd_line_parse_windows_rules(Arena *arena, String8List arg_list);
+static LNK_CmdOption * lnk_cmd_line_option_from_string(LNK_CmdLine cmd_line, String8 string);
+static B32             lnk_cmd_line_has_option_string(LNK_CmdLine cmd_line, String8 string);
+static B32             lnk_cmd_line_has_option(LNK_CmdLine cmd_line, char *string);
 
-internal LNK_CmdOption * lnk_cmd_line_push_option(Arena *arena, LNK_CmdLine *cmd_line, char *string, char *value);
-internal LNK_CmdOption * lnk_cmd_line_push_option_if_not_present(Arena *arena, LNK_CmdLine *cmd_line, char *string, char *value);
+static LNK_CmdOption * lnk_cmd_line_push_option(Arena *arena, LNK_CmdLine *cmd_line, char *string, char *value);
+static LNK_CmdOption * lnk_cmd_line_push_option_if_not_present(Arena *arena, LNK_CmdLine *cmd_line, char *string, char *value);
 
-internal String8List lnk_data_from_cmd_line(Arena *arena, LNK_CmdLine cmd_line);
+static String8List lnk_data_from_cmd_line(Arena *arena, LNK_CmdLine cmd_line);
 

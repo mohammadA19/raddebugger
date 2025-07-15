@@ -35,7 +35,7 @@ global R_Handle r_window = {0};
 ////////////////////////////////
 //~ rjf: Entry Points
 
-internal B32
+static B32
 frame(void)
 {
   ProfBeginFunction();
@@ -74,7 +74,7 @@ frame(void)
   return quit;
 }
 
-internal void
+static void
 entry_point(CmdLine *cmdline)
 {
   os_window = os_window_open(r2f32p(0, 0, 1600, 900), OS_WindowFlag_UseDefaultPosition, str8_lit("textperf"));

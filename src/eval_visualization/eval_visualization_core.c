@@ -19,7 +19,7 @@ EV_EXPAND_RULE_INFO_FUNCTION_DEF(nil)
 # include "third_party/xxHash/xxhash.h"
 #endif
 
-internal EV_Key
+static EV_Key
 ev_key_make(U64 parent_hash, U64 child_id)
 {
   EV_Key key;
@@ -30,35 +30,35 @@ ev_key_make(U64 parent_hash, U64 child_id)
   return key;
 }
 
-internal EV_Key
+static EV_Key
 ev_key_zero(void)
 {
   EV_Key key = {0};
   return key;
 }
 
-internal EV_Key
+static EV_Key
 ev_key_root(void)
 {
   EV_Key key = ev_key_make(5381, 1);
   return key;
 }
 
-internal B32
+static B32
 ev_key_match(EV_Key a, EV_Key b)
 {
   B32 result = MemoryMatchStruct(&a, &b);
   return result;
 }
 
-internal U64
+static U64
 ev_hash_from_seed_string(U64 seed, String8 string)
 {
   U64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
   return result;
 }
 
-internal U64
+static U64
 ev_hash_from_key(EV_Key key)
 {
   U64 data[] =
@@ -74,7 +74,7 @@ ev_hash_from_key(EV_Key key)
 
 //- rjf: type info -> expandability/editablity
 
-internal E_TypeKey
+static E_TypeKey
 ev_expansion_type_from_key(E_TypeKey type_key)
 {
   E_TypeKey result = zero_struct;
@@ -118,7 +118,7 @@ ev_expansion_type_from_key(E_TypeKey type_key)
   return result;
 }
 
-internal B32
+static B32
 ev_type_key_and_mode_is_expandable(E_TypeKey type_key, E_Mode mode)
 {
   B32 result = 0;
@@ -143,7 +143,7 @@ ev_type_key_and_mode_is_expandable(E_TypeKey type_key, E_Mode mode)
   return result;
 }
 
-internal B32
+static B32
 ev_type_key_is_editable(E_TypeKey type_key)
 {
   B32 result = 0;
@@ -201,7 +201,7 @@ ev_type_key_is_editable(E_TypeKey type_key)
 
 //- rjf: creation / deletion
 
-internal EV_View *
+static EV_View *
 ev_view_alloc(void)
 {
   Arena *arena = arena_alloc();
@@ -214,7 +214,7 @@ ev_view_alloc(void)
   return view;
 }
 
-internal void
+static void
 ev_view_release(EV_View *view)
 {
   arena_release(view->arena);
@@ -222,7 +222,7 @@ ev_view_release(EV_View *view)
 
 //- rjf: lookups / mutations
 
-internal EV_ExpandNode *
+static EV_ExpandNode *
 ev_expand_node_from_key(EV_View *view, EV_Key key)
 {
   U64 hash = ev_hash_from_key(key);
@@ -240,14 +240,14 @@ ev_expand_node_from_key(EV_View *view, EV_Key key)
   return node;
 }
 
-internal B32
+static B32
 ev_expansion_from_key(EV_View *view, EV_Key key)
 {
   EV_ExpandNode *node = ev_expand_node_from_key(view, key);
   return (node != 0 && node->expanded);
 }
 
-internal String8
+static String8
 ev_view_rule_from_key(EV_View *view, EV_Key key)
 {
   String8 result = {0};
@@ -277,7 +277,7 @@ ev_view_rule_from_key(EV_View *view, EV_Key key)
   return result;
 }
 
-internal void
+static void
 ev_key_set_expansion(EV_View *view, EV_Key parent_key, EV_Key key, B32 expanded)
 {
   // rjf: map keys => nodes
@@ -349,7 +349,7 @@ ev_key_set_expansion(EV_View *view, EV_Key parent_key, EV_Key key, B32 expanded)
   }
 }
 
-internal void
+static void
 ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_string)
 {
   //- rjf: key -> hash * slot idx * slot
@@ -390,7 +390,7 @@ ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_string)
 ////////////////////////////////
 //~ rjf: View Rule Info Table Building / Selection / Lookups
 
-internal void
+static void
 ev_expand_rule_table_push(Arena *arena, EV_ExpandRuleTable *table, EV_ExpandRule *info)
 {
   if(table->slots_count == 0)
@@ -407,13 +407,13 @@ ev_expand_rule_table_push(Arena *arena, EV_ExpandRuleTable *table, EV_ExpandRule
   n->v.string = push_str8_copy(arena, n->v.string);
 }
 
-internal void
+static void
 ev_select_expand_rule_table(EV_ExpandRuleTable *table)
 {
   ev_view_rule_info_table = table;
 }
 
-internal EV_ExpandRule *
+static EV_ExpandRule *
 ev_expand_rule_from_string(String8 string)
 {
   EV_ExpandRule *info = &ev_nil_expand_rule;
@@ -439,7 +439,7 @@ ev_expand_rule_from_string(String8 string)
   return info;
 }
 
-internal EV_ExpandRule *
+static EV_ExpandRule *
 ev_expand_rule_from_type_key(E_TypeKey type_key)
 {
   EV_ExpandRule *rule = &ev_nil_expand_rule;
@@ -463,7 +463,7 @@ ev_expand_rule_from_type_key(E_TypeKey type_key)
 ////////////////////////////////
 //~ rjf: Block Building
 
-internal EV_BlockTree
+static EV_BlockTree
 ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root_eval)
 {
   ProfBeginFunction();
@@ -701,7 +701,7 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
   return tree;
 }
 
-internal U64
+static U64
 ev_depth_from_block(EV_Block *block)
 {
   U64 depth = 0;
@@ -715,21 +715,21 @@ ev_depth_from_block(EV_Block *block)
 ////////////////////////////////
 //~ rjf: Block Coordinate Spaces
 
-internal U64
+static U64
 ev_block_id_from_num(EV_Block *block, U64 num)
 {
   U64 result = block->type_expand_rule->id_from_num(block->type_expand_info.user_data, num);
   return result;
 }
 
-internal U64
+static U64
 ev_block_num_from_id(EV_Block *block, U64 id)
 {
   U64 result = block->type_expand_rule->num_from_id(block->type_expand_info.user_data, id);
   return result;
 }
 
-internal EV_BlockRangeList
+static EV_BlockRangeList
 ev_block_range_list_from_tree(Arena *arena, EV_BlockTree *block_tree)
 {
   EV_BlockRangeList list = {0};
@@ -793,7 +793,7 @@ ev_block_range_list_from_tree(Arena *arena, EV_BlockTree *block_tree)
   return list;
 }
 
-internal EV_BlockRange
+static EV_BlockRange
 ev_block_range_from_num(EV_BlockRangeList *block_ranges, U64 num)
 {
   EV_BlockRange result = {&ev_nil_block};
@@ -812,7 +812,7 @@ ev_block_range_from_num(EV_BlockRangeList *block_ranges, U64 num)
   return result;
 }
 
-internal EV_Key
+static EV_Key
 ev_key_from_num(EV_BlockRangeList *block_ranges, U64 num)
 {
   EV_Key key = {0};
@@ -838,7 +838,7 @@ ev_key_from_num(EV_BlockRangeList *block_ranges, U64 num)
   return key;
 }
 
-internal U64
+static U64
 ev_num_from_key(EV_BlockRangeList *block_ranges, EV_Key key)
 {
   U64 result = 0;
@@ -861,7 +861,7 @@ ev_num_from_key(EV_BlockRangeList *block_ranges, EV_Key key)
   return result;
 }
 
-internal U64
+static U64
 ev_vnum_from_num(EV_BlockRangeList *block_ranges, U64 num)
 {
   U64 vnum = 0;
@@ -888,7 +888,7 @@ ev_vnum_from_num(EV_BlockRangeList *block_ranges, U64 num)
   return vnum;
 }
 
-internal U64
+static U64
 ev_num_from_vnum(EV_BlockRangeList *block_ranges, U64 vnum)
 {
   U64 num = 0;
@@ -914,7 +914,7 @@ ev_num_from_vnum(EV_BlockRangeList *block_ranges, U64 vnum)
 ////////////////////////////////
 //~ rjf: Row Building
 
-internal EV_WindowedRowList
+static EV_WindowedRowList
 ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_BlockRangeList *block_ranges, Rng1U64 vnum_range)
 {
   EV_WindowedRowList rows = {0};
@@ -1025,7 +1025,7 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
   return rows;
 }
 
-internal EV_Row *
+static EV_Row *
 ev_row_from_num(Arena *arena, EV_View *view, EV_BlockRangeList *block_ranges, U64 num)
 {
   U64 vidx = ev_vnum_from_num(block_ranges, num);
@@ -1044,7 +1044,7 @@ ev_row_from_num(Arena *arena, EV_View *view, EV_BlockRangeList *block_ranges, U6
   return result;
 }
 
-internal EV_WindowedRowList
+static EV_WindowedRowList
 ev_rows_from_num_range(Arena *arena, EV_View *view, EV_BlockRangeList *block_ranges, Rng1U64 num_range)
 {
   Rng1U64 vnum_range = r1u64(ev_vnum_from_num(block_ranges, num_range.min), ev_vnum_from_num(block_ranges, num_range.max)+1);
@@ -1052,7 +1052,7 @@ ev_rows_from_num_range(Arena *arena, EV_View *view, EV_BlockRangeList *block_ran
   return rows;
 }
 
-internal B32
+static B32
 ev_eval_is_expandable(E_Eval eval)
 {
   B32 result = 0;
@@ -1076,7 +1076,7 @@ ev_eval_is_expandable(E_Eval eval)
   return result;
 }
 
-internal B32
+static B32
 ev_row_is_expandable(EV_Row *row)
 {
   B32 result = 0;
@@ -1087,7 +1087,7 @@ ev_row_is_expandable(EV_Row *row)
   return result;
 }
 
-internal B32
+static B32
 ev_row_is_editable(EV_Row *row)
 {
   B32 result = 0;
@@ -1101,7 +1101,7 @@ ev_row_is_editable(EV_Row *row)
 
 //- rjf: leaf stringification
 
-internal String8
+static String8
 ev_string_from_ascii_value(Arena *arena, U8 val)
 {
   String8 result = {0};
@@ -1128,7 +1128,7 @@ ev_string_from_ascii_value(Arena *arena, U8 val)
   return result;
 }
 
-internal String8
+static String8
 ev_string_from_hresult_facility_code(U32 code)
 {
   String8 result = {0};
@@ -1257,7 +1257,7 @@ ev_string_from_hresult_facility_code(U32 code)
   return result;
 }
 
-internal String8
+static String8
 ev_string_from_hresult_code(U32 code)
 {
   String8 result = {0};
@@ -1280,7 +1280,7 @@ ev_string_from_hresult_code(U32 code)
   return result;
 }
 
-internal String8
+static String8
 ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval eval)
 {
   String8 result = {0};
@@ -1420,7 +1420,7 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
   return result;
 }
 
-internal String8
+static String8
 ev_escaped_from_raw_string(Arena *arena, String8 raw)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -1464,7 +1464,7 @@ ev_escaped_from_raw_string(Arena *arena, String8 raw)
 
 //- rjf: tree stringification iterator
 
-internal EV_StringIter *
+static EV_StringIter *
 ev_string_iter_begin(Arena *arena, E_Eval eval, EV_StringParams *params)
 {
   EV_StringIter *it = push_array(arena, EV_StringIter, 1);
@@ -1474,7 +1474,7 @@ ev_string_iter_begin(Arena *arena, E_Eval eval, EV_StringParams *params)
   return it;
 }
 
-internal B32
+static B32
 ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
 {
   B32 result = 0;

@@ -9,7 +9,7 @@
 ////////////////////////////////
 //~ rjf: Top-Level Entry Point
 
-internal void
+static void
 rb_entry_point(CmdLine *cmdline)
 {
   Arena *arena = arena_alloc();

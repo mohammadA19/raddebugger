@@ -42,8 +42,8 @@ struct FP_RasterResult
 ////////////////////////////////
 //~ rjf: Basic Type Functions
 
-internal FP_Handle fp_handle_zero(void);
-internal B32 fp_handle_match(FP_Handle a, FP_Handle b);
+static FP_Handle fp_handle_zero(void);
+static B32 fp_handle_match(FP_Handle a, FP_Handle b);
 
 ////////////////////////////////
 //~ rjf: Backend Hooks

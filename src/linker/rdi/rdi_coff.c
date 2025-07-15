@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal RDI_Arch
+static RDI_Arch
 rdi_arch_from_coff_machine(COFF_MachineType machine)
 {
   switch (machine) {
@@ -36,7 +36,7 @@ rdi_arch_from_coff_machine(COFF_MachineType machine)
   }
 }
 
-internal RDI_BinarySectionFlags
+static RDI_BinarySectionFlags
 rdi_binary_section_flags_from_coff_section_flags(COFF_SectionFlags flags)
 {
   RDI_BinarySectionFlags result = 0;

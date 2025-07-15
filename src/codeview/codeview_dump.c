@@ -1,7 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal String8
+static String8
 cv_string_from_numeric(Arena *arena, CV_NumericParsed num)
 {
   String8 result = str8_zero();

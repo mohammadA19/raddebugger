@@ -1,14 +1,14 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal void
+static void
 set_thread_name(String8 string)
 {
   ProfThreadName("%.*s", str8_varg(string));
   os_set_thread_name(string);
 }
 
-internal void
+static void
 set_thread_namef(char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);

@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal void
+static void
 lnk_error_obj(LNK_ErrorCode code, LNK_Obj *obj, char *fmt, ...)
 {
   va_list args; va_start(args, fmt);
@@ -11,7 +11,7 @@ lnk_error_obj(LNK_ErrorCode code, LNK_Obj *obj, char *fmt, ...)
   va_end(args);
 }
 
-internal LNK_Obj **
+static LNK_Obj **
 lnk_array_from_obj_list(Arena *arena, LNK_ObjList list)
 {
   LNK_Obj **arr = push_array_no_zero(arena, LNK_Obj *, list.count);
@@ -22,7 +22,7 @@ lnk_array_from_obj_list(Arena *arena, LNK_ObjList list)
   return arr;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_obj_initer)
 {
   LNK_ObjIniter *task    = raw_task;
@@ -278,7 +278,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
   ProfEnd();
 }
 
-internal LNK_ObjNodeArray
+static LNK_ObjNodeArray
 lnk_obj_list_push_parallel(TP_Context        *tp,
                            TP_Arena          *arena,
                            LNK_ObjList       *list,
@@ -314,7 +314,7 @@ lnk_obj_list_push_parallel(TP_Context        *tp,
   return objs;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_input_coff_symbol_table)
 {
   LNK_InputCoffSymbolTable *task = raw_task;
@@ -386,7 +386,7 @@ THREAD_POOL_TASK_FUNC(lnk_input_coff_symbol_table)
   }
 }
 
-internal LNK_SymbolInputResult
+static LNK_SymbolInputResult
 lnk_input_obj_symbols(TP_Context *tp, TP_Arena *arena, LNK_SymbolTable *symtab, LNK_ObjNodeArray objs)
 {
   ProfBeginFunction();
@@ -408,7 +408,7 @@ lnk_input_obj_symbols(TP_Context *tp, TP_Arena *arena, LNK_SymbolTable *symtab, 
   return result;
 }
 
-internal COFF_ParsedSymbol
+static COFF_ParsedSymbol
 lnk_obj_match_symbol(LNK_Obj *obj, String8 match_name)
 {
   COFF_ParsedSymbol result = {0};
@@ -440,25 +440,25 @@ lnk_obj_match_symbol(LNK_Obj *obj, String8 match_name)
   return result;
 }
 
-internal MSCRT_FeatFlags
+static MSCRT_FeatFlags
 lnk_obj_get_features(LNK_Obj *obj)
 {
   return lnk_obj_match_symbol(obj, str8_lit("@feat.00")).value;
 }
 
-internal U32
+static U32
 lnk_obj_get_comp_id(LNK_Obj *obj)
 {
   return lnk_obj_match_symbol(obj, str8_lit("@comp.id")).value;
 }
 
-internal U32
+static U32
 lnk_obj_get_vol_md(LNK_Obj *obj)
 {
   return lnk_obj_match_symbol(obj, str8_lit("@vol.md")).value;
 }
 
-internal COFF_SectionHeader *
+static COFF_SectionHeader *
 lnk_coff_section_header_from_section_number(LNK_Obj *obj, U64 section_number)
 {
   COFF_SectionHeader *section_table  = (COFF_SectionHeader *)str8_substr(obj->data, obj->header.section_table_range).str;
@@ -466,7 +466,7 @@ lnk_coff_section_header_from_section_number(LNK_Obj *obj, U64 section_number)
   return section_header;
 }
 
-internal B32
+static B32
 lnk_is_coff_section_debug(LNK_Obj *obj, U64 sect_idx)
 {
   String8 string_table = str8_substr(obj->data, obj->header.string_table_range);
@@ -480,7 +480,7 @@ lnk_is_coff_section_debug(LNK_Obj *obj, U64 sect_idx)
   return is_debug;
 }
 
-internal COFF_ParsedSymbol
+static COFF_ParsedSymbol
 lnk_parsed_symbol_from_coff_symbol_idx(LNK_Obj *obj, U64 symbol_idx)
 {
   String8 string_table = str8_substr(obj->data, obj->header.string_table_range);
@@ -496,7 +496,7 @@ lnk_parsed_symbol_from_coff_symbol_idx(LNK_Obj *obj, U64 symbol_idx)
   return result;
 }
 
-internal
+static
 THREAD_POOL_TASK_FUNC(lnk_collect_obj_chunks_task)
 {
   LNK_SectionCollector *task = raw_task;
@@ -521,7 +521,7 @@ THREAD_POOL_TASK_FUNC(lnk_collect_obj_chunks_task)
   }
 }
 
-internal String8List *
+static String8List *
 lnk_collect_obj_sections(TP_Context *tp, TP_Arena *arena, U64 objs_count, LNK_Obj **objs, String8 name, B32 collect_discarded)
 {
   LNK_SectionCollector task = {0};
@@ -533,7 +533,7 @@ lnk_collect_obj_sections(TP_Context *tp, TP_Arena *arena, U64 objs_count, LNK_Ob
   return task.out_lists;
 }
 
-internal void
+static void
 lnk_parse_msvc_linker_directive(Arena *arena, LNK_Obj *obj, LNK_DirectiveInfo *directive_info, String8 buffer)
 {
   Temp scratch = scratch_begin(&arena, 1);

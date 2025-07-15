@@ -29,7 +29,7 @@ global FP_DWrite_FontFileStreamVTable fp_dwrite_static_data_font_file_stream__vt
 
 //- rjf: handle conversion functions
 
-internal FP_DWrite_Font
+static FP_DWrite_Font
 fp_dwrite_font_from_handle(FP_Handle handle)
 {
   FP_DWrite_Font result = {0};
@@ -38,7 +38,7 @@ fp_dwrite_font_from_handle(FP_Handle handle)
   return result;
 }
 
-internal FP_Handle
+static FP_Handle
 fp_dwrite_handle_from_font(FP_DWrite_Font font)
 {
   FP_Handle result = {0};
@@ -49,7 +49,7 @@ fp_dwrite_handle_from_font(FP_DWrite_Font font)
 
 //- rjf: file stream allocator
 
-internal FP_DWrite_FontFileStreamNode *
+static FP_DWrite_FontFileStreamNode *
 fp_dwrite_font_file_stream_node_alloc(String8 *data_ptr)
 {
   FP_DWrite_FontFileStreamNode *node = 0;
@@ -80,7 +80,7 @@ fp_dwrite_font_file_stream_node_alloc(String8 *data_ptr)
   return node;
 }
 
-internal void
+static void
 fp_dwrite_font_file_stream_node_release(FP_DWrite_FontFileStreamNode *node)
 {
   DLLPushBack(fp_dwrite_state->first_stream_node, fp_dwrite_state->last_stream_node, node);
@@ -89,20 +89,20 @@ fp_dwrite_font_file_stream_node_release(FP_DWrite_FontFileStreamNode *node)
 
 //- rjf: iunknown no-op helpers
 
-internal HRESULT
+static HRESULT
 fp_dwrite_iunknown_noop__query_interface(void *obj, REFIID riid, void *ptr_to_object)
 {
   return E_NOINTERFACE;
 }
 
-internal ULONG
+static ULONG
 fp_dwrite_iunknown_noop__add_ref(void *obj)
 {
   ULONG result = 1;
   return result;
 }
 
-internal ULONG
+static ULONG
 fp_dwrite_iunknown_noop__release(void *obj)
 {
   ULONG result = 1;
@@ -111,7 +111,7 @@ fp_dwrite_iunknown_noop__release(void *obj)
 
 //- rjf: font file loader interface function implementations
 
-internal HRESULT
+static HRESULT
 fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader *obj, void const *font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream **stream_out)
 {
   HRESULT result = S_OK;
@@ -123,7 +123,7 @@ fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader *obj
 
 //- rjf: font file stream  interface function implementations
 
-internal HRESULT
+static HRESULT
 fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream *obj, void const **fragment_start, UINT64 file_offset, UINT64 fragment_size, void **fragment_context)
 {
   HRESULT result = S_OK;
@@ -132,14 +132,14 @@ fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream *
   return result;
 }
 
-internal HRESULT
+static HRESULT
 fp_dwrite_static_font_file_stream__release_file_fragment(FP_DWrite_FontFileStream *obj, void *fragment_context)
 {
   HRESULT result = S_OK;
   return result;
 }
 
-internal HRESULT
+static HRESULT
 fp_dwrite_static_font_file_stream__get_file_size(FP_DWrite_FontFileStream *obj, UINT64 *size_out)
 {
   HRESULT result = S_OK;
@@ -147,7 +147,7 @@ fp_dwrite_static_font_file_stream__get_file_size(FP_DWrite_FontFileStream *obj, 
   return result;
 }
 
-internal HRESULT
+static HRESULT
 fp_dwrite_static_font_file_stream__get_last_write_time(FP_DWrite_FontFileStream *obj, UINT64 *time_out)
 {
   HRESULT result = S_OK;

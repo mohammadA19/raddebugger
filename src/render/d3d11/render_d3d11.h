@@ -177,12 +177,12 @@ global read_only R_D3D11_Buffer r_d3d11_buffer_nil = {&r_d3d11_buffer_nil};
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal R_D3D11_Window *r_d3d11_window_from_handle(R_Handle handle);
-internal R_Handle r_d3d11_handle_from_window(R_D3D11_Window *window);
-internal R_D3D11_Tex2D *r_d3d11_tex2d_from_handle(R_Handle handle);
-internal R_Handle r_d3d11_handle_from_tex2d(R_D3D11_Tex2D *texture);
-internal R_D3D11_Buffer *r_d3d11_buffer_from_handle(R_Handle handle);
-internal R_Handle r_d3d11_handle_from_buffer(R_D3D11_Buffer *buffer);
-internal ID3D11Buffer *r_d3d11_instance_buffer_from_size(U64 size);
-internal void r_usage_access_flags_from_resource_kind(R_ResourceKind kind, D3D11_USAGE *out_d3d11_usage, UINT *out_cpu_access_flags);
+static R_D3D11_Window *r_d3d11_window_from_handle(R_Handle handle);
+static R_Handle r_d3d11_handle_from_window(R_D3D11_Window *window);
+static R_D3D11_Tex2D *r_d3d11_tex2d_from_handle(R_Handle handle);
+static R_Handle r_d3d11_handle_from_tex2d(R_D3D11_Tex2D *texture);
+static R_D3D11_Buffer *r_d3d11_buffer_from_handle(R_Handle handle);
+static R_Handle r_d3d11_handle_from_buffer(R_D3D11_Buffer *buffer);
+static ID3D11Buffer *r_d3d11_instance_buffer_from_size(U64 size);
+static void r_usage_access_flags_from_resource_kind(R_ResourceKind kind, D3D11_USAGE *out_d3d11_usage, UINT *out_cpu_access_flags);
 

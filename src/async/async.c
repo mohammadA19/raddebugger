@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Top-Level Layer Initialization
 
-internal void
+static void
 async_init(CmdLine *cmdline)
 {
   Arena *arena = arena_alloc();
@@ -39,7 +39,7 @@ async_init(CmdLine *cmdline)
 ////////////////////////////////
 //~ rjf: Top-Level Accessors
 
-internal U64
+static U64
 async_thread_count(void)
 {
   return async_shared->work_threads_count;
@@ -48,7 +48,7 @@ async_thread_count(void)
 ////////////////////////////////
 //~ rjf: Work Kickoffs
 
-internal B32
+static B32
 async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params)
 {
   // rjf: choose ring
@@ -118,7 +118,7 @@ async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params
 ////////////////////////////////
 //~ rjf: Task-Based Work Helper
 
-internal void
+static void
 async_task_list_push(Arena *arena, ASYNC_TaskList *list, ASYNC_Task *t)
 {
   ASYNC_TaskNode *n = push_array(arena, ASYNC_TaskNode, 1);
@@ -127,7 +127,7 @@ async_task_list_push(Arena *arena, ASYNC_TaskList *list, ASYNC_Task *t)
   list->count += 1;
 }
 
-internal ASYNC_Task *
+static ASYNC_Task *
 async_task_launch_(Arena *arena, ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params)
 {
   ASYNC_Task *task = push_array(arena, ASYNC_Task, 1);
@@ -144,7 +144,7 @@ async_task_launch_(Arena *arena, ASYNC_WorkFunctionType *work_function, ASYNC_Wo
   return task;
 }
 
-internal void *
+static void *
 async_task_join(ASYNC_Task *task)
 {
   void *result = 0;
@@ -161,7 +161,7 @@ async_task_join(ASYNC_Task *task)
 ////////////////////////////////
 //~ rjf: Work Execution
 
-internal ASYNC_Work
+static ASYNC_Work
 async_pop_work(void)
 {
   ASYNC_Work work = {0};
@@ -201,7 +201,7 @@ async_pop_work(void)
   return work;
 }
 
-internal void
+static void
 async_execute_work(ASYNC_Work work)
 {
   //- rjf: run work
@@ -237,7 +237,7 @@ async_execute_work(ASYNC_Work work)
 ////////////////////////////////
 //~ rjf: Root Allocation/Deallocation
 
-internal ASYNC_Root *
+static ASYNC_Root *
 async_root_alloc(void)
 {
   Arena *arena = arena_alloc();
@@ -251,7 +251,7 @@ async_root_alloc(void)
   return root;
 }
 
-internal void
+static void
 async_root_release(ASYNC_Root *root)
 {
   for(U64 idx = 1; idx < async_thread_count(); idx += 1)
@@ -261,7 +261,7 @@ async_root_release(ASYNC_Root *root)
   arena_release(root->arenas[0]);
 }
 
-internal Arena *
+static Arena *
 async_root_thread_arena(ASYNC_Root *root)
 {
   return root->arenas[async_work_thread_idx];
@@ -270,7 +270,7 @@ async_root_thread_arena(ASYNC_Root *root)
 ////////////////////////////////
 //~ rjf: Work Thread Entry Point
 
-internal void
+static void
 async_work_thread__entry_point(void *p)
 {
   U64 thread_idx = (U64)p;

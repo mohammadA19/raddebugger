@@ -88,43 +88,43 @@ typedef struct LNK_SectionTable
 
 // --- Section Contrib Chunk List ----------------------------------------------
 
-internal LNK_SectionContrib *       lnk_section_contrib_chunk_push(LNK_SectionContribChunk *chunk, U64 count);
-internal LNK_SectionContrib *       lnk_section_contrib_chunk_push_atomic(LNK_SectionContribChunk *chunk, U64 count);
-internal LNK_SectionContribChunk *  lnk_section_contrib_chunk_list_push_chunk(Arena *arena, LNK_SectionContribChunkList *list, U64 cap, String8 sort_idx);
-internal void                       lnk_section_contrib_chunk_list_concat_in_place(LNK_SectionContribChunkList *list, LNK_SectionContribChunkList *to_concat);
-internal LNK_SectionContribChunk ** lnk_array_from_section_contrib_chunk_list(Arena *arena, LNK_SectionContribChunkList list);
+static LNK_SectionContrib *       lnk_section_contrib_chunk_push(LNK_SectionContribChunk *chunk, U64 count);
+static LNK_SectionContrib *       lnk_section_contrib_chunk_push_atomic(LNK_SectionContribChunk *chunk, U64 count);
+static LNK_SectionContribChunk *  lnk_section_contrib_chunk_list_push_chunk(Arena *arena, LNK_SectionContribChunkList *list, U64 cap, String8 sort_idx);
+static void                       lnk_section_contrib_chunk_list_concat_in_place(LNK_SectionContribChunkList *list, LNK_SectionContribChunkList *to_concat);
+static LNK_SectionContribChunk ** lnk_array_from_section_contrib_chunk_list(Arena *arena, LNK_SectionContribChunkList list);
 
 // --- Section List ------------------------------------------------------------
 
-internal LNK_SectionArray lnk_section_array_from_list(Arena *arena, LNK_SectionList list);
+static LNK_SectionArray lnk_section_array_from_list(Arena *arena, LNK_SectionList list);
 
 // --- Section Table -----------------------------------------------------------
 
-internal String8 lnk_make_name_with_flags(Arena *arena, String8 name, COFF_SectionFlags flags);
+static String8 lnk_make_name_with_flags(Arena *arena, String8 name, COFF_SectionFlags flags);
 
-internal LNK_SectionTable *  lnk_section_table_alloc(void);
-internal void                lnk_section_table_release(LNK_SectionTable **sectab_ptr);
-internal LNK_Section *       lnk_section_table_push(LNK_SectionTable *sectab, String8 name, COFF_SectionFlags flags);
-internal LNK_SectionNode *   lnk_section_table_remove(LNK_SectionTable *sectab, String8 name);
-internal LNK_Section *       lnk_section_table_search(LNK_SectionTable *sectab, String8 name, COFF_SectionFlags flags);
-internal LNK_SectionArray    lnk_section_table_search_many(Arena *arena, LNK_SectionTable *sectab, String8 full_or_partial_name);
-internal void                lnk_section_table_merge(LNK_SectionTable *sectab, LNK_MergeDirectiveList merge_list);
+static LNK_SectionTable *  lnk_section_table_alloc(void);
+static void                lnk_section_table_release(LNK_SectionTable **sectab_ptr);
+static LNK_Section *       lnk_section_table_push(LNK_SectionTable *sectab, String8 name, COFF_SectionFlags flags);
+static LNK_SectionNode *   lnk_section_table_remove(LNK_SectionTable *sectab, String8 name);
+static LNK_Section *       lnk_section_table_search(LNK_SectionTable *sectab, String8 name, COFF_SectionFlags flags);
+static LNK_SectionArray    lnk_section_table_search_many(Arena *arena, LNK_SectionTable *sectab, String8 full_or_partial_name);
+static void                lnk_section_table_merge(LNK_SectionTable *sectab, LNK_MergeDirectiveList merge_list);
 
 // --- Section Finalization ----------------------------------------------------
 
-internal void lnk_finalize_section_layout     (LNK_Section *sect, U64 file_align, U64 pad_size);
-internal void lnk_assign_section_index        (LNK_Section *sect, U64 sect_idx);
-internal void lnk_assign_section_virtual_space(LNK_Section *sect, U64 sect_align, U64 *voff_cursor);
-internal void lnk_assign_section_file_space   (LNK_Section *sect, U64 *foff_cursor);
+static void lnk_finalize_section_layout     (LNK_Section *sect, U64 file_align, U64 pad_size);
+static void lnk_assign_section_index        (LNK_Section *sect, U64 sect_idx);
+static void lnk_assign_section_virtual_space(LNK_Section *sect, U64 sect_align, U64 *voff_cursor);
+static void lnk_assign_section_file_space   (LNK_Section *sect, U64 *foff_cursor);
 
 // --- Section Contribution ----------------------------------------------------
 
-internal U64 lnk_size_from_section_contrib(LNK_SectionContrib *sc);
-internal U64 lnk_voff_from_section_contrib(COFF_SectionHeader **image_section_table, LNK_SectionContrib *sc);
-internal U64 lnk_foff_from_section_contrib(COFF_SectionHeader **image_section_table, LNK_SectionContrib *sc);
-internal U64 lnk_fopl_from_section_contrib(COFF_SectionHeader **image_section_table, LNK_SectionContrib *sc);
+static U64 lnk_size_from_section_contrib(LNK_SectionContrib *sc);
+static U64 lnk_voff_from_section_contrib(COFF_SectionHeader **image_section_table, LNK_SectionContrib *sc);
+static U64 lnk_foff_from_section_contrib(COFF_SectionHeader **image_section_table, LNK_SectionContrib *sc);
+static U64 lnk_fopl_from_section_contrib(COFF_SectionHeader **image_section_table, LNK_SectionContrib *sc);
 
-internal LNK_SectionContrib * lnk_get_first_section_contrib(LNK_Section *sect);
-internal LNK_SectionContrib * lnk_get_last_section_contrib(LNK_Section *sect);
-internal U64                  lnk_get_section_contrib_size(LNK_Section *sect);
-internal U64                  lnk_get_first_section_contrib_voff(COFF_SectionHeader **image_section_table, LNK_Section *sect);
+static LNK_SectionContrib * lnk_get_first_section_contrib(LNK_Section *sect);
+static LNK_SectionContrib * lnk_get_last_section_contrib(LNK_Section *sect);
+static U64                  lnk_get_section_contrib_size(LNK_Section *sect);
+static U64                  lnk_get_first_section_contrib_voff(COFF_SectionHeader **image_section_table, LNK_Section *sect);

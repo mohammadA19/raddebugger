@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal RDI_Arch
+static RDI_Arch
 rdi_arch_from_cv_arch(CV_Arch arch)
 {
   switch (arch) {
@@ -72,7 +72,7 @@ rdi_arch_from_cv_arch(CV_Arch arch)
   }
 }
 
-internal RDI_Language
+static RDI_Language
 rdi_language_from_cv_language(CV_Language language)
 {
   switch (language) {
@@ -100,7 +100,7 @@ rdi_language_from_cv_language(CV_Language language)
   }
 }
 
-internal RDI_TypeModifierFlags
+static RDI_TypeModifierFlags
 rdi_type_modifier_flags_from_cv_modifier_flags(CV_ModifierFlags flags)
 {
   RDI_TypeModifierFlags result = 0;
@@ -113,7 +113,7 @@ rdi_type_modifier_flags_from_cv_modifier_flags(CV_ModifierFlags flags)
   return result;
 }
 
-internal RDI_TypeModifierFlags
+static RDI_TypeModifierFlags
 rdi_type_modifier_flags_from_cv_pointer_attribs(CV_PointerAttribs attribs)
 {
   RDI_TypeModifierFlags result = 0;
@@ -126,7 +126,7 @@ rdi_type_modifier_flags_from_cv_pointer_attribs(CV_PointerAttribs attribs)
   return result;
 }
 
-internal RDI_TypeKind
+static RDI_TypeKind
 rdi_type_kind_from_pointer(CV_PointerAttribs attribs, CV_PointerMode mode)
 {
   RDI_TypeKind result = RDI_TypeKind_Ptr;
@@ -146,7 +146,7 @@ rdi_type_kind_from_pointer(CV_PointerAttribs attribs, CV_PointerMode mode)
   return result;
 }
 
-internal RDI_TypeKind
+static RDI_TypeKind
 rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
 {
   switch (basic_type) {
@@ -206,7 +206,7 @@ rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
   return RDI_TypeKind_NULL;
 }
 
-internal RDI_RegCode
+static RDI_RegCode
 rdi_reg_code_from_cv(CV_Arch arch, CV_Reg reg)
 {
   RDI_RegCode result = 0;
@@ -230,7 +230,7 @@ rdi_reg_code_from_cv(CV_Arch arch, CV_Reg reg)
   return result;
 }
 
-internal RDI_ChecksumKind
+static RDI_ChecksumKind
 rdi_checksum_from_cv_c13(CV_C13ChecksumKind kind)
 {
   switch (kind) {

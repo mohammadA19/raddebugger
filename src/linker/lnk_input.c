@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal String8
+static String8
 lnk_string_from_input_source(LNK_InputSourceType input_source)
 {
   String8 result = str8_zero();
@@ -14,14 +14,14 @@ lnk_string_from_input_source(LNK_InputSourceType input_source)
   return result;
 }
 
-internal void
+static void
 lnk_input_obj_list_push_node(LNK_InputObjList *list, LNK_InputObj *node)
 {
   SLLQueuePush(list->first, list->last, node);
   ++list->count;
 }
 
-internal LNK_InputObj *
+static LNK_InputObj *
 lnk_input_obj_list_push(Arena *arena, LNK_InputObjList *list)
 {
   LNK_InputObj *node = push_array(arena, LNK_InputObj, 1);
@@ -29,13 +29,13 @@ lnk_input_obj_list_push(Arena *arena, LNK_InputObjList *list)
   return node;
 }
 
-internal void
+static void
 lnk_input_obj_list_concat_in_place(LNK_InputObjList *list, LNK_InputObjList *to_concat)
 {
   SLLConcatInPlace(list, to_concat);
 }
 
-internal LNK_InputObj **
+static LNK_InputObj **
 lnk_array_from_input_obj_list(Arena *arena, LNK_InputObjList list)
 {
   LNK_InputObj **result = push_array_no_zero(arena, LNK_InputObj *, list.count);
@@ -47,7 +47,7 @@ lnk_array_from_input_obj_list(Arena *arena, LNK_InputObjList list)
   return result;
 }
 
-internal LNK_InputObj **
+static LNK_InputObj **
 lnk_thin_array_from_input_obj_list(Arena *arena, LNK_InputObjList list, U64 *count_out)
 {
   for (LNK_InputObj *input = list.first; input != 0; input = input->next) {
@@ -61,7 +61,7 @@ lnk_thin_array_from_input_obj_list(Arena *arena, LNK_InputObjList list, U64 *cou
   return thin_inputs;
 }
 
-internal String8Array
+static String8Array
 lnk_path_array_from_input_obj_array(Arena *arena, LNK_InputObj **arr, U64 count)
 {
   String8Array paths = {0};
@@ -73,7 +73,7 @@ lnk_path_array_from_input_obj_array(Arena *arena, LNK_InputObj **arr, U64 count)
   return paths;
 }
 
-internal int
+static int
 lnk_input_obj_compar(const void *raw_a, const void *raw_b)
 {
   const LNK_InputObj **a = (const LNK_InputObj **) raw_a;
@@ -82,7 +82,7 @@ lnk_input_obj_compar(const void *raw_a, const void *raw_b)
   return cmp;
 }
 
-internal int
+static int
 lnk_input_obj_compar_is_before(void *raw_a, void *raw_b)
 {
   LNK_InputObj **a = raw_a;
@@ -92,7 +92,7 @@ lnk_input_obj_compar_is_before(void *raw_a, void *raw_b)
   return is_before;
 }
 
-internal LNK_InputObjList
+static LNK_InputObjList
 lnk_list_from_input_obj_arr(LNK_InputObj **arr, U64 count)
 {
   LNK_InputObjList list = {0};
@@ -103,7 +103,7 @@ lnk_list_from_input_obj_arr(LNK_InputObj **arr, U64 count)
   return list;
 }
 
-internal LNK_InputObjList
+static LNK_InputObjList
 lnk_input_obj_list_from_string_list(Arena *arena, String8List list)
 {
   LNK_InputObjList input_list = {0};
@@ -116,7 +116,7 @@ lnk_input_obj_list_from_string_list(Arena *arena, String8List list)
   return input_list;
 }
 
-internal LNK_InputImportNode *
+static LNK_InputImportNode *
 lnk_input_import_list_push(Arena *arena, LNK_InputImportList *list)
 {
   LNK_InputImportNode *node = push_array(arena, LNK_InputImportNode, 1);
@@ -125,13 +125,13 @@ lnk_input_import_list_push(Arena *arena, LNK_InputImportList *list)
   return node; 
 }
 
-internal void
+static void
 lnk_input_import_list_concat_in_place(LNK_InputImportList *list, LNK_InputImportList *to_concat)
 {
   SLLConcatInPlace(list, to_concat);
 }
 
-internal LNK_InputImportNode **
+static LNK_InputImportNode **
 lnk_input_import_arr_from_list(Arena *arena, LNK_InputImportList list)
 {
   LNK_InputImportNode **result = push_array_no_zero(arena, LNK_InputImportNode *, list.count);
@@ -143,7 +143,7 @@ lnk_input_import_arr_from_list(Arena *arena, LNK_InputImportList list)
   return result;
 }
 
-internal LNK_InputImportList
+static LNK_InputImportList
 lnk_list_from_input_import_arr(LNK_InputImportNode **arr, U64 count)
 {
   LNK_InputImportList list = {0};
