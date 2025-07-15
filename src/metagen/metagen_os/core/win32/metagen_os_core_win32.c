@@ -7,7 +7,7 @@
 // (We must dynamically link to them, since they can be missing in older SDKs)
 
 typedef HRESULT W32_SetThreadDescription_Type(HANDLE hThread, PCWSTR lpThreadDescription);
-global W32_SetThreadDescription_Type *w32_SetThreadDescription_func = 0;
+static W32_SetThreadDescription_Type *w32_SetThreadDescription_func = 0;
 
 ////////////////////////////////
 //~ rjf: File Info Conversion Helpers

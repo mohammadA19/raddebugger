@@ -204,7 +204,7 @@ struct R_OGL_State
 ////////////////////////////////
 //~ rjf: Globals
 
-global R_OGL_State *r_ogl_state = 0;
+static R_OGL_State *r_ogl_state = 0;
 
 ////////////////////////////////
 //~ rjf: Helpers

@@ -11,16 +11,16 @@
 ////////////////////////////////
 //~ rjf: Globals
 
-global B32 demon_lnx_already_has_halt_injection = false;
-global U64 demon_lnx_halt_code = 0;
-global U64 demon_lnx_halt_user_data = 0;
+static B32 demon_lnx_already_has_halt_injection = false;
+static U64 demon_lnx_halt_code = 0;
+static U64 demon_lnx_halt_user_data = 0;
 
-global B32 demon_lnx_new_process_pending = false;
+static B32 demon_lnx_new_process_pending = false;
 
-global Arena *demon_lnx_event_arena = 0;
-global DEMON_EventList demon_lnx_queued_events = {0};
+static Arena *demon_lnx_event_arena = 0;
+static DEMON_EventList demon_lnx_queued_events = {0};
 
-global U32 demon_lnx_ptrace_options = (PTRACE_O_TRACEEXIT|
+static U32 demon_lnx_ptrace_options = (PTRACE_O_TRACEEXIT|
                                        PTRACE_O_EXITKILL|
                                        PTRACE_O_TRACEFORK|
                                        PTRACE_O_TRACEVFORK|

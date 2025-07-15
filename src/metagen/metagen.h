@@ -253,8 +253,8 @@ struct MG_State
 ////////////////////////////////
 //~ rjf: Globals
 
-global Arena *mg_arena = 0;
-global MG_State *mg_state = 0;
+static Arena *mg_arena = 0;
+static MG_State *mg_state = 0;
 read_only global MG_StrExpr mg_str_expr_nil = {&mg_str_expr_nil, &mg_str_expr_nil, &mg_str_expr_nil};
 
 ////////////////////////////////

@@ -4,16 +4,16 @@
 ////////////////////////////////
 //~ rjf: Globals
 
-global FP_DWrite_State *fp_dwrite_state = 0;
-global FP_DWrite_FontFileLoaderVTable fp_dwrite_static_data_font_file_loader__vtable =
+static FP_DWrite_State *fp_dwrite_state = 0;
+static FP_DWrite_FontFileLoaderVTable fp_dwrite_static_data_font_file_loader__vtable =
 {
   fp_dwrite_iunknown_noop__query_interface,
   fp_dwrite_iunknown_noop__add_ref,
   fp_dwrite_iunknown_noop__release,
   fp_dwrite_static_font_file_loader__stream_from_key,
 };
-global FP_DWrite_FontFileLoader fp_dwrite_static_data_font_file_loader = {&fp_dwrite_static_data_font_file_loader__vtable};
-global FP_DWrite_FontFileStreamVTable fp_dwrite_static_data_font_file_stream__vtable =
+static FP_DWrite_FontFileLoader fp_dwrite_static_data_font_file_loader = {&fp_dwrite_static_data_font_file_loader__vtable};
+static FP_DWrite_FontFileStreamVTable fp_dwrite_static_data_font_file_stream__vtable =
 {
   fp_dwrite_iunknown_noop__query_interface,
   fp_dwrite_iunknown_noop__add_ref,

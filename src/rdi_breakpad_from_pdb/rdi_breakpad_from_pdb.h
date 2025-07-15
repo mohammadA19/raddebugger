@@ -41,5 +41,5 @@ ASYNC_WORK_DEF(p2b_dump_proc_chunk_work);
 ////////////////////////////////
 //~ rjf: Globals
 
-global ASYNC_Root *p2b_async_root = 0;
+static ASYNC_Root *p2b_async_root = 0;
 

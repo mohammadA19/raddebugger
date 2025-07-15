@@ -98,7 +98,7 @@
 
 ////////////////////////////////
 
-global read_only struct
+static read_only struct
 {
   RD_Option opt;
   char     *name;

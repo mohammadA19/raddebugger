@@ -239,7 +239,7 @@ struct MD_ParseResult
 ////////////////////////////////
 //~ rjf: Globals
 
-global read_only MD_Node md_nil_node =
+static read_only MD_Node md_nil_node =
 {
   &md_nil_node,
   &md_nil_node,

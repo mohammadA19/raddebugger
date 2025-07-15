@@ -4981,7 +4981,7 @@ lnk_coff_section_header_from_obj_sect_idx_pair(LNK_Obj **objs, PairU32 p)
   return &section_table[p.v1];
 }
 
-global LNK_Obj **g_rad_map_objs;
+static LNK_Obj **g_rad_map_objs;
 
 static int
 lnk_obj_sect_idx_is_before(void *raw_a, void *raw_b)

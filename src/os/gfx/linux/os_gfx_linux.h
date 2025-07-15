@@ -50,7 +50,7 @@ struct OS_LNX_GfxState
 ////////////////////////////////
 //~ rjf: Globals
 
-global OS_LNX_GfxState *os_lnx_gfx_state = 0;
+static OS_LNX_GfxState *os_lnx_gfx_state = 0;
 
 ////////////////////////////////
 //~ rjf: Helpers

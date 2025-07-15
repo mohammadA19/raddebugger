@@ -320,7 +320,7 @@ struct D_State
 ////////////////////////////////
 //~ rjf: Globals
 
-global D_State *d_state = 0;
+static D_State *d_state = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers

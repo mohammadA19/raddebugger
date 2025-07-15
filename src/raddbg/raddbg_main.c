@@ -330,17 +330,17 @@ struct IPCInfo
 //- rjf: IPC resources
 #define IPC_SHARED_MEMORY_BUFFER_SIZE MB(4)
 StaticAssert(IPC_SHARED_MEMORY_BUFFER_SIZE > sizeof(IPCInfo), ipc_buffer_size_requirement);
-global OS_Handle ipc_sender2main_signal_semaphore = {0};
-global OS_Handle ipc_sender2main_lock_semaphore = {0};
-global U8 *ipc_sender2main_shared_memory_base = 0;
-global OS_Handle ipc_main2sender_signal_semaphore = {0};
-global OS_Handle ipc_main2sender_lock_semaphore = {0};
-global U8 *ipc_main2sender_shared_memory_base = 0;
-global U8  ipc_s2m_ring_buffer[MB(4)] = {0};
-global U64 ipc_s2m_ring_write_pos = 0;
-global U64 ipc_s2m_ring_read_pos = 0;
-global OS_Handle ipc_s2m_ring_mutex = {0};
-global OS_Handle ipc_s2m_ring_cv = {0};
+static OS_Handle ipc_sender2main_signal_semaphore = {0};
+static OS_Handle ipc_sender2main_lock_semaphore = {0};
+static U8 *ipc_sender2main_shared_memory_base = 0;
+static OS_Handle ipc_main2sender_signal_semaphore = {0};
+static OS_Handle ipc_main2sender_lock_semaphore = {0};
+static U8 *ipc_main2sender_shared_memory_base = 0;
+static U8  ipc_s2m_ring_buffer[MB(4)] = {0};
+static U64 ipc_s2m_ring_write_pos = 0;
+static U64 ipc_s2m_ring_read_pos = 0;
+static OS_Handle ipc_s2m_ring_mutex = {0};
+static OS_Handle ipc_s2m_ring_cv = {0};
 
 ////////////////////////////////
 //~ rjf: IPC Signaler Thread

@@ -391,7 +391,7 @@ struct DI_Shared
 ////////////////////////////////
 //~ rjf: Globals
 
-global DI_Shared *di_shared = 0;
+static DI_Shared *di_shared = 0;
 thread_static DI_TCTX *di_tctx = 0;
 
 ////////////////////////////////

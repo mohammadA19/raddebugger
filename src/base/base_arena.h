@@ -60,9 +60,9 @@ struct Temp
 ////////////////////////////////
 //~ rjf: Global Defaults
 
-global U64 arena_default_reserve_size = MB(64);
-global U64 arena_default_commit_size  = KB(64);
-global ArenaFlags arena_default_flags = 0;
+static U64 arena_default_reserve_size = MB(64);
+static U64 arena_default_commit_size  = KB(64);
+static ArenaFlags arena_default_flags = 0;
 
 ////////////////////////////////
 //~ rjf: Arena Functions

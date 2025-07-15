@@ -4,7 +4,7 @@
 ////////////////////////////////
 //~ rjf: Lexing/Parsing Data Tables
 
-global read_only String8 e_multichar_symbol_strings[] =
+static read_only String8 e_multichar_symbol_strings[] =
 {
   str8_lit_comp("<<"),
   str8_lit_comp(">>"),
@@ -18,7 +18,7 @@ global read_only String8 e_multichar_symbol_strings[] =
   str8_lit_comp("=>"),
 };
 
-global read_only S64 e_max_precedence = 15;
+static read_only S64 e_max_precedence = 15;
 
 ////////////////////////////////
 //~ rjf: Tokenization Functions

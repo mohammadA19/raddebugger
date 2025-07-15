@@ -1,7 +1,7 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-global read_only LNK_CmdSwitch g_cmd_switch_map[] =
+static read_only LNK_CmdSwitch g_cmd_switch_map[] =
 {
   { LNK_CmdSwitch_Null,               0, "",                     "", ""                                                                                                      },
   { LNK_CmdSwitch_NotImplemented,     0, "NOT_IMPLEMENTED",      "", ""                                                                                                      },
@@ -162,7 +162,7 @@ global read_only LNK_CmdSwitch g_cmd_switch_map[] =
   { LNK_CmdSwitch_Help, 0, "?",    "", "" },
 };
 
-global read_only struct
+static read_only struct
 {
   char         *name;
   LNK_InputType type;
@@ -174,7 +174,7 @@ global read_only struct
   { "res",  LNK_Input_Res },
 };
 
-global read_only struct
+static read_only struct
 {
   char         *name;
   LNK_DebugMode mode;
@@ -186,7 +186,7 @@ global read_only struct
   { "full",     LNK_DebugMode_Full     },
 }; 
 
-global read_only struct
+static read_only struct
 {
    char                 *name;
    LNK_TypeNameHashMode  mode;

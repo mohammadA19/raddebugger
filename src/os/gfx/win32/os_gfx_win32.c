@@ -11,9 +11,9 @@ typedef UINT w32_GetDpiForWindow_Type(HWND hwnd);
 typedef HRESULT w32_GetDpiForMonitor_Type(HMONITOR hmonitor, MONITOR_DPI_TYPE dpiType, UINT *dpiX, UINT *dpiY);
 typedef int w32_GetSystemMetricsForDpi_Type(int nIndex, UINT dpi);
 #define w32_DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 ((void*)-4)
-global w32_GetDpiForWindow_Type *w32_GetDpiForWindow_func = 0;
-global w32_GetDpiForMonitor_Type *w32_GetDpiForMonitor_func = 0;
-global w32_GetSystemMetricsForDpi_Type *w32_GetSystemMetricsForDpi_func = 0;
+static w32_GetDpiForWindow_Type *w32_GetDpiForWindow_func = 0;
+static w32_GetDpiForMonitor_Type *w32_GetDpiForMonitor_func = 0;
+static w32_GetSystemMetricsForDpi_Type *w32_GetSystemMetricsForDpi_func = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers

@@ -752,9 +752,9 @@ read_only global RD_WindowState rd_nil_window_state =
   &rd_nil_window_state,
 };
 
-global RD_State *rd_state = 0;
-global RD_CfgID rd_last_drag_drop_panel = 0;
-global RD_CfgID rd_last_drag_drop_prev_tab = 0;
+static RD_State *rd_state = 0;
+static RD_CfgID rd_last_drag_drop_panel = 0;
+static RD_CfgID rd_last_drag_drop_prev_tab = 0;
 
 ////////////////////////////////
 //~ rjf: Config ID Type Functions

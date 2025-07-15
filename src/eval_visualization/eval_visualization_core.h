@@ -273,13 +273,13 @@ EV_EXPAND_RULE_INFO_FUNCTION_DEF(nil);
 ////////////////////////////////
 //~ rjf: Globals
 
-global read_only EV_ExpandRule ev_nil_expand_rule =
+static read_only EV_ExpandRule ev_nil_expand_rule =
 {
   {0},
   EV_EXPAND_RULE_INFO_FUNCTION_NAME(nil),
 };
 thread_static EV_ExpandRuleTable *ev_view_rule_info_table = 0;
-global read_only EV_Block ev_nil_block =
+static read_only EV_Block ev_nil_block =
 {
   &ev_nil_block,
   &ev_nil_block,

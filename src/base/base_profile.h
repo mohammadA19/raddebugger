@@ -69,8 +69,8 @@ scratch_end(scratch);                                                          \
 //~ rjf: Spall Profile Defines
 
 #if PROFILE_SPALL
-global U64 spall_capturing = 0;
-global SpallProfile spall_profile = {0};
+static U64 spall_capturing = 0;
+static SpallProfile spall_profile = {0};
 thread_static SpallBuffer spall_buffer = {0};
 thread_static U32 spall_tid = 0;
 thread_static U32 spall_pid = 0;

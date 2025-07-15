@@ -1,7 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-global U64 global_update_tick_idx = 0;
+static U64 global_update_tick_idx = 0;
 
 static void
 main_thread_base_entry_point(int arguments_count, char **arguments)

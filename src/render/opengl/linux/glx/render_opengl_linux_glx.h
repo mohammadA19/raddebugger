@@ -19,5 +19,5 @@
 #define GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB 0x00000002
 typedef GLXContext (*glXCreateContextAttribsARBProc)(Display*, GLXFBConfig, GLXContext, Bool, const int*);
 
-global GLXContext r_ogl_lnx_ctx = 0;
+static GLXContext r_ogl_lnx_ctx = 0;
 

@@ -94,7 +94,7 @@ struct GEO_Shared
 //~ rjf: Globals
 
 thread_static GEO_TCTX *geo_tctx = 0;
-global GEO_Shared *geo_shared = 0;
+static GEO_Shared *geo_shared = 0;
 
 ////////////////////////////////
 //~ rjf: Main Layer Initialization

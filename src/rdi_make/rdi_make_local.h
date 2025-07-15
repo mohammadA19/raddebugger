@@ -371,7 +371,7 @@ ASYNC_WORK_DEF(rdim_bake_idx_runs_work);
 ////////////////////////////////
 //~ rjf: Globals
 
-global ASYNC_Root *rdim_local_async_root = 0;
+static ASYNC_Root *rdim_local_async_root = 0;
 
 ////////////////////////////////
 

@@ -6,12 +6,12 @@
 ////////////////////////////////
 //~ rjf: Globals
 
-global pthread_mutex_t lnx_mutex = {0};
-global Arena *lnx_perm_arena = 0;
-global String8List lnx_cmd_line_args = {0};
-global LNX_Entity lnx_entity_buffer[1024];
-global LNX_Entity *lnx_entity_free = 0;
-global String8 lnx_initial_path = {0};
+static pthread_mutex_t lnx_mutex = {0};
+static Arena *lnx_perm_arena = 0;
+static String8List lnx_cmd_line_args = {0};
+static LNX_Entity lnx_entity_buffer[1024];
+static LNX_Entity *lnx_entity_free = 0;
+static String8 lnx_initial_path = {0};
 thread_static LNX_SafeCallChain *lnx_safe_call_chain = 0;
 
 ////////////////////////////////

@@ -274,7 +274,7 @@ struct P2R_SymbolStreamConvertOut
 ////////////////////////////////
 //~ rjf: Globals
 
-global ASYNC_Root *p2r_async_root = 0;
+static ASYNC_Root *p2r_async_root = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers

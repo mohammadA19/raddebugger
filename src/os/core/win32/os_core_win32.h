@@ -90,7 +90,7 @@ struct OS_W32_State
 ////////////////////////////////
 //~ rjf: Globals
 
-global OS_W32_State os_w32_state = {0};
+static OS_W32_State os_w32_state = {0};
 
 ////////////////////////////////
 //~ rjf: File Info Conversion Helpers
