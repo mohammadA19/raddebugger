@@ -83,8 +83,8 @@ struct OS_Event
   B32 right_sided;
   uint32 character;
   uint32 repeat_count;
-  Vec2float pos;
-  Vec2float delta;
+  Vec2<float> pos;
+  Vec2<float> delta;
   String8List strings;
 };
 

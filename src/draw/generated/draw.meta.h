@@ -8,7 +8,7 @@
 
 typedef struct DR_Tex2DSampleKindNode DR_Tex2DSampleKindNode; struct DR_Tex2DSampleKindNode {DR_Tex2DSampleKindNode *next; R_Tex2DSampleKind v;};
 typedef struct DR_XForm2DNode DR_XForm2DNode; struct DR_XForm2DNode {DR_XForm2DNode *next; Mat3x3float v;};
-typedef struct DR_ClipNode DR_ClipNode; struct DR_ClipNode {DR_ClipNode *next; Rng2float v;};
+typedef struct DR_ClipNode DR_ClipNode; struct DR_ClipNode {DR_ClipNode *next; Rng2<float> v;};
 typedef struct DR_TransparencyNode DR_TransparencyNode; struct DR_TransparencyNode {DR_TransparencyNode *next; float v;};
 #define DR_BucketStackDecls struct{\
 DR_Tex2DSampleKindNode *top_tex2d_sample_kind;\

@@ -135,9 +135,9 @@ struct UI_Event
   OS_Modifiers modifiers;
   String8 string;
   String8List paths;
-  Vec2float pos;
-  Vec2float delta_2f32;
-  Vec2uint32 delta_2s32;
+  Vec2<float> pos;
+  Vec2<float> delta_2f32;
+  Vec2<uint32> delta_2s32;
   uint64 timestamp_us;
 };
 
@@ -207,7 +207,7 @@ struct UI_Size
 struct UI_ThemePattern
 {
   String8Array tags;
-  Vec4float linear;
+  Vec4<float> linear;
 };
 
 struct UI_Theme
@@ -359,9 +359,9 @@ struct UI_Box
   UI_Key tags_key;
   String8 string;
   UI_TextAlign text_align;
-  Vec2float fixed_position;
-  Vec2float fixed_size;
-  Vec2float min_size;
+  Vec2<float> fixed_position;
+  Vec2<float> fixed_size;
+  Vec2<float> min_size;
   UI_Size pref_size[Axis2_COUNT];
   Axis2 child_layout_axis;
   OS_Cursor hover_cursor;
@@ -370,9 +370,9 @@ struct UI_Box
   DR_Bucket *draw_bucket;
   UI_BoxCustomDrawFunctionType *custom_draw;
   void *custom_draw_user_data;
-  Vec4float background_color;
-  Vec4float text_color;
-  Vec4float border_color;
+  Vec4<float> background_color;
+  Vec4<float> text_color;
+  Vec4<float> border_color;
   FNT_Tag font;
   float font_size;
   float tab_size;
@@ -386,9 +386,9 @@ struct UI_Box
   //- rjf: per-build artifacts
   DR_FStrList display_fstrs;
   DR_FRunList display_fruns;
-  Rng2float rect;
-  Vec2float fixed_position_animated;
-  Vec2float position_delta;
+  Rng2<float> rect;
+  Vec2<float> fixed_position_animated;
+  Vec2<float> position_delta;
   FuzzyMatchRangeList fuzzy_match_ranges;
   
   //- rjf: persistent data
@@ -401,9 +401,9 @@ struct UI_Box
   float focus_hot_t;
   float focus_active_t;
   float focus_active_disabled_t;
-  Vec2float view_off;
-  Vec2float view_off_target;
-  Vec2float view_bounds;
+  Vec2<float> view_off;
+  Vec2<float> view_off_target;
+  Vec2<float> view_bounds;
   UI_Key default_nav_focus_hot_key;
   UI_Key default_nav_focus_active_key;
   UI_Key default_nav_focus_next_hot_key;
@@ -495,7 +495,7 @@ struct UI_Signal
 {
   UI_Box *box;
   OS_Modifiers event_flags;
-  Vec2uint16 scroll;
+  Vec2<uint16> scroll;
   UI_SignalFlags f;
 };
 
@@ -514,7 +514,7 @@ struct UI_Signal
 struct UI_Nav
 {
   B32 moved;
-  Vec2uint64 new_p;
+  Vec2<uint64> new_p;
 };
 
 ////////////////////////////////
@@ -587,8 +587,8 @@ struct UI_ThemePatternCacheNode
   UI_ThemePatternCacheNode *lru_prev;
   uint64 last_build_index_accessed;
   UI_Key key;
-  Vec4float target_rgba;
-  Vec4float current_rgba;
+  Vec4<float> target_rgba;
+  Vec4<float> current_rgba;
 };
 
 struct UI_ThemePatternCacheSlot
@@ -666,7 +666,7 @@ struct UI_State
   UI_AnimationInfo animation_info;
   OS_Handle window;
   UI_EventList *events;
-  Vec2float mouse;
+  Vec2<float> mouse;
   float animation_dt;
   float default_animation_rate;
   
@@ -677,8 +677,8 @@ struct UI_State
   UI_Key clipboard_copy_key;
   uint64 press_timestamp_history_us[UI_MouseButtonKind_COUNT][3];
   UI_Key press_key_history[UI_MouseButtonKind_COUNT][3];
-  Vec2float press_pos_history[UI_MouseButtonKind_COUNT][3];
-  Vec2float drag_start_mouse;
+  Vec2<float> press_pos_history[UI_MouseButtonKind_COUNT][3];
+  Vec2<float> drag_start_mouse;
   Arena *drag_state_arena;
   String8 drag_state_data;
   Arena *string_hover_arena;
@@ -696,8 +696,8 @@ struct UI_State
   //- rjf: context menu state
   UI_Key ctx_menu_anchor_key;
   UI_Key next_ctx_menu_anchor_key;
-  Vec2float ctx_menu_anchor_box_last_pos;
-  Vec2float ctx_menu_anchor_off;
+  Vec2<float> ctx_menu_anchor_box_last_pos;
+  Vec2<float> ctx_menu_anchor_off;
   B32 ctx_menu_open;
   B32 next_ctx_menu_open;
   float ctx_menu_open_t;

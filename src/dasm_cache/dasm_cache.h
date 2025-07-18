@@ -104,7 +104,7 @@ struct DASM_Line
   uint32 code_off;
   DASM_LineFlags flags;
   uint64 addr;
-  Rng1uint64 text_range;
+  Rng1<uint64> text_range;
 };
 
 struct DASM_LineChunkNode

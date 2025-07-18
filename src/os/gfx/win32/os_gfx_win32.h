@@ -29,7 +29,7 @@
 struct OS_W32_TitleBarClientArea
 {
   OS_W32_TitleBarClientArea *next;
-  Rng2float rect;
+  Rng2<float> rect;
 };
 
 struct OS_W32_Window

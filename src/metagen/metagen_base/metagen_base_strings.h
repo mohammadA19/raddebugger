@@ -122,7 +122,7 @@ struct UnicodeDecode
 struct FuzzyMatchRangeNode
 {
   FuzzyMatchRangeNode *next;
-  Rng1uint64 range;
+  Rng1<uint64> range;
 };
 
 struct FuzzyMatchRangeList

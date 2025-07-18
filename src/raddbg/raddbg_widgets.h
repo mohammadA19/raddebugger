@@ -91,9 +91,9 @@ struct RD_CodeSliceParams
 {
   // rjf: content
   RD_CodeSliceFlags flags;
-  Rng1uint64 line_num_range;
+  Rng1<uint64> line_num_range;
   String8 *line_text;
-  Rng1uint64 *line_ranges;
+  Rng1<uint64> *line_ranges;
   TXT_TokenArray *line_tokens;
   RD_CfgList *line_bps;
   CTRL_EntityList *line_ips;

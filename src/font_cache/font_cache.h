@@ -27,8 +27,8 @@ struct FNT_Tag
 struct FNT_Piece
 {
   R_Handle texture;
-  Rng2uint16 subrect;
-  Vec2uint16 offset;
+  Rng2<uint16> subrect;
+  Vec2<uint16> offset;
   float advance;
   uint16 decode_size;
 };
@@ -58,7 +58,7 @@ struct FNT_PieceArray
 struct FNT_Run
 {
   FNT_PieceArray pieces;
-  Vec2float dim;
+  Vec2<float> dim;
   float ascent;
   float descent;
 };
@@ -88,8 +88,8 @@ struct FNT_FontHashSlot
 
 struct FNT_RasterCacheInfo
 {
-  Rng2uint16 subrect;
-  Vec2uint16 raster_dim;
+  Rng2<uint16> subrect;
+  Vec2<uint16> raster_dim;
   uint16 atlas_num;
   float advance;
 };
@@ -160,7 +160,7 @@ struct FNT_AtlasRegionNode
 {
   FNT_AtlasRegionNode *parent;
   FNT_AtlasRegionNode *children[Corner_COUNT];
-  Vec2uint16 max_free_size[Corner_COUNT];
+  Vec2<uint16> max_free_size[Corner_COUNT];
   FNT_AtlasRegionNodeFlags flags;
   uint64 num_allocated_descendants;
 };
@@ -170,7 +170,7 @@ struct FNT_Atlas
   FNT_Atlas *next;
   FNT_Atlas *prev;
   R_Handle texture;
-  Vec2uint16 root_dim;
+  Vec2<uint16> root_dim;
   FNT_AtlasRegionNode *root;
 };
 

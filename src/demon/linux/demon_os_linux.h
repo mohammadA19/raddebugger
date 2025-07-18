@@ -54,7 +54,7 @@ struct DEMON_LNX_ProcessAux{
 };
 
 struct DEMON_LNX_PhdrInfo{
-  Rng1uint64 range;
+  Rng1<uint64> range;
   uint64 dynamic;
 };
 

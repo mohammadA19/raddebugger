@@ -12,10 +12,10 @@ typedef struct COFF_FileHeaderInfo
   uint64              section_count_no_null;
   uint64              symbol_size;
   uint64              symbol_count;
-  Rng1uint64          header_range;
-  Rng1uint64          section_table_range;
-  Rng1uint64          symbol_table_range;
-  Rng1uint64          string_table_range;
+  Rng1<uint64>          header_range;
+  Rng1<uint64>          section_table_range;
+  Rng1<uint64>          symbol_table_range;
+  Rng1<uint64>          string_table_range;
 } COFF_FileHeaderInfo;
 
 ////////////////////////////////
@@ -173,7 +173,7 @@ typedef struct COFF_ParsedArchiveMemberHeader
   uint32            group_id;       // unix artifact that does not have meaning on windows
   String8        mode;           // octal representation the members file mode
   B32            is_end_correct; // set to true if found correct signature after header
-  Rng1uint64        data_range;
+  Rng1<uint64>        data_range;
 } COFF_ParsedArchiveMemberHeader;
 
 typedef struct COFF_ParsedArchiveImportHeader

@@ -9,145 +9,80 @@
 
 //- rjf: 2-vectors
 
-union Vec2float
+[Union]
+struct Vec2<T>
 {
-  struct
+  [CRepr] struct
   {
-    float x;
-    float y;
+    T x;
+    T y;
   };
-  float v[2];
-};
-
-union Vec2uint64
-{
-  struct
-  {
-    uint64 x;
-    uint64 y;
-  };
-  uint64 v[2];
-};
-
-union Vec2uint32
-{
-  struct
-  {
-    uint32 x;
-    uint32 y;
-  };
-  uint32 v[2];
-};
-
-union Vec2uint16
-{
-  struct
-  {
-    uint16 x;
-    uint16 y;
-  };
-  uint16 v[2];
-};
+  T[2] v;
+}
 
 //- rjf: 3-vectors
 
-union Vec3float
+[Union]
+struct Vec3<T>
 {
-  struct
+  [CRepr] struct
   {
-    float x;
-    float y;
-    float z;
+    T x;
+    T y;
+    T z;
   };
-  struct
+
+  [CRepr] struct
   {
-    Vec2float xy;
-    float _z0;
+    Vec2<T> xy;
+    T _z0;
   };
-  struct
+
+  [CRepr] struct
   {
     float _x0;
-    Vec2float yz;
-  };
-  float v[3];
-};
+    Vec2<T> yz;
+  }
 
-union Vec3uint32
-{
-  struct
-  {
-    uint32 x;
-    uint32 y;
-    uint32 z;
-  };
-  struct
-  {
-    Vec2uint32 xy;
-    uint32 _z0;
-  };
-  struct
-  {
-    uint32 _x0;
-    Vec2uint32 yz;
-  };
-  uint32 v[3];
-};
+  T[3] v;
+}
 
 //- rjf: 4-vectors
 
-union Vec4float
+[Union]
+struct Vec4<T>
 {
+  [CRepr]
   struct
   {
-    float x;
-    float y;
-    float z;
-    float w;
+    T x;
+    T y;
+    T z;
+    T w;
   };
-  struct
-  {
-    Vec2float xy;
-    Vec2float zw;
-  };
-  struct
-  {
-    Vec3float xyz;
-    float _z0;
-  };
-  struct
-  {
-    float _x0;
-    Vec3float yzw;
-  };
-  float v[4];
-};
 
-union Vec4uint32
-{
+  [CRepr]
   struct
   {
-    uint32 x;
-    uint32 y;
-    uint32 z;
-    uint32 w;
+    Vec2<T> xy;
+    Vec2<T> zw;
   };
+
+  [CRepr]
   struct
   {
-    Vec2uint32 xy;
-    Vec2uint32 zw;
+    Vec3<T> xyz;
+    T _z0;
   };
+
+  [CRepr]
   struct
   {
-    Vec3uint32 xyz;
-    uint32 _z0;
+    T _x0;
+    Vec3<T> yzw;
   };
-  struct
-  {
-    uint32 _x0;
-    Vec3uint32 yzw;
-  };
-  uint32 v[4];
-};
+  T[4] v;
+}
 
 ////////////////////////////////
 //~ rjf: Matrix Types
@@ -167,186 +102,66 @@ struct Mat4x4float
 
 //- rjf: 1-range
 
-union Rng1uint32
+[Union]
+struct Rng1<T>
 {
+  [CRepr]
   struct
   {
-    uint32 min;
-    uint32 max;
+    T min;
+    T max;
   };
-  uint32 v[2];
-};
 
-union Rng1uint32
-{
-  struct
-  {
-    uint32 min;
-    uint32 max;
-  };
-  uint32 v[2];
-};
-
-union Rng1uint64
-{
-  struct
-  {
-    uint64 min;
-    uint64 max;
-  };
-  uint64 v[2];
-};
-
-union Rng1uint64
-{
-  struct
-  {
-    uint64 min;
-    uint64 max;
-  };
-  uint64 v[2];
-};
-
-union Rng1float
-{
-  struct
-  {
-    float min;
-    float max;
-  };
-  float v[2];
-};
+  T[2] v;
+}
 
 //- rjf: 2-range (rectangles)
 
-union Rng2uint16
+[Union]
+struct Rng2<T>
 {
+  [CRepr]
   struct
   {
-    Vec2uint16 min;
-    Vec2uint16 max;
+    Vec<T> min;
+    Vec<T> max;
   };
-  struct
-  {
-    Vec2uint16 p0;
-    Vec2uint16 p1;
-  };
-  struct
-  {
-    uint16 x0;
-    uint16 y0;
-    uint16 x1;
-    uint16 y1;
-  };
-  Vec2uint16 v[2];
-};
 
-union Rng2uint32
-{
+  [CRepr]
   struct
   {
-    Vec2uint32 min;
-    Vec2uint32 max;
+    Vec<T> p0;
+    Vec<T> p1;
   };
-  struct
-  {
-    Vec2uint32 p0;
-    Vec2uint32 p1;
-  };
-  struct
-  {
-    uint32 x0;
-    uint32 y0;
-    uint32 x1;
-    uint32 y1;
-  };
-  Vec2uint32 v[2];
-};
 
-union Rng2float
-{
+  [CRepr]
   struct
   {
-    Vec2float min;
-    Vec2float max;
+    T x0;
+    T y0;
+    T x1;
+    T y1;
   };
-  struct
-  {
-    Vec2float p0;
-    Vec2float p1;
-  };
-  struct
-  {
-    float x0;
-    float y0;
-    float x1;
-    float y1;
-  };
-  Vec2float v[2];
-};
 
-union Rng2uint64
-{
-  struct
-  {
-    Vec2uint64 min;
-    Vec2uint64 max;
-  };
-  struct
-  {
-    Vec2uint64 p0;
-    Vec2uint64 p1;
-  };
-  struct
-  {
-    uint64 x0;
-    uint64 y0;
-    uint64 x1;
-    uint64 y1;
-  };
-  Vec2uint64 v[2];
-};
+  Vec2<T>[2] v;
+}
 
 ////////////////////////////////
 //~ rjf: List Types
 
-struct Rng1uint64Node
+struct Node<T>
 {
-  Rng1uint64Node *next;
-  Rng1uint64 v;
-};
+  Node<T>* next;
+  T v;
+}
 
-struct Rng1uint64List
+struct List<T>
 {
+  Node<T>* first;
+  Node<T>* last;
   uint64 count;
-  Rng1uint64Node *first;
-  Rng1uint64Node *last;
-};
+}
 
-struct Rng1uint64Array
-{
-  Rng1uint64 *v;
-  uint64 count;
-};
-
-struct Rng1uint64Node
-{
-  Rng1uint64Node *next;
-  Rng1uint64 v;
-};
-
-struct Rng1uint64List
-{
-  Rng1uint64Node *first;
-  Rng1uint64Node *last;
-  uint64 count;
-};
-
-struct Rng1uint64Array
-{
-  Rng1uint64 *v;
-  uint64 count;
-};
 
 ////////////////////////////////
 //~ rjf: Scalar Ops

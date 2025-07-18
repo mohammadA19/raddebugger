@@ -125,7 +125,7 @@ struct DMN_W32_Entity
     thread;
     struct
     {
-      Rng1uint64 vaddr_range;
+      Rng1<uint64> vaddr_range;
       uint64 address_of_name_pointer;
       B32 is_main;
       B32 name_is_unicode;

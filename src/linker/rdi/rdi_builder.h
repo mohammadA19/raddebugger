@@ -58,7 +58,7 @@ typedef struct RDIB_EvalBytecode
 typedef struct RDIB_Location
 {
   RDI_LocationKind kind;
-  Rng1uint64List      ranges;
+  Rng1<uint64List>      ranges;
   union {
     struct {
       RDI_RegCode reg_code;
@@ -242,7 +242,7 @@ typedef struct RDIB_Scope
   struct RDIB_Scope      *last_child;
   struct RDIB_Scope      *next_sibling;
   struct RDIB_Procedure  *container_proc;
-  Rng1uint64List             ranges;
+  Rng1<uint64List>             ranges;
   RDIB_Variable          *local_first;
   RDIB_Variable          *local_last;
   uint64                     local_count;
@@ -441,7 +441,7 @@ typedef struct RDIB_Unit
   RDI_Language    language;
   RDIB_LineTable *line_table;
   uint64             virt_range_count;
-  Rng1uint64        *virt_ranges;
+  Rng1<uint64>        *virt_ranges;
 
   struct RDIB_UnitChunk *chunk;
 } RDIB_Unit;
@@ -649,7 +649,7 @@ typedef RDIB_STRING_MAP_UPDATE_FUNC(RDIB_StringMapUpdateFunc);
 typedef struct
 {
   RDIB_StringMap        *string_map;
-  Rng1uint64               *ranges;
+  Rng1<uint64>               *ranges;
   uint64                   *counts;
   uint64                   *offsets;
   RDIB_StringMapBucket **result;
@@ -661,13 +661,13 @@ typedef struct
   uint64                    string_data_size;
   uint8                    *string_data;
   RDIB_StringMapBucket **buckets;
-  Rng1uint64               *ranges;
+  Rng1<uint64>               *ranges;
 } RDIB_CopyStringDataTask;
 
 typedef struct
 {
   uint64                    chunk_idx_opl;
-  Rng1uint64               *ranges;
+  Rng1<uint64>               *ranges;
   RDIB_StringMapBucket **src;
   RDIB_StringMapBucket **dst;
   uint32                   *chunk_histo;
@@ -815,7 +815,7 @@ typedef struct
 
 typedef struct
 {
-  Rng1uint64         *ranges;
+  Rng1<uint64>         *ranges;
   uint64             *counts;
   uint64             *offsets;
   RDIB_TypeChunk **type_chunks;
@@ -847,7 +847,7 @@ typedef struct
 typedef struct
 {
   RDIB_StringMap            *string_map;
-  Rng1uint64                   *ranges;
+  Rng1<uint64>                   *ranges;
   RDIB_StringMapUpdateFunc  *string_map_update_func;
   RDIB_StringMapBucket     **free_buckets;
   uint64                       *insert_counts;
@@ -870,7 +870,7 @@ typedef struct
 typedef struct
 {
   RDIB_StringMap  *string_map;
-  Rng1uint64         *ranges;
+  Rng1<uint64>         *ranges;
   RDIB_TypeChunk **chunks;
   String8List     *data_lists;
 } RDIB_BuildTypeDataTask;
@@ -878,7 +878,7 @@ typedef struct
 typedef struct
 {
   RDIB_StringMap *string_map;
-  Rng1uint64        *ranges;
+  Rng1<uint64>        *ranges;
   union {
     struct {
       RDIB_VariableChunk **gvars_rdib;
@@ -916,7 +916,7 @@ typedef union
   struct {
     uint64            *counts;
     uint64            *offsets;
-    Rng1uint64        *ranges;
+    Rng1<uint64>        *ranges;
     RDIB_VMapRange *vmap;
     union {
       RDIB_UnitChunk     **unit_chunks;
@@ -938,7 +938,7 @@ typedef struct
   RDI_NameMapKind       name_map_kind;
   RDIB_IndexRunMap     *idx_run_map;
   RDIB_IndexRunBucket **free_buckets;
-  Rng1uint64              *ranges;
+  Rng1<uint64>              *ranges;
   union {
     RDIB_TypeChunk       **type_chunks;
     RDIB_StringMapBucket **name_map_buckets;
@@ -948,14 +948,14 @@ typedef struct
 typedef struct
 {
   RDIB_IndexRunBucket **buckets;
-  Rng1uint64             *ranges;
+  Rng1<uint64>             *ranges;
   uint32                 *output_array;
 } RDIB_IdxRunCopyTask;
 
 typedef struct
 {
   RDIB_IndexRunMap     *idx_run_map;
-  Rng1uint64              *ranges;
+  Rng1<uint64>              *ranges;
   uint64                  *counts;
   uint64                  *offsets;
   RDIB_IndexRunBucket **result;
@@ -964,7 +964,7 @@ typedef struct
 typedef struct
 {
   uint64                   chunk_idx_opl;
-  Rng1uint64              *ranges;
+  Rng1<uint64>              *ranges;
   RDIB_IndexRunBucket **src;
   RDIB_IndexRunBucket **dst;
   uint32                  *chunk_histo;
@@ -1004,7 +1004,7 @@ typedef struct
 typedef struct
 {
   RDIB_LineTableChunk **chunks;
-  Rng1uint64              *ranges;
+  Rng1<uint64>              *ranges;
 
   uint64       *out_line_table_counts;
   uint64      **out_line_table_voffs;
@@ -1013,7 +1013,7 @@ typedef struct
 
 typedef struct
 {
-  Rng1uint64               *ranges;
+  Rng1<uint64>               *ranges;
   RDIB_StringMap        *string_map;
   RDIB_PathTree         *path_tree;
   RDIB_SourceFileChunk **src_file_chunks;

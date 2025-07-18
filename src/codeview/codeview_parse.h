@@ -103,9 +103,9 @@ struct CV_C13InlineSiteDecoder
   B32                code_length_changed;
   B32                ln_changed;
   B32                file_off_changed;
-  Rng1uint64            last_range;
+  Rng1<uint64>            last_range;
   uint32                file_count;
-  Rng1uint64            file_last_range;
+  Rng1<uint64>            file_last_range;
   uint64                file_line_count;
   uint64                file_last_ln;
 };
@@ -121,7 +121,7 @@ enum CV_C13InlineSiteDecoderStepFlags : uint32
 struct CV_C13InlineSiteDecoderStep
 {
   CV_C13InlineSiteDecoderStepFlags flags;
-  Rng1uint64                     range;
+  Rng1<uint64>                     range;
   uint64                         line_voff;
   uint64                         line_voff_end;
   uint64                         ln;

@@ -9,7 +9,7 @@
 typedef struct ELF_BinInfo
 {
   ELF_Hdr64 hdr;
-  Rng1uint64   sh_name_range;
+  Rng1<uint64>   sh_name_range;
 } ELF_BinInfo;
 
 typedef struct ELF_Shdr64Array

@@ -156,7 +156,7 @@ struct EV_BlockTree
 struct EV_BlockRange
 {
   EV_Block *block;
-  Rng1uint64 range;
+  Rng1<uint64> range;
 };
 
 struct EV_BlockRangeNode

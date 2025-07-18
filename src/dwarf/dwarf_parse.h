@@ -32,10 +32,10 @@ typedef struct DW_ListUnitInput
   uint64           str_offset_count;
   uint64           rnglist_count;
   uint64           loclist_count;
-  Rng1uint64Array  addr_ranges;
-  Rng1uint64Array  str_offset_ranges;
-  Rng1uint64Array  rnglist_ranges;
-  Rng1uint64Array  loclist_ranges;
+  Span<Rng1<uint64>>  addr_ranges;
+  Span<Rng1<uint64>>  str_offset_ranges;
+  Span<Rng1<uint64>>  rnglist_ranges;
+  Span<Rng1<uint64>>  loclist_ranges;
   DW_ListUnit  *addrs;
   DW_ListUnit  *str_offsets;
   DW_ListUnit  *rnglists;
@@ -142,7 +142,7 @@ typedef struct DW_TagNode
 
 typedef struct DW_Loc
 {
-  Rng1uint64 range;
+  Rng1<uint64> range;
   String8 expr;
 } DW_Loc;
 
@@ -168,7 +168,7 @@ typedef struct DW_CompUnit
   DW_Format       format;
   uint64             address_size;
   uint64             abbrev_off;
-  Rng1uint64         info_range;
+  Rng1<uint64>         info_range;
   uint64             first_tag_info_off;
   DW_AbbrevTable  abbrev_table;
   String8         abbrev_data;
@@ -219,7 +219,7 @@ typedef struct DW_LineVMFileArray
 
 typedef struct DW_LineVMHeader
 {
-  Rng1uint64             unit_range;
+  Rng1<uint64>             unit_range;
   DW_Version          version;
   uint8                  address_size; // Duplicates size from the compilation unit but is needed to support stripped exe that just have .debug_line and .debug_line_str.
   uint8                  segment_selector_size;

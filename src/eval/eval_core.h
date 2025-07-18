@@ -29,7 +29,7 @@ struct E_Msg
 {
   E_Msg *next;
   E_MsgKind kind;
-  Rng1uint64 range;
+  Rng1<uint64> range;
   String8 text;
 };
 
@@ -187,7 +187,7 @@ struct E_TypeKeyList
 struct E_Token
 {
   E_TokenKind kind;
-  Rng1uint64 range;
+  Rng1<uint64> range;
 };
 
 struct E_TokenChunkNode
@@ -232,7 +232,7 @@ struct E_Expr
   E_Expr *next;
   E_Expr *prev;
   E_Expr *ref;
-  Rng1uint64 range;
+  Rng1<uint64> range;
   E_ExprKind kind;
   E_Mode mode;
   E_Space space;
@@ -436,7 +436,7 @@ typedef E_TYPE_ACCESS_FUNCTION_SIG(E_TypeAccessFunctionType);
 #define E_TYPE_EXPAND_INFO_FUNCTION_DEF(name) internal E_TYPE_EXPAND_INFO_FUNCTION_SIG(E_TYPE_EXPAND_INFO_FUNCTION_NAME(name))
 typedef E_TYPE_EXPAND_INFO_FUNCTION_SIG(E_TypeExpandInfoFunctionType);
 
-#define E_TYPE_EXPAND_RANGE_FUNCTION_SIG(name) void name(Arena *arena, void *user_data, E_Eval eval, String8 filter, Rng1uint64 idx_range, E_Eval *evals_out)
+#define E_TYPE_EXPAND_RANGE_FUNCTION_SIG(name) void name(Arena *arena, void *user_data, E_Eval eval, String8 filter, Rng1<uint64> idx_range, E_Eval *evals_out)
 #define E_TYPE_EXPAND_RANGE_FUNCTION_NAME(name) e_type_expand_range__##name
 #define E_TYPE_EXPAND_RANGE_FUNCTION_DEF(name) internal E_TYPE_EXPAND_RANGE_FUNCTION_SIG(E_TYPE_EXPAND_RANGE_FUNCTION_NAME(name))
 typedef E_TYPE_EXPAND_RANGE_FUNCTION_SIG(E_TypeExpandRangeFunctionType);
@@ -521,7 +521,7 @@ struct E_ConsTypeSlot
 struct E_Module
 {
   RDI_Parsed *rdi;
-  Rng1uint64 vaddr_range;
+  Rng1<uint64> vaddr_range;
   Arch arch;
   E_Space space;
 };
@@ -676,7 +676,7 @@ struct E_AutoHookParams
 //~ rjf: Evaluation Context
 
 typedef uint64 E_SpaceGenFunction(void *user_data, E_Space space);
-typedef B32 E_SpaceRWFunction(void *user_data, E_Space space, void *out, Rng1uint64 offset_range);
+typedef B32 E_SpaceRWFunction(void *user_data, E_Space space, void *out, Rng1<uint64> offset_range);
 
 //- rjf: base context
 

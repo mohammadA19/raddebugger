@@ -25,7 +25,7 @@ struct TweakfloatInfo
 {
   String8 name;
   float default_value;
-  Rng1float value_range;
+  Rng1<float> value_range;
   float *value_ptr;
 };
 
@@ -205,13 +205,13 @@ read_only global Type *type_kind_type_table[] =
   &type_nil,
 };
 
-//- rjf: Rng1uint64
-struct_members(Rng1uint64)
+//- rjf: Rng1<uint64>
+struct_members(Rng1<uint64>)
 {
-  member_lit_comp(Rng1uint64, type(uint64), min),
-  member_lit_comp(Rng1uint64, type(uint64), max),
+  member_lit_comp(Rng1<uint64>, type(uint64), min),
+  member_lit_comp(Rng1<uint64>, type(uint64), max),
 };
-struct_type(Rng1uint64);
+struct_type(Rng1<uint64>);
 
 //- rjf: String8
 ptr_type(String8__str_ptr_type, type(uint8), str8_lit_comp("size"));

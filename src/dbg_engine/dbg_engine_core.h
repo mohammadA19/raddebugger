@@ -112,7 +112,7 @@ struct D_Line
 {
   String8 file_path;
   TxtPt pt;
-  Rng1uint64 voff_range;
+  Rng1<uint64> voff_range;
   DI_Key dbgi_key;
 };
 

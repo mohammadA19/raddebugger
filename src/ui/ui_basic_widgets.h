@@ -45,11 +45,11 @@ struct UI_ScrollListRowBlockArray
 struct UI_ScrollListParams
 {
   UI_ScrollListFlags flags;
-  Vec2float dim_px;
+  Vec2<float> dim_px;
   float row_height_px;
   UI_ScrollListRowBlockArray row_blocks;
-  Rng2uint64 cursor_range;
-  Rng1uint64 item_range;
+  Rng2<uint64> cursor_range;
+  Rng1<uint64> item_range;
   B32 cursor_min_is_empty_selection[Axis2_COUNT];
 };
 

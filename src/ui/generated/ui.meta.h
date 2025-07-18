@@ -25,9 +25,9 @@ typedef struct UI_FastpathCodepointNode UI_FastpathCodepointNode; struct UI_Fast
 typedef struct UI_GroupKeyNode UI_GroupKeyNode; struct UI_GroupKeyNode{UI_GroupKeyNode *next; UI_Key v;};
 typedef struct UI_TransparencyNode UI_TransparencyNode; struct UI_TransparencyNode{UI_TransparencyNode *next; float v;};
 typedef struct UI_TagNode UI_TagNode; struct UI_TagNode{UI_TagNode *next; String8 v;};
-typedef struct UI_BackgroundColorNode UI_BackgroundColorNode; struct UI_BackgroundColorNode{UI_BackgroundColorNode *next; Vec4float v;};
-typedef struct UI_TextColorNode UI_TextColorNode; struct UI_TextColorNode{UI_TextColorNode *next; Vec4float v;};
-typedef struct UI_BorderColorNode UI_BorderColorNode; struct UI_BorderColorNode{UI_BorderColorNode *next; Vec4float v;};
+typedef struct UI_BackgroundColorNode UI_BackgroundColorNode; struct UI_BackgroundColorNode{UI_BackgroundColorNode *next; Vec4<float> v;};
+typedef struct UI_TextColorNode UI_TextColorNode; struct UI_TextColorNode{UI_TextColorNode *next; Vec4<float> v;};
+typedef struct UI_BorderColorNode UI_BorderColorNode; struct UI_BorderColorNode{UI_BorderColorNode *next; Vec4<float> v;};
 typedef struct UI_SquishNode UI_SquishNode; struct UI_SquishNode{UI_SquishNode *next; float v;};
 typedef struct UI_HoverCursorNode UI_HoverCursorNode; struct UI_HoverCursorNode{UI_HoverCursorNode *next; OS_Cursor v;};
 typedef struct UI_FontNode UI_FontNode; struct UI_FontNode{UI_FontNode *next; FNT_Tag v;};
@@ -139,9 +139,9 @@ struct { UI_FastpathCodepointNode *top; uint32 bottom_val; UI_FastpathCodepointN
 struct { UI_GroupKeyNode *top; UI_Key bottom_val; UI_GroupKeyNode *free; uint64 gen; B32 auto_pop; } group_key_stack;\
 struct { UI_TransparencyNode *top; float bottom_val; UI_TransparencyNode *free; uint64 gen; B32 auto_pop; } transparency_stack;\
 struct { UI_TagNode *top; String8 bottom_val; UI_TagNode *free; uint64 gen; B32 auto_pop; } tag_stack;\
-struct { UI_BackgroundColorNode *top; Vec4float bottom_val; UI_BackgroundColorNode *free; uint64 gen; B32 auto_pop; } background_color_stack;\
-struct { UI_TextColorNode *top; Vec4float bottom_val; UI_TextColorNode *free; uint64 gen; B32 auto_pop; } text_color_stack;\
-struct { UI_BorderColorNode *top; Vec4float bottom_val; UI_BorderColorNode *free; uint64 gen; B32 auto_pop; } border_color_stack;\
+struct { UI_BackgroundColorNode *top; Vec4<float> bottom_val; UI_BackgroundColorNode *free; uint64 gen; B32 auto_pop; } background_color_stack;\
+struct { UI_TextColorNode *top; Vec4<float> bottom_val; UI_TextColorNode *free; uint64 gen; B32 auto_pop; } text_color_stack;\
+struct { UI_BorderColorNode *top; Vec4<float> bottom_val; UI_BorderColorNode *free; uint64 gen; B32 auto_pop; } border_color_stack;\
 struct { UI_SquishNode *top; float bottom_val; UI_SquishNode *free; uint64 gen; B32 auto_pop; } squish_stack;\
 struct { UI_HoverCursorNode *top; OS_Cursor bottom_val; UI_HoverCursorNode *free; uint64 gen; B32 auto_pop; } hover_cursor_stack;\
 struct { UI_FontNode *top; FNT_Tag bottom_val; UI_FontNode *free; uint64 gen; B32 auto_pop; } font_stack;\

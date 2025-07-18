@@ -25,22 +25,22 @@
 
 struct R_D3D11_Uniforms_Rect
 {
-  Vec2float viewport_size;
+  Vec2<float> viewport_size;
   float opacity;
   float _padding0_;
   Mat4x4float texture_sample_channel_map;
-  Vec2float texture_t2d_size;
-  Vec2float translate;
-  Vec4float xform[3];
-  Vec2float xform_scale;
+  Vec2<float> texture_t2d_size;
+  Vec2<float> translate;
+  Vec4<float> xform[3];
+  Vec2<float> xform_scale;
 };
 
 struct R_D3D11_Uniforms_BlurPass
 {
-  Rng2float rect;
-  Vec4float corner_radii;
-  Vec2float direction;
-  Vec2float viewport_size;
+  Rng2<float> rect;
+  Vec4<float> corner_radii;
+  Vec2<float> direction;
+  Vec2<float> viewport_size;
   uint32 blur_count;
   uint8 _padding0_[204];
 };
@@ -49,7 +49,7 @@ StaticAssert(sizeof(R_D3D11_Uniforms_BlurPass) % 256 == 0, NotAligned); // const
 struct R_D3D11_Uniforms_Blur
 {
   R_D3D11_Uniforms_BlurPass passes[Axis2_COUNT];
-  Vec4float kernel[32];
+  Vec4<float> kernel[32];
 };
 
 struct R_D3D11_Uniforms_Mesh
@@ -67,7 +67,7 @@ struct R_D3D11_Tex2D
   ID3D11Texture2D *texture;
   ID3D11ShaderResourceView *view;
   R_ResourceKind kind;
-  Vec2uint32 size;
+  Vec2<uint32> size;
   R_Tex2DFormat format;
 };
 
@@ -107,7 +107,7 @@ struct R_D3D11_Window
   ID3D11ShaderResourceView *geo3d_depth_srv;
   
   // rjf: last state
-  Vec2uint32 last_resolution;
+  Vec2<uint32> last_resolution;
 };
 
 struct R_D3D11_FlushBuffer

@@ -121,7 +121,7 @@ typedef struct
   MSF_PageList     page_list;
   MSF_UInt         stream_pos;
   String8          data;
-  Rng1uint64         *range_arr;
+  Rng1<uint64>         *range_arr;
 } MSF_WriteTask;
 
 ////////////////////////////////

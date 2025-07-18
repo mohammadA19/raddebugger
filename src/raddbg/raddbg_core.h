@@ -84,7 +84,7 @@ enum RD_EvalSpaceKind : uint64
 ////////////////////////////////
 //~ rjf: View UI Hook Types
 
-#define RD_VIEW_UI_FUNCTION_SIG(name) void name(E_Eval eval, Rng2float rect)
+#define RD_VIEW_UI_FUNCTION_SIG(name) void name(E_Eval eval, Rng2<float> rect)
 #define RD_VIEW_UI_FUNCTION_NAME(name) rd_view_ui__##name
 #define RD_VIEW_UI_FUNCTION_DEF(name) internal RD_VIEW_UI_FUNCTION_SIG(RD_VIEW_UI_FUNCTION_NAME(name))
 typedef RD_VIEW_UI_FUNCTION_SIG(RD_ViewUIFunctionType);
@@ -154,7 +154,7 @@ struct RD_AutocompCursorInfo
 {
   String8 list_expr;
   String8 filter;
-  Rng1uint64 replaced_range;
+  Rng1<uint64> replaced_range;
   String8 callee_expr;
   MD_Node *arg_schema;
 };
@@ -405,11 +405,11 @@ struct RD_WindowState
   float last_dpi;
   B32 window_temporarily_focused_ipc;
   B32 window_layout_reset;
-  Rng2float last_window_rect;
+  Rng2<float> last_window_rect;
   
   // rjf: theme (recomputed each frame)
   UI_Theme *theme;
-  Vec4float theme_code_colors[RD_CodeColorSlot_COUNT];
+  Vec4<float> theme_code_colors[RD_CodeColorSlot_COUNT];
   
   // rjf: font raster flags (recomputed each frame)
   FNT_RasterFlags font_slot_raster_flags[RD_FontSlot_COUNT];
@@ -437,7 +437,7 @@ struct RD_WindowState
   // rjf: hover eval state
   B32 hover_eval_focused;
   Arena *hover_eval_arena;
-  Vec2float hover_eval_spawn_pos;
+  Vec2<float> hover_eval_spawn_pos;
   String8 hover_eval_string;
   uint64 hover_eval_firstt_us;
   uint64 hover_eval_lastt_us;

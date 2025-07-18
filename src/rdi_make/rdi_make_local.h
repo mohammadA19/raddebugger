@@ -168,7 +168,7 @@ struct RDIM_JoinBakeStringMapSlotsIn
   RDIM_BakeStringMapLoose **src_maps;
   uint64 src_maps_count;
   RDIM_BakeStringMapLoose *dst_map;
-  Rng1uint64 slot_idx_range;
+  Rng1<uint64> slot_idx_range;
 };
 
 //- rjf: string map sorting task types

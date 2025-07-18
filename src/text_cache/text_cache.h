@@ -33,7 +33,7 @@ enum TXT_TokenKind
 struct TXT_Token
 {
   TXT_TokenKind kind;
-  Rng1uint64 range;
+  Rng1<uint64> range;
 };
 
 struct TXT_TokenChunkNode
@@ -80,7 +80,7 @@ struct TXT_TokenArrayArray
 struct TXT_TextInfo
 {
   uint64 lines_count;
-  Rng1uint64 *lines_ranges;
+  Rng1<uint64> *lines_ranges;
   uint64 lines_max_size;
   TXT_LineEndKind line_end_kind;
   TXT_TokenArray tokens;

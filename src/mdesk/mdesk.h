@@ -78,7 +78,7 @@ enum MD_TokenGroups : uint32
 
 struct MD_Token
 {
-  Rng1uint64 range;
+  Rng1<uint64> range;
   MD_TokenFlags flags;
 };
 

@@ -31,7 +31,7 @@ struct FP_Metrics
 
 struct FP_RasterResult
 {
-  Vec2uint16 atlas_dim;
+  Vec2<uint16> atlas_dim;
   void *atlas;
   float advance;
 };

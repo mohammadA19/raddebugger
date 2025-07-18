@@ -70,7 +70,7 @@ typedef struct DW_CIEUnpacked
   
   uint64 handler_ip;
   
-  Rng1uint64 cfi_range;
+  Rng1<uint64> cfi_range;
 } DW_CIEUnpacked;
 
 typedef struct DW_CIEUnpackedNode
@@ -83,9 +83,9 @@ typedef struct DW_CIEUnpackedNode
 // FDE: Frame Description Entry
 typedef struct DW_FDEUnpacked
 {
-  Rng1uint64 ip_voff_range;
+  Rng1<uint64> ip_voff_range;
   uint64     lsda_ip;
-  Rng1uint64 cfi_range;
+  Rng1<uint64> cfi_range;
 } DW_FDEUnpacked;
 
 // CFI: Call Frame Information
@@ -109,7 +109,7 @@ typedef struct DW_CFICFACell
       uint64 reg_idx;
       uint64 offset;
     };
-    Rng1uint64 expr;
+    Rng1<uint64> expr;
   };
 } DW_CFICFACell;
 
@@ -129,7 +129,7 @@ typedef struct DW_CFICell
   DW_CFIRegisterRule rule;
   union {
     uint64 n;
-    Rng1uint64 expr;
+    Rng1<uint64> expr;
   };
 } DW_CFICell;
 
@@ -181,9 +181,9 @@ internal DW_UnwindResult
 dw_unwind_x64(String8           raw_text,
               String8           raw_eh_frame,
               String8           raw_eh_frame_header,
-              Rng1uint64           text_vrange,
-              Rng1uint64           eh_frame_vrange,
-              Rng1uint64           eh_frame_header_vrange,
+              Rng1<uint64>           text_vrange,
+              Rng1<uint64>           eh_frame_vrange,
+              Rng1<uint64>           eh_frame_header_vrange,
               uint64               default_image_base,
               uint64               image_base,
               uint64               stack_pointer,

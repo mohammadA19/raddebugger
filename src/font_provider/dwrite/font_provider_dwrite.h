@@ -254,7 +254,7 @@ struct FP_DWrite_State
   IDWriteRenderingParams *rendering_params_smooth_hinted;
   IDWriteRenderingParams *rendering_params_smooth_unhinted;
   IDWriteGdiInterop *gdi_interop;
-  Vec2uint32 bitmap_render_target_dim;
+  Vec2<uint32> bitmap_render_target_dim;
   IDWriteBitmapRenderTarget *bitmap_render_target;
   FP_DWrite_FontFileStreamNode *first_stream_node;
   FP_DWrite_FontFileStreamNode *last_stream_node;

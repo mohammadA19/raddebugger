@@ -98,7 +98,7 @@ struct CTRL_Entity
   uint32 rgba;
   CTRL_Handle handle;
   uint64 id;
-  Rng1uint64 vaddr_range;
+  Rng1<uint64> vaddr_range;
   uint64 stack_base;
   uint64 timestamp;
   CTRL_UserBreakpointFlags bp_flags;
@@ -431,7 +431,7 @@ struct CTRL_Event
   Arch arch;
   uint64 u64_code;
   uint32 entity_id;
-  Rng1uint64 vaddr_rng;
+  Rng1<uint64> vaddr_rng;
   uint64 rip_vaddr;
   uint64 stack_base;
   uint64 tls_root;
@@ -463,7 +463,7 @@ struct CTRL_ProcessMemoryRangeHashNode
   CTRL_ProcessMemoryRangeHashNode *next;
   
   // rjf: key
-  Rng1uint64 vaddr_range;
+  Rng1<uint64> vaddr_range;
   B32 zero_terminated;
   HS_ID id;
   
@@ -611,9 +611,9 @@ struct CTRL_ModuleImageInfoCacheNode
   PE_IntelPdata *pdatas;
   uint64 pdatas_count;
   uint64 entry_point_voff;
-  Rng1uint64 tls_vaddr_range;
+  Rng1<uint64> tls_vaddr_range;
   String8 initial_debug_info_path;
-  Rng1uint64 raddbg_section_voff_range;
+  Rng1<uint64> raddbg_section_voff_range;
   String8 raddbg_data;
 };
 

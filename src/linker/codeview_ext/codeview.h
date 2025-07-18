@@ -214,7 +214,7 @@ typedef struct CV_InlineBinaryAnnotsParsed
 {
   uint64           lines_count;
   CV_LineArray *lines;
-  Rng1uint64List   code_ranges;
+  Rng1<uint64List>   code_ranges;
 } CV_InlineBinaryAnnotsParsed;
 
 typedef struct CV_C13InlineeLinesParsedList
@@ -284,7 +284,7 @@ typedef struct CV_LeafList
 typedef struct CV_StringTableRange
 {
   struct CV_StringTableRange *next;
-  Rng1uint64                     range;
+  Rng1<uint64>                     range;
   uint64                         debug_s_idx;
 } CV_StringTableRange;
 
@@ -324,14 +324,14 @@ typedef struct
     CV_SymbolNode ***buckets;
     CV_SymbolNode  **deref_buckets;
   } u;
-  Rng1uint64         *ranges;
+  Rng1<uint64>         *ranges;
   CV_SymbolNode  **symbols;
 } CV_SymbolDeduperTask;
 
 typedef struct
 {
   CV_SymbolList  *list_arr;
-  Rng1uint64        *list_range_arr;
+  Rng1<uint64>        *list_range_arr;
   uint64            *symbol_base_arr;
   CV_SymbolNode **symbol_arr;
 } CV_SymbolListSyncer;
@@ -350,14 +350,14 @@ typedef struct
 typedef struct
 {
   uint8               *buffer;
-  Rng1uint64          *ranges;
+  Rng1<uint64>          *ranges;
   CV_StringBucket **buckets;
 } CV_PackStringHashTableTask;
 
 typedef struct
 {
   CV_DebugT    debug_t;
-  Rng1uint64     *ranges;
+  Rng1<uint64>     *ranges;
   String8List *lists;
   String8Node *nodes;
 } CV_Str8ListFromDebugT;

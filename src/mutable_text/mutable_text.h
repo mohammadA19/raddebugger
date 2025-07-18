@@ -32,7 +32,7 @@ struct MTX_Stripe
 
 struct MTX_Op
 {
-  Rng1uint64 range;
+  Rng1<uint64> range;
   String8 replace;
 };
 

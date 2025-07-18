@@ -127,7 +127,7 @@ typedef struct
     struct {
       B8                    **was_symbol_patched;
       LNK_Section            *common_block_sect;
-      Rng1uint64                *ranges;
+      Rng1<uint64>                *ranges;
       LNK_CommonBlockContrib *common_block_contribs;
     } patch_symtabs;
   } u;
@@ -136,7 +136,7 @@ typedef struct
 typedef struct
 {
   uint64                     page_size;
-  Rng1uint64                *range_arr;
+  Rng1<uint64>                *range_arr;
   LNK_BaseRelocPageList  *list_arr;
   HashTable             **page_ht_arr;
   B32                     is_large_addr_aware;
@@ -144,7 +144,7 @@ typedef struct
 
 typedef struct
 {
-  Rng1uint64                *ranges;
+  Rng1<uint64>                *ranges;
   uint64                     page_size;
   LNK_BaseRelocPageList  *list_arr;
   LNK_Obj               **obj_arr;
@@ -167,7 +167,7 @@ typedef struct
   LNK_SymbolTable        *symtab;
   LNK_SymbolNodeArray     lookup_node_arr;
   LNK_SymbolFinderResult *result_arr;
-  Rng1uint64                *range_arr;
+  Rng1<uint64>                *range_arr;
 } LNK_SymbolFinder;
 
 typedef struct
@@ -188,7 +188,7 @@ typedef struct
 typedef struct
 {
   String8  data;
-  Rng1uint64 *ranges;
+  Rng1<uint64> *ranges;
   uint128    *hashes;
 } LNK_Blake3Hasher;
 

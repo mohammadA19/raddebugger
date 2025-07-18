@@ -943,12 +943,12 @@ struct PE_BinInfo
   uint64                  section_count;
   uint64                  symbol_count;
   uint64                  optional_header_off;
-  Rng1uint64              section_table_range;
-  Rng1uint64              symbol_table_range;
-  Rng1uint64              string_table_range;
-  Rng1uint64              data_dir_range;
-  Rng1uint64             *data_dir_franges;
-  Rng1uint64             *data_dir_vranges;
+  Rng1<uint64>              section_table_range;
+  Rng1<uint64>              symbol_table_range;
+  Rng1<uint64>              string_table_range;
+  Rng1<uint64>              data_dir_range;
+  Rng1<uint64>             *data_dir_franges;
+  Rng1<uint64>             *data_dir_vranges;
   uint32                  data_dir_count;
   PE_TLSHeader64       tls_header;
 };

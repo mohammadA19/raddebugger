@@ -54,10 +54,10 @@ typedef struct LNK_CodeViewInput
   uint64                        external_total_symbol_input_count;
   LNK_CodeViewSymbolsInput  *external_symbol_inputs;     // [exteranl_total_symbol_input_count]
   CV_SymbolListArray        *external_parsed_symbols;    // [external_count]
-  Rng1uint64                  **external_ti_ranges;         // [type_server_count]
+  Rng1<uint64>                  **external_ti_ranges;         // [type_server_count]
   CV_DebugT                **external_leaves;            // [type_server_count]
   uint64                       *external_obj_to_ts_idx_arr; // [external_count]
-  Rng1uint64                    external_obj_range;
+  Rng1<uint64>                    external_obj_range;
 } LNK_CodeViewInput;
 
 // --- Leaf Ref ----------------------------------------------------------------
@@ -80,7 +80,7 @@ typedef struct
 typedef struct LNK_LeafRange
 {
   struct LNK_LeafRange *next;
-  Rng1uint64               range;
+  Rng1<uint64>               range;
   CV_DebugT            *debug_t;
 } LNK_LeafRange;
 
@@ -150,7 +150,7 @@ typedef struct
 {
   CV_TypeServerInfo  *ts_info_arr;
   MSF_Parsed        **msf_parse_arr;
-  Rng1uint64           **external_ti_ranges;
+  Rng1<uint64>           **external_ti_ranges;
   CV_DebugT         **external_leaves;
   B8                 *is_corrupted;
 } LNK_GetExternalLeavesTask;
@@ -191,7 +191,7 @@ typedef struct
 {
   LNK_LeafHashTable   *ht;
   uint64                 *count_arr;
-  Rng1uint64             *range_arr;
+  Rng1<uint64>             *range_arr;
   uint64                 *offset_arr;
   LNK_LeafBucketArray  result;
 } LNK_GetPresentBucketsTask;
@@ -203,7 +203,7 @@ typedef struct
   uint64             loc_idx_bit_count_2;
   uint64             counts_max;
   uint32           **counts_arr;
-  Rng1uint64        *ranges;
+  Rng1<uint64>        *ranges;
   LNK_LeafBucket **dst;
   LNK_LeafBucket **src;
   uint64             loc_idx_max;
@@ -216,12 +216,12 @@ typedef struct
   uint32             *offsets;
   LNK_LeafBucket **dst;
   LNK_LeafBucket **src;
-  Rng1uint64         *ranges;
+  Rng1<uint64>         *ranges;
 } LNK_LeafLocRadixSortTask;
 
 typedef struct
 {
-  Rng1uint64            *range_arr;
+  Rng1<uint64>            *range_arr;
   CV_TypeIndex        min_type_index;
   LNK_LeafBucketArray bucket_arr;
 } LNK_AssignTypeIndicesTask;
@@ -231,7 +231,7 @@ typedef struct
   LNK_CodeViewInput  *input;
   LNK_LeafBucket    **bucket_arr;
   uint8                **raw_leaf_arr;
-  Rng1uint64            *range_arr;
+  Rng1<uint64>            *range_arr;
 } LNK_UnbucketRawLeavesTask;
 
 typedef struct
@@ -257,7 +257,7 @@ typedef struct
   LNK_LeafHashes     *hashes;
   LNK_LeafHashTable  *leaf_ht_arr;
   LNK_LeafBucket    **bucket_arr;
-  Rng1uint64            *range_arr;
+  Rng1<uint64>            *range_arr;
   Arena             **fixed_arena_arr;
 } LNK_PatchLeavesTask;
 
@@ -316,8 +316,8 @@ typedef struct
   PDB_DbiModule             **mod_arr;
   PDB_DbiSectionContribList  *sc_list;
   String8                     image_data;
-  Rng1uint64Array                image_section_file_ranges;
-  Rng1uint64Array                image_section_virt_ranges;
+  Span<Rng1<uint64>>                image_section_file_ranges;
+  Span<Rng1<uint64>>                image_section_virt_ranges;
 } LNK_PushDbiSecContribTaskData;
 
 typedef struct
@@ -330,7 +330,7 @@ typedef struct
 {
   uint64            *hash_arr;
   CV_SymbolNode **arr;
-  Rng1uint64        *range_arr;
+  Rng1<uint64>        *range_arr;
 } LNK_CvSymbolPtrArrayHasher;
 
 typedef struct
@@ -338,7 +338,7 @@ typedef struct
   LNK_SymbolHashTrieChunkList  *chunk_lists;
   CV_SymbolList                *pub_list_arr;
 
-  Rng1uint64           *symbol_ranges;
+  Rng1<uint64>           *symbol_ranges;
   PDB_GsiContext    *gsi;
   CV_SymbolPtrArray  symbols;
   uint32               *hashes;
@@ -354,7 +354,7 @@ typedef struct
 
 typedef struct
 {
-  Rng1uint64           *range_arr;
+  Rng1<uint64>           *range_arr;
   CV_SymbolPtrNode **bucket_arr;
   CV_SymbolPtrNode **out_arr;
   uint64               *out_count_arr;
@@ -362,7 +362,7 @@ typedef struct
 
 typedef struct
 {
-  Rng1uint64           *range_arr;
+  Rng1<uint64>           *range_arr;
   CV_SymbolPtrNode **bucket_arr;
   uint64               *symbol_base_arr;
   CV_SymbolNode    **symbol_arr;
@@ -371,7 +371,7 @@ typedef struct
 typedef struct
 {
   CV_DebugT    debug_t;
-  Rng1uint64     *ranges;
+  Rng1<uint64>     *ranges;
   uint64          hash_length;
   B32          make_map;
   TP_Arena    *map_arena;
@@ -389,7 +389,7 @@ typedef struct
 typedef struct
 {
   CV_DebugT           debug_t;
-  Rng1uint64            *ranges;
+  Rng1<uint64>            *ranges;
   uint64                 buckets_cap;
   LNK_UDTNameBucket **buckets;
 } LNK_BuildUDTNameHashTableTask;
@@ -398,7 +398,7 @@ typedef struct
 {
   CV_DebugT           debug_t;
   CV_TypeIndex        ti_lo;
-  Rng1uint64            *ranges;
+  Rng1<uint64>            *ranges;
   uint64                 udt_name_buckets_cap;
   LNK_UDTNameBucket **udt_name_buckets;
   CV_TypeIndex       *fwdmap;
@@ -412,7 +412,7 @@ typedef struct
   uint64                      type_cap;
   uint64                      udt_cap;
   RDIB_TypeRef             variadic_type_ref;
-  Rng1uint64                 *itype_ranges;
+  Rng1<uint64>                 *itype_ranges;
   uint64                      udt_name_bucket_cap;
   LNK_UDTNameBucket      **udt_name_buckets;
   RDIB_Type              **tpi_itype_map;
@@ -425,7 +425,7 @@ typedef struct
   RDIB_TypeChunkList      *rdib_types_enum_members_lists;
   RDIB_UDTMemberChunkList *rdib_udt_members_lists;
   RDIB_UDTMemberChunkList *rdib_enum_members_lists;
-  Rng1uint64                 *ranges;
+  Rng1<uint64>                 *ranges;
 } LNK_ConvertTypesToRDI;
 
 typedef struct
@@ -458,8 +458,8 @@ typedef struct
   CV_DebugT                 ipi;
   LNK_CodeViewSymbolsInput *symbol_inputs;
   CV_SymbolListArray       *parsed_symbols;
-  Rng1uint64                   ipi_itype_range;
-  Rng1uint64                   tpi_itype_range;
+  Rng1<uint64>                   ipi_itype_range;
+  Rng1<uint64>                   tpi_itype_range;
   RDIB_Type               **tpi_itype_map;
   uint64                       src_file_buckets_cap;
   LNK_SourceFileBucket    **src_file_buckets;

@@ -174,7 +174,7 @@ struct R_OGL_Tex2D
   GLuint id;
   R_ResourceKind resource_kind;
   R_Tex2DFormat fmt;
-  Vec2uint32 size;
+  Vec2<uint32> size;
 };
 
 struct R_OGL_FlushBuffer

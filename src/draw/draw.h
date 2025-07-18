@@ -11,7 +11,7 @@ struct DR_FStrParams
 {
   FNT_Tag font;
   FNT_RasterFlags raster_flags;
-  Vec4float color;
+  Vec4<float> color;
   float size;
   float underline_thickness;
   float strikethrough_thickness;
@@ -40,7 +40,7 @@ struct DR_FStrList
 struct DR_FRun
 {
   FNT_Run run;
-  Vec4float color;
+  Vec4<float> color;
   float underline_thickness;
   float strikethrough_thickness;
   B32 icon;
@@ -57,7 +57,7 @@ struct DR_FRunList
   DR_FRunNode *first;
   DR_FRunNode *last;
   uint64 node_count;
-  Vec2float dim;
+  Vec2<float> dim;
 };
 
 ////////////////////////////////

@@ -342,12 +342,12 @@ typedef struct MSCRT_ParsedFuncInfoV4
 
 //- Exception info v4
 
-internal Rng1uint64List
+internal Rng1<uint64List>
 mscrt_catch_blocks_from_data_x8664(Arena              *arena,
                                    String8             raw_data,
                                    uint64                 section_count,
                                    COFF_SectionHeader *sections,
-                                   Rng1uint64             except_frange);
+                                   Rng1<uint64>             except_frange);
 
 ////////////////////////////////
 //~ rjf: Enum -> String

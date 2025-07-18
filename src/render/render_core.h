@@ -37,9 +37,9 @@ union R_Handle
 
 struct R_Rect2DInst
 {
-  Rng2float dst;
-  Rng2float src;
-  Vec4float colors[Corner_COUNT];
+  Rng2<float> dst;
+  Rng2<float> src;
+  Vec4<float> colors[Corner_COUNT];
   float corner_radii[Corner_COUNT];
   float border_thickness;
   float edge_softness;
@@ -82,7 +82,7 @@ struct R_BatchGroup2DParams
   R_Handle tex;
   R_Tex2DSampleKind tex_sample_kind;
   Mat3x3float xform;
-  Rng2float clip;
+  Rng2<float> clip;
   float transparency;
 };
 
@@ -135,16 +135,16 @@ struct R_PassParams_UI
 
 struct R_PassParams_Blur
 {
-  Rng2float rect;
-  Rng2float clip;
+  Rng2<float> rect;
+  Rng2<float> clip;
   float blur_size;
   float corner_radii[Corner_COUNT];
 };
 
 struct R_PassParams_Geo3D
 {
-  Rng2float viewport;
-  Rng2float clip;
+  Rng2<float> viewport;
+  Rng2<float> clip;
   Mat4x4float view;
   Mat4x4float projection;
   R_BatchGroup3DMap mesh_batches;
@@ -202,12 +202,12 @@ r_hook R_Handle          r_window_equip(OS_Handle window);
 r_hook void              r_window_unequip(OS_Handle window, R_Handle window_equip);
 
 //- rjf: textures
-r_hook R_Handle          r_tex2d_alloc(R_ResourceKind kind, Vec2uint32 size, R_Tex2DFormat format, void *data);
+r_hook R_Handle          r_tex2d_alloc(R_ResourceKind kind, Vec2<uint32> size, R_Tex2DFormat format, void *data);
 r_hook void              r_tex2d_release(R_Handle texture);
 r_hook R_ResourceKind    r_kind_from_tex2d(R_Handle texture);
-r_hook Vec2uint32           r_size_from_tex2d(R_Handle texture);
+r_hook Vec2<uint32>           r_size_from_tex2d(R_Handle texture);
 r_hook R_Tex2DFormat     r_format_from_tex2d(R_Handle texture);
-r_hook void              r_fill_tex2d_region(R_Handle texture, Rng2uint32 subrect, void *data);
+r_hook void              r_fill_tex2d_region(R_Handle texture, Rng2<uint32> subrect, void *data);
 
 //- rjf: buffers
 r_hook R_Handle          r_buffer_alloc(R_ResourceKind kind, uint64 size, void *data);

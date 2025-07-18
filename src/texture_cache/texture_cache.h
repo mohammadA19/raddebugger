@@ -9,7 +9,7 @@
 
 struct TEX_Topology
 {
-  Vec2uint16 dim;
+  Vec2<uint16> dim;
   R_Tex2DFormat fmt;
 };
 

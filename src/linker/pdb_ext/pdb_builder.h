@@ -113,7 +113,7 @@ typedef struct PDB_TypeHashStreamInfo
 
 typedef struct PDB_TypeServerParse
 {
-  Rng1uint64 ti_range;
+  Rng1<uint64> ti_range;
   String8 leaf_data;
 } PDB_TypeServerParse;
 
@@ -122,7 +122,7 @@ typedef struct
   CV_DebugT       debug_t;
   uint64            *udt_counts;
   uint64            *udt_offsets;
-  Rng1uint64        *ranges;
+  Rng1<uint64>        *ranges;
   PDB_TypeServer *type_server;
   PDB_TypeBucket *udt_buckets;
 } PDB_PushLeafTask;
@@ -140,7 +140,7 @@ typedef struct
   uint64             hint_count;
   PDB_TpiOffHint *hint_arr;
   String8Node   **lf_arr;
-  Rng1uint64        *lf_range_arr;
+  Rng1<uint64>        *lf_range_arr;
   uint64            *lf_cursor_arr;
   uint8             *lf_buf;
   uint64             lf_buf_size;
@@ -330,7 +330,7 @@ typedef struct PDB_Context
 typedef struct
 {
   PDB_GsiContext *gsi;
-  Rng1uint64        *ranges;
+  Rng1<uint64>        *ranges;
   CV_SymbolNode **symbols;
   uint32            *hashes;
 } GSI_SymbolHasherTask;
