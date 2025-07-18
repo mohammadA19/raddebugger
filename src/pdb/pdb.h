@@ -32,7 +32,7 @@ typedef struct PDB_StringTableHeader
 
 ////////////////////////////////
 
-typedef enum PDB_FixedStream
+enum PDB_FixedStream
 {
   PDB_FixedStream_Info = 1,
   PDB_FixedStream_Tpi  = 2,
@@ -43,8 +43,7 @@ typedef enum PDB_FixedStream
 ////////////////////////////////
 //~ PDB Info Types
 
-typedef uint32 PDB_InfoVersion;
-enum{
+enum PDB_InfoVersion : uint32{
   PDB_InfoVersion_VC2      = 19941610,
   PDB_InfoVersion_VC4      = 19950623,
   PDB_InfoVersion_VC41     = 19950814,
@@ -143,8 +142,7 @@ typedef struct PDB_SrcHeaderBlockEntry
 ////////////////////////////////
 //~ PDB Format DBI Types
 
-typedef uint32 PDB_DbiStream;
-enum
+enum PDB_DbiStream : uint32
 {
   PDB_DbiStream_FPO,
   PDB_DbiStream_EXCEPTION,
@@ -160,14 +158,12 @@ enum
   PDB_DbiStream_COUNT
 };
 
-typedef uint32 PDB_DbiHeaderSignature;
-enum
+enum PDB_DbiHeaderSignature : uint32
 {
   PDB_DbiHeaderSignature_V1 = 0xFFFFFFFF
 };
 
-typedef uint32 PDB_DbiVersion;
-enum
+enum PDB_DbiVersion : uint32
 {
   PDB_DbiVersion_41  =   930803,
   PDB_DbiVersion_50  = 19960307,
@@ -183,8 +179,7 @@ typedef uint16 PDB_DbiBuildNumber;
 #define PDB_DbiBuildNumberNewFormat(bn) (!!((bn)&PDB_DbiBuildNumberNewFormatFlag))
 #define PDB_DbiMakeBuildNumber(maj, min) (PDB_DbiBuildNumber)(PDB_DbiBuildNumberNewFormatFlag | ((min)&0xFF) | (((maj)&0x7F) << 16))
 
-typedef uint16 PDB_DbiHeaderFlags;
-enum
+enum PDB_DbiHeaderFlags : uint16
 {
   PDB_DbiHeaderFlag_Incremental = 0x1,
   PDB_DbiHeaderFlag_Stripped    = 0x2,
@@ -311,8 +306,7 @@ typedef struct PDB_DbiSecMapHeader
 ////////////////////////////////
 //~ PDB Format TPI/IPI Types
 
-typedef uint32 PDB_TpiVersion;
-enum
+enum PDB_TpiVersion : uint32
 {
   PDB_TpiVersion_INTV_VC2       = 920924,
   PDB_TpiVersion_IMPV40         = 19950410,
@@ -371,14 +365,12 @@ typedef struct PDB_TpiHeader
 ////////////////////////////////
 //~ PDB Format GSI Types
 
-typedef uint32 PDB_GsiSignature;
-enum
+enum PDB_GsiSignature : uint32
 {
   PDB_GsiSignature_Basic = 0xffffffff,
 };
 
-typedef uint32 PDB_GsiVersion;
-enum
+enum PDB_GsiVersion : uint32
 {
   PDB_GsiVersion_V70 = 0xeffe0000 + 19990810,
 };

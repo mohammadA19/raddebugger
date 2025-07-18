@@ -23,7 +23,7 @@ X(DebugPubTypes,       debug_pubtypes,      "DEBUG PUBTYPES")\
 X(DebugLineStr,        debug_linestr,       "DEBUG LINESTR")\
 X(DebugStrOffsets,     debug_stroff,        "DEBUG STROFF")\
 
-typedef enum DW_DumpSubset
+enum DW_DumpSubset
 {
 #define X(name, name_lower, title) DW_DumpSubset_##name,
   DW_DumpSubset_XList
@@ -31,8 +31,7 @@ typedef enum DW_DumpSubset
 }
 DW_DumpSubset;
 
-typedef uint32 DW_DumpSubsetFlags;
-enum
+enum DW_DumpSubsetFlags : uint32
 {
 #define X(name, name_lower, title) DW_DumpSubsetFlag_##name = (1<<DW_DumpSubset_##name),
   DW_DumpSubset_XList

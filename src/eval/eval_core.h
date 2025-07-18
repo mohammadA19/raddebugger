@@ -15,7 +15,7 @@ struct E_Key
 ////////////////////////////////
 //~ rjf: Messages
 
-typedef enum E_MsgKind
+enum E_MsgKind
 {
   E_MsgKind_Null,
   E_MsgKind_MalformedInput,
@@ -89,7 +89,7 @@ struct E_OpList
 ////////////////////////////////
 //~ rjf: Operator Info
 
-typedef enum E_OpKind
+enum E_OpKind
 {
   E_OpKind_Null,
   E_OpKind_UnaryPrefix,
@@ -120,8 +120,7 @@ struct E_OpInfo
 // value for understanding a key *into* a space, e.g. 1+2 -> 3, in a null
 // space, or &foo, in the space of PID: 1234.
 
-typedef uint64 E_SpaceKind;
-enum
+enum E_SpaceKind : uint64
 {
   E_SpaceKind_Null,
   E_SpaceKind_File,
@@ -147,7 +146,7 @@ struct E_Space
 ////////////////////////////////
 //~ rjf: Implicit Type Graph Key Types
 
-typedef enum E_TypeKeyKind
+enum E_TypeKeyKind
 {
   E_TypeKeyKind_Null,
   E_TypeKeyKind_Basic,
@@ -219,7 +218,7 @@ struct E_TokenArray
 ////////////////////////////////
 //~ rjf: Evaluation Modes
 
-typedef enum E_Mode
+enum E_Mode
 {
   E_Mode_Null,
   E_Mode_Value,
@@ -331,7 +330,7 @@ struct E_Eval
 ////////////////////////////////
 //~ rjf: Full Extracted Type Information Types
 
-typedef enum E_MemberKind
+enum E_MemberKind
 {
   E_MemberKind_Null,
   E_MemberKind_DataField,
@@ -348,8 +347,7 @@ typedef enum E_MemberKind
 }
 E_MemberKind;
 
-typedef uint32 E_TypeFlags;
-enum
+enum E_TypeFlags : uint32
 {
   E_TypeFlag_Const                   = (1<<0),
   E_TypeFlag_Volatile                = (1<<1),
@@ -894,8 +892,7 @@ struct E_StringIDMap
 
 //- rjf: cache evaluation bundles
 
-typedef uint32 E_CacheBundleFlags;
-enum
+enum E_CacheBundleFlags : uint32
 {
   E_CacheBundleFlag_Parse     = (1<<0),
   E_CacheBundleFlag_IRTree    = (1<<1),

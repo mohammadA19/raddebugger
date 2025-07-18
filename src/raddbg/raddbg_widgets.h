@@ -7,8 +7,7 @@
 ////////////////////////////////
 //~ rjf: Cell Types
 
-typedef uint32 RD_CellFlags;
-enum
+enum RD_CellFlags : uint32
 {
   //- rjf: expander
   RD_CellFlag_Expander            = (1<<0),
@@ -80,8 +79,7 @@ struct RD_CellParams
 ////////////////////////////////
 //~ rjf: Code Slice Types
 
-typedef uint32 RD_CodeSliceFlags;
-enum
+enum RD_CodeSliceFlags : uint32
 {
   RD_CodeSliceFlag_Clickable         = (1<<0),
   RD_CodeSliceFlag_PriorityMargin    = (1<<1),

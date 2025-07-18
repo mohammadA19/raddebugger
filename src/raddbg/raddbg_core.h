@@ -70,8 +70,7 @@ struct RD_KeyMap
 ////////////////////////////////
 //~ rjf: Evaluation Spaces
 
-typedef uint64 RD_EvalSpaceKind;
-enum
+enum RD_EvalSpaceKind : uint64
 {
   RD_EvalSpaceKind_CtrlEntity = E_SpaceKind_FirstUserDefined,
   RD_EvalSpaceKind_MetaQuery,
@@ -117,7 +116,7 @@ struct RD_ViewUIRuleMap
 ////////////////////////////////
 //~ rjf: Drag/Drop Types
 
-typedef enum RD_DragDropState
+enum RD_DragDropState
 {
   RD_DragDropState_Null,
   RD_DragDropState_Dragging,
@@ -129,8 +128,7 @@ RD_DragDropState;
 ////////////////////////////////
 //~ rjf: Command Kind Types
 
-typedef uint32 RD_QueryFlags;
-enum
+enum RD_QueryFlags : uint32
 {
   RD_QueryFlag_AllowFiles       = (1<<0),
   RD_QueryFlag_AllowFolders     = (1<<1),
@@ -141,8 +139,7 @@ enum
   RD_QueryFlag_Required         = (1<<6),
 };
 
-typedef uint32 RD_CmdKindFlags;
-enum
+enum RD_CmdKindFlags : uint32
 {
   RD_CmdKindFlag_ListInUI      = (1<<0),
   RD_CmdKindFlag_ListInIPCDocs = (1<<1),
@@ -379,7 +376,7 @@ struct RD_RegsNode
 ////////////////////////////////
 //~ rjf: Structured Theme Types, Parsed From Config
 
-typedef enum RD_FontSlot
+enum RD_FontSlot
 {
   RD_FontSlot_Main,
   RD_FontSlot_Code,

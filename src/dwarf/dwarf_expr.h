@@ -64,8 +64,7 @@ typedef struct DW_ExprMachineConfig
 
 
 //- detail analysis types
-typedef uint32 DW_ExprFlags;
-enum
+enum DW_ExprFlags : uint32
 {
   DW_ExprFlag_UsesTextBase       = (1 << 0),
   DW_ExprFlag_UsesMemory         = (1 << 1),
@@ -96,7 +95,7 @@ typedef struct DW_ExprAnalysisTask
 
 
 //- location types
-typedef enum DW_SimpleLocKind
+enum DW_SimpleLocKind
 {
   DW_SimpleLocKind_Address,
   DW_SimpleLocKind_Register,
@@ -106,7 +105,7 @@ typedef enum DW_SimpleLocKind
   DW_SimpleLocKind_Fail,
 } DW_SimpleLocKind;
 
-typedef enum DW_LocFailKind
+enum DW_LocFailKind
 {
   // Interpreting Fail Kinds
   //

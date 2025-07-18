@@ -14,8 +14,7 @@
 ////////////////////////////////
 //~ rjf: Enums
 
-typedef uint32 R_GeoVertexFlags;
-enum
+enum R_GeoVertexFlags : uint32
 {
   R_GeoVertexFlag_TexCoord = (1<<0),
   R_GeoVertexFlag_Normals  = (1<<1),

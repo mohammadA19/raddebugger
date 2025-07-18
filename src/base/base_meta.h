@@ -57,7 +57,7 @@ struct EmbedInfoTable
 ////////////////////////////////
 //~ rjf: Type Info Types
 
-typedef enum TypeKind
+enum TypeKind
 {
   TypeKind_Null,
   
@@ -91,16 +91,14 @@ typedef enum TypeKind
 }
 TypeKind;
 
-typedef uint32 TypeFlags;
-enum
+enum TypeFlags : uint32
 {
   TypeFlag_IsPlainText = (1<<0),
   TypeFlag_IsCodeText  = (1<<1),
   TypeFlag_IsPathText  = (1<<2),
 };
 
-typedef uint32 MemberFlags;
-enum
+enum MemberFlags : uint32
 {
   MemberFlag_DoNotSerialize  = (1<<0),
 };

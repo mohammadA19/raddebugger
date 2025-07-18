@@ -7,8 +7,7 @@
 ////////////////////////////////
 //~ rjf: Rasterization Flags
 
-typedef uint32 FNT_RasterFlags;
-enum
+enum FNT_RasterFlags : uint32
 {
   FNT_RasterFlag_Smooth = (1<<0),
   FNT_RasterFlag_Hinted = (1<<1),
@@ -152,8 +151,7 @@ struct FNT_Hash2StyleRasterCacheSlot
 ////////////////////////////////
 //~ rjf: Atlas Types
 
-typedef uint32 FNT_AtlasRegionNodeFlags;
-enum
+enum FNT_AtlasRegionNodeFlags : uint32
 {
   FNT_AtlasRegionNodeFlag_Taken = (1<<0),
 };

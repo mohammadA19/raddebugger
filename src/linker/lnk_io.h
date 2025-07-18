@@ -1,7 +1,6 @@
 #pragma once
 
-typedef uint32 LNK_IO_Flags;
-enum
+enum LNK_IO_Flags : uint32
 {
   LNK_IO_Flags_MemoryMapFiles = (1 << 0),
 };

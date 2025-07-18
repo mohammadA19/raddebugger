@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Icon Info
 
-typedef enum UI_IconKind
+enum UI_IconKind
 {
   UI_IconKind_Null,
   UI_IconKind_RightArrow,
@@ -33,7 +33,7 @@ struct UI_IconInfo
 ////////////////////////////////
 //~ rjf: Mouse Button Kinds
 
-typedef enum UI_MouseButtonKind
+enum UI_MouseButtonKind
 {
   UI_MouseButtonKind_Left,
   UI_MouseButtonKind_Middle,
@@ -45,8 +45,7 @@ UI_MouseButtonKind;
 ////////////////////////////////
 //~ rjf: Codepath Permissions
 
-typedef uint32 UI_PermissionFlags;
-enum
+enum UI_PermissionFlags : uint32
 {
   UI_PermissionFlag_ClicksLeft        = (1<<0),
   UI_PermissionFlag_ClicksMiddle      = (1<<1),
@@ -66,7 +65,7 @@ enum
 ////////////////////////////////
 //~ rjf: Focus Types
 
-typedef enum UI_FocusKind
+enum UI_FocusKind
 {
   UI_FocusKind_Null,
   UI_FocusKind_Off,
@@ -81,7 +80,7 @@ UI_FocusKind;
 
 // TODO(rjf): clean all this up
 
-typedef enum UI_EventKind
+enum UI_EventKind
 {
   UI_EventKind_Null,
   UI_EventKind_Press,
@@ -96,7 +95,7 @@ typedef enum UI_EventKind
 }
 UI_EventKind;
 
-typedef enum UI_EventActionSlot
+enum UI_EventActionSlot
 {
   UI_EventActionSlot_Null,
   UI_EventActionSlot_Accept,
@@ -106,8 +105,7 @@ typedef enum UI_EventActionSlot
 }
 UI_EventActionSlot;
 
-typedef uint32 UI_EventFlags;
-enum
+enum UI_EventFlags : uint32
 {
   UI_EventFlag_KeepMark            = (1<<0),
   UI_EventFlag_Delete              = (1<<1),
@@ -121,7 +119,7 @@ enum
   UI_EventFlag_Secondary           = (1<<9),
 };
 
-typedef enum UI_EventDeltaUnit
+enum UI_EventDeltaUnit
 {
   UI_EventDeltaUnit_Null,
   UI_EventDeltaUnit_Char,
@@ -166,8 +164,7 @@ struct UI_EventList
 ////////////////////////////////
 //~ rjf: Textual Operations
 
-typedef uint32 UI_TxtOpFlags;
-enum
+enum UI_TxtOpFlags : uint32
 {
   UI_TxtOpFlag_Invalid = (1<<0),
   UI_TxtOpFlag_Copy    = (1<<1),
@@ -194,7 +191,7 @@ struct UI_Key
 ////////////////////////////////
 //~ rjf: Sizes
 
-typedef enum UI_SizeKind
+enum UI_SizeKind
 {
   UI_SizeKind_Null,
   UI_SizeKind_Pixels,      // size is computed via a preferred pixel value
@@ -261,7 +258,7 @@ union UI_ScrollPt2
 ////////////////////////////////
 //~ rjf: Box Types
 
-typedef enum UI_TextAlign
+enum UI_TextAlign
 {
   UI_TextAlign_Left,
   UI_TextAlign_Center,
@@ -441,8 +438,7 @@ struct UI_BoxList
   uint64 count;
 };
 
-typedef uint32 UI_SignalFlags;
-enum
+enum UI_SignalFlags : uint32
 {
   // rjf: mouse press -> box was pressed while hovering
   UI_SignalFlag_LeftPressed         = (1<<0),
