@@ -1276,7 +1276,7 @@ lnk_hash_cv_leaf_deep(Arena               *arena,
   root_frame->ti_source    = CV_TypeIndexSource_NULL;
   MemoryZeroStruct(&root_frame->leaf);
 
-  uint128Array *curr_hashes = hashes->v[loc_type][loc_idx];
+  Sapn<uint128> *curr_hashes = hashes->v[loc_type][loc_idx];
 
   struct stack_s *stack = root_frame;
   while (stack) {
@@ -1520,7 +1520,7 @@ THREAD_POOL_TASK_FUNC(lnk_hash_debug_t_task)
 
   Arena     *fixed_arena = task->fixed_arenas[worker_id];
   CV_DebugT  debug_t     = task->debug_t_arr[obj_idx];
-  uint128Array  out_hashes  = task->hashes->v[LNK_LeafLocType_Internal][obj_idx][CV_TypeIndexSource_TPI];
+  Sapn<uint128>  out_hashes  = task->hashes->v[LNK_LeafLocType_Internal][obj_idx][CV_TypeIndexSource_TPI];
 
   Rng1uint64 ti_ranges[CV_TypeIndexSource_COUNT];
   for (uint64 ti_source = 0; ti_source < ArrayCount(ti_ranges); ++ti_source) {
@@ -1636,7 +1636,7 @@ THREAD_POOL_TASK_FUNC(lnk_leaf_dedup_external_task)
 
   LNK_CodeViewInput *input      = task->input;
   LNK_LeafHashTable *leaf_ht    = &task->leaf_ht_arr[task->dedup_ti_source];
-  uint128Array          hashes     = task->hashes->external_hashes[ts_idx][task->dedup_ti_source];
+  Sapn<uint128>          hashes     = task->hashes->external_hashes[ts_idx][task->dedup_ti_source];
   uint64                leaf_count = dim_1u64(input->external_ti_ranges[ts_idx][task->dedup_ti_source]);
 
   LNK_LeafBucket *bucket = 0;
@@ -2274,11 +2274,11 @@ lnk_import_types(TP_Context *tp, TP_Arena *tp_temp, LNK_CodeViewInput *input)
     // TPI and IPI leaves in .debug$T are stored in one array (we don't move them
     // to respective arrays before this point to save on memory move)
     ProfBegin("Push Internal Hash Arrays");
-    hashes->internal_hashes = push_array_no_zero(tp_temp->v[0], uint128Array *, input->internal_count);
+    hashes->internal_hashes = push_array_no_zero(tp_temp->v[0], Sapn<uint128> *, input->internal_count);
     for (uint64 obj_idx = 0; obj_idx < input->internal_count; ++obj_idx) {
       CV_DebugT debug_t = input->merged_debug_t_p_arr[obj_idx];
 
-      uint128Array arr = {0};
+      Sapn<uint128> arr = {0};
       arr.count     = debug_t.count;
       arr.v         = push_array_no_zero(tp_temp->v[0], uint128, debug_t.count);
       // :debug_zero_hash_assert
@@ -2286,7 +2286,7 @@ lnk_import_types(TP_Context *tp, TP_Arena *tp_temp, LNK_CodeViewInput *input)
       MemoryZeroTyped(arr.v, arr.count);
 #endif
 
-      hashes->internal_hashes[obj_idx] = push_array(tp_temp->v[0], uint128Array, CV_TypeIndexSource_COUNT);
+      hashes->internal_hashes[obj_idx] = push_array(tp_temp->v[0], Sapn<uint128>, CV_TypeIndexSource_COUNT);
       for (uint64 ti_source = 0; ti_source < CV_TypeIndexSource_COUNT; ++ti_source) {
         hashes->internal_hashes[obj_idx][ti_source] = arr;
       }
@@ -2295,9 +2295,9 @@ lnk_import_types(TP_Context *tp, TP_Arena *tp_temp, LNK_CodeViewInput *input)
 
     // push external hash arrays
     ProfBegin("Push External Hash Arrays");
-    hashes->external_hashes = push_array_no_zero(tp_temp->v[0], uint128Array *, input->type_server_count);
+    hashes->external_hashes = push_array_no_zero(tp_temp->v[0], Sapn<uint128> *, input->type_server_count);
     for (uint64 ts_idx = 0; ts_idx < input->type_server_count; ++ts_idx) {
-      hashes->external_hashes[ts_idx] = push_array_no_zero(tp_temp->v[0], uint128Array, CV_TypeIndexSource_COUNT);
+      hashes->external_hashes[ts_idx] = push_array_no_zero(tp_temp->v[0], Sapn<uint128>, CV_TypeIndexSource_COUNT);
       for (uint64 ti_source = 0; ti_source < CV_TypeIndexSource_COUNT; ++ti_source) {
         uint64 leaf_count = dim_1u64(input->external_ti_ranges[ts_idx][ti_source]);
         hashes->external_hashes[ts_idx][ti_source].count = leaf_count;

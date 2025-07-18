@@ -687,7 +687,7 @@ typedef struct RDIB_IndexRunBucket
     };
     uint64 v;
   } sorter;
-  uint32Array indices;
+  Sapn<uint32> indices;
   uint64      index_in_output_array;
 } RDIB_IndexRunBucket;
 

@@ -45,10 +45,10 @@ u64_list_concat_in_place(uint64List *list, uint64List *to_concat)
   SLLConcatInPlace(list, to_concat);
 }
 
-internal uint64Array
+internal Sapn<uint64>
 u64_array_from_list(Arena *arena, uint64List *list)
 {
-  uint64Array result;
+  Sapn<uint64> result;
   result.count = 0;
   result.v = push_array(arena, uint64, list->count);
   for (uint64Node *n = list->first; n != NULL; n = n->next) {
@@ -119,7 +119,7 @@ u32_pair_radix_sort(uint64 count, Pairuint32 *arr)
 }
 
 internal B32
-u32_array_compare(uint32Array a, uint32Array b)
+u32_array_compare(Sapn<uint32> a, Sapn<uint32> b)
 {
   B32 are_equal = 0;
   if (a.count == b.count) {
@@ -129,10 +129,10 @@ u32_array_compare(uint32Array a, uint32Array b)
   return are_equal;
 }
 
-internal uint64Array
-u64_array_remove_duplicates(Arena *arena, uint64Array in)
+internal Sapn<uint64>
+u64_array_remove_duplicates(Arena *arena, Sapn<uint64> in)
 {
-  uint64Array result;
+  Sapn<uint64> result;
   result.count = 0;
   result.v = push_array(arena, uint64, in.count);
   

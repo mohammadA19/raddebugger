@@ -710,10 +710,10 @@ dw_print_debug_loc(Arena *arena, String8List *out, String8 indent, DW_Input *inp
     DW_Version ver = ver_arr[comp_idx];
     DW_Ext     ext = ext_arr[comp_idx];
     
-    uint64Array locs = u64_array_from_list(locs_temp.arena, &loc_lists[comp_idx]);
+    Sapn<uint64> locs = u64_array_from_list(locs_temp.arena, &loc_lists[comp_idx]);
     u64_array_sort(locs.count, locs.v);
     
-    uint64Array locs_set      = remove_duplicates_u64_array(locs_temp.arena, locs);
+    Sapn<uint64> locs_set      = remove_duplicates_u64_array(locs_temp.arena, locs);
     uint64      address_size  = address_sizes[comp_idx];
     uint64      base_selector = (address_size == 8) ? max_uint64 : max_uint32;
     
@@ -834,9 +834,9 @@ dw_print_debug_ranges(Arena *arena, String8List *out, String8 indent, DW_Input *
   rd_indent();
   rd_printf("%-8s %-8s %-8s", "Offset", "Min", "Max");
   for (uint32 comp_idx = 0; comp_idx < cu_range_list.count; ++comp_idx) {
-    uint64Array locs = u64_array_from_list(scratch.arena, &loc_lists[comp_idx]);
+    Sapn<uint64> locs = u64_array_from_list(scratch.arena, &loc_lists[comp_idx]);
     u64_array_sort(locs.count, locs.v);
-    uint64Array locs_set      = remove_duplicates_u64_array(scratch.arena, locs);
+    Sapn<uint64> locs_set      = remove_duplicates_u64_array(scratch.arena, locs);
     uint64      address_size  = address_sizes[comp_idx];
     uint64      base_selector = (address_size == 8) ? max_uint64 : max_uint32;
     

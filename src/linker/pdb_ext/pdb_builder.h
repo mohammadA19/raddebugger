@@ -27,8 +27,8 @@ typedef struct PDB_HashTable
 {
   Arena               *arena;
   PDB_HashTableBucket *bucket_arr;
-  uint32Array             present_bits;
-  uint32Array             deleted_bits;
+  Sapn<uint32>             present_bits;
+  Sapn<uint32>             deleted_bits;
   uint32   			         max;
   uint32                  count;
 } PDB_HashTable;

@@ -93,6 +93,6 @@ internal void sort_key_value_pairs_as_string_sensitive(KeyValuePair *pairs, uint
 
 ////////////////////////////////
 
-internal uint64Array    remove_duplicates_u64_array(Arena *arena, uint64Array arr);
+internal Sapn<uint64>    remove_duplicates_u64_array(Arena *arena, Sapn<uint64> arr);
 internal String8List remove_duplicates_str8_list(Arena *arena, String8List list);
 

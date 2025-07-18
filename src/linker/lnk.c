@@ -3324,7 +3324,7 @@ lnk_push_coff_symbols_from_data(Arena *arena, LNK_SymbolList *symbol_list, Strin
 }
 
 internal String8
-lnk_build_guard_data(Arena *arena, uint64Array voff_arr, uint64 stride)
+lnk_build_guard_data(Arena *arena, Sapn<uint64> voff_arr, uint64 stride)
 {
   Assert(stride >= sizeof(uint32));
   
@@ -3483,7 +3483,7 @@ lnk_build_guard_tables(TP_Context       *tp,
   lnk_section_table_assign_virtual_offsets(sectab);
   
   // compute symbols virtual offsets
-  uint64Array guard_voff_arr_table[GUARD_COUNT];
+  Sapn<uint64> guard_voff_arr_table[GUARD_COUNT];
   for (uint64 i = 0; i < ArrayCount(guard_symbol_list_table); ++i) {
     uint64List voff_list; MemoryZeroStruct(&voff_list);
     LNK_SymbolList symbol_list = guard_symbol_list_table[i];
@@ -3505,7 +3505,7 @@ lnk_build_guard_tables(TP_Context       *tp,
       Assert(symbol_voff != 0);
       u64_list_push(scratch.arena, &voff_list, symbol_voff);
     }
-    uint64Array voff_arr = u64_array_from_list(scratch.arena, &voff_list);
+    Sapn<uint64> voff_arr = u64_array_from_list(scratch.arena, &voff_list);
     radsort(voff_arr.v, voff_arr.count, u64_compar_is_before);
     guard_voff_arr_table[i] = u64_array_remove_duplicates(scratch.arena, voff_arr);
   }

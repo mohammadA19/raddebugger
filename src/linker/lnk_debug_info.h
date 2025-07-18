@@ -112,10 +112,10 @@ typedef struct
 typedef union
 {
   struct {
-    uint128Array **internal_hashes;
-    uint128Array **external_hashes;
+    Sapn<uint128> **internal_hashes;
+    Sapn<uint128> **external_hashes;
   };
-  uint128Array **v[CV_TypeIndexSource_COUNT];
+  Sapn<uint128> **v[CV_TypeIndexSource_COUNT];
 } LNK_LeafHashes;
 
 // --- Symbol Parsing Tasks ----------------------------------------------------
@@ -322,7 +322,7 @@ typedef struct
 
 typedef struct
 {
-  uint32Array      *hash_arr_arr;
+  Sapn<uint32>      *hash_arr_arr;
   CV_SymbolList *list_arr;
 } LNK_HashCVSymbolListTask;
 
@@ -521,7 +521,7 @@ internal LNK_LeafBucket * lnk_leaf_hash_table_insert_or_update(LNK_LeafHashTable
 internal LNK_LeafBucket * lnk_leaf_hash_table_search(LNK_LeafHashTable *ht, LNK_CodeViewInput *input, LNK_LeafHashes *hashes, LNK_LeafRef leaf_ref);
 
 internal void                lnk_cv_debug_t_count_leaves_per_source(TP_Context *tp, uint64 count, CV_DebugT *debug_t_arr, uint64 *per_source_count_arr);
-internal void                lnk_hash_debug_t_arr(TP_Context *tp, Arena *arena, uint64 obj_count, CV_DebugT *debug_t_arr, uint128Array *hash_arr_arr);
+internal void                lnk_hash_debug_t_arr(TP_Context *tp, Arena *arena, uint64 obj_count, CV_DebugT *debug_t_arr, Sapn<uint128> *hash_arr_arr);
 internal LNK_LeafBucketArray lnk_present_bucket_array_from_leaf_hash_table(TP_Context *tp, Arena *arena, LNK_LeafHashTable *ht);
 internal void                lnk_leaf_bucket_array_sort_radix_subset_parallel(TP_Context *tp, uint64 bucket_count, uint64 loc_idx_max, LNK_LeafBucket **dst, LNK_LeafBucket **src);
 internal void                lnk_leaf_bucket_array_sort_radix_parallel(TP_Context *tp, LNK_LeafBucketArray arr, uint64 obj_count, uint64 type_server_count);

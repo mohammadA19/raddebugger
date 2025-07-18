@@ -26,13 +26,13 @@ typedef struct VoidNode
 
 internal uint64Node * u64_list_push(Arena *arena, uint64List *list, uint64 data);
 internal void      u64_list_concat_in_place(uint64List *list, uint64List *to_concat);
-internal uint64Array  u64_array_from_list(Arena *arena, uint64List *list);
+internal Sapn<uint64>  u64_array_from_list(Arena *arena, uint64List *list);
 
-internal uint64Array u64_array_remove_duplicates(Arena *arena, uint64Array in);
+internal Sapn<uint64> u64_array_remove_duplicates(Arena *arena, Sapn<uint64> in);
 
 internal void u32_array_sort(uint64 count, uint32 *v);
 internal void u64_array_sort(uint64 count, uint64 *v);
-internal B32  u32_array_compare(uint32Array a, uint32Array b);
+internal B32  u32_array_compare(Sapn<uint32> a, Sapn<uint32> b);
 
 internal uint64 sum_array_u64(uint64 count, uint64 *v);
 internal uint64 max_array_u64(uint64 count, uint64 *v);
