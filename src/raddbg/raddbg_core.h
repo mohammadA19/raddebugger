@@ -9,14 +9,12 @@
 
 typedef uint64 RD_CfgID;
 
-typedef struct RD_CfgIDNode RD_CfgIDNode;
 struct RD_CfgIDNode
 {
   RD_CfgIDNode *next;
   RD_CfgID v;
 };
 
-typedef struct RD_CfgIDList RD_CfgIDList;
 struct RD_CfgIDList
 {
   RD_CfgIDNode *first;
@@ -27,14 +25,12 @@ struct RD_CfgIDList
 ////////////////////////////////
 //~ rjf: Key Bindings
 
-typedef struct RD_Binding RD_Binding;
 struct RD_Binding
 {
   OS_Key key;
   OS_Modifiers modifiers;
 };
 
-typedef struct RD_KeyMapNode RD_KeyMapNode;
 struct RD_KeyMapNode
 {
   RD_KeyMapNode *name_hash_next;
@@ -44,14 +40,12 @@ struct RD_KeyMapNode
   RD_Binding binding;
 };
 
-typedef struct RD_KeyMapNodePtr RD_KeyMapNodePtr;
 struct RD_KeyMapNodePtr
 {
   RD_KeyMapNodePtr *next;
   RD_KeyMapNode *v;
 };
 
-typedef struct RD_KeyMapNodePtrList RD_KeyMapNodePtrList;
 struct RD_KeyMapNodePtrList
 {
   RD_KeyMapNodePtr *first;
@@ -59,14 +53,12 @@ struct RD_KeyMapNodePtrList
   uint64 count;
 };
 
-typedef struct RD_KeyMapSlot RD_KeyMapSlot;
 struct RD_KeyMapSlot
 {
   RD_KeyMapNode *first;
   RD_KeyMapNode *last;
 };
 
-typedef struct RD_KeyMap RD_KeyMap;
 struct RD_KeyMap
 {
   uint64 name_slots_count;
@@ -98,28 +90,24 @@ enum
 #define RD_VIEW_UI_FUNCTION_DEF(name) internal RD_VIEW_UI_FUNCTION_SIG(RD_VIEW_UI_FUNCTION_NAME(name))
 typedef RD_VIEW_UI_FUNCTION_SIG(RD_ViewUIFunctionType);
 
-typedef struct RD_ViewUIRule RD_ViewUIRule;
 struct RD_ViewUIRule
 {
   String8 name;
   RD_ViewUIFunctionType *ui;
 };
 
-typedef struct RD_ViewUIRuleNode RD_ViewUIRuleNode;
 struct RD_ViewUIRuleNode
 {
   RD_ViewUIRuleNode *next;
   RD_ViewUIRule v;
 };
 
-typedef struct RD_ViewUIRuleSlot RD_ViewUIRuleSlot;
 struct RD_ViewUIRuleSlot
 {
   RD_ViewUIRuleNode *first;
   RD_ViewUIRuleNode *last;
 };
 
-typedef struct RD_ViewUIRuleMap RD_ViewUIRuleMap;
 struct RD_ViewUIRuleMap
 {
   RD_ViewUIRuleSlot *slots;
@@ -166,7 +154,6 @@ enum
 ////////////////////////////////
 //~ rjf: Autocompletion Cursor Info Type
 
-typedef struct RD_AutocompCursorInfo RD_AutocompCursorInfo;
 struct RD_AutocompCursorInfo
 {
   String8 list_expr;
@@ -184,14 +171,12 @@ struct RD_AutocompCursorInfo
 ////////////////////////////////
 //~ rjf: View State Types
 
-typedef struct RD_ArenaExt RD_ArenaExt;
 struct RD_ArenaExt
 {
   RD_ArenaExt *next;
   Arena *arena;
 };
 
-typedef struct RD_ViewState RD_ViewState;
 struct RD_ViewState
 {
   // rjf: hash links & key
@@ -233,7 +218,6 @@ struct RD_ViewState
   B32 contents_are_focused;
 };
 
-typedef struct RD_ViewStateSlot RD_ViewStateSlot;
 struct RD_ViewStateSlot
 {
   RD_ViewState *first;
@@ -243,7 +227,6 @@ struct RD_ViewStateSlot
 ////////////////////////////////
 //~ rjf: Vocabulary Map
 
-typedef struct RD_VocabInfoMapNode RD_VocabInfoMapNode;
 struct RD_VocabInfoMapNode
 {
   RD_VocabInfoMapNode *single_next;
@@ -251,14 +234,12 @@ struct RD_VocabInfoMapNode
   RD_VocabInfo v;
 };
 
-typedef struct RD_VocabInfoMapSlot RD_VocabInfoMapSlot;
 struct RD_VocabInfoMapSlot
 {
   RD_VocabInfoMapNode *first;
   RD_VocabInfoMapNode *last;
 };
 
-typedef struct RD_VocabInfoMap RD_VocabInfoMap;
 struct RD_VocabInfoMap
 {
   uint64 single_slots_count;
@@ -270,7 +251,6 @@ struct RD_VocabInfoMap
 ////////////////////////////////
 //~ rjf: Config Tree
 
-typedef struct RD_Cfg RD_Cfg;
 struct RD_Cfg
 {
   RD_Cfg *first;
@@ -282,7 +262,6 @@ struct RD_Cfg
   String8 string;
 };
 
-typedef struct RD_CfgNode RD_CfgNode;
 struct RD_CfgNode
 {
   RD_CfgNode *next;
@@ -290,14 +269,12 @@ struct RD_CfgNode
   RD_Cfg *v;
 };
 
-typedef struct RD_CfgSlot RD_CfgSlot;
 struct RD_CfgSlot
 {
   RD_CfgNode *first;
   RD_CfgNode *last;
 };
 
-typedef struct RD_CfgList RD_CfgList;
 struct RD_CfgList
 {
   RD_CfgNode *first;
@@ -305,14 +282,12 @@ struct RD_CfgList
   uint64 count;
 };
 
-typedef struct RD_CfgArray RD_CfgArray;
 struct RD_CfgArray
 {
   RD_Cfg **v;
   uint64 count;
 };
 
-typedef struct RD_CfgRec RD_CfgRec;
 struct RD_CfgRec
 {
   RD_Cfg *next;
@@ -323,7 +298,6 @@ struct RD_CfgRec
 ////////////////////////////////
 //~ rjf: Structured Locations, Parsed From Config Trees
 
-typedef struct RD_Location RD_Location;
 struct RD_Location
 {
   String8 file_path;
@@ -334,7 +308,6 @@ struct RD_Location
 ////////////////////////////////
 //~ rjf: Structured Panel Trees, Parsed From Config Trees
 
-typedef struct RD_PanelNode RD_PanelNode;
 struct RD_PanelNode
 {
   // rjf: links data
@@ -358,14 +331,12 @@ struct RD_PanelNode
   RD_Cfg *selected_tab;
 };
 
-typedef struct RD_PanelTree RD_PanelTree;
 struct RD_PanelTree
 {
   RD_PanelNode *root;
   RD_PanelNode *focused;
 };
 
-typedef struct RD_PanelNodeRec RD_PanelNodeRec;
 struct RD_PanelNodeRec
 {
   RD_PanelNode *next;
@@ -376,14 +347,12 @@ struct RD_PanelNodeRec
 ////////////////////////////////
 //~ rjf: Command Types
 
-typedef struct RD_Cmd RD_Cmd;
 struct RD_Cmd
 {
   String8 name;
   RD_Regs *regs;
 };
 
-typedef struct RD_CmdNode RD_CmdNode;
 struct RD_CmdNode
 {
   RD_CmdNode *next;
@@ -391,7 +360,6 @@ struct RD_CmdNode
   RD_Cmd cmd;
 };
 
-typedef struct RD_CmdList RD_CmdList;
 struct RD_CmdList
 {
   RD_CmdNode *first;
@@ -402,7 +370,6 @@ struct RD_CmdList
 ////////////////////////////////
 //~ rjf: Context Register Types
 
-typedef struct RD_RegsNode RD_RegsNode;
 struct RD_RegsNode
 {
   RD_RegsNode *next;
@@ -424,7 +391,6 @@ RD_FontSlot;
 ////////////////////////////////
 //~ rjf: Per-Window State
 
-typedef struct RD_WindowState RD_WindowState;
 struct RD_WindowState
 {
   // rjf: links & metadata
@@ -499,7 +465,6 @@ struct RD_WindowState
   DR_Bucket *draw_bucket;
 };
 
-typedef struct RD_WindowStateSlot RD_WindowStateSlot;
 struct RD_WindowStateSlot
 {
   RD_WindowState *first;
@@ -521,14 +486,12 @@ read_only global uint64 rd_name_bucket_chunk_sizes[] =
   0xffffffffffffffffull,
 };
 
-typedef struct RD_NameChunkNode RD_NameChunkNode;
 struct RD_NameChunkNode
 {
   RD_NameChunkNode *next;
   uint64 size;
 };
 
-typedef struct RD_AmbiguousPathNode RD_AmbiguousPathNode;
 struct RD_AmbiguousPathNode
 {
   RD_AmbiguousPathNode *next;
@@ -536,7 +499,6 @@ struct RD_AmbiguousPathNode
   String8List paths;
 };
 
-typedef struct RD_State RD_State;
 struct RD_State
 {
   // rjf: basics

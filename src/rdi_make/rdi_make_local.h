@@ -50,7 +50,6 @@
 
 //- rjf: line table baking task types
 
-typedef struct RDIM_BakeLineTablesIn RDIM_BakeLineTablesIn;
 struct RDIM_BakeLineTablesIn
 {
   RDIM_LineTableChunkList *line_tables;
@@ -58,7 +57,6 @@ struct RDIM_BakeLineTablesIn
 
 //- rjf: string map baking task types
 
-typedef struct RDIM_BakeSrcFilesStringsIn RDIM_BakeSrcFilesStringsIn;
 struct RDIM_BakeSrcFilesStringsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -66,7 +64,6 @@ struct RDIM_BakeSrcFilesStringsIn
   RDIM_SrcFileChunkList *list;
 };
 
-typedef struct RDIM_BakeUnitsStringsIn RDIM_BakeUnitsStringsIn;
 struct RDIM_BakeUnitsStringsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -74,7 +71,6 @@ struct RDIM_BakeUnitsStringsIn
   RDIM_UnitChunkList *list;
 };
 
-typedef struct RDIM_BakeUDTsStringsInNode RDIM_BakeUDTsStringsInNode;
 struct RDIM_BakeUDTsStringsInNode
 {
   RDIM_BakeUDTsStringsInNode *next;
@@ -82,7 +78,6 @@ struct RDIM_BakeUDTsStringsInNode
   RDI_uint64 count;
 };
 
-typedef struct RDIM_BakeTypesStringsInNode RDIM_BakeTypesStringsInNode;
 struct RDIM_BakeTypesStringsInNode
 {
   RDIM_BakeTypesStringsInNode *next;
@@ -90,7 +85,6 @@ struct RDIM_BakeTypesStringsInNode
   RDI_uint64 count;
 };
 
-typedef struct RDIM_BakeTypesStringsIn RDIM_BakeTypesStringsIn;
 struct RDIM_BakeTypesStringsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -99,7 +93,6 @@ struct RDIM_BakeTypesStringsIn
   RDIM_BakeTypesStringsInNode *last;
 };
 
-typedef struct RDIM_BakeUDTsStringsIn RDIM_BakeUDTsStringsIn;
 struct RDIM_BakeUDTsStringsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -108,7 +101,6 @@ struct RDIM_BakeUDTsStringsIn
   RDIM_BakeUDTsStringsInNode *last;
 };
 
-typedef struct RDIM_BakeSymbolsStringsInNode RDIM_BakeSymbolsStringsInNode;
 struct RDIM_BakeSymbolsStringsInNode
 {
   RDIM_BakeSymbolsStringsInNode *next;
@@ -116,7 +108,6 @@ struct RDIM_BakeSymbolsStringsInNode
   RDI_uint64 count;
 };
 
-typedef struct RDIM_BakeSymbolsStringsIn RDIM_BakeSymbolsStringsIn;
 struct RDIM_BakeSymbolsStringsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -125,7 +116,6 @@ struct RDIM_BakeSymbolsStringsIn
   RDIM_BakeSymbolsStringsInNode *last;
 };
 
-typedef struct RDIM_BakeInlineSiteStringsInNode RDIM_BakeInlineSiteStringsInNode;
 struct RDIM_BakeInlineSiteStringsInNode
 {
   RDIM_BakeInlineSiteStringsInNode *next;
@@ -133,7 +123,6 @@ struct RDIM_BakeInlineSiteStringsInNode
   RDI_uint64 count;
 };
 
-typedef struct RDIM_BakeInlineSiteStringsIn RDIM_BakeInlineSiteStringsIn;
 struct RDIM_BakeInlineSiteStringsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -142,7 +131,6 @@ struct RDIM_BakeInlineSiteStringsIn
   RDIM_BakeInlineSiteStringsInNode *last;
 };
 
-typedef struct RDIM_BakeScopesStringsInNode RDIM_BakeScopesStringsInNode;
 struct RDIM_BakeScopesStringsInNode
 {
   RDIM_BakeScopesStringsInNode *next;
@@ -150,7 +138,6 @@ struct RDIM_BakeScopesStringsInNode
   RDI_uint64 count;
 };
 
-typedef struct RDIM_BakeScopesStringsIn RDIM_BakeScopesStringsIn;
 struct RDIM_BakeScopesStringsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -161,14 +148,12 @@ struct RDIM_BakeScopesStringsIn
 
 //- rjf: OLD string map baking types
 
-typedef struct RDIM_BuildBakeStringMapIn RDIM_BuildBakeStringMapIn;
 struct RDIM_BuildBakeStringMapIn
 {
   RDIM_BakePathTree *path_tree;
   RDIM_BakeParams *params;
 };
 
-typedef struct RDIM_BuildBakeNameMapIn RDIM_BuildBakeNameMapIn;
 struct RDIM_BuildBakeNameMapIn
 {
   RDI_NameMapKind k;
@@ -177,7 +162,6 @@ struct RDIM_BuildBakeNameMapIn
 
 //- rjf: string map joining task types
 
-typedef struct RDIM_JoinBakeStringMapSlotsIn RDIM_JoinBakeStringMapSlotsIn;
 struct RDIM_JoinBakeStringMapSlotsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -189,7 +173,6 @@ struct RDIM_JoinBakeStringMapSlotsIn
 
 //- rjf: string map sorting task types
 
-typedef struct RDIM_SortBakeStringMapSlotsIn RDIM_SortBakeStringMapSlotsIn;
 struct RDIM_SortBakeStringMapSlotsIn
 {
   RDIM_BakeStringMapTopology *top;
@@ -201,7 +184,6 @@ struct RDIM_SortBakeStringMapSlotsIn
 
 //- rjf: debug info baking task types
 
-typedef struct RDIM_BakeUnitsIn RDIM_BakeUnitsIn;
 struct RDIM_BakeUnitsIn
 {
   RDIM_BakeStringMapTight *strings;
@@ -209,13 +191,11 @@ struct RDIM_BakeUnitsIn
   RDIM_UnitChunkList *units;
 };
 
-typedef struct RDIM_BakeUnitVMapIn RDIM_BakeUnitVMapIn;
 struct RDIM_BakeUnitVMapIn
 {
   RDIM_UnitChunkList *units;
 };
 
-typedef struct RDIM_BakeSrcFilesIn RDIM_BakeSrcFilesIn;
 struct RDIM_BakeSrcFilesIn
 {
   RDIM_BakeStringMapTight *strings;
@@ -223,41 +203,35 @@ struct RDIM_BakeSrcFilesIn
   RDIM_SrcFileChunkList *src_files;
 };
 
-typedef struct RDIM_BakeUDTsIn RDIM_BakeUDTsIn;
 struct RDIM_BakeUDTsIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_UDTChunkList *udts;
 };
 
-typedef struct RDIM_BakeGlobalVariablesIn RDIM_BakeGlobalVariablesIn;
 struct RDIM_BakeGlobalVariablesIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_SymbolChunkList *global_variables;
 };
 
-typedef struct RDIM_BakeConstantsIn RDIM_BakeConstantsIn;
 struct RDIM_BakeConstantsIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_SymbolChunkList *constants;
 };
 
-typedef struct RDIM_BakeGlobalVMapIn RDIM_BakeGlobalVMapIn;
 struct RDIM_BakeGlobalVMapIn
 {
   RDIM_SymbolChunkList *global_variables;
 };
 
-typedef struct RDIM_BakeThreadVariablesIn RDIM_BakeThreadVariablesIn;
 struct RDIM_BakeThreadVariablesIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_SymbolChunkList *thread_variables;
 };
 
-typedef struct RDIM_BakeProceduresIn RDIM_BakeProceduresIn;
 struct RDIM_BakeProceduresIn
 {
   RDIM_BakeStringMapTight *strings;
@@ -266,7 +240,6 @@ struct RDIM_BakeProceduresIn
   RDIM_String8List *location_data_blobs;
 };
 
-typedef struct RDIM_BakeScopesIn RDIM_BakeScopesIn;
 struct RDIM_BakeScopesIn
 {
   RDIM_BakeStringMapTight *strings;
@@ -275,33 +248,28 @@ struct RDIM_BakeScopesIn
   RDIM_String8List *location_data_blobs;
 };
 
-typedef struct RDIM_BakeScopeVMapIn RDIM_BakeScopeVMapIn;
 struct RDIM_BakeScopeVMapIn
 {
   RDIM_ScopeChunkList *scopes;
 };
 
-typedef struct RDIM_BakeInlineSitesIn RDIM_BakeInlineSitesIn;
 struct RDIM_BakeInlineSitesIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_InlineSiteChunkList *inline_sites;
 };
 
-typedef struct RDIM_BakeFilePathsIn RDIM_BakeFilePathsIn;
 struct RDIM_BakeFilePathsIn
 {
   RDIM_BakeStringMapTight *strings;
   RDIM_BakePathTree *path_tree;
 };
 
-typedef struct RDIM_BakeStringsIn RDIM_BakeStringsIn;
 struct RDIM_BakeStringsIn
 {
   RDIM_BakeStringMapTight *strings;
 };
 
-typedef struct RDIM_BakeTypeNodesIn RDIM_BakeTypeNodesIn;
 struct RDIM_BakeTypeNodesIn
 {
   RDIM_BakeStringMapTight *strings;
@@ -309,7 +277,6 @@ struct RDIM_BakeTypeNodesIn
   RDIM_TypeChunkList *types;
 };
 
-typedef struct RDIM_BakeNameMapIn RDIM_BakeNameMapIn;
 struct RDIM_BakeNameMapIn
 {
   RDIM_BakeStringMapTight *strings;
@@ -318,7 +285,6 @@ struct RDIM_BakeNameMapIn
   RDI_NameMapKind kind;
 };
 
-typedef struct RDIM_BakeIdxRunsIn RDIM_BakeIdxRunsIn;
 struct RDIM_BakeIdxRunsIn
 {
   RDIM_BakeIdxRunMap *idx_runs;

@@ -42,7 +42,6 @@ enum
   RD_CellFlag_Button              = (1<<14),
 };
 
-typedef struct RD_CellParams RD_CellParams;
 struct RD_CellParams
 {
   //- rjf: catchall parameters
@@ -90,7 +89,6 @@ enum
   RD_CodeSliceFlag_LineNums          = (1<<3),
 };
 
-typedef struct RD_CodeSliceParams RD_CodeSliceParams;
 struct RD_CodeSliceParams
 {
   // rjf: content
@@ -119,7 +117,6 @@ struct RD_CodeSliceParams
   float margin_float_off_px;
 };
 
-typedef struct RD_CodeSliceSignal RD_CodeSliceSignal;
 struct RD_CodeSliceSignal
 {
   UI_Signal base;

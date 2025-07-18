@@ -16,13 +16,11 @@ enum
   FP_RasterFlag_Hinted = (1<<1),
 };
 
-typedef struct FP_Handle FP_Handle;
 struct FP_Handle
 {
   uint64 u64[2];
 };
 
-typedef struct FP_Metrics FP_Metrics;
 struct FP_Metrics
 {
   float design_units_per_em;
@@ -32,7 +30,6 @@ struct FP_Metrics
   float capital_height;
 };
 
-typedef struct FP_RasterResult FP_RasterResult;
 struct FP_RasterResult
 {
   Vec2uint16 atlas_dim;

@@ -7,7 +7,6 @@
 ////////////////////////////////
 //~ rjf: Tick Input Types
 
-typedef struct D_Target D_Target;
 struct D_Target
 {
   String8 exe;
@@ -21,7 +20,6 @@ struct D_Target
   String8List env;
 };
 
-typedef struct D_TargetArray D_TargetArray;
 struct D_TargetArray
 {
   D_Target *v;
@@ -36,7 +34,6 @@ enum
   D_BreakpointFlag_BreakOnExecute = (1<<2),
 };
 
-typedef struct D_Breakpoint D_Breakpoint;
 struct D_Breakpoint
 {
   D_BreakpointFlags flags;
@@ -48,21 +45,18 @@ struct D_Breakpoint
   uint64 size;
 };
 
-typedef struct D_BreakpointArray D_BreakpointArray;
 struct D_BreakpointArray
 {
   D_Breakpoint *v;
   uint64 count;
 };
 
-typedef struct D_PathMap D_PathMap;
 struct D_PathMap
 {
   String8 src;
   String8 dst;
 };
 
-typedef struct D_PathMapArray D_PathMapArray;
 struct D_PathMapArray
 {
   D_PathMap *v;
@@ -91,7 +85,6 @@ typedef enum D_EventCause
 }
 D_EventCause;
 
-typedef struct D_Event D_Event;
 struct D_Event
 {
   D_EventKind kind;
@@ -102,14 +95,12 @@ struct D_Event
   uint64 id;
 };
 
-typedef struct D_EventNode D_EventNode;
 struct D_EventNode
 {
   D_EventNode *next;
   D_Event v;
 };
 
-typedef struct D_EventList D_EventList;
 struct D_EventList
 {
   D_EventNode *first;
@@ -120,7 +111,6 @@ struct D_EventList
 ////////////////////////////////
 //~ rjf: Line Info Types
 
-typedef struct D_Line D_Line;
 struct D_Line
 {
   String8 file_path;
@@ -129,14 +119,12 @@ struct D_Line
   DI_Key dbgi_key;
 };
 
-typedef struct D_LineNode D_LineNode;
 struct D_LineNode
 {
   D_LineNode *next;
   D_Line v;
 };
 
-typedef struct D_LineList D_LineList;
 struct D_LineList
 {
   D_LineNode *first;
@@ -144,7 +132,6 @@ struct D_LineList
   uint64 count;
 };
 
-typedef struct D_LineListArray D_LineListArray;
 struct D_LineListArray
 {
   D_LineList *v;
@@ -172,7 +159,6 @@ D_RunKind;
 ////////////////////////////////
 //~ rjf: Command Types
 
-typedef struct D_CmdParams D_CmdParams;
 struct D_CmdParams
 {
   CTRL_Handle machine;
@@ -189,14 +175,12 @@ struct D_CmdParams
   D_TargetArray targets;
 };
 
-typedef struct D_Cmd D_Cmd;
 struct D_Cmd
 {
   D_CmdKind kind;
   D_CmdParams params;
 };
 
-typedef struct D_CmdNode D_CmdNode;
 struct D_CmdNode
 {
   D_CmdNode *next;
@@ -204,7 +188,6 @@ struct D_CmdNode
   D_Cmd cmd;
 };
 
-typedef struct D_CmdList D_CmdList;
 struct D_CmdList
 {
   D_CmdNode *first;
@@ -217,7 +200,6 @@ struct D_CmdList
 
 //- rjf: per-run tls-base-vaddr cache
 
-typedef struct D_RunTLSBaseCacheNode D_RunTLSBaseCacheNode;
 struct D_RunTLSBaseCacheNode
 {
   D_RunTLSBaseCacheNode *hash_next;
@@ -227,14 +209,12 @@ struct D_RunTLSBaseCacheNode
   uint64 tls_base_vaddr;
 };
 
-typedef struct D_RunTLSBaseCacheSlot D_RunTLSBaseCacheSlot;
 struct D_RunTLSBaseCacheSlot
 {
   D_RunTLSBaseCacheNode *first;
   D_RunTLSBaseCacheNode *last;
 };
 
-typedef struct D_RunTLSBaseCache D_RunTLSBaseCache;
 struct D_RunTLSBaseCache
 {
   Arena *arena;
@@ -244,7 +224,6 @@ struct D_RunTLSBaseCache
 
 //- rjf: per-run locals cache
 
-typedef struct D_RunLocalsCacheNode D_RunLocalsCacheNode;
 struct D_RunLocalsCacheNode
 {
   D_RunLocalsCacheNode *hash_next;
@@ -253,14 +232,12 @@ struct D_RunLocalsCacheNode
   E_String2NumMap *locals_map;
 };
 
-typedef struct D_RunLocalsCacheSlot D_RunLocalsCacheSlot;
 struct D_RunLocalsCacheSlot
 {
   D_RunLocalsCacheNode *first;
   D_RunLocalsCacheNode *last;
 };
 
-typedef struct D_RunLocalsCache D_RunLocalsCache;
 struct D_RunLocalsCache
 {
   Arena *arena;
@@ -271,7 +248,6 @@ struct D_RunLocalsCache
 ////////////////////////////////
 //~ rjf: Main State Types
 
-typedef struct D_State D_State;
 struct D_State
 {
   // rjf: top-level state

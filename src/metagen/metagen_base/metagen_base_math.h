@@ -9,7 +9,6 @@
 
 //- rjf: 2-vectors
 
-typedef union Vec2float Vec2float;
 union Vec2float
 {
   struct
@@ -20,7 +19,6 @@ union Vec2float
   float v[2];
 };
 
-typedef union Vec2uint64 Vec2uint64;
 union Vec2uint64
 {
   struct
@@ -31,7 +29,6 @@ union Vec2uint64
   uint64 v[2];
 };
 
-typedef union Vec2uint32 Vec2uint32;
 union Vec2uint32
 {
   struct
@@ -42,7 +39,6 @@ union Vec2uint32
   uint32 v[2];
 };
 
-typedef union Vec2uint16 Vec2uint16;
 union Vec2uint16
 {
   struct
@@ -55,7 +51,6 @@ union Vec2uint16
 
 //- rjf: 3-vectors
 
-typedef union Vec3float Vec3float;
 union Vec3float
 {
   struct
@@ -77,7 +72,6 @@ union Vec3float
   float v[3];
 };
 
-typedef union Vec3uint32 Vec3uint32;
 union Vec3uint32
 {
   struct
@@ -101,7 +95,6 @@ union Vec3uint32
 
 //- rjf: 4-vectors
 
-typedef union Vec4float Vec4float;
 union Vec4float
 {
   struct
@@ -129,7 +122,6 @@ union Vec4float
   float v[4];
 };
 
-typedef union Vec4uint32 Vec4uint32;
 union Vec4uint32
 {
   struct
@@ -160,13 +152,11 @@ union Vec4uint32
 ////////////////////////////////
 //~ rjf: Matrix Types
 
-typedef struct Mat3x3float Mat3x3float;
 struct Mat3x3float
 {
   float v[3][3];
 };
 
-typedef struct Mat4x4float Mat4x4float;
 struct Mat4x4float
 {
   float v[4][4];
@@ -177,7 +167,6 @@ struct Mat4x4float
 
 //- rjf: 1-range
 
-typedef union Rng1uint32 Rng1uint32;
 union Rng1uint32
 {
   struct
@@ -188,7 +177,6 @@ union Rng1uint32
   uint32 v[2];
 };
 
-typedef union Rng1uint32 Rng1uint32;
 union Rng1uint32
 {
   struct
@@ -199,7 +187,6 @@ union Rng1uint32
   uint32 v[2];
 };
 
-typedef union Rng1uint64 Rng1uint64;
 union Rng1uint64
 {
   struct
@@ -210,7 +197,6 @@ union Rng1uint64
   uint64 v[2];
 };
 
-typedef union Rng1uint64 Rng1uint64;
 union Rng1uint64
 {
   struct
@@ -221,7 +207,6 @@ union Rng1uint64
   uint64 v[2];
 };
 
-typedef union Rng1float Rng1float;
 union Rng1float
 {
   struct
@@ -234,7 +219,6 @@ union Rng1float
 
 //- rjf: 2-range (rectangles)
 
-typedef union Rng2uint16 Rng2uint16;
 union Rng2uint16
 {
   struct
@@ -257,7 +241,6 @@ union Rng2uint16
   Vec2uint16 v[2];
 };
 
-typedef union Rng2uint32 Rng2uint32;
 union Rng2uint32
 {
   struct
@@ -280,7 +263,6 @@ union Rng2uint32
   Vec2uint32 v[2];
 };
 
-typedef union Rng2float Rng2float;
 union Rng2float
 {
   struct
@@ -303,7 +285,6 @@ union Rng2float
   Vec2float v[2];
 };
 
-typedef union Rng2uint64 Rng2uint64;
 union Rng2uint64
 {
   struct
@@ -329,14 +310,12 @@ union Rng2uint64
 ////////////////////////////////
 //~ rjf: List Types
 
-typedef struct Rng1uint64Node Rng1uint64Node;
 struct Rng1uint64Node
 {
   Rng1uint64Node *next;
   Rng1uint64 v;
 };
 
-typedef struct Rng1uint64List Rng1uint64List;
 struct Rng1uint64List
 {
   uint64 count;
@@ -344,21 +323,18 @@ struct Rng1uint64List
   Rng1uint64Node *last;
 };
 
-typedef struct Rng1uint64Array Rng1uint64Array;
 struct Rng1uint64Array
 {
   Rng1uint64 *v;
   uint64 count;
 };
 
-typedef struct Rng1uint64Node Rng1uint64Node;
 struct Rng1uint64Node
 {
   Rng1uint64Node *next;
   Rng1uint64 v;
 };
 
-typedef struct Rng1uint64List Rng1uint64List;
 struct Rng1uint64List
 {
   Rng1uint64Node *first;
@@ -366,7 +342,6 @@ struct Rng1uint64List
   uint64 count;
 };
 
-typedef struct Rng1uint64Array Rng1uint64Array;
 struct Rng1uint64Array
 {
   Rng1uint64 *v;

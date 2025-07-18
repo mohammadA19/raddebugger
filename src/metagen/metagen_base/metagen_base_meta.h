@@ -14,7 +14,6 @@
 ////////////////////////////////
 //~ rjf: Tweak Info Tables
 
-typedef struct TweakB32Info TweakB32Info;
 struct TweakB32Info
 {
   String8 name;
@@ -22,7 +21,6 @@ struct TweakB32Info
   B32 *value_ptr;
 };
 
-typedef struct TweakfloatInfo TweakfloatInfo;
 struct TweakfloatInfo
 {
   String8 name;
@@ -31,21 +29,18 @@ struct TweakfloatInfo
   float *value_ptr;
 };
 
-typedef struct TweakB32InfoTable TweakB32InfoTable;
 struct TweakB32InfoTable
 {
   TweakB32Info *v;
   uint64 count;
 };
 
-typedef struct TweakfloatInfoTable TweakfloatInfoTable;
 struct TweakfloatInfoTable
 {
   TweakfloatInfo *v;
   uint64 count;
 };
 
-typedef struct EmbedInfo EmbedInfo;
 struct EmbedInfo
 {
   String8 name;
@@ -53,7 +48,6 @@ struct EmbedInfo
   uint128 *hash;
 };
 
-typedef struct EmbedInfoTable EmbedInfoTable;
 struct EmbedInfoTable
 {
   EmbedInfo *v;
@@ -112,8 +106,6 @@ enum
   MemberFlag_DoNotSerialize  = (1<<0),
 };
 
-typedef struct Type Type;
-typedef struct Member Member;
 struct Member
 {
   String8 name;
@@ -123,7 +115,6 @@ struct Member
   MemberFlags flags;
 };
 
-typedef struct Type Type;
 struct Type
 {
   TypeKind kind;
@@ -139,7 +130,6 @@ struct Type
 ////////////////////////////////
 //~ rjf: Type Serialization Parameters
 
-typedef struct TypeSerializePtrRefInfo TypeSerializePtrRefInfo;
 struct TypeSerializePtrRefInfo
 {
   Type *type;           // pointers to this
@@ -148,7 +138,6 @@ struct TypeSerializePtrRefInfo
   void *nil_ptr;        // is terminal if matching 0 or this
 };
 
-typedef struct TypeSerializeParams TypeSerializeParams;
 struct TypeSerializeParams
 {
   uint64 *advance_out;

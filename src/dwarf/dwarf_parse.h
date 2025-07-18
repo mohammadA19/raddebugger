@@ -48,7 +48,6 @@ typedef struct DW_AbbrevTableEntry
   uint64 off;
 } DW_AbbrevTableEntry;
 
-typedef struct DW_AbbrevTable DW_AbbrevTable;
 struct DW_AbbrevTable
 {
   uint64                  count;

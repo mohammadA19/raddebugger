@@ -12,7 +12,6 @@
 // control thread, which blocks to control & receive events, will take this
 // parameter. All other APIs can be called from any thread.
 
-typedef struct DMN_CtrlCtx DMN_CtrlCtx;
 struct DMN_CtrlCtx
 {
   uint64 u64[1];
@@ -21,21 +20,18 @@ struct DMN_CtrlCtx
 ////////////////////////////////
 //~ rjf: Handle Types
 
-typedef union DMN_Handle DMN_Handle;
 union DMN_Handle
 {
   uint32 u32[2];
   uint64 u64[1];
 };
 
-typedef struct DMN_HandleNode DMN_HandleNode;
 struct DMN_HandleNode
 {
   DMN_HandleNode *next;
   DMN_Handle v;
 };
 
-typedef struct DMN_HandleList DMN_HandleList;
 struct DMN_HandleList
 {
   DMN_HandleNode *first;
@@ -43,7 +39,6 @@ struct DMN_HandleList
   uint64 count;
 };
 
-typedef struct DMN_HandleArray DMN_HandleArray;
 struct DMN_HandleArray
 {
   DMN_Handle *handles;
@@ -58,7 +53,6 @@ struct DMN_HandleArray
 ////////////////////////////////
 //~ rjf: Event Types
 
-typedef struct DMN_Event DMN_Event;
 struct DMN_Event
 {
   DMN_EventKind kind;
@@ -82,14 +76,12 @@ struct DMN_Event
   B32 exception_repeated;
 };
 
-typedef struct DMN_EventNode DMN_EventNode;
 struct DMN_EventNode
 {
   DMN_EventNode *next;
   DMN_Event v;
 };
 
-typedef struct DMN_EventList DMN_EventList;
 struct DMN_EventList
 {
   DMN_EventNode *first;
@@ -108,7 +100,6 @@ enum
   DMN_TrapFlag_BreakOnExecute = (1<<2),
 };
 
-typedef struct DMN_Trap DMN_Trap;
 struct DMN_Trap
 {
   DMN_Handle process;
@@ -118,7 +109,6 @@ struct DMN_Trap
   uint32 size;
 };
 
-typedef struct DMN_TrapChunkNode DMN_TrapChunkNode;
 struct DMN_TrapChunkNode
 {
   DMN_TrapChunkNode *next;
@@ -127,7 +117,6 @@ struct DMN_TrapChunkNode
   uint64 count;
 };
 
-typedef struct DMN_TrapChunkList DMN_TrapChunkList;
 struct DMN_TrapChunkList
 {
   DMN_TrapChunkNode *first;
@@ -136,7 +125,6 @@ struct DMN_TrapChunkList
   uint64 trap_count;
 };
 
-typedef struct DMN_RunCtrls DMN_RunCtrls;
 struct DMN_RunCtrls
 {
   DMN_Handle single_step_thread;
@@ -151,13 +139,11 @@ struct DMN_RunCtrls
 ////////////////////////////////
 //~ rjf: System Process Listing Types
 
-typedef struct DMN_ProcessIter DMN_ProcessIter;
 struct DMN_ProcessIter
 {
   uint64 v[2];
 };
 
-typedef struct DMN_ProcessInfo DMN_ProcessInfo;
 struct DMN_ProcessInfo
 {
   String8 name;

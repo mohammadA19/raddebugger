@@ -26,7 +26,6 @@ enum
 ////////////////////////////////
 //~ rjf: Handle Type
 
-typedef union R_Handle R_Handle;
 union R_Handle
 {
   uint64 u64[1];
@@ -37,7 +36,6 @@ union R_Handle
 ////////////////////////////////
 //~ rjf: Instance Types
 
-typedef struct R_Rect2DInst R_Rect2DInst;
 struct R_Rect2DInst
 {
   Rng2float dst;
@@ -50,7 +48,6 @@ struct R_Rect2DInst
   float _unused_[1];
 };
 
-typedef struct R_Mesh3DInst R_Mesh3DInst;
 struct R_Mesh3DInst
 {
   Mat4x4float xform;
@@ -59,7 +56,6 @@ struct R_Mesh3DInst
 ////////////////////////////////
 //~ rjf: Batch Types
 
-typedef struct R_Batch R_Batch;
 struct R_Batch
 {
   uint8 *v;
@@ -67,14 +63,12 @@ struct R_Batch
   uint64 byte_cap;
 };
 
-typedef struct R_BatchNode R_BatchNode;
 struct R_BatchNode
 {
   R_BatchNode *next;
   R_Batch v;
 };
 
-typedef struct R_BatchList R_BatchList;
 struct R_BatchList
 {
   R_BatchNode *first;
@@ -84,7 +78,6 @@ struct R_BatchList
   uint64 bytes_per_inst;
 };
 
-typedef struct R_BatchGroup2DParams R_BatchGroup2DParams;
 struct R_BatchGroup2DParams
 {
   R_Handle tex;
@@ -94,7 +87,6 @@ struct R_BatchGroup2DParams
   float transparency;
 };
 
-typedef struct R_BatchGroup2DNode R_BatchGroup2DNode;
 struct R_BatchGroup2DNode
 {
   R_BatchGroup2DNode *next;
@@ -102,7 +94,6 @@ struct R_BatchGroup2DNode
   R_BatchGroup2DParams params;
 };
 
-typedef struct R_BatchGroup2DList R_BatchGroup2DList;
 struct R_BatchGroup2DList
 {
   R_BatchGroup2DNode *first;
@@ -110,7 +101,6 @@ struct R_BatchGroup2DList
   uint64 count;
 };
 
-typedef struct R_BatchGroup3DParams R_BatchGroup3DParams;
 struct R_BatchGroup3DParams
 {
   R_Handle mesh_vertices;
@@ -122,7 +112,6 @@ struct R_BatchGroup3DParams
   Mat4x4float xform;
 };
 
-typedef struct R_BatchGroup3DMapNode R_BatchGroup3DMapNode;
 struct R_BatchGroup3DMapNode
 {
   R_BatchGroup3DMapNode *next;
@@ -131,7 +120,6 @@ struct R_BatchGroup3DMapNode
   R_BatchGroup3DParams params;
 };
 
-typedef struct R_BatchGroup3DMap R_BatchGroup3DMap;
 struct R_BatchGroup3DMap
 {
   R_BatchGroup3DMapNode **slots;
@@ -141,13 +129,11 @@ struct R_BatchGroup3DMap
 ////////////////////////////////
 //~ rjf: Pass Types
 
-typedef struct R_PassParams_UI R_PassParams_UI;
 struct R_PassParams_UI
 {
   R_BatchGroup2DList rects;
 };
 
-typedef struct R_PassParams_Blur R_PassParams_Blur;
 struct R_PassParams_Blur
 {
   Rng2float rect;
@@ -156,7 +142,6 @@ struct R_PassParams_Blur
   float corner_radii[Corner_COUNT];
 };
 
-typedef struct R_PassParams_Geo3D R_PassParams_Geo3D;
 struct R_PassParams_Geo3D
 {
   Rng2float viewport;
@@ -166,7 +151,6 @@ struct R_PassParams_Geo3D
   R_BatchGroup3DMap mesh_batches;
 };
 
-typedef struct R_Pass R_Pass;
 struct R_Pass
 {
   R_PassKind kind;
@@ -179,14 +163,12 @@ struct R_Pass
   };
 };
 
-typedef struct R_PassNode R_PassNode;
 struct R_PassNode
 {
   R_PassNode *next;
   R_Pass v;
 };
 
-typedef struct R_PassList R_PassList;
 struct R_PassList
 {
   R_PassNode *first;

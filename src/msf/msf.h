@@ -28,7 +28,6 @@ typedef uint16 MSF_StreamNumber;
 static char msf_msf20_magic[] = "Microsoft C/C++ program database 2.00\r\n\x1aJG\0\0";
 static char msf_msf70_magic[] = "Microsoft C/C++ MSF 7.00\r\n\032DS\0\0";
 
-typedef struct MSF_Header20 MSF_Header20;
 struct MSF_Header20
 {
   uint8  magic[sizeof(msf_msf20_magic)];
@@ -40,7 +39,6 @@ struct MSF_Header20
   uint16 root_pn;
 };
 
-typedef struct MSF_Header70 MSF_Header70;
 struct MSF_Header70
 {
   uint8             magic[sizeof(msf_msf70_magic)];

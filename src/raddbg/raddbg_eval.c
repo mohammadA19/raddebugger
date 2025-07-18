@@ -252,7 +252,6 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(registers)
 ////////////////////////////////
 //~ rjf: Schema Type Hooks
 
-typedef struct RD_SchemaIRExt RD_SchemaIRExt;
 struct RD_SchemaIRExt
 {
   RD_Cfg *cfg;
@@ -484,7 +483,6 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
   return irtree;
 }
 
-typedef struct RD_SchemaExpandAccel RD_SchemaExpandAccel;
 struct RD_SchemaExpandAccel
 {
   String8Array commands;
@@ -670,7 +668,6 @@ E_TYPE_ACCESS_FUNCTION_DEF(control)
 ////////////////////////////////
 //~ rjf: Config Collection Type Hooks
 
-typedef struct RD_CfgsIRExt RD_CfgsIRExt;
 struct RD_CfgsIRExt
 {
   String8 cfg_name;
@@ -757,7 +754,6 @@ E_TYPE_ACCESS_FUNCTION_DEF(cfgs_slice)
   return result;
 }
 
-typedef struct RD_CfgsExpandAccel RD_CfgsExpandAccel;
 struct RD_CfgsExpandAccel
 {
   String8Array cmds;
@@ -937,7 +933,6 @@ E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(cfgs_slice)
 ////////////////////////////////
 //~ rjf: `call_stack` Type Hooks
 
-typedef struct RD_CallStackAccel RD_CallStackAccel;
 struct RD_CallStackAccel
 {
   Arch arch;
@@ -999,7 +994,6 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(call_stack)
 ////////////////////////////////
 //~ rjf: `environment` Type Hooks
 
-typedef struct RD_EnvironmentAccel RD_EnvironmentAccel;
 struct RD_EnvironmentAccel
 {
   RD_CfgArray cfgs;
@@ -1113,7 +1107,6 @@ E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(environment)
 ////////////////////////////////
 //~ rjf: `watches` Type Hooks
 
-typedef struct RD_WatchesAccel RD_WatchesAccel;
 struct RD_WatchesAccel
 {
   RD_CfgArray cfgs;
@@ -1250,7 +1243,6 @@ E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(watches)
 ////////////////////////////////
 //~ rjf: `unattached_processes` Type Hooks
 
-typedef struct RD_UnattachedProcessesAccel RD_UnattachedProcessesAccel;
 struct RD_UnattachedProcessesAccel
 {
   DMN_ProcessInfo *infos;
@@ -1532,7 +1524,6 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(ctrl_entities)
 ////////////////////////////////
 //~ rjf: Debug Info Tables Eval Hooks
 
-typedef struct RD_DebugInfoTableLookupAccel RD_DebugInfoTableLookupAccel;
 struct RD_DebugInfoTableLookupAccel
 {
   RDI_SectionKind section;

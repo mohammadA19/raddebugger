@@ -32,13 +32,10 @@ pid_t gettid(void);
 int pthread_setname_np(pthread_t thread, const char *name);
 int pthread_getname_np(pthread_t thread, char *name, size_t size);
 
-typedef struct tm tm;
-typedef struct timespec timespec;
 
 ////////////////////////////////
 //~ rjf: File Iterator
 
-typedef struct OS_LNX_FileIter OS_LNX_FileIter;
 struct OS_LNX_FileIter
 {
   DIR *dir;
@@ -50,7 +47,6 @@ StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(OS_LNX_FileIter), os_
 ////////////////////////////////
 //~ rjf: Safe Call Handler Chain
 
-typedef struct OS_LNX_SafeCallChain OS_LNX_SafeCallChain;
 struct OS_LNX_SafeCallChain
 {
   OS_LNX_SafeCallChain *next;
@@ -70,7 +66,6 @@ typedef enum OS_LNX_EntityKind
 }
 OS_LNX_EntityKind;
 
-typedef struct OS_LNX_Entity OS_LNX_Entity;
 struct OS_LNX_Entity
 {
   OS_LNX_Entity *next;
@@ -96,7 +91,6 @@ struct OS_LNX_Entity
 ////////////////////////////////
 //~ rjf: State
 
-typedef struct OS_LNX_State OS_LNX_State;
 struct OS_LNX_State
 {
   Arena *arena;

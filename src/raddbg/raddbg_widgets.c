@@ -1050,7 +1050,6 @@ rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList *matches, char *fmt, ...)
 ////////////////////////////////
 //~ rjf: UI Widgets: Text View
 
-typedef struct RD_ThreadBoxDrawExtData RD_ThreadBoxDrawExtData;
 struct RD_ThreadBoxDrawExtData
 {
   Vec4float thread_color;
@@ -1134,7 +1133,6 @@ internal UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions)
   }
 }
 
-typedef struct RD_BreakpointBoxDrawExtData RD_BreakpointBoxDrawExtData;
 struct RD_BreakpointBoxDrawExtData
 {
   Vec4float color;

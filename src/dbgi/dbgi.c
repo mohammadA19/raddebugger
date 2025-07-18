@@ -1195,7 +1195,6 @@ di_u2s_dequeue_req(uint64 thread_idx)
   return key;
 }
 
-typedef struct DI_SearchWorkIn DI_SearchWorkIn;
 struct DI_SearchWorkIn
 {
   uint128 key;
@@ -1207,7 +1206,6 @@ struct DI_SearchWorkIn
   String8 query;
   uint64 dbgi_idx;
 };
-typedef struct DI_SearchWorkOut DI_SearchWorkOut;
 struct DI_SearchWorkOut
 {
   B32 cancelled;

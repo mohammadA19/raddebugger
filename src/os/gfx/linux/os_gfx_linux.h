@@ -17,7 +17,6 @@
 ////////////////////////////////
 //~ rjf: Window State
 
-typedef struct OS_LNX_Window OS_LNX_Window;
 struct OS_LNX_Window
 {
   OS_LNX_Window *next;
@@ -31,7 +30,6 @@ struct OS_LNX_Window
 ////////////////////////////////
 //~ rjf: State Bundle
 
-typedef struct OS_LNX_GfxState OS_LNX_GfxState;
 struct OS_LNX_GfxState
 {
   Arena *arena;

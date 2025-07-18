@@ -9,7 +9,6 @@
 
 //- rjf: unit vmap baking
 
-typedef struct P2B_BakeUnitVMapIn P2B_BakeUnitVMapIn;
 struct P2B_BakeUnitVMapIn
 {
   RDIM_UnitChunkList *units;
@@ -18,7 +17,6 @@ ASYNC_WORK_DEF(p2b_bake_unit_vmap_work);
 
 //- rjf: line table baking
 
-typedef struct P2B_BakeLineTablesIn P2B_BakeLineTablesIn;
 struct P2B_BakeLineTablesIn
 {
   RDIM_LineTableChunkList *line_tables;
@@ -27,7 +25,6 @@ ASYNC_WORK_DEF(p2b_bake_line_table_work);
 
 //- rjf: per-procedure chunk dumping
 
-typedef struct P2B_DumpProcChunkIn P2B_DumpProcChunkIn;
 struct P2B_DumpProcChunkIn
 {
   RDI_VMapEntry *unit_vmap;

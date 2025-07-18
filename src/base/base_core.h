@@ -390,7 +390,6 @@ typedef uint64      B64;
 typedef float    float;
 typedef double   double;
 typedef void VoidProc(void);
-typedef union uint128 uint128;
 union uint128
 {
   uint8 u8[16];
@@ -398,7 +397,6 @@ union uint128
   uint32 u32[4];
   uint64 u64[2];
 };
-typedef union U256 U256;
 union U256
 {
   uint8 u8[32];
@@ -407,7 +405,6 @@ union U256
   uint64 u64[4];
   uint128 u128[2];
 };
-typedef union U512 U512;
 union U512
 {
   uint8 u8[64];
@@ -522,14 +519,12 @@ Compiler;
 ////////////////////////////////
 //~ rjf: Text 2D Coordinates & Ranges
 
-typedef struct TxtPt TxtPt;
 struct TxtPt
 {
   uint64 line;
   uint64 column;
 };
 
-typedef struct TxtRng TxtRng;
 struct TxtRng
 {
   TxtPt min;
@@ -539,7 +534,6 @@ struct TxtRng
 ////////////////////////////////
 //~ Globally Unique Ids
 
-typedef union Guid Guid;
 union Guid
 {
   struct
@@ -748,7 +742,6 @@ typedef enum Month
 }
 Month;
 
-typedef struct DateTime DateTime;
 struct DateTime
 {
   uint16 micro_sec; // [0,999]
@@ -781,7 +774,6 @@ enum
   FilePropertyFlag_IsFolder = (1 << 0),
 };
 
-typedef struct FileProperties FileProperties;
 struct FileProperties
 {
   uint64 size;

@@ -132,7 +132,6 @@ rrCtzBytes64(uint64 val)
 
 //---------------------
 
-typedef struct rr_lzb_simple_context rr_lzb_simple_context;
 struct rr_lzb_simple_context
 {
 	uint16	*	m_hashTable;	// must be allocated to sizeof(uint16)*(1<<m_tableSizeBits)

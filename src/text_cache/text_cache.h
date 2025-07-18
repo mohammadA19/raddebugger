@@ -32,14 +32,12 @@ typedef enum TXT_TokenKind
 }
 TXT_TokenKind;
 
-typedef struct TXT_Token TXT_Token;
 struct TXT_Token
 {
   TXT_TokenKind kind;
   Rng1uint64 range;
 };
 
-typedef struct TXT_TokenChunkNode TXT_TokenChunkNode;
 struct TXT_TokenChunkNode
 {
   TXT_TokenChunkNode *next;
@@ -48,7 +46,6 @@ struct TXT_TokenChunkNode
   TXT_Token *v;
 };
 
-typedef struct TXT_TokenChunkList TXT_TokenChunkList;
 struct TXT_TokenChunkList
 {
   TXT_TokenChunkNode *first;
@@ -57,14 +54,12 @@ struct TXT_TokenChunkList
   uint64 token_count;
 };
 
-typedef struct TXT_TokenNode TXT_TokenNode;
 struct TXT_TokenNode
 {
   TXT_TokenNode *next;
   TXT_Token v;
 };
 
-typedef struct TXT_TokenList TXT_TokenList;
 struct TXT_TokenList
 {
   TXT_TokenNode *first;
@@ -72,21 +67,18 @@ struct TXT_TokenList
   uint64 count;
 };
 
-typedef struct TXT_TokenArray TXT_TokenArray;
 struct TXT_TokenArray
 {
   uint64 count;
   TXT_Token *v;
 };
 
-typedef struct TXT_TokenArrayArray TXT_TokenArrayArray;
 struct TXT_TokenArrayArray
 {
   uint64 count;
   TXT_TokenArray *v;
 };
 
-typedef struct TXT_TextInfo TXT_TextInfo;
 struct TXT_TextInfo
 {
   uint64 lines_count;
@@ -98,7 +90,6 @@ struct TXT_TextInfo
   uint64 bytes_to_process;
 };
 
-typedef struct TXT_LineTokensSlice TXT_LineTokensSlice;
 struct TXT_LineTokensSlice
 {
   TXT_TokenArray *line_tokens;
@@ -125,7 +116,6 @@ typedef TXT_TokenArray TXT_LangLexFunctionType(Arena *arena, uint64 *bytes_proce
 ////////////////////////////////
 //~ rjf: Cache Types
 
-typedef struct TXT_Node TXT_Node;
 struct TXT_Node
 {
   // rjf: links
@@ -148,14 +138,12 @@ struct TXT_Node
   uint64 load_count;
 };
 
-typedef struct TXT_Slot TXT_Slot;
 struct TXT_Slot
 {
   TXT_Node *first;
   TXT_Node *last;
 };
 
-typedef struct TXT_Stripe TXT_Stripe;
 struct TXT_Stripe
 {
   Arena *arena;
@@ -166,7 +154,6 @@ struct TXT_Stripe
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-typedef struct TXT_Touch TXT_Touch;
 struct TXT_Touch
 {
   TXT_Touch *next;
@@ -174,7 +161,6 @@ struct TXT_Touch
   TXT_LangKind lang;
 };
 
-typedef struct TXT_Scope TXT_Scope;
 struct TXT_Scope
 {
   TXT_Scope *next;
@@ -184,7 +170,6 @@ struct TXT_Scope
 ////////////////////////////////
 //~ rjf: Thread Context
 
-typedef struct TXT_TCTX TXT_TCTX;
 struct TXT_TCTX
 {
   Arena *arena;
@@ -195,7 +180,6 @@ struct TXT_TCTX
 ////////////////////////////////
 //~ rjf: Shared State
 
-typedef struct TXT_Shared TXT_Shared;
 struct TXT_Shared
 {
   Arena *arena;

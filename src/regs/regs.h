@@ -20,14 +20,12 @@ REGS_UsageKind;
 typedef uint8 REGS_RegCode;
 typedef uint8 REGS_AliasCode;
 
-typedef union REGS_Reg16 REGS_Reg16;
 union REGS_Reg16
 {
   uint8 v[2];
   uint16 u16;
 };
 
-typedef union REGS_Reg32 REGS_Reg32;
 union REGS_Reg32
 {
   uint8 v[4];
@@ -35,7 +33,6 @@ union REGS_Reg32
   float f32;
 };
 
-typedef union REGS_Reg64 REGS_Reg64;
 union REGS_Reg64
 {
   uint8 v[8];
@@ -44,7 +41,6 @@ union REGS_Reg64
 };
 
 #pragma pack(push, 1)
-typedef struct REGS_Reg80 REGS_Reg80;
 struct REGS_Reg80
 {
   uint64 int1_frac63;
@@ -52,7 +48,6 @@ struct REGS_Reg80
 };
 #pragma pack(pop)
 
-typedef union REGS_Reg128 REGS_Reg128;
 union REGS_Reg128
 {
   uint8 v[16];
@@ -62,7 +57,6 @@ union REGS_Reg128
   double f64[2];
 };
 
-typedef union REGS_Reg256 REGS_Reg256;
 union REGS_Reg256
 {
   uint8 v[32];
@@ -72,7 +66,6 @@ union REGS_Reg256
   double f64[4];
 };
 
-typedef union REGS_Reg512 REGS_Reg512;
 union REGS_Reg512
 {
   uint8 v[64];
@@ -85,14 +78,12 @@ union REGS_Reg512
 ////////////////////////////////
 //~ rjf: Register Slicing Types
 
-typedef struct REGS_Rng REGS_Rng;
 struct REGS_Rng
 {
   uint16 byte_off;
   uint16 byte_size;
 };
 
-typedef struct REGS_Slice REGS_Slice;
 struct REGS_Slice
 {
   uint16 code;

@@ -13,7 +13,6 @@
 // case (x < 0x8000):  kind=uint16 val=x
 // case (x >= 0x8000): kind=x   val=buf
 
-typedef struct CV_NumericParsed CV_NumericParsed;
 struct CV_NumericParsed
 {
   CV_NumericKind  kind;
@@ -21,7 +20,6 @@ struct CV_NumericParsed
   uint64             encoded_size;
 };
 
-typedef struct CV_RecRange CV_RecRange;
 struct CV_RecRange
 {
   uint32          off;
@@ -30,14 +28,12 @@ struct CV_RecRange
 
 #define CV_REC_RANGE_CHUNK_SIZE 511
 
-typedef struct CV_RecRangeChunk CV_RecRangeChunk;
 struct CV_RecRangeChunk
 {
   struct CV_RecRangeChunk *next;
   CV_RecRange              ranges[CV_REC_RANGE_CHUNK_SIZE];
 };
 
-typedef struct CV_RecRangeStream CV_RecRangeStream;
 struct CV_RecRangeStream
 {
   CV_RecRangeChunk *first_chunk;
@@ -45,7 +41,6 @@ struct CV_RecRangeStream
   uint64               total_count;
 };
 
-typedef struct CV_RecRangeArray CV_RecRangeArray;
 struct CV_RecRangeArray
 {
   CV_RecRange *ranges;
@@ -55,7 +50,6 @@ struct CV_RecRangeArray
 ////////////////////////////////
 //~ CodeView Sym Parser Types
 
-typedef struct CV_SymTopLevelInfo CV_SymTopLevelInfo;
 struct CV_SymTopLevelInfo
 {
   CV_Arch     arch;
@@ -63,7 +57,6 @@ struct CV_SymTopLevelInfo
   String8     compiler_name;
 };
 
-typedef struct CV_SymParsed CV_SymParsed;
 struct CV_SymParsed
 {
   // source information
@@ -80,7 +73,6 @@ struct CV_SymParsed
 ////////////////////////////////
 //~ CodeView Leaf Parser Types
 
-typedef struct CV_LeafParsed CV_LeafParsed;
 struct CV_LeafParsed
 {
   // source information
@@ -95,7 +87,6 @@ struct CV_LeafParsed
 ////////////////////////////////
 //~ CodeView C13 Info Parser Types
 
-typedef struct CV_C13InlineSiteDecoder CV_C13InlineSiteDecoder;
 struct CV_C13InlineSiteDecoder
 {
   uint64                cursor;
@@ -128,7 +119,6 @@ enum
   CV_C13InlineSiteDecoderStepFlag_EmitLine        = (1 << 3),
 };
 
-typedef struct CV_C13InlineSiteDecoderStep CV_C13InlineSiteDecoderStep;
 struct CV_C13InlineSiteDecoderStep
 {
   CV_C13InlineSiteDecoderStepFlags flags;
@@ -140,7 +130,6 @@ struct CV_C13InlineSiteDecoderStep
   uint32                         file_off;
 };
 
-typedef struct CV_C13LinesParsed CV_C13LinesParsed;
 struct CV_C13LinesParsed
 {
   // raw info
@@ -156,14 +145,12 @@ struct CV_C13LinesParsed
   uint32      line_count;
 };
 
-typedef struct CV_C13LinesParsedNode CV_C13LinesParsedNode;
 struct CV_C13LinesParsedNode
 {
   CV_C13LinesParsedNode *next;
   CV_C13LinesParsed      v;
 };
 
-typedef struct CV_C13InlineeLinesParsed CV_C13InlineeLinesParsed;
 struct CV_C13InlineeLinesParsed
 {
   CV_ItemId  inlinee;
@@ -174,7 +161,6 @@ struct CV_C13InlineeLinesParsed
   uint32       *extra_files;
 };
 
-typedef struct CV_C13InlineeLinesParsedNode CV_C13InlineeLinesParsedNode;
 struct CV_C13InlineeLinesParsedNode
 {
   CV_C13InlineeLinesParsedNode *next;
@@ -182,7 +168,6 @@ struct CV_C13InlineeLinesParsedNode
   CV_C13InlineeLinesParsed      v;
 };
 
-typedef struct CV_C13SubSectionNode CV_C13SubSectionNode;
 struct CV_C13SubSectionNode
 {
   struct CV_C13SubSectionNode  *next;
@@ -195,7 +180,6 @@ struct CV_C13SubSectionNode
   CV_C13InlineeLinesParsedNode *inlinee_lines_last;
 };
 
-typedef struct CV_C13Parsed CV_C13Parsed;
 struct CV_C13Parsed
 {
   // rjf: source data
@@ -214,7 +198,6 @@ struct CV_C13Parsed
   uint64                            inlinee_lines_parsed_slots_count;
 };
 
-typedef struct CV_UDTInfo CV_UDTInfo;
 struct CV_UDTInfo
 {
   String8      name;
@@ -225,7 +208,6 @@ struct CV_UDTInfo
 ////////////////////////////////
 //~ CodeView Compound Types
 
-typedef struct CV_TypeIdArray CV_TypeIdArray;
 struct CV_TypeIdArray
 {
   CV_TypeId *itypes;

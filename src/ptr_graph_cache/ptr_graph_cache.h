@@ -7,7 +7,6 @@
 ////////////////////////////////
 //~ rjf: Graph Search Key
 
-typedef struct PTG_Key PTG_Key;
 struct PTG_Key
 {
   uint128 root_hash;
@@ -18,20 +17,17 @@ struct PTG_Key
 ////////////////////////////////
 //~ rjf: Cache Types
 
-typedef struct PTG_Node PTG_Node;
 struct PTG_Node
 {
   uint64 value;
 };
 
-typedef struct PTG_Link PTG_Link;
 struct PTG_Link
 {
   uint32 from;
   uint32 to;
 };
 
-typedef struct PTG_NodeChunkNode PTG_NodeChunkNode;
 struct PTG_NodeChunkNode
 {
   PTG_NodeChunkNode *next;
@@ -40,7 +36,6 @@ struct PTG_NodeChunkNode
   uint64 cap;
 };
 
-typedef struct PTG_NodeChunkList PTG_NodeChunkList;
 struct PTG_NodeChunkList
 {
   PTG_NodeChunkNode *first;
@@ -49,14 +44,12 @@ struct PTG_NodeChunkList
   uint64 total_count;
 };
 
-typedef struct PTG_NodeArray PTG_NodeArray;
 struct PTG_NodeArray
 {
   PTG_Node *v;
   uint64 count;
 };
 
-typedef struct PTG_LinkChunkNode PTG_LinkChunkNode;
 struct PTG_LinkChunkNode
 {
   PTG_LinkChunkNode *next;
@@ -65,7 +58,6 @@ struct PTG_LinkChunkNode
   uint64 cap;
 };
 
-typedef struct PTG_LinkChunkList PTG_LinkChunkList;
 struct PTG_LinkChunkList
 {
   PTG_LinkChunkNode *first;
@@ -74,21 +66,18 @@ struct PTG_LinkChunkList
   uint64 total_count;
 };
 
-typedef struct PTG_LinkArray PTG_LinkArray;
 struct PTG_LinkArray
 {
   PTG_Link *v;
   uint64 count;
 };
 
-typedef struct PTG_Graph PTG_Graph;
 struct PTG_Graph
 {
   PTG_NodeArray nodes;
   PTG_LinkArray links;
 };
 
-typedef struct PTG_GraphNode PTG_GraphNode;
 struct PTG_GraphNode
 {
   // rjf: links
@@ -110,14 +99,12 @@ struct PTG_GraphNode
   PTG_Graph graph;
 };
 
-typedef struct PTG_GraphSlot PTG_GraphSlot;
 struct PTG_GraphSlot
 {
   PTG_GraphNode *first;
   PTG_GraphNode *last;
 };
 
-typedef struct PTG_GraphStripe PTG_GraphStripe;
 struct PTG_GraphStripe
 {
   Arena *arena;
@@ -129,14 +116,12 @@ struct PTG_GraphStripe
 ////////////////////////////////
 //~ rjf: Scoped Access Types
 
-typedef struct PTG_Touch PTG_Touch;
 struct PTG_Touch
 {
   PTG_Touch *next;
   PTG_GraphNode *node;
 };
 
-typedef struct PTG_Scope PTG_Scope;
 struct PTG_Scope
 {
   PTG_Scope *next;
@@ -146,7 +131,6 @@ struct PTG_Scope
 ////////////////////////////////
 //~ rjf: Thread Context
 
-typedef struct PTG_TCTX PTG_TCTX;
 struct PTG_TCTX
 {
   Arena *arena;
@@ -157,7 +141,6 @@ struct PTG_TCTX
 ////////////////////////////////
 //~ rjf: Shared State
 
-typedef struct PTG_Shared PTG_Shared;
 struct PTG_Shared
 {
   Arena *arena;
