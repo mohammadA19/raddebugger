@@ -294,7 +294,6 @@ enum CV_Regx86Enum
   CV_Reg_X86_XList(X)
 #undef X
 }
-CV_Regx86Enum;
 
 // X(NAME, CODE, (RDI_RegisterCode_X64) NAME, BYTE_POS, BYTE_SIZE)
 #define CV_Reg_X64_XList(X)       \
@@ -1011,7 +1010,6 @@ enum CV_Regx64Enum
   CV_Reg_X64_XList(X)
 #undef X
 }
-CV_Regx64Enum;
 
 
 #define CV_SignatureXList(X) \
@@ -1028,7 +1026,6 @@ enum CV_SignatureEnum
   CV_SignatureXList(X)
 #undef X
 }
-CV_SignatureEnum;
 
 
 #define CV_LanguageXList(X) \
@@ -1057,7 +1054,6 @@ enum CV_LanguageEnum
   CV_LanguageXList(X)
 #undef X
 }
-CV_LanguageEnum;
 
 #pragma pack(push, 1)
 
@@ -1156,7 +1152,6 @@ enum CV_GenericStyleEnum
   CV_GenericStyle_IRAF,   //  "indirect returnee allocated far"
   CV_GenericStyle_UNUSED,
 }
-CV_GenericStyleEnum;
 
 enum CV_GenericFlags : uint16
 {
@@ -1208,7 +1203,6 @@ enum CV_EncodedFramePtrRegEnum
   CV_EncodedFramePtrReg_FramePtr,
   CV_EncodedFramePtrReg_BasePtr,
 }
-CV_EncodedFramePtrRegEnum;
 
 enum CV_FrameprocFlags : uint32
 {
@@ -1279,7 +1273,6 @@ enum CV_ThunkOrdinalEnum
   CV_ThunkOrdinal_TrampIncremental,
   CV_ThunkOrdinal_TrampBranchIsland,
 }
-CV_ThunkOrdinalEnum;
 
 struct CV_SymThunk32
 {
@@ -1544,7 +1537,6 @@ enum CV_TrampolineKindEnum
   CV_TrampolineKind_Incremental,
   CV_TrampolineKind_BranchIsland,
 }
-CV_TrampolineKindEnum;
 
 struct CV_SymTrampoline
 {
@@ -1639,7 +1631,6 @@ enum CV_FrameCookieKindEnum
   CV_FrameCookieKind_XorBP,
   CV_FrameCookieKind_XorR13,
 }
-CV_FrameCookieKindEnum;
 
 struct CV_SymFrameCookie
 {
@@ -1658,7 +1649,6 @@ enum CV_DiscardedKindEnum
   CV_DiscardedKind_NotSelected,
   CV_DiscardedKind_NotReferenced,
 }
-CV_DiscardedKindEnum;
 
 struct CV_SymDiscarded
 {
@@ -1856,7 +1846,6 @@ enum CV_InlineBinaryAnnotationEnum
   CV_InlineBinaryAnnotation_ChangeCodeLengthAndCodeOffset,
   CV_InlineBinaryAnnotation_ChangeColumnEnd
 }
-CV_InlineBinaryAnnotationEnum;
 
 typedef uint32 CV_InlineRangeKind;
 enum CV_InlineRangeKindEnum
@@ -1864,7 +1853,6 @@ enum CV_InlineRangeKindEnum
   CV_InlineRangeKind_Expr,
   CV_InlineRangeKind_Stmt
 }
-CV_InlineRangeKindEnum;
 
 struct CV_SymInlineSite
 {
@@ -1914,7 +1902,6 @@ enum CV_ArmSwitchKindEnum
   CV_ArmSwitchKind_INT1SSHL1,
   CV_ArmSwitchKind_INT2SSHL1,
 }
-CV_ArmSwitchKindEnum;
 
 struct CV_SymArmSwitchTable
 {
@@ -2118,7 +2105,6 @@ enum CV_PointerModeEnum
   CV_PointerMode_PtrMethod,
   CV_PointerMode_RRef,
 }
-CV_PointerModeEnum;
 
 typedef uint16 CV_MemberPointerKind;
 enum CV_MemberPointerKindEnum
@@ -2133,7 +2119,6 @@ enum CV_MemberPointerKindEnum
   CV_MemberPointerKind_FuncVirtual,
   CV_MemberPointerKind_FuncGeneral,
 }
-CV_MemberPointerKindEnum;
 
 typedef uint32 CV_VirtualTableShape;
 enum CV_VirtualTableShapeEnum
@@ -2146,7 +2131,6 @@ enum CV_VirtualTableShapeEnum
   CV_VirtualTableShape_Near32,  // 32 bit ptr
   CV_VirtualTableShape_Far32,   // ???
 }
-CV_VirtualTableShapeEnum;
 
 enum CV_MethodProp : uint8
 {
@@ -2167,7 +2151,6 @@ enum CV_MemberAccessEnum
   CV_MemberAccess_Protected,
   CV_MemberAccess_Public
 }
-CV_MemberAccessEnum;
 
 enum CV_FieldAttribs : uint16
 {
@@ -2188,7 +2171,6 @@ enum CV_LabelKindEnum
   CV_LabelKind_Near = 0,
   CV_LabelKind_Far  = 4,
 }
-CV_LabelKindEnum;
 
 enum CV_FunctionAttribs : uint8
 {
@@ -2226,7 +2208,6 @@ enum CV_CallKindEnum
   CV_CallKind_Inline,
   CV_CallKind_NearVector,
 }
-CV_CallKindEnum;
 
 //- (LeafKind: PRECOMP)
 
@@ -2615,7 +2596,6 @@ enum CV_BuildInfoIndexEnum
   CV_BuildInfoIndex_CombinedPdb        = 3,
   CV_BuildInfoIndex_CompileArguments   = 4,
 }
-CV_BuildInfoIndexEnum;
 
 struct CV_LeafBuildInfo
 {
@@ -2679,7 +2659,6 @@ enum CV_C13SubSectionKindEnum
   CV_C13SubSectionKindXList(X)
 #undef X
 }
-CV_C13SubSectionKindEnum;
 
 struct CV_C13SubSectionHeader
 {
@@ -2697,7 +2676,6 @@ enum CV_C13ChecksumKindEnum
   CV_C13ChecksumKind_SHA1,
   CV_C13ChecksumKind_SHA256,
 }
-CV_C13ChecksumKindEnum;
 
 struct CV_C13Checksum
 {

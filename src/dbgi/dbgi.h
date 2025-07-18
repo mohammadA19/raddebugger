@@ -43,7 +43,6 @@ enum DI_EventKind
   DI_EventKind_ConversionFailureUnsupportedFormat,
   DI_EventKind_COUNT
 }
-DI_EventKind;
 
 struct DI_Event
 {

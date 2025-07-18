@@ -89,7 +89,6 @@ enum TypeKind
   
   TypeKind_COUNT
 }
-TypeKind;
 
 enum TypeFlags : uint32
 {

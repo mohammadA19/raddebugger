@@ -332,7 +332,6 @@ enum RDIM_Subset
   RDIM_Subset_XList
 #undef X
 }
-RDIM_Subset;
 
 enum RDIM_SubsetFlags : uint32
 {

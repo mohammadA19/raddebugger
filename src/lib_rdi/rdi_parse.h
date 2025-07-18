@@ -52,7 +52,6 @@ enum RDI_ParseStatus
   RDI_ParseStatus_InvalidDataSecionLayout = 3,
   RDI_ParseStatus_MissingRequiredSection = 4,
 }
-RDI_ParseStatus;
 
 struct RDI_Parsed
 {

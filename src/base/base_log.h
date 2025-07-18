@@ -13,7 +13,6 @@ enum LogMsgKind
   LogMsgKind_UserError,
   LogMsgKind_COUNT
 }
-LogMsgKind;
 
 struct LogScope
 {

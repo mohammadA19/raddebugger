@@ -72,7 +72,6 @@ enum D_EventKind
   D_EventKind_Stop,
   D_EventKind_COUNT
 }
-D_EventKind;
 
 enum D_EventCause
 {
@@ -82,7 +81,6 @@ enum D_EventCause
   D_EventCause_SoftHalt,
   D_EventCause_COUNT
 }
-D_EventCause;
 
 struct D_Event
 {
@@ -148,7 +146,6 @@ enum D_RunKind
   D_RunKind_Step,
   D_RunKind_COUNT
 }
-D_RunKind;
 
 ////////////////////////////////
 //~ rjf: Generated Code

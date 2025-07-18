@@ -316,7 +316,6 @@ enum ExecMode
   ExecMode_BinaryUtility,
   ExecMode_Help,
 }
-ExecMode;
 
 struct IPCInfo
 {

@@ -90,7 +90,6 @@ enum PathStyle
 # error Absolute path style is undefined for this OS.
 #endif
 }
-PathStyle;
 
 struct StringJoin
 {

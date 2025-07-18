@@ -39,7 +39,6 @@ enum RDI_DumpSubset
   RDI_DumpSubset_XList
 #undef X
 }
-RDI_DumpSubset;
 
 enum RDI_DumpSubsetFlags : uint32
 {

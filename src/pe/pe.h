@@ -173,7 +173,6 @@ enum PE_DataDirectoryIndex
   PE_DataDirectoryIndex_RESERVED,
   PE_DataDirectoryIndex_COUNT = 16
 }
-PE_DataDirectoryIndex;
 
 struct PE_DataDirectory
 {
@@ -630,7 +629,6 @@ enum PE_ResDataKind
   PE_ResDataKind_COFF_LEAF,
   PE_ResDataKind_COFF_RESOURCE,
 }
-PE_ResDataKind;
 
 struct PE_ResourceHeader
 {
@@ -964,7 +962,6 @@ typedef struct PE_DebugInfo
   PE_CvHeaderRDI cv_rdi_header;
   String8 path;
 }
-PE_DebugInfo;
 
 typedef struct PE_DebugInfoNode
 {

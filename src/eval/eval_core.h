@@ -24,7 +24,6 @@ enum E_MsgKind
   E_MsgKind_InterpretationError,
   E_MsgKind_COUNT
 }
-E_MsgKind;
 
 struct E_Msg
 {
@@ -95,7 +94,6 @@ enum E_OpKind
   E_OpKind_UnaryPrefix,
   E_OpKind_Binary,
 }
-E_OpKind;
 
 struct E_OpInfo
 {
@@ -155,7 +153,6 @@ enum E_TypeKeyKind
   E_TypeKeyKind_Reg,
   E_TypeKeyKind_RegAlias,
 }
-E_TypeKeyKind;
 
 struct E_TypeKey
 {
@@ -224,7 +221,6 @@ enum E_Mode
   E_Mode_Value,
   E_Mode_Offset,
 }
-E_Mode;
 
 ////////////////////////////////
 //~ rjf: Expression Tree Types
@@ -345,7 +341,6 @@ enum E_MemberKind
   E_MemberKind_Padding,
   E_MemberKind_COUNT
 }
-E_MemberKind;
 
 enum E_TypeFlags : uint32
 {

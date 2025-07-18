@@ -13,7 +13,6 @@ enum DASM_Syntax
   DASM_Syntax_ATT,
   DASM_Syntax_COUNT
 }
-DASM_Syntax;
 
 ////////////////////////////////
 //~ rjf: Disassembly Instruction Info Types

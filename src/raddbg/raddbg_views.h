@@ -46,7 +46,6 @@ enum RD_WatchCellKind
   RD_WatchCellKind_ViewUI,         // an arbitrary user interface, supplied by a hook
   RD_WatchCellKind_CallStackFrame, // a slot for a yellow arrow, to show call stack frame selection
 }
-RD_WatchCellKind;
 
 enum RD_WatchCellFlags : uint32
 {

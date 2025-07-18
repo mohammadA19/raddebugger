@@ -81,7 +81,6 @@ enum MG_StrExprOpKind
   MG_StrExprOpKind_Binary,
   MG_StrExprOpKind_COUNT
 }
-MG_StrExprOpKind;
 
 enum MG_StrExprOp
 {
@@ -115,7 +114,6 @@ enum MG_StrExprOp
   
   MG_StrExprOp_COUNT,
 }
-MG_StrExprOp;
 
 struct MG_StrExpr
 {
@@ -157,7 +155,6 @@ enum MG_ColumnKind
   MG_ColumnKind_TagChild,
   MG_ColumnKind_COUNT
 }
-MG_ColumnKind;
 
 struct MG_ColumnDesc
 {

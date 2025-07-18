@@ -21,7 +21,6 @@ enum E_IdentifierResolutionPath
   E_IdentifierResolutionPath_RegisterAliases,
   E_IdentifierResolutionPath_Macros,
 }
-E_IdentifierResolutionPath;
 
 struct E_IdentifierResolutionRule
 {

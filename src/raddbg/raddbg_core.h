@@ -123,7 +123,6 @@ enum RD_DragDropState
   RD_DragDropState_Dropping,
   RD_DragDropState_COUNT
 }
-RD_DragDropState;
 
 ////////////////////////////////
 //~ rjf: Command Kind Types
@@ -383,7 +382,6 @@ enum RD_FontSlot
   RD_FontSlot_Icons,
   RD_FontSlot_COUNT
 }
-RD_FontSlot;
 
 ////////////////////////////////
 //~ rjf: Per-Window State

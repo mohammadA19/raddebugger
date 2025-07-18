@@ -39,7 +39,6 @@ enum OS_Cursor
   OS_Cursor_Disabled,
   OS_Cursor_COUNT,
 }
-OS_Cursor;
 
 ////////////////////////////////
 //~ rjf: Generated Code
@@ -63,7 +62,6 @@ enum OS_EventKind
   OS_EventKind_Wakeup,
   OS_EventKind_COUNT
 }
-OS_EventKind;
 
 enum OS_Modifiers : uint32
 {

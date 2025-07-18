@@ -384,7 +384,6 @@ enum Dimension
   Dimension_Z,
   Dimension_W,
 }
-Dimension;
 
 enum Side
 {
@@ -393,7 +392,6 @@ enum Side
   Side_Max,
   Side_COUNT,
 }
-Side;
 #define side_flip(s) ((Side)(!(s)))
 
 enum Axis2
@@ -403,7 +401,6 @@ enum Axis2
   Axis2_Y,
   Axis2_COUNT,
 }
-Axis2;
 #define axis2_flip(a) ((Axis2)(!(a)))
 
 enum Corner
@@ -415,7 +412,6 @@ enum Corner
   Corner_11,
   Corner_COUNT
 }
-Corner;
 
 enum Dir2
 {
@@ -426,7 +422,6 @@ enum Dir2
   Dir2_Down,
   Dir2_COUNT
 }
-Dir2;
 #define axis2_from_dir2(d) (((d) & 1) ? Axis2_Y : Axis2_X)
 #define side_from_dir2(d) (((d) < Dir2_Right) ? Side_Min : Side_Max)
 
@@ -441,7 +436,6 @@ enum OperatingSystem
   OperatingSystem_Mac,
   OperatingSystem_COUNT,
 }
-OperatingSystem;
 
 enum ImageType
 {
@@ -461,7 +455,6 @@ enum Arch
   Arch_arm32,
   Arch_COUNT,
 }
-Arch;
 
 enum Compiler
 {
@@ -471,7 +464,6 @@ enum Compiler
   Compiler_clang,
   Compiler_COUNT,
 }
-Compiler;
 
 ////////////////////////////////
 //~ rjf: Text 2D Coordinates & Ranges
@@ -679,7 +671,6 @@ enum WeekDay
   WeekDay_Sat,
   WeekDay_COUNT,
 }
-WeekDay;
 
 enum Month
 {
@@ -697,7 +688,6 @@ enum Month
   Month_Dec,
   Month_COUNT,
 }
-Month;
 
 struct DateTime
 {

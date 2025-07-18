@@ -29,7 +29,6 @@ enum DW_DumpSubset
   DW_DumpSubset_XList
 #undef X
 }
-DW_DumpSubset;
 
 enum DW_DumpSubsetFlags : uint32
 {
