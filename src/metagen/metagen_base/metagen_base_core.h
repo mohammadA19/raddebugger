@@ -731,31 +731,16 @@ struct FileProperties
 ////////////////////////////////
 //~ rjf: Safe Casts
 
-internal uint16 safe_cast_u16(uint32 x);
-internal uint32 safe_cast_u32(uint64 x);
-internal uint32 safe_cast_s32(uint64 x);
 
 ////////////////////////////////
 //~ rjf: Large Base Type Functions
 
-internal uint128 u128_zero(void);
-internal uint128 u128_make(uint64 v0, uint64 v1);
-internal B32 u128_match(uint128 a, uint128 b);
 
 ////////////////////////////////
 //~ rjf: Bit Patterns
 
-internal uint32 u32_from_u64_saturate(uint64 x);
-internal uint64 u64_up_to_pow2(uint64 x);
-internal uint32 extend_sign32(uint32 x, uint32 size);
-internal uint64 extend_sign64(uint64 x, uint64 size);
 
-internal float inf32(void);
-internal float neg_inf32(void);
 
-internal uint16 bswap_u16(uint16 x);
-internal uint32 bswap_u32(uint32 x);
-internal uint64 bswap_u64(uint64 x);
 
 #if ARCH_LITTLE_ENDIAN
 # define from_be_u16(x) bswap_u16(x)
@@ -767,61 +752,32 @@ internal uint64 bswap_u64(uint64 x);
 # define from_be_u64(x) (x)
 #endif
 
-internal uint64 count_bits_set32(uint32 val);
-internal uint64 count_bits_set64(uint64 val);
 
-internal uint64 ctz32(uint32 val);
-internal uint64 ctz64(uint64 val);
-internal uint64 clz32(uint32 val);
-internal uint64 clz64(uint64 val);
 
 ////////////////////////////////
 //~ rjf: Enum -> Sign
 
-internal uint32 sign_from_side_uint32(Side side);
-internal float sign_from_side_float(Side side);
 
 ////////////////////////////////
 //~ rjf: Memory Functions
 
-internal B32 memory_is_zero(void *ptr, uint64 size);
 
 ////////////////////////////////
 //~ rjf: Text 2D Coordinate/Range Functions
 
-internal TxtPt txt_pt(uint64 line, uint64 column);
-internal B32 txt_pt_match(TxtPt a, TxtPt b);
-internal B32 txt_pt_less_than(TxtPt a, TxtPt b);
-internal TxtPt txt_pt_min(TxtPt a, TxtPt b);
-internal TxtPt txt_pt_max(TxtPt a, TxtPt b);
-internal TxtRng txt_rng(TxtPt min, TxtPt max);
-internal TxtRng txt_rng_intersect(TxtRng a, TxtRng b);
-internal TxtRng txt_rng_union(TxtRng a, TxtRng b);
-internal B32 txt_rng_contains(TxtRng r, TxtPt pt);
 
 ////////////////////////////////
 //~ rjf: Toolchain/Environment Enum Functions
 
-internal uint64 bit_size_from_arch(Arch arch);
-internal uint64 max_instruction_size_from_arch(Arch arch);
 
-internal OperatingSystem operating_system_from_context(void);
-internal Arch arch_from_context(void);
-internal Compiler compiler_from_context(void);
 
 ////////////////////////////////
 //~ rjf: Time Functions
 
-internal DenseTime dense_time_from_date_time(DateTime date_time);
-internal DateTime  date_time_from_dense_time(DenseTime time);
-internal DateTime  date_time_from_micro_seconds(uint64 time);
-internal DateTime  date_time_from_unix_time(uint64 unix_time);
 
 ////////////////////////////////
 //~ rjf: Non-Fancy Ring Buffer Reads/Writes
 
-internal uint64 ring_write(uint8 *ring_base, uint64 ring_size, uint64 ring_pos, void *src_data, uint64 src_data_size);
-internal uint64 ring_read(uint8 *ring_base, uint64 ring_size, uint64 ring_pos, void *dst_data, uint64 read_size);
 #define ring_write_struct(ring_base, ring_size, ring_pos, ptr) ring_write((ring_base), (ring_size), (ring_pos), (ptr), sizeof(*(ptr)))
 #define ring_read_struct(ring_base, ring_size, ring_pos, ptr) ring_read((ring_base), (ring_size), (ring_pos), (ptr), sizeof(*(ptr)))
 

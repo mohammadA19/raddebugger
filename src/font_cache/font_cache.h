@@ -216,60 +216,32 @@ global FNT_State *fnt_state = 0;
 ////////////////////////////////
 //~ rjf: Basic Functions
 
-internal uint128 fnt_hash_from_string(String8 string);
-internal uint64 fnt_little_hash_from_string(uint64 seed, String8 string);
-internal Vec2uint32 fnt_vertex_from_corner(Corner corner);
 
 ////////////////////////////////
 //~ rjf: Font Tags
 
-internal FNT_Tag fnt_tag_zero(void);
-internal B32 fnt_tag_match(FNT_Tag a, FNT_Tag b);
-internal FP_Handle fnt_handle_from_tag(FNT_Tag tag);
-internal FP_Metrics fnt_fp_metrics_from_tag(FNT_Tag tag);
-internal FNT_Tag fnt_tag_from_path(String8 path);
-internal FNT_Tag fnt_tag_from_static_data_string(String8 *data_ptr);
-internal String8 fnt_path_from_tag(FNT_Tag tag);
 
 ////////////////////////////////
 //~ rjf: Atlas
 
-internal Rng2uint16 fnt_atlas_region_alloc(Arena *arena, FNT_Atlas *atlas, Vec2uint16 needed_size);
-internal void fnt_atlas_region_release(FNT_Atlas *atlas, Rng2uint16 region);
 
 ////////////////////////////////
 //~ rjf: Piece Type Functions
 
-internal FNT_Piece *fnt_piece_chunk_list_push_new(Arena *arena, FNT_PieceChunkList *list, uint64 cap);
-internal void fnt_piece_chunk_list_push(Arena *arena, FNT_PieceChunkList *list, uint64 cap, FNT_Piece *piece);
-internal FNT_PieceArray fnt_piece_array_from_chunk_list(Arena *arena, FNT_PieceChunkList *list);
-internal FNT_PieceArray fnt_piece_array_copy(Arena *arena, FNT_PieceArray *src);
 
 ////////////////////////////////
 //~ rjf: Cache Usage
 
 //- rjf: base cache lookups
-internal FNT_Hash2StyleRasterCacheNode *fnt_hash2style_from_tag_size_flags(FNT_Tag tag, float size, FNT_RasterFlags flags);
-internal FNT_Run fnt_run_from_string(FNT_Tag tag, float size, float base_align_px, float tab_size_px, FNT_RasterFlags flags, String8 string);
 
 //- rjf: helpers
-internal String8List fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT_Tag font, float size, float base_align_px, float tab_size_px, String8 string, float max);
-internal Vec2float fnt_dim_from_tag_size_string(FNT_Tag tag, float size, float base_align_px, float tab_size_px, String8 string);
-internal Vec2float fnt_dim_from_tag_size_string_list(FNT_Tag tag, float size, float base_align_px, float tab_size_px, String8List list);
-internal float fnt_column_size_from_tag_size(FNT_Tag tag, float size);
-internal uint64 fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, float size, float base_align_px, float tab_size_px, String8 string, float p);
 
 ////////////////////////////////
 //~ rjf: Metrics
 
-internal FNT_Metrics fnt_metrics_from_tag_size(FNT_Tag tag, float size);
-internal float fnt_line_height_from_metrics(FNT_Metrics *metrics);
 
 ////////////////////////////////
 //~ rjf: Main Calls
 
-internal void fnt_init(void);
-internal void fnt_reset(void);
-internal void fnt_frame(void);
 
 #endif // FONT_CACHE_H

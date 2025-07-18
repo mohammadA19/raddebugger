@@ -61,95 +61,42 @@ struct UI_ScrollListSignal
 ////////////////////////////////
 //~ rjf: Basic Widgets
 
-internal void ui_divider(UI_Size size);
-internal UI_Signal ui_label(String8 string);
-internal UI_Signal ui_labelf(char *fmt, ...);
-internal void ui_label_multiline(float max, String8 string);
-internal void ui_label_multilinef(float max, char *fmt, ...);
-internal UI_Signal ui_button(String8 string);
-internal UI_Signal ui_buttonf(char *fmt, ...);
-internal UI_Signal ui_hover_label(String8 string);
-internal UI_Signal ui_hover_labelf(char *fmt, ...);
-internal UI_Signal ui_line_edit(TxtPt *cursor, TxtPt *mark, uint8 *edit_buffer, uint64 edit_buffer_size, uint64 *edit_string_size_out, String8 pre_edit_value, String8 string);
-internal UI_Signal ui_line_editf(TxtPt *cursor, TxtPt *mark, uint8 *edit_buffer, uint64 edit_buffer_size, uint64 *edit_string_size_out, String8 pre_edit_value, char *fmt, ...);
 
 ////////////////////////////////
 //~ rjf: Images
 
-internal UI_Signal ui_image(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2float region, Vec4float tint, float blur, String8 string);
-internal UI_Signal ui_imagef(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2float region, Vec4float tint, float blur, char *fmt, ...);
 
 ////////////////////////////////
 //~ rjf: Special Buttons
 
-internal UI_Signal ui_expander(B32 is_expanded, String8 string);
-internal UI_Signal ui_expanderf(B32 is_expanded, char *fmt, ...);
-internal UI_Signal ui_sort_header(B32 sorting, B32 ascending, String8 string);
-internal UI_Signal ui_sort_headerf(B32 sorting, B32 ascending, char *fmt, ...);
 
 ////////////////////////////////
 //~ rjf: Color Pickers
 
 //- rjf: tooltips
-internal void ui_do_color_tooltip_hsv(Vec3float hsv);
-internal void ui_do_color_tooltip_hsva(Vec4float hsva);
 
 //- rjf: saturation/value picker
-internal UI_Signal ui_sat_val_picker(float hue, float *out_sat, float *out_val, String8 string);
-internal UI_Signal ui_sat_val_pickerf(float hue, float *out_sat, float *out_val, char *fmt, ...);
 
 //- rjf: hue picker
-internal UI_Signal ui_hue_picker(float *out_hue, float sat, float val, String8 string);
-internal UI_Signal ui_hue_pickerf(float *out_hue, float sat, float val, char *fmt, ...);
 
 //- rjf: alpha picker
-internal UI_Signal ui_alpha_picker(float *out_alpha, String8 string);
-internal UI_Signal ui_alpha_pickerf(float *out_alpha, char *fmt, ...);
 
 ////////////////////////////////
 //~ rjf: Simple Layout Widgets
 
-internal UI_Box *ui_row_begin(void);
-internal UI_Signal ui_row_end(void);
-internal UI_Box *ui_column_begin(void);
-internal UI_Signal ui_column_end(void);
-internal UI_Box *ui_named_row_begin(String8 string);
-internal UI_Signal ui_named_row_end(void);
-internal UI_Box *ui_named_column_begin(String8 string);
-internal UI_Signal ui_named_column_end(void);
 
 ////////////////////////////////
 //~ rjf: Floating Panes
 
-internal UI_Box *ui_pane_begin(Rng2float rect, String8 string);
-internal UI_Box *ui_pane_beginf(Rng2float rect, char *fmt, ...);
-internal UI_Signal ui_pane_end(void);
 
 ////////////////////////////////
 //~ rjf: Tables
 
-internal void ui_table_begin(uint64 column_pct_count, float **column_pcts, String8 string);
-internal void ui_table_beginf(uint64 column_pct_count, float **column_pcts, char *fmt, ...);
-internal void ui_table_end(void);
-internal UI_Box *  ui_named_table_vector_begin(String8 string);
-internal UI_Box *  ui_named_table_vector_beginf(char *fmt, ...);
-internal UI_Box *  ui_table_vector_begin(void);
-internal UI_Signal ui_table_vector_end(void);
-internal UI_Box *  ui_table_cell_begin(void);
-internal UI_Signal ui_table_cell_end(void);
-internal UI_Box *  ui_table_cell_sized_begin(UI_Size size);
 
 ////////////////////////////////
 //~ rjf: Scroll Regions
 
-internal void ui_scroll_list_row_block_chunk_list_push(Arena *arena, UI_ScrollListRowBlockChunkList *list, uint64 cap, UI_ScrollListRowBlock *block);
-internal UI_ScrollListRowBlockArray ui_scroll_list_row_block_array_from_chunk_list(Arena *arena, UI_ScrollListRowBlockChunkList *list);
-internal uint64 ui_scroll_list_row_from_item(UI_ScrollListRowBlockArray *blocks, uint64 item);
-internal uint64 ui_scroll_list_item_from_row(UI_ScrollListRowBlockArray *blocks, uint64 row);
 
-internal UI_ScrollPt ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1uint64 idx_range, uint64 view_num_indices);
-internal void ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt_out, Vec2uint64 *cursor_out, Vec2uint64 *mark_out, Rng1uint64 *visible_row_range_out, UI_ScrollListSignal *signal_out);
-internal void ui_scroll_list_end(void);
 
 ////////////////////////////////
 //~ rjf: Macro Loop Wrappers

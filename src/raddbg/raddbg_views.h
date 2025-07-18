@@ -156,31 +156,20 @@ struct RD_WatchViewState
 ////////////////////////////////
 //~ rjf: Code View Functions
 
-internal void rd_code_view_init(RD_CodeViewState *cv);
-internal RD_CodeViewBuildResult rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags flags, Rng2float rect, String8 text_data, TXT_TextInfo *text_info, DASM_LineArray *dasm_lines, Rng1uint64 dasm_vaddr_range, DI_Key dasm_dbgi_key);
 
 ////////////////////////////////
 //~ rjf: Watch View Functions
 
 //- rjf: cell list building
-internal uint64 rd_id_from_watch_cell(RD_WatchCell *cell);
-internal RD_WatchCell *rd_watch_cell_list_push(Arena *arena, RD_WatchCellList *list);
-internal RD_WatchCell *rd_watch_cell_list_push_new_(Arena *arena, RD_WatchCellList *list, RD_WatchCell *params);
 #define rd_watch_cell_list_push_new(arena, list, kind_, eval_, ...) rd_watch_cell_list_push_new_((arena), (list), &(RD_WatchCell){.kind = (kind_), .eval = (eval_), __VA_ARGS__})
 
 //- rjf: watch view points <-> table coordinates
-internal B32 rd_watch_pt_match(RD_WatchPt a, RD_WatchPt b);
-internal RD_WatchPt rd_watch_pt_from_tbl(EV_BlockRangeList *block_ranges, Vec2uint64 tbl);
-internal Vec2uint64 rd_tbl_from_watch_pt(EV_BlockRangeList *block_ranges, RD_WatchPt pt);
 
 //- rjf: row -> info
-internal RD_WatchRowInfo rd_watch_row_info_from_row(Arena *arena, EV_Row *row);
 
 //- rjf: row * cell -> info
-internal RD_WatchRowCellInfo rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_flags, RD_WatchRowInfo *row_info, RD_WatchCell *cell, FNT_Tag font, float font_size, float max_size_px);
 
 //- rjf: table coordinates -> text edit state
-internal RD_WatchViewTextEditState *rd_watch_view_text_edit_state_from_pt(RD_WatchViewState *wv, RD_WatchPt pt);
 
 ////////////////////////////////
 //~ rjf: View Hooks

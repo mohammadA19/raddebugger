@@ -88,25 +88,13 @@ global B32 os_w32_new_window_custom_border = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal Rng2float os_w32_rng2f32_from_rect(RECT rect);
 
 ////////////////////////////////
 //~ rjf: Windows
 
-internal OS_Handle       os_w32_handle_from_window(OS_W32_Window *window);
-internal OS_W32_Window * os_w32_window_from_handle(OS_Handle window);
-internal OS_W32_Window * os_w32_window_from_hwnd(HWND hwnd);
-internal HWND            os_w32_hwnd_from_window(OS_W32_Window *window);
-internal OS_W32_Window * os_w32_window_alloc(void);
-internal void            os_w32_window_release(OS_W32_Window *window);
-internal OS_Event *      os_w32_push_event(OS_EventKind kind, OS_W32_Window *window);
-internal OS_Key          os_w32_os_key_from_vkey(WPARAM vkey);
-internal WPARAM          os_w32_vkey_from_os_key(OS_Key key);
-internal LRESULT         os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 ////////////////////////////////
 //~ rjf: Monitors
 
-internal BOOL os_w32_monitor_gather_enum_proc(HMONITOR monitor, HDC hdc, LPRECT rect, LPARAM bundle_ptr);
 
 #endif // OS_GFX_WIN32_H

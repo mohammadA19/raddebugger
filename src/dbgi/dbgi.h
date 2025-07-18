@@ -367,92 +367,52 @@ thread_static DI_TCTX *di_tctx = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal uint64 di_hash_from_seed_string(uint64 seed, String8 string, StringMatchFlags match_flags);
-internal uint64 di_hash_from_string(String8 string, StringMatchFlags match_flags);
-internal uint64 di_hash_from_key(DI_Key *k);
-internal DI_Key di_key_zero(void);
-internal B32 di_key_match(DI_Key *a, DI_Key *b);
-internal DI_Key di_key_copy(Arena *arena, DI_Key *src);
-internal DI_Key di_normalized_key_from_key(Arena *arena, DI_Key *src);
-internal void di_key_list_push(Arena *arena, DI_KeyList *list, DI_Key *key);
-internal DI_KeyArray di_key_array_from_list(Arena *arena, DI_KeyList *list);
-internal DI_KeyArray di_key_array_copy(Arena *arena, DI_KeyArray *src);
-internal DI_SearchParams di_search_params_copy(Arena *arena, DI_SearchParams *src);
-internal uint64 di_hash_from_search_params(DI_SearchParams *params);
-internal void di_search_item_chunk_list_concat_in_place(DI_SearchItemChunkList *dst, DI_SearchItemChunkList *to_push);
-internal uint64 di_search_item_num_from_array_element_idx__linear_search(DI_SearchItemArray *array, uint64 element_idx);
-internal String8 di_search_item_string_from_rdi_target_element_idx(RDI_Parsed *rdi, RDI_SectionKind target, uint64 element_idx);
 
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void di_init(void);
 
 ////////////////////////////////
 //~ rjf: Scope Functions
 
-internal DI_Scope *di_scope_open(void);
-internal void di_scope_close(DI_Scope *scope);
-internal void di_scope_touch_node__stripe_mutex_r_guarded(DI_Scope *scope, DI_Stripe *stripe, DI_Node *node);
-internal void di_scope_touch_search_node__stripe_mutex_r_guarded(DI_Scope *scope, DI_SearchStripe *stripe, DI_SearchNode *node);
 
 ////////////////////////////////
 //~ rjf: Per-Slot Functions
 
-internal DI_Node *di_node_from_key_slot__stripe_mutex_r_guarded(DI_Slot *slot, DI_Key *key);
 
 ////////////////////////////////
 //~ rjf: Per-Stripe Functions
 
-internal uint64 di_string_bucket_idx_from_string_size(uint64 size);
-internal String8 di_string_alloc__stripe_mutex_w_guarded(DI_Stripe *stripe, String8 string);
-internal void di_string_release__stripe_mutex_w_guarded(DI_Stripe *stripe, String8 string);
 
 ////////////////////////////////
 //~ rjf: Key Opening/Closing
 
-internal void di_open(DI_Key *key);
-internal void di_close(DI_Key *key);
 
 ////////////////////////////////
 //~ rjf: Debug Info Cache Lookups
 
-internal RDI_Parsed *di_rdi_from_key(DI_Scope *scope, DI_Key *key, B32 high_priority, uint64 endt_us);
 
 ////////////////////////////////
 //~ rjf: Search Cache Lookups
 
-internal DI_SearchItemArray di_search_items_from_key_params_query(DI_Scope *scope, uint128 key, DI_SearchParams *params, String8 query, uint64 endt_us, B32 *stale_out);
 
 ////////////////////////////////
 //~ rjf: Asynchronous Parse Work
 
-internal B32 di_u2p_enqueue_key(DI_Key *key, uint64 endt_us);
-internal void di_u2p_dequeue_key(Arena *arena, DI_Key *out_key);
 
-internal void di_p2u_push_event(DI_Event *event);
-internal DI_EventList di_p2u_pop_events(Arena *arena, uint64 endt_us);
 
 ASYNC_WORK_DEF(di_parse_work);
 
 ////////////////////////////////
 //~ rjf: Search Threads
 
-internal B32 di_u2s_enqueue_req(uint128 key, uint64 endt_us);
-internal uint128 di_u2s_dequeue_req(uint64 thread_idx);
 
 ASYNC_WORK_DEF(di_search_work);
-internal int di_qsort_compare_search_items(DI_SearchItem *a, DI_SearchItem *b);
-internal void di_search_thread__entry_point(void *p);
 
-internal void di_search_evictor_thread__entry_point(void *p);
 
 ////////////////////////////////
 //~ rjf: Match Store
 
-internal DI_MatchStore *di_match_store_alloc(void);
-internal void di_match_store_begin(DI_MatchStore *store, DI_KeyArray keys);
-internal DI_Match di_match_from_name(DI_MatchStore *store, String8 name, uint64 endt_us);
 ASYNC_WORK_DEF(di_match_work);
 
 #endif // DBGI_H

@@ -24,23 +24,9 @@ typedef struct VoidNode
 
 ////////////////////////////////
 
-internal uint64Node * u64_list_push(Arena *arena, uint64List *list, uint64 data);
-internal void      u64_list_concat_in_place(uint64List *list, uint64List *to_concat);
-internal Sapn<uint64>  u64_array_from_list(Arena *arena, uint64List *list);
 
-internal Sapn<uint64> u64_array_remove_duplicates(Arena *arena, Sapn<uint64> in);
 
-internal void u32_array_sort(uint64 count, uint32 *v);
-internal void u64_array_sort(uint64 count, uint64 *v);
-internal B32  u32_array_compare(Sapn<uint32> a, Sapn<uint32> b);
 
-internal uint64 sum_array_u64(uint64 count, uint64 *v);
-internal uint64 max_array_u64(uint64 count, uint64 *v);
-internal uint64 min_array_u64(uint64 count, uint64 *v);
 
-internal void  counts_to_offsets_array_u32(uint64 count, uint32 *arr);
-internal void  counts_to_offsets_array_u64(uint64 count, uint64 *arr);
 
-internal uint32 * offsets_from_counts_array_u32(Arena *arena, uint32 *v, uint64 count);
-internal uint64 * offsets_from_counts_array_u64(Arena *arena, uint64 *v, uint64 count);
 

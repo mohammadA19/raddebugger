@@ -65,31 +65,16 @@ read_only global String8 rdi_name_title_from_dump_subset_table[] =
 ////////////////////////////////
 //~ rjf: Lookup Helpers
 
-internal String8 str8_from_rdi_string_idx(RDI_Parsed *rdi, uint32 idx);
 
 ////////////////////////////////
 //~ rjf: String <=> Enum
 
-internal String8 rdi_string_from_data_section_kind(Arena *arena, RDI_SectionKind v);
-internal String8 rdi_string_from_arch             (Arena *arena, RDI_Arch        v);
-internal String8 rdi_string_from_language         (Arena *arena, RDI_Language    v);
-internal String8 rdi_string_from_local_kind       (Arena *arena, RDI_LocalKind   v);
 #if 0 // TODO(rjf): conflicts with RDI...
-internal String8 rdi_string_from_type_kind        (Arena *arena, RDI_TypeKind    v);
 #endif
-internal String8 rdi_string_from_member_kind      (Arena *arena, RDI_MemberKind  v);
-internal String8 rdi_string_from_name_map_kind(RDI_NameMapKind kind);
 
-internal String8 rdi_string_from_binary_section_flags(Arena *arena, RDI_BinarySectionFlags flags);
-internal String8 rdi_string_from_type_modifier       (Arena *arena, RDI_TypeModifierFlags  flags);
-internal String8 rdi_string_from_udt_flags           (Arena *arena, RDI_UDTFlags           flags);
-internal String8 rdi_string_from_link_flags          (Arena *arena, RDI_LinkFlags          flags);
-internal String8 rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, String8 bc);
-internal String8List rdi_strings_from_locations(Arena *arena, RDI_Parsed *rdi, RDI_Arch arch, Rng1uint64 location_block_range);
 
 ////////////////////////////////
 //~ rjf: RDI Dumping
 
-internal String8List rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags flags);
 
 #endif // RDI_FORMAT_LOCAL_H

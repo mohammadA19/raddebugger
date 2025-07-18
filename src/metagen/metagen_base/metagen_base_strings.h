@@ -137,22 +137,10 @@ struct FuzzyMatchRangeList
 ////////////////////////////////
 //~ rjf: Character Classification & Conversion Functions
 
-internal B32 char_is_space(uint8 c);
-internal B32 char_is_upper(uint8 c);
-internal B32 char_is_lower(uint8 c);
-internal B32 char_is_alpha(uint8 c);
-internal B32 char_is_slash(uint8 c);
-internal B32 char_is_digit(uint8 c, uint32 base);
-internal uint8 char_to_lower(uint8 c);
-internal uint8 char_to_upper(uint8 c);
-internal uint8 char_to_correct_slash(uint8 c);
 
 ////////////////////////////////
 //~ rjf: C-String Measurement
 
-internal uint64 cstring8_length(uint8 *c);
-internal uint64 cstring16_length(uint16 *c);
-internal uint64 cstring32_length(uint32 *c);
 
 ////////////////////////////////
 //~ rjf: String Constructors
@@ -165,232 +153,107 @@ internal uint64 cstring32_length(uint32 *c);
 #define str8_array_fixed(S) str8((uint8*)(S), sizeof(S))
 #define str8_struct(S) str8((uint8*)(S), sizeof(*(S)))
 
-internal String8  str8(uint8 *str, uint64 size);
-internal String8  str8_range(uint8 *first, uint8 *one_past_last);
-internal String8  str8_zero(void);
-internal String16 str16(uint16 *str, uint64 size);
-internal String16 str16_range(uint16 *first, uint16 *one_past_last);
-internal String16 str16_zero(void);
-internal String32 str32(uint32 *str, uint64 size);
-internal String32 str32_range(uint32 *first, uint32 *one_past_last);
-internal String32 str32_zero(void);
-internal String8  str8_cstring(char *c);
-internal String16 str16_cstring(uint16 *c);
-internal String32 str32_cstring(uint32 *c);
-internal String8  str8_cstring_capped(void *cstr, void *cap);
-internal String16 str16_cstring_capped(void *cstr, void *cap);
-internal String8  str8_cstring_capped_reverse(void *raw_start, void *raw_cap);
 
 ////////////////////////////////
 //~ rjf: String Stylization
 
-internal String8 upper_from_str8(Arena *arena, String8 string);
-internal String8 lower_from_str8(Arena *arena, String8 string);
-internal String8 backslashed_from_str8(Arena *arena, String8 string);
 
 ////////////////////////////////
 //~ rjf: String Matching
 
-internal B32 str8_match(String8 a, String8 b, StringMatchFlags flags);
-internal uint64 str8_find_needle(String8 string, uint64 start_pos, String8 needle, StringMatchFlags flags);
-internal uint64 str8_find_needle_reverse(String8 string, uint64 start_pos, String8 needle, StringMatchFlags flags);
-internal B32 str8_ends_with(String8 string, String8 end, StringMatchFlags flags);
 
 ////////////////////////////////
 //~ rjf: String Slicing
 
-internal String8 str8_substr(String8 str, Rng1uint64 range);
-internal String8 str8_prefix(String8 str, uint64 size);
-internal String8 str8_skip(String8 str, uint64 amt);
-internal String8 str8_postfix(String8 str, uint64 size);
-internal String8 str8_chop(String8 str, uint64 amt);
-internal String8 str8_skip_chop_whitespace(String8 string);
 
 ////////////////////////////////
 //~ rjf: String Formatting & Copying
 
-internal String8 push_str8_cat(Arena *arena, String8 s1, String8 s2);
-internal String8 push_str8_copy(Arena *arena, String8 s);
-internal String8 push_str8fv(Arena *arena, char *fmt, va_list args);
-internal String8 push_str8f(Arena *arena, char *fmt, ...);
 
 ////////////////////////////////
 //~ rjf: String <=> Integer Conversions
 
 //- rjf: string -> integer
-internal uint64 sign_from_str8(String8 string, String8 *string_tail);
-internal B32 str8_is_integer(String8 string, uint32 radix);
 
-internal uint64 u64_from_str8(String8 string, uint32 radix);
-internal uint64 s64_from_str8(String8 string, uint32 radix);
-internal uint32 u32_from_str8(String8 string, uint32 radix);
-internal uint32 s32_from_str8(String8 string, uint32 radix);
-internal B32 try_u64_from_str8_c_rules(String8 string, uint64 *x);
-internal B32 try_s64_from_str8_c_rules(String8 string, uint64 *x);
 
 //- rjf: integer -> string
-internal String8 str8_from_memory_size(Arena *arena, uint64 size);
-internal String8 str8_from_count(Arena *arena, uint64 count);
-internal String8 str8_from_bits_u32(Arena *arena, uint32 x);
-internal String8 str8_from_bits_u64(Arena *arena, uint64 x);
-internal String8 str8_from_u64(Arena *arena, uint64 u64, uint32 radix, uint8 min_digits, uint8 digit_group_separator);
-internal String8 str8_from_s64(Arena *arena, uint64 s64, uint32 radix, uint8 min_digits, uint8 digit_group_separator);
 
 ////////////////////////////////
 //~ rjf: String <=> Float Conversions
 
-internal double f64_from_str8(String8 string);
 
 ////////////////////////////////
 //~ rjf: String List Construction Functions
 
-internal String8Node* str8_list_push_node(String8List *list, String8Node *node);
-internal String8Node* str8_list_push_node_set_string(String8List *list, String8Node *node, String8 string);
-internal String8Node* str8_list_push_node_front(String8List *list, String8Node *node);
-internal String8Node* str8_list_push_node_front_set_string(String8List *list, String8Node *node, String8 string);
-internal String8Node* str8_list_push(Arena *arena, String8List *list, String8 string);
-internal String8Node* str8_list_push_front(Arena *arena, String8List *list, String8 string);
-internal void         str8_list_concat_in_place(String8List *list, String8List *to_push);
-internal String8Node* str8_list_push_aligner(Arena *arena, String8List *list, uint64 min, uint64 align);
-internal String8Node* str8_list_pushf(Arena *arena, String8List *list, char *fmt, ...);
-internal String8Node* str8_list_push_frontf(Arena *arena, String8List *list, char *fmt, ...);
-internal String8List  str8_list_copy(Arena *arena, String8List *list);
 #define str8_list_first(list) ((list)->first ? (list)->first->string : str8_zero())
 
 ////////////////////////////////
 //~ rjf: String Splitting & Joining
 
-internal String8List  str8_split(Arena *arena, String8 string, uint8 *split_chars, uint64 split_char_count, StringSplitFlags flags);
-internal String8List  str8_split_by_string_chars(Arena *arena, String8 string, String8 split_chars, StringSplitFlags flags);
-internal String8List  str8_list_split_by_string_chars(Arena *arena, String8List list, String8 split_chars, StringSplitFlags flags);
-internal String8      str8_list_join(Arena *arena, String8List *list, StringJoin *optional_params);
-internal void         str8_list_from_flags(Arena *arena, String8List *list, uint32 flags, String8 *flag_string_table, uint32 flag_string_count);
 
 ////////////////////////////////
 //~ rjf; String Arrays
 
-internal String8Array str8_array_from_list(Arena *arena, String8List *list);
-internal String8Array str8_array_reserve(Arena *arena, uint64 count);
 
 ////////////////////////////////
 //~ rjf: String Path Helpers
 
-internal String8 str8_chop_last_slash(String8 string);
-internal String8 str8_skip_last_slash(String8 string);
-internal String8 str8_chop_last_dot(String8 string);
-internal String8 str8_skip_last_dot(String8 string);
 
-internal PathStyle   path_style_from_str8(String8 string);
-internal String8List str8_split_path(Arena *arena, String8 string);
-internal void        str8_path_list_resolve_dots_in_place(String8List *path, PathStyle style);
-internal String8     str8_path_list_join_by_style(Arena *arena, String8List *path, PathStyle style);
 
-internal String8TxtPtPair str8_txt_pt_pair_from_string(String8 string);
 
 ////////////////////////////////
 //~ rjf: UTF-8 & UTF-16 Decoding/Encoding
 
-internal UnicodeDecode utf8_decode(uint8 *str, uint64 max);
-internal UnicodeDecode utf16_decode(uint16 *str, uint64 max);
-internal uint32 utf8_encode(uint8 *str, uint32 codepoint);
-internal uint32 utf16_encode(uint16 *str, uint32 codepoint);
-internal uint32 utf8_from_utf32_single(uint8 *buffer, uint32 character);
 
 ////////////////////////////////
 //~ rjf: Unicode String Conversions
 
-internal String8 str8_from_16(Arena *arena, String16 in);
-internal String16 str16_from_8(Arena *arena, String8 in);
-internal String8 str8_from_32(Arena *arena, String32 in);
-internal String32 str32_from_8(Arena *arena, String8 in);
 
 ////////////////////////////////
 //~ String -> Enum Conversions
 
-internal OperatingSystem operating_system_from_string(String8 string);
 
 ////////////////////////////////
 //~ rjf: Basic Types & Space Enum -> String Conversions
 
-internal String8 string_from_dimension(Dimension dimension);
-internal String8 string_from_side(Side side);
-internal String8 string_from_operating_system(OperatingSystem os);
-internal String8 string_from_arch(Arch arch);
 
 ////////////////////////////////
 //~ rjf: Time Types -> String
 
-internal String8 string_from_week_day(WeekDay week_day);
-internal String8 string_from_month(Month month);
-internal String8 push_date_time_string(Arena *arena, DateTime *date_time);
-internal String8 push_file_name_date_time_string(Arena *arena, DateTime *date_time);
-internal String8 string_from_elapsed_time(Arena *arena, DateTime dt);
 
 ////////////////////////////////
 //~ Globally Unique Ids
 
-internal String8 string_from_guid(Arena *arena, Guid guid);
-internal B32     try_guid_from_string(String8 string, Guid *guid_out);
-internal Guid    guid_from_string(String8 string);
 
 ////////////////////////////////
 //~ rjf: Basic Text Indentation
 
-internal String8 indented_from_string(Arena *arena, String8 string);
 
 ////////////////////////////////
 //~ rjf: Text Escaping
 
-internal String8 escaped_from_raw_str8(Arena *arena, String8 string);
-internal String8 raw_from_escaped_str8(Arena *arena, String8 string);
 
 ////////////////////////////////
 //~ rjf: Text Wrapping
 
-internal String8List wrapped_lines_from_string(Arena *arena, String8 string, uint64 first_line_max_width, uint64 max_width, uint64 wrap_indent);
 
 ////////////////////////////////
 //~ rjf: String <-> Color
 
-internal String8 hex_string_from_rgba_4f32(Arena *arena, Vec4float rgba);
-internal Vec4float rgba_from_hex_string_4f32(String8 hex_string);
 
 ////////////////////////////////
 //~ rjf: String Fuzzy Matching
 
-internal FuzzyMatchRangeList fuzzy_match_find(Arena *arena, String8 needle, String8 haystack);
-internal FuzzyMatchRangeList fuzzy_match_range_list_copy(Arena *arena, FuzzyMatchRangeList *src);
 
 ////////////////////////////////
 //~ NOTE(allen): Serialization Helpers
 
-internal void    str8_serial_begin(Arena *arena, String8List *srl);
-internal String8 str8_serial_end(Arena *arena, String8List *srl);
-internal void    str8_serial_write_to_dst(String8List *srl, void *out);
-internal uint64     str8_serial_push_align(Arena *arena, String8List *srl, uint64 align);
-internal void *  str8_serial_push_size(Arena *arena, String8List *srl, uint64 size);
-internal void *  str8_serial_push_data(Arena *arena, String8List *srl, void *data, uint64 size);
-internal void    str8_serial_push_data_list(Arena *arena, String8List *srl, String8Node *first);
-internal void    str8_serial_push_u64(Arena *arena, String8List *srl, uint64 x);
-internal void    str8_serial_push_u32(Arena *arena, String8List *srl, uint32 x);
-internal void    str8_serial_push_u16(Arena *arena, String8List *srl, uint16 x);
-internal void    str8_serial_push_u8(Arena *arena, String8List *srl, uint8 x);
-internal void    str8_serial_push_cstr(Arena *arena, String8List *srl, String8 str);
-internal void    str8_serial_push_string(Arena *arena, String8List *srl, String8 str);
 #define str8_serial_push_array(arena, srl, ptr, count) str8_serial_push_data(arena, srl, ptr, sizeof(*(ptr)) * (count))
 #define str8_serial_push_struct(arena, srl, ptr) str8_serial_push_array(arena, srl, ptr, 1)
 
 ////////////////////////////////
 //~ rjf: Deserialization Helpers
 
-internal uint64    str8_deserial_read(String8 string, uint64 off, void *read_dst, uint64 read_size, uint64 granularity);
-internal uint64    str8_deserial_find_first_match(String8 string, uint64 off, uint16 scan_val);
-internal void * str8_deserial_get_raw_ptr(String8 string, uint64 off, uint64 size);
-internal uint64    str8_deserial_read_cstr(String8 string, uint64 off, String8 *cstr_out);
-internal uint64    str8_deserial_read_windows_utf16_string16(String8 string, uint64 off, String16 *str_out);
-internal uint64    str8_deserial_read_block(String8 string, uint64 off, uint64 size, String8 *block_out);
-internal uint64    str8_deserial_read_uleb128(String8 string, uint64 off, uint64 *value_out);
-internal uint64    str8_deserial_read_sleb128(String8 string, uint64 off, uint64 *value_out);
 #define str8_deserial_read_array(string, off, ptr, count) str8_deserial_read((string), (off), (ptr), sizeof(*(ptr))*(count), sizeof(*(ptr)))
 #define str8_deserial_read_struct(string, off, ptr)       str8_deserial_read_array(string, off, ptr, 1)
 

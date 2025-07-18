@@ -37,9 +37,5 @@ struct MSF_Parsed
 ////////////////////////////////
 //~ rjf: MSF Parser Functions
 
-internal MSF_RawStreamTable* msf_raw_stream_table_from_data(Arena *arena, String8 msf_data);
-internal String8             msf_data_from_stream_number(Arena *arena, String8 msf_data, MSF_RawStreamTable *st, MSF_StreamNumber sn);
-internal MSF_Parsed*         msf_parsed_from_data(Arena *arena, String8 msf_data);
-internal String8             msf_data_from_stream(MSF_Parsed *msf, MSF_StreamNumber sn);
 
 #endif // MSF_PARSE_H

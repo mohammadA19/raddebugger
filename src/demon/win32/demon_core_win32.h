@@ -230,47 +230,29 @@ thread_static B32 dmn_w32_ctrl_thread = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal uint64 dmn_w32_hash_from_string(String8 string);
-internal uint64 dmn_w32_hash_from_id(uint64 id);
 
 ////////////////////////////////
 //~ rjf: Entity Helpers
 
 //- rjf: entity <-> handle
-internal DMN_Handle dmn_w32_handle_from_entity(DMN_W32_Entity *entity);
-internal DMN_W32_Entity *dmn_w32_entity_from_handle(DMN_Handle handle);
 
 //- rjf: entity allocation/deallocation
-internal DMN_W32_Entity *dmn_w32_entity_alloc(DMN_W32_Entity *parent, DMN_W32_EntityKind kind, uint64 id);
-internal void dmn_w32_entity_release(DMN_W32_Entity *entity);
 
 //- rjf: kind*id -> entity
-internal DMN_W32_Entity *dmn_w32_entity_from_kind_id(DMN_W32_EntityKind kind, uint64 id);
 
 ////////////////////////////////
 //~ rjf: Module Info Extraction
 
-internal String8 dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module);
 
 ////////////////////////////////
 //~ rjf: Win32-Level Process/Thread Reads/Writes
 
 //- rjf: processes
-internal uint64 dmn_w32_process_read(HANDLE process, Rng1uint64 range, void *dst);
-internal B32 dmn_w32_process_write(HANDLE process, Rng1uint64 range, void *src);
-internal String8 dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, uint64 address);
-internal String16 dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, uint64 address);
 #define dmn_w32_process_read_struct(process, vaddr, ptr) dmn_w32_process_read((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)
 #define dmn_w32_process_write_struct(process, vaddr, ptr) dmn_w32_process_write((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)
-internal DMN_W32_ImageInfo dmn_w32_image_info_from_process_base_vaddr(HANDLE process, uint64 base_vaddr);
 
 //- rjf: threads
-internal uint16 dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT *fxsave);
-internal uint16 dmn_w32_xsave_tag_word_from_real_tag_word(uint16 ftw);
-internal B32 dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block);
-internal B32 dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block);
 
 //- rjf: remote thread injection
-internal DWORD dmn_w32_inject_thread(HANDLE process, uint64 start_address);
 
 #endif // DEMON_CORE_WIN32_H

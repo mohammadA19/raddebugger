@@ -298,102 +298,68 @@ global D_State *d_state = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal uint64 d_hash_from_seed_string(uint64 seed, String8 string);
-internal uint64 d_hash_from_string(String8 string);
-internal uint64 d_hash_from_seed_string__case_insensitive(uint64 seed, String8 string);
-internal uint64 d_hash_from_string__case_insensitive(String8 string);
 
 ////////////////////////////////
 //~ rjf: Breakpoints
 
-internal D_BreakpointArray d_breakpoint_array_copy(Arena *arena, D_BreakpointArray *src);
 
 ////////////////////////////////
 //~ rjf: Path Map Application
 
-internal String8List d_possible_path_overrides_from_maps_path(Arena *arena, D_PathMapArray *path_maps, String8 file_path);
 
 ////////////////////////////////
 //~ rjf: Debug Info Extraction Type Pure Functions
 
-internal D_LineList d_line_list_copy(Arena *arena, D_LineList *list);
 
 ////////////////////////////////
 //~ rjf: Command Type Functions
 
 //- rjf: command parameters
-internal D_CmdParams d_cmd_params_copy(Arena *arena, D_CmdParams *src);
 
 //- rjf: command lists
-internal void d_cmd_list_push_new(Arena *arena, D_CmdList *cmds, D_CmdKind kind, D_CmdParams *params);
 
 ////////////////////////////////
 //~ rjf: Stepping "Trap Net" Builders
 
-internal CTRL_TrapList d_trap_net_from_thread__step_over_inst(Arena *arena, CTRL_Entity *thread);
-internal CTRL_TrapList d_trap_net_from_thread__step_over_line(Arena *arena, CTRL_Entity *thread);
-internal CTRL_TrapList d_trap_net_from_thread__step_into_line(Arena *arena, CTRL_Entity *thread);
 
 ////////////////////////////////
 //~ rjf: Debug Info Lookups
 
 //- rjf: symbol -> voff lookups
-internal uint64 d_voff_from_dbgi_key_symbol_name(DI_Key *dbgi_key, String8 symbol_name);
 
 //- rjf: voff -> line info
-internal D_LineList d_lines_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, uint64 voff);
 
 //- rjf: file:line -> line info
 // TODO(rjf): this depends on file path maps, needs to move
 // TODO(rjf): need to clean this up & dedup
-internal D_LineListArray d_lines_array_from_dbgi_key_file_path_line_range(Arena *arena, DI_Key dbgi_key, String8 file_path, Rng1uint64 line_num_range);
-internal D_LineListArray d_lines_array_from_file_path_line_range(Arena *arena, String8 file_path, Rng1uint64 line_num_range);
-internal D_LineList d_lines_from_dbgi_key_file_path_line_num(Arena *arena, DI_Key dbgi_key, String8 file_path, uint64 line_num);
-internal D_LineList d_lines_from_file_path_line_num(Arena *arena, String8 file_path, uint64 line_num);
 
 ////////////////////////////////
 //~ rjf: Process/Thread/Module Info Lookups
 
-internal uint64 d_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, uint64 root_vaddr, uint64 rip_vaddr);
 
 ////////////////////////////////
 //~ rjf: Target Controls
 
 //- rjf: stopped info from the control thread
-internal CTRL_Event d_ctrl_last_stop_event(void);
 
 ////////////////////////////////
 //~ rjf: Main State Accessors/Mutators
 
 //- rjf: frame data
-internal uint64 d_frame_index(void);
 
 //- rjf: control state
-internal D_RunKind d_ctrl_last_run_kind(void);
-internal uint64 d_ctrl_last_run_frame_idx(void);
-internal B32 d_ctrl_targets_running(void);
 
 //- rjf: active entity based queries
-internal DI_KeyList d_push_active_dbgi_key_list(Arena *arena);
 
 //- rjf: per-run caches
-internal uint64 d_query_cached_rip_from_thread(CTRL_Entity *thread);
-internal uint64 d_query_cached_rip_from_thread_unwind(CTRL_Entity *thread, uint64 unwind_count);
-internal uint64 d_query_cached_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, uint64 root_vaddr, uint64 rip_vaddr);
-internal E_String2NumMap *d_query_cached_locals_map_from_dbgi_key_voff(DI_Key *dbgi_key, uint64 voff);
-internal E_String2NumMap *d_query_cached_member_map_from_dbgi_key_voff(DI_Key *dbgi_key, uint64 voff);
 
 //- rjf: top-level command dispatch
-internal void d_push_cmd(D_CmdKind kind, D_CmdParams *params);
 #define d_cmd(kind, ...) d_push_cmd((kind), &(D_CmdParams){.thread = {0}, __VA_ARGS__})
 
 //- rjf: command iteration
-internal B32 d_next_cmd(D_Cmd **cmd);
 
 ////////////////////////////////
 //~ rjf: Main Layer Top-Level Calls
 
-internal void d_init(void);
-internal D_EventList d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_PathMapArray *path_maps, uint64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64]);
 
 #endif // DBG_ENGINE_CORE_H

@@ -144,38 +144,21 @@ typedef struct Pairuint64
 
 ////////////////////////////////
 
-internal uint16 safe_cast_u16x(uint64 x);
 
 ////////////////////////////////
 
-internal uint64 u128_mod64(uint128 a, uint64 b);
 
 ////////////////////////////////
 
-internal Version make_version(uint64 major, uint64 minor);
-internal int     version_compar(Version a, Version b);
 
 ////////////////////////////////
 
-internal ISectOff isect_off(uint32 isect, uint32 off);
 
 ////////////////////////////////
 
-internal int u16_compar(const void *raw_a, const void *raw_b);
-internal int u32_compar(const void *raw_a, const void *raw_b);
-internal int u64_compar(const void *raw_a, const void *raw_b);
 
-internal int u8_is_before(void *raw_a, void *raw_b);
-internal int u16_is_before(void *raw_a, void *raw_b);
-internal int u32_is_before(void *raw_a, void *raw_b);
-internal int u64_is_before(void *raw_a, void *raw_b);
 
-internal int pair_u32_is_before_v0(void *raw_a, void *raw_b);
-internal int pair_u32_is_before_v1(void *raw_a, void *raw_b);
-internal int pair_u64_is_before_v0(void *raw_a, void *raw_b);
-internal int pair_u64_is_before_v1(void *raw_a, void *raw_b);
 
 ////////////////////////////////
 
-internal void str8_list_concat_in_place_array(String8List *list, String8List *arr, uint64 count);
 

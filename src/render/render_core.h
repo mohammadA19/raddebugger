@@ -178,24 +178,18 @@ struct R_PassList
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal Mat4x4float r_sample_channel_map_from_tex2dformat(R_Tex2DFormat fmt);
 
 ////////////////////////////////
 //~ rjf: Handle Type Functions
 
-internal R_Handle r_handle_zero(void);
-internal B32 r_handle_match(R_Handle a, R_Handle b);
 
 ////////////////////////////////
 //~ rjf: Batch Type Functions
 
-internal R_BatchList r_batch_list_make(uint64 instance_size);
-internal void *r_batch_list_push_inst(Arena *arena, R_BatchList *list, uint64 batch_inst_cap);
 
 ////////////////////////////////
 //~ rjf: Pass Type Functions
 
-internal R_Pass *r_pass_from_kind(Arena *arena, R_PassList *list, R_PassKind kind);
 
 ////////////////////////////////
 //~ rjf: Backend Hooks

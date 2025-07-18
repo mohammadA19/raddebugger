@@ -203,53 +203,30 @@ typedef struct
 
 // --- Config -----------------------------------------------------------------
 
-internal LNK_Config * lnk_config_from_argcv(Arena *arena, int argc, char **argv);
 
 // --- Entry Point -------------------------------------------------------------
 
-internal void lnk_run(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config);
 
 // --- Path --------------------------------------------------------------------
 
-internal String8 lnk_make_full_path(Arena *arena, PathStyle system_path_style, String8 work_dir, String8 path);
 
 // --- Hasher ------------------------------------------------------------------
 
-internal uint128 lnk_blake3_hash_parallel(TP_Context *tp, uint64 chunk_count, String8 data);
 
 // --- Manifest ----------------------------------------------------------------
 
-internal String8 lnk_make_linker_manifest(Arena *arena, B32 manifest_uac, String8 manifest_level, String8 manifest_ui_access, String8List manifest_dependency_list);
-internal void    lnk_merge_manifest_files(String8 mt_path, String8 out_name, String8List manifest_path_list);
-internal String8 lnk_manifest_from_inputs(Arena *arena, LNK_IO_Flags io_flags, String8 mt_path, String8 manifest_name, B32 manifest_uac, String8 manifest_level, String8 manifest_ui_access, String8List input_manifest_path_list, String8List deps_list);
 
 // --- Internal Objs -----------------------------------------------------------
 
-internal String8 lnk_make_res_obj(Arena *arena, String8List res_file_list, String8List res_path_list, COFF_MachineType machine, uint32 time_stamp, String8 work_dir, PathStyle system_path_style, String8 obj_name);
-internal String8 lnk_make_linker_coff_obj(Arena *arena, COFF_TimeStamp time_stamp, COFF_MachineType machine, String8 cwd_path, String8 exe_path, String8 pdb_path, String8 cmd_line, String8 obj_name);
 
 // --- Link Context ------------------------------------------------------------
 
-internal String8 lnk_get_lib_name(String8 path);
-internal B32     lnk_is_lib_disallowed(HashTable *disallow_lib_ht, String8 path);
-internal B32     lnk_is_lib_loaded(HashTable *loaded_lib_ht, String8 lib_path);
-internal void    lnk_push_disallow_lib(Arena *arena, HashTable *disallow_lib_ht, String8 path);
-internal void    lnk_push_loaded_lib(Arena *arena, HashTable *loaded_lib_ht, String8 path);
 
-internal LNK_InputObjList lnk_push_linker_symbols(Arena *arena, LNK_Config *config);
-internal void             lnk_queue_lib_member_input(Arena *arena, PathStyle path_style, LNK_SymbolLib *symbol, LNK_InputImportList *input_import_list, LNK_InputObjList *input_obj_list);
 
-internal LNK_LinkContext lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config);
 
 // --- Win32 Image -------------------------------------------------------------
 
-internal String8List      lnk_build_guard_tables(TP_Context *tp, LNK_SectionTable *sectab, LNK_SymbolTable *symtab, uint64 objs_count, LNK_Obj **objs, COFF_MachineType machine, String8 entry_point_name, LNK_GuardFlags guard_flags, B32 emit_suppress_flag);
-internal String8List      lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_temp, LNK_Config *config, uint64 objs_count, LNK_Obj **objs);
-internal String8List      lnk_build_win32_image_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config, LNK_SectionArray sect_arr, uint64 expected_image_header_size);
-internal LNK_ImageContext lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolTable *symtab, uint64 obj_count, LNK_Obj **objs);
 
 // --- Logger ------------------------------------------------------------------
 
-internal void lnk_log_link_stats(LNK_ObjList obj_list, LNK_LibList *lib_index, LNK_SectionTable *sectab);
-internal void lnk_log_timers(void);
 
