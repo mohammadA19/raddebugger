@@ -12,7 +12,7 @@ struct FS_RangeNode
 {
   FS_RangeNode *next;
   HS_ID id;
-  U64 working_count;
+  uint64 working_count;
 };
 
 typedef struct FS_RangeSlot FS_RangeSlot;
@@ -35,7 +35,7 @@ struct FS_Node
   HS_Root root;
   
   // rjf: sub-table of per-requested-file-range info
-  U64 slots_count;
+  uint64 slots_count;
   FS_RangeSlot *slots;
 };
 
@@ -61,19 +61,19 @@ typedef struct FS_Shared FS_Shared;
 struct FS_Shared
 {
   Arena *arena;
-  U64 change_gen;
+  uint64 change_gen;
   
   // rjf: path info cache
-  U64 slots_count;
-  U64 stripes_count;
+  uint64 slots_count;
+  uint64 stripes_count;
   FS_Slot *slots;
   FS_Stripe *stripes;
   
   // rjf: user -> streamer ring buffer
-  U64 u2s_ring_size;
-  U8 *u2s_ring_base;
-  U64 u2s_ring_write_pos;
-  U64 u2s_ring_read_pos;
+  uint64 u2s_ring_size;
+  uint8 *u2s_ring_base;
+  uint64 u2s_ring_write_pos;
+  uint64 u2s_ring_read_pos;
   OS_Handle u2s_ring_cv;
   OS_Handle u2s_ring_mutex;
   
@@ -89,8 +89,8 @@ global FS_Shared *fs_shared = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 fs_little_hash_from_string(String8 string);
-internal U128 fs_big_hash_from_string_range(String8 string, Rng1U64 range);
+internal uint64 fs_little_hash_from_string(String8 string);
+internal uint128 fs_big_hash_from_string_range(String8 string, Rng1uint64 range);
 
 ////////////////////////////////
 //~ rjf: Top-Level API
@@ -100,20 +100,20 @@ internal void fs_init(void);
 ////////////////////////////////
 //~ rjf: Change Generation
 
-internal U64 fs_change_gen(void);
+internal uint64 fs_change_gen(void);
 
 ////////////////////////////////
 //~ rjf: Cache Interaction
 
-internal HS_Key fs_key_from_path_range(String8 path, Rng1U64 range, U64 endt_us);
-internal U128 fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us);
+internal HS_Key fs_key_from_path_range(String8 path, Rng1uint64 range, uint64 endt_us);
+internal uint128 fs_hash_from_path_range(String8 path, Rng1uint64 range, uint64 endt_us);
 internal FileProperties fs_properties_from_path(String8 path);
 
 ////////////////////////////////
 //~ rjf: Streaming Work
 
-internal B32 fs_u2s_enqueue_req(HS_Key key, Rng1U64 range, String8 path, U64 endt_us);
-internal void fs_u2s_dequeue_req(Arena *arena, HS_Key *key_out, Rng1U64 *range_out, String8 *path_out);
+internal B32 fs_u2s_enqueue_req(HS_Key key, Rng1uint64 range, String8 path, uint64 endt_us);
+internal void fs_u2s_dequeue_req(Arena *arena, HS_Key *key_out, Rng1uint64 *range_out, String8 *path_out);
 ASYNC_WORK_DEF(fs_stream_work);
 
 ////////////////////////////////

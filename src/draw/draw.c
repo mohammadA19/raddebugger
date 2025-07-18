@@ -30,11 +30,11 @@ return top_val
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64
+internal uint64
 dr_hash_from_string(String8 string)
 {
-  U64 result = 5381;
-  for(U64 i = 0; i < string.size; i += 1)
+  uint64 result = 5381;
+  for(uint64 i = 0; i < string.size; i += 1)
   {
     result = ((result << 5) + result) + string.str[i];
   }
@@ -142,12 +142,12 @@ dr_fuzzy_match_find_from_fstrs(Arena *arena, DR_FStrList *fstrs, String8 needle)
   Temp scratch = scratch_begin(&arena, 1);
   String8 fstrs_string = {0};
   fstrs_string.size = fstrs->total_size;
-  fstrs_string.str = push_array(arena, U8, fstrs_string.size);
+  fstrs_string.str = push_array(arena, uint8, fstrs_string.size);
   {
     // TODO(rjf): the fact that we only increment on non-icon portions is super weird?
     // we are only doing that because of the rendering of the fuzzy matches, so maybe
     // once that is straightened out, we can fix the code here too...
-    U64 off = 0;
+    uint64 off = 0;
     for(DR_FStrNode *n = fstrs->first; n != 0; n = n->next)
     {
       if(!fnt_tag_match(n->v.params.font, dr_thread_ctx->icon_font))
@@ -163,11 +163,11 @@ dr_fuzzy_match_find_from_fstrs(Arena *arena, DR_FStrList *fstrs, String8 needle)
 }
 
 internal DR_FRunList
-dr_fruns_from_fstrs(Arena *arena, F32 tab_size_px, DR_FStrList *strs)
+dr_fruns_from_fstrs(Arena *arena, float tab_size_px, DR_FStrList *strs)
 {
   ProfBeginFunction();
   DR_FRunList run_list = {0};
-  F32 base_align_px = 0;
+  float base_align_px = 0;
   for(DR_FStrNode *n = strs->first; n != 0; n = n->next)
   {
     DR_FRunNode *dst_n = push_array(arena, DR_FRunNode, 1);
@@ -186,12 +186,12 @@ dr_fruns_from_fstrs(Arena *arena, F32 tab_size_px, DR_FStrList *strs)
   return run_list;
 }
 
-internal Vec2F32
-dr_dim_from_fstrs(F32 tab_size_px, DR_FStrList *fstrs)
+internal Vec2float
+dr_dim_from_fstrs(float tab_size_px, DR_FStrList *fstrs)
 {
   Temp scratch = scratch_begin(0, 0);
   DR_FRunList fruns = dr_fruns_from_fstrs(scratch.arena, tab_size_px, fstrs);
-  Vec2F32 dim = fruns.dim;
+  Vec2float dim = fruns.dim;
   scratch_end(scratch);
   return dim;
 }
@@ -286,7 +286,7 @@ dr_top_bucket(void)
 //- rjf: rectangles
 
 internal inline R_Rect2DInst *
-dr_rect(Rng2F32 dst, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32 edge_softness)
+dr_rect(Rng2float dst, Vec4float color, float corner_radius, float border_thickness, float edge_softness)
 {
   Arena *arena = dr_thread_ctx->arena;
   DR_Bucket *bucket = dr_top_bucket();
@@ -327,7 +327,7 @@ dr_rect(Rng2F32 dst, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32
 //- rjf: images
 
 internal inline R_Rect2DInst *
-dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, F32 corner_radius, F32 border_thickness, F32 edge_softness)
+dr_img(Rng2float dst, Rng2float src, R_Handle texture, Vec4float color, float corner_radius, float border_thickness, float edge_softness)
 {
   Arena *arena = dr_thread_ctx->arena;
   DR_Bucket *bucket = dr_top_bucket();
@@ -372,7 +372,7 @@ dr_img(Rng2F32 dst, Rng2F32 src, R_Handle texture, Vec4F32 color, F32 corner_rad
 //- rjf: blurs
 
 internal R_PassParams_Blur *
-dr_blur(Rng2F32 rect, F32 blur_size, F32 corner_radius)
+dr_blur(Rng2float rect, float blur_size, float corner_radius)
 {
   Arena *arena = dr_thread_ctx->arena;
   DR_Bucket *bucket = dr_top_bucket();
@@ -391,7 +391,7 @@ dr_blur(Rng2F32 rect, F32 blur_size, F32 corner_radius)
 //- rjf: 3d rendering pass params
 
 internal R_PassParams_Geo3D *
-dr_geo3d_begin(Rng2F32 viewport, Mat4x4F32 view, Mat4x4F32 projection)
+dr_geo3d_begin(Rng2float viewport, Mat4x4float view, Mat4x4float projection)
 {
   Arena *arena = dr_thread_ctx->arena;
   DR_Bucket *bucket = dr_top_bucket();
@@ -406,7 +406,7 @@ dr_geo3d_begin(Rng2F32 viewport, Mat4x4F32 view, Mat4x4F32 projection)
 //- rjf: meshes
 
 internal R_Mesh3DInst *
-dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_geo_topology, R_GeoVertexFlags mesh_geo_vertex_flags, R_Handle albedo_tex, Mat4x4F32 inst_xform)
+dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_geo_topology, R_GeoVertexFlags mesh_geo_vertex_flags, R_Handle albedo_tex, Mat4x4float inst_xform)
 {
   Arena *arena = dr_thread_ctx->arena;
   DR_Bucket *bucket = dr_top_bucket();
@@ -421,22 +421,22 @@ dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_ge
   }
   
   // rjf: hash batch group 3d params
-  U64 hash = 0;
-  U64 slot_idx = 0;
+  uint64 hash = 0;
+  uint64 slot_idx = 0;
   {
-    U64 buffer[] =
+    uint64 buffer[] =
     {
       mesh_vertices.u64[0],
       mesh_vertices.u64[1],
       mesh_indices.u64[0],
       mesh_indices.u64[1],
-      (U64)mesh_geo_topology,
-      (U64)mesh_geo_vertex_flags,
+      (uint64)mesh_geo_topology,
+      (uint64)mesh_geo_vertex_flags,
       albedo_tex.u64[0],
       albedo_tex.u64[1],
-      (U64)dr_top_tex2d_sample_kind(),
+      (uint64)dr_top_tex2d_sample_kind(),
     };
-    hash = dr_hash_from_string(str8((U8 *)buffer, sizeof(buffer)));
+    hash = dr_hash_from_string(str8((uint8 *)buffer, sizeof(buffer)));
     slot_idx = hash%params->mesh_batches.slots_count;
   }
   
@@ -483,7 +483,7 @@ dr_sub_bucket(DR_Bucket *bucket)
   Arena *arena = dr_thread_ctx->arena;
   DR_Bucket *src = bucket;
   DR_Bucket *dst = dr_top_bucket();
-  Rng2F32 dst_clip = dr_top_clip();
+  Rng2float dst_clip = dr_top_clip();
   B32 dst_clip_is_set = !(dst_clip.x0 == 0 && dst_clip.x1 == 0 &&
                           dst_clip.y0 == 0 && dst_clip.y1 == 0);
   for(R_PassNode *n = src->passes.first; n != 0; n = n->next)
@@ -527,7 +527,7 @@ dr_sub_bucket(DR_Bucket *bucket)
 //- rjf: text
 
 internal void
-dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run trailer_run)
+dr_truncated_fancy_run_list(Vec2float p, DR_FRunList *list, float max_x, FNT_Run trailer_run)
 {
   ProfBeginFunction();
   
@@ -535,21 +535,21 @@ dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run tra
   B32 trailer_enabled = (list->dim.x > max_x && trailer_run.dim.x < max_x);
   
   //- rjf: draw runs
-  F32 advance = 0;
+  float advance = 0;
   B32 trailer_found = 0;
-  Vec4F32 last_color = {0};
-  U64 byte_off = 0;
+  Vec4float last_color = {0};
+  uint64 byte_off = 0;
   for(DR_FRunNode *n = list->first; n != 0; n = n->next)
   {
     DR_FRun *fr = &n->v;
-    Rng1F32 pixel_range = {0};
+    Rng1float pixel_range = {0};
     {
       pixel_range.min = 100000;
       pixel_range.max = 0;
     }
     FNT_Piece *piece_first = fr->run.pieces.v;
     FNT_Piece *piece_opl = piece_first + fr->run.pieces.count;
-    F32 pre_advance = advance;
+    float pre_advance = advance;
     last_color = fr->color;
     for(FNT_Piece *piece = piece_first;
         piece < piece_opl;
@@ -565,9 +565,9 @@ dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run tra
         goto end_draw;
       }
       R_Handle texture = piece->texture;
-      Rng2F32 src = r2f32p((F32)piece->subrect.x0, (F32)piece->subrect.y0, (F32)piece->subrect.x1, (F32)piece->subrect.y1);
-      Vec2F32 size = dim_2f32(src);
-      Rng2F32 dst = r2f32p(p.x + piece->offset.x + advance,
+      Rng2float src = r2f32p((float)piece->subrect.x0, (float)piece->subrect.y0, (float)piece->subrect.x1, (float)piece->subrect.y1);
+      Vec2float size = dim_2f32(src);
+      Rng2float dst = r2f32p(p.x + piece->offset.x + advance,
                            p.y + piece->offset.y,
                            p.x + piece->offset.x + advance + size.x,
                            p.y + piece->offset.y + size.y);
@@ -604,16 +604,16 @@ dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run tra
   {
     FNT_Piece *piece_first = trailer_run.pieces.v;
     FNT_Piece *piece_opl = piece_first + trailer_run.pieces.count;
-    F32 pre_advance = advance;
-    Vec4F32 trailer_piece_color = last_color;
+    float pre_advance = advance;
+    Vec4float trailer_piece_color = last_color;
     for(FNT_Piece *piece = piece_first;
         piece < piece_opl;
         piece += 1)
     {
       R_Handle texture = piece->texture;
-      Rng2F32 src = r2f32p((F32)piece->subrect.x0, (F32)piece->subrect.y0, (F32)piece->subrect.x1, (F32)piece->subrect.y1);
-      Vec2F32 size = dim_2f32(src);
-      Rng2F32 dst = r2f32p(p.x + piece->offset.x + advance,
+      Rng2float src = r2f32p((float)piece->subrect.x0, (float)piece->subrect.y0, (float)piece->subrect.x1, (float)piece->subrect.y1);
+      Vec2float size = dim_2f32(src);
+      Rng2float dst = r2f32p(p.x + piece->offset.x + advance,
                            p.y + piece->offset.y,
                            p.x + piece->offset.x + advance + size.x,
                            p.y + piece->offset.y + size.y);
@@ -630,34 +630,34 @@ dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run tra
 }
 
 internal void
-dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FRunList *list, F32 max_x, FuzzyMatchRangeList *ranges, Vec4F32 color)
+dr_truncated_fancy_run_fuzzy_matches(Vec2float p, DR_FRunList *list, float max_x, FuzzyMatchRangeList *ranges, Vec4float color)
 {
   for(FuzzyMatchRangeNode *match_n = ranges->first; match_n != 0; match_n = match_n->next)
   {
-    Rng1U64 byte_range = match_n->range;
-    Rng1F32 pixel_range = {0};
+    Rng1uint64 byte_range = match_n->range;
+    Rng1float pixel_range = {0};
     {
       pixel_range.min = 100000;
       pixel_range.max = 0;
     }
-    F32 last_piece_end_pad = 0;
-    U64 byte_off = 0;
-    F32 advance = 0;
-    F32 ascent = 0;
-    F32 descent = 0;
+    float last_piece_end_pad = 0;
+    uint64 byte_off = 0;
+    float advance = 0;
+    float ascent = 0;
+    float descent = 0;
     for(DR_FRunNode *fr_n = list->first; fr_n != 0; fr_n = fr_n->next)
     {
       DR_FRun *fr = &fr_n->v;
       FNT_Run *run = &fr->run;
       ascent = run->ascent;
       descent = run->descent;
-      for(U64 piece_idx = 0; piece_idx < run->pieces.count; piece_idx += 1)
+      for(uint64 piece_idx = 0; piece_idx < run->pieces.count; piece_idx += 1)
       {
         FNT_Piece *piece = &run->pieces.v[piece_idx];
         if(contains_1u64(byte_range, byte_off))
         {
-          F32 pre_advance  = advance + piece->offset.x;
-          F32 post_advance = advance + piece->advance;
+          float pre_advance  = advance + piece->offset.x;
+          float post_advance = advance + piece->advance;
           pixel_range.min = Min(pre_advance,  pixel_range.min);
           pixel_range.max = Max(post_advance, pixel_range.max);
         }
@@ -670,7 +670,7 @@ dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FRunList *list, F32 max_x, Fu
     }
     if(pixel_range.min < pixel_range.max)
     {
-      Rng2F32 rect = r2f32p(p.x + pixel_range.min - ascent/4.f,
+      Rng2float rect = r2f32p(p.x + pixel_range.min - ascent/4.f,
                             p.y - descent - ascent - ascent/8.f,
                             p.x + pixel_range.max + ascent/4.f,
                             p.y - descent - ascent + ascent/8.f + list->dim.y);
@@ -682,10 +682,10 @@ dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FRunList *list, F32 max_x, Fu
 }
 
 internal void
-dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run)
+dr_text_run(Vec2float p, Vec4float color, FNT_Run run)
 {
   ProfBeginFunction();
-  F32 advance = 0;
+  float advance = 0;
   FNT_Piece *piece_first = run.pieces.v;
   FNT_Piece *piece_opl = piece_first + run.pieces.count;
   for(FNT_Piece *piece = piece_first;
@@ -693,9 +693,9 @@ dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run)
       piece += 1)
   {
     R_Handle texture = piece->texture;
-    Rng2F32 src = r2f32p((F32)piece->subrect.x0, (F32)piece->subrect.y0, (F32)piece->subrect.x1, (F32)piece->subrect.y1);
-    Vec2F32 size = dim_2f32(src);
-    Rng2F32 dst = r2f32p(p.x + piece->offset.x + advance,
+    Rng2float src = r2f32p((float)piece->subrect.x0, (float)piece->subrect.y0, (float)piece->subrect.x1, (float)piece->subrect.y1);
+    Vec2float size = dim_2f32(src);
+    Rng2float dst = r2f32p(p.x + piece->offset.x + advance,
                          p.y + piece->offset.y,
                          p.x + piece->offset.x + advance + size.x,
                          p.y + piece->offset.y + size.y);
@@ -709,7 +709,7 @@ dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run)
 }
 
 internal void
-dr_text(FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, String8 string)
+dr_text(FNT_Tag font, float size, float base_align_px, float tab_size_px, FNT_RasterFlags flags, Vec2float p, Vec4float color, String8 string)
 {
   Temp scratch = scratch_begin(0, 0);
   FNT_Run run = fnt_run_from_string(font, size, base_align_px, tab_size_px, flags, string);

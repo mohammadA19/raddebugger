@@ -3,18 +3,18 @@
 
 #pragma once
 
-typedef struct U64Node
+typedef struct uint64Node
 {
-  struct U64Node *next;
-  U64             data;
-} U64Node;
+  struct uint64Node *next;
+  uint64             data;
+} uint64Node;
 
-typedef struct U64List
+typedef struct uint64List
 {
-  U64      count;
-  U64Node *first;
-  U64Node *last;
-} U64List;
+  uint64      count;
+  uint64Node *first;
+  uint64Node *last;
+} uint64List;
 
 typedef struct VoidNode
 {
@@ -24,23 +24,23 @@ typedef struct VoidNode
 
 ////////////////////////////////
 
-internal U64Node * u64_list_push(Arena *arena, U64List *list, U64 data);
-internal void      u64_list_concat_in_place(U64List *list, U64List *to_concat);
-internal U64Array  u64_array_from_list(Arena *arena, U64List *list);
+internal uint64Node * u64_list_push(Arena *arena, uint64List *list, uint64 data);
+internal void      u64_list_concat_in_place(uint64List *list, uint64List *to_concat);
+internal uint64Array  u64_array_from_list(Arena *arena, uint64List *list);
 
-internal U64Array u64_array_remove_duplicates(Arena *arena, U64Array in);
+internal uint64Array u64_array_remove_duplicates(Arena *arena, uint64Array in);
 
-internal void u32_array_sort(U64 count, U32 *v);
-internal void u64_array_sort(U64 count, U64 *v);
-internal B32  u32_array_compare(U32Array a, U32Array b);
+internal void u32_array_sort(uint64 count, uint32 *v);
+internal void u64_array_sort(uint64 count, uint64 *v);
+internal B32  u32_array_compare(uint32Array a, uint32Array b);
 
-internal U64 sum_array_u64(U64 count, U64 *v);
-internal U64 max_array_u64(U64 count, U64 *v);
-internal U64 min_array_u64(U64 count, U64 *v);
+internal uint64 sum_array_u64(uint64 count, uint64 *v);
+internal uint64 max_array_u64(uint64 count, uint64 *v);
+internal uint64 min_array_u64(uint64 count, uint64 *v);
 
-internal void  counts_to_offsets_array_u32(U64 count, U32 *arr);
-internal void  counts_to_offsets_array_u64(U64 count, U64 *arr);
+internal void  counts_to_offsets_array_u32(uint64 count, uint32 *arr);
+internal void  counts_to_offsets_array_u64(uint64 count, uint64 *arr);
 
-internal U32 * offsets_from_counts_array_u32(Arena *arena, U32 *v, U64 count);
-internal U64 * offsets_from_counts_array_u64(Arena *arena, U64 *v, U64 count);
+internal uint32 * offsets_from_counts_array_u32(Arena *arena, uint32 *v, uint64 count);
+internal uint64 * offsets_from_counts_array_u64(Arena *arena, uint64 *v, uint64 count);
 

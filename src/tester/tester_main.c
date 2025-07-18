@@ -88,7 +88,7 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
   //
   Test(pdb2rdi_determinism)
   {
-    U64 num_repeats_per_pdb = 32;
+    uint64 num_repeats_per_pdb = 32;
     String8 pdb_paths[] =
     {
       push_str8f(arena, "%S/mule_main/mule_main.pdb", test_data_folder_path),
@@ -114,7 +114,7 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
         }
         for(OS_HandleNode *n = processes.first; n != 0; n = n->next)
         {
-          os_process_join(n->v, max_U64);
+          os_process_join(n->v, max_uint64);
         }
       }
       
@@ -130,19 +130,19 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
         }
         for(OS_HandleNode *n = processes.first; n != 0; n = n->next)
         {
-          os_process_join(n->v, max_U64);
+          os_process_join(n->v, max_uint64);
         }
       }
       
       // rjf: gather all hashes/paths
-      U64 rdi_hashes_count = rdi_paths.node_count;
-      U128 *rdi_hashes = push_array(arena, U128, rdi_hashes_count);
+      uint64 rdi_hashes_count = rdi_paths.node_count;
+      uint128 *rdi_hashes = push_array(arena, uint128, rdi_hashes_count);
       String8 *rdi_paths_array = push_array(arena, String8, rdi_hashes_count);
-      U64 dump_hashes_count = dump_paths.node_count;
-      U128 *dump_hashes = push_array(arena, U128, dump_hashes_count);
+      uint64 dump_hashes_count = dump_paths.node_count;
+      uint128 *dump_hashes = push_array(arena, uint128, dump_hashes_count);
       String8 *dump_paths_array = push_array(arena, String8, dump_hashes_count);
       {
-        U64 idx = 0;
+        uint64 idx = 0;
         for(String8Node *n = rdi_paths.first; n != 0; n = n->next, idx += 1)
         {
           Temp scratch = scratch_begin(0, 0);
@@ -154,7 +154,7 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
         }
       }
       {
-        U64 idx = 0;
+        uint64 idx = 0;
         for(String8Node *n = dump_paths.first; n != 0; n = n->next, idx += 1)
         {
           Temp scratch = scratch_begin(0, 0);

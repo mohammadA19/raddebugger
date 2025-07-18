@@ -53,9 +53,9 @@ case CV_Arch_PENTIUM:{result = str8_lit("PENTIUM");}break;
 case CV_Arch_PENTIUMII:{result = str8_lit("PENTIUMII");}break;
 case CV_Arch_PENTIUMIII:{result = str8_lit("PENTIUMIII");}break;
 case CV_Arch_MIPS:{result = str8_lit("MIPS");}break;
-case CV_Arch_MIPS16:{result = str8_lit("MIPS16");}break;
-case CV_Arch_MIPS32:{result = str8_lit("MIPS32");}break;
-case CV_Arch_MIPS64:{result = str8_lit("MIPS64");}break;
+case CV_Arch_MIPuint16:{result = str8_lit("MIPuint16");}break;
+case CV_Arch_MIPuint32:{result = str8_lit("MIPuint32");}break;
+case CV_Arch_MIPuint64:{result = str8_lit("MIPuint64");}break;
 case CV_Arch_MIPSI:{result = str8_lit("MIPSI");}break;
 case CV_Arch_MIPSII:{result = str8_lit("MIPSII");}break;
 case CV_Arch_MIPSIII:{result = str8_lit("MIPSIII");}break;
@@ -413,8 +413,8 @@ case CV_BasicType_FLOAT128:{result = str8_lit("FLOAT128");}break;
 case CV_BasicType_FLOAT48:{result = str8_lit("FLOAT48");}break;
 case CV_BasicType_FLOAT32PP:{result = str8_lit("FLOAT32PP");}break;
 case CV_BasicType_FLOAT16:{result = str8_lit("FLOAT16");}break;
-case CV_BasicType_COMPLEX32:{result = str8_lit("ComplexF32");}break;
-case CV_BasicType_COMPLEX64:{result = str8_lit("ComplexF64");}break;
+case CV_BasicType_COMPLEX32:{result = str8_lit("Complexfloat");}break;
+case CV_BasicType_COMPLEX64:{result = str8_lit("Complexdouble");}break;
 case CV_BasicType_COMPLEX80:{result = str8_lit("ComplexF80");}break;
 case CV_BasicType_COMPLEX128:{result = str8_lit("ComplexF128");}break;
 case CV_BasicType_BIT:{result = str8_lit("");}break;
@@ -585,10 +585,10 @@ case CV_LeafKind_STRUCT2:{result = str8_lit("STRUCT2");}break;
 return result;
 }
 
-internal U64
+internal uint64
 cv_header_struct_size_from_sym_kind(CV_SymKind v)
 {
-U64 result = 0;
+uint64 result = 0;
 switch(v)
 {
 default:{}break;
@@ -664,10 +664,10 @@ case CV_SymKind_INLINEES:{result = sizeof(CV_SymInlinees);}break;
 }
 return result;
 }
-internal U64
+internal uint64
 cv_header_struct_size_from_leaf_kind(CV_LeafKind v)
 {
-U64 result = 0;
+uint64 result = 0;
 switch(v)
 {
 default:{}break;

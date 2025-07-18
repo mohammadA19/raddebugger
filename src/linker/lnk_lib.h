@@ -8,11 +8,11 @@ typedef struct LNK_Lib
   String8          path;
   String8          data;
   COFF_ArchiveType type;
-  U32              symbol_count;
-  U32             *member_off_arr;
+  uint32              symbol_count;
+  uint32             *member_off_arr;
   String8List      symbol_name_list;
   String8          long_names;
-  U64              input_idx;
+  uint64              input_idx;
 } LNK_Lib;
 
 typedef struct LNK_LibNode
@@ -23,13 +23,13 @@ typedef struct LNK_LibNode
 
 typedef struct LNK_LibNodeArray
 {
-  U64          count;
+  uint64          count;
   LNK_LibNode *v;
 } LNK_LibNodeArray;
 
 typedef struct LNK_LibList
 {
-  U64                 count;
+  uint64                 count;
   struct LNK_LibNode *first;
 } LNK_LibList;
  
@@ -45,7 +45,7 @@ typedef struct
 internal LNK_LibNode *    lnk_lib_list_pop_node_atomic(LNK_LibList *list);
 internal void             lnk_lib_list_push_node_atomic(LNK_LibList *list, LNK_LibNode *node);
 internal void             lnk_lib_list_push_node(LNK_LibList *list, LNK_LibNode *node);
-internal LNK_LibList      lnk_lib_list_reserve(Arena *arena, U64 count);
+internal LNK_LibList      lnk_lib_list_reserve(Arena *arena, uint64 count);
 internal LNK_LibNodeArray lnk_array_from_lib_list(Arena *arena, LNK_LibList list);
 
 internal B32              lnk_lib_from_data(Arena *arena, String8 data, String8 path, LNK_Lib *lib_out);

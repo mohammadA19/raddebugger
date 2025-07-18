@@ -8,11 +8,11 @@
 //~ rjf: Basic Helpers
 
 internal TEX_Topology
-tex_topology_make(Vec2S32 dim, R_Tex2DFormat fmt)
+tex_topology_make(Vec2uint32 dim, R_Tex2DFormat fmt)
 {
   TEX_Topology top = {0};
-  top.dim.x = (S16)Clamp(0, dim.x, max_S32);
-  top.dim.y = (S16)Clamp(0, dim.y, max_S32);
+  top.dim.x = (uint16)Clamp(0, dim.x, max_uint32);
+  top.dim.y = (uint16)Clamp(0, dim.y, max_uint32);
   top.fmt = fmt;
   return top;
 }
@@ -31,14 +31,14 @@ tex_init(void)
   tex_shared->slots = push_array(arena, TEX_Slot, tex_shared->slots_count);
   tex_shared->stripes = push_array(arena, TEX_Stripe, tex_shared->stripes_count);
   tex_shared->stripes_free_nodes = push_array(arena, TEX_Node *, tex_shared->stripes_count);
-  for(U64 idx = 0; idx < tex_shared->stripes_count; idx += 1)
+  for(uint64 idx = 0; idx < tex_shared->stripes_count; idx += 1)
   {
     tex_shared->stripes[idx].arena = arena_alloc();
     tex_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
     tex_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
   tex_shared->u2x_ring_size = KB(64);
-  tex_shared->u2x_ring_base = push_array_no_zero(arena, U8, tex_shared->u2x_ring_size);
+  tex_shared->u2x_ring_base = push_array_no_zero(arena, uint8, tex_shared->u2x_ring_size);
   tex_shared->u2x_ring_cv = os_condition_variable_alloc();
   tex_shared->u2x_ring_mutex = os_mutex_alloc();
   tex_shared->evictor_thread = os_thread_launch(tex_evictor_thread__entry_point, 0, 0);
@@ -83,10 +83,10 @@ tex_scope_close(TEX_Scope *scope)
 {
   for(TEX_Touch *touch = scope->top_touch, *next = 0; touch != 0; touch = next)
   {
-    U128 hash = touch->hash;
+    uint128 hash = touch->hash;
     next = touch->next;
-    U64 slot_idx = hash.u64[1]%tex_shared->slots_count;
-    U64 stripe_idx = slot_idx%tex_shared->stripes_count;
+    uint64 slot_idx = hash.u64[1]%tex_shared->slots_count;
+    uint64 stripe_idx = slot_idx%tex_shared->stripes_count;
     TEX_Slot *slot = &tex_shared->slots[slot_idx];
     TEX_Stripe *stripe = &tex_shared->stripes[stripe_idx];
     OS_MutexScopeR(stripe->rw_mutex)
@@ -130,12 +130,12 @@ tex_scope_touch_node__stripe_r_guarded(TEX_Scope *scope, TEX_Node *node)
 //~ rjf: Cache Lookups
 
 internal R_Handle
-tex_texture_from_hash_topology(TEX_Scope *scope, U128 hash, TEX_Topology topology)
+tex_texture_from_hash_topology(TEX_Scope *scope, uint128 hash, TEX_Topology topology)
 {
   R_Handle handle = {0};
   {
-    U64 slot_idx = hash.u64[1]%tex_shared->slots_count;
-    U64 stripe_idx = slot_idx%tex_shared->stripes_count;
+    uint64 slot_idx = hash.u64[1]%tex_shared->slots_count;
+    uint64 stripe_idx = slot_idx%tex_shared->stripes_count;
     TEX_Slot *slot = &tex_shared->slots[slot_idx];
     TEX_Stripe *stripe = &tex_shared->stripes[stripe_idx];
     B32 found = 0;
@@ -188,7 +188,7 @@ tex_texture_from_hash_topology(TEX_Scope *scope, U128 hash, TEX_Topology topolog
     }
     if(node_is_new)
     {
-      tex_u2x_enqueue_req(hash, topology, max_U64);
+      tex_u2x_enqueue_req(hash, topology, max_uint64);
       async_push_work(tex_xfer_work);
     }
   }
@@ -196,12 +196,12 @@ tex_texture_from_hash_topology(TEX_Scope *scope, U128 hash, TEX_Topology topolog
 }
 
 internal R_Handle
-tex_texture_from_key_topology(TEX_Scope *scope, HS_Key key, TEX_Topology topology, U128 *hash_out)
+tex_texture_from_key_topology(TEX_Scope *scope, HS_Key key, TEX_Topology topology, uint128 *hash_out)
 {
   R_Handle handle = {0};
-  for(U64 rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
+  for(uint64 rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
   {
-    U128 hash = hs_hash_from_key(key, rewind_idx);
+    uint128 hash = hs_hash_from_key(key, rewind_idx);
     handle = tex_texture_from_hash_topology(scope, hash, topology);
     if(!r_handle_match(handle, r_handle_zero()))
     {
@@ -219,13 +219,13 @@ tex_texture_from_key_topology(TEX_Scope *scope, HS_Key key, TEX_Topology topolog
 //~ rjf: Transfer Threads
 
 internal B32
-tex_u2x_enqueue_req(U128 hash, TEX_Topology top, U64 endt_us)
+tex_u2x_enqueue_req(uint128 hash, TEX_Topology top, uint64 endt_us)
 {
   B32 good = 0;
   OS_MutexScope(tex_shared->u2x_ring_mutex) for(;;)
   {
-    U64 unconsumed_size = tex_shared->u2x_ring_write_pos-tex_shared->u2x_ring_read_pos;
-    U64 available_size = tex_shared->u2x_ring_size-unconsumed_size;
+    uint64 unconsumed_size = tex_shared->u2x_ring_write_pos-tex_shared->u2x_ring_read_pos;
+    uint64 available_size = tex_shared->u2x_ring_size-unconsumed_size;
     if(available_size >= sizeof(hash)+sizeof(top))
     {
       good = 1;
@@ -247,18 +247,18 @@ tex_u2x_enqueue_req(U128 hash, TEX_Topology top, U64 endt_us)
 }
 
 internal void
-tex_u2x_dequeue_req(U128 *hash_out, TEX_Topology *top_out)
+tex_u2x_dequeue_req(uint128 *hash_out, TEX_Topology *top_out)
 {
   OS_MutexScope(tex_shared->u2x_ring_mutex) for(;;)
   {
-    U64 unconsumed_size = tex_shared->u2x_ring_write_pos-tex_shared->u2x_ring_read_pos;
+    uint64 unconsumed_size = tex_shared->u2x_ring_write_pos-tex_shared->u2x_ring_read_pos;
     if(unconsumed_size >= sizeof(*hash_out)+sizeof(*top_out))
     {
       tex_shared->u2x_ring_read_pos += ring_read_struct(tex_shared->u2x_ring_base, tex_shared->u2x_ring_size, tex_shared->u2x_ring_read_pos, hash_out);
       tex_shared->u2x_ring_read_pos += ring_read_struct(tex_shared->u2x_ring_base, tex_shared->u2x_ring_size, tex_shared->u2x_ring_read_pos, top_out);
       break;
     }
-    os_condition_variable_wait(tex_shared->u2x_ring_cv, tex_shared->u2x_ring_mutex, max_U64);
+    os_condition_variable_wait(tex_shared->u2x_ring_cv, tex_shared->u2x_ring_mutex, max_uint64);
   }
   os_condition_variable_broadcast(tex_shared->u2x_ring_cv);
 }
@@ -269,13 +269,13 @@ ASYNC_WORK_DEF(tex_xfer_work)
   HS_Scope *scope = hs_scope_open();
   
   //- rjf: decode
-  U128 hash = {0};
+  uint128 hash = {0};
   TEX_Topology top = {0};
   tex_u2x_dequeue_req(&hash, &top);
   
   //- rjf: unpack hash
-  U64 slot_idx = hash.u64[1]%tex_shared->slots_count;
-  U64 stripe_idx = slot_idx%tex_shared->stripes_count;
+  uint64 slot_idx = hash.u64[1]%tex_shared->slots_count;
+  uint64 stripe_idx = slot_idx%tex_shared->stripes_count;
   TEX_Slot *slot = &tex_shared->slots[slot_idx];
   TEX_Stripe *stripe = &tex_shared->stripes[stripe_idx];
   
@@ -302,7 +302,7 @@ ASYNC_WORK_DEF(tex_xfer_work)
   
   //- rjf: data * topology -> texture
   R_Handle texture = {0};
-  if(got_task && top.dim.x > 0 && top.dim.y > 0 && data.size >= (U64)top.dim.x*(U64)top.dim.y*(U64)r_tex2d_format_bytes_per_pixel_table[top.fmt])
+  if(got_task && top.dim.x > 0 && top.dim.y > 0 && data.size >= (uint64)top.dim.x*(uint64)top.dim.y*(uint64)r_tex2d_format_bytes_per_pixel_table[top.fmt])
   {
     texture = r_tex2d_alloc(R_ResourceKind_Static, v2s32(top.dim.x, top.dim.y), top.fmt, data.str);
   }
@@ -336,13 +336,13 @@ tex_evictor_thread__entry_point(void *p)
   ThreadNameF("[tex] evictor thread");
   for(;;)
   {
-    U64 check_time_us = os_now_microseconds();
-    U64 check_time_user_clocks = update_tick_idx();
-    U64 evict_threshold_us = 10*1000000;
-    U64 evict_threshold_user_clocks = 10;
-    for(U64 slot_idx = 0; slot_idx < tex_shared->slots_count; slot_idx += 1)
+    uint64 check_time_us = os_now_microseconds();
+    uint64 check_time_user_clocks = update_tick_idx();
+    uint64 evict_threshold_us = 10*1000000;
+    uint64 evict_threshold_user_clocks = 10;
+    for(uint64 slot_idx = 0; slot_idx < tex_shared->slots_count; slot_idx += 1)
     {
-      U64 stripe_idx = slot_idx%tex_shared->stripes_count;
+      uint64 stripe_idx = slot_idx%tex_shared->stripes_count;
       TEX_Slot *slot = &tex_shared->slots[slot_idx];
       TEX_Stripe *stripe = &tex_shared->stripes[stripe_idx];
       B32 slot_has_work = 0;

@@ -211,7 +211,7 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
       PE_BinInfo          pe                = pe_bin_info_from_data(scratch.arena, pe_data);
       String8             raw_section_table = str8_substr(pe_data, pe.section_table_range);
       String8             string_table      = str8_substr(pe_data, pe.string_table_range);
-      U64                 section_count     = raw_section_table.size / sizeof(COFF_SectionHeader);
+      uint64                 section_count     = raw_section_table.size / sizeof(COFF_SectionHeader);
       COFF_SectionHeader *section_table     = (COFF_SectionHeader *)raw_section_table.str;
       if (dw_is_dwarf_present_coff_section_table(pe_data, string_table, section_count, section_table)) {
         driver     = RC_Driver_Dwarf;

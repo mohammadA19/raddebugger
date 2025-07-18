@@ -23,7 +23,7 @@ cv_arch_from_coff_machine(COFF_MachineType machine)
     case COFF_MachineType_Ebc:       arch = CV_Arch_EBC;    break;
     case COFF_MachineType_Ia64:      arch = CV_Arch_IA64;   break;
     case COFF_MachineType_M32R:      arch = CV_Arch_M32R;   break;
-    case COFF_MachineType_Mips16:    arch = CV_Arch_MIPS16; break;
+    case COFF_MachineType_Mips16:    arch = CV_Arch_MIPuint16; break;
     case COFF_MachineType_MipsFpu:   NotImplemented;        break;
     case COFF_MachineType_MipsFpu16: NotImplemented;        break;
     case COFF_MachineType_PowerPc:   NotImplemented;        break;
@@ -42,7 +42,7 @@ cv_arch_from_coff_machine(COFF_MachineType machine)
   return arch;
 }
 
-internal U64
+internal uint64
 cv_size_from_reg(CV_Arch arch, CV_Reg reg)
 {
   switch(arch)
@@ -66,7 +66,7 @@ cv_is_reg_sp(CV_Arch arch, CV_Reg reg)
   return 0;
 }
 
-internal U64
+internal uint64
 cv_size_from_reg_x86(CV_Reg reg)
 {
   switch(reg)
@@ -78,7 +78,7 @@ cv_size_from_reg_x86(CV_Reg reg)
   return 0;
 }
 
-internal U64
+internal uint64
 cv_size_from_reg_x64(CV_Reg reg)
 {
   switch(reg)
@@ -139,10 +139,10 @@ cv_decode_fp_reg(CV_Arch arch, CV_EncodedFramePtrReg encoded_reg)
   return fp_reg;
 }
 
-internal U32
-cv_map_encoded_base_pointer(CV_Arch arch, U32 encoded_frame_reg)
+internal uint32
+cv_map_encoded_base_pointer(CV_Arch arch, uint32 encoded_frame_reg)
 {
-  U32 r = 0;
+  uint32 r = 0;
   switch (arch) {
     case CV_Arch_8086: {
       switch (encoded_frame_reg) {
@@ -203,7 +203,7 @@ cv_string_from_language(CV_Language x)
 }
 
 internal String8 
-cv_string_from_reg_id(Arena *arena, CV_Arch arch, U32 id)
+cv_string_from_reg_id(Arena *arena, CV_Arch arch, uint32 id)
 {
   String8 result = str8_zero();
   switch (arch) {
@@ -544,7 +544,7 @@ cv_string_from_pointer_attribs(Arena *arena, CV_PointerAttribs x)
   
   CV_PointerKind kind = CV_PointerAttribs_Extract_Kind(x);
   CV_PointerMode mode = CV_PointerAttribs_Extract_Mode(x);
-  U64            size = CV_PointerAttribs_Extract_Size(x);
+  uint64            size = CV_PointerAttribs_Extract_Size(x);
   
   x &= ~(0x1f|(0x7<<5)|(0x3f<<13));
   
@@ -742,8 +742,8 @@ cv_string_from_type_props(Arena *arena, CV_TypeProps32 x)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
-  U32 hfa  = CV_TypeProps_Extract_HFA(x);
-  U32 mcom = CV_TypeProps_Extract_MOCOM(x);
+  uint32 hfa  = CV_TypeProps_Extract_HFA(x);
+  uint32 mcom = CV_TypeProps_Extract_MOCOM(x);
   
   String8 hfa_str  = cv_string_from_hfa(hfa);
   String8 mcom_str = cv_string_from_mcom(mcom);
@@ -936,8 +936,8 @@ cv_string_from_field_attribs(Arena *arena, CV_FieldAttribs attribs)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
-  U32 access = CV_FieldAttribs_Extract_Access(attribs);
-  U32 mprop  = CV_FieldAttribs_Extract_MethodProp(attribs);
+  uint32 access = CV_FieldAttribs_Extract_Access(attribs);
+  uint32 mprop  = CV_FieldAttribs_Extract_MethodProp(attribs);
   attribs &= ~(0x3 | 0x7);
   
   String8 access_str = cv_string_from_member_access(access);
@@ -992,7 +992,7 @@ cv_string_from_itype(Arena *arena, CV_TypeIndex min_itype, CV_TypeIndex itype)
     if (n.size) {
       Temp scratch = scratch_begin(&arena, 1);
       
-      U64 type = CV_BasicTypeFromTypeId(itype);
+      uint64 type = CV_BasicTypeFromTypeId(itype);
       char *type_str = "???";
       switch (type) {
         case CV_BasicType_NOTYPE:     type_str = "NOTYPE";     break;
@@ -1050,7 +1050,7 @@ cv_string_from_itype(Arena *arena, CV_TypeIndex min_itype, CV_TypeIndex itype)
         case CV_BasicType_PTR:        type_str = "PTR";        break;
       }
       
-      U64 ptr = CV_BasicPointerKindFromTypeId(itype);
+      uint64 ptr = CV_BasicPointerKindFromTypeId(itype);
       char *ptr_str = "";
       switch (ptr) {
         case 0x1: ptr_str = "P";    break;
@@ -1097,7 +1097,7 @@ cv_string_from_symbol_kind(Arena *arena, CV_SymKind kind)
 }
 
 internal String8
-cv_string_from_leaf_name(Arena *arena, U32 leaf_type)
+cv_string_from_leaf_name(Arena *arena, uint32 leaf_type)
 {
   String8 str    = cv_string_from_leaf_kind(leaf_type);
   String8 result = push_str8f(arena, "LF_%S", str);
@@ -1105,7 +1105,7 @@ cv_string_from_leaf_name(Arena *arena, U32 leaf_type)
 }
 
 internal String8 
-cv_string_sec_off(Arena *arena, U32 sec, U32 off)
+cv_string_sec_off(Arena *arena, uint32 sec, uint32 off)
 {
   return push_str8f(arena, "%04x:%08x", sec, off);
 }

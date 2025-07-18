@@ -30,7 +30,7 @@ typedef struct OS_W32_TitleBarClientArea OS_W32_TitleBarClientArea;
 struct OS_W32_TitleBarClientArea
 {
   OS_W32_TitleBarClientArea *next;
-  Rng2F32 rect;
+  Rng2float rect;
 };
 
 typedef struct OS_W32_Window OS_W32_Window;
@@ -41,12 +41,12 @@ struct OS_W32_Window
   HWND hwnd;
   HDC hdc;
   WINDOWPLACEMENT last_window_placement;
-  F32 dpi;
+  float dpi;
   B32 first_paint_done;
   B32 maximized;
   B32 custom_border;
-  F32 custom_border_title_thickness;
-  F32 custom_border_edge_thickness;
+  float custom_border_title_thickness;
+  float custom_border_edge_thickness;
   B32 custom_border_composition_enabled;
   Arena *paint_arena;
   OS_W32_TitleBarClientArea *first_title_bar_client_area;
@@ -70,7 +70,7 @@ typedef struct OS_W32_GfxState OS_W32_GfxState;
 struct OS_W32_GfxState
 {
   Arena *arena;
-  U32 gfx_thread_tid;
+  uint32 gfx_thread_tid;
   HINSTANCE hInstance;
   HCURSOR hCursor;
   OS_GfxInfo gfx_info;
@@ -92,7 +92,7 @@ global B32 os_w32_new_window_custom_border = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal Rng2F32 os_w32_rng2f32_from_rect(RECT rect);
+internal Rng2float os_w32_rng2f32_from_rect(RECT rect);
 
 ////////////////////////////////
 //~ rjf: Windows

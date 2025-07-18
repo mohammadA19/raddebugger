@@ -42,8 +42,8 @@ internal FP_Handle
 fp_dwrite_handle_from_font(FP_DWrite_Font font)
 {
   FP_Handle result = {0};
-  result.u64[0] = (U64)font.file;
-  result.u64[1] = (U64)font.face;
+  result.u64[0] = (uint64)font.file;
+  result.u64[1] = (uint64)font.face;
   return result;
 }
 
@@ -437,18 +437,18 @@ fp_metrics_from_font(FP_Handle handle)
   }
   FP_Metrics result = {0};
   {
-    result.design_units_per_em = (F32)metrics.designUnitsPerEm;
-    result.ascent  = (F32)metrics.ascent;
-    result.descent = (F32)metrics.descent;
-    result.line_gap = (F32)metrics.lineGap;
-    result.capital_height = (F32)metrics.capHeight;
+    result.design_units_per_em = (float)metrics.designUnitsPerEm;
+    result.ascent  = (float)metrics.ascent;
+    result.descent = (float)metrics.descent;
+    result.line_gap = (float)metrics.lineGap;
+    result.capital_height = (float)metrics.capHeight;
   }
   ProfEnd();
   return result;
 }
 
 fp_hook NO_ASAN FP_RasterResult
-fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, String8 string)
+fp_raster(Arena *arena, FP_Handle font_handle, float size, FP_RasterFlags flags, String8 string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -464,17 +464,17 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   {
     IDWriteFontFace_GetMetrics(font.face, &font_metrics);
   }
-  F32 design_units_per_em = (F32)font_metrics.designUnitsPerEm;
+  float design_units_per_em = (float)font_metrics.designUnitsPerEm;
   
   //- rjf: get glyph indices
-  U16 *glyph_indices = push_array_no_zero(scratch.arena, U16, string32.size);
+  uint16 *glyph_indices = push_array_no_zero(scratch.arena, uint16, string32.size);
   if(font.face != 0)
   {
     error = IDWriteFontFace_GetGlyphIndices(font.face, string32.str, string32.size, glyph_indices);
   }
   
   //- rjf: get metrics info
-  U64 glyphs_count = string32.size;
+  uint64 glyphs_count = string32.size;
   DWRITE_GLYPH_METRICS *glyphs_metrics = push_array_no_zero(scratch.arena, DWRITE_GLYPH_METRICS, glyphs_count);
   if(font.face != 0)
   {
@@ -482,19 +482,19 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   }
   
   //- rjf: derive info from metrics
-  F32 advance = 0;
-  Vec2S16 atlas_dim = {0};
-  F32 left_side_bearing = 0;
-  F32 right_side_bearing = 0;
+  float advance = 0;
+  Vec2uint16 atlas_dim = {0};
+  float left_side_bearing = 0;
+  float right_side_bearing = 0;
   if(font.face != 0)
   {
-    atlas_dim.y = (S16)round_f32((96.f/72.f) * size * (font_metrics.ascent + font_metrics.descent + font_metrics.lineGap) / design_units_per_em) + 1;
-    for(U64 idx = 0; idx < glyphs_count; idx += 1)
+    atlas_dim.y = (uint16)round_f32((96.f/72.f) * size * (font_metrics.ascent + font_metrics.descent + font_metrics.lineGap) / design_units_per_em) + 1;
+    for(uint64 idx = 0; idx < glyphs_count; idx += 1)
     {
       DWRITE_GLYPH_METRICS *glyph_metrics = glyphs_metrics + idx;
-      F32 glyph_advance_width         = (96.f/72.f) * size * glyph_metrics->advanceWidth       / design_units_per_em;
+      float glyph_advance_width         = (96.f/72.f) * size * glyph_metrics->advanceWidth       / design_units_per_em;
       advance += glyph_advance_width;
-      atlas_dim.x = Max(atlas_dim.x, (S16)(advance+1));
+      atlas_dim.x = Max(atlas_dim.x, (uint16)(advance+1));
       if(idx == 0)
       {
         left_side_bearing = (96.f/72.f) * size * glyph_metrics->leftSideBearing    / design_units_per_em;
@@ -532,11 +532,11 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   }
   
   //- rjf: draw glyph run
-  Vec2F32 draw_p = {0, (F32)atlas_dim.y};
+  Vec2float draw_p = {0, (float)atlas_dim.y};
   if(font.face != 0)
   {
-    F32 descent = round_f32((96.f/72.f)*size * font_metrics.descent / design_units_per_em);
-    F32 line_gap = round_f32((96.f/72.f)*size * font_metrics.lineGap / design_units_per_em);
+    float descent = round_f32((96.f/72.f)*size * font_metrics.descent / design_units_per_em);
+    float line_gap = round_f32((96.f/72.f)*size * font_metrics.lineGap / design_units_per_em);
     draw_p.y -= descent;
     draw_p.y -= line_gap;
   }
@@ -582,25 +582,25 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, S
   {
     // rjf: fill basics
     result.atlas_dim    = atlas_dim;
-    result.atlas        = push_array_no_zero(arena, U8, atlas_dim.x*atlas_dim.y*4);
+    result.atlas        = push_array_no_zero(arena, uint8, atlas_dim.x*atlas_dim.y*4);
     result.advance      = floor_f32(advance);
     
     // rjf: fill atlas
     {
-      U8 *in_data   = (U8 *)dib.dsBm.bmBits;
-      U64 in_pitch  = (U64)dib.dsBm.bmWidthBytes;
-      U8 *out_data  = (U8 *)result.atlas;
-      U64 out_pitch = atlas_dim.x * 4;
-      U64 color_sum = 0;
-      U8 *in_line = (U8 *)in_data;
-      U8 *out_line = out_data;
-      for(U64 y = 0; y < atlas_dim.y; y += 1)
+      uint8 *in_data   = (uint8 *)dib.dsBm.bmBits;
+      uint64 in_pitch  = (uint64)dib.dsBm.bmWidthBytes;
+      uint8 *out_data  = (uint8 *)result.atlas;
+      uint64 out_pitch = atlas_dim.x * 4;
+      uint64 color_sum = 0;
+      uint8 *in_line = (uint8 *)in_data;
+      uint8 *out_line = out_data;
+      for(uint64 y = 0; y < atlas_dim.y; y += 1)
       {
-        U8 *in_pixel = in_line;
-        U8 *out_pixel = out_line;
-        for(U64 x = 0; x < atlas_dim.x; x += 1)
+        uint8 *in_pixel = in_line;
+        uint8 *out_pixel = out_line;
+        for(uint64 x = 0; x < atlas_dim.x; x += 1)
         {
-          U8 in_pixel_byte = in_pixel[0];
+          uint8 in_pixel_byte = in_pixel[0];
           out_pixel[0] = 255;
           out_pixel[1] = 255;
           out_pixel[2] = 255;

@@ -12,8 +12,8 @@ typedef struct PE_ExportParse
   String8           alias;
   COFF_ImportType   type;
   COFF_ImportByType import_by;
-  U16               hint;
-  U16               ordinal;
+  uint16               hint;
+  uint16               ordinal;
   B32               is_ordinal_assigned;
   B32               is_noname_present;
   B32               is_private;
@@ -28,20 +28,20 @@ typedef struct PE_ExportParseNode
 
 typedef struct PE_ExportParseList
 {
-  U64                  count;
+  uint64                  count;
   PE_ExportParseNode *first;
   PE_ExportParseNode *last;
 } PE_ExportParseList;
 
 typedef struct PE_ExportParsePtrArray
 {
-  U64               count;
+  uint64               count;
   PE_ExportParse **v;
 } PE_ExportParsePtrArray;
 
 typedef struct PE_FinalizedExports
 {
-  U64 ordinal_low;
+  uint64 ordinal_low;
   union {
     struct {
       PE_ExportParsePtrArray named_exports;

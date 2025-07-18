@@ -32,7 +32,7 @@ os_handle_array_from_list(Arena *arena, OS_HandleList *list)
   OS_HandleArray result = {0};
   result.count = list->count;
   result.v = push_array_no_zero(arena, OS_Handle, result.count);
-  U64 idx = 0;
+  uint64 idx = 0;
   for(OS_HandleNode *n = list->first; n != 0; n = n->next, idx += 1)
   {
     result.v[idx] = n->v;
@@ -91,18 +91,18 @@ os_write_data_list_to_file_path(String8 path, String8List list)
   {
     good = 1;
     Temp scratch = scratch_begin(0, 0);
-    U64 write_buffer_size = KB(64);
-    U8 *write_buffer = push_array_no_zero(scratch.arena, U8, write_buffer_size);
-    U64 write_buffer_write_pos = 0;
-    U64 write_buffer_read_pos = 0;
-    U64 file_off = 0;
+    uint64 write_buffer_size = KB(64);
+    uint8 *write_buffer = push_array_no_zero(scratch.arena, uint8, write_buffer_size);
+    uint64 write_buffer_write_pos = 0;
+    uint64 write_buffer_read_pos = 0;
+    uint64 file_off = 0;
     {
       for(String8Node *n = list.first; n != 0; n = n->next)
       {
-        for(U64 n_off = 0; n_off < n->string.size;)
+        for(uint64 n_off = 0; n_off < n->string.size;)
         {
-          U64 write_buffer_unconsumed_size = (write_buffer_write_pos - write_buffer_read_pos);
-          U64 write_buffer_available_size = (write_buffer_size - write_buffer_unconsumed_size);
+          uint64 write_buffer_unconsumed_size = (write_buffer_write_pos - write_buffer_read_pos);
+          uint64 write_buffer_available_size = (write_buffer_size - write_buffer_unconsumed_size);
           if(write_buffer_available_size == 0)
           {
             os_file_write(file, r1u64(file_off, file_off+write_buffer_size), write_buffer);
@@ -111,7 +111,7 @@ os_write_data_list_to_file_path(String8 path, String8List list)
           }
           else
           {
-            U64 bytes_to_copy = Min(write_buffer_available_size, n->string.size - n_off);
+            uint64 bytes_to_copy = Min(write_buffer_available_size, n->string.size - n_off);
             write_buffer_write_pos += ring_write(write_buffer, write_buffer_size, write_buffer_write_pos, n->string.str + n_off, bytes_to_copy);
             n_off += bytes_to_copy;
           }
@@ -138,7 +138,7 @@ os_append_data_to_file_path(String8 path, String8 data)
     if(!os_handle_match(file, os_handle_zero()))
     {
       good = 1;
-      U64 pos = os_properties_from_file(file).size;
+      uint64 pos = os_properties_from_file(file).size;
       os_file_write(file, r1u64(pos, pos+data.size), data.str);
       os_file_close(file);
     }
@@ -155,21 +155,21 @@ os_id_from_file_path(String8 path)
   return id;
 }
 
-internal S64
+internal uint64
 os_file_id_compare(OS_FileID a, OS_FileID b)
 {
-  S64 cmp = MemoryCompare((void*)&a.v[0], (void*)&b.v[0], sizeof(a.v));
+  uint64 cmp = MemoryCompare((void*)&a.v[0], (void*)&b.v[0], sizeof(a.v));
   return cmp;
 }
 
 internal String8
-os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
+os_string_from_file_range(Arena *arena, OS_Handle file, Rng1uint64 range)
 {
-  U64 pre_pos = arena_pos(arena);
+  uint64 pre_pos = arena_pos(arena);
   String8 result;
   result.size = dim_1u64(range);
-  result.str = push_array_no_zero(arena, U8, result.size);
-  U64 actual_read_size = os_file_read(file, range, result.str);
+  result.str = push_array_no_zero(arena, uint8, result.size);
+  uint64 actual_read_size = os_file_read(file, range, result.str);
   if(actual_read_size < result.size)
   {
     arena_pop_to(arena, pre_pos + actual_read_size);
@@ -179,14 +179,14 @@ os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
 }
 
 internal String8
-os_file_read_cstring(Arena *arena, OS_Handle file, U64 off)
+os_file_read_cstring(Arena *arena, OS_Handle file, uint64 off)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List block_list = {0};
-  for(U64 cursor = off, stride = 256;; cursor += stride)
+  for(uint64 cursor = off, stride = 256;; cursor += stride)
   {
-    U8      *raw_block = push_array_no_zero(scratch.arena, U8, stride);
-    U64      read_size = os_file_read(file, r1u64(cursor, cursor + stride), raw_block);
+    uint8      *raw_block = push_array_no_zero(scratch.arena, uint8, stride);
+    uint64      read_size = os_file_read(file, r1u64(cursor, cursor + stride), raw_block);
     String8  block     = str8_cstring_capped(raw_block, raw_block+read_size);
     str8_list_push(scratch.arena, &block_list, block);
     if(read_size != stride || (block.size+1 <= read_size && block.str[block.size] == 0))
@@ -206,7 +206,7 @@ internal OS_Handle
 os_cmd_line_launch(String8 string)
 {
   Temp scratch = scratch_begin(0, 0);
-  U8 split_chars[] = {' '};
+  uint8 split_chars[] = {' '};
   String8List parts = str8_split(scratch.arena, string, split_chars, ArrayCount(split_chars), 0);
   OS_Handle handle = {0};
   if(parts.node_count != 0)

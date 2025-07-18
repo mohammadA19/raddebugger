@@ -63,13 +63,13 @@ os_string_from_modifiers_key(Arena *arena, OS_Modifiers modifiers, OS_Key key)
   return result;
 }
 
-internal U32
+internal uint32
 os_codepoint_from_modifiers_and_key(OS_Modifiers modifiers, OS_Key key)
 {
-  U32 result = 0;
+  uint32 result = 0;
   
   // rjf: special-case map
-  local_persist read_only struct {U32 character; OS_Key key; OS_Modifiers modifiers;} map[] =
+  local_persist read_only struct {uint32 character; OS_Key key; OS_Modifiers modifiers;} map[] =
   {
     {'!', OS_Key_1, OS_Modifier_Shift},
     {'@', OS_Key_2, OS_Modifier_Shift},
@@ -166,7 +166,7 @@ os_codepoint_from_modifiers_and_key(OS_Modifiers modifiers, OS_Key key)
   }
   
   // rjf: check special-case map
-  for(U64 idx = 0; idx < ArrayCount(map); idx += 1)
+  for(uint64 idx = 0; idx < ArrayCount(map); idx += 1)
   {
     if(map[idx].key == key && map[idx].modifiers == modifiers)
     {
@@ -220,7 +220,7 @@ os_key_release(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, O
 }
 
 internal B32
-os_text(OS_EventList *events, OS_Handle window, U32 character)
+os_text(OS_EventList *events, OS_Handle window, uint32 character)
 {
   B32 result = 0;
   for(OS_Event *event = events->first; event != 0; event = event->next)

@@ -9,17 +9,17 @@
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64
+internal uint64
 p2r_end_of_cplusplus_container_name(String8 str)
 {
   // NOTE: This finds the index one past the last "::" contained in str.
   //       if no "::" is contained in str, then the returned index is 0.
   //       The intent is that [0,clamp_bot(0,result - 2)) gives the
   //       "container name" and [result,str.size) gives the leaf name.
-  U64 result = 0;
+  uint64 result = 0;
   if(str.size >= 2)
   {
-    for(U64 i = str.size; i >= 2; i -= 1)
+    for(uint64 i = str.size; i >= 2; i -= 1)
     {
       if(str.str[i - 2] == ':' && str.str[i - 1] == ':')
       {
@@ -31,10 +31,10 @@ p2r_end_of_cplusplus_container_name(String8 str)
   return(result);
 }
 
-internal U64
-p2r_hash_from_voff(U64 voff)
+internal uint64
+p2r_hash_from_voff(uint64 voff)
 {
-  U64 hash = (voff >> 3) ^ ((7 & voff) << 6);
+  uint64 hash = (voff >> 3) ^ ((7 & voff) << 6);
   return hash;
 }
 
@@ -79,9 +79,9 @@ p2r_rdi_arch_from_cv_arch(CV_Arch cv_arch)
     //case CV_Arch_PENTIUMII: break;
     //case CV_Arch_PENTIUMIII: break;
     //case CV_Arch_MIPS: break;
-    //case CV_Arch_MIPS16: break;
-    //case CV_Arch_MIPS32: break;
-    //case CV_Arch_MIPS64: break;
+    //case CV_Arch_MIPuint16: break;
+    //case CV_Arch_MIPuint32: break;
+    //case CV_Arch_MIPuint64: break;
     //case CV_Arch_MIPSI: break;
     //case CV_Arch_MIPSII: break;
     //case CV_Arch_MIPSIII: break;
@@ -209,54 +209,54 @@ p2r_rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
     
     case CV_BasicType_BOOL8:
     case CV_BasicType_INT8:
-    {result = RDI_TypeKind_S8;}break;
+    {result = RDI_TypeKind_uint8;}break;
     
     case CV_BasicType_BOOL16:
     case CV_BasicType_INT16:
     case CV_BasicType_SHORT:
-    {result = RDI_TypeKind_S16;}break;
+    {result = RDI_TypeKind_uint16;}break;
     
     case CV_BasicType_BOOL32:
     case CV_BasicType_INT32:
     case CV_BasicType_LONG:
-    {result = RDI_TypeKind_S32;}break;
+    {result = RDI_TypeKind_uint32;}break;
     
     case CV_BasicType_BOOL64:
     case CV_BasicType_INT64:
     case CV_BasicType_QUAD:
-    {result = RDI_TypeKind_S64;}break;
+    {result = RDI_TypeKind_uint64;}break;
     
     case CV_BasicType_INT128:
     case CV_BasicType_OCT:
-    {result = RDI_TypeKind_S128;}break;
+    {result = RDI_TypeKind_uint128;}break;
     
-    case CV_BasicType_UINT8: {result = RDI_TypeKind_U8;}break;
+    case CV_BasicType_UINT8: {result = RDI_TypeKind_uint8;}break;
     
     case CV_BasicType_UINT16:
     case CV_BasicType_USHORT:
-    {result = RDI_TypeKind_U16;}break;
+    {result = RDI_TypeKind_uint16;}break;
     
     case CV_BasicType_UINT32:
     case CV_BasicType_ULONG:
-    {result = RDI_TypeKind_U32;}break;
+    {result = RDI_TypeKind_uint32;}break;
     
     case CV_BasicType_UINT64:
     case CV_BasicType_UQUAD:
-    {result = RDI_TypeKind_U64;}break;
+    {result = RDI_TypeKind_uint64;}break;
     
     case CV_BasicType_UINT128:
     case CV_BasicType_UOCT:
-    {result = RDI_TypeKind_U128;}break;
+    {result = RDI_TypeKind_uint128;}break;
     
     case CV_BasicType_FLOAT16:{result = RDI_TypeKind_F16;}break;
-    case CV_BasicType_FLOAT32:{result = RDI_TypeKind_F32;}break;
-    case CV_BasicType_FLOAT32PP:{result = RDI_TypeKind_F32PP;}break;
+    case CV_BasicType_FLOAT32:{result = RDI_TypeKind_float;}break;
+    case CV_BasicType_FLOAT32PP:{result = RDI_TypeKind_floatPP;}break;
     case CV_BasicType_FLOAT48:{result = RDI_TypeKind_F48;}break;
-    case CV_BasicType_FLOAT64:{result = RDI_TypeKind_F64;}break;
+    case CV_BasicType_FLOAT64:{result = RDI_TypeKind_double;}break;
     case CV_BasicType_FLOAT80:{result = RDI_TypeKind_F80;}break;
     case CV_BasicType_FLOAT128:{result = RDI_TypeKind_F128;}break;
-    case CV_BasicType_COMPLEX32:{result = RDI_TypeKind_ComplexF32;}break;
-    case CV_BasicType_COMPLEX64:{result = RDI_TypeKind_ComplexF64;}break;
+    case CV_BasicType_COMPLEX32:{result = RDI_TypeKind_Complexfloat;}break;
+    case CV_BasicType_COMPLEX64:{result = RDI_TypeKind_Complexdouble;}break;
     case CV_BasicType_COMPLEX80:{result = RDI_TypeKind_ComplexF80;}break;
     case CV_BasicType_COMPLEX128:{result = RDI_TypeKind_ComplexF128;}break;
     case CV_BasicType_PTR:{result = RDI_TypeKind_Handle;}break;
@@ -268,30 +268,30 @@ p2r_rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
 //~ rjf: Location Info Building Helpers
 
 internal RDIM_Location *
-p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 extra_indirection)
+p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code, uint32 reg_byte_size, uint32 reg_byte_pos, uint64 offset, B32 extra_indirection)
 {
   RDIM_Location *result = 0;
-  if(0 <= offset && offset <= (S64)max_U16)
+  if(0 <= offset && offset <= (uint64)max_uint16)
   {
     if(extra_indirection)
     {
-      result = rdim_push_location_addr_addr_reg_plus_u16(arena, reg_code, (U16)offset);
+      result = rdim_push_location_addr_addr_reg_plus_u16(arena, reg_code, (uint16)offset);
     }
     else
     {
-      result = rdim_push_location_addr_reg_plus_u16(arena, reg_code, (U16)offset);
+      result = rdim_push_location_addr_reg_plus_u16(arena, reg_code, (uint16)offset);
     }
   }
   else
   {
     RDIM_EvalBytecode bytecode = {0};
-    U32 regread_param = RDI_EncodeRegReadParam(reg_code, reg_byte_size, reg_byte_pos);
+    uint32 regread_param = RDI_EncodeRegReadParam(reg_code, reg_byte_size, reg_byte_pos);
     rdim_bytecode_push_op(arena, &bytecode, RDI_EvalOp_RegRead, regread_param);
     rdim_bytecode_push_sconst(arena, &bytecode, offset);
     rdim_bytecode_push_op(arena, &bytecode, RDI_EvalOp_Add, 0);
     if(extra_indirection)
     {
-      U64 addr_size = rdi_addr_size_from_arch(arch);
+      uint64 addr_size = rdi_addr_size_from_arch(arch);
       rdim_bytecode_push_op(arena, &bytecode, RDI_EvalOp_MemRead, addr_size);
     }
     result = rdim_push_location_addr_bytecode_stream(arena, &bytecode);
@@ -347,11 +347,11 @@ p2r_reg_code_from_arch_encoded_fp_reg(RDI_Arch arch, CV_EncodedFramePtrReg encod
 }
 
 internal void
-p2r_location_over_lvar_addr_range(Arena *arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Location *location, CV_LvarAddrRange *range, COFF_SectionHeader *section, CV_LvarAddrGap *gaps, U64 gap_count)
+p2r_location_over_lvar_addr_range(Arena *arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Location *location, CV_LvarAddrRange *range, COFF_SectionHeader *section, CV_LvarAddrGap *gaps, uint64 gap_count)
 {
   //- rjf: extract range info
-  U64 voff_first = 0;
-  U64 voff_opl = 0;
+  uint64 voff_first = 0;
+  uint64 voff_opl = 0;
   if(section != 0)
   {
     voff_first = section->voff + range->off;
@@ -360,14 +360,14 @@ p2r_location_over_lvar_addr_range(Arena *arena, RDIM_ScopeChunkList *scopes, RDI
   
   //- rjf: emit ranges
   CV_LvarAddrGap *gap_ptr = gaps;
-  U64 voff_cursor = voff_first;
-  for(U64 i = 0; i < gap_count; i += 1, gap_ptr += 1)
+  uint64 voff_cursor = voff_first;
+  for(uint64 i = 0; i < gap_count; i += 1, gap_ptr += 1)
   {
-    U64 voff_gap_first = voff_first + gap_ptr->off;
-    U64 voff_gap_opl   = voff_gap_first + gap_ptr->len;
+    uint64 voff_gap_first = voff_first + gap_ptr->off;
+    uint64 voff_gap_opl   = voff_gap_first + gap_ptr->len;
     if(voff_cursor < voff_gap_first)
     {
-      RDIM_Rng1U64 voff_range = {voff_cursor, voff_gap_first};
+      RDIM_Rng1uint64 voff_range = {voff_cursor, voff_gap_first};
       rdim_location_set_push_case(arena, scopes, locset, voff_range, location);
     }
     voff_cursor = voff_gap_opl;
@@ -376,7 +376,7 @@ p2r_location_over_lvar_addr_range(Arena *arena, RDIM_ScopeChunkList *scopes, RDI
   //- rjf: emit remaining range
   if(voff_cursor < voff_opl)
   {
-    RDIM_Rng1U64 voff_range = {voff_cursor, voff_opl};
+    RDIM_Rng1uint64 voff_range = {voff_cursor, voff_opl};
     rdim_location_set_push_case(arena, scopes, locset, voff_range, location);
   }
 }
@@ -389,7 +389,7 @@ ASYNC_WORK_DEF(p2r_exe_hash_work)
   ProfBeginFunction();
   Arena *arena = async_root_thread_arena(p2r_async_root);
   P2R_EXEHashIn *in = (P2R_EXEHashIn *)input;
-  U64 *out = push_array(arena, U64, 1);
+  uint64 *out = push_array(arena, uint64, 1);
   ProfScope("hash exe") *out = rdi_hash(in->exe_data.str, in->exe_data.size);
   ProfEnd();
   return out;
@@ -468,13 +468,13 @@ ASYNC_WORK_DEF(p2r_comp_unit_contributions_bucket_work)
   P2R_CompUnitContributionsBucketIn *in = (P2R_CompUnitContributionsBucketIn *)input;
   P2R_CompUnitContributionsBucketOut *out = push_array(arena, P2R_CompUnitContributionsBucketOut, 1);
   {
-    out->unit_ranges = push_array(arena, RDIM_Rng1U64ChunkList, in->comp_unit_count);
-    for(U64 idx = 0; idx < in->contributions.count; idx += 1)
+    out->unit_ranges = push_array(arena, RDIM_Rng1uint64ChunkList, in->comp_unit_count);
+    for(uint64 idx = 0; idx < in->contributions.count; idx += 1)
     {
       PDB_CompUnitContribution *contribution = &in->contributions.contributions[idx];
       if(contribution->mod < in->comp_unit_count)
       {
-        RDIM_Rng1U64 r = {contribution->voff_first, contribution->voff_opl};
+        RDIM_Rng1uint64 r = {contribution->voff_first, contribution->voff_opl};
         rdim_rng1u64_chunk_list_push(arena, &out->unit_ranges[contribution->mod], 256, r);
       }
     }
@@ -501,7 +501,7 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
   String8List src_file_paths = {0};
   {
     //- rjf: build local hash table to dedup files within this unit
-    U64 hit_path_slots_count = 4096;
+    uint64 hit_path_slots_count = 4096;
     String8Node **hit_path_slots = push_array(scratch.arena, String8Node *, hit_path_slots_count);
     
     //- rjf: produce obj name/path
@@ -543,8 +543,8 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
           }
           
           // rjf: normalized file path -> source file node
-          U64 file_path_normalized_hash = rdi_hash(file_path_normalized.str, file_path_normalized.size);
-          U64 hit_path_slot = file_path_normalized_hash%hit_path_slots_count;
+          uint64 file_path_normalized_hash = rdi_hash(file_path_normalized.str, file_path_normalized.size);
+          uint64 hit_path_slot = file_path_normalized_hash%hit_path_slots_count;
           String8Node *hit_path_node = 0;
           for(String8Node *n = hit_path_slots[hit_path_slot]; n != 0; n = n->next)
           {
@@ -568,14 +568,14 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
     //- rjf: find all files in unit's inline line info
     ProfScope("find all files in unit's inline line info")
     {
-      U64 base_voff = 0;
+      uint64 base_voff = 0;
       for(CV_RecRange *rec_range = rec_ranges_first;
           rec_range < rec_ranges_opl;
           rec_range += 1)
       {
         //- rjf: rec range -> symbol info range
-        U64 sym_off_first = rec_range->off + 2;
-        U64 sym_off_opl   = rec_range->off + rec_range->hdr.size;
+        uint64 sym_off_first = rec_range->off + 2;
+        uint64 sym_off_opl   = rec_range->off + rec_range->hdr.size;
         
         //- rjf: skip invalid ranges
         if(sym_off_opl > pdb_unit_sym->data.size || sym_off_first > pdb_unit_sym->data.size || sym_off_first > sym_off_opl)
@@ -585,7 +585,7 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
         
         //- rjf: unpack symbol info
         CV_SymKind kind = rec_range->hdr.kind;
-        U64 sym_header_struct_size = cv_header_struct_size_from_sym_kind(kind);
+        uint64 sym_header_struct_size = cv_header_struct_size_from_sym_kind(kind);
         void *sym_header_struct_base = pdb_unit_sym->data.str + sym_off_first;
         void *sym_data_opl = pdb_unit_sym->data.str + sym_off_opl;
         
@@ -617,13 +617,13 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
           {
             // rjf: unpack sym
             CV_SymInlineSite *sym           = (CV_SymInlineSite *)sym_header_struct_base;
-            String8           binary_annots = str8((U8 *)(sym+1), rec_range->hdr.size - sizeof(rec_range->hdr.kind) - sizeof(*sym));
+            String8           binary_annots = str8((uint8 *)(sym+1), rec_range->hdr.size - sizeof(rec_range->hdr.kind) - sizeof(*sym));
             
             // rjf: map inlinee -> parsed cv c13 inlinee line info
             CV_C13InlineeLinesParsed *inlinee_lines_parsed = 0;
             {
-              U64 hash = cv_hash_from_item_id(sym->inlinee);
-              U64 slot_idx = hash%pdb_unit_c13->inlinee_lines_parsed_slots_count;
+              uint64 hash = cv_hash_from_item_id(sym->inlinee);
+              uint64 slot_idx = hash%pdb_unit_c13->inlinee_lines_parsed_slots_count;
               for(CV_C13InlineeLinesParsedNode *n = pdb_unit_c13->inlinee_lines_parsed_slots[slot_idx]; n != 0; n = n->hash_next)
               {
                 if(n->v.inlinee == sym->inlinee)
@@ -641,9 +641,9 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
               CV_C13SubSectionNode *file_chksms = pdb_unit_c13->file_chksms_sub_section;
               
               // rjf: gathered lines
-              U32 last_file_off = max_U32;
-              U32 curr_file_off = max_U32;
-              U64 line_count = 0;
+              uint32 last_file_off = max_uint32;
+              uint32 curr_file_off = max_uint32;
+              uint64 line_count = 0;
               CV_C13InlineSiteDecoder decoder = cv_c13_inline_site_decoder_init(inlinee_lines_parsed->file_off, inlinee_lines_parsed->first_source_ln, base_voff);
               for(;;)
               {
@@ -657,17 +657,17 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
                 if(step.flags == 0 && line_count > 0)
                 {
                   last_file_off = curr_file_off;
-                  curr_file_off = max_U32;
+                  curr_file_off = max_uint32;
                 }
                 
                 // rjf: file updated -> gather new file name
-                if(last_file_off != max_U32 && last_file_off != curr_file_off)
+                if(last_file_off != max_uint32 && last_file_off != curr_file_off)
                 {
                   String8 seq_file_name = {0};
                   if(last_file_off + sizeof(CV_C13Checksum) <= file_chksms->size)
                   {
                     CV_C13Checksum *checksum = (CV_C13Checksum*)(pdb_unit_c13->data.str + file_chksms->off + last_file_off);
-                    U32             name_off = checksum->name_off;
+                    uint32             name_off = checksum->name_off;
                     seq_file_name = pdb_strtbl_string_from_off(in->pdb_strtbl, name_off);
                   }
                   
@@ -689,8 +689,8 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
                   }
                   
                   // rjf: normalized file path -> source file node
-                  U64 file_path_normalized_hash = rdi_hash(file_path_normalized.str, file_path_normalized.size);
-                  U64 hit_path_slot = file_path_normalized_hash%hit_path_slots_count;
+                  uint64 file_path_normalized_hash = rdi_hash(file_path_normalized.str, file_path_normalized.size);
+                  uint64 hit_path_slot = file_path_normalized_hash%hit_path_slots_count;
                   String8Node *hit_path_node = 0;
                   for(String8Node *n = hit_path_slots[hit_path_slot]; n != 0; n = n->next)
                   {
@@ -806,8 +806,8 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
           }
           
           // rjf: normalized file path -> source file node
-          U64 file_path_normalized_hash = rdi_hash(file_path_normalized.str, file_path_normalized.size);
-          U64 src_file_slot = file_path_normalized_hash%in->src_file_map->slots_count;
+          uint64 file_path_normalized_hash = rdi_hash(file_path_normalized.str, file_path_normalized.size);
+          uint64 src_file_slot = file_path_normalized_hash%in->src_file_map->slots_count;
           P2R_SrcFileNode *src_file_node = 0;
           if(lines->line_count != 0)
           {
@@ -867,14 +867,14 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
     String8 obj_folder_path = lower_from_str8(scratch.arena, str8_chop_last_slash(obj_name));
     
     //- rjf: parse inlinee line tables
-    U64 base_voff = 0;
+    uint64 base_voff = 0;
     for(CV_RecRange *rec_range = rec_ranges_first;
         rec_range < rec_ranges_opl;
         rec_range += 1)
     {
       //- rjf: rec range -> symbol info range
-      U64 sym_off_first = rec_range->off + 2;
-      U64 sym_off_opl   = rec_range->off + rec_range->hdr.size;
+      uint64 sym_off_first = rec_range->off + 2;
+      uint64 sym_off_opl   = rec_range->off + rec_range->hdr.size;
       
       //- rjf: skip invalid ranges
       if(sym_off_opl > pdb_unit_sym->data.size || sym_off_first > pdb_unit_sym->data.size || sym_off_first > sym_off_opl)
@@ -884,7 +884,7 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
       
       //- rjf: unpack symbol info
       CV_SymKind kind = rec_range->hdr.kind;
-      U64 sym_header_struct_size = cv_header_struct_size_from_sym_kind(kind);
+      uint64 sym_header_struct_size = cv_header_struct_size_from_sym_kind(kind);
       void *sym_header_struct_base = pdb_unit_sym->data.str + sym_off_first;
       void *sym_data_opl = pdb_unit_sym->data.str + sym_off_opl;
       
@@ -916,13 +916,13 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
         {
           // rjf: unpack sym
           CV_SymInlineSite *sym           = (CV_SymInlineSite *)sym_header_struct_base;
-          String8           binary_annots = str8((U8 *)(sym+1), rec_range->hdr.size - sizeof(rec_range->hdr.kind) - sizeof(*sym));
+          String8           binary_annots = str8((uint8 *)(sym+1), rec_range->hdr.size - sizeof(rec_range->hdr.kind) - sizeof(*sym));
           
           // rjf: map inlinee -> parsed cv c13 inlinee line info
           CV_C13InlineeLinesParsed *inlinee_lines_parsed = 0;
           {
-            U64 hash = cv_hash_from_item_id(sym->inlinee);
-            U64 slot_idx = hash%pdb_unit_c13->inlinee_lines_parsed_slots_count;
+            uint64 hash = cv_hash_from_item_id(sym->inlinee);
+            uint64 slot_idx = hash%pdb_unit_c13->inlinee_lines_parsed_slots_count;
             for(CV_C13InlineeLinesParsedNode *n = pdb_unit_c13->inlinee_lines_parsed_slots[slot_idx]; n != 0; n = n->hash_next)
             {
               if(n->v.inlinee == sym->inlinee)
@@ -944,17 +944,17 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
             struct LineChunk
             {
               LineChunk *next;
-              U64        cap;
-              U64        count;
-              U64       *voffs;     // [line_count + 1] (sorted)
-              U32       *line_nums; // [line_count]
-              U16       *col_nums;  // [2*line_count]
+              uint64        cap;
+              uint64        count;
+              uint64       *voffs;     // [line_count + 1] (sorted)
+              uint32       *line_nums; // [line_count]
+              uint16       *col_nums;  // [2*line_count]
             };
             LineChunk       *first_line_chunk            = 0;
             LineChunk       *last_line_chunk             = 0;
-            U64              total_line_chunk_line_count = 0;
-            U32              last_file_off               = max_U32;
-            U32              curr_file_off               = max_U32;
+            uint64              total_line_chunk_line_count = 0;
+            uint32              last_file_off               = max_uint32;
+            uint32              curr_file_off               = max_uint32;
             RDIM_LineTable*  line_table                  = 0;
             
             CV_C13InlineSiteDecoder decoder = cv_c13_inline_site_decoder_init(inlinee_lines_parsed->file_off, inlinee_lines_parsed->first_source_ln, base_voff);
@@ -970,17 +970,17 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
               if(step.flags == 0 && total_line_chunk_line_count > 0)
               {
                 last_file_off = curr_file_off;
-                curr_file_off = max_U32;
+                curr_file_off = max_uint32;
               }
               
               // rjf: file updated -> push line chunks gathered for this file
-              if(last_file_off != max_U32 && last_file_off != curr_file_off)
+              if(last_file_off != max_uint32 && last_file_off != curr_file_off)
               {
                 String8 seq_file_name = {0};
                 if(last_file_off + sizeof(CV_C13Checksum) <= file_chksms->size)
                 {
                   CV_C13Checksum *checksum = (CV_C13Checksum*)(pdb_unit_c13->data.str + file_chksms->off + last_file_off);
-                  U32             name_off = checksum->name_off;
+                  uint32             name_off = checksum->name_off;
                   seq_file_name = pdb_strtbl_string_from_off(in->pdb_strtbl, name_off);
                 }
                 
@@ -1002,8 +1002,8 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
                 }
                 
                 // rjf: normalized file path -> source file node
-                U64              file_path_normalized_hash = rdi_hash(file_path_normalized.str, file_path_normalized.size);
-                U64              src_file_slot             = file_path_normalized_hash%in->src_file_map->slots_count;
+                uint64              file_path_normalized_hash = rdi_hash(file_path_normalized.str, file_path_normalized.size);
+                uint64              src_file_slot             = file_path_normalized_hash%in->src_file_map->slots_count;
                 P2R_SrcFileNode *src_file_node             = 0;
                 for(P2R_SrcFileNode *n = in->src_file_map->slots[src_file_slot]; n != 0; n = n->next)
                 {
@@ -1015,19 +1015,19 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
                 }
                 
                 // rjf: gather all lines
-                RDI_U64 *voffs      = 0;
-                RDI_U32 *line_nums  = 0;
-                RDI_U64  line_count = 0;
+                RDI_uint64 *voffs      = 0;
+                RDI_uint32 *line_nums  = 0;
+                RDI_uint64  line_count = 0;
                 if(src_file_node != 0)
                 {
-                  voffs = push_array_no_zero(arena, RDI_U64, total_line_chunk_line_count+1);
-                  line_nums = push_array_no_zero(arena, RDI_U32, total_line_chunk_line_count);
+                  voffs = push_array_no_zero(arena, RDI_uint64, total_line_chunk_line_count+1);
+                  line_nums = push_array_no_zero(arena, RDI_uint32, total_line_chunk_line_count);
                   line_count = total_line_chunk_line_count;
-                  U64 dst_idx = 0;
+                  uint64 dst_idx = 0;
                   for(LineChunk *chunk = first_line_chunk; chunk != 0; chunk = chunk->next)
                   {
-                    MemoryCopy(voffs+dst_idx, chunk->voffs, sizeof(U64)*(chunk->count+1));
-                    MemoryCopy(line_nums+dst_idx, chunk->line_nums, sizeof(U32)*chunk->count);
+                    MemoryCopy(voffs+dst_idx, chunk->voffs, sizeof(uint64)*(chunk->count+1));
+                    MemoryCopy(line_nums+dst_idx, chunk->line_nums, sizeof(uint32)*chunk->count);
                     dst_idx += chunk->count;
                   }
                 }
@@ -1060,8 +1060,8 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
                   chunk = push_array(scratch.arena, LineChunk, 1);
                   SLLQueuePush(first_line_chunk, last_line_chunk, chunk);
                   chunk->cap       = 8;
-                  chunk->voffs     = push_array_no_zero(scratch.arena, U64, chunk->cap);
-                  chunk->line_nums = push_array_no_zero(scratch.arena, U32, chunk->cap);
+                  chunk->voffs     = push_array_no_zero(scratch.arena, uint64, chunk->cap);
+                  chunk->line_nums = push_array_no_zero(scratch.arena, uint32, chunk->cap);
                 }
                 chunk->voffs[chunk->count]     = step.line_voff;
                 chunk->voffs[chunk->count+1]   = step.line_voff_end;
@@ -1125,9 +1125,9 @@ ASYNC_WORK_DEF(p2r_link_name_map_build_work)
   {
     //- rjf: unpack symbol range info
     CV_SymKind kind = rec_range->hdr.kind;
-    U64 header_struct_size = cv_header_struct_size_from_sym_kind(kind);
-    U8 *sym_first = in->sym->data.str + rec_range->off + 2;
-    U8 *sym_opl   = sym_first + rec_range->hdr.size;
+    uint64 header_struct_size = cv_header_struct_size_from_sym_kind(kind);
+    uint8 *sym_first = in->sym->data.str + rec_range->off + 2;
+    uint8 *sym_opl   = sym_first + rec_range->hdr.size;
     
     //- rjf: skip bad ranges
     if(sym_opl > in->sym->data.str + in->sym->data.size || sym_first + header_struct_size > in->sym->data.str + in->sym->data.size)
@@ -1145,15 +1145,15 @@ ASYNC_WORK_DEF(p2r_link_name_map_build_work)
         CV_SymPub32 *pub32 = (CV_SymPub32 *)sym_first;
         String8 name = str8_cstring_capped(pub32+1, sym_opl);
         COFF_SectionHeader *section = (0 < pub32->sec && pub32->sec <= in->coff_sections.count) ? &in->coff_sections.v[pub32->sec-1] : 0;
-        U64 voff = 0;
+        uint64 voff = 0;
         if(section != 0)
         {
           voff = section->voff + pub32->off;
         }
         
         // rjf: commit to link name map
-        U64 hash = p2r_hash_from_voff(voff);
-        U64 bucket_idx = hash%in->link_name_map->buckets_count;
+        uint64 hash = p2r_hash_from_voff(voff);
+        uint64 bucket_idx = hash%in->link_name_map->buckets_count;
         P2R_LinkNameNode *node = push_array(arena, P2R_LinkNameNode, 1);
         SLLStackPush(in->link_name_map->buckets[bucket_idx], node);
         node->voff = voff;
@@ -1187,13 +1187,13 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
     CV_TypeId itype_fwd = 0;
     CV_RecRange *range = &in->tpi_leaf->leaf_ranges.ranges[itype-in->tpi_leaf->itype_first];
     CV_LeafKind kind = range->hdr.kind;
-    U64 header_struct_size = cv_header_struct_size_from_leaf_kind(kind);
+    uint64 header_struct_size = cv_header_struct_size_from_leaf_kind(kind);
     if(range->off+range->hdr.size <= in->tpi_leaf->data.size &&
        range->off+2+header_struct_size <= in->tpi_leaf->data.size &&
        range->hdr.size >= 2)
     {
-      U8 *itype_leaf_first = in->tpi_leaf->data.str + range->off+2;
-      U8 *itype_leaf_opl   = itype_leaf_first + range->hdr.size-2;
+      uint8 *itype_leaf_first = in->tpi_leaf->data.str + range->off+2;
+      uint8 *itype_leaf_opl   = itype_leaf_first + range->hdr.size-2;
       switch(kind)
       {
         default:{}break;
@@ -1209,11 +1209,11 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
           if(lf_struct->props & CV_TypeProp_FwdRef)
           {
             // rjf: unpack rest of leaf
-            U8 *numeric_ptr = (U8 *)(lf_struct + 1);
+            uint8 *numeric_ptr = (uint8 *)(lf_struct + 1);
             CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
-            U8 *name_ptr = numeric_ptr + size.encoded_size;
+            uint8 *name_ptr = numeric_ptr + size.encoded_size;
             String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
-            U8 *unique_name_ptr = name_ptr + name.size + 1;
+            uint8 *unique_name_ptr = name_ptr + name.size + 1;
             String8 unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
             
             // rjf: lookup
@@ -1234,11 +1234,11 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
           if(lf_struct->props & CV_TypeProp_FwdRef)
           {
             // rjf: unpack rest of leaf
-            U8 *numeric_ptr = (U8 *)(lf_struct + 1);
+            uint8 *numeric_ptr = (uint8 *)(lf_struct + 1);
             CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
-            U8 *name_ptr = (U8 *)numeric_ptr + size.encoded_size;
+            uint8 *name_ptr = (uint8 *)numeric_ptr + size.encoded_size;
             String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
-            U8 *unique_name_ptr = name_ptr + name.size + 1;
+            uint8 *unique_name_ptr = name_ptr + name.size + 1;
             String8 unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
             
             // rjf: lookup
@@ -1253,11 +1253,11 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
         {
           // rjf: unpack leaf
           CV_LeafUnion *lf_union = (CV_LeafUnion *)itype_leaf_first;
-          U8 *numeric_ptr = (U8 *)(lf_union + 1);
+          uint8 *numeric_ptr = (uint8 *)(lf_union + 1);
           CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
-          U8 *name_ptr = numeric_ptr + size.encoded_size;
+          uint8 *name_ptr = numeric_ptr + size.encoded_size;
           String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
-          U8 *unique_name_ptr = name_ptr + name.size + 1;
+          uint8 *unique_name_ptr = name_ptr + name.size + 1;
           String8 unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
           
           // rjf: has fwd ref flag -> lookup itype that this itype resolves tos
@@ -1274,9 +1274,9 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
         {
           // rjf: unpack leaf
           CV_LeafEnum *lf_enum = (CV_LeafEnum*)itype_leaf_first;
-          U8 *name_ptr = (U8 *)(lf_enum + 1);
+          uint8 *name_ptr = (uint8 *)(lf_enum + 1);
           String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
-          U8 *unique_name_ptr = name_ptr + name.size + 1;
+          uint8 *unique_name_ptr = name_ptr + name.size + 1;
           String8 unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
           
           // rjf: has fwd ref flag -> lookup itype that this itype resolves to
@@ -1338,13 +1338,13 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
         }
         CV_RecRange *range = &in->tpi_leaf->leaf_ranges.ranges[walk_itype-in->tpi_leaf->itype_first];
         CV_LeafKind kind = range->hdr.kind;
-        U64 header_struct_size = cv_header_struct_size_from_leaf_kind(kind);
+        uint64 header_struct_size = cv_header_struct_size_from_leaf_kind(kind);
         if(range->off+range->hdr.size <= in->tpi_leaf->data.size &&
            range->off+2+header_struct_size <= in->tpi_leaf->data.size &&
            range->hdr.size >= 2)
         {
-          U8 *itype_leaf_first = in->tpi_leaf->data.str + range->off+2;
-          U8 *itype_leaf_opl   = itype_leaf_first + range->hdr.size-2;
+          uint8 *itype_leaf_first = in->tpi_leaf->data.str + range->off+2;
+          uint8 *itype_leaf_opl   = itype_leaf_first + range->hdr.size-2;
           switch(kind)
           {
             default:{}break;
@@ -1416,8 +1416,8 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               {
                 break;
               }
-              U8 *arglist_first = in->tpi_leaf->data.str + arglist_range->off + 2;
-              U8 *arglist_opl   = arglist_first+arglist_range->hdr.size-2;
+              uint8 *arglist_first = in->tpi_leaf->data.str + arglist_range->off + 2;
+              uint8 *arglist_opl   = arglist_first+arglist_range->hdr.size-2;
               if(arglist_first + sizeof(CV_LeafArgList) > arglist_opl)
               {
                 break;
@@ -1426,10 +1426,10 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               // rjf: unpack arglist info
               CV_LeafArgList *arglist = (CV_LeafArgList*)arglist_first;
               CV_TypeId *arglist_itypes_base = (CV_TypeId *)(arglist+1);
-              U32 arglist_itypes_count = arglist->count;
+              uint32 arglist_itypes_count = arglist->count;
               
               // rjf: push arg types to chain
-              for(U32 idx = 0; idx < arglist_itypes_count; idx += 1)
+              for(uint32 idx = 0; idx < arglist_itypes_count; idx += 1)
               {
                 P2R_TypeIdChain *c = push_array(arena, P2R_TypeIdChain, 1);
                 c->itype = arglist_itypes_base[idx];
@@ -1437,7 +1437,7 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               }
               
               // rjf: push task to walk arg types
-              for(U32 idx = 0; idx < arglist_itypes_count; idx += 1)
+              for(uint32 idx = 0; idx < arglist_itypes_count; idx += 1)
               {
                 P2R_TypeIdChain *c = push_array(scratch.arena, P2R_TypeIdChain, 1);
                 c->itype = arglist_itypes_base[idx];
@@ -1492,8 +1492,8 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               {
                 break;
               }
-              U8 *arglist_first = in->tpi_leaf->data.str + arglist_range->off + 2;
-              U8 *arglist_opl   = arglist_first+arglist_range->hdr.size-2;
+              uint8 *arglist_first = in->tpi_leaf->data.str + arglist_range->off + 2;
+              uint8 *arglist_opl   = arglist_first+arglist_range->hdr.size-2;
               if(arglist_first + sizeof(CV_LeafArgList) > arglist_opl)
               {
                 break;
@@ -1502,10 +1502,10 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               // rjf: unpack arglist info
               CV_LeafArgList *arglist = (CV_LeafArgList*)arglist_first;
               CV_TypeId *arglist_itypes_base = (CV_TypeId *)(arglist+1);
-              U32 arglist_itypes_count = arglist->count;
+              uint32 arglist_itypes_count = arglist->count;
               
               // rjf: push arg types to chain
-              for(U32 idx = 0; idx < arglist_itypes_count; idx += 1)
+              for(uint32 idx = 0; idx < arglist_itypes_count; idx += 1)
               {
                 P2R_TypeIdChain *c = push_array(arena, P2R_TypeIdChain, 1);
                 c->itype = arglist_itypes_base[idx];
@@ -1513,7 +1513,7 @@ ASYNC_WORK_DEF(p2r_itype_chain_build_work)
               }
               
               // rjf: push task to walk arg types
-              for(U32 idx = 0; idx < arglist_itypes_count; idx += 1)
+              for(uint32 idx = 0; idx < arglist_itypes_count; idx += 1)
               {
                 P2R_TypeIdChain *c = push_array(scratch.arena, P2R_TypeIdChain, 1);
                 c->itype = arglist_itypes_base[idx];
@@ -1610,7 +1610,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
   P2R_UDTConvertIn *in = (P2R_UDTConvertIn *)input;
 #define p2r_type_ptr_from_itype(itype) ((in->itype_type_ptrs && (itype) < in->tpi_leaf->itype_opl) ? (in->itype_type_ptrs[(in->itype_fwd_map[(itype)] ? in->itype_fwd_map[(itype)] : (itype))]) : 0)
   RDIM_UDTChunkList *udts = push_array(arena, RDIM_UDTChunkList, 1);
-  RDI_U64 udts_chunk_cap = 1024;
+  RDI_uint64 udts_chunk_cap = 1024;
   ProfScope("convert UDT info")
   {
     for(CV_TypeId itype = in->itype_first; itype < in->itype_opl; itype += 1)
@@ -1625,9 +1625,9 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
       //- rjf: unpack itype leaf range - skip if out-of-range
       CV_RecRange *range = &in->tpi_leaf->leaf_ranges.ranges[itype-in->tpi_leaf->itype_first];
       CV_LeafKind kind = range->hdr.kind;
-      U64 header_struct_size = cv_header_struct_size_from_leaf_kind(kind);
-      U8 *itype_leaf_first = in->tpi_leaf->data.str + range->off+2;
-      U8 *itype_leaf_opl   = itype_leaf_first + range->hdr.size-2;
+      uint64 header_struct_size = cv_header_struct_size_from_leaf_kind(kind);
+      uint8 *itype_leaf_first = in->tpi_leaf->data.str + range->off+2;
+      uint8 *itype_leaf_opl   = itype_leaf_first + range->hdr.size-2;
       if(range->off+range->hdr.size > in->tpi_leaf->data.size ||
          range->off+2+header_struct_size > in->tpi_leaf->data.size ||
          range->hdr.size < 2)
@@ -1722,17 +1722,17 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
             
             //- rjf: loop over all fields
             {
-              U8 *field_list_first = in->tpi_leaf->data.str+range->off+2;
-              U8 *field_list_opl = field_list_first+range->hdr.size-2;
-              for(U8 *read_ptr = field_list_first, *next_read_ptr = field_list_opl;
+              uint8 *field_list_first = in->tpi_leaf->data.str+range->off+2;
+              uint8 *field_list_opl = field_list_first+range->hdr.size-2;
+              for(uint8 *read_ptr = field_list_first, *next_read_ptr = field_list_opl;
                   read_ptr < field_list_opl;
                   read_ptr = next_read_ptr)
               {
                 // rjf: unpack field
                 CV_LeafKind field_kind = *(CV_LeafKind *)read_ptr;
-                U64 field_leaf_header_size = cv_header_struct_size_from_leaf_kind(field_kind);
-                U8 *field_leaf_first = read_ptr+2;
-                U8 *field_leaf_opl   = field_list_opl;
+                uint64 field_leaf_header_size = cv_header_struct_size_from_leaf_kind(field_kind);
+                uint8 *field_leaf_first = read_ptr+2;
+                uint8 *field_leaf_opl   = field_list_opl;
                 next_read_ptr = field_leaf_opl;
                 
                 // rjf: skip out-of-bounds fields
@@ -1758,7 +1758,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     CV_TypeId new_itype = lf->itype;
                     
                     // rjf: bump next read pointer past header
-                    next_read_ptr = (U8 *)(lf+1);
+                    next_read_ptr = (uint8 *)(lf+1);
                     
                     // rjf: determine if index itype is new
                     B32 is_new = 1;
@@ -1787,10 +1787,10 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     
                     // rjf: unpack leaf
                     CV_LeafMember *lf = (CV_LeafMember *)field_leaf_first;
-                    U8 *offset_ptr = (U8 *)(lf+1);
+                    uint8 *offset_ptr = (uint8 *)(lf+1);
                     CV_NumericParsed offset = cv_numeric_from_data_range(offset_ptr, field_leaf_opl);
-                    U64 offset64 = cv_u64_from_numeric(&offset);
-                    U8 *name_ptr = offset_ptr + offset.encoded_size;
+                    uint64 offset64 = cv_u64_from_numeric(&offset);
+                    uint8 *name_ptr = offset_ptr + offset.encoded_size;
                     String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
@@ -1801,7 +1801,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     mem->kind = RDI_MemberKind_DataField;
                     mem->name = name;
                     mem->type = p2r_type_ptr_from_itype(lf->itype);
-                    mem->off  = (U32)offset64;
+                    mem->off  = (uint32)offset64;
                   }break;
                   
                   //- rjf: STMEMBER
@@ -1811,7 +1811,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     
                     // rjf: unpack leaf
                     CV_LeafStMember *lf = (CV_LeafStMember *)field_leaf_first;
-                    U8 *name_ptr = (U8 *)(lf+1);
+                    uint8 *name_ptr = (uint8 *)(lf+1);
                     String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
@@ -1829,7 +1829,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                   {
                     // rjf: unpack leaf
                     CV_LeafMethod *lf = (CV_LeafMethod *)field_leaf_first;
-                    U8 *name_ptr = (U8 *)(lf+1);
+                    uint8 *name_ptr = (uint8 *)(lf+1);
                     String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
@@ -1847,16 +1847,16 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     }
                     
                     //- rjf: loop through all methods & emit members
-                    U8 *method_list_first = in->tpi_leaf->data.str + method_list_range->off + 2;
-                    U8 *method_list_opl   = method_list_first + method_list_range->hdr.size-2;
-                    for(U8 *method_read_ptr = method_list_first, *next_method_read_ptr = method_list_opl;
+                    uint8 *method_list_first = in->tpi_leaf->data.str + method_list_range->off + 2;
+                    uint8 *method_list_opl   = method_list_first + method_list_range->hdr.size-2;
+                    for(uint8 *method_read_ptr = method_list_first, *next_method_read_ptr = method_list_opl;
                         method_read_ptr < method_list_opl;
                         method_read_ptr = next_method_read_ptr)
                     {
                       CV_LeafMethodListMember *method = (CV_LeafMethodListMember*)method_read_ptr;
                       CV_MethodProp prop = CV_FieldAttribs_Extract_MethodProp(method->attribs);
                       RDIM_Type *method_type = p2r_type_ptr_from_itype(method->itype);
-                      next_method_read_ptr = (U8 *)(method+1);
+                      next_method_read_ptr = (uint8 *)(method+1);
                       
                       // TODO(allen): PROBLEM
                       // We only get offsets for virtual functions (the "vbaseoff") from
@@ -1880,12 +1880,12 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                       // us and greatly complicates matters.
                       
                       // rjf: read vbaseoff
-                      U32 vbaseoff = 0;
+                      uint32 vbaseoff = 0;
                       if(prop == CV_MethodProp_Intro || prop == CV_MethodProp_PureIntro)
                       {
                         if(next_method_read_ptr+4 <= method_list_opl)
                         {
-                          vbaseoff = *(U32 *)next_method_read_ptr;
+                          vbaseoff = *(uint32 *)next_method_read_ptr;
                         }
                         next_method_read_ptr += 4;
                       }
@@ -1930,15 +1930,15 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     // rjf: unpack leaf
                     CV_LeafOneMethod *lf = (CV_LeafOneMethod *)field_leaf_first;
                     CV_MethodProp prop = CV_FieldAttribs_Extract_MethodProp(lf->attribs);
-                    U8 *vbaseoff_ptr = (U8 *)(lf+1);
-                    U8 *vbaseoff_opl_ptr = vbaseoff_ptr;
-                    U32 vbaseoff = 0;
+                    uint8 *vbaseoff_ptr = (uint8 *)(lf+1);
+                    uint8 *vbaseoff_opl_ptr = vbaseoff_ptr;
+                    uint32 vbaseoff = 0;
                     if(prop == CV_MethodProp_Intro || prop == CV_MethodProp_PureIntro)
                     {
-                      vbaseoff = *(U32 *)(vbaseoff_ptr);
-                      vbaseoff_opl_ptr += sizeof(U32);
+                      vbaseoff = *(uint32 *)(vbaseoff_ptr);
+                      vbaseoff_opl_ptr += sizeof(uint32);
                     }
-                    U8 *name_ptr = vbaseoff_opl_ptr;
+                    uint8 *name_ptr = vbaseoff_opl_ptr;
                     String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     RDIM_Type *method_type = p2r_type_ptr_from_itype(lf->itype);
                     
@@ -1982,7 +1982,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                   {
                     // rjf: unpack leaf
                     CV_LeafNestType *lf = (CV_LeafNestType *)field_leaf_first;
-                    U8 *name_ptr = (U8 *)(lf+1);
+                    uint8 *name_ptr = (uint8 *)(lf+1);
                     String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
@@ -2002,7 +2002,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     
                     // rjf: unpack leaf
                     CV_LeafNestTypeEx *lf = (CV_LeafNestTypeEx *)field_leaf_first;
-                    U8 *name_ptr = (U8 *)(lf+1);
+                    uint8 *name_ptr = (uint8 *)(lf+1);
                     String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
@@ -2022,9 +2022,9 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     
                     // rjf: unpack leaf
                     CV_LeafBClass *lf = (CV_LeafBClass *)field_leaf_first;
-                    U8 *offset_ptr = (U8 *)(lf+1);
+                    uint8 *offset_ptr = (uint8 *)(lf+1);
                     CV_NumericParsed offset = cv_numeric_from_data_range(offset_ptr, field_leaf_opl);
-                    U64 offset64 = cv_u64_from_numeric(&offset);
+                    uint64 offset64 = cv_u64_from_numeric(&offset);
                     
                     // rjf: bump next read pointer past variable length parts
                     next_read_ptr = offset_ptr+offset.encoded_size;
@@ -2033,7 +2033,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     RDIM_UDTMember *mem = rdim_udt_push_member(arena, udts, dst_udt);
                     mem->kind = RDI_MemberKind_Base;
                     mem->type = p2r_type_ptr_from_itype(lf->itype);
-                    mem->off  = (U32)offset64;
+                    mem->off  = (uint32)offset64;
                   }break;
                   
                   //- rjf: VBCLASS/IVBCLASS
@@ -2046,13 +2046,13 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     
                     // rjf: unpack leaf
                     CV_LeafVBClass *lf = (CV_LeafVBClass *)field_leaf_first;
-                    U8 *num1_ptr = (U8 *)(lf+1);
+                    uint8 *num1_ptr = (uint8 *)(lf+1);
                     CV_NumericParsed num1 = cv_numeric_from_data_range(num1_ptr, field_leaf_opl);
-                    U8 *num2_ptr = num1_ptr + num1.encoded_size;
+                    uint8 *num2_ptr = num1_ptr + num1.encoded_size;
                     CV_NumericParsed num2 = cv_numeric_from_data_range(num2_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past header
-                    next_read_ptr = (U8 *)(lf+1);
+                    next_read_ptr = (uint8 *)(lf+1);
                     
                     // rjf: emit member
                     RDIM_UDTMember *mem = rdim_udt_push_member(arena, udts, dst_udt);
@@ -2066,7 +2066,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     CV_LeafVFuncTab *lf = (CV_LeafVFuncTab *)field_leaf_first;
                     
                     // rjf: bump next read pointer past header
-                    next_read_ptr = (U8 *)(lf+1);
+                    next_read_ptr = (uint8 *)(lf+1);
                     
                     // NOTE(rjf): currently no-op this case
                     (void)lf;
@@ -2074,7 +2074,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                 }
                 
                 // rjf: align-up next field
-                next_read_ptr = (U8 *)AlignPow2((U64)next_read_ptr, 4);
+                next_read_ptr = (uint8 *)AlignPow2((uint64)next_read_ptr, 4);
               }
             }
           }
@@ -2143,17 +2143,17 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
             
             //- rjf: loop over all fields
             {
-              U8 *field_list_first = in->tpi_leaf->data.str+range->off+2;
-              U8 *field_list_opl = field_list_first+range->hdr.size-2;
-              for(U8 *read_ptr = field_list_first, *next_read_ptr = field_list_opl;
+              uint8 *field_list_first = in->tpi_leaf->data.str+range->off+2;
+              uint8 *field_list_opl = field_list_first+range->hdr.size-2;
+              for(uint8 *read_ptr = field_list_first, *next_read_ptr = field_list_opl;
                   read_ptr < field_list_opl;
                   read_ptr = next_read_ptr)
               {
                 // rjf: unpack field
                 CV_LeafKind field_kind = *(CV_LeafKind *)read_ptr;
-                U64 field_leaf_header_size = cv_header_struct_size_from_leaf_kind(field_kind);
-                U8 *field_leaf_first = read_ptr+2;
-                U8 *field_leaf_opl   = field_leaf_first+range->hdr.size-2;
+                uint64 field_leaf_header_size = cv_header_struct_size_from_leaf_kind(field_kind);
+                uint8 *field_leaf_first = read_ptr+2;
+                uint8 *field_leaf_opl   = field_leaf_first+range->hdr.size-2;
                 next_read_ptr = field_leaf_opl;
                 
                 // rjf: skip out-of-bounds fields
@@ -2205,10 +2205,10 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     
                     // rjf: unpack leaf
                     CV_LeafEnumerate *lf = (CV_LeafEnumerate *)field_leaf_first;
-                    U8 *val_ptr = (U8 *)(lf+1);
+                    uint8 *val_ptr = (uint8 *)(lf+1);
                     CV_NumericParsed val = cv_numeric_from_data_range(val_ptr, field_leaf_opl);
-                    U64 val64 = cv_u64_from_numeric(&val);
-                    U8 *name_ptr = val_ptr + val.encoded_size;
+                    uint64 val64 = cv_u64_from_numeric(&val);
+                    uint8 *name_ptr = val_ptr + val.encoded_size;
                     String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
@@ -2222,7 +2222,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                 }
                 
                 // rjf: align-up next field
-                next_read_ptr = (U8 *)AlignPow2((U64)next_read_ptr, 4);
+                next_read_ptr = (uint8 *)AlignPow2((uint64)next_read_ptr, 4);
               }
             }
           }
@@ -2251,12 +2251,12 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
   //////////////////////////
   //- rjf: set up outputs for this sym stream
   //
-  U64 sym_procedures_chunk_cap = 1024;
-  U64 sym_global_variables_chunk_cap = 1024;
-  U64 sym_thread_variables_chunk_cap = 1024;
-  U64 sym_constants_chunk_cap = 1024;
-  U64 sym_scopes_chunk_cap = 1024;
-  U64 sym_inline_sites_chunk_cap = 1024;
+  uint64 sym_procedures_chunk_cap = 1024;
+  uint64 sym_global_variables_chunk_cap = 1024;
+  uint64 sym_thread_variables_chunk_cap = 1024;
+  uint64 sym_constants_chunk_cap = 1024;
+  uint64 sym_scopes_chunk_cap = 1024;
+  uint64 sym_inline_sites_chunk_cap = 1024;
   RDIM_SymbolChunkList sym_procedures = {0};
   RDIM_SymbolChunkList sym_global_variables = {0};
   RDIM_SymbolChunkList sym_thread_variables = {0};
@@ -2268,12 +2268,12 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
   //////////////////////////
   //- rjf: symbols pass 1: produce procedure frame info map (procedure -> frame info)
   //
-  U64 procedure_frameprocs_count = 0;
-  U64 procedure_frameprocs_cap   = (in->sym_ranges_opl - in->sym_ranges_first);
+  uint64 procedure_frameprocs_count = 0;
+  uint64 procedure_frameprocs_cap   = (in->sym_ranges_opl - in->sym_ranges_first);
   CV_SymFrameproc **procedure_frameprocs = push_array_no_zero(scratch.arena, CV_SymFrameproc *, procedure_frameprocs_cap);
   ProfScope("symbols pass 1: produce procedure frame info map (procedure -> frame info)")
   {
-    U64 procedure_num = 0;
+    uint64 procedure_num = 0;
     CV_RecRange *rec_ranges_first = in->sym->sym_ranges.ranges + in->sym_ranges_first;
     CV_RecRange *rec_ranges_opl   = in->sym->sym_ranges.ranges + in->sym_ranges_opl;
     for(CV_RecRange *rec_range = rec_ranges_first;
@@ -2281,8 +2281,8 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
         rec_range += 1)
     {
       //- rjf: rec range -> symbol info range
-      U64 sym_off_first = rec_range->off + 2;
-      U64 sym_off_opl   = rec_range->off + rec_range->hdr.size;
+      uint64 sym_off_first = rec_range->off + 2;
+      uint64 sym_off_opl   = rec_range->off + rec_range->hdr.size;
       
       //- rjf: skip invalid ranges
       if(sym_off_opl > in->sym->data.size || sym_off_first > in->sym->data.size || sym_off_first > sym_off_opl)
@@ -2292,7 +2292,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
       
       //- rjf: unpack symbol info
       CV_SymKind kind = rec_range->hdr.kind;
-      U64 sym_header_struct_size = cv_header_struct_size_from_sym_kind(kind);
+      uint64 sym_header_struct_size = cv_header_struct_size_from_sym_kind(kind);
       void *sym_header_struct_base = in->sym->data.str + sym_off_first;
       
       //- rjf: skip bad sizes
@@ -2324,7 +2324,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
         }break;
       }
     }
-    U64 scratch_overkill = sizeof(procedure_frameprocs[0])*(procedure_frameprocs_cap-procedure_frameprocs_count);
+    uint64 scratch_overkill = sizeof(procedure_frameprocs[0])*(procedure_frameprocs_cap-procedure_frameprocs_count);
     arena_pop(scratch.arena, scratch_overkill);
   }
   
@@ -2335,8 +2335,8 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
   {
     RDIM_LocationSet *defrange_target = 0;
     B32 defrange_target_is_param = 0;
-    U64 procedure_num = 0;
-    U64 procedure_base_voff = 0;
+    uint64 procedure_num = 0;
+    uint64 procedure_base_voff = 0;
     CV_RecRange *rec_ranges_first = in->sym->sym_ranges.ranges + in->sym_ranges_first;
     CV_RecRange *rec_ranges_opl   = in->sym->sym_ranges.ranges + in->sym_ranges_opl;
     typedef struct P2R_ScopeNode P2R_ScopeNode;
@@ -2353,8 +2353,8 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
         rec_range += 1)
     {
       //- rjf: rec range -> symbol info range
-      U64 sym_off_first = rec_range->off + 2;
-      U64 sym_off_opl   = rec_range->off + rec_range->hdr.size;
+      uint64 sym_off_first = rec_range->off + 2;
+      uint64 sym_off_opl   = rec_range->off + rec_range->hdr.size;
       
       //- rjf: skip invalid ranges
       if(sym_off_opl > in->sym->data.size || sym_off_first > in->sym->data.size || sym_off_first > sym_off_opl)
@@ -2364,7 +2364,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
       
       //- rjf: unpack symbol info
       CV_SymKind kind = rec_range->hdr.kind;
-      U64 sym_header_struct_size = cv_header_struct_size_from_sym_kind(kind);
+      uint64 sym_header_struct_size = cv_header_struct_size_from_sym_kind(kind);
       void *sym_header_struct_base = in->sym->data.str + sym_off_first;
       void *sym_data_opl = in->sym->data.str + sym_off_opl;
       
@@ -2415,9 +2415,9 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
             COFF_SectionHeader *section = (0 < block32->sec && block32->sec <= in->coff_sections.count) ? &in->coff_sections.v[block32->sec-1] : 0;
             if(section != 0)
             {
-              U64 voff_first = section->voff + block32->off;
-              U64 voff_last = voff_first + block32->len;
-              RDIM_Rng1U64 voff_range = {voff_first, voff_last};
+              uint64 voff_first = section->voff + block32->off;
+              uint64 voff_last = voff_first + block32->len;
+              RDIM_Rng1uint64 voff_range = {voff_first, voff_last};
               rdim_scope_push_voff_range(arena, &sym_scopes, scope, voff_range);
             }
           }
@@ -2440,7 +2440,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           CV_SymData32 *data32 = (CV_SymData32 *)sym_header_struct_base;
           String8 name = str8_cstring_capped(data32+1, sym_data_opl);
           COFF_SectionHeader *section = (0 < data32->sec && data32->sec <= in->coff_sections.count) ? &in->coff_sections.v[data32->sec-1] : 0;
-          U64 voff = (section ? section->voff : 0) + data32->off;
+          uint64 voff = (section ? section->voff : 0) + data32->off;
           
           // rjf: determine if this is an exact duplicate global
           //
@@ -2461,7 +2461,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
             
             // rjf: unpack global's container type
             RDIM_Type *container_type = 0;
-            U64 container_name_opl = p2r_end_of_cplusplus_container_name(name);
+            uint64 container_name_opl = p2r_end_of_cplusplus_container_name(name);
             if(container_name_opl > 2)
             {
               String8 container_name = str8(name.str, container_name_opl - 2);
@@ -2514,7 +2514,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           
           // rjf: unpack proc's container type
           RDIM_Type *container_type = 0;
-          U64 container_name_opl = p2r_end_of_cplusplus_container_name(name);
+          uint64 container_name_opl = p2r_end_of_cplusplus_container_name(name);
           if(container_name_opl > 2 && in->tpi_hash != 0 && in->tpi_leaf != 0)
           {
             String8 container_name = str8(name.str, container_name_opl - 2);
@@ -2541,9 +2541,9 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
             COFF_SectionHeader *section = (0 < proc32->sec && proc32->sec <= in->coff_sections.count) ? &in->coff_sections.v[proc32->sec-1] : 0;
             if(section != 0)
             {
-              U64 voff_first = section->voff + proc32->off;
-              U64 voff_last = voff_first + proc32->len;
-              RDIM_Rng1U64 voff_range = {voff_first, voff_last};
+              uint64 voff_first = section->voff + proc32->off;
+              uint64 voff_last = voff_first + proc32->len;
+              RDIM_Rng1uint64 voff_range = {voff_first, voff_last};
               rdim_scope_push_voff_range(arena, &sym_scopes, procedure_root_scope, voff_range);
               procedure_base_voff = voff_first;
             }
@@ -2553,9 +2553,9 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           String8 link_name = {0};
           if(procedure_root_scope->voff_ranges.min != 0)
           {
-            U64 voff = procedure_root_scope->voff_ranges.min;
-            U64 hash = p2r_hash_from_voff(voff);
-            U64 bucket_idx = hash%in->link_name_map->buckets_count;
+            uint64 voff = procedure_root_scope->voff_ranges.min;
+            uint64 hash = p2r_hash_from_voff(voff);
+            uint64 bucket_idx = hash%in->link_name_map->buckets_count;
             P2R_LinkNameNode *node = 0;
             for(P2R_LinkNameNode *n = in->link_name_map->buckets[bucket_idx]; n != 0; n = n->next)
             {
@@ -2614,7 +2614,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           String8 name = str8_cstring_capped(regrel32+1, sym_data_opl);
           RDIM_Type *type = p2r_type_ptr_from_itype(regrel32->itype);
           CV_Reg cv_reg = regrel32->reg;
-          U32 var_off = regrel32->reg_off;
+          uint32 var_off = regrel32->reg_off;
           
           // rjf: determine if this is a parameter
           RDI_LocalKind local_kind = RDI_LocalKind_Variable;
@@ -2628,7 +2628,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
             }
             if(is_stack_reg)
             {
-              U32 frame_size = 0xFFFFFFFF;
+              uint32 frame_size = 0xFFFFFFFF;
               if(procedure_num != 0 && procedure_frameprocs[procedure_num-1] != 0 && procedure_num <= procedure_frameprocs_count)
               {
                 CV_SymFrameproc *frameproc = procedure_frameprocs[procedure_num-1];
@@ -2678,12 +2678,12 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
             // rjf: get raddbg register code
             RDI_RegCode reg_code = p2r_rdi_reg_code_from_cv_reg_code(in->arch, cv_reg);
             // TODO(rjf): real byte_size & byte_pos from cv_reg goes here
-            U32 byte_size = 8;
-            U32 byte_pos = 0;
+            uint32 byte_size = 8;
+            uint32 byte_pos = 0;
             
             // rjf: set location case
-            RDIM_Location *loc = p2r_location_from_addr_reg_off(arena, in->arch, reg_code, byte_size, byte_pos, (S64)(S32)var_off, extra_indirection_to_value);
-            RDIM_Rng1U64 voff_range = {0, max_U64};
+            RDIM_Location *loc = p2r_location_from_addr_reg_off(arena, in->arch, reg_code, byte_size, byte_pos, (uint64)(uint32)var_off, extra_indirection_to_value);
+            RDIM_Rng1uint64 voff_range = {0, max_uint64};
             rdim_location_set_push_case(arena, &sym_scopes, &local->locset, voff_range, loc);
           }
         }break;
@@ -2695,12 +2695,12 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           // rjf: unpack sym
           CV_SymThread32 *thread32 = (CV_SymThread32 *)sym_header_struct_base;
           String8 name = str8_cstring_capped(thread32+1, sym_data_opl);
-          U32 tls_off = thread32->tls_off;
+          uint32 tls_off = thread32->tls_off;
           RDIM_Type *type = p2r_type_ptr_from_itype(thread32->itype);
           
           // rjf: unpack thread variable's container type
           RDIM_Type *container_type = 0;
-          U64 container_name_opl = p2r_end_of_cplusplus_container_name(name);
+          uint64 container_name_opl = p2r_end_of_cplusplus_container_name(name);
           if(container_name_opl > 2)
           {
             String8 container_name = str8(name.str, container_name_opl - 2);
@@ -2795,7 +2795,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           CV_LvarAddrRange *range = &defrange_register->range;
           COFF_SectionHeader *range_section = (0 < range->sec && range->sec <= in->coff_sections.count) ? &in->coff_sections.v[range->sec-1] : 0;
           CV_LvarAddrGap *gaps = (CV_LvarAddrGap*)(defrange_register+1);
-          U64 gap_count = ((U8*)sym_data_opl - (U8*)gaps) / sizeof(*gaps);
+          uint64 gap_count = ((uint8*)sym_data_opl - (uint8*)gaps) / sizeof(*gaps);
           RDI_RegCode reg_code = p2r_rdi_reg_code_from_cv_reg_code(in->arch, cv_reg);
           
           // rjf: build location
@@ -2834,7 +2834,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           CV_LvarAddrRange *range = &defrange_fprel->range;
           COFF_SectionHeader *range_section = (0 < range->sec && range->sec <= in->coff_sections.count) ? &in->coff_sections.v[range->sec-1] : 0;
           CV_LvarAddrGap *gaps = (CV_LvarAddrGap*)(defrange_fprel + 1);
-          U64 gap_count = ((U8*)sym_data_opl - (U8*)gaps) / sizeof(*gaps);
+          uint64 gap_count = ((uint8*)sym_data_opl - (uint8*)gaps) / sizeof(*gaps);
           
           // rjf: select frame pointer register
           CV_EncodedFramePtrReg encoded_fp_reg = cv_pick_fp_encoding(frameproc, defrange_target_is_param);
@@ -2842,9 +2842,9 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           
           // rjf: build location
           B32 extra_indirection = 0;
-          U32 byte_size = rdi_addr_size_from_arch(in->arch);
-          U32 byte_pos = 0;
-          S64 var_off = (S64)defrange_fprel->off;
+          uint32 byte_size = rdi_addr_size_from_arch(in->arch);
+          uint32 byte_pos = 0;
+          uint64 var_off = (uint64)defrange_fprel->off;
           RDIM_Location *location = p2r_location_from_addr_reg_off(arena, in->arch, fp_register_code, byte_size, byte_pos, var_off, extra_indirection);
           
           // rjf: emit locations over ranges
@@ -2867,7 +2867,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           CV_LvarAddrRange *range = &defrange_subfield_register->range;
           COFF_SectionHeader *range_section = (0 < range->sec && range->sec <= in->coff_sections.count) ? &in->coff_sections.v[range->sec-1] : 0;
           CV_LvarAddrGap *gaps = (CV_LvarAddrGap*)(defrange_subfield_register + 1);
-          U64 gap_count = ((U8*)sym_data_opl - (U8*)gaps) / sizeof(*gaps);
+          uint64 gap_count = ((uint8*)sym_data_opl - (uint8*)gaps) / sizeof(*gaps);
           RDI_RegCode reg_code = p2r_rdi_reg_code_from_cv_reg_code(in->arch, cv_reg);
           
           // rjf: skip "subfield" location info - currently not supported
@@ -2914,13 +2914,13 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           
           // rjf: build location
           B32 extra_indirection = 0;
-          U32 byte_size = rdi_addr_size_from_arch(in->arch);
-          U32 byte_pos = 0;
-          S64 var_off = (S64)defrange_fprel_full_scope->off;
+          uint32 byte_size = rdi_addr_size_from_arch(in->arch);
+          uint32 byte_pos = 0;
+          uint64 var_off = (uint64)defrange_fprel_full_scope->off;
           RDIM_Location *location = p2r_location_from_addr_reg_off(arena, in->arch, fp_register_code, byte_size, byte_pos, var_off, extra_indirection);
           
           // rjf: emit location over ranges
-          RDIM_Rng1U64 voff_range = {0, max_U64};
+          RDIM_Rng1uint64 voff_range = {0, max_uint64};
           rdim_location_set_push_case(arena, &sym_scopes, defrange_target, voff_range, location);
         }break;
         
@@ -2941,14 +2941,14 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           CV_LvarAddrRange *range = &defrange_register_rel->range;
           COFF_SectionHeader *range_section = (0 < range->sec && range->sec <= in->coff_sections.count) ? &in->coff_sections.v[range->sec-1] : 0;
           CV_LvarAddrGap *gaps = (CV_LvarAddrGap*)(defrange_register_rel + 1);
-          U64 gap_count = ((U8*)sym_data_opl - (U8*)gaps) / sizeof(*gaps);
+          uint64 gap_count = ((uint8*)sym_data_opl - (uint8*)gaps) / sizeof(*gaps);
           
           // rjf: build location
           // TODO(rjf): offset & size from cv_reg code
-          U32 byte_size = rdi_addr_size_from_arch(in->arch);
-          U32 byte_pos = 0;
+          uint32 byte_size = rdi_addr_size_from_arch(in->arch);
+          uint32 byte_pos = 0;
           B32 extra_indirection_to_value = 0;
-          S64 var_off = defrange_register_rel->reg_off;
+          uint64 var_off = defrange_register_rel->reg_off;
           RDIM_Location *location = p2r_location_from_addr_reg_off(arena, in->arch, reg_code, byte_size, byte_pos, var_off, extra_indirection_to_value);
           
           // rjf: emit locations over ranges
@@ -2971,7 +2971,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
         {
           // rjf: unpack sym
           CV_SymInlineSite *sym           = (CV_SymInlineSite *)sym_header_struct_base;
-          String8           binary_annots = str8((U8 *)(sym+1), rec_range->hdr.size - sizeof(rec_range->hdr.kind) - sizeof(*sym));
+          String8           binary_annots = str8((uint8 *)(sym+1), rec_range->hdr.size - sizeof(rec_range->hdr.kind) - sizeof(*sym));
           
           // rjf: extract external info about inline site
           String8    name      = str8_zero();
@@ -2981,7 +2981,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           {
             CV_RecRange rec_range = in->ipi_leaf->leaf_ranges.ranges[sym->inlinee - in->ipi_leaf->itype_first];
             String8     rec_data  = str8_substr(in->ipi_leaf->data, rng_1u64(rec_range.off, rec_range.off + rec_range.hdr.size));
-            void       *raw_leaf  = rec_data.str + sizeof(U16);
+            void       *raw_leaf  = rec_data.str + sizeof(uint16);
             
             // rjf: extract method inline info
             if(rec_range.hdr.kind == CV_LeafKind_MFUNC_ID &&
@@ -3015,7 +3015,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           if(inline_site_line_table != 0 && inline_site_line_table->chunk != 0)
           {
             RDIM_LineTableChunkNode *chunk = inline_site_line_table->chunk;
-            U64 current_idx = (U64)(inline_site_line_table - chunk->v);
+            uint64 current_idx = (uint64)(inline_site_line_table - chunk->v);
             if(current_idx+1 < chunk->count)
             {
               inline_site_line_table += 1;
@@ -3065,7 +3065,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
               if(step.flags & CV_C13InlineSiteDecoderStepFlag_EmitRange)
               {
                 // rjf: build new range & add to scope
-                RDIM_Rng1U64 voff_range = { step.range.min, step.range.max };
+                RDIM_Rng1uint64 voff_range = { step.range.min, step.range.max };
                 rdim_scope_push_voff_range(arena, &sym_scopes, scope, voff_range);
               }
               
@@ -3104,13 +3104,13 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           // rjf: unpack
           CV_SymConstant *sym = (CV_SymConstant *)sym_header_struct_base;
           RDIM_Type *type = p2r_type_ptr_from_itype(sym->itype);
-          U8 *val_ptr = (U8 *)(sym+1);
+          uint8 *val_ptr = (uint8 *)(sym+1);
           CV_NumericParsed val = cv_numeric_from_data_range(val_ptr, sym_data_opl);
-          U64 val64 = cv_u64_from_numeric(&val);
-          U8 *name_ptr = val_ptr + val.encoded_size;
+          uint64 val64 = cv_u64_from_numeric(&val);
+          uint8 *name_ptr = val_ptr + val.encoded_size;
           String8 name = str8_cstring_capped(name_ptr, sym_data_opl);
           String8 val_data = str8_struct(&val64);
-          U64 container_name_opl = 0;
+          uint64 container_name_opl = 0;
           if(type != 0)
           {
             container_name_opl = p2r_end_of_cplusplus_container_name(type->name);
@@ -3335,7 +3335,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   //- rjf: do compilation unit parse
   //
   PDB_CompUnitArray *comp_units = 0;
-  U64 comp_unit_count = 0;
+  uint64 comp_unit_count = 0;
   {
     P2R_CompUnitParseIn comp_unit_parse_in = {dbi ? pdb_data_from_dbi_range(dbi, PDB_DbiRange_ModuleInfo) : str8_zero()};
     ASYNC_Task *comp_unit_parse_task = !dbi ? 0 : async_task_launch(scratch.arena, p2r_comp_unit_parse_work, .input = &comp_unit_parse_in);
@@ -3347,7 +3347,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   //- rjf: do compilation unit contributions parse
   //
   PDB_CompUnitContributionArray *comp_unit_contributions = 0;
-  U64 comp_unit_contribution_count = 0;
+  uint64 comp_unit_contribution_count = 0;
   {
     P2R_CompUnitContributionsParseIn comp_unit_contributions_parse_in = {dbi ? pdb_data_from_dbi_range(dbi, PDB_DbiRange_SecCon) : str8_zero(), coff_sections};
     ASYNC_Task *comp_unit_contributions_parse_task = !dbi ? 0 : async_task_launch(scratch.arena, p2r_comp_unit_contributions_parse_work, .input = &comp_unit_contributions_parse_in);
@@ -3358,7 +3358,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   //////////////////////////////////////////////////////////////
   //- rjf: do compilation unit contributions bucket
   //
-  RDIM_Rng1U64ChunkList *unit_ranges = 0;
+  RDIM_Rng1uint64ChunkList *unit_ranges = 0;
   if(comp_unit_contributions)
   {
     P2R_CompUnitContributionsBucketIn in = {comp_unit_count, *comp_unit_contributions};
@@ -3379,7 +3379,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
     ASYNC_Task **sym_tasks = push_array(scratch.arena, ASYNC_Task *, comp_unit_count);
     P2R_C13StreamParseIn *c13_tasks_inputs = push_array(scratch.arena, P2R_C13StreamParseIn, comp_unit_count);
     ASYNC_Task **c13_tasks = push_array(scratch.arena, ASYNC_Task *, comp_unit_count);
-    for(U64 idx = 0; idx < comp_unit_count; idx += 1)
+    for(uint64 idx = 0; idx < comp_unit_count; idx += 1)
     {
       PDB_CompUnit *unit = comp_units->units[idx];
       sym_tasks_inputs[idx].data = pdb_data_from_unit_range(msf, unit, PDB_DbiCompUnitRange_Symbols);
@@ -3391,7 +3391,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
     }
     
     //- rjf: join tasks
-    for(U64 idx = 0; idx < comp_unit_count; idx += 1)
+    for(uint64 idx = 0; idx < comp_unit_count; idx += 1)
     {
       sym_for_unit[idx] = async_task_join_struct(sym_tasks[idx], CV_SymParsed);
       c13_for_unit[idx] = async_task_join_struct(c13_tasks[idx], CV_C13Parsed);
@@ -3401,13 +3401,13 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   //////////////////////////////////////////////////////////////
   //- rjf: calculate EXE's max voff
   //
-  U64 exe_voff_max = 0;
+  uint64 exe_voff_max = 0;
   {
     COFF_SectionHeader *coff_sec_ptr = coff_sections.v;
     COFF_SectionHeader *coff_ptr_opl = coff_sec_ptr + coff_sections.count;
     for(;coff_sec_ptr < coff_ptr_opl; coff_sec_ptr += 1)
     {
-      U64 sec_voff_max = coff_sec_ptr->voff + coff_sec_ptr->vsize;
+      uint64 sec_voff_max = coff_sec_ptr->voff + coff_sec_ptr->vsize;
       exe_voff_max = Max(exe_voff_max, sec_voff_max);
     }
   }
@@ -3416,7 +3416,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   //- rjf: determine architecture
   //
   RDI_Arch arch = RDI_Arch_NULL;
-  U64 arch_addr_size = 0;
+  uint64 arch_addr_size = 0;
   {
     // TODO(rjf): in some cases, the first compilation unit has a zero
     // architecture, as it's sometimes used as a "nil" unit. this causes bugs
@@ -3430,7 +3430,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
     // case, we'll need to not only have this be a top-level "contextual" piece
     // of info, but to use the appropriate compilation unit's architecture when
     // possible. assuming, of course, that we care about supporting that case.
-    for(U64 comp_unit_idx = 0; comp_unit_idx < comp_unit_count; comp_unit_idx += 1)
+    for(uint64 comp_unit_idx = 0; comp_unit_idx < comp_unit_count; comp_unit_idx += 1)
     {
       if(sym_for_unit[comp_unit_idx] != 0)
       {
@@ -3447,7 +3447,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   //////////////////////////////////////////////////////////////
   //- rjf: join EXE hash
   //
-  U64 exe_hash = *async_task_join_struct(exe_hash_task, U64);
+  uint64 exe_hash = *async_task_join_struct(exe_hash_task, uint64);
   
   //////////////////////////////////////////////////////////////
   //- rjf: produce top-level-info
@@ -3493,7 +3493,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   P2R_SrcFileMap src_file_map = {0};
   ProfScope("gather all source file paths; build nodes")
   {
-    U64 tasks_count = comp_unit_count;
+    uint64 tasks_count = comp_unit_count;
     P2R_GatherUnitSrcFilesIn *tasks_inputs = push_array(scratch.arena, P2R_GatherUnitSrcFilesIn, tasks_count);
     P2R_GatherUnitSrcFilesOut *tasks_outputs = push_array(scratch.arena, P2R_GatherUnitSrcFilesOut, tasks_count);
     ASYNC_Task **tasks = push_array(scratch.arena, ASYNC_Task *, tasks_count);
@@ -3506,7 +3506,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
       tasks_inputs[idx].comp_unit_c13s = c13_for_unit[idx];
       tasks[idx] = async_task_launch(scratch.arena, p2r_gather_unit_src_file_work, .input = &tasks_inputs[idx]);
     }
-    U64 total_path_count = 0;
+    uint64 total_path_count = 0;
     for EachIndex(idx, tasks_count)
     {
       tasks_outputs[idx] = *async_task_join_struct(tasks[idx], P2R_GatherUnitSrcFilesOut);
@@ -3519,8 +3519,8 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
       for EachIndex(path_idx, tasks_outputs[idx].src_file_paths.count)
       {
         String8 file_path_normalized = tasks_outputs[idx].src_file_paths.v[path_idx];
-        U64 file_path_normalized_hash = rdi_hash(file_path_normalized.str, file_path_normalized.size);
-        U64 src_file_slot = file_path_normalized_hash%src_file_map.slots_count;
+        uint64 file_path_normalized_hash = rdi_hash(file_path_normalized.str, file_path_normalized.size);
+        uint64 src_file_slot = file_path_normalized_hash%src_file_map.slots_count;
         P2R_SrcFileNode *src_file_node = 0;
         for(P2R_SrcFileNode *n = src_file_map.slots[src_file_slot]; n != 0; n = n->next)
         {
@@ -3544,7 +3544,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   //////////////////////////////////////////////////////////////
   //- rjf: kick off unit conversion tasks
   //
-  U64 unit_convert_tasks_count = comp_unit_count;
+  uint64 unit_convert_tasks_count = comp_unit_count;
   P2R_UnitConvertIn *unit_convert_tasks_ins = push_array(scratch.arena, P2R_UnitConvertIn, unit_convert_tasks_count);
   ASYNC_Task **unit_convert_tasks = push_array(scratch.arena, ASYNC_Task *, unit_convert_tasks_count);
   for EachIndex(idx, unit_convert_tasks_count)
@@ -3569,15 +3569,15 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   //////////////////////////////
   //- rjf: predict symbol count
   //
-  U64 symbol_count_prediction = 0;
+  uint64 symbol_count_prediction = 0;
   ProfScope("predict symbol count")
   {
-    U64 rec_range_count = 0;
+    uint64 rec_range_count = 0;
     if(sym != 0)
     {
       rec_range_count += sym->sym_ranges.count;
     }
-    for(U64 comp_unit_idx = 0; comp_unit_idx < comp_unit_count; comp_unit_idx += 1)
+    for(uint64 comp_unit_idx = 0; comp_unit_idx < comp_unit_count; comp_unit_idx += 1)
     {
       CV_SymParsed *unit_sym = sym_for_unit[comp_unit_idx];
       rec_range_count += unit_sym->sym_ranges.count;
@@ -3636,14 +3636,14 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
     //- rjf: allocate forward resolution map
     itype_first = tpi_leaf->itype_first;
     itype_opl = tpi_leaf->itype_opl;
-    itype_fwd_map = push_array(arena, CV_TypeId, (U64)itype_opl);
+    itype_fwd_map = push_array(arena, CV_TypeId, (uint64)itype_opl);
     
     //- rjf: kick off tasks to fill forward resolution map
-    U64 task_size_itypes = 1024;
-    U64 tasks_count = ((U64)itype_opl+(task_size_itypes-1))/task_size_itypes;
+    uint64 task_size_itypes = 1024;
+    uint64 tasks_count = ((uint64)itype_opl+(task_size_itypes-1))/task_size_itypes;
     P2R_ITypeFwdMapFillIn *tasks_inputs = push_array(scratch.arena, P2R_ITypeFwdMapFillIn, tasks_count);
     ASYNC_Task **tasks = push_array(scratch.arena, ASYNC_Task *, tasks_count);
-    for(U64 idx = 0; idx < tasks_count; idx += 1)
+    for(uint64 idx = 0; idx < tasks_count; idx += 1)
     {
       tasks_inputs[idx].tpi_hash      = tpi_hash;
       tasks_inputs[idx].tpi_leaf      = tpi_leaf;
@@ -3655,7 +3655,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
     }
     
     //- rjf: join all tasks
-    for(U64 idx = 0; idx < tasks_count; idx += 1)
+    for(uint64 idx = 0; idx < tasks_count; idx += 1)
     {
       async_task_join(tasks[idx]);
     }
@@ -3675,14 +3675,14 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   if(tpi_leaf != 0 && in->subset_flags & RDIM_SubsetFlag_Types) ProfScope("types pass 2: produce per-itype itype chain (for producing dependent types first)")
   {
     //- rjf: allocate itype chain table
-    itype_chains = push_array(arena, P2R_TypeIdChain *, (U64)itype_opl);
+    itype_chains = push_array(arena, P2R_TypeIdChain *, (uint64)itype_opl);
     
     //- rjf: kick off tasks to fill itype chain table
-    U64 task_size_itypes = 1024;
-    U64 tasks_count = ((U64)itype_opl+(task_size_itypes-1))/task_size_itypes;
+    uint64 task_size_itypes = 1024;
+    uint64 tasks_count = ((uint64)itype_opl+(task_size_itypes-1))/task_size_itypes;
     P2R_ITypeChainBuildIn *tasks_inputs = push_array(scratch.arena, P2R_ITypeChainBuildIn, tasks_count);
     ASYNC_Task **tasks = push_array(scratch.arena, ASYNC_Task *, tasks_count);
-    for(U64 idx = 0; idx < tasks_count; idx += 1)
+    for(uint64 idx = 0; idx < tasks_count; idx += 1)
     {
       tasks_inputs[idx].tpi_leaf      = tpi_leaf;
       tasks_inputs[idx].itype_first   = idx*task_size_itypes;
@@ -3694,7 +3694,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
     }
     
     //- rjf: join all tasks
-    for(U64 idx = 0; idx < tasks_count; idx += 1)
+    for(uint64 idx = 0; idx < tasks_count; idx += 1)
     {
       async_task_join(tasks[idx]);
     }
@@ -3712,7 +3712,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
 #define p2r_type_ptr_from_itype(itype) ((itype_type_ptrs && (itype) < itype_opl) ? (itype_type_ptrs[(itype_fwd_map[(itype)] ? itype_fwd_map[(itype)] : (itype))]) : 0)
   if(in->subset_flags & RDIM_SubsetFlag_Types) ProfScope("types pass 3: construct all root/stub types from TPI")
   {
-    itype_type_ptrs = push_array(arena, RDIM_Type *, (U64)(itype_opl));
+    itype_type_ptrs = push_array(arena, RDIM_Type *, (uint64)(itype_opl));
     
     //////////////////////////
     //- basic type aliases
@@ -3739,36 +3739,36 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
         { "short"                , short_type              , CV_BasicType_SHORT      },
         { "long"                 , long_type               , CV_BasicType_LONG       },
         { "long long"            , long_long_type          , CV_BasicType_QUAD       },
-        { "__int128"             , RDI_TypeKind_S128       , CV_BasicType_OCT        }, // Clang type
+        { "__int128"             , RDI_TypeKind_uint128       , CV_BasicType_OCT        }, // Clang type
         { "unsigned char"        , RDI_TypeKind_UChar8     , CV_BasicType_UCHAR      },
         { "unsigned short"       , ushort_type             , CV_BasicType_USHORT     },
         { "unsigned long"        , ulong_type              , CV_BasicType_ULONG      },
         { "unsigned long long"   , ulong_long_type         , CV_BasicType_UQUAD      },
-        { "__uint128"            , RDI_TypeKind_U128       , CV_BasicType_UOCT       }, // Clang type
-        { "bool"                 , RDI_TypeKind_S8         , CV_BasicType_BOOL8      },
-        { "__bool16"             , RDI_TypeKind_S16        , CV_BasicType_BOOL16     }, // not real C type
-        { "__bool32"             , RDI_TypeKind_S32        , CV_BasicType_BOOL32     }, // not real C type
-        { "float"                , RDI_TypeKind_F32        , CV_BasicType_FLOAT32    },
-        { "double"               , RDI_TypeKind_F64        , CV_BasicType_FLOAT64    },
+        { "__uint128"            , RDI_TypeKind_uint128       , CV_BasicType_UOCT       }, // Clang type
+        { "bool"                 , RDI_TypeKind_uint8         , CV_BasicType_BOOL8      },
+        { "__bool16"             , RDI_TypeKind_uint16        , CV_BasicType_BOOL16     }, // not real C type
+        { "__bool32"             , RDI_TypeKind_uint32        , CV_BasicType_BOOL32     }, // not real C type
+        { "float"                , RDI_TypeKind_float        , CV_BasicType_FLOAT32    },
+        { "double"               , RDI_TypeKind_double        , CV_BasicType_FLOAT64    },
         { "long double"          , RDI_TypeKind_F80        , CV_BasicType_FLOAT80    },
         { "__float128"           , RDI_TypeKind_F128       , CV_BasicType_FLOAT128   }, // Clang type
         { "__float48"            , RDI_TypeKind_F48        , CV_BasicType_FLOAT48    }, // not real C type
-        { "__float32pp"          , RDI_TypeKind_F32PP      , CV_BasicType_FLOAT32PP  }, // not real C type
+        { "__float32pp"          , RDI_TypeKind_floatPP      , CV_BasicType_FLOAT32PP  }, // not real C type
         { "__float16"            , RDI_TypeKind_F16        , CV_BasicType_FLOAT16    },
-        { "_Complex float"       , RDI_TypeKind_ComplexF32 , CV_BasicType_COMPLEX32  },
-        { "_Complex double"      , RDI_TypeKind_ComplexF64 , CV_BasicType_COMPLEX64  },
+        { "_Complex float"       , RDI_TypeKind_Complexfloat , CV_BasicType_COMPLEX32  },
+        { "_Complex double"      , RDI_TypeKind_Complexdouble , CV_BasicType_COMPLEX64  },
         { "_Complex long double" , RDI_TypeKind_ComplexF80 , CV_BasicType_COMPLEX80  },
         { "_Complex __float128"  , RDI_TypeKind_ComplexF128, CV_BasicType_COMPLEX128 },
-        { "__int8"               , RDI_TypeKind_S8         , CV_BasicType_INT8       },
-        { "__uint8"              , RDI_TypeKind_U8         , CV_BasicType_UINT8      },
-        { "__int16"              , RDI_TypeKind_S16        , CV_BasicType_INT16      },
-        { "__uint16"             , RDI_TypeKind_U16        , CV_BasicType_UINT16     },
-        { "int32"                , RDI_TypeKind_S32        , CV_BasicType_INT32      },
-        { "uint32"               , RDI_TypeKind_U32        , CV_BasicType_UINT32     },
-        { "__int64"              , RDI_TypeKind_S64        , CV_BasicType_INT64      },
-        { "__uint64"             , RDI_TypeKind_U64        , CV_BasicType_UINT64     },
-        { "__int128"             , RDI_TypeKind_S128       , CV_BasicType_INT128     },
-        { "__uint128"            , RDI_TypeKind_U128       , CV_BasicType_UINT128    },
+        { "__int8"               , RDI_TypeKind_uint8         , CV_BasicType_INT8       },
+        { "__uint8"              , RDI_TypeKind_uint8         , CV_BasicType_UINT8      },
+        { "__int16"              , RDI_TypeKind_uint16        , CV_BasicType_INT16      },
+        { "__uint16"             , RDI_TypeKind_uint16        , CV_BasicType_UINT16     },
+        { "int32"                , RDI_TypeKind_uint32        , CV_BasicType_INT32      },
+        { "uint32"               , RDI_TypeKind_uint32        , CV_BasicType_UINT32     },
+        { "__int64"              , RDI_TypeKind_uint64        , CV_BasicType_INT64      },
+        { "__uint64"             , RDI_TypeKind_uint64        , CV_BasicType_UINT64     },
+        { "__int128"             , RDI_TypeKind_uint128       , CV_BasicType_INT128     },
+        { "__uint128"            , RDI_TypeKind_uint128       , CV_BasicType_UINT128    },
         { "char"                 , RDI_TypeKind_Char8      , CV_BasicType_RCHAR      }, // always ASCII
         { "wchar_t"              , RDI_TypeKind_UChar16    , CV_BasicType_WCHAR      }, // on windows always UTF-16
         { "char8_t"              , RDI_TypeKind_Char8      , CV_BasicType_CHAR8      }, // always UTF-8
@@ -3781,7 +3781,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
       itype_type_ptrs[CV_BasicType_HRESULT] = rdim_builtin_type_from_kind(all_types, RDI_TypeKind_HResult);
       itype_type_ptrs[CV_BasicType_VOID]    = rdim_builtin_type_from_kind(all_types, RDI_TypeKind_Void);
       
-      for(U64 i = 0; i < ArrayCount(table); i += 1)
+      for(uint64 i = 0; i < ArrayCount(table); i += 1)
       {
         RDIM_Type *builtin_alias   = rdim_type_chunk_list_push(arena, &all_types, tpi_leaf->itype_opl);
         builtin_alias->kind        = RDI_TypeKind_Alias;
@@ -3835,8 +3835,8 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
           if(basic_type == 0)
           {
             RDI_TypeKind type_kind = p2r_rdi_type_kind_from_cv_basic_type(cv_basic_type_code);
-            U32 byte_size = rdi_size_from_basic_type_kind(type_kind);
-            basic_type = dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
+            uint32 byte_size = rdi_size_from_basic_type_kind(type_kind);
+            basic_type = dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
             if(byte_size == 0xffffffff)
             {
               byte_size = arch_addr_size;
@@ -3849,7 +3849,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
           // rjf: nonzero ptr kind -> form ptr type to basic tpye
           if(cv_basic_ptr_kind != 0)
           {
-            dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
+            dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
             dst_type->kind        = RDI_TypeKind_Ptr;
             dst_type->byte_size   = arch_addr_size;
             dst_type->direct_type = basic_type;
@@ -3867,13 +3867,13 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
           RDIM_Type *dst_type = 0;
           CV_RecRange *range = &tpi_leaf->leaf_ranges.ranges[itype-itype_first];
           CV_LeafKind kind = range->hdr.kind;
-          U64 header_struct_size = cv_header_struct_size_from_leaf_kind(kind);
+          uint64 header_struct_size = cv_header_struct_size_from_leaf_kind(kind);
           if(range->off+range->hdr.size <= tpi_leaf->data.size &&
              range->off+2+header_struct_size <= tpi_leaf->data.size &&
              range->hdr.size >= 2)
           {
-            U8 *itype_leaf_first = tpi_leaf->data.str + range->off+2;
-            U8 *itype_leaf_opl   = itype_leaf_first + range->hdr.size-2;
+            uint8 *itype_leaf_first = tpi_leaf->data.str + range->off+2;
+            uint8 *itype_leaf_opl   = itype_leaf_first + range->hdr.size-2;
             switch(kind)
             {
               //- rjf: MODIFIER
@@ -3894,7 +3894,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 }
                 else
                 {
-                  dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
+                  dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
                   dst_type->kind        = RDI_TypeKind_Modifier;
                   dst_type->flags       = flags;
                   dst_type->direct_type = p2r_type_ptr_from_itype(lf->itype);
@@ -3912,7 +3912,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 RDIM_Type *direct_type = p2r_type_ptr_from_itype(lf->itype);
                 CV_PointerKind ptr_kind = CV_PointerAttribs_Extract_Kind(lf->attribs);
                 CV_PointerMode ptr_mode = CV_PointerAttribs_Extract_Mode(lf->attribs);
-                U32            ptr_size = CV_PointerAttribs_Extract_Size(lf->attribs);
+                uint32            ptr_size = CV_PointerAttribs_Extract_Size(lf->attribs);
                 
                 // rjf: cv -> rdi modifier flags
                 RDI_TypeModifierFlags modifier_flags = 0;
@@ -3944,8 +3944,8 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 // rjf: fill type
                 if(modifier_flags != 0)
                 {
-                  RDIM_Type *pointer_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
-                  dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
+                  RDIM_Type *pointer_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
+                  dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
                   dst_type->kind             = RDI_TypeKind_Modifier;
                   dst_type->flags            = modifier_flags;
                   dst_type->direct_type      = pointer_type;
@@ -3956,7 +3956,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 }
                 else
                 {
-                  dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
+                  dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
                   dst_type->kind        = type_kind;
                   dst_type->byte_size   = arch_addr_size;
                   dst_type->direct_type = direct_type;
@@ -3973,7 +3973,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 RDIM_Type *ret_type = p2r_type_ptr_from_itype(lf->ret_itype);
                 
                 // rjf: fill type's basics
-                dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
+                dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
                 dst_type->kind        = RDI_TypeKind_Function;
                 dst_type->byte_size   = arch_addr_size;
                 dst_type->direct_type = ret_type;
@@ -3986,8 +3986,8 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 {
                   break;
                 }
-                U8 *arglist_first = tpi_leaf->data.str + arglist_range->off + 2;
-                U8 *arglist_opl   = arglist_first+arglist_range->hdr.size-2;
+                uint8 *arglist_first = tpi_leaf->data.str + arglist_range->off + 2;
+                uint8 *arglist_opl   = arglist_first+arglist_range->hdr.size-2;
                 if(arglist_first + sizeof(CV_LeafArgList) > arglist_opl)
                 {
                   break;
@@ -3996,11 +3996,11 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 // rjf: unpack arglist info
                 CV_LeafArgList *arglist = (CV_LeafArgList*)arglist_first;
                 CV_TypeId *arglist_itypes_base = (CV_TypeId *)(arglist+1);
-                U32 arglist_itypes_count = arglist->count;
+                uint32 arglist_itypes_count = arglist->count;
                 
                 // rjf: build param type array
                 RDIM_Type **params = push_array(arena, RDIM_Type *, arglist_itypes_count);
-                for(U32 idx = 0; idx < arglist_itypes_count; idx += 1)
+                for(uint32 idx = 0; idx < arglist_itypes_count; idx += 1)
                 {
                   params[idx] = p2r_type_ptr_from_itype(arglist_itypes_base[idx]);
                 }
@@ -4021,7 +4021,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 RDIM_Type *ret_type  = p2r_type_ptr_from_itype(lf->ret_itype);
                 
                 // rjf: fill type
-                dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
+                dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
                 dst_type->kind        = (lf->this_itype != 0) ? RDI_TypeKind_Method : RDI_TypeKind_Function;
                 dst_type->byte_size   = arch_addr_size;
                 dst_type->direct_type = ret_type;
@@ -4034,8 +4034,8 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 {
                   break;
                 }
-                U8 *arglist_first = tpi_leaf->data.str + arglist_range->off + 2;
-                U8 *arglist_opl   = arglist_first+arglist_range->hdr.size-2;
+                uint8 *arglist_first = tpi_leaf->data.str + arglist_range->off + 2;
+                uint8 *arglist_opl   = arglist_first+arglist_range->hdr.size-2;
                 if(arglist_first + sizeof(CV_LeafArgList) > arglist_opl)
                 {
                   break;
@@ -4044,16 +4044,16 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 // rjf: unpack arglist info
                 CV_LeafArgList *arglist = (CV_LeafArgList*)arglist_first;
                 CV_TypeId *arglist_itypes_base = (CV_TypeId *)(arglist+1);
-                U32 arglist_itypes_count = arglist->count;
+                uint32 arglist_itypes_count = arglist->count;
                 
                 // rjf: build param type array
-                U64 num_this_extras = 1;
+                uint64 num_this_extras = 1;
                 if(lf->this_itype == 0)
                 {
                   num_this_extras = 0;
                 }
                 RDIM_Type **params = push_array(arena, RDIM_Type *, arglist_itypes_count+num_this_extras);
-                for(U32 idx = 0; idx < arglist_itypes_count; idx += 1)
+                for(uint32 idx = 0; idx < arglist_itypes_count; idx += 1)
                 {
                   params[idx+num_this_extras] = p2r_type_ptr_from_itype(arglist_itypes_base[idx]);
                 }
@@ -4075,7 +4075,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 RDIM_Type *direct_type = p2r_type_ptr_from_itype(lf->itype);
                 
                 // rjf: fill type
-                dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
+                dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
                 dst_type->kind        = RDI_TypeKind_Bitfield;
                 dst_type->off         = lf->pos;
                 dst_type->count       = lf->len;
@@ -4089,12 +4089,12 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 // rjf: unpack leaf
                 CV_LeafArray *lf = (CV_LeafArray *)itype_leaf_first;
                 RDIM_Type *direct_type = p2r_type_ptr_from_itype(lf->entry_itype);
-                U8 *numeric_ptr = (U8*)(lf + 1);
+                uint8 *numeric_ptr = (uint8*)(lf + 1);
                 CV_NumericParsed array_count = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
-                U64 full_size = cv_u64_from_numeric(&array_count);
+                uint64 full_size = cv_u64_from_numeric(&array_count);
                 
                 // rjf: fill type
-                dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
+                dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
                 dst_type->kind        = RDI_TypeKind_Array;
                 dst_type->direct_type = direct_type;
                 dst_type->byte_size   = full_size;
@@ -4109,14 +4109,14 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 
                 // rjf: unpack leaf
                 CV_LeafStruct *lf = (CV_LeafStruct *)itype_leaf_first;
-                U8 *numeric_ptr = (U8*)(lf + 1);
+                uint8 *numeric_ptr = (uint8*)(lf + 1);
                 CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
-                U64 size_u64 = cv_u64_from_numeric(&size);
-                U8 *name_ptr = numeric_ptr + size.encoded_size;
+                uint64 size_u64 = cv_u64_from_numeric(&size);
+                uint8 *name_ptr = numeric_ptr + size.encoded_size;
                 String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
                 
                 // rjf: fill type
-                dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
+                dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
                 if(lf->props & CV_TypeProp_FwdRef)
                 {
                   dst_type->kind = (kind == CV_LeafKind_CLASS ? RDI_TypeKind_IncompleteClass : RDI_TypeKind_IncompleteStruct);
@@ -4125,7 +4125,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 else
                 {
                   dst_type->kind      = (kind == CV_LeafKind_CLASS ? RDI_TypeKind_Class : RDI_TypeKind_Struct);
-                  dst_type->byte_size = (U32)size_u64;
+                  dst_type->byte_size = (uint32)size_u64;
                   dst_type->name      = name;
                 }
               }break;
@@ -4138,14 +4138,14 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 
                 // rjf: unpack leaf
                 CV_LeafStruct2 *lf = (CV_LeafStruct2 *)itype_leaf_first;
-                U8 *numeric_ptr = (U8*)(lf + 1);
+                uint8 *numeric_ptr = (uint8*)(lf + 1);
                 CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
-                U64 size_u64 = cv_u64_from_numeric(&size);
-                U8 *name_ptr = numeric_ptr + size.encoded_size;
+                uint64 size_u64 = cv_u64_from_numeric(&size);
+                uint8 *name_ptr = numeric_ptr + size.encoded_size;
                 String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
                 
                 // rjf: fill type
-                dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
+                dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
                 if(lf->props & CV_TypeProp_FwdRef)
                 {
                   dst_type->kind = (kind == CV_LeafKind_CLASS2 ? RDI_TypeKind_IncompleteClass : RDI_TypeKind_IncompleteStruct);
@@ -4154,7 +4154,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 else
                 {
                   dst_type->kind      = (kind == CV_LeafKind_CLASS2 ? RDI_TypeKind_Class : RDI_TypeKind_Struct);
-                  dst_type->byte_size = (U32)size_u64;
+                  dst_type->byte_size = (uint32)size_u64;
                   dst_type->name      = name;
                 }
               }break;
@@ -4166,14 +4166,14 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 
                 // rjf: unpack leaf
                 CV_LeafUnion *lf = (CV_LeafUnion *)itype_leaf_first;
-                U8 *numeric_ptr = (U8*)(lf + 1);
+                uint8 *numeric_ptr = (uint8*)(lf + 1);
                 CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
-                U64 size_u64 = cv_u64_from_numeric(&size);
-                U8 *name_ptr = numeric_ptr + size.encoded_size;
+                uint64 size_u64 = cv_u64_from_numeric(&size);
+                uint8 *name_ptr = numeric_ptr + size.encoded_size;
                 String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
                 
                 // rjf: fill type
-                dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
+                dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
                 if(lf->props & CV_TypeProp_FwdRef)
                 {
                   dst_type->kind = RDI_TypeKind_IncompleteUnion;
@@ -4182,7 +4182,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 else
                 {
                   dst_type->kind      = RDI_TypeKind_Union;
-                  dst_type->byte_size = (U32)size_u64;
+                  dst_type->byte_size = (uint32)size_u64;
                   dst_type->name      = name;
                 }
               }break;
@@ -4195,11 +4195,11 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 // rjf: unpack leaf
                 CV_LeafEnum *lf = (CV_LeafEnum *)itype_leaf_first;
                 RDIM_Type *direct_type = p2r_type_ptr_from_itype(lf->base_itype);
-                U8 *name_ptr = (U8 *)(lf + 1);
+                uint8 *name_ptr = (uint8 *)(lf + 1);
                 String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
                 
                 // rjf: fill type
-                dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
+                dst_type = rdim_type_chunk_list_push(arena, &all_types, (uint64)itype_opl);
                 if(lf->props & CV_TypeProp_FwdRef)
                 {
                   dst_type->kind = RDI_TypeKind_IncompleteEnum;
@@ -4226,13 +4226,13 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   //////////////////////////////////////////////////////////////
   //- rjf: types pass 4: kick off UDT build
   //
-  U64 udt_task_size_itypes = 4096;
-  U64 udt_tasks_count = ((U64)itype_opl+(udt_task_size_itypes-1))/udt_task_size_itypes;
+  uint64 udt_task_size_itypes = 4096;
+  uint64 udt_tasks_count = ((uint64)itype_opl+(udt_task_size_itypes-1))/udt_task_size_itypes;
   P2R_UDTConvertIn *udt_tasks_inputs = push_array(scratch.arena, P2R_UDTConvertIn, udt_tasks_count);
   ASYNC_Task **udt_tasks = push_array(scratch.arena, ASYNC_Task *, udt_tasks_count);
   if(in->subset_flags & RDIM_SubsetFlag_UDTs) ProfScope("types pass 4: kick off UDT build")
   {
-    for(U64 idx = 0; idx < udt_tasks_count; idx += 1)
+    for(uint64 idx = 0; idx < udt_tasks_count; idx += 1)
     {
       udt_tasks_inputs[idx].tpi_leaf        = tpi_leaf;
       udt_tasks_inputs[idx].itype_first     = idx*udt_task_size_itypes;
@@ -4296,14 +4296,14 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
     ////////////////////////////
     //- rjf: kick off all symbol conversion tasks
     //
-    U64 global_stream_subdivision_tasks_count = sym ? (sym->sym_ranges.count+16383)/16384 : 0;
-    U64 global_stream_syms_per_task = sym ? sym->sym_ranges.count/global_stream_subdivision_tasks_count : 0;
-    U64 tasks_count = comp_unit_count + global_stream_subdivision_tasks_count;
+    uint64 global_stream_subdivision_tasks_count = sym ? (sym->sym_ranges.count+16383)/16384 : 0;
+    uint64 global_stream_syms_per_task = sym ? sym->sym_ranges.count/global_stream_subdivision_tasks_count : 0;
+    uint64 tasks_count = comp_unit_count + global_stream_subdivision_tasks_count;
     P2R_SymbolStreamConvertIn *tasks_inputs = push_array(scratch.arena, P2R_SymbolStreamConvertIn, tasks_count);
     ASYNC_Task **tasks = push_array(scratch.arena, ASYNC_Task *, tasks_count);
     ProfScope("kick off all symbol conversion tasks")
     {
-      for(U64 idx = 0; idx < tasks_count; idx += 1)
+      for(uint64 idx = 0; idx < tasks_count; idx += 1)
       {
         tasks_inputs[idx].arch                         = arch;
         tasks_inputs[idx].coff_sections                = coff_sections;
@@ -4337,7 +4337,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
     //
     ProfScope("join tasks, merge with top-level collections")
     {
-      for(U64 idx = 0; idx < tasks_count; idx += 1)
+      for(uint64 idx = 0; idx < tasks_count; idx += 1)
       {
         P2R_SymbolStreamConvertOut *out = async_task_join_struct(tasks[idx], P2R_SymbolStreamConvertOut);
         rdim_symbol_chunk_list_concat_in_place(&all_procedures,       &out->procedures);
@@ -4355,7 +4355,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   //- rjf: types pass 5: join UDT build tasks
   //
   RDIM_UDTChunkList all_udts = {0};
-  for(U64 idx = 0; idx < udt_tasks_count; idx += 1)
+  for(uint64 idx = 0; idx < udt_tasks_count; idx += 1)
   {
     RDIM_UDTChunkList *udts = async_task_join_struct(udt_tasks[idx], RDIM_UDTChunkList);
     rdim_udt_chunk_list_concat_in_place(&all_udts, udts);

@@ -13,8 +13,8 @@ str8_lit_comp("COFF (OBJ)"),
 str8_lit_comp("COFF (Big OBJ)"),
 str8_lit_comp("COFF (Archive)"),
 str8_lit_comp("COFF (Thin Archive)"),
-str8_lit_comp("ELF32"),
-str8_lit_comp("ELF64"),
+str8_lit_comp("ELfloat"),
+str8_lit_comp("ELdouble"),
 str8_lit_comp("RDI"),
 };
 

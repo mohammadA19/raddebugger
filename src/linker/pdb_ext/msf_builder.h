@@ -14,7 +14,7 @@
 
 typedef struct MSF_PageNumberArray
 {
-  U64             count;
+  uint64             count;
   MSF_PageNumber *v;
 } MSF_PageNumberArray;
 
@@ -59,7 +59,7 @@ typedef struct MSF_PageDataNode
 {
   struct MSF_PageDataNode *next;
   struct MSF_PageDataNode *prev;
-  U8                      *data;
+  uint8                      *data;
 } MSF_PageDataNode;
 
 typedef struct MSF_PageDataList
@@ -121,7 +121,7 @@ typedef struct
   MSF_PageList     page_list;
   MSF_UInt         stream_pos;
   String8          data;
-  Rng1U64         *range_arr;
+  Rng1uint64         *range_arr;
 } MSF_WriteTask;
 
 ////////////////////////////////
@@ -130,9 +130,9 @@ internal MSF_Context *    msf_alloc(MSF_UInt page_size, MSF_UInt active_fpm);
 internal MSF_Error        msf_open(String8 data, MSF_Context **msf_out);
 internal void             msf_release(MSF_Context **msf_ptr);
 internal MSF_Error        msf_build(MSF_Context *msf);
-internal U64              msf_get_save_size(MSF_Context *msf);
+internal uint64              msf_get_save_size(MSF_Context *msf);
 internal String8List      msf_get_page_data_nodes(Arena *arena, MSF_Context *msf);
-internal B32              msf_save(MSF_Context *msf, void *buffer, U64 buffer_size);
+internal B32              msf_save(MSF_Context *msf, void *buffer, uint64 buffer_size);
 internal MSF_Error        msf_save_arena(Arena *arena, MSF_Context *msf, String8 *data_out);
 internal MSF_StreamNode * msf_find_stream_node(MSF_Context *msf, MSF_StreamNumber sn);
 internal MSF_Stream *     msf_find_stream(MSF_Context *msf, MSF_StreamNumber sn);
@@ -158,16 +158,16 @@ internal B32              msf_stream_seek_start(MSF_Context *msf, MSF_StreamNumb
 internal B32              msf_stream_seek_end(MSF_Context *msf, MSF_StreamNumber sn);
 
 internal MSF_UInt msf_stream_read(MSF_Context *msf, MSF_StreamNumber sn, void *dst, MSF_UInt dst_len);
-internal String8  msf_stream_read_block(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U64 block_size);
+internal String8  msf_stream_read_block(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, uint64 block_size);
 internal String8  msf_stream_read_string(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn);
-internal S8       msf_stream_read_s8(MSF_Context *msf, MSF_StreamNumber sn);
-internal S16      msf_stream_read_s16(MSF_Context *msf, MSF_StreamNumber sn);
-internal S32      msf_stream_read_s32(MSF_Context *msf, MSF_StreamNumber sn);
-internal S64      msf_stream_read_s64(MSF_Context *msf, MSF_StreamNumber sn);
-internal U8       msf_stream_read_u8(MSF_Context *msf, MSF_StreamNumber sn);
-internal U16      msf_stream_read_u16(MSF_Context *msf, MSF_StreamNumber sn);
-internal U32      msf_stream_read_u32(MSF_Context *msf, MSF_StreamNumber sn);
-internal U64      msf_stream_read_u64(MSF_Context *msf, MSF_StreamNumber sn);
+internal uint8       msf_stream_read_s8(MSF_Context *msf, MSF_StreamNumber sn);
+internal uint16      msf_stream_read_s16(MSF_Context *msf, MSF_StreamNumber sn);
+internal uint32      msf_stream_read_s32(MSF_Context *msf, MSF_StreamNumber sn);
+internal uint64      msf_stream_read_s64(MSF_Context *msf, MSF_StreamNumber sn);
+internal uint8       msf_stream_read_u8(MSF_Context *msf, MSF_StreamNumber sn);
+internal uint16      msf_stream_read_u16(MSF_Context *msf, MSF_StreamNumber sn);
+internal uint32      msf_stream_read_u32(MSF_Context *msf, MSF_StreamNumber sn);
+internal uint64      msf_stream_read_u64(MSF_Context *msf, MSF_StreamNumber sn);
 #define msf_stream_read_array(msf, sn, ptr, count) msf_stream_read(msf, sn, ptr, sizeof(*ptr) * (count))
 #define msf_stream_read_struct(msf, sn, ptr) msf_stream_read_array(msf, sn, ptr, 1)
 
@@ -176,19 +176,19 @@ internal B32 msf_stream_write_string(MSF_Context *msf, MSF_StreamNumber sn, Stri
 internal B32 msf_stream_write_list(MSF_Context *msf, MSF_StreamNumber sn, String8List list);
 internal B32 msf_stream_write_uint(MSF_Context *msf, MSF_StreamNumber sn, MSF_UInt value);
 internal B32 msf_stream_write_cstr(MSF_Context *msf, MSF_StreamNumber sn, String8 string);
-internal B32 msf_stream_write_u8(MSF_Context *msf, MSF_StreamNumber sn, U8 value);
-internal B32 msf_stream_write_u16(MSF_Context *msf, MSF_StreamNumber sn, U16 value);
-internal B32 msf_stream_write_u32(MSF_Context *msf, MSF_StreamNumber sn, U32 value);
-internal B32 msf_stream_write_u64(MSF_Context *msf, MSF_StreamNumber sn, U64 value);
-internal B32 msf_stream_write_s8(MSF_Context *msf, MSF_StreamNumber sn, S8 value);
-internal B32 msf_stream_write_s16(MSF_Context *msf, MSF_StreamNumber sn, S16 value);
-internal B32 msf_stream_write_s32(MSF_Context *msf, MSF_StreamNumber sn, S32 value);
-internal B32 msf_stream_write_s64(MSF_Context *msf, MSF_StreamNumber sn, S64 value);
+internal B32 msf_stream_write_u8(MSF_Context *msf, MSF_StreamNumber sn, uint8 value);
+internal B32 msf_stream_write_u16(MSF_Context *msf, MSF_StreamNumber sn, uint16 value);
+internal B32 msf_stream_write_u32(MSF_Context *msf, MSF_StreamNumber sn, uint32 value);
+internal B32 msf_stream_write_u64(MSF_Context *msf, MSF_StreamNumber sn, uint64 value);
+internal B32 msf_stream_write_s8(MSF_Context *msf, MSF_StreamNumber sn, uint8 value);
+internal B32 msf_stream_write_s16(MSF_Context *msf, MSF_StreamNumber sn, uint16 value);
+internal B32 msf_stream_write_s32(MSF_Context *msf, MSF_StreamNumber sn, uint32 value);
+internal B32 msf_stream_write_s64(MSF_Context *msf, MSF_StreamNumber sn, uint64 value);
 internal B32 msf_stream_write_parallel(TP_Context *tp, MSF_Context *msf, MSF_StreamNumber sn, void *buffer, MSF_UInt buffer_size);
 #define msf_stream_write_array(m, s, v, c) msf_stream_write(m, s, (void*)(v), sizeof(*(v)) * (c))
 #define msf_stream_write_struct(m, s, v )  msf_stream_write_array(m, s, v, 1)
 
-internal MSF_UInt       msf_count_pages(MSF_UInt page_size, U64 data_size);
+internal MSF_UInt       msf_count_pages(MSF_UInt page_size, uint64 data_size);
 internal MSF_PageNumber msf_get_page_count_cap(MSF_PageDataList page_data_list, MSF_UInt page_size);
 internal MSF_UInt       msf_get_fpm_interval_correct(MSF_UInt page_size);
 internal MSF_UInt       msf_get_fpm_interval_wrong(MSF_UInt page_size);

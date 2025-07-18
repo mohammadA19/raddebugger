@@ -79,7 +79,7 @@ struct RDIM_BakeUDTsStringsInNode
 {
   RDIM_BakeUDTsStringsInNode *next;
   RDIM_UDT *v;
-  RDI_U64 count;
+  RDI_uint64 count;
 };
 
 typedef struct RDIM_BakeTypesStringsInNode RDIM_BakeTypesStringsInNode;
@@ -87,7 +87,7 @@ struct RDIM_BakeTypesStringsInNode
 {
   RDIM_BakeTypesStringsInNode *next;
   RDIM_Type *v;
-  RDI_U64 count;
+  RDI_uint64 count;
 };
 
 typedef struct RDIM_BakeTypesStringsIn RDIM_BakeTypesStringsIn;
@@ -113,7 +113,7 @@ struct RDIM_BakeSymbolsStringsInNode
 {
   RDIM_BakeSymbolsStringsInNode *next;
   RDIM_Symbol *v;
-  RDI_U64 count;
+  RDI_uint64 count;
 };
 
 typedef struct RDIM_BakeSymbolsStringsIn RDIM_BakeSymbolsStringsIn;
@@ -130,7 +130,7 @@ struct RDIM_BakeInlineSiteStringsInNode
 {
   RDIM_BakeInlineSiteStringsInNode *next;
   RDIM_InlineSite *v;
-  RDI_U64 count;
+  RDI_uint64 count;
 };
 
 typedef struct RDIM_BakeInlineSiteStringsIn RDIM_BakeInlineSiteStringsIn;
@@ -147,7 +147,7 @@ struct RDIM_BakeScopesStringsInNode
 {
   RDIM_BakeScopesStringsInNode *next;
   RDIM_Scope *v;
-  RDI_U64 count;
+  RDI_uint64 count;
 };
 
 typedef struct RDIM_BakeScopesStringsIn RDIM_BakeScopesStringsIn;
@@ -182,9 +182,9 @@ struct RDIM_JoinBakeStringMapSlotsIn
 {
   RDIM_BakeStringMapTopology *top;
   RDIM_BakeStringMapLoose **src_maps;
-  U64 src_maps_count;
+  uint64 src_maps_count;
   RDIM_BakeStringMapLoose *dst_map;
-  Rng1U64 slot_idx_range;
+  Rng1uint64 slot_idx_range;
 };
 
 //- rjf: string map sorting task types
@@ -195,8 +195,8 @@ struct RDIM_SortBakeStringMapSlotsIn
   RDIM_BakeStringMapTopology *top;
   RDIM_BakeStringMapLoose *src_map;
   RDIM_BakeStringMapLoose *dst_map;
-  U64 slot_idx;
-  U64 slot_count;
+  uint64 slot_idx;
+  uint64 slot_count;
 };
 
 //- rjf: debug info baking task types
@@ -377,7 +377,7 @@ global ASYNC_Root *rdim_local_async_root = 0;
 ////////////////////////////////
 
 internal RDIM_DataModel    rdim_infer_data_model(OperatingSystem os, RDI_Arch arch);
-internal RDIM_TopLevelInfo rdim_make_top_level_info(String8 image_name, Arch arch, U64 exe_hash, RDIM_BinarySectionList sections);
+internal RDIM_TopLevelInfo rdim_make_top_level_info(String8 image_name, Arch arch, uint64 exe_hash, RDIM_BinarySectionList sections);
 
 ////////////////////////////////
 

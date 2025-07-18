@@ -19,7 +19,7 @@ To encode :
 
 	rr_lzb_simple_context c;
 	c.m_tableSizeBits = 14;
-	c.m_hashTable = OODLE_MALLOC_ARRAY(U16,RR_ONE_SA<<c.m_tableSizeBits);
+	c.m_hashTable = OODLE_MALLOC_ARRAY(uint16,RR_ONE_SA<<c.m_tableSizeBits);
 	
 	then call _encode
 
@@ -47,20 +47,20 @@ To decode :
 #define __RAD64REGS__
 
 #include <stdint.h>
-typedef uint8_t  U8;
-typedef uint16_t U16;
-typedef uint32_t U32;
-typedef uint64_t U64;
-typedef int8_t   S8;
-typedef int16_t  S16;
-typedef int32_t  S32;
-typedef int64_t  S64;
+typedef uint8_t  uint8;
+typedef uint16_t uint16;
+typedef uint32_t uint32;
+typedef uint64_t uint64;
+typedef int8_t   uint8;
+typedef int16_t  uint16;
+typedef int32_t  uint32;
+typedef int64_t  uint64;
 
-typedef S64 SINTa;
-typedef U64 RAD_U64;
-typedef S64 RAD_S64;
-typedef U32 RAD_U32;
-typedef S32 RAD_S32;
+typedef uint64 SINTa;
+typedef uint64 RAD_uint64;
+typedef uint64 RAD_uint64;
+typedef uint32 RAD_uint32;
+typedef uint32 RAD_uint32;
 
 #define RADINLINE __inline
 
@@ -108,11 +108,11 @@ typedef S32 RAD_S32;
 #define RR_ASSERT_ALWAYS(c) do{if(!(c)) {RADLZB_TRAP();}}while(0)
 #define RR_ASSERT(c) RR_ASSERT_ALWAYS(c)
 
-#define RR_PUT16_LE(ptr,val)       *((U16 *)(ptr)) = (U16)(val)
-#define RR_GET16_LE_UNALIGNED(ptr) *((const U16 *)(ptr))
+#define RR_PUT16_LE(ptr,val)       *((uint16 *)(ptr)) = (uint16)(val)
+#define RR_GET16_LE_UNALIGNED(ptr) *((const uint16 *)(ptr))
 
-static RADINLINE U32
-rrCtzBytes32(U32 val)
+static RADINLINE uint32
+rrCtzBytes32(uint32 val)
 {
   // Don't get fancy here. Assumes val != 0.
   if (val & 0x000000ffu) return 0;
@@ -121,11 +121,11 @@ rrCtzBytes32(U32 val)
   return 3;
 }
 
-static RADINLINE U32
-rrCtzBytes64(U64 val)
+static RADINLINE uint32
+rrCtzBytes64(uint64 val)
 {
-  U32 lo = (U32) val;
-  return lo ? rrCtzBytes32(lo) : 4 + rrCtzBytes32((U32) (val >> 32));
+  uint32 lo = (uint32) val;
+  return lo ? rrCtzBytes32(lo) : 4 + rrCtzBytes32((uint32) (val >> 32));
 }
 
 //~
@@ -135,8 +135,8 @@ rrCtzBytes64(U64 val)
 typedef struct rr_lzb_simple_context rr_lzb_simple_context;
 struct rr_lzb_simple_context
 {
-	U16	*	m_hashTable;	// must be allocated to sizeof(U16)*(1<<m_tableSizeBits)
-	S32		m_tableSizeBits;
+	uint16	*	m_hashTable;	// must be allocated to sizeof(uint16)*(1<<m_tableSizeBits)
+	uint32		m_tableSizeBits;
 };
 
 SINTa rr_lzb_simple_encode_fast(rr_lzb_simple_context * ctx,
@@ -158,7 +158,7 @@ SINTa rr_lzb_simple_decode(const void * comp, SINTa compLen, void * raw, SINTa r
 //~ Top-Level Parsing API
 
 RDI_PROC RDI_ParseStatus
-rdi_parse(RDI_U8 *data, RDI_U64 size, RDI_Parsed *out)
+rdi_parse(RDI_uint8 *data, RDI_uint64 size, RDI_Parsed *out)
 {
   RDI_ParseStatus result = RDI_ParseStatus_Good;
   
@@ -188,10 +188,10 @@ rdi_parse(RDI_U8 *data, RDI_U64 size, RDI_Parsed *out)
   //- rjf: extract data sections
   //
   RDI_Section *dsecs = 0;
-  RDI_U32 dsec_count = 0;
+  RDI_uint32 dsec_count = 0;
   if(result == RDI_ParseStatus_Good)
   {
-    RDI_U64 opl = (RDI_U64)hdr->data_section_off + (RDI_U64)hdr->data_section_count*sizeof(*dsecs);
+    RDI_uint64 opl = (RDI_uint64)hdr->data_section_off + (RDI_uint64)hdr->data_section_count*sizeof(*dsecs);
     if(opl <= size)
     {
       dsecs = (RDI_Section*)(data + hdr->data_section_off);
@@ -223,7 +223,7 @@ rdi_parse(RDI_U8 *data, RDI_U64 size, RDI_Parsed *out)
     {
       if(rdi_section_is_required_table[k])
       {
-        RDI_U64 data_size = 0;
+        RDI_uint64 data_size = 0;
         RDI_SectionEncoding encoding = 0;
         void *data = rdi_section_raw_data_from_kind(out, k, &encoding, &data_size);
         if(data == 0 || data == &rdi_nil_element_union || data_size == 0)
@@ -244,7 +244,7 @@ rdi_parse(RDI_U8 *data, RDI_U64 size, RDI_Parsed *out)
 //- section table/element raw data extraction
 
 RDI_PROC void *
-rdi_section_raw_data_from_kind(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_SectionEncoding *encoding_out, RDI_U64 *size_out)
+rdi_section_raw_data_from_kind(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_SectionEncoding *encoding_out, RDI_uint64 *size_out)
 {
   void *result = 0;
 #if !defined(RDI_DISABLE_NILS)
@@ -262,16 +262,16 @@ rdi_section_raw_data_from_kind(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_Sectio
 }
 
 RDI_PROC void *
-rdi_section_raw_table_from_kind(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_U64 *count_out)
+rdi_section_raw_table_from_kind(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_uint64 *count_out)
 {
   void *result = 0;
-  RDI_U64 all_elements_size = 0;
+  RDI_uint64 all_elements_size = 0;
   RDI_SectionEncoding all_elements_encoding = 0;
   void *all_elements = rdi_section_raw_data_from_kind(rdi, kind, &all_elements_encoding, &all_elements_size);
   if(all_elements_encoding == RDI_SectionEncoding_Unpacked)
   {
-    RDI_U64 element_size = (RDI_U64)rdi_section_element_size_table[kind];
-    RDI_U64 all_elements_count = all_elements_size/element_size;
+    RDI_uint64 element_size = (RDI_uint64)rdi_section_element_size_table[kind];
+    RDI_uint64 all_elements_count = all_elements_size/element_size;
     result = all_elements;
     *count_out = all_elements_count;
   }
@@ -279,26 +279,26 @@ rdi_section_raw_table_from_kind(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_U64 *
 }
 
 RDI_PROC void *
-rdi_section_raw_element_from_kind_idx(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_U64 idx)
+rdi_section_raw_element_from_kind_idx(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_uint64 idx)
 {
-  RDI_U64 count = 0;
+  RDI_uint64 count = 0;
   void *table = rdi_section_raw_table_from_kind(rdi, kind, &count);
   void *result = table;
   if(idx < count)
   {
-    RDI_U64 element_size = (RDI_U64)rdi_section_element_size_table[kind];
-    result = (RDI_U8 *)table + element_size*idx;
+    RDI_uint64 element_size = (RDI_uint64)rdi_section_element_size_table[kind];
+    result = (RDI_uint8 *)table + element_size*idx;
   }
   return result;
 }
 
 //- info about whole parse
 
-RDI_PROC RDI_U64
+RDI_PROC RDI_uint64
 rdi_decompressed_size_from_parsed(RDI_Parsed *rdi)
 {
-  RDI_U64 decompressed_size = rdi->raw_data_size;
-  for(RDI_U64 section_idx = 0; section_idx < rdi->sections_count; section_idx += 1)
+  RDI_uint64 decompressed_size = rdi->raw_data_size;
+  for(RDI_uint64 section_idx = 0; section_idx < rdi->sections_count; section_idx += 1)
   {
     decompressed_size += (rdi->sections[section_idx].unpacked_size - rdi->sections[section_idx].encoded_size);
   }
@@ -308,7 +308,7 @@ rdi_decompressed_size_from_parsed(RDI_Parsed *rdi)
 //- decompression
 
 internal void
-rdi_decompress_parsed(U8 *decompressed_data, U64 decompressed_size, RDI_Parsed *og_rdi)
+rdi_decompress_parsed(uint8 *decompressed_data, uint64 decompressed_size, RDI_Parsed *og_rdi)
 {
   // rjf: copy header
   RDI_Header *src_header = (RDI_Header *)og_rdi->raw_data;
@@ -321,11 +321,11 @@ rdi_decompress_parsed(U8 *decompressed_data, U64 decompressed_size, RDI_Parsed *
   if(og_rdi->sections_count != 0)
   {
     RDI_Section *dsec_base = (RDI_Section *)(decompressed_data + dst_header->data_section_off);
-    MemoryCopy(dsec_base, (U8 *)og_rdi->raw_data + src_header->data_section_off, sizeof(RDI_Section) * og_rdi->sections_count);
-    U64 off = dst_header->data_section_off + sizeof(RDI_Section) * og_rdi->sections_count;
+    MemoryCopy(dsec_base, (uint8 *)og_rdi->raw_data + src_header->data_section_off, sizeof(RDI_Section) * og_rdi->sections_count);
+    uint64 off = dst_header->data_section_off + sizeof(RDI_Section) * og_rdi->sections_count;
     off += 7;
     off -= off%8;
-    for(U64 idx = 0; idx < og_rdi->sections_count; idx += 1)
+    for(uint64 idx = 0; idx < og_rdi->sections_count; idx += 1)
     {
       dsec_base[idx].encoding = RDI_SectionEncoding_Unpacked;
       dsec_base[idx].off = off;
@@ -347,7 +347,7 @@ rdi_decompress_parsed(U8 *decompressed_data, U64 decompressed_size, RDI_Parsed *
         src < src_opl && dst < dst_opl;
         src += 1, dst += 1)
     {
-      rr_lzb_simple_decode((U8*)og_rdi->raw_data + src->off, src->encoded_size,
+      rr_lzb_simple_decode((uint8*)og_rdi->raw_data + src->off, src->encoded_size,
                            decompressed_data     + dst->off, dst->unpacked_size);
     }
   }
@@ -355,22 +355,22 @@ rdi_decompress_parsed(U8 *decompressed_data, U64 decompressed_size, RDI_Parsed *
 
 //- strings
 
-RDI_PROC RDI_U8 *
-rdi_string_from_idx(RDI_Parsed *rdi, RDI_U32 idx, RDI_U64 *len_out)
+RDI_PROC RDI_uint8 *
+rdi_string_from_idx(RDI_Parsed *rdi, RDI_uint32 idx, RDI_uint64 *len_out)
 {
-  RDI_U8 *result_base = 0;
-  RDI_U64 result_size = 0;
+  RDI_uint8 *result_base = 0;
+  RDI_uint64 result_size = 0;
   {
-    RDI_U64 string_offs_count = 0;
-    RDI_U32 *string_offs = rdi_table_from_name(rdi, StringTable, &string_offs_count);
+    RDI_uint64 string_offs_count = 0;
+    RDI_uint32 *string_offs = rdi_table_from_name(rdi, StringTable, &string_offs_count);
     if(idx < string_offs_count)
     {
-      RDI_U64 string_data_size = 0;
-      RDI_U8 *string_data = rdi_table_from_name(rdi, StringData, &string_data_size);
-      RDI_U32 off_raw = string_offs[idx];
-      RDI_U32 opl_raw = string_offs[idx + 1];
-      RDI_U32 opl = rdi_parse__min(opl_raw, string_data_size);
-      RDI_U32 off = rdi_parse__min(off_raw, opl);
+      RDI_uint64 string_data_size = 0;
+      RDI_uint8 *string_data = rdi_table_from_name(rdi, StringData, &string_data_size);
+      RDI_uint32 off_raw = string_offs[idx];
+      RDI_uint32 opl_raw = string_offs[idx + 1];
+      RDI_uint32 opl = rdi_parse__min(opl_raw, string_data_size);
+      RDI_uint32 off = rdi_parse__min(off_raw, opl);
       result_base = string_data + off;
       result_size = opl - off;
     }
@@ -381,15 +381,15 @@ rdi_string_from_idx(RDI_Parsed *rdi, RDI_U32 idx, RDI_U64 *len_out)
 
 //- index runs
 
-RDI_PROC RDI_U32*
-rdi_idx_run_from_first_count(RDI_Parsed *rdi, RDI_U32 raw_first, RDI_U32 raw_count, RDI_U32 *n_out)
+RDI_PROC RDI_uint32*
+rdi_idx_run_from_first_count(RDI_Parsed *rdi, RDI_uint32 raw_first, RDI_uint32 raw_count, RDI_uint32 *n_out)
 {
-  RDI_U64 idx_run_count = 0;
-  RDI_U32 *idx_run_data = rdi_table_from_name(rdi, IndexRuns, &idx_run_count);
-  RDI_U32 raw_opl = raw_first + raw_count;
-  RDI_U32 opl = rdi_parse__min(raw_opl, idx_run_count);
-  RDI_U32 first = rdi_parse__min(raw_first, opl);
-  RDI_U32 *result = 0;
+  RDI_uint64 idx_run_count = 0;
+  RDI_uint32 *idx_run_data = rdi_table_from_name(rdi, IndexRuns, &idx_run_count);
+  RDI_uint32 raw_opl = raw_first + raw_count;
+  RDI_uint32 opl = rdi_parse__min(raw_opl, idx_run_count);
+  RDI_uint32 first = rdi_parse__min(raw_first, opl);
+  RDI_uint32 *result = 0;
   if(first < idx_run_count)
   {
     result = idx_run_data + first;
@@ -404,22 +404,22 @@ RDI_PROC void
 rdi_parsed_from_line_table(RDI_Parsed *rdi, RDI_LineTable *line_table, RDI_ParsedLineTable *out)
 {
   //- rjf: extract top-level line info tables
-  RDI_U64 all_voffs_count = 0;
-  RDI_U64 *all_voffs = rdi_table_from_name(rdi, LineInfoVOffs, &all_voffs_count);
-  RDI_U64 *all_voffs_opl = all_voffs + all_voffs_count;
-  RDI_U64 all_lines_count = 0;
+  RDI_uint64 all_voffs_count = 0;
+  RDI_uint64 *all_voffs = rdi_table_from_name(rdi, LineInfoVOffs, &all_voffs_count);
+  RDI_uint64 *all_voffs_opl = all_voffs + all_voffs_count;
+  RDI_uint64 all_lines_count = 0;
   RDI_Line *all_lines = rdi_table_from_name(rdi, LineInfoLines, &all_lines_count);
   RDI_Line *all_lines_opl = all_lines + all_lines_count;
-  RDI_U64 all_cols_count = 0;
+  RDI_uint64 all_cols_count = 0;
   RDI_Column *all_cols = rdi_table_from_name(rdi, LineInfoColumns, &all_cols_count);
   RDI_Column *all_cols_opl = all_cols + all_cols_count;
   
   //- rjf: extract ranges of top-level tables belonging to this line table
-  RDI_U64    *lt_voffs = all_voffs + line_table->voffs_base_idx;
+  RDI_uint64    *lt_voffs = all_voffs + line_table->voffs_base_idx;
   RDI_Line   *lt_lines = all_lines + line_table->lines_base_idx;
   RDI_Column *lt_cols  = all_cols  + line_table->cols_base_idx;
-  RDI_U64 lines_count = line_table->lines_count;
-  RDI_U64 cols_count  = line_table->cols_count;
+  RDI_uint64 lines_count = line_table->lines_count;
+  RDI_uint64 cols_count  = line_table->cols_count;
   if(lt_voffs >= all_voffs_opl) {lt_voffs = all_voffs; lines_count = 0;}
   if(lt_lines >= all_lines_opl) {lt_lines = all_lines; lines_count = 0;}
   if(lt_cols  >= all_cols_opl)  {lt_cols  = all_cols;  cols_count = 0;}
@@ -432,20 +432,20 @@ rdi_parsed_from_line_table(RDI_Parsed *rdi, RDI_LineTable *line_table, RDI_Parse
   out->col_count = cols_count;
 }
 
-RDI_PROC RDI_U64
-rdi_line_info_idx_range_from_voff(RDI_ParsedLineTable *line_info, RDI_U64 voff, RDI_U64 *n_out)
+RDI_PROC RDI_uint64
+rdi_line_info_idx_range_from_voff(RDI_ParsedLineTable *line_info, RDI_uint64 voff, RDI_uint64 *n_out)
 {
-  RDI_U64 result = 0;
-  RDI_U64 n = 0;
+  RDI_uint64 result = 0;
+  RDI_uint64 n = 0;
   if(line_info->count > 0 && line_info->voffs[0] <= voff && voff < line_info->voffs[line_info->count - 1])
   {
     //- rjf: find i such that: (vmap[i].voff <= voff) && (voff < vmap[i + 1].voff)
     // assuming: (i < j) -> (vmap[i].voff < vmap[j].voff)
-    RDI_U32 first = 0;
-    RDI_U32 opl   = line_info->count;
+    RDI_uint32 first = 0;
+    RDI_uint32 opl   = line_info->count;
     for(;;)
     {
-      RDI_U32 mid = (first + opl)/2;
+      RDI_uint32 mid = (first + opl)/2;
       if(line_info->voffs[mid] < voff)
       {
         first = mid;
@@ -464,7 +464,7 @@ rdi_line_info_idx_range_from_voff(RDI_ParsedLineTable *line_info, RDI_U64 voff, 
         break;
       }
     }
-    result = (RDI_U64)first;
+    result = (RDI_uint64)first;
     
     //- rjf: scan leftward, to find shallowest line info matching this voff
     for(;result != 0;)
@@ -480,7 +480,7 @@ rdi_line_info_idx_range_from_voff(RDI_ParsedLineTable *line_info, RDI_U64 voff, 
     }
     
     //- rjf: scan rightward, to count # of line info with this voff
-    for(RDI_U64 idx = result; idx < line_info->count; idx += 1)
+    for(RDI_uint64 idx = result; idx < line_info->count; idx += 1)
     {
       if(line_info->voffs[idx] == voff)
       {
@@ -499,12 +499,12 @@ rdi_line_info_idx_range_from_voff(RDI_ParsedLineTable *line_info, RDI_U64 voff, 
   return result;
 }
 
-RDI_PROC RDI_U64
-rdi_line_info_idx_from_voff(RDI_ParsedLineTable *line_info, RDI_U64 voff)
+RDI_PROC RDI_uint64
+rdi_line_info_idx_from_voff(RDI_ParsedLineTable *line_info, RDI_uint64 voff)
 {
-  RDI_U64 count = 0;
-  RDI_U64 result = rdi_line_info_idx_range_from_voff(line_info, voff, &count);
-  for(RDI_S64 idx = count-1; idx >= 0; idx -= 1)
+  RDI_uint64 count = 0;
+  RDI_uint64 result = rdi_line_info_idx_range_from_voff(line_info, voff, &count);
+  for(RDI_uint64 idx = count-1; idx >= 0; idx -= 1)
   {
     if(result + idx < line_info->count && line_info->lines[result+idx].file_idx != 0)
     {
@@ -519,22 +519,22 @@ RDI_PROC void
 rdi_parsed_from_source_line_map(RDI_Parsed *rdi, RDI_SourceLineMap *map, RDI_ParsedSourceLineMap *out)
 {
   //- rjf: extract top-level line info tables
-  RDI_U64 all_nums_count = 0;
-  RDI_U32 *all_nums = rdi_table_from_name(rdi, SourceLineMapNumbers, &all_nums_count);
-  RDI_U32 *all_nums_opl = all_nums + all_nums_count;
-  RDI_U64 all_rngs_count = 0;
-  RDI_U32 *all_rngs = rdi_table_from_name(rdi, SourceLineMapRanges, &all_rngs_count);
-  RDI_U32 *all_rngs_opl = all_rngs + all_rngs_count;
-  RDI_U64 all_voffs_count = 0;
-  RDI_U64 *all_voffs = rdi_table_from_name(rdi, SourceLineMapVOffs, &all_voffs_count);
-  RDI_U64 *all_voffs_opl = all_voffs + all_voffs_count;
+  RDI_uint64 all_nums_count = 0;
+  RDI_uint32 *all_nums = rdi_table_from_name(rdi, SourceLineMapNumbers, &all_nums_count);
+  RDI_uint32 *all_nums_opl = all_nums + all_nums_count;
+  RDI_uint64 all_rngs_count = 0;
+  RDI_uint32 *all_rngs = rdi_table_from_name(rdi, SourceLineMapRanges, &all_rngs_count);
+  RDI_uint32 *all_rngs_opl = all_rngs + all_rngs_count;
+  RDI_uint64 all_voffs_count = 0;
+  RDI_uint64 *all_voffs = rdi_table_from_name(rdi, SourceLineMapVOffs, &all_voffs_count);
+  RDI_uint64 *all_voffs_opl = all_voffs + all_voffs_count;
   
   //- rjf: extract ranges of top-level tables belonging to this line map
-  RDI_U32 *map_nums = all_nums + map->line_map_nums_base_idx;
-  RDI_U32 *map_rngs = all_rngs + map->line_map_range_base_idx;
-  RDI_U64 *map_voffs= all_voffs+ map->line_map_voff_base_idx;
-  RDI_U64 lines_count = (RDI_U64)map->line_count;
-  RDI_U64 voffs_count = (RDI_U64)map->voff_count;
+  RDI_uint32 *map_nums = all_nums + map->line_map_nums_base_idx;
+  RDI_uint32 *map_rngs = all_rngs + map->line_map_range_base_idx;
+  RDI_uint64 *map_voffs= all_voffs+ map->line_map_voff_base_idx;
+  RDI_uint64 lines_count = (RDI_uint64)map->line_count;
+  RDI_uint64 voffs_count = (RDI_uint64)map->voff_count;
   if(map_nums >= all_nums_opl) {map_nums = all_nums; lines_count = 0;}
   if(map_rngs >= all_rngs_opl) {map_rngs = all_rngs; lines_count = 0;}
   if(map_voffs>= all_voffs_opl){map_voffs= all_voffs;voffs_count = 0;}
@@ -547,22 +547,22 @@ rdi_parsed_from_source_line_map(RDI_Parsed *rdi, RDI_SourceLineMap *map, RDI_Par
   out->voff_count = voffs_count;
 }
 
-RDI_PROC RDI_U64 *
-rdi_line_voffs_from_num(RDI_ParsedSourceLineMap *map, RDI_U32 linenum, RDI_U32 *n_out)
+RDI_PROC RDI_uint64 *
+rdi_line_voffs_from_num(RDI_ParsedSourceLineMap *map, RDI_uint32 linenum, RDI_uint32 *n_out)
 {
-  RDI_U64 *result = 0;
+  RDI_uint64 *result = 0;
   *n_out = 0;
-  RDI_U32 closest_i = 0;
+  RDI_uint32 closest_i = 0;
   if(map->count > 0 && map->nums[0] <= linenum)
   {
     // assuming: (i < j) -> (nums[i] < nums[j])
     // find i such that: (nums[i] <= linenum) && (linenum < nums[i + 1])
-    RDI_U32 *nums = map->nums;
-    RDI_U32 first = 0;
-    RDI_U32 opl   = map->count;
+    RDI_uint32 *nums = map->nums;
+    RDI_uint32 first = 0;
+    RDI_uint32 opl   = map->count;
     for(;;)
     {
-      RDI_U32 mid = (first + opl)/2;
+      RDI_uint32 mid = (first + opl)/2;
       if(nums[mid] < linenum)
       {
         first = mid;
@@ -593,8 +593,8 @@ rdi_line_voffs_from_num(RDI_ParsedSourceLineMap *map, RDI_U32 linenum, RDI_U32 *
   // set result if possible
   if(closest_i < map->count)
   {
-    RDI_U32 first = map->ranges[closest_i];
-    RDI_U32 opl   = map->ranges[closest_i + 1];
+    RDI_uint32 first = map->ranges[closest_i];
+    RDI_uint32 opl   = map->ranges[closest_i + 1];
     if(opl <= map->voff_count)
     {
       result = map->voffs + first;
@@ -607,19 +607,19 @@ rdi_line_voffs_from_num(RDI_ParsedSourceLineMap *map, RDI_U32 linenum, RDI_U32 *
 
 //- vmap lookups
 
-RDI_PROC RDI_U64
-rdi_vmap_idx_from_voff(RDI_VMapEntry *vmap, RDI_U64 vmap_count, RDI_U64 voff)
+RDI_PROC RDI_uint64
+rdi_vmap_idx_from_voff(RDI_VMapEntry *vmap, RDI_uint64 vmap_count, RDI_uint64 voff)
 {
-  RDI_U64 result = 0;
+  RDI_uint64 result = 0;
   if(vmap_count > 0 && vmap[0].voff <= voff && voff < vmap[vmap_count - 1].voff)
   {
     // assuming: (i < j) -> (vmap[i].voff < vmap[j].voff)
     // find i such that: (vmap[i].voff <= voff) && (voff < vmap[i + 1].voff)
-    RDI_U32 first = 0;
-    RDI_U32 opl   = vmap_count;
+    RDI_uint32 first = 0;
+    RDI_uint32 opl   = vmap_count;
     for(;;)
     {
-      RDI_U32 mid = (first + opl)/2;
+      RDI_uint32 mid = (first + opl)/2;
       if(vmap[mid].voff < voff)
       {
         first = mid;
@@ -638,17 +638,17 @@ rdi_vmap_idx_from_voff(RDI_VMapEntry *vmap, RDI_U64 vmap_count, RDI_U64 voff)
         break;
       }
     }
-    result = (RDI_U64)vmap[first].idx;
+    result = (RDI_uint64)vmap[first].idx;
   }
   return result;
 }
 
-RDI_PROC RDI_U64
-rdi_vmap_idx_from_section_kind_voff(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_U64 voff)
+RDI_PROC RDI_uint64
+rdi_vmap_idx_from_section_kind_voff(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_uint64 voff)
 {
-  RDI_U64 vmaps_count = 0;
+  RDI_uint64 vmaps_count = 0;
   RDI_VMapEntry *vmaps = rdi_section_raw_table_from_kind(rdi, kind, &vmaps_count);
-  RDI_U64 result = rdi_vmap_idx_from_voff(vmaps, vmaps_count, voff);
+  RDI_uint64 result = rdi_vmap_idx_from_voff(vmaps, vmaps_count, voff);
   return result;
 }
 
@@ -661,9 +661,9 @@ rdi_parsed_from_name_map(RDI_Parsed *rdi, RDI_NameMap *mapptr, RDI_ParsedNameMap
   out->bucket_count = 0;
   if(mapptr != 0)
   {
-    RDI_U64 all_buckets_count = 0;
+    RDI_uint64 all_buckets_count = 0;
     RDI_NameMapBucket *all_buckets = rdi_table_from_name(rdi, NameMapBuckets, &all_buckets_count);
-    RDI_U64 all_nodes_count = 0;
+    RDI_uint64 all_nodes_count = 0;
     RDI_NameMapNode *all_nodes = rdi_table_from_name(rdi, NameMapNodes, &all_nodes_count);
     out->buckets = all_buckets+mapptr->bucket_base_idx;
     out->nodes = all_nodes+mapptr->node_base_idx;
@@ -683,31 +683,31 @@ rdi_parsed_from_name_map(RDI_Parsed *rdi, RDI_NameMap *mapptr, RDI_ParsedNameMap
 }
 
 RDI_PROC RDI_NameMapNode*
-rdi_name_map_lookup(RDI_Parsed *p, RDI_ParsedNameMap *map, RDI_U8 *str, RDI_U64 len)
+rdi_name_map_lookup(RDI_Parsed *p, RDI_ParsedNameMap *map, RDI_uint8 *str, RDI_uint64 len)
 {
   RDI_NameMapNode *result = 0;
   if(map->bucket_count > 0)
   {
     RDI_NameMapBucket *buckets = map->buckets;
-    RDI_U64 bucket_count = map->bucket_count;
-    RDI_U64 hash = rdi_hash(str, len);
-    RDI_U64 bucket_index = hash%bucket_count;
+    RDI_uint64 bucket_count = map->bucket_count;
+    RDI_uint64 hash = rdi_hash(str, len);
+    RDI_uint64 bucket_index = hash%bucket_count;
     RDI_NameMapBucket *bucket = map->buckets + bucket_index;
     RDI_NameMapNode *node = map->nodes + bucket->first_node;
     RDI_NameMapNode *node_opl = node + bucket->node_count;
     for(;node < node_opl; node += 1)
     {
       // extract a string from this node
-      RDI_U64 nlen = 0;
-      RDI_U8 *nstr = rdi_string_from_idx(p, node->string_idx, &nlen);
+      RDI_uint64 nlen = 0;
+      RDI_uint8 *nstr = rdi_string_from_idx(p, node->string_idx, &nlen);
       
       // compare this to the needle string
-      RDI_S32 match = 0;
+      RDI_uint32 match = 0;
       if(nlen == len)
       {
-        RDI_U8 *a = str;
-        RDI_U8 *aopl = str + len;
-        RDI_U8 *b = nstr;
+        RDI_uint8 *a = str;
+        RDI_uint8 *aopl = str + len;
+        RDI_uint8 *b = nstr;
         for (;a < aopl && *a == *b; a += 1, b += 1);
         match = (a == aopl);
       }
@@ -724,10 +724,10 @@ rdi_name_map_lookup(RDI_Parsed *p, RDI_ParsedNameMap *map, RDI_U8 *str, RDI_U64 
   return result;
 }
 
-RDI_PROC RDI_U32*
-rdi_matches_from_map_node(RDI_Parsed *p, RDI_NameMapNode *node, RDI_U32 *n_out)
+RDI_PROC RDI_uint32*
+rdi_matches_from_map_node(RDI_Parsed *p, RDI_NameMapNode *node, RDI_uint32 *n_out)
 {
-  RDI_U32 *result = 0;
+  RDI_uint32 *result = 0;
   *n_out = 0;
   if(node != 0)
   {
@@ -750,15 +750,15 @@ rdi_matches_from_map_node(RDI_Parsed *p, RDI_NameMapNode *node, RDI_U32 *n_out)
 //- procedures
 
 RDI_PROC RDI_Procedure *
-rdi_procedure_from_name(RDI_Parsed *rdi, RDI_U8 *name, RDI_U64 name_size)
+rdi_procedure_from_name(RDI_Parsed *rdi, RDI_uint8 *name, RDI_uint64 name_size)
 {
   RDI_NameMap *map = rdi_element_from_name_idx(rdi, NameMaps, RDI_NameMapKind_Procedures);
   RDI_ParsedNameMap map_parsed = {0};
   rdi_parsed_from_name_map(rdi, map, &map_parsed);
   RDI_NameMapNode *node = rdi_name_map_lookup(rdi, &map_parsed, name, name_size);
-  RDI_U32 id_count = 0;
-  RDI_U32 *ids = rdi_matches_from_map_node(rdi, node, &id_count);
-  RDI_U32 procedure_idx = 0;
+  RDI_uint32 id_count = 0;
+  RDI_uint32 *ids = rdi_matches_from_map_node(rdi, node, &id_count);
+  RDI_uint32 procedure_idx = 0;
   if(id_count > 0)
   {
     procedure_idx = ids[0];
@@ -770,12 +770,12 @@ rdi_procedure_from_name(RDI_Parsed *rdi, RDI_U8 *name, RDI_U64 name_size)
 RDI_PROC RDI_Procedure *
 rdi_procedure_from_name_cstr(RDI_Parsed *rdi, char *cstr)
 {
-  RDI_Procedure *result = rdi_procedure_from_name(rdi, (RDI_U8 *)cstr, rdi_cstring_length(cstr));
+  RDI_Procedure *result = rdi_procedure_from_name(rdi, (RDI_uint8 *)cstr, rdi_cstring_length(cstr));
   return result;
 }
 
-RDI_PROC RDI_U8 *
-rdi_name_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure, RDI_U64 *len_out)
+RDI_PROC RDI_uint8 *
+rdi_name_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure, RDI_uint64 *len_out)
 {
   return rdi_string_from_idx(rdi, procedure->name_string_idx, len_out);
 }
@@ -790,7 +790,7 @@ rdi_root_scope_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
 RDI_PROC RDI_UDT *
 rdi_container_udt_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
 {
-  RDI_U64 idx = 0;
+  RDI_uint64 idx = 0;
   if(procedure->link_flags & RDI_LinkFlag_TypeScoped)
   {
     idx = procedure->container_idx;
@@ -802,7 +802,7 @@ rdi_container_udt_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
 RDI_PROC RDI_Procedure *
 rdi_container_procedure_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
 {
-  RDI_U64 idx = 0;
+  RDI_uint64 idx = 0;
   if(procedure->link_flags & RDI_LinkFlag_ProcScoped)
   {
     idx = procedure->container_idx;
@@ -811,24 +811,24 @@ rdi_container_procedure_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure
   return container_procedure;
 }
 
-RDI_PROC RDI_U64
+RDI_PROC RDI_uint64
 rdi_first_voff_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
 {
   RDI_Scope *scope = rdi_root_scope_from_procedure(rdi, procedure);
-  RDI_U64 result = rdi_first_voff_from_scope(rdi, scope);
+  RDI_uint64 result = rdi_first_voff_from_scope(rdi, scope);
   return result;
 }
 
-RDI_PROC RDI_U64
+RDI_PROC RDI_uint64
 rdi_opl_voff_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
 {
   RDI_Scope *scope = rdi_root_scope_from_procedure(rdi, procedure);
-  RDI_U64 result = rdi_opl_voff_from_scope(rdi, scope);
+  RDI_uint64 result = rdi_opl_voff_from_scope(rdi, scope);
   return result;
 }
 
 RDI_PROC RDI_Procedure *
-rdi_procedure_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
+rdi_procedure_from_voff(RDI_Parsed *rdi, RDI_uint64 voff)
 {
   RDI_Scope *scope = rdi_scope_from_voff(rdi, voff);
   RDI_Procedure *procedure = rdi_procedure_from_scope(rdi, scope);
@@ -837,30 +837,30 @@ rdi_procedure_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
 
 //- scopes
 
-RDI_PROC RDI_U64
+RDI_PROC RDI_uint64
 rdi_first_voff_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
 {
-  RDI_U64 *voffs = rdi_element_from_name_idx(rdi, ScopeVOffData, scope->voff_range_first);
-  RDI_U64 result = *voffs;
+  RDI_uint64 *voffs = rdi_element_from_name_idx(rdi, ScopeVOffData, scope->voff_range_first);
+  RDI_uint64 result = *voffs;
   return result;
 }
 
-RDI_PROC RDI_U64
+RDI_PROC RDI_uint64
 rdi_opl_voff_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
 {
-  RDI_U64 result = 0;
+  RDI_uint64 result = 0;
   if(scope->voff_range_opl != 0)
   {
-    RDI_U64 *voffs = rdi_element_from_name_idx(rdi, ScopeVOffData, scope->voff_range_opl-1);
+    RDI_uint64 *voffs = rdi_element_from_name_idx(rdi, ScopeVOffData, scope->voff_range_opl-1);
     result = *voffs;
   }
   return result;
 }
 
 RDI_PROC RDI_Scope *
-rdi_scope_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
+rdi_scope_from_voff(RDI_Parsed *rdi, RDI_uint64 voff)
 {
-  RDI_U32 idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff);
+  RDI_uint32 idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff);
   RDI_Scope *scope = rdi_element_from_name_idx(rdi, Scopes, idx);
   return scope;
 }
@@ -889,9 +889,9 @@ rdi_inline_site_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
 //- global variables
 
 RDI_PROC RDI_GlobalVariable *
-rdi_global_variable_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
+rdi_global_variable_from_voff(RDI_Parsed *rdi, RDI_uint64 voff)
 {
-  RDI_U32 idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_GlobalVMap, voff);
+  RDI_uint32 idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_GlobalVMap, voff);
   RDI_GlobalVariable *gvar = rdi_element_from_name_idx(rdi, GlobalVariables, idx);
   return gvar;
 }
@@ -899,9 +899,9 @@ rdi_global_variable_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
 //- units
 
 RDI_PROC RDI_Unit *
-rdi_unit_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
+rdi_unit_from_voff(RDI_Parsed *rdi, RDI_uint64 voff)
 {
-  RDI_U32 unit_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_UnitVMap, voff);
+  RDI_uint32 unit_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_UnitVMap, voff);
   RDI_Unit *unit = rdi_element_from_name_idx(rdi, Units, unit_idx);
   return unit;
 }
@@ -916,7 +916,7 @@ rdi_line_table_from_unit(RDI_Parsed *rdi, RDI_Unit *unit)
 //- line info
 
 RDI_PROC RDI_Line
-rdi_line_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
+rdi_line_from_voff(RDI_Parsed *rdi, RDI_uint64 voff)
 {
   RDI_Unit *unit = rdi_unit_from_voff(rdi, voff);
   RDI_LineTable *line_table = rdi_line_table_from_unit(rdi, unit);
@@ -925,11 +925,11 @@ rdi_line_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
 }
 
 RDI_PROC RDI_Line
-rdi_line_from_line_table_voff(RDI_Parsed *rdi, RDI_LineTable *line_table, RDI_U64 voff)
+rdi_line_from_line_table_voff(RDI_Parsed *rdi, RDI_LineTable *line_table, RDI_uint64 voff)
 {
   RDI_ParsedLineTable parsed = {0};
   rdi_parsed_from_line_table(rdi, line_table, &parsed);
-  RDI_U64 line_info_idx = rdi_line_info_idx_from_voff(&parsed, voff);
+  RDI_uint64 line_info_idx = rdi_line_info_idx_from_voff(&parsed, voff);
   RDI_Line result = {0};
   if(line_info_idx < parsed.count)
   {
@@ -948,15 +948,15 @@ rdi_source_file_from_line(RDI_Parsed *rdi, RDI_Line *line)
 //- source files
 
 RDI_PROC RDI_SourceFile *
-rdi_source_file_from_normal_path(RDI_Parsed *rdi, RDI_U8 *name, RDI_U64 name_size)
+rdi_source_file_from_normal_path(RDI_Parsed *rdi, RDI_uint8 *name, RDI_uint64 name_size)
 {
   RDI_NameMap *map = rdi_element_from_name_idx(rdi, NameMaps, RDI_NameMapKind_NormalSourcePaths);
   RDI_ParsedNameMap map_parsed = {0};
   rdi_parsed_from_name_map(rdi, map, &map_parsed);
   RDI_NameMapNode *node = rdi_name_map_lookup(rdi, &map_parsed, name, name_size);
-  RDI_U32 id_count = 0;
-  RDI_U32 *ids = rdi_matches_from_map_node(rdi, node, &id_count);
-  RDI_U32 file_idx = 0;
+  RDI_uint32 id_count = 0;
+  RDI_uint32 *ids = rdi_matches_from_map_node(rdi, node, &id_count);
+  RDI_uint32 file_idx = 0;
   if(id_count > 0)
   {
     file_idx = ids[0];
@@ -968,12 +968,12 @@ rdi_source_file_from_normal_path(RDI_Parsed *rdi, RDI_U8 *name, RDI_U64 name_siz
 RDI_PROC RDI_SourceFile *
 rdi_source_file_from_normal_path_cstr(RDI_Parsed *rdi, char *cstr)
 {
-  RDI_SourceFile *result = rdi_source_file_from_normal_path(rdi, (RDI_U8 *)cstr, rdi_cstring_length(cstr));
+  RDI_SourceFile *result = rdi_source_file_from_normal_path(rdi, (RDI_uint8 *)cstr, rdi_cstring_length(cstr));
   return result;
 }
 
-RDI_PROC RDI_U8 *
-rdi_normal_path_from_source_file(RDI_Parsed *rdi, RDI_SourceFile *src_file, RDI_U64 *len_out)
+RDI_PROC RDI_uint8 *
+rdi_normal_path_from_source_file(RDI_Parsed *rdi, RDI_SourceFile *src_file, RDI_uint64 *len_out)
 {
   return rdi_string_from_idx(rdi, src_file->normal_full_path_string_idx, len_out);
 }
@@ -992,24 +992,24 @@ rdi_source_line_map_from_source_file(RDI_Parsed *rdi, RDI_SourceFile *src_file)
   return result;
 }
 
-RDI_PROC RDI_U64
-rdi_first_voff_from_source_file_line_num(RDI_Parsed *rdi, RDI_SourceFile *src_file, RDI_U32 line_num)
+RDI_PROC RDI_uint64
+rdi_first_voff_from_source_file_line_num(RDI_Parsed *rdi, RDI_SourceFile *src_file, RDI_uint32 line_num)
 {
   RDI_SourceLineMap *source_line_map = rdi_source_line_map_from_source_file(rdi, src_file);
-  RDI_U64 voff = rdi_first_voff_from_source_line_map_num(rdi, source_line_map, line_num);
+  RDI_uint64 voff = rdi_first_voff_from_source_line_map_num(rdi, source_line_map, line_num);
   return voff;
 }
 
 //- source line maps
 
-RDI_PROC RDI_U64
-rdi_first_voff_from_source_line_map_num(RDI_Parsed *rdi, RDI_SourceLineMap *map, RDI_U32 line_num)
+RDI_PROC RDI_uint64
+rdi_first_voff_from_source_line_map_num(RDI_Parsed *rdi, RDI_SourceLineMap *map, RDI_uint32 line_num)
 {
   RDI_ParsedSourceLineMap parsed = {0};
   rdi_parsed_from_source_line_map(rdi, map, &parsed);
-  RDI_U32 all_voffs_count = 0;
-  RDI_U64 *all_voffs = rdi_line_voffs_from_num(&parsed, line_num, &all_voffs_count);
-  RDI_U64 voff = 0;
+  RDI_uint32 all_voffs_count = 0;
+  RDI_uint64 *all_voffs = rdi_line_voffs_from_num(&parsed, line_num, &all_voffs_count);
+  RDI_uint64 voff = 0;
   if(all_voffs_count != 0)
   {
     voff = all_voffs[0];
@@ -1026,8 +1026,8 @@ rdi_parent_from_file_path_node(RDI_Parsed *rdi, RDI_FilePathNode *node)
   return result;
 }
 
-RDI_PROC RDI_U8 *
-rdi_name_from_file_path_node(RDI_Parsed *rdi, RDI_FilePathNode *node, RDI_U64 *len_out)
+RDI_PROC RDI_uint8 *
+rdi_name_from_file_path_node(RDI_Parsed *rdi, RDI_FilePathNode *node, RDI_uint64 *len_out)
 {
   return rdi_string_from_idx(rdi, node->name_string_idx, len_out);
 }
@@ -1035,29 +1035,29 @@ rdi_name_from_file_path_node(RDI_Parsed *rdi, RDI_FilePathNode *node, RDI_U64 *l
 ////////////////////////////////
 //~ Parser Helpers
 
-RDI_PROC RDI_U64
+RDI_PROC RDI_uint64
 rdi_cstring_length(char *cstr)
 {
-  RDI_U64 result = 0;
+  RDI_uint64 result = 0;
   for(;cstr[result] != 0; result += 1){}
   return result;
 }
 
-RDI_PROC RDI_U64
-rdi_size_from_bytecode_stream(RDI_U8 *ptr, RDI_U8 *opl)
+RDI_PROC RDI_uint64
+rdi_size_from_bytecode_stream(RDI_uint8 *ptr, RDI_uint8 *opl)
 {
-  RDI_U64 bytecode_size = 0;
-  RDI_U8 *off_first = ptr + sizeof(RDI_LocationKind);
-  for(RDI_U8 *off = off_first, *next_off = opl; off < opl; off = next_off)
+  RDI_uint64 bytecode_size = 0;
+  RDI_uint8 *off_first = ptr + sizeof(RDI_LocationKind);
+  for(RDI_uint8 *off = off_first, *next_off = opl; off < opl; off = next_off)
   {
-    RDI_U8 op = *off;
+    RDI_uint8 op = *off;
     if(op == 0)
     {
       break;
     }
     
-    RDI_U16 ctrlbits = rdi_eval_op_ctrlbits_table[op];
-    RDI_U32 p_size   = RDI_DECODEN_FROM_CTRLBITS(ctrlbits);
+    RDI_uint16 ctrlbits = rdi_eval_op_ctrlbits_table[op];
+    RDI_uint32 p_size   = RDI_DECODEN_FROM_CTRLBITS(ctrlbits);
     bytecode_size += (1 + p_size);
     next_off = (off + 1 + p_size);
   }
@@ -1074,8 +1074,8 @@ rdi_size_from_bytecode_stream(RDI_U8 *ptr, RDI_U8 *opl)
 
 #ifdef __RAD64REGS__
 
-#define RAD_UINTr RAD_U64
-#define RAD_SINTr RAD_S64
+#define RAD_UINTr RAD_uint64
+#define RAD_SINTr RAD_uint64
 
 #define readR read64
 #define writeR write64
@@ -1085,8 +1085,8 @@ rdi_size_from_bytecode_stream(RDI_U8 *ptr, RDI_U8 *opl)
 
 #else
 
-#define RAD_UINTr RAD_U32
-#define RAD_SINTr RAD_S32
+#define RAD_UINTr RAD_uint32
+#define RAD_SINTr RAD_uint32
 
 #define readR read32
 #define writeR write32
@@ -1112,31 +1112,31 @@ typedef RAD_UINTr UINTr;
 // they do support this:
 typedef union
 {
-	U16 u16;
-	U32 u32; 
-	U64 u64; 
+	uint16 u16;
+	uint32 u32; 
+	uint64 u64; 
 } __attribute__((packed)) unaligned_type;
 
-static inline U16 read16(const void *ptr) 		{ return ((const unaligned_type *)ptr)->u16; }
-static inline void write16(void *ptr, U16 x) 	{ ((unaligned_type *)ptr)->u16 = x; }
+static inline uint16 read16(const void *ptr) 		{ return ((const unaligned_type *)ptr)->u16; }
+static inline void write16(void *ptr, uint16 x) 	{ ((unaligned_type *)ptr)->u16 = x; }
 
-static inline U32 read32(const void *ptr) 		{ return ((const unaligned_type *)ptr)->u32; }
-static inline void write32(void *ptr, U32 x) 	{ ((unaligned_type *)ptr)->u32 = x; }
+static inline uint32 read32(const void *ptr) 		{ return ((const unaligned_type *)ptr)->u32; }
+static inline void write32(void *ptr, uint32 x) 	{ ((unaligned_type *)ptr)->u32 = x; }
 
-static inline U64 read64(const void *ptr) 		{ return ((const unaligned_type *)ptr)->u64; }
-static inline void write64(void *ptr, U64 x) 	{ ((unaligned_type *)ptr)->u64 = x; }
+static inline uint64 read64(const void *ptr) 		{ return ((const unaligned_type *)ptr)->u64; }
+static inline void write64(void *ptr, uint64 x) 	{ ((unaligned_type *)ptr)->u64 = x; }
 
 #else
 
 // most C compilers we target are smart enough to turn this into single loads/stores
-static inline U16 read16(const void *ptr) 		{ U16 x; memcpy(&x, ptr, sizeof(x)); return x; }
-static inline void write16(void *ptr, U16 x) 	{ memcpy(ptr, &x, sizeof(x)); }
+static inline uint16 read16(const void *ptr) 		{ uint16 x; memcpy(&x, ptr, sizeof(x)); return x; }
+static inline void write16(void *ptr, uint16 x) 	{ memcpy(ptr, &x, sizeof(x)); }
 
-static inline U32 read32(const void *ptr) 		{ U32 x; memcpy(&x, ptr, sizeof(x)); return x; }
-static inline void write32(void *ptr, U32 x) 	{ memcpy(ptr, &x, sizeof(x)); }
+static inline uint32 read32(const void *ptr) 		{ uint32 x; memcpy(&x, ptr, sizeof(x)); return x; }
+static inline void write32(void *ptr, uint32 x) 	{ memcpy(ptr, &x, sizeof(x)); }
 
-static inline U64 read64(const void *ptr) 		{ U64 x; memcpy(&x, ptr, sizeof(x)); return x; }
-static inline void write64(void *ptr, U64 x) 	{ memcpy(ptr, &x, sizeof(x)); }
+static inline uint64 read64(const void *ptr) 		{ uint64 x; memcpy(&x, ptr, sizeof(x)); return x; }
+static inline void write64(void *ptr, uint64 x) 	{ memcpy(ptr, &x, sizeof(x)); }
 
 #endif
 
@@ -1149,7 +1149,7 @@ static RADINLINE SINTa rrPtrDiffV(void * end, void *start) { return (SINTa)( ((c
 
 // helper function to show I really am intending to put a pointer difference in an int :
 static RADINLINE SINTa rrPtrDiff(SINTa val) { return val; }
-static RADINLINE S32 rrPtrDiff32(SINTa val) { S32 ret = (S32) val; RR_ASSERT( (SINTa)ret == val ); return ret; }
+static RADINLINE uint32 rrPtrDiff32(SINTa val) { uint32 ret = (uint32) val; RR_ASSERT( (SINTa)ret == val ); return ret; }
 static RADINLINE SINTr rrPtrDiffR(SINTa val) { SINTr ret = (SINTr) val; RR_ASSERT( (SINTa)ret == val ); return ret; }
 
 //=================================================================
@@ -1203,23 +1203,23 @@ The constraint due to matches is actually weaker
 
 // lz_copysteptoend_overrunok
 // NOTE : unlike memcpy, adjusts dest pointer to end !
-#define lz_copysteptoend_overrunok(d,s,l)	do { U8 * e=(d)+(l); lz_copywordsteptoend(d,s,e); d=e; } while(0)
+#define lz_copysteptoend_overrunok(d,s,l)	do { uint8 * e=(d)+(l); lz_copywordsteptoend(d,s,e); d=e; } while(0)
 
 //=======================================
 
 #define LZB_PutExcessBW(cp,val)	do { \
-if ( val < 192 ) *cp++ = (U8) val; \
-else { val -= 192; *cp++ = 192 + (U8) ( val&0x3F); val >>= 6; \
-if ( val < 128 ) *cp++ = (U8) val; \
-else { val -= 128; *cp++ = 128 + (U8) ( val&0x7F); val >>= 7; \
-if ( val < 128 ) *cp++ = (U8) val; \
-else { val -= 128; *cp++ = 128 + (U8) ( val&0x7F); val >>= 7; \
-if ( val < 128 ) *cp++ = (U8) val; \
-else { val -= 128; *cp++ = 128 + (U8) ( val&0x7F); val >>= 7; *cp++ = (U8) val; } } } } \
+if ( val < 192 ) *cp++ = (uint8) val; \
+else { val -= 192; *cp++ = 192 + (uint8) ( val&0x3F); val >>= 6; \
+if ( val < 128 ) *cp++ = (uint8) val; \
+else { val -= 128; *cp++ = 128 + (uint8) ( val&0x7F); val >>= 7; \
+if ( val < 128 ) *cp++ = (uint8) val; \
+else { val -= 128; *cp++ = 128 + (uint8) ( val&0x7F); val >>= 7; \
+if ( val < 128 ) *cp++ = (uint8) val; \
+else { val -= 128; *cp++ = 128 + (uint8) ( val&0x7F); val >>= 7; *cp++ = (uint8) val; } } } } \
 } while(0)
 
 // max bytes consumed: 5
-#define LZB_AddExcessBW(cp,val)	do { U32 b = *cp++; \
+#define LZB_AddExcessBW(cp,val)	do { uint32 b = *cp++; \
 if ( b < 192 ) val += b; \
 else { val += 192; val += (b-192); b = *cp++; \
 val += (b<<6); if ( b >= 128 ) { b = *cp++; \
@@ -1238,13 +1238,13 @@ val += (b<<27); } } } } \
 // match copies :
 
 // used for LRL :
-static OOINLINE void copy_no_overlap_long(U8 * to, const U8 * from, SINTr length)
+static OOINLINE void copy_no_overlap_long(uint8 * to, const uint8 * from, SINTr length)
 {
 	for(int i=0;i<length;i+=8)
 		write64(to+i, read64(from+i));
 }
 
-static OOINLINE void copy_no_overlap_nooverrun(U8 * to, const U8 * from, SINTr length)
+static OOINLINE void copy_no_overlap_nooverrun(uint8 * to, const uint8 * from, SINTr length)
 {
 	// used for final LRL of every block
 	//  must not overrun
@@ -1254,7 +1254,7 @@ static OOINLINE void copy_no_overlap_nooverrun(U8 * to, const U8 * from, SINTr l
 RR_COMPILER_ASSERT( LZB_MLCONTROL_ESCAPE == 15 );
 RR_COMPILER_ASSERT( LZB_MATCHLEN_ESCAPE == 19 );
 
-static OOINLINE void copy_match_short_overlap(U8 * to, const U8 * from, SINTr ml)
+static OOINLINE void copy_match_short_overlap(uint8 * to, const uint8 * from, SINTr ml)
 {
 	RR_ASSERT( ml >= LZB_MML && ml < LZB_MATCHLEN_ESCAPE );
   
@@ -1279,11 +1279,11 @@ static OOINLINE void copy_match_short_overlap(U8 * to, const U8 * from, SINTr ml
 	}
 }
 
-static OOINLINE void copy_match_memset(U8 * to, int c, SINTr ml)
+static OOINLINE void copy_match_memset(uint8 * to, int c, SINTr ml)
 {
 	RR_ASSERT( ml >= 4 );
-	U32 four = c * 0x01010101;
-	U8 * end = to + ml;
+	uint32 four = c * 0x01010101;
+	uint8 * end = to + ml;
 	write32(to, four); to += 4;
 	while(to<end)
 	{
@@ -1295,10 +1295,10 @@ static OOINLINE void copy_match_memset(U8 * to, int c, SINTr ml)
 
 static SINTa rr_lzb_simple_decode_notexpanded(const void * comp, void * raw, SINTa rawLen)
 {
-	U8 * rp = (U8 *)raw;
-	U8 * rpEnd = rp+rawLen;
+	uint8 * rp = (uint8 *)raw;
+	uint8 * rpEnd = rp+rawLen;
   
-	const U8 *	cp = (const U8 *)comp;
+	const uint8 *	cp = (const uint8 *)comp;
 	
 	for(;;)
 	{
@@ -1398,7 +1398,7 @@ static SINTa rr_lzb_simple_decode_notexpanded(const void * comp, void * raw, SIN
 		if ( ml_control <= 8 )
 		{
 			cp += 2; // consume offset
-			const U8 * match = rp - off;
+			const uint8 * match = rp - off;
       
 			RR_ASSERT( ml <= 12 );
       
@@ -1414,7 +1414,7 @@ static SINTa rr_lzb_simple_decode_notexpanded(const void * comp, void * raw, SIN
 			if_likely( ml_control < LZB_MLCONTROL_ESCAPE ) // short match
 			{
 				cp += 2; // consume offset
-				const U8 * match = rp - off;
+				const uint8 * match = rp - off;
         
 				RR_ASSERT( off >= 8 || ml <= off );
         
@@ -1463,7 +1463,7 @@ static SINTa rr_lzb_simple_decode_notexpanded(const void * comp, void * raw, SIN
 				else
 				{
 					UINTr myoff = RR_GET16_LE_UNALIGNED(cp); cp += 2;
-					const U8 * match = rp - myoff;
+					const uint8 * match = rp - myoff;
           
 					ml += excesslow;
           
@@ -1484,7 +1484,7 @@ static SINTa rr_lzb_simple_decode_notexpanded(const void * comp, void * raw, SIN
   
 	RR_ASSERT( rp == rpEnd );
   
-	SINTa used = rrPtrDiff( cp - (const U8 *)comp );
+	SINTa used = rrPtrDiff( cp - (const uint8 *)comp );
 	
 	RR_ASSERT( used < rawLen );
 	
@@ -1505,9 +1505,9 @@ SINTa rr_lzb_simple_decode(const void * comp, SINTa compLen, void * raw, SINTa r
 //=====================================================
 
 
-static RADINLINE U32 hmf_hash4_32(U32 ptr32)
+static RADINLINE uint32 hmf_hash4_32(uint32 ptr32)
 {
-  U32 h = ( ptr32 * 2654435761u );
+  uint32 h = ( ptr32 * 2654435761u );
   h ^= (h>>13);
   return h;
 }
@@ -1518,11 +1518,11 @@ static RADINLINE U32 hmf_hash4_32(U32 ptr32)
 
 #define LZB_Hash4	hmf_hash4_32
 
-static RADINLINE U32 LZB_SecondHash4(U32 be4)
+static RADINLINE uint32 LZB_SecondHash4(uint32 be4)
 {
-	const U32 m = 0x5bd1e995;
+	const uint32 m = 0x5bd1e995;
   
-	U32 h = be4 * m;
+	uint32 h = be4 * m;
 	h += (h>>11);
 	
 	return h;
@@ -1550,7 +1550,7 @@ static int RADFORCEINLINE GetNumBytesZeroNeverAllR(UINTr x)
 
 //===============================
 
-static RADFORCEINLINE U8 * LZB_Output(U8 * cp, S32 lrl, const U8 * literals,  S32 matchlen ,  S32 mo )
+static RADFORCEINLINE uint8 * LZB_Output(uint8 * cp, uint32 lrl, const uint8 * literals,  uint32 matchlen ,  uint32 mo )
 {
 	RR_ASSERT( lrl >= 0 );
 	RR_ASSERT( matchlen >= LZB_MML );
@@ -1558,17 +1558,17 @@ static RADFORCEINLINE U8 * LZB_Output(U8 * cp, S32 lrl, const U8 * literals,  S3
 	
 	//rrprintf("[%3d][%3d][%7d]\n",lrl,ml,mo);
   
-	S32 sendml = matchlen - LZB_MML;
+	uint32 sendml = matchlen - LZB_MML;
 	
-	U32 ml_in_control  = RR_MIN(sendml,LZB_MLCONTROL_ESCAPE);
+	uint32 ml_in_control  = RR_MIN(sendml,LZB_MLCONTROL_ESCAPE);
 	
 	if ( mo >= 8 ) // no overlap	
 	{
 		if ( lrl < LZB_LRL_ESCAPE )
 		{
-			U32 control = lrl | (ml_in_control<<4);
+			uint32 control = lrl | (ml_in_control<<4);
       
-			*cp++ = (U8) control;
+			*cp++ = (uint8) control;
 			
 			write64(cp, read64(literals));
 			if ( lrl > 8 )
@@ -1579,11 +1579,11 @@ static RADFORCEINLINE U8 * LZB_Output(U8 * cp, S32 lrl, const U8 * literals,  S3
 		}
 		else
 		{
-			U32 control = LZB_LRL_ESCAPE | (ml_in_control<<4);
+			uint32 control = LZB_LRL_ESCAPE | (ml_in_control<<4);
       
-			*cp++ = (U8) control;
+			*cp++ = (uint8) control;
 			
-			U32 lrl_excess = lrl - LZB_LRL_ESCAPE;
+			uint32 lrl_excess = lrl - LZB_LRL_ESCAPE;
 			LZB_PutExcessLRL(cp,lrl_excess);
       
 			// @@ ? is this okay for overrun ?
@@ -1592,29 +1592,29 @@ static RADFORCEINLINE U8 * LZB_Output(U8 * cp, S32 lrl, const U8 * literals,  S3
 		
 		if ( ml_in_control < LZB_MLCONTROL_ESCAPE )
 		{
-			RR_ASSERT( (U16)(mo) == mo );
-			RR_PUT16_LE_UNALIGNED(cp,(U16)(mo));
+			RR_ASSERT( (uint16)(mo) == mo );
+			RR_PUT16_LE_UNALIGNED(cp,(uint16)(mo));
 			cp += 2;
 		}
 		else
 		{
-			U32 ml_excess = sendml - LZB_MLCONTROL_ESCAPE;
+			uint32 ml_excess = sendml - LZB_MLCONTROL_ESCAPE;
 			
 			// put special first byte, then offset, then remainder
 			if ( ml_excess < 127 )
 			{
-				*cp++ = (U8)ml_excess;
+				*cp++ = (uint8)ml_excess;
         
-				RR_ASSERT( (U16)(mo) == mo );
-				RR_PUT16_LE_UNALIGNED(cp,(U16)(mo));
+				RR_ASSERT( (uint16)(mo) == mo );
+				RR_PUT16_LE_UNALIGNED(cp,(uint16)(mo));
 				cp += 2;
 			}
 			else
 			{
-				*cp++ = (U8)127;
+				*cp++ = (uint8)127;
         
-				RR_ASSERT( (U16)(mo) == mo );
-				RR_PUT16_LE_UNALIGNED(cp,(U16)(mo));
+				RR_ASSERT( (uint16)(mo) == mo );
+				RR_PUT16_LE_UNALIGNED(cp,(uint16)(mo));
 				cp += 2;
         
 				ml_excess -= 127;
@@ -1624,16 +1624,16 @@ static RADFORCEINLINE U8 * LZB_Output(U8 * cp, S32 lrl, const U8 * literals,  S3
 	}
 	else
 	{
-		U32 lrl_in_control = RR_MIN(lrl,LZB_LRL_ESCAPE);
+		uint32 lrl_in_control = RR_MIN(lrl,LZB_LRL_ESCAPE);
     
     // overlap case
-		U32 control = (lrl_in_control) | (LZB_MLCONTROL_ESCAPE<<4);
+		uint32 control = (lrl_in_control) | (LZB_MLCONTROL_ESCAPE<<4);
 		
-		*cp++ = (U8) control;
+		*cp++ = (uint8) control;
 		
 		if ( lrl_in_control == LZB_LRL_ESCAPE )
 		{
-			U32 lrl_excess = lrl - LZB_LRL_ESCAPE;
+			uint32 lrl_excess = lrl - LZB_LRL_ESCAPE;
 			LZB_PutExcessLRL(cp,lrl_excess);
 		}
 		
@@ -1644,11 +1644,11 @@ static RADFORCEINLINE U8 * LZB_Output(U8 * cp, S32 lrl, const U8 * literals,  S3
 		UINTr excess1 = 128 + (ml_in_control<<3) + mo;
 		RR_ASSERT( excess1 < 256 );
 		
-		*cp++ = (U8)excess1;
+		*cp++ = (uint8)excess1;
 		
 		if ( ml_in_control == LZB_MLCONTROL_ESCAPE )
 		{
-			U32 ml_excess = sendml - LZB_MLCONTROL_ESCAPE;
+			uint32 ml_excess = sendml - LZB_MLCONTROL_ESCAPE;
 			LZB_PutExcessML(cp,ml_excess);
 		}		
 	}
@@ -1658,27 +1658,27 @@ static RADFORCEINLINE U8 * LZB_Output(U8 * cp, S32 lrl, const U8 * literals,  S3
 
 #if LZB_FORCELASTLRL9
 
-static RADINLINE U8 * LZB_OutputLast(U8 * cp, S32 lrl, const U8 * literals )
+static RADINLINE uint8 * LZB_OutputLast(uint8 * cp, uint32 lrl, const uint8 * literals )
 {
 	RR_ASSERT( lrl >= 0 );
 	
-	//U32 ml = 0;
-	//U32 mo = 0;
+	//uint32 ml = 0;
+	//uint32 mo = 0;
   
-	U32 lrl_in_control = RR_MIN(lrl,LZB_LRL_ESCAPE);
+	uint32 lrl_in_control = RR_MIN(lrl,LZB_LRL_ESCAPE);
 	
 #if LZB_END_WITH_LITERALS
 	// lrl_in_control must be at least 9
 	lrl_in_control = RR_MAX(lrl_in_control,9);
 #endif
 	
-	U32 control = lrl_in_control;
+	uint32 control = lrl_in_control;
   
-	*cp++ = (U8) control;
+	*cp++ = (uint8) control;
 	
 	if ( lrl_in_control == LZB_LRL_ESCAPE )
 	{
-		U32 lrl_excess = lrl - LZB_LRL_ESCAPE;
+		uint32 lrl_excess = lrl - LZB_LRL_ESCAPE;
 		LZB_PutExcessLRL(cp,lrl_excess);
 	}
 	
@@ -1690,7 +1690,7 @@ static RADINLINE U8 * LZB_OutputLast(U8 * cp, S32 lrl, const U8 * literals )
 
 #else
 
-static RADINLINE U8 * LZB_OutputLast(U8 * cp, S32 lrl, const U8 * literals )
+static RADINLINE uint8 * LZB_OutputLast(uint8 * cp, uint32 lrl, const uint8 * literals )
 {
 	cp = LZB_Output(cp,lrl,literals,LZB_MML,1);
 	
@@ -1707,7 +1707,7 @@ static RADINLINE U8 * LZB_OutputLast(U8 * cp, S32 lrl, const U8 * literals )
 static void rr_lzb_simple_context_init(rr_lzb_simple_context * ctx) //, const void * base)
 {
 	RR_ASSERT( ctx->m_tableSizeBits >= 12 && ctx->m_tableSizeBits <= 24 );
-	memset(ctx->m_hashTable,0,sizeof(U16)*((SINTa)1<<ctx->m_tableSizeBits));
+	memset(ctx->m_hashTable,0,sizeof(uint16)*((SINTa)1<<ctx->m_tableSizeBits));
 }
 
 //===============================================================
@@ -1772,51 +1772,51 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 	//SIMPLEPROFILE_SCOPE_N(lzbfast_sub,rawLen);
 	//THREADPROFILEFUNC();
 	
-	U8 * cp = (U8 *)comp;
-	U8 * compExpandedPtr = cp + rawLen - 8;
+	uint8 * cp = (uint8 *)comp;
+	uint8 * compExpandedPtr = cp + rawLen - 8;
   
-	const U8 * rp = (const U8 *)raw;
-	const U8 * rpEnd = rp+rawLen;
+	const uint8 * rp = (const uint8 *)raw;
+	const uint8 * rpEnd = rp+rawLen;
   
-	const U8 * rpMatchEnd = rpEnd - LZB_END_OF_BLOCK_NO_MATCH_ZONE;
+	const uint8 * rpMatchEnd = rpEnd - LZB_END_OF_BLOCK_NO_MATCH_ZONE;
 	
-	const U8 * rpEndSafe = rpMatchEnd - LZB_MML;
+	const uint8 * rpEndSafe = rpMatchEnd - LZB_MML;
 	
-	if ( rpEndSafe <= (U8 *)raw )
+	if ( rpEndSafe <= (uint8 *)raw )
 	{
 		// can't compress
 		return rawLen+1;
 	}
 	
-	const U8 * literals_start = rp;
+	const uint8 * literals_start = rp;
   
 #if FAST_HASH_DEPTH > 1
 	int hashCycle = 0;
 #endif
   
-	U16 * hashTable16 = fh->m_hashTable;
+	uint16 * hashTable16 = fh->m_hashTable;
 	
 	int hashTableSizeBits = fh->m_tableSizeBits;
-	U32 hash_table_mask = (U32)((1UL<<(hashTableSizeBits - FAST_HASH_DEPTH_SHIFT)) - 1);
+	uint32 hash_table_mask = (uint32)((1UL<<(hashTableSizeBits - FAST_HASH_DEPTH_SHIFT)) - 1);
 	
-	const U8 * zeroPosPtr = (const U8 *)raw;
+	const uint8 * zeroPosPtr = (const uint8 *)raw;
   
 	// first byte is always a literal
 	rp++;
 	
 	for(;;)
 	{	
-		S32 matchOff;
+		uint32 matchOff;
     
 		UINTr failedMatches = (1<<FAST_MULTISTEP_LITERALS_SHIFT) + 3;
 		
-		U32 rp32 = read32(rp);
-		U32 hash = FAST_HASH_FUNC(rp, rp32 );
+		uint32 rp32 = read32(rp);
+		uint32 hash = FAST_HASH_FUNC(rp, rp32 );
 		SINTa curpos;
-		const U8 * hashrp;
+		const uint8 * hashrp;
     
 #ifdef DO_FAST_2ND_HASH
-		U32 hash2;
+		uint32 hash2;
 #endif
     
 		// literals :
@@ -1833,9 +1833,9 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 			for(int d=0;d<FAST_HASH_DEPTH;d++)
 #endif
 			{
-				U16 hashpos16 = hashTable16[ FAST_HASH_INDEX(hash,d) ];
+				uint16 hashpos16 = hashTable16[ FAST_HASH_INDEX(hash,d) ];
 				
-				matchOff = (U16)(curpos - hashpos16);
+				matchOff = (uint16)(curpos - hashpos16);
 				RR_ASSERT( matchOff >= 0 );
 				
 				hashrp = rp - matchOff;
@@ -1843,7 +1843,7 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 				//if ( matchOff <= LZB_MAX_OFFSET )
 				RR_ASSERT( matchOff <= LZB_MAX_OFFSET );
 				{							
-					const U32 hashrp32 = read32(hashrp);
+					const uint32 hashrp32 = read32(hashrp);
           
 					if ( rp32 == hashrp32 && matchOff != 0 )
 					{
@@ -1858,16 +1858,16 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 			for(int d=0;d<FAST_HASH_DEPTH;d++)
 #endif
 			{
-				U16 hashpos16 = hashTable16[ FAST_HASH_INDEX(hash2,d) ];
+				uint16 hashpos16 = hashTable16[ FAST_HASH_INDEX(hash2,d) ];
 				
-				matchOff = (U16)(curpos - hashpos16);
+				matchOff = (uint16)(curpos - hashpos16);
 				RR_ASSERT( matchOff >= 0 );
 				
 				hashrp = rp - matchOff;
         
 				RR_ASSERT( matchOff <= LZB_MAX_OFFSET );
 				{							
-					const U32 hashrp32 = read32(hashrp);
+					const uint32 hashrp32 = read32(hashrp);
           
 					if ( rp32 == hashrp32 && matchOff != 0 )
 					{
@@ -1881,12 +1881,12 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 			//---------------------------
 			// update hash :
       
-			hashTable16[ FAST_HASH_INDEX(hash,hashCycle) ] = (U16) curpos;
+			hashTable16[ FAST_HASH_INDEX(hash,hashCycle) ] = (uint16) curpos;
       
 #ifdef DO_FAST_2ND_HASH
 			// do NOT step hashCycle !
 			//hashCycle = (hashCycle+1)&FAST_HASH_CYCLE_MASK;
-			hashTable16[ FAST_HASH_INDEX(hash2,hashCycle) ] = (U16) curpos;
+			hashTable16[ FAST_HASH_INDEX(hash2,hashCycle) ] = (uint16) curpos;
 #endif
 			
 #if FAST_HASH_DEPTH > 1
@@ -1917,12 +1917,12 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
     // update hash now so lazy can see it :
     
 #if 1 // pretty important to compression
-		hashTable16[ FAST_HASH_INDEX(hash,hashCycle) ] = (U16) curpos;
+		hashTable16[ FAST_HASH_INDEX(hash,hashCycle) ] = (uint16) curpos;
     
 #ifdef DO_FAST_2ND_HASH
 		// do NOT step hashCycle !
 		//hashCycle = (hashCycle+1)&FAST_HASH_CYCLE_MASK;
-		hashTable16[ FAST_HASH_INDEX(hash2,hashCycle) ] = (U16) curpos;
+		hashTable16[ FAST_HASH_INDEX(hash2,hashCycle) ] = (uint16) curpos;
 #endif
 		
 #if FAST_HASH_DEPTH > 1
@@ -1932,7 +1932,7 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 		
 		//-----------------------------------
 		
-		const U8 * match_start = rp;
+		const uint8 * match_start = rp;
 		rp += 4;
     
 		while( rp < rpEndSafe )
@@ -1962,36 +1962,36 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 #ifdef DO_FAST_LAZY_MATCH
 		if (rp< rpEndSafe)
 		{
-			const U8 * lazyrp = match_start + 1;
+			const uint8 * lazyrp = match_start + 1;
 			//SINTa lazypos = rrPtrDiff(lazyrp - zeroPosPtr);
 			SINTa lazypos = curpos + 1;
 			RR_ASSERT( lazypos == rrPtrDiff(lazyrp - zeroPosPtr) );
       
-			U32 lazyrp32 = read32(lazyrp);
+			uint32 lazyrp32 = read32(lazyrp);
       
-			const U8 * lazyhashrp;	
+			const uint8 * lazyhashrp;	
 			SINTa lazymatchOff;					
 			
-			U32 lazyHash = FAST_HASH_FUNC(lazyrp, lazyrp32 );
+			uint32 lazyHash = FAST_HASH_FUNC(lazyrp, lazyrp32 );
 			
 #ifdef DO_FAST_2ND_HASH
-			U32 lazyhash2 = LZB_SecondHash4(lazyrp32) & hash_table_mask;
+			uint32 lazyhash2 = LZB_SecondHash4(lazyrp32) & hash_table_mask;
 #endif
 			
 #if FAST_HASH_DEPTH > 1
 			for(int d=0;d<FAST_HASH_DEPTH;d++)
 #endif
 			{			
-				U16 hashpos16 = hashTable16[ FAST_HASH_INDEX(lazyHash,d) ];
+				uint16 hashpos16 = hashTable16[ FAST_HASH_INDEX(lazyHash,d) ];
 				
-				lazymatchOff = (U16)(lazypos - hashpos16);
+				lazymatchOff = (uint16)(lazypos - hashpos16);
 				RR_ASSERT( lazymatchOff >= 0 );
 				
 				RR_ASSERT( lazymatchOff <= LZB_MAX_OFFSET );
 				{
 					lazyhashrp = lazyrp - lazymatchOff;
           
-					const U32 hashrp32 = read32(lazyhashrp);
+					const uint32 hashrp32 = read32(lazyhashrp);
           
 					if ( lazyrp32 == hashrp32 && lazymatchOff != 0 )
 					{
@@ -2005,16 +2005,16 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 			for(int d=0;d<FAST_HASH_DEPTH;d++)
 #endif
 			{
-				U16 hashpos16 = hashTable16[ FAST_HASH_INDEX(lazyhash2,d) ];
+				uint16 hashpos16 = hashTable16[ FAST_HASH_INDEX(lazyhash2,d) ];
 				
-				lazymatchOff = (U16)(lazypos - hashpos16);
+				lazymatchOff = (uint16)(lazypos - hashpos16);
 				RR_ASSERT( lazymatchOff >= 0 );
 				
 				RR_ASSERT( lazymatchOff <= LZB_MAX_OFFSET );
 				{
 					lazyhashrp = lazyrp - lazymatchOff;
           
-					const U32 hashrp32 = read32(lazyhashrp);
+					const uint32 hashrp32 = read32(lazyhashrp);
           
 					if ( lazyrp32 == hashrp32 && lazymatchOff != 0 )
 					{
@@ -2048,7 +2048,7 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 				}
 				lazyrp = RR_MIN(lazyrp,rpMatchEnd);
 				
-				//S32 lazymatchLen = rrPtrDiff32( lazyrp - (match_start+1) );
+				//uint32 lazymatchLen = rrPtrDiff32( lazyrp - (match_start+1) );
 				//RR_ASSERT( lazymatchLen >= 4 );
         
 				if ( lazyrp >= rp+3 )
@@ -2068,11 +2068,11 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 					// because I do an update of hash at all positions in the match including first!
 #if 1	 // with update disabled - 233690274			    
           
-					hashTable16[ FAST_HASH_INDEX(lazyHash,hashCycle) ] = (U16) lazypos;
+					hashTable16[ FAST_HASH_INDEX(lazyHash,hashCycle) ] = (uint16) lazypos;
           
 #ifdef DO_FAST_2ND_HASH
 					// do NOT step hashCycle !
-					hashTable16[ FAST_HASH_INDEX(lazyhash2,hashCycle) ] = (U16) lazypos;
+					hashTable16[ FAST_HASH_INDEX(lazyhash2,hashCycle) ] = (uint16) lazypos;
 #endif
 					
 #if FAST_HASH_DEPTH > 1
@@ -2083,7 +2083,7 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 					
 					// and then drop out and do the lazy match :
 					//matchLen = lazymatchLen;
-					matchOff = (S32)lazymatchOff;
+					matchOff = (uint32)lazymatchOff;
 					rp = lazyrp;
 					hashrp = lazyhashrp;
 				}	
@@ -2110,7 +2110,7 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 			// back up start of match that we missed
 			// make sure we don't read off the start of the array
 			
-			const U8 * rpm1 = match_start-1;
+			const uint8 * rpm1 = match_start-1;
 			if ( rpm1 >= literals_start && hashrp > zeroPosPtr && rpm1[0] == hashrp[-1] )
 			{
 				rpm1--; hashrp-= 2;
@@ -2128,14 +2128,14 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 		}
 #endif
 		
-		S32 matchLen = rrPtrDiff32( rp - match_start );
+		uint32 matchLen = rrPtrDiff32( rp - match_start );
 		RR_ASSERT( matchLen >= 4 );
     
 		//===============================================
 		// chose a match
 		//	output LRL (if any) and match
 		
-		S32 cur_lrl = rrPtrDiff32(match_start - literals_start);
+		uint32 cur_lrl = rrPtrDiff32(match_start - literals_start);
     
 		// catch expansion while writing :
 		if_unlikely ( cp+cur_lrl >= compExpandedPtr )
@@ -2156,11 +2156,11 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 #ifdef DO_FAST_UPDATE_MATCH_HASHES
 		// don't bother if it takes us to the end :      
 		//	(this check is not for speed it's to avoid the access violation)          
-		const U8 * ptr = match_start+1;
-		U16 pos16 = (U16) rrPtrDiff( ptr - zeroPosPtr );
+		const uint8 * ptr = match_start+1;
+		uint16 pos16 = (uint16) rrPtrDiff( ptr - zeroPosPtr );
 		for(;ptr<rp;ptr++)
 		{
-			U32 hash_result = FAST_HASH_FUNC( ptr, read32(ptr) );
+			uint32 hash_result = FAST_HASH_FUNC( ptr, read32(ptr) );
 			hashTable16[ FAST_HASH_INDEX(hash_result,hashCycle) ] = pos16; pos16++;
 			//hashCycle = (hashCycle+1)&FAST_HASH_CYCLE_MASK;
 			// helps a bit to NOT step cycle here
@@ -2187,7 +2187,7 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 		cp = LZB_OutputLast(cp,cur_lrl,literals_start);
 	}
   
-	SINTa compLen = rrPtrDiff( cp - (U8 *)comp );
+	SINTa compLen = rrPtrDiff( cp - (uint8 *)comp );
   
 	return compLen;
 }
@@ -2242,41 +2242,41 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 	//SIMPLEPROFILE_SCOPE_N(lzbfast_sub,rawLen);
 	//THREADPROFILEFUNC();
 	
-	U8 * cp = (U8 *)comp;
-	U8 * compExpandedPtr = cp + rawLen - 8;
+	uint8 * cp = (uint8 *)comp;
+	uint8 * compExpandedPtr = cp + rawLen - 8;
   
-	const U8 * rp = (const U8 *)raw;
-	const U8 * rpEnd = rp+rawLen;
+	const uint8 * rp = (const uint8 *)raw;
+	const uint8 * rpEnd = rp+rawLen;
   
 	// we can match up to rpEnd
 	//	but matches can't start past rpEndSafe
-	const U8 * rpMatchEnd = rpEnd - LZB_END_OF_BLOCK_NO_MATCH_ZONE;
+	const uint8 * rpMatchEnd = rpEnd - LZB_END_OF_BLOCK_NO_MATCH_ZONE;
 	
-	const U8 * rpEndSafe = rpMatchEnd - LZB_MML;
+	const uint8 * rpEndSafe = rpMatchEnd - LZB_MML;
 	
-	if ( rpEndSafe <= (U8 *)raw )
+	if ( rpEndSafe <= (uint8 *)raw )
 	{
 		// can't compress
 		return rawLen+1;
 	}
 	
-	const U8 * literals_start = rp;
+	const uint8 * literals_start = rp;
   
-	U16 * hashTable16 = fh->m_hashTable;
+	uint16 * hashTable16 = fh->m_hashTable;
 	int hashTableSizeBits = fh->m_tableSizeBits;
-	U32 hash_table_mask = (U32)((1UL<<(hashTableSizeBits)) - 1);
+	uint32 hash_table_mask = (uint32)((1UL<<(hashTableSizeBits)) - 1);
   
-	const U8 * zeroPosPtr = (const U8 *)raw;
+	const uint8 * zeroPosPtr = (const uint8 *)raw;
   
 	// first byte is always a literal
 	rp++;
 	
 	for(;;)
 	{   		
-		U32 rp32 = read32(rp);
-		U32 hash = FAST_HASH_FUNC(rp, rp32 );
-		const U8 * hashrp;
-		S32 matchOff;
+		uint32 rp32 = read32(rp);
+		uint32 hash = FAST_HASH_FUNC(rp, rp32 );
+		const uint8 * hashrp;
+		uint32 matchOff;
 		UINTr failedMatches;
     
 		// loop while no match found :
@@ -2290,14 +2290,14 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 			SINTa curpos = rrPtrDiff(rp - zeroPosPtr);	
 			RR_ASSERT( curpos >= 0 );
 			
-			U16 hashpos16 = hashTable16[hash];
-			hashTable16[ hash ] = (U16) curpos;
+			uint16 hashpos16 = hashTable16[hash];
+			hashTable16[ hash ] = (uint16) curpos;
 			
-			matchOff = (U16)(curpos - hashpos16);
+			matchOff = (uint16)(curpos - hashpos16);
 			RR_ASSERT( matchOff >= 0 && matchOff <= LZB_MAX_OFFSET );
 			hashrp = rp - matchOff;
       
-			const U32 hashrp32 = read32(hashrp);
+			const uint32 hashrp32 = read32(hashrp);
 			if ( rp32 == hashrp32 && matchOff != 0 )
 			{
 				goto found_match;
@@ -2318,14 +2318,14 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 			SINTa curpos = rrPtrDiff(rp - zeroPosPtr);	
 			RR_ASSERT( curpos >= 0 );
 			
-			U16 hashpos16 = hashTable16[hash];
-			hashTable16[ hash ] = (U16) curpos;
+			uint16 hashpos16 = hashTable16[hash];
+			hashTable16[ hash ] = (uint16) curpos;
       
-			matchOff = (U16)(curpos - hashpos16);
+			matchOff = (uint16)(curpos - hashpos16);
 			RR_ASSERT( matchOff >= 0 && matchOff <= LZB_MAX_OFFSET );
 			hashrp = rp - matchOff;
       
-			const U32 hashrp32 = read32(hashrp);
+			const uint32 hashrp32 = read32(hashrp);
       
 			if ( rp32 == hashrp32 && matchOff != 0 )
 			{
@@ -2354,7 +2354,7 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 #if LZBVF_DO_BACKUP
 		
 		// alternative backup using counter :
-		S32 cur_lrl = rrPtrDiff32(rp - literals_start);
+		uint32 cur_lrl = rrPtrDiff32(rp - literals_start);
 		int neg_max_backup = - RR_MIN(cur_lrl , rrPtrDiff32(hashrp - zeroPosPtr) );
 		int neg_backup = -1;
 		if( neg_backup >= neg_max_backup && rp[neg_backup] == hashrp[neg_backup] )
@@ -2373,7 +2373,7 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 		
 #else
 		
-		S32 cur_lrl = rrPtrDiff32(rp - literals_start);
+		uint32 cur_lrl = rrPtrDiff32(rp - literals_start);
 		
 #endif
     
@@ -2389,7 +2389,7 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 		// find rest of match len
 		// save pointer to start of match
 		// walk rp ahead to end of match
-		const U8 * match_start = rp;
+		const uint8 * match_start = rp;
 		rp += 4;
     
 		while( rp < rpEndSafe )
@@ -2409,7 +2409,7 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 			}
 		}
 		rp = RR_MIN(rp,rpMatchEnd);
-		S32 matchLen = rrPtrDiff32( rp - match_start );
+		uint32 matchLen = rrPtrDiff32( rp - match_start );
 		
 		//===============================================
 		// chose a match
@@ -2442,7 +2442,7 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 		cp = LZB_OutputLast(cp,cur_lrl,literals_start);
 	}
   
-	SINTa compLen = rrPtrDiff( cp - (U8 *)comp );
+	SINTa compLen = rrPtrDiff( cp - (uint8 *)comp );
   
 	return compLen;
 }

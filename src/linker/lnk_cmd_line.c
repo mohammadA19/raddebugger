@@ -8,12 +8,12 @@ lnk_arg_list_parse_windows_rules(Arena *arena, String8 string)
   
   String8List list = {0};
   
-  U8 *ptr = string.str;
-  U8 *opl = string.str + string.size;
+  uint8 *ptr = string.str;
+  uint8 *opl = string.str + string.size;
   while (ptr < opl) {
     // skip white space and new lines
     for (;;) {
-      U64 size = (U64)(opl - ptr);
+      uint64 size = (uint64)(opl - ptr);
       UnicodeDecode uni = utf8_decode(ptr, size);
       if (uni.codepoint != ' ' && uni.codepoint != '\n' && uni.codepoint != '\r') {
         break;
@@ -26,31 +26,31 @@ lnk_arg_list_parse_windows_rules(Arena *arena, String8 string)
     }
     
     String8List token_builder = {0};
-    U8 *anchor = ptr;
+    uint8 *anchor = ptr;
     while (ptr < opl) {
       UnicodeDecode uni;
       
-      uni = utf8_decode(ptr, (U64)(opl-ptr));
+      uni = utf8_decode(ptr, (uint64)(opl-ptr));
       if (uni.codepoint == '\0' || uni.codepoint == '\n' || uni.codepoint == '\r' || uni.codepoint == ' ') {
         break;
       }
       
       // handle string and strip quotes
       if (uni.codepoint == '"') {
-        String8 text_before_quote = str8(anchor, (U64)(ptr - anchor));
+        String8 text_before_quote = str8(anchor, (uint64)(ptr - anchor));
         str8_list_push(scratch.arena, &token_builder, text_before_quote);
         
         // advance past starting quote
         ptr += uni.inc;
         anchor = ptr;
         
-        U8 *quote_end = ptr;
+        uint8 *quote_end = ptr;
         while (ptr < opl) {
-          uni = utf8_decode(ptr, (U64)(opl - ptr));
+          uni = utf8_decode(ptr, (uint64)(opl - ptr));
           ptr += uni.inc;
           // skip escape char
           if (uni.codepoint == '\\') {
-            uni = utf8_decode(ptr, (U64)(opl - ptr));
+            uni = utf8_decode(ptr, (uint64)(opl - ptr));
             ptr += uni.inc;
           } else if (uni.codepoint == '"' || uni.codepoint == '\0') {
             break; // found matching quote char
@@ -58,7 +58,7 @@ lnk_arg_list_parse_windows_rules(Arena *arena, String8 string)
           quote_end = ptr;
         }
         
-        String8 text_inside_quotes = str8(anchor, (U64)(quote_end - anchor));
+        String8 text_inside_quotes = str8(anchor, (uint64)(quote_end - anchor));
         str8_list_push(scratch.arena, &token_builder, text_inside_quotes);
         anchor = ptr;
       } else {
@@ -67,7 +67,7 @@ lnk_arg_list_parse_windows_rules(Arena *arena, String8 string)
     }
     
     // push remaining text 
-    String8 text = str8(anchor, (U64)(ptr - anchor));
+    String8 text = str8(anchor, (uint64)(ptr - anchor));
     str8_list_push(scratch.arena, &token_builder, text);
     
     // push token
@@ -139,7 +139,7 @@ lnk_cmd_line_parse_windows_rules(Arena *arena, String8List arg_list)
     B32 is_option = str8_match_lit("/", arg, StringMatchFlag_RightSideSloppy) ||
                     str8_match_lit("-", arg, StringMatchFlag_RightSideSloppy);
     if (is_option) {
-      U64 param_start_pos = str8_find_needle(arg, 0, str8_lit(":"), 0);
+      uint64 param_start_pos = str8_find_needle(arg, 0, str8_lit(":"), 0);
       String8 option_name = str8_chop(arg, arg.size - param_start_pos);
 
       // remove '/' or '-' from option name

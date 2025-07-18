@@ -8,7 +8,7 @@
 typedef struct LNK_LinkContext
 {
   LNK_SymbolTable   *symtab;
-  U64                objs_count;
+  uint64                objs_count;
   LNK_Obj          **objs;
   PE_ExportParseList export_symbol_list;
   LNK_LibList        lib_index[LNK_InputSource_Count];
@@ -16,8 +16,8 @@ typedef struct LNK_LinkContext
 
 // -- Image --------------------------------------------------------------------
 
-#define LNK_REMOVED_SECTION_NUMBER_32 (U32)-3
-#define LNK_REMOVED_SECTION_NUMBER_16 (U16)-3
+#define LNK_REMOVED_SECTION_NUMBER_32 (uint32)-3
+#define LNK_REMOVED_SECTION_NUMBER_16 (uint16)-3
 
 typedef struct LNK_ImageContext
 {
@@ -27,9 +27,9 @@ typedef struct LNK_ImageContext
 
 typedef struct LNK_SymbolTableFixup
 {
-  U32 idx;
-  U32 obj_idx;
-  U32 obj_symbol_idx;
+  uint32 idx;
+  uint32 obj_idx;
+  uint32 obj_symbol_idx;
 } LNK_SymbolTableFixup;
 
 typedef struct LNK_SymbolTableFixupNode
@@ -40,14 +40,14 @@ typedef struct LNK_SymbolTableFixupNode
 
 typedef struct LNK_SymbolTableFixupList
 {
-  U64                       count;
+  uint64                       count;
   LNK_SymbolTableFixupNode *first;
   LNK_SymbolTableFixupNode *last;
 } LNK_SymbolTableFixupList;
 
 typedef struct LNK_SymbolTableFixupArray
 {
-  U64                   count;
+  uint64                   count;
   LNK_SymbolTableFixup *v;
 } LNK_SymbolTableFixupArray;
 
@@ -55,17 +55,17 @@ typedef struct LNK_SectionDefinition
 {
   String8           name;
   COFF_SectionFlags flags;
-  U64               contribs_count;
+  uint64               contribs_count;
   struct LNK_Obj   *obj;
-  U64               obj_sect_idx;
+  uint64               obj_sect_idx;
 } LNK_SectionDefinition;
 
 typedef struct LNK_CommonBlockContrib
 {
   struct LNK_Symbol *symbol;
   union {
-    U32 size;
-    U32 offset;
+    uint32 size;
+    uint32 offset;
   } u;
 } LNK_CommonBlockContrib;
 
@@ -73,9 +73,9 @@ typedef struct LNK_CommonBlockContrib
 
 typedef struct LNK_BaseRelocPage
 {
-  U64     voff;
-  U64List entries_addr32;
-  U64List entries_addr64;
+  uint64     voff;
+  uint64List entries_addr32;
+  uint64List entries_addr64;
 } LNK_BaseRelocPage;
 
 typedef struct LNK_BaseRelocPageNode
@@ -86,14 +86,14 @@ typedef struct LNK_BaseRelocPageNode
 
 typedef struct LNK_BaseRelocPageList
 {
-  U64                    count;
+  uint64                    count;
   LNK_BaseRelocPageNode *first;
   LNK_BaseRelocPageNode *last;
 } LNK_BaseRelocPageList;
 
 typedef struct LNK_BaseRelocPageArray
 {
-  U64                count;
+  uint64                count;
   LNK_BaseRelocPage *v;
 } LNK_BaseRelocPageArray;
 
@@ -105,9 +105,9 @@ typedef struct
   LNK_SectionTable          *sectab;
   LNK_SectionContrib        *null_sc;
   LNK_SymbolTableFixupArray *obj_symtab_fixups;
-  U64                        function_pad_min;
-  U64                        default_align;
-  U64                        objs_count;
+  uint64                        function_pad_min;
+  uint64                        default_align;
+  uint64                        objs_count;
   LNK_Obj                  **objs;
   LNK_SectionContrib      ***sect_map;
   HashTable                 *contribs_ht;
@@ -117,8 +117,8 @@ typedef struct
       HashTable **defns;
     } gather_sects;
     struct {
-      U64                    *counts;
-      U64                    *offsets;
+      uint64                    *counts;
+      uint64                    *offsets;
       LNK_CommonBlockContrib *contribs;
     } common_block;
     struct {
@@ -127,7 +127,7 @@ typedef struct
     struct {
       B8                    **was_symbol_patched;
       LNK_Section            *common_block_sect;
-      Rng1U64                *ranges;
+      Rng1uint64                *ranges;
       LNK_CommonBlockContrib *common_block_contribs;
     } patch_symtabs;
   } u;
@@ -135,8 +135,8 @@ typedef struct
 
 typedef struct
 {
-  U64                     page_size;
-  Rng1U64                *range_arr;
+  uint64                     page_size;
+  Rng1uint64                *range_arr;
   LNK_BaseRelocPageList  *list_arr;
   HashTable             **page_ht_arr;
   B32                     is_large_addr_aware;
@@ -144,8 +144,8 @@ typedef struct
 
 typedef struct
 {
-  Rng1U64                *ranges;
-  U64                     page_size;
+  Rng1uint64                *ranges;
+  uint64                     page_size;
   LNK_BaseRelocPageList  *list_arr;
   LNK_Obj               **obj_arr;
   HashTable             **page_ht_arr;
@@ -155,7 +155,7 @@ typedef struct
 typedef struct
 {
   LNK_InputObjList    input_obj_list;
-  U64                 input_imports_count;
+  uint64                 input_imports_count;
   LNK_InputImport    *input_imports;
   LNK_InputImportList input_import_list;
   LNK_SymbolList      unresolved_symbol_list;
@@ -167,14 +167,14 @@ typedef struct
   LNK_SymbolTable        *symtab;
   LNK_SymbolNodeArray     lookup_node_arr;
   LNK_SymbolFinderResult *result_arr;
-  Rng1U64                *range_arr;
+  Rng1uint64                *range_arr;
 } LNK_SymbolFinder;
 
 typedef struct
 {
   String8              image_data;
   LNK_Obj            **objs;
-  U64                  image_base;
+  uint64                  image_base;
   COFF_SectionHeader **image_section_table;
 } LNK_ObjRelocPatcher;
 
@@ -188,8 +188,8 @@ typedef struct
 typedef struct
 {
   String8  data;
-  Rng1U64 *ranges;
-  U128    *hashes;
+  Rng1uint64 *ranges;
+  uint128    *hashes;
 } LNK_Blake3Hasher;
 
 typedef struct
@@ -215,7 +215,7 @@ internal String8 lnk_make_full_path(Arena *arena, PathStyle system_path_style, S
 
 // --- Hasher ------------------------------------------------------------------
 
-internal U128 lnk_blake3_hash_parallel(TP_Context *tp, U64 chunk_count, String8 data);
+internal uint128 lnk_blake3_hash_parallel(TP_Context *tp, uint64 chunk_count, String8 data);
 
 // --- Manifest ----------------------------------------------------------------
 
@@ -225,7 +225,7 @@ internal String8 lnk_manifest_from_inputs(Arena *arena, LNK_IO_Flags io_flags, S
 
 // --- Internal Objs -----------------------------------------------------------
 
-internal String8 lnk_make_res_obj(Arena *arena, String8List res_file_list, String8List res_path_list, COFF_MachineType machine, U32 time_stamp, String8 work_dir, PathStyle system_path_style, String8 obj_name);
+internal String8 lnk_make_res_obj(Arena *arena, String8List res_file_list, String8List res_path_list, COFF_MachineType machine, uint32 time_stamp, String8 work_dir, PathStyle system_path_style, String8 obj_name);
 internal String8 lnk_make_linker_coff_obj(Arena *arena, COFF_TimeStamp time_stamp, COFF_MachineType machine, String8 cwd_path, String8 exe_path, String8 pdb_path, String8 cmd_line, String8 obj_name);
 
 // --- Link Context ------------------------------------------------------------
@@ -243,10 +243,10 @@ internal LNK_LinkContext lnk_build_link_context(TP_Context *tp, TP_Arena *tp_are
 
 // --- Win32 Image -------------------------------------------------------------
 
-internal String8List      lnk_build_guard_tables(TP_Context *tp, LNK_SectionTable *sectab, LNK_SymbolTable *symtab, U64 objs_count, LNK_Obj **objs, COFF_MachineType machine, String8 entry_point_name, LNK_GuardFlags guard_flags, B32 emit_suppress_flag);
-internal String8List      lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_temp, LNK_Config *config, U64 objs_count, LNK_Obj **objs);
-internal String8List      lnk_build_win32_image_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config, LNK_SectionArray sect_arr, U64 expected_image_header_size);
-internal LNK_ImageContext lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolTable *symtab, U64 obj_count, LNK_Obj **objs);
+internal String8List      lnk_build_guard_tables(TP_Context *tp, LNK_SectionTable *sectab, LNK_SymbolTable *symtab, uint64 objs_count, LNK_Obj **objs, COFF_MachineType machine, String8 entry_point_name, LNK_GuardFlags guard_flags, B32 emit_suppress_flag);
+internal String8List      lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_temp, LNK_Config *config, uint64 objs_count, LNK_Obj **objs);
+internal String8List      lnk_build_win32_image_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config, LNK_SectionArray sect_arr, uint64 expected_image_header_size);
+internal LNK_ImageContext lnk_build_image(TP_Arena *arena, TP_Context *tp, LNK_Config *config, LNK_SymbolTable *symtab, uint64 obj_count, LNK_Obj **objs);
 
 // --- Logger ------------------------------------------------------------------
 

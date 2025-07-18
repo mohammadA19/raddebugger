@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Type Unwrapping
 
-typedef U32 E_TypeUnwrapFlags;
+typedef uint32 E_TypeUnwrapFlags;
 enum
 {
   E_TypeUnwrapFlag_Modifiers     = (1<<0),
@@ -69,19 +69,19 @@ internal E_EnumValArray e_enum_val_array_from_list(Arena *arena, E_EnumValList *
 //- rjf: basic key constructors
 internal E_TypeKey e_type_key_zero(void);
 internal E_TypeKey e_type_key_basic(E_TypeKind kind);
-internal E_TypeKey e_type_key_ext(E_TypeKind kind, U32 type_idx, U32 rdi_idx);
+internal E_TypeKey e_type_key_ext(E_TypeKind kind, uint32 type_idx, uint32 rdi_idx);
 internal E_TypeKey e_type_key_reg(Arch arch, REGS_RegCode code);
 internal E_TypeKey e_type_key_reg_alias(Arch arch, REGS_AliasCode code);
 
 //- rjf: constructed type construction
-internal U64 e_hash_from_cons_type_params(E_ConsTypeParams *params);
+internal uint64 e_hash_from_cons_type_params(E_ConsTypeParams *params);
 internal B32 e_cons_type_params_match(E_ConsTypeParams *l, E_ConsTypeParams *r);
 internal E_TypeKey e_type_key_cons_(E_ConsTypeParams *params);
 #define e_type_key_cons(...) e_type_key_cons_(&(E_ConsTypeParams){.kind = E_TypeKind_Null, __VA_ARGS__})
 
 //- rjf: constructed type construction helpers
-internal E_TypeKey e_type_key_cons_array(E_TypeKey element_type_key, U64 count, E_TypeFlags flags);
-internal E_TypeKey e_type_key_cons_ptr(Arch arch, E_TypeKey element_type_key, U64 count, E_TypeFlags flags);
+internal E_TypeKey e_type_key_cons_array(E_TypeKey element_type_key, uint64 count, E_TypeFlags flags);
+internal E_TypeKey e_type_key_cons_ptr(Arch arch, E_TypeKey element_type_key, uint64 count, E_TypeFlags flags);
 internal E_TypeKey e_type_key_cons_meta_expr(E_TypeKey type_key, String8 expr);
 internal E_TypeKey e_type_key_cons_meta_display_name(E_TypeKey type_key, String8 name);
 internal E_TypeKey e_type_key_cons_meta_description(E_TypeKey type_key, String8 desc);
@@ -93,9 +93,9 @@ internal E_TypeKey e_type_key_folder(void);
 internal B32 e_type_key_match(E_TypeKey l, E_TypeKey r);
 
 //- rjf: type key -> info extraction
-internal U64 e_hash_from_type(E_Type *type);
+internal uint64 e_hash_from_type(E_Type *type);
 internal E_TypeKind e_type_kind_from_key(E_TypeKey key);
-internal U64 e_type_byte_size_from_key(E_TypeKey key);
+internal uint64 e_type_byte_size_from_key(E_TypeKey key);
 internal E_Type *e_push_type_from_key(Arena *arena, E_TypeKey key);
 internal int e_type_qsort_compare_members_offset(E_Member *a, E_Member *b);
 internal E_MemberArray e_type_data_members_from_key(Arena *arena, E_TypeKey key);
@@ -111,8 +111,8 @@ internal E_TypeKey e_type_key_unwrap(E_TypeKey key, E_TypeUnwrapFlags flags);
 internal B32 e_type_match(E_TypeKey l, E_TypeKey r);
 
 //- rjf: type key -> string
-internal void e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec, B32 skip_return);
-internal void e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec);
+internal void e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, uint32 prec, B32 skip_return);
+internal void e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, uint32 prec);
 internal String8 e_type_string_from_key(Arena *arena, E_TypeKey key);
 internal E_TypeKey e_default_expansion_type_from_key(E_TypeKey key);
 

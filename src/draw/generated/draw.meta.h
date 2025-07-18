@@ -7,9 +7,9 @@
 #define DRAW_META_H
 
 typedef struct DR_Tex2DSampleKindNode DR_Tex2DSampleKindNode; struct DR_Tex2DSampleKindNode {DR_Tex2DSampleKindNode *next; R_Tex2DSampleKind v;};
-typedef struct DR_XForm2DNode DR_XForm2DNode; struct DR_XForm2DNode {DR_XForm2DNode *next; Mat3x3F32 v;};
-typedef struct DR_ClipNode DR_ClipNode; struct DR_ClipNode {DR_ClipNode *next; Rng2F32 v;};
-typedef struct DR_TransparencyNode DR_TransparencyNode; struct DR_TransparencyNode {DR_TransparencyNode *next; F32 v;};
+typedef struct DR_XForm2DNode DR_XForm2DNode; struct DR_XForm2DNode {DR_XForm2DNode *next; Mat3x3float v;};
+typedef struct DR_ClipNode DR_ClipNode; struct DR_ClipNode {DR_ClipNode *next; Rng2float v;};
+typedef struct DR_TransparencyNode DR_TransparencyNode; struct DR_TransparencyNode {DR_TransparencyNode *next; float v;};
 #define DR_BucketStackDecls struct{\
 DR_Tex2DSampleKindNode *top_tex2d_sample_kind;\
 DR_XForm2DNode *top_xform2d;\
@@ -28,17 +28,17 @@ read_only global DR_TransparencyNode dr_nil_transparency = {0, 0};
 }while(0)
 #if 0
 internal R_Tex2DSampleKind          dr_push_tex2d_sample_kind(R_Tex2DSampleKind v);
-internal Mat3x3F32                  dr_push_xform2d(Mat3x3F32 v);
-internal Rng2F32                    dr_push_clip(Rng2F32 v);
-internal F32                        dr_push_transparency(F32 v);
+internal Mat3x3float                  dr_push_xform2d(Mat3x3float v);
+internal Rng2float                    dr_push_clip(Rng2float v);
+internal float                        dr_push_transparency(float v);
 internal R_Tex2DSampleKind          dr_pop_tex2d_sample_kind(void);
-internal Mat3x3F32                  dr_pop_xform2d(void);
-internal Rng2F32                    dr_pop_clip(void);
-internal F32                        dr_pop_transparency(void);
+internal Mat3x3float                  dr_pop_xform2d(void);
+internal Rng2float                    dr_pop_clip(void);
+internal float                        dr_pop_transparency(void);
 internal R_Tex2DSampleKind          dr_top_tex2d_sample_kind(void);
-internal Mat3x3F32                  dr_top_xform2d(void);
-internal Rng2F32                    dr_top_clip(void);
-internal F32                        dr_top_transparency(void);
+internal Mat3x3float                  dr_top_xform2d(void);
+internal Rng2float                    dr_top_clip(void);
+internal float                        dr_top_transparency(void);
 #endif
 #if 0
 #define DR_Tex2DSampleKindScope(v)  DeferLoop(dr_push_tex2d_sample_kind(v), dr_pop_tex2d_sample_kind())

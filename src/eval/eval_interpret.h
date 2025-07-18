@@ -16,10 +16,10 @@ struct E_InterpretCtx
   E_Space primary_space;
   Arch reg_arch;
   E_Space reg_space;
-  U64 reg_unwind_count;
-  U64 *module_base;
-  U64 *frame_base;
-  U64 *tls_base;
+  uint64 reg_unwind_count;
+  uint64 *module_base;
+  uint64 *frame_base;
+  uint64 *tls_base;
 };
 
 ////////////////////////////////
@@ -30,14 +30,14 @@ thread_static E_InterpretCtx *e_interpret_ctx = 0;
 ////////////////////////////////
 //~ rjf: Context Selection Functions (Selection Required For All Subsequent APIs)
 
-internal void e_select_interpret_ctx(E_InterpretCtx *ctx, RDI_Parsed *primary_rdi, U64 ip_voff);
+internal void e_select_interpret_ctx(E_InterpretCtx *ctx, RDI_Parsed *primary_rdi, uint64 ip_voff);
 
 ////////////////////////////////
 //~ rjf: Space Reading Helpers
 
-internal U64 e_space_gen(E_Space space);
-internal B32 e_space_read(E_Space space, void *out, Rng1U64 range);
-internal B32 e_space_write(E_Space space, void *in, Rng1U64 range);
+internal uint64 e_space_gen(E_Space space);
+internal B32 e_space_read(E_Space space, void *out, Rng1uint64 range);
+internal B32 e_space_write(E_Space space, void *in, Rng1uint64 range);
 
 ////////////////////////////////
 //~ rjf: Interpretation Functions

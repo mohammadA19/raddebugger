@@ -12,7 +12,7 @@
 ////////////////////////////////
 //~ rjf: Types
 
-typedef U64 ArenaFlags;
+typedef uint64 ArenaFlags;
 enum
 {
   ArenaFlag_NoChain    = (1<<0),
@@ -23,8 +23,8 @@ typedef struct ArenaParams ArenaParams;
 struct ArenaParams
 {
   ArenaFlags flags;
-  U64 reserve_size;
-  U64 commit_size;
+  uint64 reserve_size;
+  uint64 commit_size;
   void *optional_backing_buffer;
 };
 
@@ -34,14 +34,14 @@ struct Arena
   Arena *prev;    // previous arena in chain
   Arena *current; // current arena in chain
   ArenaFlags flags;
-  U64 cmt_size;
-  U64 res_size;
-  U64 base_pos;
-  U64 pos;
-  U64 cmt;
-  U64 res;
+  uint64 cmt_size;
+  uint64 res_size;
+  uint64 base_pos;
+  uint64 pos;
+  uint64 cmt;
+  uint64 res;
 #if ARENA_FREE_LIST
-  U64 free_size;
+  uint64 free_size;
   Arena *free_last;
 #endif
 };
@@ -51,14 +51,14 @@ typedef struct Temp Temp;
 struct Temp
 {
   Arena *arena;
-  U64 pos;
+  uint64 pos;
 };
 
 ////////////////////////////////
 //~ rjf: Global Defaults
 
-global U64 arena_default_reserve_size = MB(64);
-global U64 arena_default_commit_size  = KB(64);
+global uint64 arena_default_reserve_size = MB(64);
+global uint64 arena_default_commit_size  = KB(64);
 global ArenaFlags arena_default_flags = 0;
 
 ////////////////////////////////
@@ -70,13 +70,13 @@ internal Arena *arena_alloc_(ArenaParams *params);
 internal void arena_release(Arena *arena);
 
 //- rjf: arena push/pop/pos core functions
-internal void *arena_push(Arena *arena, U64 size, U64 align);
-internal U64   arena_pos(Arena *arena);
-internal void  arena_pop_to(Arena *arena, U64 pos);
+internal void *arena_push(Arena *arena, uint64 size, uint64 align);
+internal uint64   arena_pos(Arena *arena);
+internal void  arena_pop_to(Arena *arena, uint64 pos);
 
 //- rjf: arena push/pop helpers
 internal void arena_clear(Arena *arena);
-internal void arena_pop(Arena *arena, U64 amt);
+internal void arena_pop(Arena *arena, uint64 amt);
 
 //- rjf: temporary arena scopes
 internal Temp temp_begin(Arena *arena);

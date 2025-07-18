@@ -4,11 +4,11 @@
 ////////////////////////////////
 //~ NOTE(rjf): Command Line Option Parsing
 
-internal U64
+internal uint64
 cmd_line_hash_from_string(String8 string)
 {
-  U64 result = 5381;
-  for(U64 i = 0; i < string.size; i += 1)
+  uint64 result = 5381;
+  for(uint64 i = 0; i < string.size; i += 1)
   {
     result = ((result << 5) + result) + string.str[i];
   }
@@ -21,8 +21,8 @@ cmd_line_slot_from_string(CmdLine *cmd_line, String8 string)
   CmdLineOpt **slot = 0;
   if(cmd_line->option_table_size != 0)
   {
-    U64 hash = cmd_line_hash_from_string(string);
-    U64 bucket = hash % cmd_line->option_table_size;
+    uint64 hash = cmd_line_hash_from_string(string);
+    uint64 bucket = hash % cmd_line->option_table_size;
     slot = &cmd_line->option_table[bucket];
   }
   return slot;
@@ -137,9 +137,9 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
     if(is_option)
     {
       B32 has_arguments = 0;
-      U64 arg_signifier_position1 = str8_find_needle(option_name, 0, str8_lit(":"), 0);
-      U64 arg_signifier_position2 = str8_find_needle(option_name, 0, str8_lit("="), 0);
-      U64 arg_signifier_position = Min(arg_signifier_position1, arg_signifier_position2);
+      uint64 arg_signifier_position1 = str8_find_needle(option_name, 0, str8_lit(":"), 0);
+      uint64 arg_signifier_position2 = str8_find_needle(option_name, 0, str8_lit("="), 0);
+      uint64 arg_signifier_position = Min(arg_signifier_position1, arg_signifier_position2);
       String8 arg_portion_this_string = str8_skip(option_name, arg_signifier_position+1);
       if(arg_signifier_position < option_name.size)
       {
@@ -162,7 +162,7 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
             string = arg_portion_this_string;
           }
           
-          U8 splits[] = { ',' };
+          uint8 splits[] = { ',' };
           String8List args_in_this_string = str8_split(arena, string, splits, ArrayCount(splits), 0);
           for(String8Node *sub_arg = args_in_this_string.first; sub_arg; sub_arg = sub_arg->next)
           {
@@ -194,7 +194,7 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
   parsed.argc = command_line.node_count;
   parsed.argv = push_array(arena, char *, parsed.argc);
   {
-    U64 idx = 0;
+    uint64 idx = 0;
     for(String8Node *n = command_line.first; n != 0; n = n->next)
     {
       parsed.argv[idx] = (char *)push_str8_copy(arena, n->string).str;

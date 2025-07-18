@@ -79,7 +79,7 @@ frame(void)
     group.batches = r_batch_list_make(sizeof(R_Rect2DInst));
     group.params.xform = mat_3x3f32(1.f);
     group.params.clip = os_client_rect_from_window(window_os);
-    Vec2F32 mouse = os_mouse_from_window(window_os);
+    Vec2float mouse = os_mouse_from_window(window_os);
     R_Rect2DInst *inst = r_batch_list_push_inst(scratch.arena, &group.batches, 256);
     MemoryZeroStruct(inst);
     inst->dst = r2f32p(mouse.x+30, mouse.y+30, mouse.x+100, mouse.y+100);

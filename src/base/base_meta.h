@@ -9,7 +9,7 @@
 
 #define EmbedFile(name, path)
 #define TweakB32(name, default)           (TWEAK_##name)
-#define TweakF32(name, default, min, max) (TWEAK_##name)
+#define Tweakfloat(name, default, min, max) (TWEAK_##name)
 
 ////////////////////////////////
 //~ rjf: Tweak Info Tables
@@ -22,27 +22,27 @@ struct TweakB32Info
   B32 *value_ptr;
 };
 
-typedef struct TweakF32Info TweakF32Info;
-struct TweakF32Info
+typedef struct TweakfloatInfo TweakfloatInfo;
+struct TweakfloatInfo
 {
   String8 name;
-  F32 default_value;
-  Rng1F32 value_range;
-  F32 *value_ptr;
+  float default_value;
+  Rng1float value_range;
+  float *value_ptr;
 };
 
 typedef struct TweakB32InfoTable TweakB32InfoTable;
 struct TweakB32InfoTable
 {
   TweakB32Info *v;
-  U64 count;
+  uint64 count;
 };
 
-typedef struct TweakF32InfoTable TweakF32InfoTable;
-struct TweakF32InfoTable
+typedef struct TweakfloatInfoTable TweakfloatInfoTable;
+struct TweakfloatInfoTable
 {
-  TweakF32Info *v;
-  U64 count;
+  TweakfloatInfo *v;
+  uint64 count;
 };
 
 typedef struct EmbedInfo EmbedInfo;
@@ -50,14 +50,14 @@ struct EmbedInfo
 {
   String8 name;
   String8 *data;
-  U128 *hash;
+  uint128 *hash;
 };
 
 typedef struct EmbedInfoTable EmbedInfoTable;
 struct EmbedInfoTable
 {
   EmbedInfo *v;
-  U64 count;
+  uint64 count;
 };
 
 ////////////////////////////////
@@ -69,20 +69,20 @@ typedef enum TypeKind
   
   // rjf: leaves
   TypeKind_Void, TypeKind_FirstLeaf = TypeKind_Void,
-  TypeKind_U8,
-  TypeKind_U16,
-  TypeKind_U32,
-  TypeKind_U64,
-  TypeKind_S8,
-  TypeKind_S16,
-  TypeKind_S32,
-  TypeKind_S64,
+  TypeKind_uint8,
+  TypeKind_uint16,
+  TypeKind_uint32,
+  TypeKind_uint64,
+  TypeKind_uint8,
+  TypeKind_uint16,
+  TypeKind_uint32,
+  TypeKind_uint64,
   TypeKind_B8,
   TypeKind_B16,
   TypeKind_B32,
   TypeKind_B64,
-  TypeKind_F32,
-  TypeKind_F64, TypeKind_LastLeaf = TypeKind_F64,
+  TypeKind_float,
+  TypeKind_double, TypeKind_LastLeaf = TypeKind_double,
   
   // rjf: operators
   TypeKind_Ptr,
@@ -97,7 +97,7 @@ typedef enum TypeKind
 }
 TypeKind;
 
-typedef U32 TypeFlags;
+typedef uint32 TypeFlags;
 enum
 {
   TypeFlag_IsPlainText = (1<<0),
@@ -105,7 +105,7 @@ enum
   TypeFlag_IsPathText  = (1<<2),
 };
 
-typedef U32 MemberFlags;
+typedef uint32 MemberFlags;
 enum
 {
   MemberFlag_DoNotSerialize  = (1<<0),
@@ -118,7 +118,7 @@ struct Member
   String8 name;
   String8 pretty_name;
   Type *type;
-  U64 value;
+  uint64 value;
   MemberFlags flags;
 };
 
@@ -127,11 +127,11 @@ struct Type
 {
   TypeKind kind;
   TypeFlags flags;
-  U64 size;
+  uint64 size;
   Type *direct;
   String8 name;
   String8 count_delimiter_name; // gathered from surrounding members, turns *->[1] into *->[N]
-  U64 count;
+  uint64 count;
   Member *members;
 };
 
@@ -150,9 +150,9 @@ struct TypeSerializePtrRefInfo
 typedef struct TypeSerializeParams TypeSerializeParams;
 struct TypeSerializeParams
 {
-  U64 *advance_out;
+  uint64 *advance_out;
   TypeSerializePtrRefInfo *ptr_ref_infos;
-  U64 ptr_ref_infos_count;
+  uint64 ptr_ref_infos_count;
 };
 
 ////////////////////////////////
@@ -180,38 +180,38 @@ read_only global Member member_nil = {{0}, {0}, &type_nil};
 
 //- rjf: leaves
 read_only global Type void__type = {TypeKind_Void, 0, 0,           &type_nil, str8_lit_comp("void")};
-read_only global Type U8__type   = {TypeKind_U8,   0, sizeof(U8),  &type_nil, str8_lit_comp("U8")};
-read_only global Type U16__type  = {TypeKind_U16,  0, sizeof(U16), &type_nil, str8_lit_comp("U16")};
-read_only global Type U32__type  = {TypeKind_U32,  0, sizeof(U32), &type_nil, str8_lit_comp("U32")};
-read_only global Type U64__type  = {TypeKind_U64,  0, sizeof(U64), &type_nil, str8_lit_comp("U64")};
-read_only global Type S8__type   = {TypeKind_S8,   0, sizeof(S8),  &type_nil, str8_lit_comp("S8")};
-read_only global Type S16__type  = {TypeKind_S16,  0, sizeof(S16), &type_nil, str8_lit_comp("S16")};
-read_only global Type S32__type  = {TypeKind_S32,  0, sizeof(S32), &type_nil, str8_lit_comp("S32")};
-read_only global Type S64__type  = {TypeKind_S64,  0, sizeof(S64), &type_nil, str8_lit_comp("S64")};
+read_only global Type uint8__type   = {TypeKind_uint8,   0, sizeof(uint8),  &type_nil, str8_lit_comp("uint8")};
+read_only global Type uint16__type  = {TypeKind_uint16,  0, sizeof(uint16), &type_nil, str8_lit_comp("uint16")};
+read_only global Type uint32__type  = {TypeKind_uint32,  0, sizeof(uint32), &type_nil, str8_lit_comp("uint32")};
+read_only global Type uint64__type  = {TypeKind_uint64,  0, sizeof(uint64), &type_nil, str8_lit_comp("uint64")};
+read_only global Type uint8__type   = {TypeKind_uint8,   0, sizeof(uint8),  &type_nil, str8_lit_comp("uint8")};
+read_only global Type uint16__type  = {TypeKind_uint16,  0, sizeof(uint16), &type_nil, str8_lit_comp("uint16")};
+read_only global Type uint32__type  = {TypeKind_uint32,  0, sizeof(uint32), &type_nil, str8_lit_comp("uint32")};
+read_only global Type uint64__type  = {TypeKind_uint64,  0, sizeof(uint64), &type_nil, str8_lit_comp("uint64")};
 read_only global Type B8__type   = {TypeKind_B8,   0, sizeof(B8),  &type_nil, str8_lit_comp("B8")};
 read_only global Type B16__type  = {TypeKind_B16,  0, sizeof(B16), &type_nil, str8_lit_comp("B16")};
 read_only global Type B32__type  = {TypeKind_B32,  0, sizeof(B32), &type_nil, str8_lit_comp("B32")};
 read_only global Type B64__type  = {TypeKind_B64,  0, sizeof(B64), &type_nil, str8_lit_comp("B64")};
-read_only global Type F32__type  = {TypeKind_F32,  0, sizeof(F32), &type_nil, str8_lit_comp("F32")};
-read_only global Type F64__type  = {TypeKind_F64,  0, sizeof(F64), &type_nil, str8_lit_comp("F64")};
+read_only global Type float__type  = {TypeKind_float,  0, sizeof(float), &type_nil, str8_lit_comp("float")};
+read_only global Type double__type  = {TypeKind_double,  0, sizeof(double), &type_nil, str8_lit_comp("double")};
 read_only global Type *type_kind_type_table[] =
 {
   &type_nil,
   type(void),
-  type(U8),
-  type(U16),
-  type(U32),
-  type(U64),
-  type(S8),
-  type(S16),
-  type(S32),
-  type(S64),
+  type(uint8),
+  type(uint16),
+  type(uint32),
+  type(uint64),
+  type(uint8),
+  type(uint16),
+  type(uint32),
+  type(uint64),
   type(B8),
   type(B16),
   type(B32),
   type(B64),
-  type(F32),
-  type(F64),
+  type(float),
+  type(double),
   &type_nil,
   &type_nil,
   &type_nil,
@@ -219,20 +219,20 @@ read_only global Type *type_kind_type_table[] =
   &type_nil,
 };
 
-//- rjf: Rng1U64
-struct_members(Rng1U64)
+//- rjf: Rng1uint64
+struct_members(Rng1uint64)
 {
-  member_lit_comp(Rng1U64, type(U64), min),
-  member_lit_comp(Rng1U64, type(U64), max),
+  member_lit_comp(Rng1uint64, type(uint64), min),
+  member_lit_comp(Rng1uint64, type(uint64), max),
 };
-struct_type(Rng1U64);
+struct_type(Rng1uint64);
 
 //- rjf: String8
-ptr_type(String8__str_ptr_type, type(U8), str8_lit_comp("size"));
+ptr_type(String8__str_ptr_type, type(uint8), str8_lit_comp("size"));
 struct_members(String8)
 {
   member_lit_comp(String8, &String8__str_ptr_type, str),
-  member_lit_comp(String8, type(U64),              size),
+  member_lit_comp(String8, type(uint64),              size),
 };
 struct_type(String8);
 
@@ -261,8 +261,8 @@ Member String8List__members[] =
 {
   {str8_lit_comp("first"),      {0}, &String8Node__ptr_type,     OffsetOf(String8List, first)},
   {str8_lit_comp("last"),       {0}, &String8Node__ptr_type,     OffsetOf(String8List, last), MemberFlag_DoNotSerialize},
-  {str8_lit_comp("node_count"), {0}, type(U64), OffsetOf(String8List, node_count)},
-  {str8_lit_comp("total_size"), {0}, type(U64), OffsetOf(String8List, total_size)},
+  {str8_lit_comp("node_count"), {0}, type(uint64), OffsetOf(String8List, node_count)},
+  {str8_lit_comp("total_size"), {0}, type(uint64), OffsetOf(String8List, total_size)},
 };
 Type String8List__type =
 {

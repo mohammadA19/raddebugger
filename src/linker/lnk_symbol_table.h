@@ -16,13 +16,13 @@ typedef enum
 typedef struct LNK_SymbolDefined
 {
   struct LNK_Obj *obj;
-  U32             symbol_idx;
+  uint32             symbol_idx;
 } LNK_SymbolDefined;
 
 typedef struct LNK_SymbolLib
 {
   struct LNK_Lib *lib;
-  U64             member_offset;
+  uint64             member_offset;
 } LNK_SymbolLib;
 
 typedef struct LNK_SymbolUndefined
@@ -56,20 +56,20 @@ typedef struct LNK_SymbolNode
 
 typedef struct LNK_SymbolList
 {
-  U64             count;
+  uint64             count;
   LNK_SymbolNode *first;
   LNK_SymbolNode *last;
 } LNK_SymbolList;
 
 typedef struct LNK_SymbolNodeArray
 {
-  U64              count;
+  uint64              count;
   LNK_SymbolNode **v;
 } LNK_SymbolNodeArray;
 
 typedef struct LNK_SymbolArray
 {
-  U64         count;
+  uint64         count;
   LNK_Symbol *v;
 } LNK_SymbolArray;
 
@@ -85,14 +85,14 @@ typedef struct LNK_SymbolHashTrie
 typedef struct LNK_SymbolHashTrieChunk
 {
   struct LNK_SymbolHashTrieChunk *next;
-  U64                             count;
-  U64                             cap;
+  uint64                             count;
+  uint64                             cap;
   LNK_SymbolHashTrie             *v;
 } LNK_SymbolHashTrieChunk;
 
 typedef struct LNK_SymbolHashTrieChunkList
 {
-  U64                      count;
+  uint64                      count;
   LNK_SymbolHashTrieChunk *first;
   LNK_SymbolHashTrieChunk *last;
 } LNK_SymbolHashTrieChunkList;
@@ -109,8 +109,8 @@ typedef struct LNK_SymbolTable
 
 // --- Symbol Make -------------------------------------------------------------
 
-internal LNK_Symbol * lnk_make_defined_symbol(Arena *arena, String8 name, struct LNK_Obj *obj, U32 symbol_idx);
-internal LNK_Symbol * lnk_make_lib_symbol(Arena *arena, String8 name, struct LNK_Lib *lib, U64 member_offset);
+internal LNK_Symbol * lnk_make_defined_symbol(Arena *arena, String8 name, struct LNK_Obj *obj, uint32 symbol_idx);
+internal LNK_Symbol * lnk_make_lib_symbol(Arena *arena, String8 name, struct LNK_Lib *lib, uint64 member_offset);
 internal LNK_Symbol * lnk_make_undefined_symbol(Arena *arena, String8 name, struct LNK_Obj *obj);
 internal LNK_Symbol * lnk_make_import_symbol(Arena *arena, String8 name, String8 import_header);
 
@@ -125,13 +125,13 @@ internal LNK_SymbolArray     lnk_symbol_array_from_list(Arena *arena, LNK_Symbol
 
 // --- Symbol Hash Trie --------------------------------------------------------
 
-internal void                 lnk_symbol_hash_trie_insert_or_replace(Arena *arena, LNK_SymbolHashTrieChunkList *chunks, LNK_SymbolHashTrie **trie, U64 hash, LNK_SymbolScope scope, LNK_Symbol *symbol);
-internal LNK_SymbolHashTrie * lnk_symbol_hash_trie_search(LNK_SymbolHashTrie *trie, U64 hash, String8 name);
+internal void                 lnk_symbol_hash_trie_insert_or_replace(Arena *arena, LNK_SymbolHashTrieChunkList *chunks, LNK_SymbolHashTrie **trie, uint64 hash, LNK_SymbolScope scope, LNK_Symbol *symbol);
+internal LNK_SymbolHashTrie * lnk_symbol_hash_trie_search(LNK_SymbolHashTrie *trie, uint64 hash, String8 name);
 internal void                 lnk_symbol_hash_trie_remove(LNK_SymbolHashTrie *trie);
 
 // --- Symbol Table ------------------------------------------------------------
 
-internal U64 lnk_symbol_hash(String8 string);
+internal uint64 lnk_symbol_hash(String8 string);
 
 internal LNK_SymbolTable * lnk_symbol_table_init(TP_Arena *arena);
 internal void              lnk_symbol_table_push(LNK_SymbolTable *symtab, LNK_SymbolScope scope, LNK_Symbol *symbol);
@@ -143,8 +143,8 @@ internal void lnk_symbol_table_push_alt_name(LNK_SymbolTable *symtab, struct LNK
 // --- Symbol Contrib Helpers --------------------------------------------------
 
 internal ISectOff lnk_sc_from_symbol(LNK_Symbol *symbol);
-internal U64      lnk_isect_from_symbol(LNK_Symbol *symbol);
-internal U64      lnk_sect_off_from_symbol(LNK_Symbol *symbol);
-internal U64      lnk_virt_off_from_symbol(COFF_SectionHeader **section_table, LNK_Symbol *symbol);
-internal U64      lnk_file_off_from_symbol(COFF_SectionHeader **section_table, LNK_Symbol *symbol);
+internal uint64      lnk_isect_from_symbol(LNK_Symbol *symbol);
+internal uint64      lnk_sect_off_from_symbol(LNK_Symbol *symbol);
+internal uint64      lnk_virt_off_from_symbol(COFF_SectionHeader **section_table, LNK_Symbol *symbol);
+internal uint64      lnk_file_off_from_symbol(COFF_SectionHeader **section_table, LNK_Symbol *symbol);
 

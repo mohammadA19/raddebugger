@@ -36,7 +36,7 @@ str8_lit_comp("Breakpoint"),
 str8_lit_comp("AddressRangeAnnotation"),
 };
 
-U32 ctrl_exception_code_kind_code_table[38] =
+uint32 ctrl_exception_code_kind_code_table[38] =
 {
 0,
 0x40010005,

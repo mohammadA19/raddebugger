@@ -42,171 +42,171 @@
 #endif
 internal UI_Box * ui_top_parent(void) { UI_StackTopImpl(ui_state, Parent, parent) }
 internal Axis2 ui_top_child_layout_axis(void) { UI_StackTopImpl(ui_state, ChildLayoutAxis, child_layout_axis) }
-internal F32 ui_top_fixed_x(void) { UI_StackTopImpl(ui_state, FixedX, fixed_x) }
-internal F32 ui_top_fixed_y(void) { UI_StackTopImpl(ui_state, FixedY, fixed_y) }
-internal F32 ui_top_fixed_width(void) { UI_StackTopImpl(ui_state, FixedWidth, fixed_width) }
-internal F32 ui_top_fixed_height(void) { UI_StackTopImpl(ui_state, FixedHeight, fixed_height) }
+internal float ui_top_fixed_x(void) { UI_StackTopImpl(ui_state, FixedX, fixed_x) }
+internal float ui_top_fixed_y(void) { UI_StackTopImpl(ui_state, FixedY, fixed_y) }
+internal float ui_top_fixed_width(void) { UI_StackTopImpl(ui_state, FixedWidth, fixed_width) }
+internal float ui_top_fixed_height(void) { UI_StackTopImpl(ui_state, FixedHeight, fixed_height) }
 internal UI_Size ui_top_pref_width(void) { UI_StackTopImpl(ui_state, PrefWidth, pref_width) }
 internal UI_Size ui_top_pref_height(void) { UI_StackTopImpl(ui_state, PrefHeight, pref_height) }
-internal F32 ui_top_min_width(void) { UI_StackTopImpl(ui_state, MinWidth, min_width) }
-internal F32 ui_top_min_height(void) { UI_StackTopImpl(ui_state, MinHeight, min_height) }
+internal float ui_top_min_width(void) { UI_StackTopImpl(ui_state, MinWidth, min_width) }
+internal float ui_top_min_height(void) { UI_StackTopImpl(ui_state, MinHeight, min_height) }
 internal UI_PermissionFlags ui_top_permission_flags(void) { UI_StackTopImpl(ui_state, PermissionFlags, permission_flags) }
 internal UI_BoxFlags ui_top_flags(void) { UI_StackTopImpl(ui_state, Flags, flags) }
 internal UI_BoxFlags ui_top_omit_flags(void) { UI_StackTopImpl(ui_state, OmitFlags, omit_flags) }
 internal UI_FocusKind ui_top_focus_hot(void) { UI_StackTopImpl(ui_state, FocusHot, focus_hot) }
 internal UI_FocusKind ui_top_focus_active(void) { UI_StackTopImpl(ui_state, FocusActive, focus_active) }
-internal U32 ui_top_fastpath_codepoint(void) { UI_StackTopImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
+internal uint32 ui_top_fastpath_codepoint(void) { UI_StackTopImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
 internal UI_Key ui_top_group_key(void) { UI_StackTopImpl(ui_state, GroupKey, group_key) }
-internal F32 ui_top_transparency(void) { UI_StackTopImpl(ui_state, Transparency, transparency) }
-internal Vec4F32 ui_top_background_color(void) { UI_StackTopImpl(ui_state, BackgroundColor, background_color) }
-internal Vec4F32 ui_top_text_color(void) { UI_StackTopImpl(ui_state, TextColor, text_color) }
-internal Vec4F32 ui_top_border_color(void) { UI_StackTopImpl(ui_state, BorderColor, border_color) }
-internal F32 ui_top_squish(void) { UI_StackTopImpl(ui_state, Squish, squish) }
+internal float ui_top_transparency(void) { UI_StackTopImpl(ui_state, Transparency, transparency) }
+internal Vec4float ui_top_background_color(void) { UI_StackTopImpl(ui_state, BackgroundColor, background_color) }
+internal Vec4float ui_top_text_color(void) { UI_StackTopImpl(ui_state, TextColor, text_color) }
+internal Vec4float ui_top_border_color(void) { UI_StackTopImpl(ui_state, BorderColor, border_color) }
+internal float ui_top_squish(void) { UI_StackTopImpl(ui_state, Squish, squish) }
 internal OS_Cursor ui_top_hover_cursor(void) { UI_StackTopImpl(ui_state, HoverCursor, hover_cursor) }
 internal FNT_Tag ui_top_font(void) { UI_StackTopImpl(ui_state, Font, font) }
-internal F32 ui_top_font_size(void) { UI_StackTopImpl(ui_state, FontSize, font_size) }
+internal float ui_top_font_size(void) { UI_StackTopImpl(ui_state, FontSize, font_size) }
 internal FNT_RasterFlags ui_top_text_raster_flags(void) { UI_StackTopImpl(ui_state, TextRasterFlags, text_raster_flags) }
-internal F32 ui_top_tab_size(void) { UI_StackTopImpl(ui_state, TabSize, tab_size) }
-internal F32 ui_top_corner_radius_00(void) { UI_StackTopImpl(ui_state, CornerRadius00, corner_radius_00) }
-internal F32 ui_top_corner_radius_01(void) { UI_StackTopImpl(ui_state, CornerRadius01, corner_radius_01) }
-internal F32 ui_top_corner_radius_10(void) { UI_StackTopImpl(ui_state, CornerRadius10, corner_radius_10) }
-internal F32 ui_top_corner_radius_11(void) { UI_StackTopImpl(ui_state, CornerRadius11, corner_radius_11) }
-internal F32 ui_top_blur_size(void) { UI_StackTopImpl(ui_state, BlurSize, blur_size) }
-internal F32 ui_top_text_padding(void) { UI_StackTopImpl(ui_state, TextPadding, text_padding) }
+internal float ui_top_tab_size(void) { UI_StackTopImpl(ui_state, TabSize, tab_size) }
+internal float ui_top_corner_radius_00(void) { UI_StackTopImpl(ui_state, CornerRadius00, corner_radius_00) }
+internal float ui_top_corner_radius_01(void) { UI_StackTopImpl(ui_state, CornerRadius01, corner_radius_01) }
+internal float ui_top_corner_radius_10(void) { UI_StackTopImpl(ui_state, CornerRadius10, corner_radius_10) }
+internal float ui_top_corner_radius_11(void) { UI_StackTopImpl(ui_state, CornerRadius11, corner_radius_11) }
+internal float ui_top_blur_size(void) { UI_StackTopImpl(ui_state, BlurSize, blur_size) }
+internal float ui_top_text_padding(void) { UI_StackTopImpl(ui_state, TextPadding, text_padding) }
 internal UI_TextAlign ui_top_text_alignment(void) { UI_StackTopImpl(ui_state, TextAlignment, text_alignment) }
 internal UI_Box * ui_bottom_parent(void) { UI_StackBottomImpl(ui_state, Parent, parent) }
 internal Axis2 ui_bottom_child_layout_axis(void) { UI_StackBottomImpl(ui_state, ChildLayoutAxis, child_layout_axis) }
-internal F32 ui_bottom_fixed_x(void) { UI_StackBottomImpl(ui_state, FixedX, fixed_x) }
-internal F32 ui_bottom_fixed_y(void) { UI_StackBottomImpl(ui_state, FixedY, fixed_y) }
-internal F32 ui_bottom_fixed_width(void) { UI_StackBottomImpl(ui_state, FixedWidth, fixed_width) }
-internal F32 ui_bottom_fixed_height(void) { UI_StackBottomImpl(ui_state, FixedHeight, fixed_height) }
+internal float ui_bottom_fixed_x(void) { UI_StackBottomImpl(ui_state, FixedX, fixed_x) }
+internal float ui_bottom_fixed_y(void) { UI_StackBottomImpl(ui_state, FixedY, fixed_y) }
+internal float ui_bottom_fixed_width(void) { UI_StackBottomImpl(ui_state, FixedWidth, fixed_width) }
+internal float ui_bottom_fixed_height(void) { UI_StackBottomImpl(ui_state, FixedHeight, fixed_height) }
 internal UI_Size ui_bottom_pref_width(void) { UI_StackBottomImpl(ui_state, PrefWidth, pref_width) }
 internal UI_Size ui_bottom_pref_height(void) { UI_StackBottomImpl(ui_state, PrefHeight, pref_height) }
-internal F32 ui_bottom_min_width(void) { UI_StackBottomImpl(ui_state, MinWidth, min_width) }
-internal F32 ui_bottom_min_height(void) { UI_StackBottomImpl(ui_state, MinHeight, min_height) }
+internal float ui_bottom_min_width(void) { UI_StackBottomImpl(ui_state, MinWidth, min_width) }
+internal float ui_bottom_min_height(void) { UI_StackBottomImpl(ui_state, MinHeight, min_height) }
 internal UI_PermissionFlags ui_bottom_permission_flags(void) { UI_StackBottomImpl(ui_state, PermissionFlags, permission_flags) }
 internal UI_BoxFlags ui_bottom_flags(void) { UI_StackBottomImpl(ui_state, Flags, flags) }
 internal UI_BoxFlags ui_bottom_omit_flags(void) { UI_StackBottomImpl(ui_state, OmitFlags, omit_flags) }
 internal UI_FocusKind ui_bottom_focus_hot(void) { UI_StackBottomImpl(ui_state, FocusHot, focus_hot) }
 internal UI_FocusKind ui_bottom_focus_active(void) { UI_StackBottomImpl(ui_state, FocusActive, focus_active) }
-internal U32 ui_bottom_fastpath_codepoint(void) { UI_StackBottomImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
+internal uint32 ui_bottom_fastpath_codepoint(void) { UI_StackBottomImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
 internal UI_Key ui_bottom_group_key(void) { UI_StackBottomImpl(ui_state, GroupKey, group_key) }
-internal F32 ui_bottom_transparency(void) { UI_StackBottomImpl(ui_state, Transparency, transparency) }
-internal Vec4F32 ui_bottom_background_color(void) { UI_StackBottomImpl(ui_state, BackgroundColor, background_color) }
-internal Vec4F32 ui_bottom_text_color(void) { UI_StackBottomImpl(ui_state, TextColor, text_color) }
-internal Vec4F32 ui_bottom_border_color(void) { UI_StackBottomImpl(ui_state, BorderColor, border_color) }
-internal F32 ui_bottom_squish(void) { UI_StackBottomImpl(ui_state, Squish, squish) }
+internal float ui_bottom_transparency(void) { UI_StackBottomImpl(ui_state, Transparency, transparency) }
+internal Vec4float ui_bottom_background_color(void) { UI_StackBottomImpl(ui_state, BackgroundColor, background_color) }
+internal Vec4float ui_bottom_text_color(void) { UI_StackBottomImpl(ui_state, TextColor, text_color) }
+internal Vec4float ui_bottom_border_color(void) { UI_StackBottomImpl(ui_state, BorderColor, border_color) }
+internal float ui_bottom_squish(void) { UI_StackBottomImpl(ui_state, Squish, squish) }
 internal OS_Cursor ui_bottom_hover_cursor(void) { UI_StackBottomImpl(ui_state, HoverCursor, hover_cursor) }
 internal FNT_Tag ui_bottom_font(void) { UI_StackBottomImpl(ui_state, Font, font) }
-internal F32 ui_bottom_font_size(void) { UI_StackBottomImpl(ui_state, FontSize, font_size) }
+internal float ui_bottom_font_size(void) { UI_StackBottomImpl(ui_state, FontSize, font_size) }
 internal FNT_RasterFlags ui_bottom_text_raster_flags(void) { UI_StackBottomImpl(ui_state, TextRasterFlags, text_raster_flags) }
-internal F32 ui_bottom_tab_size(void) { UI_StackBottomImpl(ui_state, TabSize, tab_size) }
-internal F32 ui_bottom_corner_radius_00(void) { UI_StackBottomImpl(ui_state, CornerRadius00, corner_radius_00) }
-internal F32 ui_bottom_corner_radius_01(void) { UI_StackBottomImpl(ui_state, CornerRadius01, corner_radius_01) }
-internal F32 ui_bottom_corner_radius_10(void) { UI_StackBottomImpl(ui_state, CornerRadius10, corner_radius_10) }
-internal F32 ui_bottom_corner_radius_11(void) { UI_StackBottomImpl(ui_state, CornerRadius11, corner_radius_11) }
-internal F32 ui_bottom_blur_size(void) { UI_StackBottomImpl(ui_state, BlurSize, blur_size) }
-internal F32 ui_bottom_text_padding(void) { UI_StackBottomImpl(ui_state, TextPadding, text_padding) }
+internal float ui_bottom_tab_size(void) { UI_StackBottomImpl(ui_state, TabSize, tab_size) }
+internal float ui_bottom_corner_radius_00(void) { UI_StackBottomImpl(ui_state, CornerRadius00, corner_radius_00) }
+internal float ui_bottom_corner_radius_01(void) { UI_StackBottomImpl(ui_state, CornerRadius01, corner_radius_01) }
+internal float ui_bottom_corner_radius_10(void) { UI_StackBottomImpl(ui_state, CornerRadius10, corner_radius_10) }
+internal float ui_bottom_corner_radius_11(void) { UI_StackBottomImpl(ui_state, CornerRadius11, corner_radius_11) }
+internal float ui_bottom_blur_size(void) { UI_StackBottomImpl(ui_state, BlurSize, blur_size) }
+internal float ui_bottom_text_padding(void) { UI_StackBottomImpl(ui_state, TextPadding, text_padding) }
 internal UI_TextAlign ui_bottom_text_alignment(void) { UI_StackBottomImpl(ui_state, TextAlignment, text_alignment) }
 internal UI_Box * ui_push_parent(UI_Box * v) { UI_StackPushImpl(ui_state, Parent, parent, UI_Box *, v) }
 internal Axis2 ui_push_child_layout_axis(Axis2 v) { UI_StackPushImpl(ui_state, ChildLayoutAxis, child_layout_axis, Axis2, v) }
-internal F32 ui_push_fixed_x(F32 v) { UI_StackPushImpl(ui_state, FixedX, fixed_x, F32, v) }
-internal F32 ui_push_fixed_y(F32 v) { UI_StackPushImpl(ui_state, FixedY, fixed_y, F32, v) }
-internal F32 ui_push_fixed_width(F32 v) { UI_StackPushImpl(ui_state, FixedWidth, fixed_width, F32, v) }
-internal F32 ui_push_fixed_height(F32 v) { UI_StackPushImpl(ui_state, FixedHeight, fixed_height, F32, v) }
+internal float ui_push_fixed_x(float v) { UI_StackPushImpl(ui_state, FixedX, fixed_x, float, v) }
+internal float ui_push_fixed_y(float v) { UI_StackPushImpl(ui_state, FixedY, fixed_y, float, v) }
+internal float ui_push_fixed_width(float v) { UI_StackPushImpl(ui_state, FixedWidth, fixed_width, float, v) }
+internal float ui_push_fixed_height(float v) { UI_StackPushImpl(ui_state, FixedHeight, fixed_height, float, v) }
 internal UI_Size ui_push_pref_width(UI_Size v) { UI_StackPushImpl(ui_state, PrefWidth, pref_width, UI_Size, v) }
 internal UI_Size ui_push_pref_height(UI_Size v) { UI_StackPushImpl(ui_state, PrefHeight, pref_height, UI_Size, v) }
-internal F32 ui_push_min_width(F32 v) { UI_StackPushImpl(ui_state, MinWidth, min_width, F32, v) }
-internal F32 ui_push_min_height(F32 v) { UI_StackPushImpl(ui_state, MinHeight, min_height, F32, v) }
+internal float ui_push_min_width(float v) { UI_StackPushImpl(ui_state, MinWidth, min_width, float, v) }
+internal float ui_push_min_height(float v) { UI_StackPushImpl(ui_state, MinHeight, min_height, float, v) }
 internal UI_PermissionFlags ui_push_permission_flags(UI_PermissionFlags v) { UI_StackPushImpl(ui_state, PermissionFlags, permission_flags, UI_PermissionFlags, v) }
 internal UI_BoxFlags ui_push_flags(UI_BoxFlags v) { UI_StackPushImpl(ui_state, Flags, flags, UI_BoxFlags, v) }
 internal UI_BoxFlags ui_push_omit_flags(UI_BoxFlags v) { UI_StackPushImpl(ui_state, OmitFlags, omit_flags, UI_BoxFlags, v) }
 internal UI_FocusKind ui_push_focus_hot(UI_FocusKind v) { UI_StackPushImpl(ui_state, FocusHot, focus_hot, UI_FocusKind, v) }
 internal UI_FocusKind ui_push_focus_active(UI_FocusKind v) { UI_StackPushImpl(ui_state, FocusActive, focus_active, UI_FocusKind, v) }
-internal U32 ui_push_fastpath_codepoint(U32 v) { UI_StackPushImpl(ui_state, FastpathCodepoint, fastpath_codepoint, U32, v) }
+internal uint32 ui_push_fastpath_codepoint(uint32 v) { UI_StackPushImpl(ui_state, FastpathCodepoint, fastpath_codepoint, uint32, v) }
 internal UI_Key ui_push_group_key(UI_Key v) { UI_StackPushImpl(ui_state, GroupKey, group_key, UI_Key, v) }
-internal F32 ui_push_transparency(F32 v) { UI_StackPushImpl(ui_state, Transparency, transparency, F32, v) }
-internal Vec4F32 ui_push_background_color(Vec4F32 v) { UI_StackPushImpl(ui_state, BackgroundColor, background_color, Vec4F32, v) }
-internal Vec4F32 ui_push_text_color(Vec4F32 v) { UI_StackPushImpl(ui_state, TextColor, text_color, Vec4F32, v) }
-internal Vec4F32 ui_push_border_color(Vec4F32 v) { UI_StackPushImpl(ui_state, BorderColor, border_color, Vec4F32, v) }
-internal F32 ui_push_squish(F32 v) { UI_StackPushImpl(ui_state, Squish, squish, F32, v) }
+internal float ui_push_transparency(float v) { UI_StackPushImpl(ui_state, Transparency, transparency, float, v) }
+internal Vec4float ui_push_background_color(Vec4float v) { UI_StackPushImpl(ui_state, BackgroundColor, background_color, Vec4float, v) }
+internal Vec4float ui_push_text_color(Vec4float v) { UI_StackPushImpl(ui_state, TextColor, text_color, Vec4float, v) }
+internal Vec4float ui_push_border_color(Vec4float v) { UI_StackPushImpl(ui_state, BorderColor, border_color, Vec4float, v) }
+internal float ui_push_squish(float v) { UI_StackPushImpl(ui_state, Squish, squish, float, v) }
 internal OS_Cursor ui_push_hover_cursor(OS_Cursor v) { UI_StackPushImpl(ui_state, HoverCursor, hover_cursor, OS_Cursor, v) }
 internal FNT_Tag ui_push_font(FNT_Tag v) { UI_StackPushImpl(ui_state, Font, font, FNT_Tag, v) }
-internal F32 ui_push_font_size(F32 v) { UI_StackPushImpl(ui_state, FontSize, font_size, F32, v) }
+internal float ui_push_font_size(float v) { UI_StackPushImpl(ui_state, FontSize, font_size, float, v) }
 internal FNT_RasterFlags ui_push_text_raster_flags(FNT_RasterFlags v) { UI_StackPushImpl(ui_state, TextRasterFlags, text_raster_flags, FNT_RasterFlags, v) }
-internal F32 ui_push_tab_size(F32 v) { UI_StackPushImpl(ui_state, TabSize, tab_size, F32, v) }
-internal F32 ui_push_corner_radius_00(F32 v) { UI_StackPushImpl(ui_state, CornerRadius00, corner_radius_00, F32, v) }
-internal F32 ui_push_corner_radius_01(F32 v) { UI_StackPushImpl(ui_state, CornerRadius01, corner_radius_01, F32, v) }
-internal F32 ui_push_corner_radius_10(F32 v) { UI_StackPushImpl(ui_state, CornerRadius10, corner_radius_10, F32, v) }
-internal F32 ui_push_corner_radius_11(F32 v) { UI_StackPushImpl(ui_state, CornerRadius11, corner_radius_11, F32, v) }
-internal F32 ui_push_blur_size(F32 v) { UI_StackPushImpl(ui_state, BlurSize, blur_size, F32, v) }
-internal F32 ui_push_text_padding(F32 v) { UI_StackPushImpl(ui_state, TextPadding, text_padding, F32, v) }
+internal float ui_push_tab_size(float v) { UI_StackPushImpl(ui_state, TabSize, tab_size, float, v) }
+internal float ui_push_corner_radius_00(float v) { UI_StackPushImpl(ui_state, CornerRadius00, corner_radius_00, float, v) }
+internal float ui_push_corner_radius_01(float v) { UI_StackPushImpl(ui_state, CornerRadius01, corner_radius_01, float, v) }
+internal float ui_push_corner_radius_10(float v) { UI_StackPushImpl(ui_state, CornerRadius10, corner_radius_10, float, v) }
+internal float ui_push_corner_radius_11(float v) { UI_StackPushImpl(ui_state, CornerRadius11, corner_radius_11, float, v) }
+internal float ui_push_blur_size(float v) { UI_StackPushImpl(ui_state, BlurSize, blur_size, float, v) }
+internal float ui_push_text_padding(float v) { UI_StackPushImpl(ui_state, TextPadding, text_padding, float, v) }
 internal UI_TextAlign ui_push_text_alignment(UI_TextAlign v) { UI_StackPushImpl(ui_state, TextAlignment, text_alignment, UI_TextAlign, v) }
 internal UI_Box * ui_pop_parent(void) { UI_StackPopImpl(ui_state, Parent, parent) }
 internal Axis2 ui_pop_child_layout_axis(void) { UI_StackPopImpl(ui_state, ChildLayoutAxis, child_layout_axis) }
-internal F32 ui_pop_fixed_x(void) { UI_StackPopImpl(ui_state, FixedX, fixed_x) }
-internal F32 ui_pop_fixed_y(void) { UI_StackPopImpl(ui_state, FixedY, fixed_y) }
-internal F32 ui_pop_fixed_width(void) { UI_StackPopImpl(ui_state, FixedWidth, fixed_width) }
-internal F32 ui_pop_fixed_height(void) { UI_StackPopImpl(ui_state, FixedHeight, fixed_height) }
+internal float ui_pop_fixed_x(void) { UI_StackPopImpl(ui_state, FixedX, fixed_x) }
+internal float ui_pop_fixed_y(void) { UI_StackPopImpl(ui_state, FixedY, fixed_y) }
+internal float ui_pop_fixed_width(void) { UI_StackPopImpl(ui_state, FixedWidth, fixed_width) }
+internal float ui_pop_fixed_height(void) { UI_StackPopImpl(ui_state, FixedHeight, fixed_height) }
 internal UI_Size ui_pop_pref_width(void) { UI_StackPopImpl(ui_state, PrefWidth, pref_width) }
 internal UI_Size ui_pop_pref_height(void) { UI_StackPopImpl(ui_state, PrefHeight, pref_height) }
-internal F32 ui_pop_min_width(void) { UI_StackPopImpl(ui_state, MinWidth, min_width) }
-internal F32 ui_pop_min_height(void) { UI_StackPopImpl(ui_state, MinHeight, min_height) }
+internal float ui_pop_min_width(void) { UI_StackPopImpl(ui_state, MinWidth, min_width) }
+internal float ui_pop_min_height(void) { UI_StackPopImpl(ui_state, MinHeight, min_height) }
 internal UI_PermissionFlags ui_pop_permission_flags(void) { UI_StackPopImpl(ui_state, PermissionFlags, permission_flags) }
 internal UI_BoxFlags ui_pop_flags(void) { UI_StackPopImpl(ui_state, Flags, flags) }
 internal UI_BoxFlags ui_pop_omit_flags(void) { UI_StackPopImpl(ui_state, OmitFlags, omit_flags) }
 internal UI_FocusKind ui_pop_focus_hot(void) { UI_StackPopImpl(ui_state, FocusHot, focus_hot) }
 internal UI_FocusKind ui_pop_focus_active(void) { UI_StackPopImpl(ui_state, FocusActive, focus_active) }
-internal U32 ui_pop_fastpath_codepoint(void) { UI_StackPopImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
+internal uint32 ui_pop_fastpath_codepoint(void) { UI_StackPopImpl(ui_state, FastpathCodepoint, fastpath_codepoint) }
 internal UI_Key ui_pop_group_key(void) { UI_StackPopImpl(ui_state, GroupKey, group_key) }
-internal F32 ui_pop_transparency(void) { UI_StackPopImpl(ui_state, Transparency, transparency) }
-internal Vec4F32 ui_pop_background_color(void) { UI_StackPopImpl(ui_state, BackgroundColor, background_color) }
-internal Vec4F32 ui_pop_text_color(void) { UI_StackPopImpl(ui_state, TextColor, text_color) }
-internal Vec4F32 ui_pop_border_color(void) { UI_StackPopImpl(ui_state, BorderColor, border_color) }
-internal F32 ui_pop_squish(void) { UI_StackPopImpl(ui_state, Squish, squish) }
+internal float ui_pop_transparency(void) { UI_StackPopImpl(ui_state, Transparency, transparency) }
+internal Vec4float ui_pop_background_color(void) { UI_StackPopImpl(ui_state, BackgroundColor, background_color) }
+internal Vec4float ui_pop_text_color(void) { UI_StackPopImpl(ui_state, TextColor, text_color) }
+internal Vec4float ui_pop_border_color(void) { UI_StackPopImpl(ui_state, BorderColor, border_color) }
+internal float ui_pop_squish(void) { UI_StackPopImpl(ui_state, Squish, squish) }
 internal OS_Cursor ui_pop_hover_cursor(void) { UI_StackPopImpl(ui_state, HoverCursor, hover_cursor) }
 internal FNT_Tag ui_pop_font(void) { UI_StackPopImpl(ui_state, Font, font) }
-internal F32 ui_pop_font_size(void) { UI_StackPopImpl(ui_state, FontSize, font_size) }
+internal float ui_pop_font_size(void) { UI_StackPopImpl(ui_state, FontSize, font_size) }
 internal FNT_RasterFlags ui_pop_text_raster_flags(void) { UI_StackPopImpl(ui_state, TextRasterFlags, text_raster_flags) }
-internal F32 ui_pop_tab_size(void) { UI_StackPopImpl(ui_state, TabSize, tab_size) }
-internal F32 ui_pop_corner_radius_00(void) { UI_StackPopImpl(ui_state, CornerRadius00, corner_radius_00) }
-internal F32 ui_pop_corner_radius_01(void) { UI_StackPopImpl(ui_state, CornerRadius01, corner_radius_01) }
-internal F32 ui_pop_corner_radius_10(void) { UI_StackPopImpl(ui_state, CornerRadius10, corner_radius_10) }
-internal F32 ui_pop_corner_radius_11(void) { UI_StackPopImpl(ui_state, CornerRadius11, corner_radius_11) }
-internal F32 ui_pop_blur_size(void) { UI_StackPopImpl(ui_state, BlurSize, blur_size) }
-internal F32 ui_pop_text_padding(void) { UI_StackPopImpl(ui_state, TextPadding, text_padding) }
+internal float ui_pop_tab_size(void) { UI_StackPopImpl(ui_state, TabSize, tab_size) }
+internal float ui_pop_corner_radius_00(void) { UI_StackPopImpl(ui_state, CornerRadius00, corner_radius_00) }
+internal float ui_pop_corner_radius_01(void) { UI_StackPopImpl(ui_state, CornerRadius01, corner_radius_01) }
+internal float ui_pop_corner_radius_10(void) { UI_StackPopImpl(ui_state, CornerRadius10, corner_radius_10) }
+internal float ui_pop_corner_radius_11(void) { UI_StackPopImpl(ui_state, CornerRadius11, corner_radius_11) }
+internal float ui_pop_blur_size(void) { UI_StackPopImpl(ui_state, BlurSize, blur_size) }
+internal float ui_pop_text_padding(void) { UI_StackPopImpl(ui_state, TextPadding, text_padding) }
 internal UI_TextAlign ui_pop_text_alignment(void) { UI_StackPopImpl(ui_state, TextAlignment, text_alignment) }
 internal UI_Box * ui_set_next_parent(UI_Box * v) { UI_StackSetNextImpl(ui_state, Parent, parent, UI_Box *, v) }
 internal Axis2 ui_set_next_child_layout_axis(Axis2 v) { UI_StackSetNextImpl(ui_state, ChildLayoutAxis, child_layout_axis, Axis2, v) }
-internal F32 ui_set_next_fixed_x(F32 v) { UI_StackSetNextImpl(ui_state, FixedX, fixed_x, F32, v) }
-internal F32 ui_set_next_fixed_y(F32 v) { UI_StackSetNextImpl(ui_state, FixedY, fixed_y, F32, v) }
-internal F32 ui_set_next_fixed_width(F32 v) { UI_StackSetNextImpl(ui_state, FixedWidth, fixed_width, F32, v) }
-internal F32 ui_set_next_fixed_height(F32 v) { UI_StackSetNextImpl(ui_state, FixedHeight, fixed_height, F32, v) }
+internal float ui_set_next_fixed_x(float v) { UI_StackSetNextImpl(ui_state, FixedX, fixed_x, float, v) }
+internal float ui_set_next_fixed_y(float v) { UI_StackSetNextImpl(ui_state, FixedY, fixed_y, float, v) }
+internal float ui_set_next_fixed_width(float v) { UI_StackSetNextImpl(ui_state, FixedWidth, fixed_width, float, v) }
+internal float ui_set_next_fixed_height(float v) { UI_StackSetNextImpl(ui_state, FixedHeight, fixed_height, float, v) }
 internal UI_Size ui_set_next_pref_width(UI_Size v) { UI_StackSetNextImpl(ui_state, PrefWidth, pref_width, UI_Size, v) }
 internal UI_Size ui_set_next_pref_height(UI_Size v) { UI_StackSetNextImpl(ui_state, PrefHeight, pref_height, UI_Size, v) }
-internal F32 ui_set_next_min_width(F32 v) { UI_StackSetNextImpl(ui_state, MinWidth, min_width, F32, v) }
-internal F32 ui_set_next_min_height(F32 v) { UI_StackSetNextImpl(ui_state, MinHeight, min_height, F32, v) }
+internal float ui_set_next_min_width(float v) { UI_StackSetNextImpl(ui_state, MinWidth, min_width, float, v) }
+internal float ui_set_next_min_height(float v) { UI_StackSetNextImpl(ui_state, MinHeight, min_height, float, v) }
 internal UI_PermissionFlags ui_set_next_permission_flags(UI_PermissionFlags v) { UI_StackSetNextImpl(ui_state, PermissionFlags, permission_flags, UI_PermissionFlags, v) }
 internal UI_BoxFlags ui_set_next_flags(UI_BoxFlags v) { UI_StackSetNextImpl(ui_state, Flags, flags, UI_BoxFlags, v) }
 internal UI_BoxFlags ui_set_next_omit_flags(UI_BoxFlags v) { UI_StackSetNextImpl(ui_state, OmitFlags, omit_flags, UI_BoxFlags, v) }
 internal UI_FocusKind ui_set_next_focus_hot(UI_FocusKind v) { UI_StackSetNextImpl(ui_state, FocusHot, focus_hot, UI_FocusKind, v) }
 internal UI_FocusKind ui_set_next_focus_active(UI_FocusKind v) { UI_StackSetNextImpl(ui_state, FocusActive, focus_active, UI_FocusKind, v) }
-internal U32 ui_set_next_fastpath_codepoint(U32 v) { UI_StackSetNextImpl(ui_state, FastpathCodepoint, fastpath_codepoint, U32, v) }
+internal uint32 ui_set_next_fastpath_codepoint(uint32 v) { UI_StackSetNextImpl(ui_state, FastpathCodepoint, fastpath_codepoint, uint32, v) }
 internal UI_Key ui_set_next_group_key(UI_Key v) { UI_StackSetNextImpl(ui_state, GroupKey, group_key, UI_Key, v) }
-internal F32 ui_set_next_transparency(F32 v) { UI_StackSetNextImpl(ui_state, Transparency, transparency, F32, v) }
-internal Vec4F32 ui_set_next_background_color(Vec4F32 v) { UI_StackSetNextImpl(ui_state, BackgroundColor, background_color, Vec4F32, v) }
-internal Vec4F32 ui_set_next_text_color(Vec4F32 v) { UI_StackSetNextImpl(ui_state, TextColor, text_color, Vec4F32, v) }
-internal Vec4F32 ui_set_next_border_color(Vec4F32 v) { UI_StackSetNextImpl(ui_state, BorderColor, border_color, Vec4F32, v) }
-internal F32 ui_set_next_squish(F32 v) { UI_StackSetNextImpl(ui_state, Squish, squish, F32, v) }
+internal float ui_set_next_transparency(float v) { UI_StackSetNextImpl(ui_state, Transparency, transparency, float, v) }
+internal Vec4float ui_set_next_background_color(Vec4float v) { UI_StackSetNextImpl(ui_state, BackgroundColor, background_color, Vec4float, v) }
+internal Vec4float ui_set_next_text_color(Vec4float v) { UI_StackSetNextImpl(ui_state, TextColor, text_color, Vec4float, v) }
+internal Vec4float ui_set_next_border_color(Vec4float v) { UI_StackSetNextImpl(ui_state, BorderColor, border_color, Vec4float, v) }
+internal float ui_set_next_squish(float v) { UI_StackSetNextImpl(ui_state, Squish, squish, float, v) }
 internal OS_Cursor ui_set_next_hover_cursor(OS_Cursor v) { UI_StackSetNextImpl(ui_state, HoverCursor, hover_cursor, OS_Cursor, v) }
 internal FNT_Tag ui_set_next_font(FNT_Tag v) { UI_StackSetNextImpl(ui_state, Font, font, FNT_Tag, v) }
-internal F32 ui_set_next_font_size(F32 v) { UI_StackSetNextImpl(ui_state, FontSize, font_size, F32, v) }
+internal float ui_set_next_font_size(float v) { UI_StackSetNextImpl(ui_state, FontSize, font_size, float, v) }
 internal FNT_RasterFlags ui_set_next_text_raster_flags(FNT_RasterFlags v) { UI_StackSetNextImpl(ui_state, TextRasterFlags, text_raster_flags, FNT_RasterFlags, v) }
-internal F32 ui_set_next_tab_size(F32 v) { UI_StackSetNextImpl(ui_state, TabSize, tab_size, F32, v) }
-internal F32 ui_set_next_corner_radius_00(F32 v) { UI_StackSetNextImpl(ui_state, CornerRadius00, corner_radius_00, F32, v) }
-internal F32 ui_set_next_corner_radius_01(F32 v) { UI_StackSetNextImpl(ui_state, CornerRadius01, corner_radius_01, F32, v) }
-internal F32 ui_set_next_corner_radius_10(F32 v) { UI_StackSetNextImpl(ui_state, CornerRadius10, corner_radius_10, F32, v) }
-internal F32 ui_set_next_corner_radius_11(F32 v) { UI_StackSetNextImpl(ui_state, CornerRadius11, corner_radius_11, F32, v) }
-internal F32 ui_set_next_blur_size(F32 v) { UI_StackSetNextImpl(ui_state, BlurSize, blur_size, F32, v) }
-internal F32 ui_set_next_text_padding(F32 v) { UI_StackSetNextImpl(ui_state, TextPadding, text_padding, F32, v) }
+internal float ui_set_next_tab_size(float v) { UI_StackSetNextImpl(ui_state, TabSize, tab_size, float, v) }
+internal float ui_set_next_corner_radius_00(float v) { UI_StackSetNextImpl(ui_state, CornerRadius00, corner_radius_00, float, v) }
+internal float ui_set_next_corner_radius_01(float v) { UI_StackSetNextImpl(ui_state, CornerRadius01, corner_radius_01, float, v) }
+internal float ui_set_next_corner_radius_10(float v) { UI_StackSetNextImpl(ui_state, CornerRadius10, corner_radius_10, float, v) }
+internal float ui_set_next_corner_radius_11(float v) { UI_StackSetNextImpl(ui_state, CornerRadius11, corner_radius_11, float, v) }
+internal float ui_set_next_blur_size(float v) { UI_StackSetNextImpl(ui_state, BlurSize, blur_size, float, v) }
+internal float ui_set_next_text_padding(float v) { UI_StackSetNextImpl(ui_state, TextPadding, text_padding, float, v) }
 internal UI_TextAlign ui_set_next_text_alignment(UI_TextAlign v) { UI_StackSetNextImpl(ui_state, TextAlignment, text_alignment, UI_TextAlign, v) }

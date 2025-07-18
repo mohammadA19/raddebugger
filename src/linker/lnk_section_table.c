@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal LNK_SectionContrib *
-lnk_section_contrib_chunk_push(LNK_SectionContribChunk *chunk, U64 count)
+lnk_section_contrib_chunk_push(LNK_SectionContribChunk *chunk, uint64 count)
 {
   Assert(chunk->count + count <= chunk->cap);
   LNK_SectionContrib *result = chunk->v[chunk->count];
@@ -11,16 +11,16 @@ lnk_section_contrib_chunk_push(LNK_SectionContribChunk *chunk, U64 count)
 }
 
 internal LNK_SectionContrib *
-lnk_section_contrib_chunk_push_atomic(LNK_SectionContribChunk *chunk, U64 count)
+lnk_section_contrib_chunk_push_atomic(LNK_SectionContribChunk *chunk, uint64 count)
 {
-  U64 pos = ins_atomic_u64_add_eval(&chunk->count, count) - count;
+  uint64 pos = ins_atomic_u64_add_eval(&chunk->count, count) - count;
   Assert(pos + count <= chunk->cap);
   LNK_SectionContrib *result = chunk->v[pos];
   return result;
 }
 
 internal LNK_SectionContribChunk *
-lnk_section_contrib_chunk_list_push_chunk(Arena *arena, LNK_SectionContribChunkList *list, U64 cap, String8 sort_idx)
+lnk_section_contrib_chunk_list_push_chunk(Arena *arena, LNK_SectionContribChunkList *list, uint64 cap, String8 sort_idx)
 {
   LNK_SectionContribChunk *chunk = push_array(arena, LNK_SectionContribChunk, 1);
   chunk->count    = 0;
@@ -28,7 +28,7 @@ lnk_section_contrib_chunk_list_push_chunk(Arena *arena, LNK_SectionContribChunkL
   chunk->v        = push_array(arena, LNK_SectionContrib *, cap);
   chunk->v2       = push_array(arena, LNK_SectionContrib, cap);
   chunk->sort_idx = sort_idx;
-  for (U64 i = 0; i < cap; i += 1) { chunk->v[i] = &chunk->v2[i]; }
+  for (uint64 i = 0; i < cap; i += 1) { chunk->v[i] = &chunk->v2[i]; }
   SLLQueuePush(list->first, list->last, chunk);
   list->chunk_count += 1;
   return chunk;
@@ -50,7 +50,7 @@ internal LNK_SectionContribChunk **
 lnk_array_from_section_contrib_chunk_list(Arena *arena, LNK_SectionContribChunkList list)
 {
   LNK_SectionContribChunk **result = push_array(arena, LNK_SectionContribChunk *, list.chunk_count);
-  U64 i = 0;
+  uint64 i = 0;
   for (LNK_SectionContribChunk *chunk = list.first; chunk != 0; chunk = chunk->next, i += 1) {
     result[i] = chunk;
   }
@@ -194,7 +194,7 @@ lnk_section_table_search_many(Arena *arena, LNK_SectionTable *sectab, String8 fu
   String8 postfix = {0};
   coff_parse_section_name(full_or_partial_name, &name, &postfix);
 
-  U64 match_count = 0;
+  uint64 match_count = 0;
   for (LNK_SectionNode *sect_n = sectab->list.first; sect_n != 0; sect_n = sect_n->next) {
     if (str8_match(sect_n->data.name, name, 0)) {
       match_count += 1;
@@ -232,7 +232,7 @@ lnk_section_table_merge(LNK_SectionTable *sectab, LNK_MergeDirectiveList merge_l
         str8_lit_comp(".rsrc"),
         str8_lit_comp(".reloc"),
       };
-      for (U64 i = 0; i < ArrayCount(illegal_merge_sections); i += 1) {
+      for (uint64 i = 0; i < ArrayCount(illegal_merge_sections); i += 1) {
         if (str8_match(merge->src, illegal_merge_sections[i], 0)) {
           lnk_error(LNK_Error_IllegalSectionMerge, "illegal to merge %S with %S", illegal_merge_sections[i], merge->dst);
         }
@@ -292,7 +292,7 @@ lnk_section_table_merge(LNK_SectionTable *sectab, LNK_MergeDirectiveList merge_l
       }
     }
 
-    for (U64 src_idx = 0; src_idx < src_matches.count; src_idx += 1) {
+    for (uint64 src_idx = 0; src_idx < src_matches.count; src_idx += 1) {
       LNK_Section *src = src_matches.v[src_idx];
 
       if (src->flags != dst->flags) {
@@ -335,7 +335,7 @@ lnk_sort_section_contribs(LNK_Section *sect)
   // repopulate chunk list in sorted order
   sect->contribs.first = 0;
   sect->contribs.last  = 0;
-  for (U64 chunk_idx = 0; chunk_idx < sect->contribs.chunk_count; chunk_idx += 1) {
+  for (uint64 chunk_idx = 0; chunk_idx < sect->contribs.chunk_count; chunk_idx += 1) {
     SLLQueuePush(sect->contribs.first, sect->contribs.last, chunks[chunk_idx]);
   }
 
@@ -344,12 +344,12 @@ lnk_sort_section_contribs(LNK_Section *sect)
 }
 
 internal void
-lnk_finalize_section_layout(LNK_Section *sect, U64 file_align, U64 pad_size)
+lnk_finalize_section_layout(LNK_Section *sect, uint64 file_align, uint64 pad_size)
 {
   ProfBegin("Layout Contribs");
-  U64 cursor = 0;
+  uint64 cursor = 0;
   for (LNK_SectionContribChunk *sc_chunk = sect->contribs.first; sc_chunk != 0; sc_chunk = sc_chunk->next) {
-    for (U64 sc_idx = 0; sc_idx < sc_chunk->count; sc_idx += 1) {
+    for (uint64 sc_idx = 0; sc_idx < sc_chunk->count; sc_idx += 1) {
       LNK_SectionContrib *sc = sc_chunk->v[sc_idx];
 
       // add section pad bytes
@@ -362,7 +362,7 @@ lnk_finalize_section_layout(LNK_Section *sect, U64 file_align, U64 pad_size)
       sc->u.off = cursor;
 
       // advance cursor
-      U64 sc_size = lnk_size_from_section_contrib(sc);
+      uint64 sc_size = lnk_size_from_section_contrib(sc);
       cursor += sc_size;
     }
   }
@@ -375,20 +375,20 @@ lnk_finalize_section_layout(LNK_Section *sect, U64 file_align, U64 pad_size)
 }
 
 internal void
-lnk_assign_section_index(LNK_Section *sect, U64 sect_idx)
+lnk_assign_section_index(LNK_Section *sect, uint64 sect_idx)
 {
   sect->sect_idx = sect_idx;
 
   // assign section indices to contribs
   for (LNK_SectionContribChunk *sc_chunk = sect->contribs.first; sc_chunk != 0; sc_chunk = sc_chunk->next) {
-    for (U64 sc_idx = 0; sc_idx < sc_chunk->count; sc_idx += 1) {
+    for (uint64 sc_idx = 0; sc_idx < sc_chunk->count; sc_idx += 1) {
       sc_chunk->v[sc_idx]->u.sect_idx = sect_idx;
     }
   }
 }
 
 internal void
-lnk_assign_section_virtual_space(LNK_Section *sect, U64 sect_align, U64 *voff_cursor)
+lnk_assign_section_virtual_space(LNK_Section *sect, uint64 sect_align, uint64 *voff_cursor)
 {
   sect->voff    = *voff_cursor;
   *voff_cursor += sect->vsize;
@@ -396,7 +396,7 @@ lnk_assign_section_virtual_space(LNK_Section *sect, U64 sect_align, U64 *voff_cu
 }
 
 internal void
-lnk_assign_section_file_space(LNK_Section *sect, U64 *foff_cursor)
+lnk_assign_section_file_space(LNK_Section *sect, uint64 *foff_cursor)
 {
   if (~sect->flags & COFF_SectionFlag_CntUninitializedData) {
     sect->foff    = *foff_cursor;
@@ -404,36 +404,36 @@ lnk_assign_section_file_space(LNK_Section *sect, U64 *foff_cursor)
   }
 }
 
-internal U64
+internal uint64
 lnk_size_from_section_contrib(LNK_SectionContrib *sc)
 {
-  U64 size = 0;
+  uint64 size = 0;
   for (String8Node *n = &sc->first_data_node; n != 0; n = n->next) {
     size += n->string.size;
   }
   return size;
 }
 
-internal U64
+internal uint64
 lnk_voff_from_section_contrib(COFF_SectionHeader **image_section_table, LNK_SectionContrib *sc)
 {
   COFF_SectionHeader *sect_header = image_section_table[sc->u.sect_idx+1];
-  U64 voff = sect_header->voff + sc->u.off;
+  uint64 voff = sect_header->voff + sc->u.off;
   return voff;
 }
 
-internal U64
+internal uint64
 lnk_foff_from_section_contrib(COFF_SectionHeader **image_section_table, LNK_SectionContrib *sc)
 {
   COFF_SectionHeader *sect_header = image_section_table[sc->u.sect_idx+1];
-  U64 foff = sect_header->foff + sc->u.off;
+  uint64 foff = sect_header->foff + sc->u.off;
   return foff;
 }
 
-internal U64
+internal uint64
 lnk_fopl_from_section_contrib(COFF_SectionHeader **image_section_table, LNK_SectionContrib *sc)
 {
-  U64 foff = lnk_foff_from_section_contrib(image_section_table, sc);
+  uint64 foff = lnk_foff_from_section_contrib(image_section_table, sc);
   return foff + lnk_size_from_section_contrib(sc);
 }
 
@@ -459,16 +459,16 @@ lnk_get_last_section_contrib(LNK_Section *sect)
   return 0;
 }
 
-internal U64
+internal uint64
 lnk_get_section_contrib_size(LNK_Section *sect)
 {
   LNK_SectionContrib *first_sc = lnk_get_first_section_contrib(sect);
   LNK_SectionContrib *last_sc = lnk_get_last_section_contrib(sect);
-  U64 size = (last_sc->u.off - first_sc->u.off) + lnk_size_from_section_contrib(last_sc);
+  uint64 size = (last_sc->u.off - first_sc->u.off) + lnk_size_from_section_contrib(last_sc);
   return size;
 }
 
-internal U64
+internal uint64
 lnk_get_first_section_contrib_voff(COFF_SectionHeader **image_section_table, LNK_Section *sect)
 {
   LNK_SectionContrib *sc = lnk_get_first_section_contrib(sect);

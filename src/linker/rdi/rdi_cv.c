@@ -16,9 +16,9 @@ rdi_arch_from_cv_arch(CV_Arch arch)
   case CV_Arch_PENTIUMII: 
   case CV_Arch_PENTIUMIII: 
   case CV_Arch_MIPS: 
-  case CV_Arch_MIPS16: 
-  case CV_Arch_MIPS32: 
-  case CV_Arch_MIPS64: 
+  case CV_Arch_MIPuint16: 
+  case CV_Arch_MIPuint32: 
+  case CV_Arch_MIPuint64: 
   case CV_Arch_MIPSI: 
   case CV_Arch_MIPSII: 
   case CV_Arch_MIPSIII: 
@@ -159,47 +159,47 @@ rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
   case CV_BasicType_FBASICSTR : return RDI_TypeKind_NULL;
   case CV_BasicType_HRESULT   : return RDI_TypeKind_Handle;
   case CV_BasicType_CHAR      : return RDI_TypeKind_Char8;
-  case CV_BasicType_SHORT     : return RDI_TypeKind_S16;
-  case CV_BasicType_LONG      : return RDI_TypeKind_S32;
-  case CV_BasicType_QUAD      : return RDI_TypeKind_S64;
-  case CV_BasicType_OCT       : return RDI_TypeKind_S128;
+  case CV_BasicType_SHORT     : return RDI_TypeKind_uint16;
+  case CV_BasicType_LONG      : return RDI_TypeKind_uint32;
+  case CV_BasicType_QUAD      : return RDI_TypeKind_uint64;
+  case CV_BasicType_OCT       : return RDI_TypeKind_uint128;
   case CV_BasicType_UCHAR     : return RDI_TypeKind_UChar8;
-  case CV_BasicType_USHORT    : return RDI_TypeKind_U16;
-  case CV_BasicType_ULONG     : return RDI_TypeKind_U32;
-  case CV_BasicType_UQUAD     : return RDI_TypeKind_U64;
-  case CV_BasicType_UOCT      : return RDI_TypeKind_U128;
-  case CV_BasicType_BOOL8     : return RDI_TypeKind_S8;
-  case CV_BasicType_BOOL16    : return RDI_TypeKind_S16;
-  case CV_BasicType_BOOL32    : return RDI_TypeKind_S32;
-  case CV_BasicType_BOOL64    : return RDI_TypeKind_S64;
-  case CV_BasicType_FLOAT32   : return RDI_TypeKind_F32;
-  case CV_BasicType_FLOAT64   : return RDI_TypeKind_F64;
+  case CV_BasicType_USHORT    : return RDI_TypeKind_uint16;
+  case CV_BasicType_ULONG     : return RDI_TypeKind_uint32;
+  case CV_BasicType_UQUAD     : return RDI_TypeKind_uint64;
+  case CV_BasicType_UOCT      : return RDI_TypeKind_uint128;
+  case CV_BasicType_BOOL8     : return RDI_TypeKind_uint8;
+  case CV_BasicType_BOOL16    : return RDI_TypeKind_uint16;
+  case CV_BasicType_BOOL32    : return RDI_TypeKind_uint32;
+  case CV_BasicType_BOOL64    : return RDI_TypeKind_uint64;
+  case CV_BasicType_FLOAT32   : return RDI_TypeKind_float;
+  case CV_BasicType_FLOAT64   : return RDI_TypeKind_double;
   case CV_BasicType_FLOAT80   : return RDI_TypeKind_F80;
   case CV_BasicType_FLOAT128  : return RDI_TypeKind_F128;
   case CV_BasicType_FLOAT48   : return RDI_TypeKind_F48;
-  case CV_BasicType_FLOAT32PP : return RDI_TypeKind_F32PP;
+  case CV_BasicType_FLOAT32PP : return RDI_TypeKind_floatPP;
   case CV_BasicType_FLOAT16   : return RDI_TypeKind_F16;
-  case CV_BasicType_COMPLEX32 : return RDI_TypeKind_ComplexF32;
-  case CV_BasicType_COMPLEX64 : return RDI_TypeKind_ComplexF64;
+  case CV_BasicType_COMPLEX32 : return RDI_TypeKind_Complexfloat;
+  case CV_BasicType_COMPLEX64 : return RDI_TypeKind_Complexdouble;
   case CV_BasicType_COMPLEX80 : return RDI_TypeKind_ComplexF80;
   case CV_BasicType_COMPLEX128: return RDI_TypeKind_ComplexF128;
   case CV_BasicType_BIT       : return RDI_TypeKind_NULL;
   case CV_BasicType_PASCHAR   : return RDI_TypeKind_NULL;
   case CV_BasicType_BOOL32FF  : return RDI_TypeKind_NULL;
-  case CV_BasicType_INT8      : return RDI_TypeKind_S8;
-  case CV_BasicType_UINT8     : return RDI_TypeKind_U8;
+  case CV_BasicType_INT8      : return RDI_TypeKind_uint8;
+  case CV_BasicType_UINT8     : return RDI_TypeKind_uint8;
   case CV_BasicType_RCHAR     : return RDI_TypeKind_Char8;
   case CV_BasicType_WCHAR     : return RDI_TypeKind_UChar16;
   case CV_BasicType_CHAR16    : return RDI_TypeKind_Char16;
   case CV_BasicType_CHAR32    : return RDI_TypeKind_Char32;
-  case CV_BasicType_INT16     : return RDI_TypeKind_S16;
-  case CV_BasicType_UINT16    : return RDI_TypeKind_U16;
-  case CV_BasicType_INT32     : return RDI_TypeKind_S32;
-  case CV_BasicType_UINT32    : return RDI_TypeKind_U32;
-  case CV_BasicType_INT64     : return RDI_TypeKind_S64;
-  case CV_BasicType_UINT64    : return RDI_TypeKind_U64;
-  case CV_BasicType_INT128    : return RDI_TypeKind_S128;
-  case CV_BasicType_UINT128   : return RDI_TypeKind_U128;
+  case CV_BasicType_INT16     : return RDI_TypeKind_uint16;
+  case CV_BasicType_UINT16    : return RDI_TypeKind_uint16;
+  case CV_BasicType_INT32     : return RDI_TypeKind_uint32;
+  case CV_BasicType_UINT32    : return RDI_TypeKind_uint32;
+  case CV_BasicType_INT64     : return RDI_TypeKind_uint64;
+  case CV_BasicType_UINT64    : return RDI_TypeKind_uint64;
+  case CV_BasicType_INT128    : return RDI_TypeKind_uint128;
+  case CV_BasicType_UINT128   : return RDI_TypeKind_uint128;
   case CV_BasicType_CHAR8     : return RDI_TypeKind_Char8;
   case CV_BasicType_PTR       : return RDI_TypeKind_Ptr;
   }

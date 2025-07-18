@@ -25,10 +25,10 @@ typedef struct D_TargetArray D_TargetArray;
 struct D_TargetArray
 {
   D_Target *v;
-  U64 count;
+  uint64 count;
 };
 
-typedef U32 D_BreakpointFlags;
+typedef uint32 D_BreakpointFlags;
 enum
 {
   D_BreakpointFlag_BreakOnWrite   = (1<<0),
@@ -40,19 +40,19 @@ typedef struct D_Breakpoint D_Breakpoint;
 struct D_Breakpoint
 {
   D_BreakpointFlags flags;
-  U64 id;
+  uint64 id;
   String8 file_path;
   TxtPt pt;
   String8 vaddr_expr;
   String8 condition;
-  U64 size;
+  uint64 size;
 };
 
 typedef struct D_BreakpointArray D_BreakpointArray;
 struct D_BreakpointArray
 {
   D_Breakpoint *v;
-  U64 count;
+  uint64 count;
 };
 
 typedef struct D_PathMap D_PathMap;
@@ -66,7 +66,7 @@ typedef struct D_PathMapArray D_PathMapArray;
 struct D_PathMapArray
 {
   D_PathMap *v;
-  U64 count;
+  uint64 count;
 };
 
 ////////////////////////////////
@@ -97,9 +97,9 @@ struct D_Event
   D_EventKind kind;
   D_EventCause cause;
   CTRL_Handle thread;
-  U64 vaddr;
-  U64 code;
-  U64 id;
+  uint64 vaddr;
+  uint64 code;
+  uint64 id;
 };
 
 typedef struct D_EventNode D_EventNode;
@@ -114,7 +114,7 @@ struct D_EventList
 {
   D_EventNode *first;
   D_EventNode *last;
-  U64 count;
+  uint64 count;
 };
 
 ////////////////////////////////
@@ -125,7 +125,7 @@ struct D_Line
 {
   String8 file_path;
   TxtPt pt;
-  Rng1U64 voff_range;
+  Rng1uint64 voff_range;
   DI_Key dbgi_key;
 };
 
@@ -141,14 +141,14 @@ struct D_LineList
 {
   D_LineNode *first;
   D_LineNode *last;
-  U64 count;
+  uint64 count;
 };
 
 typedef struct D_LineListArray D_LineListArray;
 struct D_LineListArray
 {
   D_LineList *v;
-  U64 count;
+  uint64 count;
   DI_KeyList dbgi_keys;
 };
 
@@ -182,10 +182,10 @@ struct D_CmdParams
   String8 string;
   String8 file_path;
   TxtPt cursor;
-  U64 vaddr;
+  uint64 vaddr;
   B32 prefer_disasm;
-  U32 pid;
-  U32 rgba;
+  uint32 pid;
+  uint32 rgba;
   D_TargetArray targets;
 };
 
@@ -209,7 +209,7 @@ struct D_CmdList
 {
   D_CmdNode *first;
   D_CmdNode *last;
-  U64 count;
+  uint64 count;
 };
 
 ////////////////////////////////
@@ -222,9 +222,9 @@ struct D_RunTLSBaseCacheNode
 {
   D_RunTLSBaseCacheNode *hash_next;
   CTRL_Handle process;
-  U64 root_vaddr;
-  U64 rip_vaddr;
-  U64 tls_base_vaddr;
+  uint64 root_vaddr;
+  uint64 rip_vaddr;
+  uint64 tls_base_vaddr;
 };
 
 typedef struct D_RunTLSBaseCacheSlot D_RunTLSBaseCacheSlot;
@@ -238,7 +238,7 @@ typedef struct D_RunTLSBaseCache D_RunTLSBaseCache;
 struct D_RunTLSBaseCache
 {
   Arena *arena;
-  U64 slots_count;
+  uint64 slots_count;
   D_RunTLSBaseCacheSlot *slots;
 };
 
@@ -249,7 +249,7 @@ struct D_RunLocalsCacheNode
 {
   D_RunLocalsCacheNode *hash_next;
   DI_Key dbgi_key;
-  U64 voff;
+  uint64 voff;
   E_String2NumMap *locals_map;
 };
 
@@ -264,7 +264,7 @@ typedef struct D_RunLocalsCache D_RunLocalsCache;
 struct D_RunLocalsCache
 {
   Arena *arena;
-  U64 table_size;
+  uint64 table_size;
   D_RunLocalsCacheSlot *table;
 };
 
@@ -276,7 +276,7 @@ struct D_State
 {
   // rjf: top-level state
   Arena *arena;
-  U64 frame_index;
+  uint64 frame_index;
   
   // rjf: commands
   Arena *cmds_arena;
@@ -286,26 +286,26 @@ struct D_State
   HS_Key output_log_key;
   
   // rjf: per-run caches
-  U64 tls_base_cache_reggen_idx;
-  U64 tls_base_cache_memgen_idx;
+  uint64 tls_base_cache_reggen_idx;
+  uint64 tls_base_cache_memgen_idx;
   D_RunTLSBaseCache tls_base_caches[2];
-  U64 tls_base_cache_gen;
-  U64 locals_cache_reggen_idx;
+  uint64 tls_base_cache_gen;
+  uint64 locals_cache_reggen_idx;
   D_RunLocalsCache locals_caches[2];
-  U64 locals_cache_gen;
-  U64 member_cache_reggen_idx;
+  uint64 locals_cache_gen;
+  uint64 member_cache_reggen_idx;
   D_RunLocalsCache member_caches[2];
-  U64 member_cache_gen;
+  uint64 member_cache_gen;
   
   // rjf: user -> ctrl driving state
   Arena *ctrl_last_run_arena;
   D_RunKind ctrl_last_run_kind;
-  U64 ctrl_last_run_frame_idx;
+  uint64 ctrl_last_run_frame_idx;
   CTRL_Handle ctrl_last_run_thread_handle;
   CTRL_RunFlags ctrl_last_run_flags;
   CTRL_TrapList ctrl_last_run_traps;
   D_BreakpointArray ctrl_last_run_extra_bps;
-  U128 ctrl_last_run_param_state_hash;
+  uint128 ctrl_last_run_param_state_hash;
   B32 ctrl_is_running;
   B32 ctrl_thread_run_state;
   B32 ctrl_soft_halt_issued;
@@ -326,10 +326,10 @@ global D_State *d_state = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 d_hash_from_seed_string(U64 seed, String8 string);
-internal U64 d_hash_from_string(String8 string);
-internal U64 d_hash_from_seed_string__case_insensitive(U64 seed, String8 string);
-internal U64 d_hash_from_string__case_insensitive(String8 string);
+internal uint64 d_hash_from_seed_string(uint64 seed, String8 string);
+internal uint64 d_hash_from_string(String8 string);
+internal uint64 d_hash_from_seed_string__case_insensitive(uint64 seed, String8 string);
+internal uint64 d_hash_from_string__case_insensitive(String8 string);
 
 ////////////////////////////////
 //~ rjf: Breakpoints
@@ -366,23 +366,23 @@ internal CTRL_TrapList d_trap_net_from_thread__step_into_line(Arena *arena, CTRL
 //~ rjf: Debug Info Lookups
 
 //- rjf: symbol -> voff lookups
-internal U64 d_voff_from_dbgi_key_symbol_name(DI_Key *dbgi_key, String8 symbol_name);
+internal uint64 d_voff_from_dbgi_key_symbol_name(DI_Key *dbgi_key, String8 symbol_name);
 
 //- rjf: voff -> line info
-internal D_LineList d_lines_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff);
+internal D_LineList d_lines_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, uint64 voff);
 
 //- rjf: file:line -> line info
 // TODO(rjf): this depends on file path maps, needs to move
 // TODO(rjf): need to clean this up & dedup
-internal D_LineListArray d_lines_array_from_dbgi_key_file_path_line_range(Arena *arena, DI_Key dbgi_key, String8 file_path, Rng1S64 line_num_range);
-internal D_LineListArray d_lines_array_from_file_path_line_range(Arena *arena, String8 file_path, Rng1S64 line_num_range);
-internal D_LineList d_lines_from_dbgi_key_file_path_line_num(Arena *arena, DI_Key dbgi_key, String8 file_path, S64 line_num);
-internal D_LineList d_lines_from_file_path_line_num(Arena *arena, String8 file_path, S64 line_num);
+internal D_LineListArray d_lines_array_from_dbgi_key_file_path_line_range(Arena *arena, DI_Key dbgi_key, String8 file_path, Rng1uint64 line_num_range);
+internal D_LineListArray d_lines_array_from_file_path_line_range(Arena *arena, String8 file_path, Rng1uint64 line_num_range);
+internal D_LineList d_lines_from_dbgi_key_file_path_line_num(Arena *arena, DI_Key dbgi_key, String8 file_path, uint64 line_num);
+internal D_LineList d_lines_from_file_path_line_num(Arena *arena, String8 file_path, uint64 line_num);
 
 ////////////////////////////////
 //~ rjf: Process/Thread/Module Info Lookups
 
-internal U64 d_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, U64 root_vaddr, U64 rip_vaddr);
+internal uint64 d_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, uint64 root_vaddr, uint64 rip_vaddr);
 
 ////////////////////////////////
 //~ rjf: Target Controls
@@ -394,22 +394,22 @@ internal CTRL_Event d_ctrl_last_stop_event(void);
 //~ rjf: Main State Accessors/Mutators
 
 //- rjf: frame data
-internal U64 d_frame_index(void);
+internal uint64 d_frame_index(void);
 
 //- rjf: control state
 internal D_RunKind d_ctrl_last_run_kind(void);
-internal U64 d_ctrl_last_run_frame_idx(void);
+internal uint64 d_ctrl_last_run_frame_idx(void);
 internal B32 d_ctrl_targets_running(void);
 
 //- rjf: active entity based queries
 internal DI_KeyList d_push_active_dbgi_key_list(Arena *arena);
 
 //- rjf: per-run caches
-internal U64 d_query_cached_rip_from_thread(CTRL_Entity *thread);
-internal U64 d_query_cached_rip_from_thread_unwind(CTRL_Entity *thread, U64 unwind_count);
-internal U64 d_query_cached_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, U64 root_vaddr, U64 rip_vaddr);
-internal E_String2NumMap *d_query_cached_locals_map_from_dbgi_key_voff(DI_Key *dbgi_key, U64 voff);
-internal E_String2NumMap *d_query_cached_member_map_from_dbgi_key_voff(DI_Key *dbgi_key, U64 voff);
+internal uint64 d_query_cached_rip_from_thread(CTRL_Entity *thread);
+internal uint64 d_query_cached_rip_from_thread_unwind(CTRL_Entity *thread, uint64 unwind_count);
+internal uint64 d_query_cached_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, uint64 root_vaddr, uint64 rip_vaddr);
+internal E_String2NumMap *d_query_cached_locals_map_from_dbgi_key_voff(DI_Key *dbgi_key, uint64 voff);
+internal E_String2NumMap *d_query_cached_member_map_from_dbgi_key_voff(DI_Key *dbgi_key, uint64 voff);
 
 //- rjf: top-level command dispatch
 internal void d_push_cmd(D_CmdKind kind, D_CmdParams *params);
@@ -422,6 +422,6 @@ internal B32 d_next_cmd(D_Cmd **cmd);
 //~ rjf: Main Layer Top-Level Calls
 
 internal void d_init(void);
-internal D_EventList d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_PathMapArray *path_maps, U64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64]);
+internal D_EventList d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_PathMapArray *path_maps, uint64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64]);
 
 #endif // DBG_ENGINE_CORE_H

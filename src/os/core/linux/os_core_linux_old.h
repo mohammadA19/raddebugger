@@ -45,7 +45,7 @@ enum LNX_EntityKind{
 struct LNX_Entity{
   LNX_Entity *next;
   LNX_EntityKind kind;
-  volatile U32 reference_mask;
+  volatile uint32 reference_mask;
   union{
     struct{
       OS_ThreadFunctionType *func;
@@ -71,7 +71,7 @@ struct LNX_SafeCallChain{
 
 internal B32 lnx_write_list_to_file_descriptor(int fd, String8List list);
 
-internal void lnx_date_time_from_tm(DateTime *out, struct tm *in, U32 msec);
+internal void lnx_date_time_from_tm(DateTime *out, struct tm *in, uint32 msec);
 internal void lnx_tm_from_date_time(struct tm *out, DateTime *in);
 internal void lnx_dense_time_from_timespec(DenseTime *out, struct timespec *in);
 internal void lnx_file_properties_from_stat(FileProperties *out, struct stat *in);

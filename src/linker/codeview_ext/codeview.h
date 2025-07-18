@@ -25,7 +25,7 @@ typedef struct CV_SymbolHeader
 typedef struct CV_Symbol
 {
   CV_SymKind kind;
-  U64        offset;
+  uint64        offset;
   String8    data;
 } CV_Symbol;
 
@@ -44,7 +44,7 @@ typedef struct CV_SymbolPtrNode
 
 typedef struct CV_SymbolList
 {
-  U64            count;
+  uint64            count;
   CV_Signature   signature;
   CV_SymbolNode *first;
   CV_SymbolNode *last;
@@ -52,13 +52,13 @@ typedef struct CV_SymbolList
 
 typedef struct CV_SymbolListArray
 {
-  U64            count;
+  uint64            count;
   CV_SymbolList *v;
 } CV_SymbolListArray;
 
 typedef struct CV_SymbolPtrArray
 {
-  U64             count;
+  uint64             count;
   CV_SymbolNode **v;
 } CV_SymbolPtrArray;
 
@@ -81,9 +81,9 @@ typedef struct CV_ScopeFrame
   struct        CV_ScopeFrame *next;
   CV_ScopeList *list;
   CV_Scope     *curr;
-  U64           symbol_off;
-  U32          *parent_off_ptr;
-  U32          *end_off_ptr;
+  uint64           symbol_off;
+  uint32          *parent_off_ptr;
+  uint32          *end_off_ptr;
 } CV_ScopeFrame;
 
 //- $$FileChksms
@@ -102,7 +102,7 @@ typedef struct CV_ChecksumNode
 
 typedef struct CV_ChecksumList
 {
-  U64 count;
+  uint64 count;
   CV_ChecksumNode *first;
   CV_ChecksumNode *last;
 } CV_ChecksumList;
@@ -111,30 +111,30 @@ typedef struct CV_ChecksumList
 
 typedef struct CV_LineArray
 {
-  U32  file_off;
-  U64  line_count;
-  U64  col_count;
-  U64 *voffs;     // [line_count + 1]
-  U32 *line_nums; // [line_count]
-  U16 *col_nums;  // [line_count * 2]
+  uint32  file_off;
+  uint64  line_count;
+  uint64  col_count;
+  uint64 *voffs;     // [line_count + 1]
+  uint32 *line_nums; // [line_count]
+  uint16 *col_nums;  // [line_count * 2]
 } CV_LineArray;
 
 typedef struct CV_File
 {
-  U32          file_off;
+  uint32          file_off;
   CV_LineArray lines;
 } CV_File;
 
 typedef struct CV_C13LinesHeader
 {
-  U64 sec_idx;
-  U64 sec_off_lo;
-  U64 sec_off_hi;
-  U64 file_off;
-  U64 line_count;
-  U64 col_count;
-  U64 line_array_off;
-  U64 col_array_off;
+  uint64 sec_idx;
+  uint64 sec_off_lo;
+  uint64 sec_off_hi;
+  uint64 file_off;
+  uint64 line_count;
+  uint64 col_count;
+  uint64 line_array_off;
+  uint64 col_array_off;
 } CV_C13LinesHeader;
 
 typedef struct CV_C13LinesHeaderNode
@@ -147,7 +147,7 @@ typedef struct CV_C13LinesHeaderList
 {
   CV_C13LinesHeaderNode *first;
   CV_C13LinesHeaderNode *last;
-  U64                    count;
+  uint64                    count;
 } CV_C13LinesHeaderList;
 
 ////////////////////////////////
@@ -156,7 +156,7 @@ typedef struct CV_TypeServerInfo
 {
   String8 name;
   Guid    sig;
-  U32     age;
+  uint32     age;
 } CV_TypeServerInfo;
 
 typedef struct CV_TypeServerInfoNode
@@ -169,20 +169,20 @@ typedef struct CV_TypeServerInfoList
 {
   CV_TypeServerInfoNode *first;
   CV_TypeServerInfoNode *last;
-  U64                    count;
+  uint64                    count;
 } CV_TypeServerInfoList;
 
 typedef struct CV_PrecompInfo
 {
   CV_TypeIndex start_index;
-  U32          sig;
-  U32          leaf_count;
+  uint32          sig;
+  uint32          leaf_count;
   String8      obj_name;
 } CV_PrecompInfo;
 
 typedef struct CV_ObjInfo
 {
-  U32     sig;
+  uint32     sig;
   String8 name;
 } CV_ObjInfo;
 
@@ -191,42 +191,42 @@ typedef struct CV_ObjInfo
 
 typedef struct CV_Line
 {
-  U64 voff;
-  U32 file_off;
-  U32 line_num;
-  U16 col_num;
+  uint64 voff;
+  uint32 file_off;
+  uint32 line_num;
+  uint16 col_num;
 } CV_Line;
 
 typedef struct CV_LinesAccel
 {
-  U64      map_count;
+  uint64      map_count;
   CV_Line *map;
 } CV_LinesAccel;
 
 typedef struct CV_InlineeLinesAccel
 {
-  U64                        bucket_count;
-  U64                        bucket_max;
+  uint64                        bucket_count;
+  uint64                        bucket_max;
   CV_C13InlineeLinesParsed **buckets;
 } CV_InlineeLinesAccel;
 
 typedef struct CV_InlineBinaryAnnotsParsed
 {
-  U64           lines_count;
+  uint64           lines_count;
   CV_LineArray *lines;
-  Rng1U64List   code_ranges;
+  Rng1uint64List   code_ranges;
 } CV_InlineBinaryAnnotsParsed;
 
 typedef struct CV_C13InlineeLinesParsedList
 {
   CV_C13InlineeLinesParsedNode *first;
   CV_C13InlineeLinesParsedNode *last;
-  U64                           count;
+  uint64                           count;
 } CV_C13InlineeLinesParsedList;
 
 ////////////////////////////////
 
-typedef U32 CV_C13SubSectionIdxKind;
+typedef uint32 CV_C13SubSectionIdxKind;
 enum
 {
   CV_C13SubSectionIdxKind_NULL,
@@ -240,7 +240,7 @@ typedef struct CV_C13SubSectionList
 {
   CV_C13SubSectionNode *first;
   CV_C13SubSectionNode *last;
-  U64                   count;
+  uint64                   count;
 } CV_C13SubSectionList;
 
 ////////////////////////////////
@@ -252,9 +252,9 @@ typedef struct CV_DebugS
 
 typedef struct CV_DebugT
 {
-  U64  size;
-  U64  count;
-  U8 **v;
+  uint64  size;
+  uint64  count;
+  uint8 **v;
 } CV_DebugT;
 
 ////////////////////////////////
@@ -274,7 +274,7 @@ typedef struct CV_LeafNode
 
 typedef struct CV_LeafList
 {
-  U64          count;
+  uint64          count;
   CV_LeafNode *first;
   CV_LeafNode *last;
 } CV_LeafList;
@@ -285,8 +285,8 @@ typedef struct CV_LeafList
 typedef struct CV_StringTableRange
 {
   struct CV_StringTableRange *next;
-  Rng1U64                     range;
-  U64                         debug_s_idx;
+  Rng1uint64                     range;
+  uint64                         debug_s_idx;
 } CV_StringTableRange;
 
 typedef struct CV_StringBucket
@@ -294,24 +294,24 @@ typedef struct CV_StringBucket
   String8 string;
   union {
     struct {
-      U32 idx0;
-      U32 idx1;
+      uint32 idx0;
+      uint32 idx1;
     };
-    U64 offset;
+    uint64 offset;
   } u;
 } CV_StringBucket;
 
 typedef struct CV_StringHashTable
 {
-  U64               total_string_size;
-  U64               total_insert_count;
-  U64               bucket_cap;
+  uint64               total_string_size;
+  uint64               total_insert_count;
+  uint64               bucket_cap;
   CV_StringBucket **buckets;
 } CV_StringHashTable;
 
 typedef struct CV_StringHashTableResult
 {
-  U64               string_count;
+  uint64               string_count;
   CV_StringBucket **buckets;
 } CV_StringHashTableResult;
 
@@ -320,20 +320,20 @@ typedef struct CV_StringHashTableResult
 
 typedef struct
 {
-  U64              cap;
+  uint64              cap;
   union {
     CV_SymbolNode ***buckets;
     CV_SymbolNode  **deref_buckets;
   } u;
-  Rng1U64         *ranges;
+  Rng1uint64         *ranges;
   CV_SymbolNode  **symbols;
 } CV_SymbolDeduperTask;
 
 typedef struct
 {
   CV_SymbolList  *list_arr;
-  Rng1U64        *list_range_arr;
-  U64            *symbol_base_arr;
+  Rng1uint64        *list_range_arr;
+  uint64            *symbol_base_arr;
   CV_SymbolNode **symbol_arr;
 } CV_SymbolListSyncer;
 
@@ -341,24 +341,24 @@ typedef struct
 {
   CV_DebugS            *arr;
   CV_StringTableRange **range_lists;
-  U64                  *string_counts;
-  U64                   bucket_cap;
+  uint64                  *string_counts;
+  uint64                   bucket_cap;
   CV_StringBucket     **buckets;
-  U64                   total_string_size;
-  U64                   total_insert_count;
+  uint64                   total_string_size;
+  uint64                   total_insert_count;
 } CV_DedupStringTablesTask;
 
 typedef struct
 {
-  U8               *buffer;
-  Rng1U64          *ranges;
+  uint8               *buffer;
+  Rng1uint64          *ranges;
   CV_StringBucket **buckets;
 } CV_PackStringHashTableTask;
 
 typedef struct
 {
   CV_DebugT    debug_t;
-  Rng1U64     *ranges;
+  Rng1uint64     *ranges;
   String8List *lists;
   String8Node *nodes;
 } CV_Str8ListFromDebugT;
@@ -372,31 +372,31 @@ internal CV_PrecompInfo    cv_precomp_info_from_leaf(CV_Leaf leaf);
 ////////////////////////////////
 //~ Leaf Helpers
 
-internal U64     cv_compute_leaf_record_size(String8 data, U64 align);
-internal U64     cv_serialize_leaf_to_buffer(U8 *buffer, U64 buffer_cursor, U64 buffer_size, CV_LeafKind kind, String8 data, U64 align);
-internal String8 cv_serialize_raw_leaf(Arena *arena, CV_LeafKind kind, String8 data, U64 align);
-internal String8 cv_serialize_leaf(Arena *arena, CV_Leaf *leaf, U64 align);
+internal uint64     cv_compute_leaf_record_size(String8 data, uint64 align);
+internal uint64     cv_serialize_leaf_to_buffer(uint8 *buffer, uint64 buffer_cursor, uint64 buffer_size, CV_LeafKind kind, String8 data, uint64 align);
+internal String8 cv_serialize_raw_leaf(Arena *arena, CV_LeafKind kind, String8 data, uint64 align);
+internal String8 cv_serialize_leaf(Arena *arena, CV_Leaf *leaf, uint64 align);
 internal CV_Leaf cv_make_leaf(Arena *arena, CV_LeafKind kind, String8 data);
-internal U64     cv_deserial_leaf(String8 raw_data, U64 off, U64 align, CV_Leaf *leaf_out);
+internal uint64     cv_deserial_leaf(String8 raw_data, uint64 off, uint64 align, CV_Leaf *leaf_out);
 internal CV_Leaf cv_leaf_from_string(String8 raw_data);
 
 ////////////////////////////////
 //~ Symbol Helpers
 
-internal U64     cv_compute_symbol_record_size(CV_Symbol *symbol, U64 align);
-internal U64     cv_serialize_symbol_to_buffer(U8 *buffer, U64 buffer_cursor, U64 buffer_size, CV_Symbol *symbol, U64 align);
-internal String8 cv_serialize_symbol(Arena *arena, CV_Symbol *symbol, U64 align);
+internal uint64     cv_compute_symbol_record_size(CV_Symbol *symbol, uint64 align);
+internal uint64     cv_serialize_symbol_to_buffer(uint8 *buffer, uint64 buffer_cursor, uint64 buffer_size, CV_Symbol *symbol, uint64 align);
+internal String8 cv_serialize_symbol(Arena *arena, CV_Symbol *symbol, uint64 align);
 
 internal String8       cv_make_symbol(Arena *arena, CV_SymKind kind, String8 data);
-internal String8       cv_make_obj_name(Arena *arena, String8 obj_path, U32 sig);
+internal String8       cv_make_obj_name(Arena *arena, String8 obj_path, uint32 sig);
 internal String8       cv_make_comp3(Arena *arena,
                                      CV_Compile3Flags flags, CV_Language lang, CV_Arch arch, 
-                                     U16 ver_fe_major, U16 ver_fe_minor, U16 ver_fe_build, U16 ver_feqfe,
-                                     U16 ver_major, U16 ver_minor, U16 ver_build, U16 ver_qfe,
+                                     uint16 ver_fe_major, uint16 ver_fe_minor, uint16 ver_fe_build, uint16 ver_feqfe,
+                                     uint16 ver_major, uint16 ver_minor, uint16 ver_build, uint16 ver_qfe,
                                      String8 version_string);
 internal String8       cv_make_envblock(Arena *arena, String8List string_list);
-internal CV_Symbol     cv_make_proc_ref(Arena *arena, CV_ModIndex imod, U32 stream_offset, String8 name, B32 is_local);
-internal CV_Symbol     cv_make_pub32(Arena *arena, CV_Pub32Flags flags, U32 off, U16 isect, String8 name);
+internal CV_Symbol     cv_make_proc_ref(Arena *arena, CV_ModIndex imod, uint32 stream_offset, String8 name, B32 is_local);
+internal CV_Symbol     cv_make_pub32(Arena *arena, CV_Pub32Flags flags, uint32 off, uint16 isect, String8 name);
 internal CV_SymbolList cv_make_proc_refs(Arena *arena, CV_ModIndex imod, CV_SymbolList symbol_list);
 
 ////////////////////////////////
@@ -417,14 +417,14 @@ internal String8                 cv_file_chksms_from_debug_s(CV_DebugS debug_s);
 ////////////////////////////////
 //~ .debug$T helpers
 
-internal CV_DebugT       cv_debug_t_from_data_arr(Arena *arena, String8Array data_arr, U64 align);
-internal CV_DebugT       cv_debug_t_from_data(Arena *arena, String8 data, U64 align);
-internal CV_Leaf         cv_debug_t_get_leaf(CV_DebugT debug_t, U64 leaf_idx);
-internal String8         cv_debug_t_get_raw_leaf(CV_DebugT debug_t, U64 leaf_idx);
-internal CV_LeafHeader * cv_debug_t_get_leaf_header(CV_DebugT debug_t, U64 leaf_idx);
+internal CV_DebugT       cv_debug_t_from_data_arr(Arena *arena, String8Array data_arr, uint64 align);
+internal CV_DebugT       cv_debug_t_from_data(Arena *arena, String8 data, uint64 align);
+internal CV_Leaf         cv_debug_t_get_leaf(CV_DebugT debug_t, uint64 leaf_idx);
+internal String8         cv_debug_t_get_raw_leaf(CV_DebugT debug_t, uint64 leaf_idx);
+internal CV_LeafHeader * cv_debug_t_get_leaf_header(CV_DebugT debug_t, uint64 leaf_idx);
 internal B32             cv_debug_t_is_pch(CV_DebugT debug_t);
 internal B32             cv_debug_t_is_type_server(CV_DebugT debug_t);
-internal U64             cv_debug_t_array_count_leaves(U64 count, CV_DebugT *arr);
+internal uint64             cv_debug_t_array_count_leaves(uint64 count, CV_DebugT *arr);
 
 internal String8List cv_str8_list_from_debug_t_parallel(TP_Context *tp, Arena *arena, CV_DebugT types);
 
@@ -432,49 +432,49 @@ internal String8List cv_str8_list_from_debug_t_parallel(TP_Context *tp, Arena *a
 //~ Sub Section helpers
 
 // $$Symbols
-internal void              cv_parse_symbol_sub_section_capped(Arena *arena, CV_SymbolList *list, U64 offset_base, String8 data, U64 align, U64 cap);
-internal void              cv_parse_symbol_sub_section(Arena *arena, CV_SymbolList *list, U64 offset_base, String8 data, U64 align);
+internal void              cv_parse_symbol_sub_section_capped(Arena *arena, CV_SymbolList *list, uint64 offset_base, String8 data, uint64 align, uint64 cap);
+internal void              cv_parse_symbol_sub_section(Arena *arena, CV_SymbolList *list, uint64 offset_base, String8 data, uint64 align);
 internal void              cv_symbol_list_push_node(CV_SymbolList *list, CV_SymbolNode *node);
 internal CV_SymbolNode *   cv_symbol_list_push(Arena *arena, CV_SymbolList *list);
 internal CV_SymbolNode *   cv_symbol_list_push_data(Arena *arena, CV_SymbolList *list, CV_SymKind kind, String8 data);
-internal CV_SymbolNode *   cv_symbol_list_push_many(Arena *arena, CV_SymbolList *list, U64 count);
+internal CV_SymbolNode *   cv_symbol_list_push_many(Arena *arena, CV_SymbolList *list, uint64 count);
 internal void              cv_symbol_list_remove_node(CV_SymbolList *list, CV_SymbolNode *node);
 internal void              cv_symbol_list_concat_in_place(CV_SymbolList *list, CV_SymbolList *to_concat);
-internal void              cv_symbol_list_concat_in_place_arr(CV_SymbolList *list, U64 count, CV_SymbolList *to_concat);
-internal U64               cv_symbol_list_arr_get_count(U64 count, CV_SymbolList *list_arr);
-internal String8List       cv_data_from_symbol_list(Arena *arena, CV_SymbolList symbol_list, U64 align);
+internal void              cv_symbol_list_concat_in_place_arr(CV_SymbolList *list, uint64 count, CV_SymbolList *to_concat);
+internal uint64               cv_symbol_list_arr_get_count(uint64 count, CV_SymbolList *list_arr);
+internal String8List       cv_data_from_symbol_list(Arena *arena, CV_SymbolList symbol_list, uint64 align);
 internal CV_SymbolList     cv_global_scope_symbols_from_list(Arena *arena, CV_SymbolList list);
-internal CV_SymbolPtrArray cv_symbol_ptr_array_from_list(Arena *arena, TP_Context *tp, U64 count, CV_SymbolList *symbol_list_arr);
+internal CV_SymbolPtrArray cv_symbol_ptr_array_from_list(Arena *arena, TP_Context *tp, uint64 count, CV_SymbolList *symbol_list_arr);
 
 // $$FileChksms
-#define CV_MAP_STRING_TO_OFFSET_FUNC(name) U64 name(void *ud, String8 string)
+#define CV_MAP_STRING_TO_OFFSET_FUNC(name) uint64 name(void *ud, String8 string)
 typedef CV_MAP_STRING_TO_OFFSET_FUNC(CV_MapStringToOffsetFunc);
 
-internal void        cv_c13_patch_string_offsets_in_checksum_list(CV_ChecksumList checksum_list, String8 string_data, U64 string_data_base_offset, CV_StringHashTable string_ht);
+internal void        cv_c13_patch_string_offsets_in_checksum_list(CV_ChecksumList checksum_list, String8 string_data, uint64 string_data_base_offset, CV_StringHashTable string_ht);
 internal String8List cv_c13_collect_source_file_names(Arena *arena, CV_ChecksumList checksum_list, String8 string_data);
 
 // $$Lines
-internal CV_C13LinesHeaderList cv_c13_lines_from_sub_sections(Arena *arena, String8 c13_data, Rng1U64 ss_range);
-internal CV_LineArray     cv_c13_line_array_from_data(Arena *arena, String8 c13_data, U64 sec_base, CV_C13LinesHeader parsed_lines);
+internal CV_C13LinesHeaderList cv_c13_lines_from_sub_sections(Arena *arena, String8 c13_data, Rng1uint64 ss_range);
+internal CV_LineArray     cv_c13_line_array_from_data(Arena *arena, String8 c13_data, uint64 sec_base, CV_C13LinesHeader parsed_lines);
 
 // $$InlineeLines
 internal CV_C13InlineeLinesParsedList cv_c13_inlinee_lines_from_sub_sections(Arena *arena, String8List raw_inlinee_lines);
-internal CV_InlineBinaryAnnotsParsed  cv_c13_parse_inline_binary_annots(Arena *arena, U64 parent_voff, CV_C13InlineeLinesParsed *inlinee_parsed, String8 binary_annots);
+internal CV_InlineBinaryAnnotsParsed  cv_c13_parse_inline_binary_annots(Arena *arena, uint64 parent_voff, CV_C13InlineeLinesParsed *inlinee_parsed, String8 binary_annots);
 
 // $$FrameData
-internal void cv_c13_patch_checksum_offsets_in_frame_data_list(String8List frame_data, U32 checksum_rebase);
+internal void cv_c13_patch_checksum_offsets_in_frame_data_list(String8List frame_data, uint32 checksum_rebase);
 
 ////////////////////////////////
 // $$Lines Accel
 
-internal void            cv_make_c13_files(Arena *arena, String8 c13_data, CV_C13SubSectionList lines, U64 *file_count_out, CV_C13File **files_out);
-internal CV_LinesAccel * cv_make_lines_accel(Arena *arena, U64 lines_count, CV_LineArray *lines);
-internal CV_Line *       cv_line_from_voff(CV_LinesAccel *accel, U64 voff, U64 *out_line_count);
+internal void            cv_make_c13_files(Arena *arena, String8 c13_data, CV_C13SubSectionList lines, uint64 *file_count_out, CV_C13File **files_out);
+internal CV_LinesAccel * cv_make_lines_accel(Arena *arena, uint64 lines_count, CV_LineArray *lines);
+internal CV_Line *       cv_line_from_voff(CV_LinesAccel *accel, uint64 voff, uint64 *out_line_count);
 
 ////////////////////////////////
 // $$InlineeLines Accel
 
-internal U64                        cv_c13_inlinee_lines_accel_hash(void *buffer, U64 size);
+internal uint64                        cv_c13_inlinee_lines_accel_hash(void *buffer, uint64 size);
 internal B32                        cv_c13_inlinee_lines_accel_push(CV_InlineeLinesAccel *accel, CV_C13InlineeLinesParsed *parsed);
 internal CV_C13InlineeLinesParsed * cv_c13_inlinee_lines_accel_find(CV_InlineeLinesAccel *accel, CV_ItemId inlinee);
 internal CV_InlineeLinesAccel *     cv_c13_make_inlinee_lines_accel(Arena *arena, CV_C13InlineeLinesParsedList sub_sects);
@@ -482,13 +482,13 @@ internal CV_InlineeLinesAccel *     cv_c13_make_inlinee_lines_accel(Arena *arena
 ////////////////////////////////
 // String Hash Table
 
-internal U64                      cv_string_hash_table_hash(String8 string);
-internal CV_StringHashTable       cv_dedup_string_tables(TP_Arena *arena, TP_Context *tp, U64 count, CV_DebugS *arr);
+internal uint64                      cv_string_hash_table_hash(String8 string);
+internal CV_StringHashTable       cv_dedup_string_tables(TP_Arena *arena, TP_Context *tp, uint64 count, CV_DebugS *arr);
 internal CV_StringHashTableResult cv_serialize_string_hash_table(Arena *arena, TP_Context *tp, CV_StringHashTable string_ht);
 internal String8                  cv_pack_string_hash_table(Arena *arena, TP_Context *tp, CV_StringHashTable string_ht);
 
 ////////////////////////////////
 
-internal Rng1U64List cv_make_defined_range_list_from_gaps(Arena *arena, Rng1U64 defrange, CV_LvarAddrGap *gaps, U64 gap_count);
+internal Rng1uint64List cv_make_defined_range_list_from_gaps(Arena *arena, Rng1uint64 defrange, CV_LvarAddrGap *gaps, uint64 gap_count);
 
 

@@ -41,7 +41,7 @@ typedef enum RDI_DumpSubset
 }
 RDI_DumpSubset;
 
-typedef U32 RDI_DumpSubsetFlags;
+typedef uint32 RDI_DumpSubsetFlags;
 enum
 {
 #define X(name, name_lower, title) RDI_DumpSubsetFlag_##name = (1<<RDI_DumpSubset_##name),
@@ -67,7 +67,7 @@ read_only global String8 rdi_name_title_from_dump_subset_table[] =
 ////////////////////////////////
 //~ rjf: Lookup Helpers
 
-internal String8 str8_from_rdi_string_idx(RDI_Parsed *rdi, U32 idx);
+internal String8 str8_from_rdi_string_idx(RDI_Parsed *rdi, uint32 idx);
 
 ////////////////////////////////
 //~ rjf: String <=> Enum
@@ -87,7 +87,7 @@ internal String8 rdi_string_from_type_modifier       (Arena *arena, RDI_TypeModi
 internal String8 rdi_string_from_udt_flags           (Arena *arena, RDI_UDTFlags           flags);
 internal String8 rdi_string_from_link_flags          (Arena *arena, RDI_LinkFlags          flags);
 internal String8 rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, String8 bc);
-internal String8List rdi_strings_from_locations(Arena *arena, RDI_Parsed *rdi, RDI_Arch arch, Rng1U64 location_block_range);
+internal String8List rdi_strings_from_locations(Arena *arena, RDI_Parsed *rdi, RDI_Arch arch, Rng1uint64 location_block_range);
 
 ////////////////////////////////
 //~ rjf: RDI Dumping

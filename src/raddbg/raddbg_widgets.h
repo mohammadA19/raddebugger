@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Cell Types
 
-typedef U32 RD_CellFlags;
+typedef uint32 RD_CellFlags;
 enum
 {
   //- rjf: expander
@@ -47,7 +47,7 @@ struct RD_CellParams
 {
   //- rjf: catchall parameters
   RD_CellFlags flags;
-  S32 depth;
+  uint32 depth;
   String8 pre_edit_value;
   DR_FStrList meta_fstrs;
   DR_FStrList value_fstrs;
@@ -61,7 +61,7 @@ struct RD_CellParams
   B32 *toggled_out;
   
   //- rjf: slider info r/w info
-  F32 *slider_value_out;
+  float *slider_value_out;
   
   //- rjf: bindings name w info
   String8 bindings_name;
@@ -72,16 +72,16 @@ struct RD_CellParams
   //- rjf: text editing r/w info
   TxtPt *cursor;
   TxtPt *mark;
-  U8 *edit_buffer;
-  U64 edit_buffer_size;
-  U64 *edit_string_size_out;
+  uint8 *edit_buffer;
+  uint64 edit_buffer_size;
+  uint64 *edit_string_size_out;
   UI_Key *line_edit_key_out;
 };
 
 ////////////////////////////////
 //~ rjf: Code Slice Types
 
-typedef U32 RD_CodeSliceFlags;
+typedef uint32 RD_CodeSliceFlags;
 enum
 {
   RD_CodeSliceFlag_Clickable         = (1<<0),
@@ -95,28 +95,28 @@ struct RD_CodeSliceParams
 {
   // rjf: content
   RD_CodeSliceFlags flags;
-  Rng1S64 line_num_range;
+  Rng1uint64 line_num_range;
   String8 *line_text;
-  Rng1U64 *line_ranges;
+  Rng1uint64 *line_ranges;
   TXT_TokenArray *line_tokens;
   RD_CfgList *line_bps;
   CTRL_EntityList *line_ips;
   RD_CfgList *line_pins;
-  U64 *line_vaddrs;
+  uint64 *line_vaddrs;
   D_LineList *line_infos;
   DI_KeyList relevant_dbgi_keys;
   
   // rjf: visual parameters
   FNT_Tag font;
-  F32 font_size;
-  F32 tab_size;
+  float font_size;
+  float tab_size;
   String8 search_query;
-  F32 line_height_px;
-  F32 priority_margin_width_px;
-  F32 catchall_margin_width_px;
-  F32 line_num_width_px;
-  F32 line_text_max_width_px;
-  F32 margin_float_off_px;
+  float line_height_px;
+  float priority_margin_width_px;
+  float catchall_margin_width_px;
+  float line_num_width_px;
+  float line_text_max_width_px;
+  float margin_float_off_px;
 };
 
 typedef struct RD_CodeSliceSignal RD_CodeSliceSignal;
@@ -143,7 +143,7 @@ internal DR_FStrList rd_title_fstrs_from_file_path(Arena *arena, String8 file_pa
 ////////////////////////////////
 //~ rjf: UI Widgets: Loading Overlay
 
-internal void rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U64 progress_v_target);
+internal void rd_loading_overlay(Rng2float rect, float loading_t, uint64 progress_v, uint64 progress_v_target);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Fancy Buttons
@@ -151,7 +151,7 @@ internal void rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U6
 internal void rd_cmd_binding_buttons(String8 name, String8 filter, B32 add_new);
 internal UI_Signal rd_menu_bar_button(String8 string);
 internal UI_Signal rd_cmd_spec_button(String8 name);
-internal void rd_cmd_list_menu_buttons(U64 count, String8 *cmd_names, U32 *fastpath_codepoints);
+internal void rd_cmd_list_menu_buttons(uint64 count, String8 *cmd_names, uint32 *fastpath_codepoints);
 internal UI_Signal rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList *matches, String8 string);
 internal UI_Signal rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList *matches, char *fmt, ...);
 
@@ -160,10 +160,10 @@ internal UI_Signal rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList *matche
 
 internal UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions);
 internal UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions);
-internal RD_CodeSliceSignal rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, String8 string);
-internal RD_CodeSliceSignal rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, char *fmt, ...);
+internal RD_CodeSliceSignal rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, uint64 *preferred_column, String8 string);
+internal RD_CodeSliceSignal rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, uint64 *preferred_column, char *fmt, ...);
 
-internal B32 rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, TxtPt *cursor, TxtPt *mark, S64 *preferred_column);
+internal B32 rd_do_txt_controls(TXT_TextInfo *info, String8 data, uint64 line_count_per_page, TxtPt *cursor, TxtPt *mark, uint64 *preferred_column);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Fancy Labels
@@ -172,8 +172,8 @@ internal DR_FStrList rd_fstrs_from_rich_string(Arena *arena, String8 string);
 internal UI_Signal rd_label(String8 string);
 internal UI_Signal rd_error_label(String8 string);
 internal B32 rd_help_label(String8 string);
-internal DR_FStrList rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string);
-internal UI_Box *rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string);
+internal DR_FStrList rd_fstrs_from_code_string(Arena *arena, float alpha, B32 indirection_size_change, Vec4float base_color, String8 string);
+internal UI_Box *rd_code_label(float alpha, B32 indirection_size_change, Vec4float base_color, String8 string);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Line Edit

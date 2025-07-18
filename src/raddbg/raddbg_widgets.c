@@ -19,12 +19,12 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
     String8 expr_string = rd_expr_from_cfg(cfg);
     String8 collection_name = {0};
     String8 file_path = rd_path_from_cfg(cfg);
-    Vec4F32 rgba = rd_color_from_cfg(cfg);
+    Vec4float rgba = rd_color_from_cfg(cfg);
     if(rgba.w == 0)
     {
       rgba = ui_color_from_name(str8_lit("text"));
     }
-    Vec4F32 rgba_secondary = rgba;
+    Vec4float rgba_secondary = rgba;
     UI_TagF("weak")
     {
       rgba_secondary = ui_color_from_name(str8_lit("text"));
@@ -109,7 +109,7 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
         if(bp == cfg)
         {
           CTRL_Entity *thread = ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, stop_event.entity);
-          Vec4F32 thread_color = rd_color_from_ctrl_entity(thread);
+          Vec4float thread_color = rd_color_from_ctrl_entity(thread);
           if(thread_color.w == 0)
           {
             thread_color = rgba_secondary;
@@ -187,8 +187,8 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
       String8 file_name = str8_skip_last_slash(file_path);
       if(rd_state->ambiguous_path_slots_count != 0)
       {
-        U64 hash = d_hash_from_string__case_insensitive(file_name);
-        U64 slot_idx = hash%rd_state->ambiguous_path_slots_count;
+        uint64 hash = d_hash_from_string__case_insensitive(file_name);
+        uint64 slot_idx = hash%rd_state->ambiguous_path_slots_count;
         RD_AmbiguousPathNode *node = 0;
         {
           for(RD_AmbiguousPathNode *n = rd_state->ambiguous_path_slots[slot_idx];
@@ -230,7 +230,7 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
           // search path; disqualify until we only have one path remaining; gather
           // qualifiers
           {
-            U64 num_collisions_left = collisions.count;
+            uint64 num_collisions_left = collisions.count;
             String8Node **collision_nodes = push_array(scratch.arena, String8Node *, collisions.count);
             for EachIndex(idx, collisions.count)
             {
@@ -351,7 +351,7 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
     //- rjf: push hit count
     {
       String8 hit_count_value_string = rd_cfg_child_from_string(cfg, str8_lit("hit_count"))->first->string;
-      U64 hit_count = 0;
+      uint64 hit_count = 0;
       if(try_u64_from_str8_c_rules(hit_count_value_string, &hit_count) && hit_count != 0)
       {
         String8 hit_count_text = push_str8f(arena, "(%I64u hit%s)", hit_count, hit_count == 1 ? "" : "s");
@@ -364,8 +364,8 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
     {
       String8 src_string = rd_cfg_child_from_string(cfg, str8_lit("type"))->first->string;
       String8 dst_string = rd_cfg_child_from_string(cfg, str8_lit("expr"))->first->string;
-      Vec4F32 src_color = rgba;
-      Vec4F32 dst_color = rgba;
+      Vec4float src_color = rgba;
+      Vec4float dst_color = rgba;
       DR_FStrList src_fstrs = {0};
       DR_FStrList dst_fstrs = {0};
       if(src_string.size == 0)
@@ -400,8 +400,8 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
     {
       String8 src_string = rd_cfg_child_from_string(cfg, str8_lit("source"))->first->string;
       String8 dst_string = rd_cfg_child_from_string(cfg, str8_lit("dest"))->first->string;
-      Vec4F32 src_color = rgba;
-      Vec4F32 dst_color = rgba;
+      Vec4float src_color = rgba;
+      Vec4float dst_color = rgba;
       if(src_string.size == 0)
       {
         src_string = str8_lit("(source path)");
@@ -424,8 +424,8 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
     {
       String8 tags = rd_cfg_child_from_string(cfg, str8_lit("tags"))->first->string;
       String8 color_string = rd_cfg_child_from_string(cfg, str8_lit("value"))->first->string;
-      U32 color_u32 = e_value_from_stringf("(uint32)(%S)", color_string).u32;
-      Vec4F32 color = linear_from_srgba(rgba_from_u32(color_u32));
+      uint32 color_u32 = e_value_from_stringf("(uint32)(%S)", color_string).u32;
+      Vec4float color = linear_from_srgba(rgba_from_u32(color_u32));
       if(tags.size != 0)
       {
         dr_fstrs_push_new(arena, &result, &params, tags);
@@ -450,13 +450,13 @@ rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, B32 include_e
   DR_FStrList result = {0};
   
   //- rjf: unpack entity info
-  F32 extras_size = ui_top_font_size()*0.95f;
-  Vec4F32 color = rd_color_from_ctrl_entity(entity);
+  float extras_size = ui_top_font_size()*0.95f;
+  Vec4float color = rd_color_from_ctrl_entity(entity);
   if(color.w == 0)
   {
     color = ui_color_from_name(str8_lit("text"));
   }
-  Vec4F32 secondary_color = color;
+  Vec4float secondary_color = color;
   UI_TagF("weak")
   {
     secondary_color = ui_color_from_name(str8_lit("text"));
@@ -514,7 +514,7 @@ rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, B32 include_e
     {
       CTRL_Entity *process = ctrl_entity_ancestor_from_kind(entity, CTRL_EntityKind_Process);
       String8 process_name = rd_name_from_ctrl_entity(arena, process);
-      Vec4F32 process_color = rd_color_from_ctrl_entity(process);
+      Vec4float process_color = rd_color_from_ctrl_entity(process);
       if(process_color.w == 0)
       {
         process_color = ui_color_from_name(str8_lit("text"));
@@ -545,7 +545,7 @@ rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, B32 include_e
   //- rjf: threads get callstack extras
   if(entity->kind == CTRL_EntityKind_Thread && include_extras)
   {
-    Vec4F32 symbol_color = ui_color_from_name(str8_lit("code_symbol"));
+    Vec4float symbol_color = ui_color_from_name(str8_lit("code_symbol"));
     dr_fstrs_push_new(arena, &result, &params, str8_lit(" "));
     CTRL_Scope *ctrl_scope = ctrl_scope_open();
     DI_Scope *di_scope = di_scope_open();
@@ -554,14 +554,14 @@ rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, B32 include_e
     B32 call_stack_high_priority = ctrl_handle_match(entity->handle, rd_base_regs()->thread);
     CTRL_CallStack call_stack = ctrl_call_stack_from_thread(ctrl_scope, &d_state->ctrl_entity_store->ctx, entity, call_stack_high_priority, call_stack_high_priority ? rd_state->frame_eval_memread_endt_us : 0);
     B32 did_first_known = 0;
-    for(U64 idx = 0, limit = 10;
+    for(uint64 idx = 0, limit = 10;
         idx < call_stack.frames_count && idx < limit;
         idx += 1)
     {
       CTRL_CallStackFrame *f = &call_stack.frames[call_stack.frames_count - 1 - idx];
-      U64 rip_vaddr = regs_rip_from_arch_block(arch, f->regs);
+      uint64 rip_vaddr = regs_rip_from_arch_block(arch, f->regs);
       CTRL_Entity *module = ctrl_module_from_process_vaddr(process, rip_vaddr);
-      U64 rip_voff = ctrl_voff_from_vaddr(module, rip_vaddr);
+      uint64 rip_voff = ctrl_voff_from_vaddr(module, rip_vaddr);
       String8 name = {0};
       {
         DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
@@ -684,29 +684,29 @@ rd_title_fstrs_from_file_path(Arena *arena, String8 file_path)
 //~ rjf: UI Widgets: Loading Overlay
 
 internal void
-rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U64 progress_v_target)
+rd_loading_overlay(Rng2float rect, float loading_t, uint64 progress_v, uint64 progress_v_target)
 {
   if(loading_t >= 0.001f) UI_Focus(UI_FocusKind_Off)
   {
     // rjf: set up dimensions
-    F32 edge_padding = 30.f;
-    F32 width = ui_top_font_size() * 10;
-    F32 height = ui_top_font_size() * 1.f;
-    F32 min_thickness = ui_top_font_size()/2;
-    F32 trail = ui_top_font_size() * 4;
-    F32 t = pow_f32(sin_f32((F32)rd_state->time_in_seconds / 1.8f), 2.f);
-    F64 v = 1.f - abs_f32(0.5f - t);
+    float edge_padding = 30.f;
+    float width = ui_top_font_size() * 10;
+    float height = ui_top_font_size() * 1.f;
+    float min_thickness = ui_top_font_size()/2;
+    float trail = ui_top_font_size() * 4;
+    float t = pow_f32(sin_f32((float)rd_state->time_in_seconds / 1.8f), 2.f);
+    double v = 1.f - abs_f32(0.5f - t);
     
     // rjf: build indicator
     UI_CornerRadius(height/3.f) UI_Transparency(1-loading_t)
     {
       // rjf: rects
-      Rng2F32 indicator_region_rect =
+      Rng2float indicator_region_rect =
         r2f32p((rect.x0 + rect.x1)/2 - width/2  - rect.x0,
                (rect.y0 + rect.y1)/2 - height/2 - rect.y0,
                (rect.x0 + rect.x1)/2 + width/2  - rect.x0,
                (rect.y0 + rect.y1)/2 + height/2 - rect.y0);
-      Rng2F32 indicator_rect =
+      Rng2float indicator_rect =
         r2f32p(indicator_region_rect.x0 + width*t - min_thickness/2 - trail*v,
                indicator_region_rect.y0,
                indicator_region_rect.x0 + width*t + min_thickness/2 + trail*v,
@@ -718,9 +718,9 @@ rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U64 progress_v_t
       // rjf: does the view have loading *progress* info? -> draw extra progress layer
       if(progress_v != progress_v_target) UI_TagF("drop_site")
       {
-        F64 pct_done_f64 = ((F64)progress_v/(F64)progress_v_target);
-        F32 pct_done = (F32)pct_done_f64;
-        Rng2F32 pct_rect = r2f32p(indicator_region_rect.x0,
+        double pct_done_f64 = ((double)progress_v/(double)progress_v_target);
+        float pct_done = (float)pct_done_f64;
+        Rng2float pct_rect = r2f32p(indicator_region_rect.x0,
                                   indicator_region_rect.y0,
                                   indicator_region_rect.x0 + (indicator_region_rect.x1 - indicator_region_rect.x0)*pct_done,
                                   indicator_region_rect.y1);
@@ -963,10 +963,10 @@ rd_cmd_spec_button(String8 name)
 }
 
 internal void
-rd_cmd_list_menu_buttons(U64 count, String8 *cmd_names, U32 *fastpath_codepoints)
+rd_cmd_list_menu_buttons(uint64 count, String8 *cmd_names, uint32 *fastpath_codepoints)
 {
   Temp scratch = scratch_begin(0, 0);
-  for(U64 idx = 0; idx < count; idx += 1)
+  for(uint64 idx = 0; idx < count; idx += 1)
   {
     ui_set_next_fastpath_codepoint(fastpath_codepoints[idx]);
     UI_Signal sig = rd_cmd_spec_button(cmd_names[idx]);
@@ -1053,10 +1053,10 @@ rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList *matches, char *fmt, ...)
 typedef struct RD_ThreadBoxDrawExtData RD_ThreadBoxDrawExtData;
 struct RD_ThreadBoxDrawExtData
 {
-  Vec4F32 thread_color;
-  F32 progress_t;
-  F32 alive_t;
-  F32 hover_t;
+  Vec4float thread_color;
+  float progress_t;
+  float alive_t;
+  float hover_t;
   B32 is_selected;
   B32 is_frozen;
   B32 do_lines;
@@ -1082,7 +1082,7 @@ internal UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions)
   // rjf: draw 'progress bar', showing thread's progress through the line's address range
   if(u->progress_t > 0)
   {
-    Vec4F32 weak_thread_color = u->thread_color;
+    Vec4float weak_thread_color = u->thread_color;
     weak_thread_color.w *= 0.4f;
     dr_rect(r2f32p(box->rect.x0,
                    box->rect.y0,
@@ -1095,7 +1095,7 @@ internal UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions)
   // rjf: draw rich hover fill
   if(u->hover_t > 0.001f)
   {
-    Vec4F32 weak_thread_color = u->thread_color;
+    Vec4float weak_thread_color = u->thread_color;
     weak_thread_color.w *= 0.15f*u->hover_t;
     R_Rect2DInst *inst = dr_rect(r2f32p(box->rect.x0,
                                         box->parent->rect.y0,
@@ -1109,7 +1109,7 @@ internal UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions)
   // rjf: draw slight fill on selected thread
   if(u->is_selected && u->do_glow)
   {
-    Vec4F32 weak_thread_color = u->thread_color;
+    Vec4float weak_thread_color = u->thread_color;
     weak_thread_color.w *= 0.1f;
     R_Rect2DInst *inst = dr_rect(r2f32p(box->rect.x0,
                                         box->parent->rect.y0,
@@ -1123,8 +1123,8 @@ internal UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions)
   // rjf: locked icon on frozen threads
   if(u->is_frozen) UI_TagF("bad")
   {
-    F32 lock_icon_off = ui_top_font_size()*0.2f;
-    Vec4F32 color = ui_color_from_name(str8_lit("text"));
+    float lock_icon_off = ui_top_font_size()*0.2f;
+    Vec4float color = ui_color_from_name(str8_lit("text"));
     dr_text(rd_font_from_slot(RD_FontSlot_Icons),
             box->font_size, 0, 0, FNT_RasterFlag_Smooth,
             v2f32((box->rect.x0 + box->rect.x1)/2 + lock_icon_off/2,
@@ -1137,10 +1137,10 @@ internal UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions)
 typedef struct RD_BreakpointBoxDrawExtData RD_BreakpointBoxDrawExtData;
 struct RD_BreakpointBoxDrawExtData
 {
-  Vec4F32 color;
-  F32 alive_t;
-  F32 hover_t;
-  F32 remap_px_delta;
+  Vec4float color;
+  float alive_t;
+  float hover_t;
+  float remap_px_delta;
   B32 do_lines;
   B32 do_glow;
   B32 is_disabled;
@@ -1166,7 +1166,7 @@ internal UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
   // rjf: draw rich hover fill
   if(u->hover_t > 0.001f)
   {
-    Vec4F32 weak_color = u->color;
+    Vec4float weak_color = u->color;
     weak_color.w *= 0.5f*u->hover_t;
     R_Rect2DInst *inst = dr_rect(r2f32p(box->rect.x0,
                                         box->parent->rect.y0,
@@ -1180,7 +1180,7 @@ internal UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
   // rjf: draw slight fill
   if(u->do_glow)
   {
-    Vec4F32 weak_thread_color = u->color;
+    Vec4float weak_thread_color = u->color;
     weak_thread_color.w *= 0.3f;
     R_Rect2DInst *inst = dr_rect(r2f32p(box->rect.x0,
                                         box->parent->rect.y0,
@@ -1194,14 +1194,14 @@ internal UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
   // rjf: draw remaps
   if(u->remap_px_delta != 0)
   {
-    F32 remap_px_delta = u->remap_px_delta;
-    F32 circle_advance = fnt_dim_from_tag_size_string(box->font, box->font_size, 0, 0, rd_icon_kind_text_table[RD_IconKind_CircleFilled]).x;
-    Vec2F32 bp_text_pos = ui_box_text_position(box);
-    Vec2F32 bp_center = v2f32(bp_text_pos.x + circle_advance/2, bp_text_pos.y);
+    float remap_px_delta = u->remap_px_delta;
+    float circle_advance = fnt_dim_from_tag_size_string(box->font, box->font_size, 0, 0, rd_icon_kind_text_table[RD_IconKind_CircleFilled]).x;
+    Vec2float bp_text_pos = ui_box_text_position(box);
+    Vec2float bp_center = v2f32(bp_text_pos.x + circle_advance/2, bp_text_pos.y);
     FNT_Metrics icon_font_metrics = fnt_metrics_from_tag_size(box->font, box->font_size);
-    F32 icon_font_line_height = fnt_line_height_from_metrics(&icon_font_metrics);
-    F32 remap_bar_thickness = 0.3f*ui_top_font_size();
-    Vec4F32 remap_color = u->color;
+    float icon_font_line_height = fnt_line_height_from_metrics(&icon_font_metrics);
+    float remap_bar_thickness = 0.3f*ui_top_font_size();
+    Vec4float remap_color = u->color;
     remap_color.w *= 0.3f;
     R_Rect2DInst *inst = dr_rect(r2f32p(bp_center.x - remap_bar_thickness,
                                         bp_center.y + ClampTop(remap_px_delta, 0) + remap_bar_thickness,
@@ -1219,9 +1219,9 @@ internal UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
   if(u->is_conditioned) UI_TagF(u->is_disabled ? "weak" : "")
   {
     Temp scratch = scratch_begin(0, 0);
-    Vec4F32 color = ui_color_from_name(str8_lit("text"));
+    Vec4float color = ui_color_from_name(str8_lit("text"));
     FNT_Run run = fnt_run_from_string(rd_font_from_slot(RD_FontSlot_Code), box->font_size*0.8f, 0, 0, FNT_RasterFlag_Smooth, str8_lit("if"));
-    Vec2F32 p = center_2f32(box->rect);
+    Vec2float p = center_2f32(box->rect);
     p.x -= run.dim.x*0.5f;
     p.y += run.descent;
     dr_text_run(p, color, run);
@@ -1232,10 +1232,10 @@ internal UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
   if(u->is_disabled)
   {
     Temp scratch = scratch_begin(0, 0);
-    Vec4F32 color = ui_color_from_name(str8_lit("breakpoint"));
+    Vec4float color = ui_color_from_name(str8_lit("breakpoint"));
     FNT_Run run = fnt_run_from_string(rd_font_from_slot(RD_FontSlot_Icons), box->font_size*0.95f, 0, 0, FNT_RasterFlag_Smooth, str8_lit("x"));
-    Vec2F32 box_dim = dim_2f32(box->rect);
-    Vec2F32 p = center_2f32(box->rect);
+    Vec2float box_dim = dim_2f32(box->rect);
+    Vec2float p = center_2f32(box->rect);
     p.x += box_dim.x*0.1f;
     p.y -= box_dim.y*0.2f;
     dr_text_run(p, color, run);
@@ -1244,37 +1244,37 @@ internal UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
 }
 
 internal RD_CodeSliceSignal
-rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, String8 string)
+rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, uint64 *preferred_column, String8 string)
 {
   RD_CodeSliceSignal result = {0};
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
   CTRL_Entity *selected_thread = ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, rd_regs()->thread);
   CTRL_Entity *selected_thread_process = ctrl_entity_ancestor_from_kind(selected_thread, CTRL_EntityKind_Process);
-  U64 selected_thread_rip_unwind_vaddr = d_query_cached_rip_from_thread_unwind(selected_thread, rd_regs()->unwind_count);
+  uint64 selected_thread_rip_unwind_vaddr = d_query_cached_rip_from_thread_unwind(selected_thread, rd_regs()->unwind_count);
   CTRL_Entity *selected_thread_module = ctrl_module_from_process_vaddr(selected_thread_process, selected_thread_rip_unwind_vaddr);
-  F32 selected_thread_alive_t = ui_anim(ui_key_from_stringf(ui_key_zero(), "###selected_thread_alive_t_%p", selected_thread), 1.f);
-  F32 selected_thread_module_alive_t = ui_anim(ui_key_from_stringf(ui_key_zero(), "###selected_thread_module_alive_t_%p", selected_thread_module), 1.f);
-  F32 selected_thread_arch_alive_t = ui_anim(ui_key_from_stringf(ui_key_zero(), "###selected_thread_arch_alive_t_%i", selected_thread->arch), 1.f);
+  float selected_thread_alive_t = ui_anim(ui_key_from_stringf(ui_key_zero(), "###selected_thread_alive_t_%p", selected_thread), 1.f);
+  float selected_thread_module_alive_t = ui_anim(ui_key_from_stringf(ui_key_zero(), "###selected_thread_module_alive_t_%p", selected_thread_module), 1.f);
+  float selected_thread_arch_alive_t = ui_anim(ui_key_from_stringf(ui_key_zero(), "###selected_thread_arch_alive_t_%i", selected_thread->arch), 1.f);
   CTRL_Event stop_event = d_ctrl_last_stop_event();
   CTRL_Entity *stopper_thread = ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, stop_event.entity);
   B32 is_focused = ui_is_focus_active();
   B32 ctrlified = (os_get_modifiers() & OS_Modifier_Ctrl);
-  Vec4F32 code_line_bgs[] =
+  Vec4float code_line_bgs[] =
   {
     ui_color_from_name(str8_lit("line_info_0")),
     ui_color_from_name(str8_lit("line_info_1")),
     ui_color_from_name(str8_lit("line_info_2")),
     ui_color_from_name(str8_lit("line_info_3")),
   };
-  F32 line_num_padding_px = ui_top_font_size()*1.f;
-  F32 entity_alive_t_rate = rd_state->entity_alive_animation_rate;
-  F32 entity_hover_t_rate = rd_state->rich_hover_animation_rate;
+  float line_num_padding_px = ui_top_font_size()*1.f;
+  float entity_alive_t_rate = rd_state->entity_alive_animation_rate;
+  float entity_hover_t_rate = rd_state->rich_hover_animation_rate;
   B32 do_thread_lines = rd_setting_b32_from_name(str8_lit("thread_lines"));
   B32 do_thread_glow = rd_setting_b32_from_name(str8_lit("thread_glow"));
   B32 do_bp_lines = rd_setting_b32_from_name(str8_lit("breakpoint_lines"));
   B32 do_bp_glow = rd_setting_b32_from_name(str8_lit("breakpoint_glow"));
-  Vec4F32 pop_color = {0};
+  Vec4float pop_color = {0};
   UI_TagF("pop")
   {
     pop_color = ui_color_from_name(str8_lit("background"));
@@ -1292,13 +1292,13 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
       rd_rgba_from_code_color_slot(RD_CodeColorSlot_CodeDefault),
       params->font_size,
     };
-    U64 line_idx = 0;
-    for(S64 line_num = params->line_num_range.min;
+    uint64 line_idx = 0;
+    for(uint64 line_num = params->line_num_range.min;
         line_num <= params->line_num_range.max;
         line_num += 1, line_idx += 1)
     {
       String8 line_string = params->line_text[line_idx];
-      Rng1U64 line_range = params->line_ranges[line_idx];
+      Rng1uint64 line_range = params->line_ranges[line_idx];
       TXT_TokenArray *line_tokens = &params->line_tokens[line_idx];
       DR_FStrList fstrs = {0};
       if(line_tokens->count == 0)
@@ -1314,7 +1314,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
           // rjf: token -> token string
           String8 token_string = {0};
           {
-            Rng1U64 token_range = r1u64(0, line_string.size);
+            Rng1uint64 token_range = r1u64(0, line_string.size);
             if(token->range.min > line_range.min)
             {
               token_range.min += token->range.min-line_range.min;
@@ -1329,11 +1329,11 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
           // rjf: token -> token color
           RD_CodeColorSlot token_color_slot = rd_code_color_slot_from_txt_token_kind(token->kind);
           RD_CodeColorSlot lookup_color_slot = rd_code_color_slot_from_txt_token_kind_lookup_string(token->kind, token_string);
-          Vec4F32 token_color = rd_rgba_from_code_color_slot(token_color_slot);
+          Vec4float token_color = rd_rgba_from_code_color_slot(token_color_slot);
           if(lookup_color_slot != RD_CodeColorSlot_CodeDefault)
           {
-            Vec4F32 lookup_color = rd_rgba_from_code_color_slot(lookup_color_slot);
-            F32 lookup_color_mix_t = ui_anim(ui_key_from_stringf(ui_key_zero(), "%S_lookup", token_string), 1.f);
+            Vec4float lookup_color = rd_rgba_from_code_color_slot(lookup_color_slot);
+            float lookup_color_mix_t = ui_anim(ui_key_from_stringf(ui_key_zero(), "%S_lookup", token_string), 1.f);
             token_color = mix_4f32(token_color, lookup_color, lookup_color_mix_t);
           }
           
@@ -1349,7 +1349,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //- rjf: build top-level container
   //
   UI_Box *top_container_box = &ui_nil_box;
-  Rng2F32 clipped_top_container_rect = {0};
+  Rng2float clipped_top_container_rect = {0};
   {
     ui_set_next_child_layout_axis(Axis2_X);
     ui_set_next_pref_width(ui_px(params->line_text_max_width_px, 1));
@@ -1372,7 +1372,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   RD_Cfg *drop_cfg = &rd_nil_cfg;
   CTRL_Entity *drop_thread = &ctrl_entity_nil;
   String8 drop_expr = {0};
-  Vec4F32 drop_color = pop_color;
+  Vec4float drop_color = pop_color;
   UI_Key drop_site_key = ui_key_from_stringf(top_container_box->key, "drop_site");
   if(rd_drag_is_active())
   {
@@ -1414,13 +1414,13 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: build per-line background colors
   //
-  Vec4F32 *line_bg_colors = push_array(scratch.arena, Vec4F32, dim_1s64(params->line_num_range)+1);
+  Vec4float *line_bg_colors = push_array(scratch.arena, Vec4float, dim_1s64(params->line_num_range)+1);
   {
     //- rjf: color line with stopper-thread red
     UI_TagF("bad_pop")
     {
-      U64 line_idx = 0;
-      for(S64 line_num = params->line_num_range.min;
+      uint64 line_idx = 0;
+      for(uint64 line_num = params->line_num_range.min;
           line_num < params->line_num_range.max;
           line_num += 1, line_idx += 1)
       {
@@ -1455,8 +1455,8 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     priority_margin_container_box = ui_build_box_from_string(UI_BoxFlag_Clickable*!!(params->flags & RD_CodeSliceFlag_Clickable), str8_lit("priority_margin_container"));
     UI_Parent(priority_margin_container_box) UI_PrefHeight(ui_px(params->line_height_px, 1.f))
     {
-      U64 line_idx = 0;
-      for(S64 line_num = params->line_num_range.min;
+      uint64 line_idx = 0;
+      for(uint64 line_num = params->line_num_range.min;
           line_num <= params->line_num_range.max;
           line_num += 1, line_idx += 1)
       {
@@ -1474,15 +1474,15 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
             {
               continue;
             }
-            U64 unwind_count = (thread == selected_thread) ? rd_regs()->unwind_count : 0;
-            U64 thread_rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, unwind_count);
+            uint64 unwind_count = (thread == selected_thread) ? rd_regs()->unwind_count : 0;
+            uint64 thread_rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, unwind_count);
             CTRL_Entity *process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
             CTRL_Entity *module = ctrl_module_from_process_vaddr(process, thread_rip_vaddr);
             DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
-            U64 thread_rip_voff = ctrl_voff_from_vaddr(module, thread_rip_vaddr);
+            uint64 thread_rip_voff = ctrl_voff_from_vaddr(module, thread_rip_vaddr);
             
             // rjf: thread info => color
-            Vec4F32 color = rd_color_from_ctrl_entity(thread);
+            Vec4float color = rd_color_from_ctrl_entity(thread);
             {
               if(color.w == 0)
               {
@@ -1534,7 +1534,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
               RD_ThreadBoxDrawExtData *u = push_array(ui_build_arena(), RD_ThreadBoxDrawExtData, 1);
               u->thread_color = color;
               u->alive_t      = ui_anim(ui_key_from_stringf(top_container_box->key, "###entity_alive_t_%p", thread), 1.f, .rate = entity_alive_t_rate);
-              u->hover_t      = ui_anim(ui_key_from_stringf(top_container_box->key, "###entity_hover_t_%p", thread), (F32)!!is_hovering, .rate = entity_hover_t_rate);
+              u->hover_t      = ui_anim(ui_key_from_stringf(top_container_box->key, "###entity_hover_t_%p", thread), (float)!!is_hovering, .rate = entity_hover_t_rate);
               u->is_selected  = (thread == selected_thread);
               u->is_frozen    = !!thread->is_frozen;
               u->do_lines     = do_thread_lines;
@@ -1557,10 +1557,10 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                 }
                 if(line != 0)
                 {
-                  Rng1U64 line_voff_rng = line->voff_range;
-                  Vec4F32 weak_thread_color = color;
+                  Rng1uint64 line_voff_rng = line->voff_range;
+                  Vec4float weak_thread_color = color;
                   weak_thread_color.w *= 0.4f;
-                  F32 progress_t = (line_voff_rng.max != line_voff_rng.min) ? ((F32)(thread_rip_voff - line_voff_rng.min) / (F32)(line_voff_rng.max - line_voff_rng.min)) : 0;
+                  float progress_t = (line_voff_rng.max != line_voff_rng.min) ? ((float)(thread_rip_voff - line_voff_rng.min) / (float)(line_voff_rng.max - line_voff_rng.min)) : 0;
                   progress_t = Clamp(0, progress_t, 1);
                   u->progress_t = progress_t;
                 }
@@ -1608,8 +1608,8 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     catchall_margin_container_box = ui_build_box_from_string(UI_BoxFlag_DrawSideRight|UI_BoxFlag_DrawSideLeft|UI_BoxFlag_Clickable*!!(params->flags & RD_CodeSliceFlag_Clickable), str8_lit("catchall_margin_container"));
     UI_Parent(catchall_margin_container_box) UI_PrefHeight(ui_px(params->line_height_px, 1.f))
     {
-      U64 line_idx = 0;
-      for(S64 line_num = params->line_num_range.min;
+      uint64 line_idx = 0;
+      for(uint64 line_num = params->line_num_range.min;
           line_num <= params->line_num_range.max;
           line_num += 1, line_idx += 1)
       {
@@ -1630,15 +1630,15 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
             {
               continue;
             }
-            U64 unwind_count = (thread == selected_thread) ? rd_regs()->unwind_count : 0;
-            U64 thread_rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, unwind_count);
+            uint64 unwind_count = (thread == selected_thread) ? rd_regs()->unwind_count : 0;
+            uint64 thread_rip_vaddr = d_query_cached_rip_from_thread_unwind(thread, unwind_count);
             CTRL_Entity *process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
             CTRL_Entity *module = ctrl_module_from_process_vaddr(process, thread_rip_vaddr);
             DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
-            U64 thread_rip_voff = ctrl_voff_from_vaddr(module, thread_rip_vaddr);
+            uint64 thread_rip_voff = ctrl_voff_from_vaddr(module, thread_rip_vaddr);
             
             // rjf: thread info => color
-            Vec4F32 color = rd_color_from_ctrl_entity(thread);
+            Vec4float color = rd_color_from_ctrl_entity(thread);
             {
               if(color.w == 0)
               {
@@ -1690,7 +1690,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
               RD_ThreadBoxDrawExtData *u = push_array(ui_build_arena(), RD_ThreadBoxDrawExtData, 1);
               u->thread_color = color;
               u->alive_t      = ui_anim(ui_key_from_stringf(top_container_box->key, "###entity_alive_t_%p", thread), 1.f, .rate = entity_alive_t_rate);
-              u->hover_t      = ui_anim(ui_key_from_stringf(top_container_box->key, "###entity_hover_t_%p", thread), (F32)!!is_hovering, .rate = entity_hover_t_rate);
+              u->hover_t      = ui_anim(ui_key_from_stringf(top_container_box->key, "###entity_hover_t_%p", thread), (float)!!is_hovering, .rate = entity_hover_t_rate);
               u->is_selected  = (thread == selected_thread);
               u->is_frozen    = !!thread->is_frozen;
               ui_box_equip_custom_draw(thread_box, rd_thread_box_draw_extensions, u);
@@ -1711,10 +1711,10 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                 }
                 if(line != 0)
                 {
-                  Rng1U64 line_voff_rng = line->voff_range;
-                  Vec4F32 weak_thread_color = color;
+                  Rng1uint64 line_voff_rng = line->voff_range;
+                  Vec4float weak_thread_color = color;
                   weak_thread_color.w *= 0.4f;
-                  F32 progress_t = (line_voff_rng.max != line_voff_rng.min) ? ((F32)(thread_rip_voff - line_voff_rng.min) / (F32)(line_voff_rng.max - line_voff_rng.min)) : 0;
+                  float progress_t = (line_voff_rng.max != line_voff_rng.min) ? ((float)(thread_rip_voff - line_voff_rng.min) / (float)(line_voff_rng.max - line_voff_rng.min)) : 0;
                   progress_t = Clamp(0, progress_t, 1);
                   u->progress_t = progress_t;
                 }
@@ -1747,7 +1747,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
           for(RD_CfgNode *n = line_bps.first; n != 0; n = n->next)
           {
             RD_Cfg *bp = n->v;
-            Vec4F32 bp_rgba = rd_color_from_cfg(bp);
+            Vec4float bp_rgba = rd_color_from_cfg(bp);
             if(bp_rgba.w == 0)
             {
               bp_rgba = ui_color_from_name(str8_lit("breakpoint"));
@@ -1765,7 +1765,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
               B32 is_hovering = (rd_cfg_from_id(hover_regs->cfg) == bp && rd_state->hover_regs_slot == RD_RegSlot_Cfg);
               bp_draw->color    = bp_rgba;
               bp_draw->alive_t  = ui_anim(ui_key_from_stringf(ui_key_zero(), "cfg_alive_t_%p", bp), 1.f, .rate = entity_alive_t_rate);
-              bp_draw->hover_t  = ui_anim(ui_key_from_stringf(ui_key_zero(), "cfg_hover_t_%p", bp), (F32)!!is_hovering, .rate = entity_hover_t_rate);
+              bp_draw->hover_t  = ui_anim(ui_key_from_stringf(ui_key_zero(), "cfg_hover_t_%p", bp), (float)!!is_hovering, .rate = entity_hover_t_rate);
               bp_draw->do_lines = do_bp_lines;
               bp_draw->do_glow  = do_bp_glow;
               bp_draw->is_disabled = bp_is_disabled;
@@ -1775,7 +1775,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                 D_LineList *lines = &params->line_infos[line_idx];
                 for(D_LineNode *n = lines->first; n != 0; n = n->next)
                 {
-                  S64 remap_line = n->v.pt.line;
+                  uint64 remap_line = n->v.pt.line;
                   if(remap_line != line_num)
                   {
                     bp_draw->remap_px_delta = (remap_line - line_num) * params->line_height_px;
@@ -1837,7 +1837,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
           for(RD_CfgNode *n = line_pins.first; n != 0; n = n->next)
           {
             RD_Cfg *pin = n->v;
-            Vec4F32 color = rd_color_from_cfg(pin);
+            Vec4float color = rd_color_from_cfg(pin);
             if(color.w == 0)
             {
               color = ui_color_from_name(str8_lit("code_default"));
@@ -1915,20 +1915,20 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
       UI_FontSize(params->font_size)
       UI_CornerRadius(0)
     {
-      U64 line_idx = 0;
-      for(S64 line_num = params->line_num_range.min;
+      uint64 line_idx = 0;
+      for(uint64 line_num = params->line_num_range.min;
           line_num <= params->line_num_range.max;
           line_num += 1, line_idx += 1)
       {
         B32 line_is_selected = (select_rng.min.line <= line_num && line_num <= select_rng.max.line);
-        Vec4F32 bg_color = v4f32(0, 0, 0, 0);
+        Vec4float bg_color = v4f32(0, 0, 0, 0);
         
         // rjf: line info on this line -> adjust bg color to visualize
         B32 has_line_info = 0;
         {
-          U64 best_stamp = 0;
-          S64 line_info_line_num = 0;
-          F32 line_info_t = 0;
+          uint64 best_stamp = 0;
+          uint64 line_info_line_num = 0;
+          float line_info_t = 0;
           D_LineList *lines = &params->line_infos[line_idx];
           for(D_LineNode *n = lines->first; n != 0; n = n->next)
           {
@@ -1942,7 +1942,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
           }
           if(has_line_info)
           {
-            Vec4F32 color = code_line_bgs[line_info_line_num % ArrayCount(code_line_bgs)];
+            Vec4float color = code_line_bgs[line_info_line_num % ArrayCount(code_line_bgs)];
             color.w *= line_info_t;
             bg_color = color;
           }
@@ -1982,15 +1982,15 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //////////////////////////////
   //- rjf: determine starting offset for each at line, at which we can begin placing extra info to the right
   //
-  F32 *line_extras_off = push_array(scratch.arena, F32, dim_1s64(params->line_num_range)+1);
+  float *line_extras_off = push_array(scratch.arena, float, dim_1s64(params->line_num_range)+1);
   {
-    U64 line_idx = 0;
-    for(S64 line_num = params->line_num_range.min;
+    uint64 line_idx = 0;
+    for(uint64 line_num = params->line_num_range.min;
         line_num <= params->line_num_range.max;
         line_num += 1, line_idx += 1)
     {
       DR_FStrList line_fstrs = lines_fstrs[line_idx];
-      F32 line_text_dim = dr_dim_from_fstrs(params->tab_size, &line_fstrs).x + params->line_num_width_px + params->catchall_margin_width_px + params->priority_margin_width_px;
+      float line_text_dim = dr_dim_from_fstrs(params->tab_size, &line_fstrs).x + params->line_num_width_px + params->catchall_margin_width_px + params->priority_margin_width_px;
       line_extras_off[line_idx] = Max(line_text_dim, params->font_size*30);
     }
   }
@@ -2001,8 +2001,8 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   UI_Box **line_extras_boxes = push_array(scratch.arena, UI_Box *, dim_1s64(params->line_num_range)+1);
   UI_PrefWidth(ui_children_sum(1)) UI_PrefHeight(ui_px(params->line_height_px, 1.f)) UI_Parent(text_container_box) UI_Focus(UI_FocusKind_Off)
   {
-    U64 line_idx = 0;
-    for(S64 line_num = params->line_num_range.min;
+    uint64 line_idx = 0;
+    for(uint64 line_num = params->line_num_range.min;
         line_num < params->line_num_range.max;
         line_num += 1, line_idx += 1)
     {
@@ -2017,8 +2017,8 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //
   UI_Focus(UI_FocusKind_Off)
   {
-    U64 line_idx = 0;
-    for(S64 line_num = params->line_num_range.min;
+    uint64 line_idx = 0;
+    for(uint64 line_num = params->line_num_range.min;
         line_num < params->line_num_range.max;
         line_num += 1, line_idx += 1)
     {
@@ -2048,14 +2048,14 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   UI_Focus(UI_FocusKind_Off)
   {
     DI_Scope *scope = di_scope_open();
-    U64 line_idx = 0;
-    for(S64 line_num = params->line_num_range.min;
+    uint64 line_idx = 0;
+    for(uint64 line_num = params->line_num_range.min;
         line_num < params->line_num_range.max;
         line_num += 1, line_idx += 1)
     {
       RD_CfgList immediate_pins = {0};
       String8 line_text = params->line_text[line_idx];
-      for(U64 off = 0, next_off = line_text.size;
+      for(uint64 off = 0, next_off = line_text.size;
           off < line_text.size;
           off = next_off)
       {
@@ -2066,8 +2066,8 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         
         // rjf: extract contents of markup
         String8 contents = {0};
-        S32 nest = 1;
-        for(U64 off2 = next_off; off2 < line_text.size; off2 += 1)
+        uint32 nest = 1;
+        for(uint64 off2 = next_off; off2 < line_text.size; off2 += 1)
         {
           if(line_text.str[off2] == '(')
           {
@@ -2087,9 +2087,9 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         // rjf: gather arguments
         String8List args = {0};
         {
-          S32 nest = 0;
-          U64 arg_start_off = 0;
-          for(U64 contents_off = 0; contents_off <= contents.size; contents_off += 1)
+          uint32 nest = 0;
+          uint64 arg_start_off = 0;
+          for(uint64 contents_off = 0; contents_off <= contents.size; contents_off += 1)
           {
             if(nest == 0 && (contents_off == contents.size || contents.str[contents_off] == ','))
             {
@@ -2162,12 +2162,12 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                                                     UI_BoxFlag_DrawBorder, pin_box_key);
             UI_Parent(pin_box) UI_PrefWidth(ui_text_dim(10, 1))
             {
-              Vec4F32 pin_color = rd_color_from_cfg(pin);
+              Vec4float pin_color = rd_color_from_cfg(pin);
               if(pin_color.w == 0)
               {
                 pin_color = ui_color_from_name(str8_lit("text"));
               }
-              Vec4F32 default_code_color = ui_color_from_name(str8_lit("code_default"));
+              Vec4float default_code_color = ui_color_from_name(str8_lit("code_default"));
               rd_code_label(0.8f, 1, default_code_color, pin_expr);
               rd_code_label(0.6f, 1, default_code_color, eval_string);
             }
@@ -2189,24 +2189,24 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   TxtPt mouse_pt = {0};
   ProfScope("mouse -> text coordinates")
   {
-    Vec2F32 mouse = ui_mouse();
+    Vec2float mouse = ui_mouse();
     
     // rjf: mouse y => index
-    U64 mouse_y_line_idx = (U64)((mouse.y - text_container_box->rect.y0) / params->line_height_px);
+    uint64 mouse_y_line_idx = (uint64)((mouse.y - text_container_box->rect.y0) / params->line_height_px);
     
     // rjf: index => line num
-    S64 line_num = (params->line_num_range.min + mouse_y_line_idx);
+    uint64 line_num = (params->line_num_range.min + mouse_y_line_idx);
     String8 line_string = (params->line_num_range.min <= line_num && line_num <= params->line_num_range.max) ? (params->line_text[mouse_y_line_idx]) : str8_zero();
     
     // rjf: mouse x * string => column
-    S64 column = fnt_char_pos_from_tag_size_string_p(params->font, params->font_size, 0, params->tab_size, line_string, mouse.x-text_container_box->rect.x0-params->line_num_width_px-line_num_padding_px)+1;
+    uint64 column = fnt_char_pos_from_tag_size_string_p(params->font, params->font_size, 0, params->tab_size, line_string, mouse.x-text_container_box->rect.x0-params->line_num_width_px-line_num_padding_px)+1;
     
     // rjf: bundle
     mouse_pt = txt_pt(line_num, column);
     
     // rjf: clamp
     {
-      U64 last_line_size = params->line_text[dim_1s64(params->line_num_range)].size;
+      uint64 last_line_size = params->line_text[dim_1s64(params->line_num_range)].size;
       TxtRng legal_pt_rng = txt_rng(txt_pt(params->line_num_range.min, 1),
                                     txt_pt(params->line_num_range.max, last_line_size+1));
       if(txt_pt_less_than(mouse_pt, legal_pt_rng.min))
@@ -2230,14 +2230,14 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   if(contains_1s64(params->line_num_range, mouse_pt.line))
   {
     TXT_TokenArray *line_tokens = &params->line_tokens[mouse_pt.line-params->line_num_range.min];
-    Rng1U64 line_range = params->line_ranges[mouse_pt.line-params->line_num_range.min];
-    U64 mouse_pt_off = (mouse_pt.column-1) + line_range.min;
-    for(U64 line_token_idx = 0; line_token_idx < line_tokens->count; line_token_idx += 1)
+    Rng1uint64 line_range = params->line_ranges[mouse_pt.line-params->line_num_range.min];
+    uint64 mouse_pt_off = (mouse_pt.column-1) + line_range.min;
+    for(uint64 line_token_idx = 0; line_token_idx < line_tokens->count; line_token_idx += 1)
     {
       TXT_Token *line_token = &line_tokens->v[line_token_idx];
       if(contains_1u64(line_token->range, mouse_pt_off))
       {
-        Rng1U64 line_token_range_clamped = intersect_1u64(line_token->range, line_range);
+        Rng1uint64 line_token_range_clamped = intersect_1u64(line_token->range, line_range);
         mouse_token_rng = txt_rng(txt_pt(mouse_pt.line, 1+line_token_range_clamped.min-line_range.min), txt_pt(mouse_pt.line, 1+line_token_range_clamped.max-line_range.min));
         break;
       }
@@ -2308,7 +2308,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
       {
         *cursor = *mark = mouse_pt;
       }
-      U64 vaddr = 0;
+      uint64 vaddr = 0;
       D_LineList lines = {0};
       if(params->line_num_range.min <= cursor->line && cursor->line < params->line_num_range.max)
       {
@@ -2332,9 +2332,9 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     {
       if(rd_state->drag_drop_regs_slot == RD_RegSlot_Expr)
       {
-        S64 line_num = mouse_pt.line;
-        U64 line_idx = line_num - params->line_num_range.min;
-        U64 line_vaddr = params->line_vaddrs[line_idx];
+        uint64 line_num = mouse_pt.line;
+        uint64 line_idx = line_num - params->line_num_range.min;
+        uint64 line_vaddr = params->line_vaddrs[line_idx];
         rd_cmd(RD_CmdKind_AddWatchPin,
                .expr       = rd_state->drag_drop_regs->expr,
                .file_path  = line_vaddr == 0 ? rd_regs()->file_path : str8_zero(),
@@ -2343,9 +2343,9 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
       }
       if(rd_state->drag_drop_regs_slot == RD_RegSlot_Cfg && drop_cfg != &rd_nil_cfg)
       {
-        S64 line_num = mouse_pt.line;
-        U64 line_idx = line_num - params->line_num_range.min;
-        U64 line_vaddr = params->line_vaddrs[line_idx];
+        uint64 line_num = mouse_pt.line;
+        uint64 line_idx = line_num - params->line_num_range.min;
+        uint64 line_vaddr = params->line_vaddrs[line_idx];
         rd_cmd(RD_CmdKind_RelocateCfg,
                .cfg        = drop_cfg->id,
                .file_path  = line_vaddr == 0 ? rd_regs()->file_path : str8_zero(),
@@ -2354,11 +2354,11 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
       }
       if(drop_thread != &ctrl_entity_nil)
       {
-        S64 line_num = mouse_pt.line;
-        U64 line_idx = line_num - params->line_num_range.min;
-        U64 line_vaddr = params->line_vaddrs[line_idx];
+        uint64 line_num = mouse_pt.line;
+        uint64 line_idx = line_num - params->line_num_range.min;
+        uint64 line_vaddr = params->line_vaddrs[line_idx];
         CTRL_Entity *thread = drop_thread;
-        U64 new_rip_vaddr = line_vaddr;
+        uint64 new_rip_vaddr = line_vaddr;
         if(params->line_vaddrs[line_idx] == 0)
         {
           D_LineList *lines = &params->line_infos[line_idx];
@@ -2385,7 +2385,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //- rjf: mouse -> expression range info
   //
   TxtRng mouse_expr_rng = {0};
-  Vec2F32 mouse_expr_baseline_pos = {0};
+  Vec2float mouse_expr_baseline_pos = {0};
   String8 mouse_expr = {0};
   B32 mouse_expr_is_explicit = 0;
   if(ui_hovering(text_container_sig) && contains_1s64(params->line_num_range, mouse_pt.line)) ProfScope("mouse -> expression range")
@@ -2395,9 +2395,9 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
        ((txt_pt_less_than(selected_rng.min, mouse_pt) || txt_pt_match(selected_rng.min, mouse_pt)) &&
         txt_pt_less_than(mouse_pt, selected_rng.max)))
     {
-      U64 line_slice_idx = mouse_pt.line-params->line_num_range.min;
+      uint64 line_slice_idx = mouse_pt.line-params->line_num_range.min;
       String8 line_text = params->line_text[line_slice_idx];
-      F32 expr_hoff_px = params->line_num_width_px + fnt_dim_from_tag_size_string(params->font, params->font_size, 0, params->tab_size, str8_prefix(line_text, selected_rng.min.column-1)).x;
+      float expr_hoff_px = params->line_num_width_px + fnt_dim_from_tag_size_string(params->font, params->font_size, 0, params->tab_size, str8_prefix(line_text, selected_rng.min.column-1)).x;
       result.mouse_expr_rng = mouse_expr_rng = selected_rng;
       mouse_expr_baseline_pos = v2f32(text_container_box->rect.x0+expr_hoff_px,
                                       text_container_box->rect.y0+line_slice_idx*params->line_height_px + params->line_height_px*0.85f);
@@ -2406,15 +2406,15 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     }
     else
     {
-      U64 line_slice_idx = mouse_pt.line-params->line_num_range.min;
+      uint64 line_slice_idx = mouse_pt.line-params->line_num_range.min;
       String8 line_text = params->line_text[line_slice_idx];
       TXT_TokenArray line_tokens = params->line_tokens[line_slice_idx];
-      Rng1U64 line_range = params->line_ranges[line_slice_idx];
-      U64 mouse_pt_off = line_range.min + (mouse_pt.column-1);
-      Rng1U64 expr_off_rng = txt_expr_off_range_from_line_off_range_string_tokens(mouse_pt_off, line_range, line_text, &line_tokens);
+      Rng1uint64 line_range = params->line_ranges[line_slice_idx];
+      uint64 mouse_pt_off = line_range.min + (mouse_pt.column-1);
+      Rng1uint64 expr_off_rng = txt_expr_off_range_from_line_off_range_string_tokens(mouse_pt_off, line_range, line_text, &line_tokens);
       if(expr_off_rng.max != expr_off_rng.min)
       {
-        F32 expr_hoff_px = params->line_num_width_px + fnt_dim_from_tag_size_string(params->font, params->font_size, 0, params->tab_size, str8_prefix(line_text, expr_off_rng.min-line_range.min)).x;
+        float expr_hoff_px = params->line_num_width_px + fnt_dim_from_tag_size_string(params->font, params->font_size, 0, params->tab_size, str8_prefix(line_text, expr_off_rng.min-line_range.min)).x;
         result.mouse_expr_rng = mouse_expr_rng = txt_rng(txt_pt(mouse_pt.line, 1+(expr_off_rng.min-line_range.min)), txt_pt(mouse_pt.line, 1+(expr_off_rng.max-line_range.min)));
         mouse_expr_baseline_pos = v2f32(text_container_box->rect.x0+expr_hoff_px,
                                         text_container_box->rect.y0+line_slice_idx*params->line_height_px + params->line_height_px*0.85f);
@@ -2428,7 +2428,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   //
   if(ui_hovering(text_container_sig) && contains_1s64(params->line_num_range, mouse_pt.line) && (ui_mouse().x - text_container_box->rect.x0 < params->line_num_width_px + line_num_padding_px))
   {
-    U64 line_slice_idx = mouse_pt.line-params->line_num_range.min;
+    uint64 line_slice_idx = mouse_pt.line-params->line_num_range.min;
     D_LineList *lines = &params->line_infos[line_slice_idx];
     if(lines->first != 0 && (params->line_vaddrs[line_slice_idx] != 0 || lines->first->v.pt.line == mouse_pt.line))
     {
@@ -2451,10 +2451,10 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     E_Eval eval = e_eval_from_string(mouse_expr);
     if(eval.msgs.max_kind == E_MsgKind_Null && (eval.irtree.mode != E_Mode_Null || mouse_expr_is_explicit))
     {
-      U64 line_vaddr = 0;
+      uint64 line_vaddr = 0;
       if(contains_1s64(params->line_num_range, mouse_pt.line))
       {
-        U64 line_idx = mouse_pt.line-params->line_num_range.min;
+        uint64 line_idx = mouse_pt.line-params->line_num_range.min;
         line_vaddr = params->line_vaddrs[line_idx];
       }
       rd_set_hover_eval(mouse_expr_baseline_pos, mouse_expr);
@@ -2469,9 +2469,9 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     DR_Bucket *bucket = dr_bucket_make();
     DR_BucketScope(bucket)
     {
-      Vec4F32 color = drop_color;
+      Vec4float color = drop_color;
       color.w *= 0.2f;
-      Rng2F32 drop_line_rect = r2f32p(top_container_box->rect.x0,
+      Rng2float drop_line_rect = r2f32p(top_container_box->rect.x0,
                                       top_container_box->rect.y0 + (mouse_pt.line - params->line_num_range.min) * params->line_height_px,
                                       top_container_box->rect.x1,
                                       top_container_box->rect.y0 + (mouse_pt.line - params->line_num_range.min + 1) * params->line_height_px);
@@ -2489,7 +2489,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   {
     TxtRngColorPairNode *next;
     TxtRng rng;
-    Vec4F32 color;
+    Vec4float color;
   };
   TxtRngColorPairNode *first_txt_rng_color_pair = 0;
   TxtRngColorPairNode *last_txt_rng_color_pair = 0;
@@ -2529,7 +2529,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
   UI_Parent(text_container_box) ProfScope("build line text") UI_Focus(UI_FocusKind_Off)
   {
     RD_Regs *hover_regs = rd_get_hover_regs();
-    Rng1U64 hover_voff_range = hover_regs->voff_range;
+    Rng1uint64 hover_voff_range = hover_regs->voff_range;
     if(hover_voff_range.min == 0 && hover_voff_range.max == 0)
     {
       CTRL_Entity *module = ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, hover_regs->module);
@@ -2543,16 +2543,16 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
       UI_FontSize(params->font_size)
       UI_CornerRadius(0)
     {
-      U64 line_idx = 0;
-      for(S64 line_num = params->line_num_range.min;
+      uint64 line_idx = 0;
+      for(uint64 line_num = params->line_num_range.min;
           line_num <= params->line_num_range.max; line_num += 1, line_idx += 1)
       {
         String8 line_string = params->line_text[line_idx];
-        Rng1U64 line_range = params->line_ranges[line_idx];
+        Rng1uint64 line_range = params->line_ranges[line_idx];
         DR_FStrList line_fstrs = lines_fstrs[line_idx];
         ui_set_next_text_padding(line_num_padding_px);
         UI_Key line_key = ui_key_from_stringf(top_container_box->key, "ln_%I64x", line_num);
-        Vec4F32 line_bg_color = line_bg_colors[line_idx];
+        Vec4float line_bg_color = line_bg_colors[line_idx];
         if(line_bg_color.w != 0)
         {
           ui_set_next_flags(UI_BoxFlag_DrawBackground);
@@ -2567,25 +2567,25 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         // rjf: extra rendering for strings that are currently being searched for
         if(!search_query_invalidated && params->search_query.size != 0)
         {
-          for(U64 needle_pos = 0; needle_pos < line_string.size;)
+          for(uint64 needle_pos = 0; needle_pos < line_string.size;)
           {
             needle_pos = str8_find_needle(line_string, needle_pos, params->search_query, StringMatchFlag_CaseInsensitive);
             if(needle_pos < line_string.size)
             {
-              Rng1U64 match_range = r1u64(needle_pos, needle_pos+params->search_query.size);
-              Rng1F32 match_column_pixel_off_range =
+              Rng1uint64 match_range = r1u64(needle_pos, needle_pos+params->search_query.size);
+              Rng1float match_column_pixel_off_range =
               {
                 fnt_dim_from_tag_size_string(line_box->font, line_box->font_size, 0, params->tab_size, str8_prefix(line_string, match_range.min)).x,
                 fnt_dim_from_tag_size_string(line_box->font, line_box->font_size, 0, params->tab_size, str8_prefix(line_string, match_range.max)).x,
               };
-              Rng2F32 match_rect =
+              Rng2float match_rect =
               {
                 line_box->rect.x0+line_num_padding_px+match_column_pixel_off_range.min,
                 line_box->rect.y0,
                 line_box->rect.x0+line_num_padding_px+match_column_pixel_off_range.max+2.f,
                 line_box->rect.y1,
               };
-              Vec4F32 color = pop_color;
+              Vec4float color = pop_color;
               if(!is_focused)
               {
                 color.w *= 0.5f;
@@ -2599,8 +2599,8 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         
         // rjf: extra rendering for list(text_range*color)
         {
-          U64 prev_line_size = (line_idx > 0) ? params->line_text[line_idx-1].size : 0;
-          U64 next_line_size = (line_idx+1 < dim_1s64(params->line_num_range)) ? params->line_text[line_idx+1].size : 0;
+          uint64 prev_line_size = (line_idx > 0) ? params->line_text[line_idx-1].size : 0;
+          uint64 next_line_size = (line_idx+1 < dim_1s64(params->line_num_range)) ? params->line_text[line_idx+1].size : 0;
           for(TxtRngColorPairNode *n = first_txt_rng_color_pair; n != 0; n = n->next)
           {
             TxtRng select_range = n->rng;
@@ -2617,29 +2617,29 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                                     txt_pt_less_than(select_range_in_prev_line.min, select_range_in_prev_line.max));
               B32 next_line_good = (!txt_pt_match(select_range_in_next_line.min, select_range_in_next_line.max) &&
                                     txt_pt_less_than(select_range_in_next_line.min, select_range_in_next_line.max));
-              Rng1S64 select_column_range_in_line =
+              Rng1uint64 select_column_range_in_line =
               {
                 (select_range.min.line == line_num) ? select_range.min.column : 1,
-                (select_range.max.line == line_num) ? select_range.max.column : (S64)(line_string.size+1),
+                (select_range.max.line == line_num) ? select_range.max.column : (uint64)(line_string.size+1),
               };
-              Rng1F32 select_column_pixel_off_range =
+              Rng1float select_column_pixel_off_range =
               {
                 fnt_dim_from_tag_size_string(line_box->font, line_box->font_size, 0, params->tab_size, str8_prefix(line_string, select_column_range_in_line.min-1)).x,
                 fnt_dim_from_tag_size_string(line_box->font, line_box->font_size, 0, params->tab_size, str8_prefix(line_string, select_column_range_in_line.max-1)).x,
               };
-              Rng2F32 select_rect =
+              Rng2float select_rect =
               {
                 line_box->rect.x0+line_num_padding_px+select_column_pixel_off_range.min-2.f,
                 floor_f32(line_box->rect.y0) - 1.f,
                 line_box->rect.x0+line_num_padding_px+select_column_pixel_off_range.max+2.f,
                 ceil_f32(line_box->rect.y1) + 1.f,
               };
-              Vec4F32 color = n->color;
+              Vec4float color = n->color;
               if(!is_focused)
               {
                 color.w *= 0.5f;
               }
-              F32 rounded_radius = params->font_size*0.4f;
+              float rounded_radius = params->font_size*0.4f;
               R_Rect2DInst *inst = dr_rect(select_rect, color, rounded_radius, 0, 1);
               inst->corner_radii[Corner_00] = !prev_line_good || select_range_in_prev_line.min.column > select_range_in_line.min.column ? rounded_radius : 0.f;
               inst->corner_radii[Corner_10] = (!prev_line_good || select_range_in_line.max.column > select_range_in_prev_line.max.column || select_range_in_line.max.column < select_range_in_prev_line.min.column) ? rounded_radius : 0.f;
@@ -2652,18 +2652,18 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         // rjf: extra rendering for cursor position
         if(cursor->line == line_num)
         {
-          S64 column = cursor->column;
-          Vec2F32 advance = fnt_dim_from_tag_size_string(line_box->font, line_box->font_size, 0, params->tab_size, str8_prefix(line_string, column-1));
-          F32 cursor_off_pixels = advance.x;
-          F32 cursor_thickness = ClampBot(1.f, floor_f32(line_box->font_size/10.f));
-          Rng2F32 cursor_rect =
+          uint64 column = cursor->column;
+          Vec2float advance = fnt_dim_from_tag_size_string(line_box->font, line_box->font_size, 0, params->tab_size, str8_prefix(line_string, column-1));
+          float cursor_off_pixels = advance.x;
+          float cursor_thickness = ClampBot(1.f, floor_f32(line_box->font_size/10.f));
+          Rng2float cursor_rect =
           {
             ui_box_text_position(line_box).x+cursor_off_pixels,
             line_box->rect.y0-params->font_size*0.125f,
             ui_box_text_position(line_box).x+cursor_off_pixels+cursor_thickness,
             line_box->rect.y1+params->font_size*0.125f,
           };
-          Vec4F32 cursor_color = ui_color_from_name(str8_lit("cursor"));
+          Vec4float cursor_color = ui_color_from_name(str8_lit("cursor"));
           if(!is_focused)
           {
             cursor_color.w *= 0.5f;
@@ -2674,7 +2674,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         // rjf: extra rendering for lines with line-info that match the hovered
         {
           B32 matches = 0;
-          S64 line_info_line_num = 0;
+          uint64 line_info_line_num = 0;
           D_LineList *lines = &params->line_infos[line_idx];
           for(D_LineNode *n = lines->first; n != 0; n = n->next)
           {
@@ -2692,7 +2692,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
           // rjf: matches => highlight background
           if(matches)
           {
-            Vec4F32 highlight_color = code_line_bgs[line_info_line_num % ArrayCount(code_line_bgs)];
+            Vec4float highlight_color = code_line_bgs[line_info_line_num % ArrayCount(code_line_bgs)];
             highlight_color.w *= 0.2f;
             dr_rect(line_box->rect, highlight_color, 0, 0, 0);
           }
@@ -2715,7 +2715,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
 }
 
 internal RD_CodeSliceSignal
-rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, char *fmt, ...)
+rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, uint64 *preferred_column, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -2728,7 +2728,7 @@ rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *pref
 }
 
 internal B32
-rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, TxtPt *cursor, TxtPt *mark, S64 *preferred_column)
+rd_do_txt_controls(TXT_TextInfo *info, String8 data, uint64 line_count_per_page, TxtPt *cursor, TxtPt *mark, uint64 *preferred_column)
 {
   Temp scratch = scratch_begin(0, 0);
   B32 change = 0;
@@ -2745,10 +2745,10 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
     //- rjf: invalid single-line op or endpoint units => try multiline
     if(evt->delta_unit == UI_EventDeltaUnit_Whole || single_line_op.flags & UI_TxtOpFlag_Invalid)
     {
-      U64 line_count = info->lines_count;
+      uint64 line_count = info->lines_count;
       String8 prev_line = txt_string_from_info_data_line_num(info, data, cursor->line-1);
       String8 next_line = txt_string_from_info_data_line_num(info, data, cursor->line+1);
-      Vec2S32 delta = evt->delta_2s32;
+      Vec2uint32 delta = evt->delta_2s32;
       
       //- rjf: wrap lines right
       if(evt->delta_unit != UI_EventDeltaUnit_Whole && delta.x > 0 && cursor->column == line.size+1 && cursor->line+1 <= line_count)
@@ -2791,10 +2791,10 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       //- rjf: movement down (chunk)
       if(evt->delta_unit == UI_EventDeltaUnit_Word && delta.y > 0 && cursor->line+1 <= line_count)
       {
-        for(S64 line_num = cursor->line+1; line_num <= line_count; line_num += 1)
+        for(uint64 line_num = cursor->line+1; line_num <= line_count; line_num += 1)
         {
           String8 line = txt_string_from_info_data_line_num(info, data, line_num);
-          U64 line_size = line.size;
+          uint64 line_size = line.size;
           if(line_size == 0)
           {
             cursor->line = line_num;
@@ -2814,10 +2814,10 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
       //- rjf: movement up (chunk)
       if(evt->delta_unit == UI_EventDeltaUnit_Word && delta.y < 0 && cursor->line-1 >= 1)
       {
-        for(S64 line_num = cursor->line-1; line_num > 0; line_num -= 1)
+        for(uint64 line_num = cursor->line-1; line_num > 0; line_num -= 1)
         {
           String8 line = txt_string_from_info_data_line_num(info, data, line_num);
-          U64 line_size = line.size;
+          uint64 line_size = line.size;
           if(line_size == 0)
           {
             cursor->line = line_num;
@@ -2913,7 +2913,7 @@ internal DR_FStrList
 rd_fstrs_from_rich_string(Arena *arena, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  typedef U32 StringPartFlags;
+  typedef uint32 StringPartFlags;
   enum
   {
     StringPartFlag_Code      = (1<<0),
@@ -2929,9 +2929,9 @@ rd_fstrs_from_rich_string(Arena *arena, String8 string)
   };
   StringPart *first_part = 0;
   StringPart *last_part = 0;
-  U64 active_part_start_idx = 0;
+  uint64 active_part_start_idx = 0;
   StringPartFlags active_part_flags = 0;
-  for(U64 idx = 0; idx <= string.size; idx += 1)
+  for(uint64 idx = 0; idx <= string.size; idx += 1)
   {
     if(idx == string.size)
     {
@@ -3028,19 +3028,19 @@ rd_help_label(String8 string)
 }
 
 internal DR_FStrList
-rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string)
+rd_fstrs_from_code_string(Arena *arena, float alpha, B32 indirection_size_change, Vec4float base_color, String8 string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
   DR_FStrList fstrs = {0};
   TXT_TokenArray tokens = txt_token_array_from_string__c_cpp(scratch.arena, 0, string);
   TXT_Token *tokens_opl = tokens.v+tokens.count;
-  S32 indirection_counter = 0;
+  uint32 indirection_counter = 0;
   indirection_size_change = 0;
   for(TXT_Token *token = tokens.v; token < tokens_opl; token += 1)
   {
     RD_CodeColorSlot token_color_slot = rd_code_color_slot_from_txt_token_kind(token->kind);
-    Vec4F32 token_color_rgba = rd_rgba_from_code_color_slot(token_color_slot);
+    Vec4float token_color_rgba = rd_rgba_from_code_color_slot(token_color_slot);
     token_color_rgba.w *= alpha;
     String8 token_string = str8_substr(string, token->range);
     if(str8_match(token_string, str8_lit("{"), 0)) { indirection_counter += 1; }
@@ -3068,8 +3068,8 @@ rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, 
         RD_CodeColorSlot lookup_theme_color_slot = rd_code_color_slot_from_txt_token_kind_lookup_string(token->kind, token_string);
         if(lookup_theme_color_slot != RD_CodeColorSlot_CodeDefault)
         {
-          Vec4F32 lookup_color = rd_rgba_from_code_color_slot(lookup_theme_color_slot);
-          F32 lookup_color_mix_t = ui_anim(ui_key_from_stringf(ui_key_zero(), "%S_lookup", token_string), 1.f);
+          Vec4float lookup_color = rd_rgba_from_code_color_slot(lookup_theme_color_slot);
+          float lookup_color_mix_t = ui_anim(ui_key_from_stringf(ui_key_zero(), "%S_lookup", token_string), 1.f);
           token_color_rgba = mix_4f32(token_color_rgba, lookup_color, lookup_color_mix_t);
         }
         DR_FStr fstr =
@@ -3086,14 +3086,14 @@ rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, 
       }break;
       case TXT_TokenKind_Numeric:
       {
-        Vec4F32 token_color_rgba_alt = rd_rgba_from_code_color_slot(RD_CodeColorSlot_CodeNumericAltDigitGroup);
+        Vec4float token_color_rgba_alt = rd_rgba_from_code_color_slot(RD_CodeColorSlot_CodeNumericAltDigitGroup);
         token_color_rgba_alt.w *= alpha;
-        F32 font_size = ui_top_font_size() * (1.f - !!indirection_size_change*(indirection_counter/10.f));
+        float font_size = ui_top_font_size() * (1.f - !!indirection_size_change*(indirection_counter/10.f));
         
         // rjf: unpack string
-        U32 base = 10;
-        U64 prefix_skip = 0;
-        U64 digit_group_size = 3;
+        uint32 base = 10;
+        uint64 prefix_skip = 0;
+        uint64 digit_group_size = 3;
         if(str8_match(str8_prefix(token_string, 2), str8_lit("0x"), StringMatchFlag_CaseInsensitive))
         {
           base = 16;
@@ -3114,14 +3114,14 @@ rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, 
         }
         
         // rjf: grab string parts
-        U64 dot_pos = str8_find_needle(token_string, 0, str8_lit("."), 0);
+        uint64 dot_pos = str8_find_needle(token_string, 0, str8_lit("."), 0);
         String8 prefix = str8_prefix(token_string, prefix_skip);
         String8 whole = str8_substr(token_string, r1u64(prefix_skip, dot_pos));
         String8 decimal = str8_skip(token_string, dot_pos);
         
         // rjf: determine # of digits
-        U64 num_digits = 0;
-        for(U64 idx = 0; idx < whole.size; idx += 1)
+        uint64 num_digits = 0;
+        for(uint64 idx = 0; idx < whole.size; idx += 1)
         {
           num_digits += char_is_digit(whole.str[idx], base);
         }
@@ -3144,11 +3144,11 @@ rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, 
         // rjf: push digit groups
         {
           B32 odd = 0;
-          U64 start_idx = 0;
-          U64 num_digits_passed = digit_group_size - num_digits%digit_group_size;
-          for(U64 idx = 0; idx <= whole.size; idx += 1)
+          uint64 start_idx = 0;
+          uint64 num_digits_passed = digit_group_size - num_digits%digit_group_size;
+          for(uint64 idx = 0; idx <= whole.size; idx += 1)
           {
-            U8 byte = idx < whole.size ? whole.str[idx] : 0;
+            uint8 byte = idx < whole.size ? whole.str[idx] : 0;
             if(num_digits_passed >= digit_group_size || idx == whole.size)
             {
               num_digits_passed = 0;
@@ -3203,7 +3203,7 @@ rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, 
 }
 
 internal UI_Box *
-rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string)
+rd_code_label(float alpha, B32 indirection_size_change, Vec4float base_color, String8 string)
 {
   Temp scratch = scratch_begin(0, 0);
   DR_FStrList fstrs = rd_fstrs_from_code_string(scratch.arena, alpha, indirection_size_change, base_color, string);
@@ -3225,7 +3225,7 @@ rd_cell(RD_CellParams *params, String8 string)
   //////////////////////////////
   //- rjf: unpack visual metrics
   //
-  F32 expander_size_px = floor_f32(ui_top_font_size()*2.f);
+  float expander_size_px = floor_f32(ui_top_font_size()*2.f);
   
   //////////////////////////////
   //- rjf: make key
@@ -3289,7 +3289,7 @@ rd_cell(RD_CellParams *params, String8 string)
   //////////////////////////////
   //- rjf: build indent
   //
-  UI_Parent(box) for(S32 idx = 0; idx < params->depth; idx += 1)
+  UI_Parent(box) for(uint32 idx = 0; idx < params->depth; idx += 1)
   {
     ui_set_next_flags(UI_BoxFlag_DrawSideLeft);
     ui_spacer(ui_em(1.f, 1.f));
@@ -3519,9 +3519,9 @@ rd_cell(RD_CellParams *params, String8 string)
   if(build_toggle_switch) UI_Parent(box)
   {
     B32 is_toggled = !!params->toggled_out[0];
-    F32 toggle_t = ui_anim(ui_key_from_stringf(key, "toggled"), (F32)is_toggled, .initial = (F32)is_toggled, .rate = rd_state->menu_animation_rate);
-    F32 height_px = ceil_f32(ui_top_font_size() * 1.75f);
-    F32 padding_px = ceil_f32((ui_top_px_height() - height_px) / 2.f);
+    float toggle_t = ui_anim(ui_key_from_stringf(key, "toggled"), (float)is_toggled, .initial = (float)is_toggled, .rate = rd_state->menu_animation_rate);
+    float height_px = ceil_f32(ui_top_font_size() * 1.75f);
+    float padding_px = ceil_f32((ui_top_px_height() - height_px) / 2.f);
     UI_PrefWidth(ui_children_sum(1.f))
       UI_HeightFill
       UI_Column UI_Padding(ui_px(padding_px, 1.f))
@@ -3548,8 +3548,8 @@ rd_cell(RD_CellParams *params, String8 string)
           UI_BackgroundColor(ui_color_from_name(str8_lit("text")))
             UI_PrefWidth(ui_px(height_px, 1.f))
           {
-            F32 extratoggler_padding_px = floor_f32(ui_top_font_size()*0.35f);
-            F32 toggler_size_px = ceil_f32(height_px - extratoggler_padding_px*2.f) - 1.f;
+            float extratoggler_padding_px = floor_f32(ui_top_font_size()*0.35f);
+            float toggler_size_px = ceil_f32(height_px - extratoggler_padding_px*2.f) - 1.f;
             UI_Column UI_Padding(ui_px(extratoggler_padding_px, 1.f))
               UI_Row UI_Padding(ui_px(extratoggler_padding_px, 1.f))
               UI_PrefWidth(ui_px(toggler_size_px, 1.f))
@@ -3579,7 +3579,7 @@ rd_cell(RD_CellParams *params, String8 string)
         {
           String8 all_keys_data = ui_get_drag_data(sizeof(UI_Key));
           UI_Key *keys = (UI_Key *)all_keys_data.str;
-          U64 keys_count = all_keys_data.size / sizeof(UI_Key);
+          uint64 keys_count = all_keys_data.size / sizeof(UI_Key);
           B32 key_is_touched = 0;
           for EachIndex(idx, keys_count)
           {
@@ -3595,7 +3595,7 @@ rd_cell(RD_CellParams *params, String8 string)
             UI_Key *new_keys = push_array(scratch.arena, UI_Key, keys_count+1);
             MemoryCopy(new_keys, keys, sizeof(UI_Key)*keys_count);
             new_keys[keys_count] = switch_box->key;
-            ui_store_drag_data(str8((U8 *)new_keys, sizeof(UI_Key) * (keys_count+1)));
+            ui_store_drag_data(str8((uint8 *)new_keys, sizeof(UI_Key) * (keys_count+1)));
           }
         }
       }
@@ -3615,8 +3615,8 @@ rd_cell(RD_CellParams *params, String8 string)
   //
   if(build_slider) UI_Parent(box)
   {
-    F32 height_px = ceil_f32(ui_top_font_size() * 1.75f);
-    F32 padding_px = ceil_f32((ui_top_px_height() - height_px) / 2.f);
+    float height_px = ceil_f32(ui_top_font_size() * 1.75f);
+    float padding_px = ceil_f32((ui_top_px_height() - height_px) / 2.f);
     UI_PrefWidth(ui_children_sum(1.f))
       UI_HeightFill
       UI_Column UI_Padding(ui_px(padding_px, 1.f))
@@ -3625,8 +3625,8 @@ rd_cell(RD_CellParams *params, String8 string)
       UI_PrefHeight(ui_px(height_px, 1.f))
       UI_CornerRadius(floor_f32(height_px/2.f - 1.f))
     {
-      F32 extratoggler_padding_px = floor_f32(ui_top_font_size()*0.35f);
-      F32 toggler_size_px = ceil_f32(height_px - extratoggler_padding_px*2.f) - 1.f;
+      float extratoggler_padding_px = floor_f32(ui_top_font_size()*0.35f);
+      float toggler_size_px = ceil_f32(height_px - extratoggler_padding_px*2.f) - 1.f;
       ui_set_next_hover_cursor(OS_Cursor_LeftRight);
       UI_Box *slider_box = ui_build_box_from_stringf(UI_BoxFlag_DrawHotEffects|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground|UI_BoxFlag_Clickable, "slider");
       UI_Parent(slider_box) UI_TagF("pop")
@@ -3638,9 +3638,9 @@ rd_cell(RD_CellParams *params, String8 string)
           {
             ui_store_drag_struct(params->slider_value_out);
           }
-          F32 draggable_region_size_px = dim_2f32(slider_box->rect).x - (extratoggler_padding_px*2 + toggler_size_px);
-          F32 initial_pct = *ui_get_drag_struct(F32);
-          F32 current_pct = initial_pct + (ui_drag_delta().x / draggable_region_size_px);
+          float draggable_region_size_px = dim_2f32(slider_box->rect).x - (extratoggler_padding_px*2 + toggler_size_px);
+          float initial_pct = *ui_get_drag_struct(float);
+          float current_pct = initial_pct + (ui_drag_delta().x / draggable_region_size_px);
           params->slider_value_out[0] = current_pct;
         }
         
@@ -3891,8 +3891,8 @@ rd_cell(RD_CellParams *params, String8 string)
         RD_WindowState *ws = rd_window_state_from_cfg(window);
         RD_AutocompCursorInfo *autocomp_cursor_info = &ws->autocomp_cursor_info;
         String8 autocomplete_append_string = str8_skip(autocomplete_hint_string, params->cursor->column-1 - autocomp_cursor_info->replaced_range.min);
-        U64 off = 0;
-        U64 cursor_off = params->cursor->column-1;
+        uint64 off = 0;
+        uint64 cursor_off = params->cursor->column-1;
         DR_FStrNode *prev_n = 0;
         for(DR_FStrNode *n = edit_string_fstrs.first; n != 0; n = n->next)
         {
@@ -3930,7 +3930,7 @@ rd_cell(RD_CellParams *params, String8 string)
           if(prev_n != 0 && cursor_off - off < prev_n->v.string.size)
           {
             String8 full_string = prev_n->v.string;
-            U64 chop_amt = full_string.size - (cursor_off - off);
+            uint64 chop_amt = full_string.size - (cursor_off - off);
             prev_n->v.string = str8_chop(full_string, chop_amt);
             edit_string_fstrs.total_size -= chop_amt;
             if(chop_amt != 0)
@@ -3960,7 +3960,7 @@ rd_cell(RD_CellParams *params, String8 string)
   //- rjf: build scrolled contents
   //
   TxtPt mouse_pt = {0};
-  F32 cursor_off = 0;
+  float cursor_off = 0;
   if(scrollable_box != &ui_nil_box) UI_Parent(scrollable_box)
   {
     FuzzyMatchRangeList fuzzy_matches = {0};
@@ -3988,14 +3988,14 @@ rd_cell(RD_CellParams *params, String8 string)
       draw_data->cursor = params->cursor[0];
       draw_data->mark = params->mark[0];
       ui_box_equip_custom_draw(text_box, ui_line_edit_draw, draw_data);
-      Vec2F32 text2mouse = sub_2f32(ui_mouse(), ui_box_text_position(text_box));
+      Vec2float text2mouse = sub_2f32(ui_mouse(), ui_box_text_position(text_box));
       FNT_Tag font = ui_top_font();
-      F32 font_size = ui_top_font_size();
+      float font_size = ui_top_font_size();
       if(params->flags & RD_CellFlag_CodeContents)
       {
         font = rd_font_from_slot(RD_FontSlot_Code);
       }
-      U64 mouse_pt_off = fnt_char_pos_from_tag_size_string_p(font, font_size, 0, ui_top_tab_size(), edit_string, text2mouse.x);
+      uint64 mouse_pt_off = fnt_char_pos_from_tag_size_string_p(font, font_size, 0, ui_top_tab_size(), edit_string, text2mouse.x);
       mouse_pt = txt_pt(1, 1+mouse_pt_off);
       cursor_off = fnt_dim_from_tag_size_string(ui_top_font(), ui_top_font_size(), 0, ui_top_tab_size(), str8_prefix(edit_string, params->cursor->column-1)).x;
     }
@@ -4022,15 +4022,15 @@ rd_cell(RD_CellParams *params, String8 string)
   //
   if(scrollable_box != &ui_nil_box)
   {
-    F32 visible_dim_px = dim_2f32(box->rect).x - expander_size_px - ui_top_font_size()*params->depth;
+    float visible_dim_px = dim_2f32(box->rect).x - expander_size_px - ui_top_font_size()*params->depth;
     if(visible_dim_px > 0)
     {
-      Rng1F32 cursor_range_px  = r1f32(cursor_off-ui_top_font_size()*2.f, cursor_off+ui_top_font_size()*1.f);
-      Rng1F32 visible_range_px = r1f32(scrollable_box->view_off_target.x, scrollable_box->view_off_target.x + visible_dim_px);
+      Rng1float cursor_range_px  = r1f32(cursor_off-ui_top_font_size()*2.f, cursor_off+ui_top_font_size()*1.f);
+      Rng1float visible_range_px = r1f32(scrollable_box->view_off_target.x, scrollable_box->view_off_target.x + visible_dim_px);
       cursor_range_px.min = ClampBot(0, cursor_range_px.min);
       cursor_range_px.max = ClampBot(0, cursor_range_px.max);
-      F32 min_delta = cursor_range_px.min-visible_range_px.min;
-      F32 max_delta = cursor_range_px.max-visible_range_px.max;
+      float min_delta = cursor_range_px.min-visible_range_px.min;
+      float max_delta = cursor_range_px.max-visible_range_px.max;
       min_delta = Min(min_delta, 0);
       max_delta = Max(max_delta, 0);
       scrollable_box->view_off_target.x += min_delta;

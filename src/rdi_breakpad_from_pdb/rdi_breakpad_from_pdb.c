@@ -39,12 +39,12 @@ ASYNC_WORK_DEF(p2b_dump_proc_chunk_work)
   P2B_DumpProcChunkIn *in = (P2B_DumpProcChunkIn *)input;
   String8List *out = push_array(arena, String8List, 1);
   RDI_LineTable *line_tables = in->line_tables_bake->line_tables;
-  RDI_U64 line_tables_count = in->line_tables_bake->line_tables_count;
-  RDI_U64 *line_table_voffs = in->line_tables_bake->line_table_voffs;
-  RDI_U64 line_table_voffs_count = in->line_tables_bake->line_table_voffs_count;
+  RDI_uint64 line_tables_count = in->line_tables_bake->line_tables_count;
+  RDI_uint64 *line_table_voffs = in->line_tables_bake->line_table_voffs;
+  RDI_uint64 line_table_voffs_count = in->line_tables_bake->line_table_voffs_count;
   RDI_Line *line_table_lines = in->line_tables_bake->line_table_lines;
-  RDI_U64 line_table_lines_count = in->line_tables_bake->line_table_lines_count;
-  for(U64 idx = 0; idx < in->chunk->count; idx += 1)
+  RDI_uint64 line_table_lines_count = in->line_tables_bake->line_table_lines_count;
+  for(uint64 idx = 0; idx < in->chunk->count; idx += 1)
   {
     // NOTE(rjf): breakpad does not support multiple voff ranges per procedure.
     RDIM_Symbol *proc = &in->chunk->v[idx];
@@ -52,14 +52,14 @@ ASYNC_WORK_DEF(p2b_dump_proc_chunk_work)
     if(root_scope != 0 && root_scope->voff_ranges.first != 0)
     {
       // rjf: dump function record
-      RDIM_Rng1U64 voff_range = root_scope->voff_ranges.first->v;
+      RDIM_Rng1uint64 voff_range = root_scope->voff_ranges.first->v;
       str8_list_pushf(arena, out, "FUNC %I64x %I64x %I64x %S\n", voff_range.min, voff_range.max-voff_range.min, 0ull, proc->name);
       
       // rjf: dump function lines
-      U64 unit_idx = rdi_vmap_idx_from_voff(in->unit_vmap, in->unit_vmap_count, voff_range.min);
+      uint64 unit_idx = rdi_vmap_idx_from_voff(in->unit_vmap, in->unit_vmap_count, voff_range.min);
       if(0 < unit_idx && unit_idx <= in->unit_count)
       {
-        U32 line_table_idx = in->unit_line_table_idxs[unit_idx];
+        uint32 line_table_idx = in->unit_line_table_idxs[unit_idx];
         if(0 < line_table_idx && line_table_idx <= line_tables_count)
         {
           // rjf: unpack unit line info
@@ -72,22 +72,22 @@ ASYNC_WORK_DEF(p2b_dump_proc_chunk_work)
             line_table->lines_count,
             0
           };
-          for(U64 voff = voff_range.min, last_voff = 0;
+          for(uint64 voff = voff_range.min, last_voff = 0;
               voff < voff_range.max && voff > last_voff;)
           {
-            RDI_U64 line_info_idx = rdi_line_info_idx_from_voff(&line_info, voff);
+            RDI_uint64 line_info_idx = rdi_line_info_idx_from_voff(&line_info, voff);
             if(line_info_idx < line_info.count)
             {
               RDI_Line *line = &line_info.lines[line_info_idx];
-              U64 line_voff_min = line_info.voffs[line_info_idx];
-              U64 line_voff_opl = line_info.voffs[line_info_idx+1];
+              uint64 line_voff_min = line_info.voffs[line_info_idx];
+              uint64 line_voff_opl = line_info.voffs[line_info_idx+1];
               if(line->file_idx != 0)
               {
                 str8_list_pushf(arena, out, "%I64x %I64x %I64u %I64u\n",
                                 line_voff_min,
                                 line_voff_opl-line_voff_min,
-                                (U64)line->line_num,
-                                (U64)line->file_idx);
+                                (uint64)line->line_num,
+                                (uint64)line->file_idx);
               }
               last_voff = voff;
               voff = line_voff_opl;

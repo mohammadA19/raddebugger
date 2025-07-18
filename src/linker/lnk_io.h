@@ -1,6 +1,6 @@
 #pragma once
 
-typedef U32 LNK_IO_Flags;
+typedef uint32 LNK_IO_Flags;
 enum
 {
   LNK_IO_Flags_MemoryMapFiles = (1 << 0),
@@ -12,9 +12,9 @@ typedef struct
   String8Array path_arr;
   String8Array data_arr;
   OS_Handle   *handle_arr;
-  U64         *size_arr;
-  U64         *off_arr;
-  U8          *buffer;
+  uint64         *size_arr;
+  uint64         *off_arr;
+  uint8          *buffer;
 } LNK_DiskReader;
 
 // --- Shared File API ---------------------------------------------------------

@@ -18,7 +18,7 @@ global read_only String8 e_multichar_symbol_strings[] =
   str8_lit_comp("=>"),
 };
 
-global read_only S64 e_max_precedence = 15;
+global read_only uint64 e_max_precedence = 15;
 
 ////////////////////////////////
 //~ rjf: Tokenization Functions
@@ -31,7 +31,7 @@ e_token_zero(void)
 }
 
 internal void
-e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_Token *token)
+e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, uint64 chunk_size, E_Token *token)
 {
   E_TokenChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
@@ -53,7 +53,7 @@ e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list)
   E_TokenArray array = {0};
   array.count = list->total_count;
   array.v = push_array_no_zero(arena, E_Token, array.count);
-  U64 idx = 0;
+  uint64 idx = 0;
   for(E_TokenChunkNode *node = list->first; node != 0; node = node->next)
   {
     MemoryCopy(array.v+idx, node->v, sizeof(E_Token)*node->count);
@@ -69,19 +69,19 @@ e_token_array_from_text(Arena *arena, String8 text)
   
   //- rjf: lex loop
   E_TokenChunkList tokens = {0};
-  U64 active_token_start_idx = 0;
+  uint64 active_token_start_idx = 0;
   E_TokenKind active_token_kind = E_TokenKind_Null;
   B32 active_token_kind_started_with_tick = 0;
   B32 escaped = 0;
   B32 exp = 0;
-  for(U64 idx = 0, advance = 0; idx <= text.size; idx += advance)
+  for(uint64 idx = 0, advance = 0; idx <= text.size; idx += advance)
   {
-    U8 byte      = (idx+0 < text.size) ? text.str[idx+0] : 0;
-    U8 byte_next = (idx+1 < text.size) ? text.str[idx+1] : 0;
-    U8 byte_next2= (idx+2 < text.size) ? text.str[idx+2] : 0;
+    uint8 byte      = (idx+0 < text.size) ? text.str[idx+0] : 0;
+    uint8 byte_next = (idx+1 < text.size) ? text.str[idx+1] : 0;
+    uint8 byte_next2= (idx+2 < text.size) ? text.str[idx+2] : 0;
     advance = 1;
     B32 token_formed = 0;
-    U64 token_end_idx_pad = 0;
+    uint64 token_end_idx_pad = 0;
     switch(active_token_kind)
     {
       //- rjf: no active token -> seek token starter
@@ -139,8 +139,8 @@ e_token_array_from_text(Arena *arena, String8 text)
         {
           // NOTE(rjf): encountering C++-style templates - try to find ender. if no ender found,
           // assume this is an operator & just consume the identifier part.
-          S64 nest = 1;
-          for(U64 idx2 = idx+1; idx2 <= text.size; idx2 += 1)
+          uint64 nest = 1;
+          for(uint64 idx2 = idx+1; idx2 <= text.size; idx2 += 1)
           {
             if(idx2 < text.size && text.str[idx2] == '<')
             {
@@ -257,11 +257,11 @@ e_token_array_from_text(Arena *arena, String8 text)
       // >1-length symbol strings.
       else
       {
-        U64 advance2 = 0;
-        for(U64 idx2 = active_token_start_idx; idx2 < idx; idx2 += advance2)
+        uint64 advance2 = 0;
+        for(uint64 idx2 = active_token_start_idx; idx2 < idx; idx2 += advance2)
         {
           advance2 = 1;
-          for(U64 multichar_symbol_idx = 0;
+          for(uint64 multichar_symbol_idx = 0;
               multichar_symbol_idx < ArrayCount(e_multichar_symbol_strings);
               multichar_symbol_idx += 1)
           {
@@ -292,7 +292,7 @@ e_token_array_from_text(Arena *arena, String8 text)
 internal E_TokenArray
 e_token_array_make_first_opl(E_Token *first, E_Token *opl)
 {
-  E_TokenArray array = {first, (U64)(opl-first)};
+  E_TokenArray array = {first, (uint64)(opl-first)};
   return array;
 }
 
@@ -300,7 +300,7 @@ e_token_array_make_first_opl(E_Token *first, E_Token *opl)
 //~ rjf: Expression Tree Building Functions
 
 internal E_Expr *
-e_push_expr(Arena *arena, E_ExprKind kind, Rng1U64 range)
+e_push_expr(Arena *arena, E_ExprKind kind, Rng1uint64 range)
 {
   E_Expr *e = push_array(arena, E_Expr, 1);
   e->first = e->last = e->next = e->prev = e->ref = &e_expr_nil;
@@ -436,7 +436,7 @@ e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_strin
         op_info->sep,
         op_info->post,
       };
-      U64 sep_idx = 0;
+      uint64 sep_idx = 0;
       for(E_Expr *child = expr->first;; child = child->next)
       {
         if(sep_idx == ArrayCount(seps)-1 && child != &e_expr_nil)
@@ -481,7 +481,7 @@ e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_strin
     {
       str8_list_pushf(arena, out, "\"%S\"", expr->string);
     }break;
-    case E_ExprKind_LeafU64:
+    case E_ExprKind_Leafuint64:
     {
       str8_list_pushf(arena, out, "%I64u", expr->value.u64);
     }break;
@@ -493,11 +493,11 @@ e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_strin
     {
       str8_list_pushf(arena, out, "file:\"%S\"", escaped_from_raw_str8(arena, expr->string));
     }break;
-    case E_ExprKind_LeafF64:
+    case E_ExprKind_Leafdouble:
     {
       str8_list_pushf(arena, out, "%f", expr->value.f64);
     }break;
-    case E_ExprKind_LeafF32:
+    case E_ExprKind_Leaffloat:
     {
       str8_list_pushf(arena, out, "%f", expr->value.f32);
     }break;
@@ -531,48 +531,48 @@ e_leaf_builtin_type_key_from_name(String8 name)
   E_TypeKey result = {0};
   if(0){}
 #define BuiltInType_XList \
-BasicCase("uint8", U8)\
-BasicCase("uint8_t", U8)\
+BasicCase("uint8", uint8)\
+BasicCase("uint8_t", uint8)\
 BasicCase("uchar", UChar8)\
 BasicCase("uchar8", UChar8)\
-BasicCase("uint16", U16)\
-BasicCase("uint16_t", U16)\
+BasicCase("uint16", uint16)\
+BasicCase("uint16_t", uint16)\
 BasicCase("uchar16", UChar16)\
-BasicCase("uint32", U32)\
-BasicCase("uint32_t", U32)\
+BasicCase("uint32", uint32)\
+BasicCase("uint32_t", uint32)\
 BasicCase("uchar32", UChar32)\
-BasicCase("uint64", U64)\
-BasicCase("uint64_t", U64)\
-BasicCase("uint128", U128)\
-BasicCase("uint128_t", U128)\
+BasicCase("uint64", uint64)\
+BasicCase("uint64_t", uint64)\
+BasicCase("uint128", uint128)\
+BasicCase("uint128_t", uint128)\
 BasicCase("uint256", U256)\
 BasicCase("uint256_t", U256)\
 BasicCase("uint512", U512)\
 BasicCase("uint512_t", U512)\
-BasicCase("int8", S8)\
-BasicCase("int8_t", S8)\
+BasicCase("int8", uint8)\
+BasicCase("int8_t", uint8)\
 BasicCase("char", Char8)\
 BasicCase("char8", Char8)\
-BasicCase("int16", S16)\
-BasicCase("int16_t", S16)\
+BasicCase("int16", uint16)\
+BasicCase("int16_t", uint16)\
 BasicCase("char16", Char16)\
-BasicCase("int32", S32)\
-BasicCase("int32_t", S32)\
+BasicCase("int32", uint32)\
+BasicCase("int32_t", uint32)\
 BasicCase("char32", Char32)\
-BasicCase("int64", S64)\
-BasicCase("int64_t", S64)\
-BasicCase("int128", S128)\
-BasicCase("int128_t", S128)\
+BasicCase("int64", uint64)\
+BasicCase("int64_t", uint64)\
+BasicCase("int128", uint128)\
+BasicCase("int128_t", uint128)\
 BasicCase("int256", S256)\
 BasicCase("int256_t", S256)\
 BasicCase("int512", S512)\
 BasicCase("int512_t", S512)\
 BasicCase("void", Void)\
 BasicCase("bool", Bool)\
-BasicCase("float", F32)\
-BasicCase("float32", F32)\
-BasicCase("double", F64)\
-BasicCase("float64", F64)
+BasicCase("float", float)\
+BasicCase("float32", float)\
+BasicCase("double", double)\
+BasicCase("float64", double)
 #define BasicCase(str, kind) else if(str8_match(name, str8_lit(str), 0)) {result = e_type_key_basic(E_TypeKind_##kind);}
   BuiltInType_XList
 #undef BasicCase
@@ -590,9 +590,9 @@ e_leaf_type_key_from_name(String8 name)
     {
       E_Module *module = &e_base_ctx->modules[match.dbgi_idx];
       RDI_Parsed *rdi = module->rdi;
-      U32 type_idx = match.idx;
+      uint32 type_idx = match.idx;
       RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, type_idx);
-      key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), type_idx, (U32)match.dbgi_idx);
+      key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), type_idx, (uint32)match.dbgi_idx);
     }
   }
   return key;
@@ -675,11 +675,11 @@ e_push_type_parse_from_text_tokens(Arena *arena, String8 text, E_TokenArray toke
           case E_TypeKind_Char8: {type_key = e_type_key_basic(E_TypeKind_UChar8);}break;
           case E_TypeKind_Char16:{type_key = e_type_key_basic(E_TypeKind_UChar16);}break;
           case E_TypeKind_Char32:{type_key = e_type_key_basic(E_TypeKind_UChar32);}break;
-          case E_TypeKind_S8:  {type_key = e_type_key_basic(E_TypeKind_U8);}break;
-          case E_TypeKind_S16: {type_key = e_type_key_basic(E_TypeKind_U16);}break;
-          case E_TypeKind_S32: {type_key = e_type_key_basic(E_TypeKind_U32);}break;
-          case E_TypeKind_S64: {type_key = e_type_key_basic(E_TypeKind_U64);}break;
-          case E_TypeKind_S128:{type_key = e_type_key_basic(E_TypeKind_U128);}break;
+          case E_TypeKind_uint8:  {type_key = e_type_key_basic(E_TypeKind_uint8);}break;
+          case E_TypeKind_uint16: {type_key = e_type_key_basic(E_TypeKind_uint16);}break;
+          case E_TypeKind_uint32: {type_key = e_type_key_basic(E_TypeKind_uint32);}break;
+          case E_TypeKind_uint64: {type_key = e_type_key_basic(E_TypeKind_uint64);}break;
+          case E_TypeKind_uint128:{type_key = e_type_key_basic(E_TypeKind_uint128);}break;
           case E_TypeKind_S256:{type_key = e_type_key_basic(E_TypeKind_U256);}break;
           case E_TypeKind_S512:{type_key = e_type_key_basic(E_TypeKind_U512);}break;
         }
@@ -722,7 +722,7 @@ e_push_type_parse_from_text_tokens(Arena *arena, String8 text, E_TokenArray toke
 }
 
 internal E_Parse
-e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray tokens, S64 max_precedence, U64 max_chain_count)
+e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray tokens, uint64 max_precedence, uint64 max_chain_count)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -733,7 +733,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
   //////////////////////////////
   //- rjf: parse chain of expressions
   //
-  for(U64 chain_count = 0; it < it_opl && chain_count < max_chain_count;)
+  for(uint64 chain_count = 0; it < it_opl && chain_count < max_chain_count;)
   {
     ////////////////////////////
     //- rjf: exit on symbols callers may be waiting on
@@ -778,7 +778,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
     {
       PrefixUnaryTask *next;
       E_ExprKind kind;
-      Rng1U64 range;
+      Rng1uint64 range;
       E_Expr *cast_type_expr;
     };
     PrefixUnaryTask *first_prefix_unary = 0;
@@ -793,7 +793,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
       {
         E_Token token = e_token_at_it(it, &tokens);
         String8 token_string = str8_substr(text, token.range);
-        S64 prefix_unary_precedence = 0;
+        uint64 prefix_unary_precedence = 0;
         E_ExprKind prefix_unary_kind = 0;
         E_Expr *prefix_unary_cast_expr = &e_expr_nil;
         
@@ -961,7 +961,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
             it = nested_parse.last_token;
             got_new_atom = 1;
             
-            // rjf: build cast-to-U64*, and dereference operators
+            // rjf: build cast-to-uint64*, and dereference operators
             if(nested_parse.expr == &e_expr_nil)
             {
               e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token.range, "Expected expression following `[`.");
@@ -969,7 +969,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
             else
             {
               E_Expr *type = e_push_expr(arena, E_ExprKind_TypeIdent, token.range);
-              type->type_key = e_type_key_cons_ptr(e_base_ctx->primary_module->arch, e_type_key_basic(E_TypeKind_U64), 1, 0);
+              type->type_key = e_type_key_cons_ptr(e_base_ctx->primary_module->arch, e_type_key_basic(E_TypeKind_uint64), 1, 0);
               E_Expr *casted = atom;
               E_Expr *cast = e_push_expr(arena, E_ExprKind_Cast, token.range);
               e_expr_push_child(cast, type);
@@ -1024,35 +1024,35 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
           String8 token_string = str8_substr(text, token.range);
           if(token.kind == E_TokenKind_Numeric)
           {
-            U64 dot_pos = str8_find_needle(token_string, 0, str8_lit("."), 0);
+            uint64 dot_pos = str8_find_needle(token_string, 0, str8_lit("."), 0);
             it += 1;
             
             // rjf: no . => integral
             if(dot_pos == token_string.size)
             {
-              U64 val = 0;
+              uint64 val = 0;
               try_u64_from_str8_c_rules(token_string, &val);
-              atom = e_push_expr(arena, E_ExprKind_LeafU64, token.range);
+              atom = e_push_expr(arena, E_ExprKind_Leafuint64, token.range);
               atom->value.u64 = val;
             }
             
             // rjf: presence of . => double or float
             if(dot_pos < token_string.size)
             {
-              F64 val = f64_from_str8(token_string);
-              U64 f_pos = str8_find_needle(token_string, 0, str8_lit("f"), StringMatchFlag_CaseInsensitive);
+              double val = f64_from_str8(token_string);
+              uint64 f_pos = str8_find_needle(token_string, 0, str8_lit("f"), StringMatchFlag_CaseInsensitive);
               
               // rjf: presence of f after . => f32
               if(f_pos < token_string.size)
               {
-                atom = e_push_expr(arena, E_ExprKind_LeafF32, token.range);
+                atom = e_push_expr(arena, E_ExprKind_Leaffloat, token.range);
                 atom->value.f32 = val;
               }
               
               // rjf: no f => f64
               else
               {
-                atom = e_push_expr(arena, E_ExprKind_LeafF64, token.range);
+                atom = e_push_expr(arena, E_ExprKind_Leafdouble, token.range);
                 atom->value.f64 = val;
               }
             }
@@ -1075,9 +1075,9 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
             {
               String8 char_literal_escaped = str8_skip(str8_chop(token_string, 1), 1);
               String8 char_literal_raw = raw_from_escaped_str8(scratch.arena, char_literal_escaped);
-              U8 char_val = char_literal_raw.size > 0 ? char_literal_raw.str[0] : 0;
-              atom = e_push_expr(arena, E_ExprKind_LeafU64, token.range);
-              atom->value.u64 = (U64)char_val;
+              uint8 char_val = char_literal_raw.size > 0 ? char_literal_raw.str[0] : 0;
+              atom = e_push_expr(arena, E_ExprKind_Leafuint64, token.range);
+              atom->value.u64 = (uint64)char_val;
               got_new_atom = 1;
             }
             else
@@ -1257,7 +1257,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         E_Expr *call_expr = e_push_expr(arena, E_ExprKind_Call, token.range);
         call_expr->string = callee_expr->string;
         e_expr_push_child(call_expr, callee_expr);
-        E_Parse args_parse = e_push_parse_from_string_tokens__prec(arena, text, e_token_array_make_first_opl(it, it_opl), e_max_precedence, max_U64);
+        E_Parse args_parse = e_push_parse_from_string_tokens__prec(arena, text, e_token_array_make_first_opl(it, it_opl), e_max_precedence, max_uint64);
         e_msg_list_concat_in_place(&result.msgs, &args_parse.msgs);
         it = args_parse.last_token;
         if(args_parse.expr != &e_expr_nil)
@@ -1336,7 +1336,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
       //- rjf: parse binaries
       {
         // rjf: first try to find a matching binary operator
-        S64 binary_precedence = 0;
+        uint64 binary_precedence = 0;
         E_ExprKind binary_kind = 0;
         for EachNonZeroEnumVal(E_ExprKind, k)
         {
@@ -1476,7 +1476,7 @@ e_push_parse_from_string(Arena *arena, String8 text)
 {
   Temp scratch = scratch_begin(&arena, 1);
   E_TokenArray tokens = e_token_array_from_text(scratch.arena, text);
-  E_Parse parse = e_push_parse_from_string_tokens__prec(arena, text, tokens, e_max_precedence, max_U64);
+  E_Parse parse = e_push_parse_from_string_tokens__prec(arena, text, tokens, e_max_precedence, max_uint64);
   scratch_end(scratch);
   return parse;
 }

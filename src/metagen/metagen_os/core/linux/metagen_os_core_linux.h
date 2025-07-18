@@ -116,7 +116,7 @@ thread_static OS_LNX_SafeCallChain *os_lnx_safe_call_chain = 0;
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal DateTime os_lnx_date_time_from_tm(tm in, U32 msec);
+internal DateTime os_lnx_date_time_from_tm(tm in, uint32 msec);
 internal tm os_lnx_tm_from_date_time(DateTime dt);
 internal timespec os_lnx_timespec_from_date_time(DateTime dt);
 internal DenseTime os_lnx_dense_time_from_timespec(timespec in);

@@ -27,7 +27,7 @@ typedef struct E_IdentifierResolutionRule E_IdentifierResolutionRule;
 struct E_IdentifierResolutionRule
 {
   E_IdentifierResolutionPath *paths;
-  U64 count;
+  uint64 count;
 };
 
 ////////////////////////////////
@@ -53,7 +53,7 @@ typedef struct E_IRState E_IRState;
 struct E_IRState
 {
   Arena *arena;
-  U64 arena_eval_start_pos;
+  uint64 arena_eval_start_pos;
   
   // rjf: ir context
   E_IRCtx *ctx;
@@ -69,9 +69,9 @@ struct E_IRState
   // rjf: caches
   E_UsedExprMap *used_expr_map;
   E_TypeAutoHookCacheMap *type_auto_hook_cache_map;
-  U64 string_id_gen;
+  uint64 string_id_gen;
   E_StringIDMap *string_id_map;
-  U64 ir_cache_slots_count;
+  uint64 ir_cache_slots_count;
   E_IRCacheSlot *ir_cache_slots;
 };
 
@@ -123,8 +123,8 @@ E_IdentifierResolutionRule e_callable_identifier_resolution_rule =
 
 //- rjf: op list functions
 internal void e_oplist_push_op(Arena *arena, E_OpList *list, RDI_EvalOp opcode, E_Value value);
-internal void e_oplist_push_uconst(Arena *arena, E_OpList *list, U64 x);
-internal void e_oplist_push_sconst(Arena *arena, E_OpList *list, S64 x);
+internal void e_oplist_push_uconst(Arena *arena, E_OpList *list, uint64 x);
+internal void e_oplist_push_sconst(Arena *arena, E_OpList *list, uint64 x);
 internal void e_oplist_push_bytecode(Arena *arena, E_OpList *list, String8 bytecode);
 internal void e_oplist_push_set_space(Arena *arena, E_OpList *list, E_Space space);
 internal void e_oplist_push_string_literal(Arena *arena, E_OpList *list, String8 string);
@@ -135,8 +135,8 @@ internal E_IRNode *e_push_irnode(Arena *arena, RDI_EvalOp op);
 internal void e_irnode_push_child(E_IRNode *parent, E_IRNode *child);
 
 //- rjf: ir subtree building helpers
-internal E_IRNode *e_irtree_const_u(Arena *arena, U64 v);
-internal E_IRNode *e_irtree_leaf_u128(Arena *arena, U128 u128);
+internal E_IRNode *e_irtree_const_u(Arena *arena, uint64 v);
+internal E_IRNode *e_irtree_leaf_u128(Arena *arena, uint128 u128);
 internal E_IRNode *e_irtree_unary_op(Arena *arena, RDI_EvalOp op, RDI_EvalTypeGroup group, E_IRNode *c);
 internal E_IRNode *e_irtree_binary_op(Arena *arena, RDI_EvalOp op, RDI_EvalTypeGroup group, E_IRNode *l, E_IRNode *r);
 internal E_IRNode *e_irtree_binary_op_u(Arena *arena, RDI_EvalOp op, E_IRNode *l, E_IRNode *r);

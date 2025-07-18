@@ -79,7 +79,7 @@ str8_lit_comp("meta_display_name"),
 str8_lit_comp("meta_description"),
 };
 
-U8 e_type_kind_basic_byte_size_table[61] =
+uint8 e_type_kind_basic_byte_size_table[61] =
 {
 0,
 0,
@@ -182,9 +182,9 @@ str8_lit_comp("Ternary"),
 str8_lit_comp("Call"),
 str8_lit_comp("LeafBytecode"),
 str8_lit_comp("LeafStringLiteral"),
-str8_lit_comp("LeafU64"),
-str8_lit_comp("LeafF64"),
-str8_lit_comp("LeafF32"),
+str8_lit_comp("Leafuint64"),
+str8_lit_comp("Leafdouble"),
+str8_lit_comp("Leaffloat"),
 str8_lit_comp("LeafIdentifier"),
 str8_lit_comp("LeafOffset"),
 str8_lit_comp("LeafValue"),

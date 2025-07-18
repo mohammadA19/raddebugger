@@ -13,7 +13,7 @@
 #endif
 
 internal DASM_Inst
-dasm_inst_from_code(Arena *arena, Arch arch, U64 vaddr, String8 code, DASM_Syntax syntax)
+dasm_inst_from_code(Arena *arena, Arch arch, uint64 vaddr, String8 code, DASM_Syntax syntax)
 {
   DASM_Inst inst = {0};
   switch(arch)
@@ -39,7 +39,7 @@ dasm_inst_from_code(Arena *arena, Arch arch, U64 vaddr, String8 code, DASM_Synta
       
       // rjf: analyze
       DASM_InstFlags flags = 0;
-      U64 jump_dest_vaddr = 0;
+      uint64 jump_dest_vaddr = 0;
       {
         ZydisDecodedOperand *first_visible_op = (zinst.info.operand_count_visible > 0 ? &zinst.operands[0] : 0);
         ZydisDecodedOperand *first_op = (zinst.info.operand_count > 0 ? &zinst.operands[0] : 0);
@@ -148,14 +148,14 @@ dasm_inst_from_code(Arena *arena, Arch arch, U64 vaddr, String8 code, DASM_Synta
 //~ rjf: Control Flow Analysis
 
 internal DASM_CtrlFlowInfo
-dasm_ctrl_flow_info_from_arch_vaddr_code(Arena *arena, DASM_InstFlags exit_points_mask, Arch arch, U64 vaddr, String8 code)
+dasm_ctrl_flow_info_from_arch_vaddr_code(Arena *arena, DASM_InstFlags exit_points_mask, Arch arch, uint64 vaddr, String8 code)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DASM_CtrlFlowInfo info = {0};
-  for(U64 offset = 0; offset < code.size;)
+  for(uint64 offset = 0; offset < code.size;)
   {
     DASM_Inst inst = dasm_inst_from_code(scratch.arena, arch, vaddr+offset, str8_skip(code, offset), DASM_Syntax_Intel);
-    U64 inst_vaddr = vaddr+offset;
+    uint64 inst_vaddr = vaddr+offset;
     offset += inst.size;
     info.total_size += inst.size;
     if(inst.flags & exit_points_mask)
@@ -193,7 +193,7 @@ dasm_params_match(DASM_Params *a, DASM_Params *b)
 //~ rjf: Line Type Functions
 
 internal void
-dasm_line_chunk_list_push(Arena *arena, DASM_LineChunkList *list, U64 cap, DASM_Line *inst)
+dasm_line_chunk_list_push(Arena *arena, DASM_LineChunkList *list, uint64 cap, DASM_Line *inst)
 {
   DASM_LineChunkNode *node = list->last;
   if(node == 0 || node->count >= node->cap)
@@ -215,7 +215,7 @@ dasm_line_array_from_chunk_list(Arena *arena, DASM_LineChunkList *list)
   DASM_LineArray array = {0};
   array.count = list->line_count;
   array.v = push_array_no_zero(arena, DASM_Line, array.count);
-  U64 idx = 0;
+  uint64 idx = 0;
   for(DASM_LineChunkNode *n = list->first; n != 0; n = n->next)
   {
     MemoryCopy(array.v+idx, n->v, sizeof(DASM_Line)*n->count);
@@ -224,13 +224,13 @@ dasm_line_array_from_chunk_list(Arena *arena, DASM_LineChunkList *list)
   return array;
 }
 
-internal U64
-dasm_line_array_idx_from_code_off__linear_scan(DASM_LineArray *array, U64 off)
+internal uint64
+dasm_line_array_idx_from_code_off__linear_scan(DASM_LineArray *array, uint64 off)
 {
-  U64 result = 0;
-  for(U64 idx = 0; idx < array->count; idx += 1)
+  uint64 result = 0;
+  for(uint64 idx = 0; idx < array->count; idx += 1)
   {
-    U64 next_off = (idx+1 < array->count ? array->v[idx+1].code_off : max_U64);
+    uint64 next_off = (idx+1 < array->count ? array->v[idx+1].code_off : max_uint64);
     if(array->v[idx].code_off <= off && off < next_off)
     {
       result = idx;
@@ -243,10 +243,10 @@ dasm_line_array_idx_from_code_off__linear_scan(DASM_LineArray *array, U64 off)
   return result;
 }
 
-internal U64
-dasm_line_array_code_off_from_idx(DASM_LineArray *array, U64 idx)
+internal uint64
+dasm_line_array_code_off_from_idx(DASM_LineArray *array, uint64 idx)
 {
-  U64 off = 0;
+  uint64 off = 0;
   if(idx < array->count)
   {
     off = array->v[idx].code_off;
@@ -267,14 +267,14 @@ dasm_init(void)
   dasm_shared->stripes_count = Min(dasm_shared->slots_count, os_get_system_info()->logical_processor_count);
   dasm_shared->slots = push_array(arena, DASM_Slot, dasm_shared->slots_count);
   dasm_shared->stripes = push_array(arena, DASM_Stripe, dasm_shared->stripes_count);
-  for(U64 idx = 0; idx < dasm_shared->stripes_count; idx += 1)
+  for(uint64 idx = 0; idx < dasm_shared->stripes_count; idx += 1)
   {
     dasm_shared->stripes[idx].arena = arena_alloc();
     dasm_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
     dasm_shared->stripes[idx].cv = os_condition_variable_alloc();
   }
   dasm_shared->u2p_ring_size = KB(64);
-  dasm_shared->u2p_ring_base = push_array_no_zero(arena, U8, dasm_shared->u2p_ring_size);
+  dasm_shared->u2p_ring_base = push_array_no_zero(arena, uint8, dasm_shared->u2p_ring_size);
   dasm_shared->u2p_ring_cv = os_condition_variable_alloc();
   dasm_shared->u2p_ring_mutex = os_mutex_alloc();
   dasm_shared->evictor_detector_thread = os_thread_launch(dasm_evictor_detector_thread__entry_point, 0, 0);
@@ -292,7 +292,7 @@ dasm_scope_open(void)
     dasm_tctx = push_array(arena, DASM_TCTX, 1);
     dasm_tctx->arena = arena;
   }
-  U64 base_pos = arena_pos(dasm_tctx->arena);
+  uint64 base_pos = arena_pos(dasm_tctx->arena);
   DASM_Scope *scope = push_array(dasm_tctx->arena, DASM_Scope, 1);
   scope->base_pos = base_pos;
   return scope;
@@ -304,8 +304,8 @@ dasm_scope_close(DASM_Scope *scope)
   for(DASM_Touch *t = scope->top_touch, *next = 0; t != 0; t = next)
   {
     next = t->next;
-    U64 slot_idx = t->hash.u64[1]%dasm_shared->slots_count;
-    U64 stripe_idx = slot_idx%dasm_shared->stripes_count;
+    uint64 slot_idx = t->hash.u64[1]%dasm_shared->slots_count;
+    uint64 stripe_idx = slot_idx%dasm_shared->stripes_count;
     DASM_Slot *slot = &dasm_shared->slots[slot_idx];
     DASM_Stripe *stripe = &dasm_shared->stripes[stripe_idx];
     OS_MutexScopeR(stripe->rw_mutex)
@@ -340,14 +340,14 @@ dasm_scope_touch_node__stripe_r_guarded(DASM_Scope *scope, DASM_Node *node)
 //~ rjf: Cache Lookups
 
 internal DASM_Info
-dasm_info_from_hash_params(DASM_Scope *scope, U128 hash, DASM_Params *params)
+dasm_info_from_hash_params(DASM_Scope *scope, uint128 hash, DASM_Params *params)
 {
   DASM_Info info = {0};
   if(!u128_match(hash, u128_zero()))
   {
     //- rjf: unpack hash
-    U64 slot_idx = hash.u64[1]%dasm_shared->slots_count;
-    U64 stripe_idx = slot_idx%dasm_shared->stripes_count;
+    uint64 slot_idx = hash.u64[1]%dasm_shared->slots_count;
+    uint64 stripe_idx = slot_idx%dasm_shared->stripes_count;
     DASM_Slot *slot = &dasm_shared->slots[slot_idx];
     DASM_Stripe *stripe = &dasm_shared->stripes[stripe_idx];
     
@@ -371,7 +371,7 @@ dasm_info_from_hash_params(DASM_Scope *scope, U128 hash, DASM_Params *params)
     if(!found)
     {
       B32 node_is_new = 0;
-      U64 *node_working_count = 0;
+      uint64 *node_working_count = 0;
       HS_Root root = {0};
       OS_MutexScopeW(stripe->rw_mutex)
       {
@@ -415,7 +415,7 @@ dasm_info_from_hash_params(DASM_Scope *scope, U128 hash, DASM_Params *params)
       }
       if(node_is_new)
       {
-        dasm_u2p_enqueue_req(root, hash, params, max_U64);
+        dasm_u2p_enqueue_req(root, hash, params, max_uint64);
         async_push_work(dasm_parse_work, .working_counter = node_working_count);
       }
     }
@@ -424,12 +424,12 @@ dasm_info_from_hash_params(DASM_Scope *scope, U128 hash, DASM_Params *params)
 }
 
 internal DASM_Info
-dasm_info_from_key_params(DASM_Scope *scope, HS_Key key, DASM_Params *params, U128 *hash_out)
+dasm_info_from_key_params(DASM_Scope *scope, HS_Key key, DASM_Params *params, uint128 *hash_out)
 {
   DASM_Info result = {0};
-  for(U64 rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
+  for(uint64 rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
   {
-    U128 hash = hs_hash_from_key(key, rewind_idx);
+    uint128 hash = hs_hash_from_key(key, rewind_idx);
     result = dasm_info_from_hash_params(scope, hash, params);
     if(result.lines.count != 0)
     {
@@ -447,14 +447,14 @@ dasm_info_from_key_params(DASM_Scope *scope, HS_Key key, DASM_Params *params, U1
 //~ rjf: Parse Threads
 
 internal B32
-dasm_u2p_enqueue_req(HS_Root root, U128 hash, DASM_Params *params, U64 endt_us)
+dasm_u2p_enqueue_req(HS_Root root, uint128 hash, DASM_Params *params, uint64 endt_us)
 {
   B32 good = 0;
   OS_MutexScope(dasm_shared->u2p_ring_mutex) for(;;)
   {
-    U64 unconsumed_size = dasm_shared->u2p_ring_write_pos - dasm_shared->u2p_ring_read_pos;
-    U64 available_size = dasm_shared->u2p_ring_size - unconsumed_size;
-    if(available_size >= sizeof(root)+sizeof(hash)+sizeof(U64)+sizeof(Arch)+sizeof(DASM_StyleFlags)+sizeof(DASM_Syntax)+sizeof(U64)+sizeof(U64)+params->dbgi_key.path.size+sizeof(U64))
+    uint64 unconsumed_size = dasm_shared->u2p_ring_write_pos - dasm_shared->u2p_ring_read_pos;
+    uint64 available_size = dasm_shared->u2p_ring_size - unconsumed_size;
+    if(available_size >= sizeof(root)+sizeof(hash)+sizeof(uint64)+sizeof(Arch)+sizeof(DASM_StyleFlags)+sizeof(DASM_Syntax)+sizeof(uint64)+sizeof(uint64)+params->dbgi_key.path.size+sizeof(uint64))
     {
       good = 1;
       dasm_shared->u2p_ring_write_pos += ring_write_struct(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_write_pos, &root);
@@ -483,12 +483,12 @@ dasm_u2p_enqueue_req(HS_Root root, U128 hash, DASM_Params *params, U64 endt_us)
 }
 
 internal void
-dasm_u2p_dequeue_req(Arena *arena, HS_Root *root_out, U128 *hash_out, DASM_Params *params_out)
+dasm_u2p_dequeue_req(Arena *arena, HS_Root *root_out, uint128 *hash_out, DASM_Params *params_out)
 {
   OS_MutexScope(dasm_shared->u2p_ring_mutex) for(;;)
   {
-    U64 unconsumed_size = dasm_shared->u2p_ring_write_pos - dasm_shared->u2p_ring_read_pos;
-    if(unconsumed_size >= sizeof(*hash_out)+sizeof(U64)+sizeof(Arch)+sizeof(DASM_StyleFlags)+sizeof(DASM_Syntax)+sizeof(U64)+sizeof(U64)+sizeof(U64))
+    uint64 unconsumed_size = dasm_shared->u2p_ring_write_pos - dasm_shared->u2p_ring_read_pos;
+    if(unconsumed_size >= sizeof(*hash_out)+sizeof(uint64)+sizeof(Arch)+sizeof(DASM_StyleFlags)+sizeof(DASM_Syntax)+sizeof(uint64)+sizeof(uint64)+sizeof(uint64))
     {
       dasm_shared->u2p_ring_read_pos += ring_read_struct(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, root_out);
       dasm_shared->u2p_ring_read_pos += ring_read_struct(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, hash_out);
@@ -498,12 +498,12 @@ dasm_u2p_dequeue_req(Arena *arena, HS_Root *root_out, U128 *hash_out, DASM_Param
       dasm_shared->u2p_ring_read_pos += ring_read_struct(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, &params_out->syntax);
       dasm_shared->u2p_ring_read_pos += ring_read_struct(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, &params_out->base_vaddr);
       dasm_shared->u2p_ring_read_pos += ring_read_struct(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, &params_out->dbgi_key.path.size);
-      params_out->dbgi_key.path.str = push_array(arena, U8, params_out->dbgi_key.path.size);
+      params_out->dbgi_key.path.str = push_array(arena, uint8, params_out->dbgi_key.path.size);
       dasm_shared->u2p_ring_read_pos += ring_read(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, params_out->dbgi_key.path.str, params_out->dbgi_key.path.size);
       dasm_shared->u2p_ring_read_pos += ring_read_struct(dasm_shared->u2p_ring_base, dasm_shared->u2p_ring_size, dasm_shared->u2p_ring_read_pos, &params_out->dbgi_key.min_timestamp);
       break;
     }
-    os_condition_variable_wait(dasm_shared->u2p_ring_cv, dasm_shared->u2p_ring_mutex, max_U64);
+    os_condition_variable_wait(dasm_shared->u2p_ring_cv, dasm_shared->u2p_ring_mutex, max_uint64);
   }
   os_condition_variable_broadcast(dasm_shared->u2p_ring_cv);
 }
@@ -518,14 +518,14 @@ ASYNC_WORK_DEF(dasm_parse_work)
   
   //- rjf: get next request
   HS_Root root = {0};
-  U128 hash = {0};
+  uint128 hash = {0};
   DASM_Params params = {0};
   dasm_u2p_dequeue_req(scratch.arena, &root, &hash, &params);
-  U64 change_gen = fs_change_gen();
+  uint64 change_gen = fs_change_gen();
   
   //- rjf: unpack hash
-  U64 slot_idx = hash.u64[1]%dasm_shared->slots_count;
-  U64 stripe_idx = slot_idx%dasm_shared->stripes_count;
+  uint64 slot_idx = hash.u64[1]%dasm_shared->slots_count;
+  uint64 stripe_idx = slot_idx%dasm_shared->stripes_count;
   DASM_Slot *slot = &dasm_shared->slots[slot_idx];
   DASM_Stripe *stripe = &dasm_shared->stripes[stripe_idx];
   
@@ -533,7 +533,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
   RDI_Parsed *rdi = &rdi_parsed_nil;
   if(params.dbgi_key.path.size != 0)
   {
-    rdi = di_rdi_from_key(di_scope, &params.dbgi_key, 1, max_U64);
+    rdi = di_rdi_from_key(di_scope, &params.dbgi_key, 1, max_uint64);
   }
   
   //- rjf: hash -> data
@@ -554,7 +554,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
         // rjf: disassemble
         RDI_SourceFile *last_file = &rdi_nil_element_union.source_file;
         RDI_Line *last_line = 0;
-        for(U64 off = 0; off < data.size;)
+        for(uint64 off = 0; off < data.size;)
         {
           // rjf: disassemble one instruction
           DASM_Inst inst = dasm_inst_from_code(scratch.arena, params.arch, params.vaddr+off, str8_skip(data, off), params.syntax);
@@ -568,13 +568,13 @@ ASYNC_WORK_DEF(dasm_parse_work)
           {
             if(rdi != &rdi_parsed_nil)
             {
-              U64 voff = (params.vaddr+off) - params.base_vaddr;
-              U32 unit_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_UnitVMap, voff);
+              uint64 voff = (params.vaddr+off) - params.base_vaddr;
+              uint32 unit_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_UnitVMap, voff);
               RDI_Unit *unit = rdi_element_from_name_idx(rdi, Units, unit_idx);
               RDI_LineTable *line_table = rdi_element_from_name_idx(rdi, LineTables, unit->line_table_idx);
               RDI_ParsedLineTable unit_line_info = {0};
               rdi_parsed_from_line_table(rdi, line_table, &unit_line_info);
-              U64 line_info_idx = rdi_line_info_idx_from_voff(&unit_line_info, voff);
+              uint64 line_info_idx = rdi_line_info_idx_from_voff(&unit_line_info, voff);
               if(line_info_idx < unit_line_info.count)
               {
                 RDI_Line *line = &unit_line_info.lines[line_info_idx];
@@ -611,10 +611,10 @@ ASYNC_WORK_DEF(dasm_parse_work)
                   {
                     // TODO(rjf): need redirection path - this may map to a different path on the local machine,
                     // need frontend to communicate path remapping info to this layer
-                    HS_Key key = fs_key_from_path_range(file_normalized_full_path, r1u64(0, max_U64), 0);
+                    HS_Key key = fs_key_from_path_range(file_normalized_full_path, r1u64(0, max_uint64), 0);
                     TXT_LangKind lang_kind = txt_lang_kind_from_extension(file_normalized_full_path);
-                    U64 endt_us = max_U64;
-                    U128 hash = {0};
+                    uint64 endt_us = max_uint64;
+                    uint128 hash = {0};
                     TXT_TextInfo text_info = {0};
                     for(;os_now_microseconds() <= endt_us;)
                     {
@@ -655,11 +655,11 @@ ASYNC_WORK_DEF(dasm_parse_work)
           {
             String8List code_bytes_strings = {0};
             str8_list_push(scratch.arena, &code_bytes_strings, str8_lit("{"));
-            for(U64 byte_idx = 0; byte_idx < inst.size || byte_idx < 16; byte_idx += 1)
+            for(uint64 byte_idx = 0; byte_idx < inst.size || byte_idx < 16; byte_idx += 1)
             {
               if(byte_idx < inst.size)
               {
-                str8_list_pushf(scratch.arena, &code_bytes_strings, "%02x%s ", (U32)data.str[off+byte_idx], byte_idx == inst.size-1 ? "}" : "");
+                str8_list_pushf(scratch.arena, &code_bytes_strings, "%02x%s ", (uint32)data.str[off+byte_idx], byte_idx == inst.size-1 ? "}" : "");
               }
               else if(byte_idx < 8)
               {
@@ -672,11 +672,11 @@ ASYNC_WORK_DEF(dasm_parse_work)
           String8 symbol_part = {0};
           if(inst.jump_dest_vaddr != 0 && rdi != &rdi_parsed_nil && params.style_flags & DASM_StyleFlag_SymbolNames)
           {
-            RDI_U32 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, inst.jump_dest_vaddr-params.base_vaddr);
+            RDI_uint32 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, inst.jump_dest_vaddr-params.base_vaddr);
             if(scope_idx != 0)
             {
               RDI_Scope *scope = rdi_element_from_name_idx(rdi, Scopes, scope_idx);
-              RDI_U32 procedure_idx = scope->proc_idx;
+              RDI_uint32 procedure_idx = scope->proc_idx;
               RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, procedure_idx);
               String8 procedure_name = {0};
               procedure_name.str = rdi_string_from_idx(rdi, procedure->name_string_idx, &procedure_name.size);
@@ -713,7 +713,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
     HS_Key text_key = hs_key_make(root, hs_id_make(0, 0));
     
     //- rjf: submit text data to hash store
-    U128 text_hash = hs_submit_data(text_key, &text_arena, text);
+    uint128 text_hash = hs_submit_data(text_key, &text_arena, text);
     
     //- rjf: produce value bundle
     info_arena = arena_alloc();
@@ -760,16 +760,16 @@ dasm_evictor_detector_thread__entry_point(void *p)
   ThreadNameF("[dasm] evictor/detector thread");
   for(;;)
   {
-    U64 change_gen = fs_change_gen();
-    U64 check_time_us = os_now_microseconds();
-    U64 check_time_user_clocks = update_tick_idx();
-    U64 evict_threshold_us = 10*1000000;
-    U64 retry_threshold_us =  1*1000000;
-    U64 evict_threshold_user_clocks = 10;
-    U64 retry_threshold_user_clocks = 10;
-    for(U64 slot_idx = 0; slot_idx < dasm_shared->slots_count; slot_idx += 1)
+    uint64 change_gen = fs_change_gen();
+    uint64 check_time_us = os_now_microseconds();
+    uint64 check_time_user_clocks = update_tick_idx();
+    uint64 evict_threshold_us = 10*1000000;
+    uint64 retry_threshold_us =  1*1000000;
+    uint64 evict_threshold_user_clocks = 10;
+    uint64 retry_threshold_user_clocks = 10;
+    for(uint64 slot_idx = 0; slot_idx < dasm_shared->slots_count; slot_idx += 1)
     {
-      U64 stripe_idx = slot_idx%dasm_shared->stripes_count;
+      uint64 stripe_idx = slot_idx%dasm_shared->stripes_count;
       DASM_Slot *slot = &dasm_shared->slots[slot_idx];
       DASM_Stripe *stripe = &dasm_shared->stripes[stripe_idx];
       B32 slot_has_work = 0;
@@ -815,7 +815,7 @@ dasm_evictor_detector_thread__entry_point(void *p)
              n->last_time_requested_us+retry_threshold_us <= check_time_us &&
              n->last_user_clock_idx_requested+retry_threshold_user_clocks <= check_time_user_clocks)
           {
-            if(dasm_u2p_enqueue_req(n->root, n->hash, &n->params, max_U64))
+            if(dasm_u2p_enqueue_req(n->root, n->hash, &n->params, max_uint64))
             {
               async_push_work(dasm_parse_work);
               n->last_time_requested_us = os_now_microseconds();

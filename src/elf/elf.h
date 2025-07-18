@@ -4,7 +4,7 @@
 #ifndef ELF_H
 #define ELF_H
 
-typedef U8 ELF_Class;
+typedef uint8 ELF_Class;
 enum
 {
   ELF_Class_None  = 0,
@@ -13,7 +13,7 @@ enum
   ELF_Class_Count = 3
 };
 
-typedef U8 ELF_OsAbi;
+typedef uint8 ELF_OsAbi;
 enum
 {
   ELF_OsAbi_None,
@@ -25,19 +25,19 @@ enum
   ELF_OsAbi_SOLARIS,
   ELF_OsAbi_IRIX,
   ELF_OsAbi_FREEBSD,
-  ELF_OsAbi_TRU64,
+  ELF_OsAbi_TRuint64,
   ELF_OsAbi_ARM = 97,
   ELF_OsAbi_STANDALONE = 255,
 };
 
-typedef U8 ELF_Version;
+typedef uint8 ELF_Version;
 enum
 {
   ELF_Version_None,
   ELF_Version_Current,
 };
 
-typedef U16 ELF_MachineKind;
+typedef uint16 ELF_MachineKind;
 enum
 {
   ELF_MachineKind_None        = 0,
@@ -49,8 +49,8 @@ enum
   ELF_MachineKind_IAMCU       = 6,
   ELF_MachineKind_860         = 7,
   ELF_MachineKind_MIPS        = 8,
-  ELF_MachineKind_S370        = 9,
-  ELF_MachineKind_MIPS_RS3_LE = 10,
+  ELF_MachineKind_uint370        = 9,
+  ELF_MachineKind_MIPS_Ruint3_LE = 10,
   //  11-14 reserved
   ELF_MachineKind_PARISC      = 15,
   //  16 reserved
@@ -60,7 +60,7 @@ enum
   ELF_MachineKind_INTEL960    = 19,
   ELF_MachineKind_PPC         = 20,
   ELF_MachineKind_PPC64       = 21,
-  ELF_MachineKind_S390        = 22,
+  ELF_MachineKind_uint390        = 22,
   ELF_MachineKind_SPU         = 23,
   //  24-35 reserved
   ELF_MachineKind_V800        = 36,
@@ -95,10 +95,10 @@ enum
   ELF_MachineKind_L1OM        = 180,
   ELF_MachineKind_K1OM        = 181,
   ELF_MachineKind_RISCV       = 243,
-  ELF_MachineKind_S390_OLD    = 0xA390,
+  ELF_MachineKind_uint390_OLD    = 0xA390,
 };
 
-typedef U8 ELF_Data;
+typedef uint8 ELF_Data;
 enum
 {
   ELF_Data_None = 0,
@@ -106,7 +106,7 @@ enum
   ELF_Data_2MSB = 2,
 };
 
-typedef U32 ELF_PType;
+typedef uint32 ELF_PType;
 enum
 {
   ELF_PType_Null        = 0,
@@ -134,7 +134,7 @@ enum
   ELF_PType_SunEHFrame  = ELF_PType_GnuEHFrame,
 };
 
-typedef U32 ELF_PFlag;
+typedef uint32 ELF_PFlag;
 enum
 {
   ELF_PFlag_Exec  = (1 << 0),
@@ -142,7 +142,7 @@ enum
   ELF_PFlag_Read  = (1 << 2),
 };
 
-typedef U32 ELF_SectionCode;
+typedef uint32 ELF_SectionCode;
 enum
 {
   ELF_SectionCode_Null                   = 0,
@@ -178,7 +178,7 @@ enum
   ELF_SectionCode_User,
 };
 
-typedef U32 ELF_SectionIndex;
+typedef uint32 ELF_SectionIndex;
 enum
 {
   
@@ -205,7 +205,7 @@ enum
   ELF_SectionIndex_MIPS_SUndefined   = 0xff04,
 };
 
-typedef U32 ELF_SectionFlag;
+typedef uint32 ELF_SectionFlag;
 enum
 {
   ELF_Shf_Write            = (1 << 0),
@@ -226,9 +226,9 @@ enum
   ELF_Shf_MaskProc_Shift   = 28, ELF_Shf_MaskProc_Mask = 0xf,
 };
 
-#define ELF_SectionFlag_Extract_MaskOs(f)   (U8)(((f) >> ELF_SectionFlag_MaskOs_Shift)   & ELF_SectionFlag_MaskOs_Mask)
-#define ELF_SectionFlag_Extract_MaskProc(f) (U8)(((f) >> ELF_SectionFlag_MaskProc_shift) & ELF_SectionFlag_MaskProc_Mask)
-typedef U32 ELF_AuxType;
+#define ELF_SectionFlag_Extract_MaskOs(f)   (uint8)(((f) >> ELF_SectionFlag_MaskOs_Shift)   & ELF_SectionFlag_MaskOs_Mask)
+#define ELF_SectionFlag_Extract_MaskProc(f) (uint8)(((f) >> ELF_SectionFlag_MaskProc_shift) & ELF_SectionFlag_MaskProc_Mask)
+typedef uint32 ELF_AuxType;
 enum
 {
   ELF_AuxType_Null              = 0,
@@ -267,7 +267,7 @@ enum
   ELF_AuxType_L3_CacheGeometry  = 47,
 };
 
-typedef U32 ELF_DynTag;
+typedef uint32 ELF_DynTag;
 enum
 {
   ELF_DynTag_Null            = 0,
@@ -349,7 +349,7 @@ enum
   ELF_DynTag_HiProc          = 0x7fffffff,
 };
 
-typedef U32 ELF_DynFlag;
+typedef uint32 ELF_DynFlag;
 enum
 {
   ELF_DynFlag_Origin    = (1 << 0),
@@ -359,14 +359,14 @@ enum
   ELF_DynFlag_StaticTls = (1 << 4),
 };
 
-typedef U32 ELF_DynFeatureFlag;
+typedef uint32 ELF_DynFeatureFlag;
 enum
 {
   ELF_DynFeatureFlag_ParInit = (1 << 0),
   ELF_DynFeatureFlag_ConfExp = (1 << 1),
 };
 
-typedef U8 ELF_SymBind;
+typedef uint8 ELF_SymBind;
 enum
 {
   //  the same name may exists in multiple files without interfering with each other. 
@@ -379,7 +379,7 @@ enum
   ELF_SymBind_HiProc = 15,
 };
 
-typedef U8 ELF_SymType;
+typedef uint8 ELF_SymType;
 enum
 {
   ELF_SymType_NoType  = 0,
@@ -398,7 +398,7 @@ enum
   ELF_SymType_HiProc  = 15,
 };
 
-typedef U8 ELF_SymVisibility;
+typedef uint8 ELF_SymVisibility;
 enum
 {
   ELF_SymVisibility_Default   = 0,
@@ -407,7 +407,7 @@ enum
   ELF_SymVisibility_Protected = 3,
 };
 
-typedef U32 ELF_RelocI386;
+typedef uint32 ELF_RelocI386;
 enum
 {
   ELF_RelocI386_None           = 0,
@@ -457,7 +457,7 @@ enum
   ELF_RelocI386_GNU_VTEntry    = 251,
 };
 
-typedef U32 ELF_RelocX8664;
+typedef uint32 ELF_RelocX8664;
 enum
 {
   ELF_RelocX8664_None           = 0,
@@ -507,7 +507,7 @@ enum
   ELF_RelocX8664_GNU_VTEntry    = 251,
 };
 
-typedef U32 ELF_ExternalVerFlag;
+typedef uint32 ELF_ExternalVerFlag;
 enum
 {
   ELF_ExternalVerFlag_Base = (1 << 0),
@@ -515,7 +515,7 @@ enum
   ELF_ExternalVerFlag_Info = (1 << 2),
 };
 
-typedef U32 ELF_NoteType;
+typedef uint32 ELF_NoteType;
 enum
 {
   ELF_NoteType_GNU_Abi           = 1,
@@ -525,7 +525,7 @@ enum
   ELF_NoteType_GNU_PropertyType0 = 5,
 };
 
-typedef U32 ELF_GnuABITag;
+typedef uint32 ELF_GnuABITag;
 enum
 {
   ELF_GnuABITag_Linux    = 0,
@@ -537,7 +537,7 @@ enum
   ELF_GnuABITag_Nacl     = 6,
 };
 
-typedef S32 ELF_GnuProperty;
+typedef uint32 ELF_GnuProperty;
 enum
 {
   ELF_GnuProperty_LoProc            = 0xc0000000,
@@ -550,7 +550,7 @@ enum
   ELF_GnuProperty_NoCopyOnProtected = 2,
 };
 
-typedef U32 ELF_GnuPropertyX86Isa1;
+typedef uint32 ELF_GnuPropertyX86Isa1;
 enum
 {
   ELF_GnuPropertyX86Isa1_BaseLine = (1 << 0),
@@ -559,7 +559,7 @@ enum
   ELF_GnuPropertyX86Isa1_V4       = (1 << 3),
 };
 
-typedef U32 ELF_GnuPropertyX86Compat1Isa1;
+typedef uint32 ELF_GnuPropertyX86Compat1Isa1;
 enum
 {
   ELF_GnuPropertyX86Compat1Isa1_486      = (1 << 0),
@@ -581,7 +581,7 @@ enum
   ELF_GnuPropertyX86Compat1Isa1_AVX512BW = (1 << 16),
 };
 
-typedef U32 ELF_GnuPropertyX86Compat2Isa1;
+typedef uint32 ELF_GnuPropertyX86Compat2Isa1;
 enum
 {
   ELF_GnuPropertyX86Compat2Isa1_CMOVE         = (1 << 0),
@@ -610,7 +610,7 @@ enum
   ELF_GnuPropertyX86Compat2Isa1_AVX512_BF16   = (1 << 23),
 };
 
-typedef S32 ELF_GnuPropertyX86;
+typedef uint32 ELF_GnuPropertyX86;
 enum
 {
   ELF_GnuPropertyX86_Feature1And         = 0xc0000002,
@@ -628,7 +628,7 @@ enum
   ELF_GnuPropertyX86_UInt32OrAndHi       = 0xc0017fff,
 };
 
-typedef U32 ELF_GnuPropertyX86Feature1;
+typedef uint32 ELF_GnuPropertyX86Feature1;
 enum
 {
   ELF_GnuPropertyX86Feature1_Ibt    = (1 << 0),
@@ -637,7 +637,7 @@ enum
   ELF_GnuPropertyX86Feature1_LamU57 = (1 << 3),
 };
 
-typedef U32 ELF_GnuPropertyX86Feature2;
+typedef uint32 ELF_GnuPropertyX86Feature2;
 enum
 {
   ELF_GnuPropertyX86Feature2_X86      = (1 << 0),
@@ -671,7 +671,7 @@ typedef enum ELF_Identifier
   ELF_Identifier_Max        = 16,
 } ELF_Identifier;
 
-typedef U16 ELF_Type;
+typedef uint16 ELF_Type;
 typedef enum ELF_TypeEnum
 {
   ELF_Type_None   = 0,
@@ -687,90 +687,90 @@ typedef enum ELF_TypeEnum
 
 typedef struct ELF_Hdr64
 {
-  U8              e_ident[ELF_Identifier_Max];
+  uint8              e_ident[ELF_Identifier_Max];
   ELF_Type        e_type;
   ELF_MachineKind e_machine;
-  U32             e_version;
-  U64             e_entry;
-  U64             e_phoff;
-  U64             e_shoff;
-  U32             e_flags;
-  U16             e_ehsize;
-  U16             e_phentsize;
-  U16             e_phnum;
-  U16             e_shentsize;
-  U16             e_shnum;
-  U16             e_shstrndx;
+  uint32             e_version;
+  uint64             e_entry;
+  uint64             e_phoff;
+  uint64             e_shoff;
+  uint32             e_flags;
+  uint16             e_ehsize;
+  uint16             e_phentsize;
+  uint16             e_phnum;
+  uint16             e_shentsize;
+  uint16             e_shnum;
+  uint16             e_shstrndx;
 } ELF_Hdr64;
 
 typedef struct ELF_Hdr32
 {
-  U8              e_ident[ELF_Identifier_Max];
+  uint8              e_ident[ELF_Identifier_Max];
   ELF_Type        e_type;
   ELF_MachineKind e_machine;
-  U32             e_version;
-  U32             e_entry;
-  U32             e_phoff;
-  U32             e_shoff;
-  U32             e_flags;
-  U16             e_ehsize;
-  U16             e_phentsize;
-  U16             e_phnum;
-  U16             e_shentsize;
-  U16             e_shnum;
-  U16             e_shstrndx;
+  uint32             e_version;
+  uint32             e_entry;
+  uint32             e_phoff;
+  uint32             e_shoff;
+  uint32             e_flags;
+  uint16             e_ehsize;
+  uint16             e_phentsize;
+  uint16             e_phnum;
+  uint16             e_shentsize;
+  uint16             e_shnum;
+  uint16             e_shstrndx;
 } ELF_Hdr32;
 
 typedef struct ELF_Shdr64
 {
-  U32 sh_name;
-  U32 sh_type;
-  U64 sh_flags;
-  U64 sh_addr;
-  U64 sh_offset;
-  U64 sh_size;
-  U32 sh_link;
-  U32 sh_info;
-  U64 sh_addralign;
-  U64 sh_entsize;
+  uint32 sh_name;
+  uint32 sh_type;
+  uint64 sh_flags;
+  uint64 sh_addr;
+  uint64 sh_offset;
+  uint64 sh_size;
+  uint32 sh_link;
+  uint32 sh_info;
+  uint64 sh_addralign;
+  uint64 sh_entsize;
 } ELF_Shdr64;
 
 typedef struct ELF_Shdr32
 {
-  U32 sh_name;
-  U32 sh_type;
-  U32 sh_flags;
-  U32 sh_addr;
-  U32 sh_offset;
-  U32 sh_size;
-  U32 sh_link;
-  U32 sh_info;
-  U32 sh_addralign;
-  U32 sh_entsize;
+  uint32 sh_name;
+  uint32 sh_type;
+  uint32 sh_flags;
+  uint32 sh_addr;
+  uint32 sh_offset;
+  uint32 sh_size;
+  uint32 sh_link;
+  uint32 sh_info;
+  uint32 sh_addralign;
+  uint32 sh_entsize;
 } ELF_Shdr32;
 
 typedef struct ELF_Phdr64
 {
-  U32 p_type;
-  U32 p_flags;
-  U64 p_offset;
-  U64 p_vaddr;
-  U64 p_paddr;
-  U64 p_filesz;
-  U64 p_memsz;
-  U64 p_align;
+  uint32 p_type;
+  uint32 p_flags;
+  uint64 p_offset;
+  uint64 p_vaddr;
+  uint64 p_paddr;
+  uint64 p_filesz;
+  uint64 p_memsz;
+  uint64 p_align;
 } ELF_Phdr64;
 
 typedef struct ELF_Phdr32
 {
-  U32 p_type;
-  U32 p_offset;
-  U32 p_vaddr;
-  U32 p_paddr;
-  U32 p_filesz;
-  U32 p_memsz;
-  U32 p_flags;
-  U32 p_align;
+  uint32 p_type;
+  uint32 p_offset;
+  uint32 p_vaddr;
+  uint32 p_paddr;
+  uint32 p_filesz;
+  uint32 p_memsz;
+  uint32 p_flags;
+  uint32 p_align;
 } ELF_Phdr32;
 
 ////////////////////////////////
@@ -780,14 +780,14 @@ typedef struct ELF_Phdr32
 
 typedef struct ELF_Auxv32
 {
-  U32 a_type;
-  U32 a_val;
+  uint32 a_type;
+  uint32 a_val;
 } ELF_Auxv32;
 
 typedef struct ELF_Auxv64
 {
-  U64 a_type;
-  U64 a_val;
+  uint64 a_type;
+  uint64 a_val;
 } ELF_Auxv64;
 
 ////////////////////////////////
@@ -797,30 +797,30 @@ typedef struct ELF_Auxv64
 
 typedef struct ELF_Dyn32
 {
-  U32 tag;
-  U32 val;
+  uint32 tag;
+  uint32 val;
 } ELF_Dyn32;
 
 typedef struct ELF_Dyn64
 {
-  U64 tag;
-  U64 val;
+  uint64 tag;
+  uint64 val;
 } ELF_Dyn64;
 
 typedef struct ELF_LinkMap32
 {
-  U32 base;
-  U32 name;
-  U32 ld;
-  U32 next;
+  uint32 base;
+  uint32 name;
+  uint32 ld;
+  uint32 next;
 } ELF_LinkMap32;
 
 typedef struct ELF_LinkMap64
 {
-  U64 base;
-  U64 name;
-  U64 ld;
-  U64 next;
+  uint64 base;
+  uint64 name;
+  uint64 ld;
+  uint64 next;
 } ELF_LinkMap64;
 
 ////////////////////////////////
@@ -828,22 +828,22 @@ typedef struct ELF_LinkMap64
 
 typedef struct 
 {
-  U32 st_name;  // Holds index into files string table.
-  U32 st_value; // Depending on the context, this may be address, size, etc.
-  U32 st_size;  // Data size in bytes. Zero when size is unknown.
-  U8  st_info;  // Contains symbols type and binding.
-  U8  st_other; // Reserved for future use, currenly zero.
-  U16 st_shndx; // Section index to which symbol is relevant.
+  uint32 st_name;  // Holds index into files string table.
+  uint32 st_value; // Depending on the context, this may be address, size, etc.
+  uint32 st_size;  // Data size in bytes. Zero when size is unknown.
+  uint8  st_info;  // Contains symbols type and binding.
+  uint8  st_other; // Reserved for future use, currenly zero.
+  uint16 st_shndx; // Section index to which symbol is relevant.
 } ELF_Sym32;
 
 typedef struct 
 {
-  U32 st_name;
-  U8  st_info;
-  U8  st_other;
-  U16 st_shndx;
-  U64 st_value;
-  U64 st_size;
+  uint32 st_name;
+  uint8  st_info;
+  uint8  st_other;
+  uint16 st_shndx;
+  uint64 st_value;
+  uint64 st_size;
 } ELF_Sym64;
 
 #define ELF_ST_INFO(b,t)     (((b) << 4) + ((t) & 0xF))
@@ -853,36 +853,36 @@ typedef struct
 
 typedef struct
 {
-  U32 r_offset;
-  U32 r_info;
+  uint32 r_offset;
+  uint32 r_info;
 } ELF_Rel32;
 
 typedef struct
 {
-  U32 r_offset;
-  U32 r_info;
-  S32 r_addend;
+  uint32 r_offset;
+  uint32 r_info;
+  uint32 r_addend;
 } ELF_Rela32;
 
 typedef struct
 {
-  U64 r_offset;
-  U64 r_info;
+  uint64 r_offset;
+  uint64 r_info;
 } ELF_Rel64;
 
 typedef struct
 {
-  U64 r_offset;
-  U64 r_info;
-  S64 r_addend;
+  uint64 r_offset;
+  uint64 r_info;
+  uint64 r_addend;
 } ELF_Rela64;
 
-#define ELF32_R_SYM(x)  ((x) >> 8)
-#define ELF32_R_TYPE(x) ((x) & 0xFF)
+#define ELfloat_R_SYM(x)  ((x) >> 8)
+#define ELfloat_R_TYPE(x) ((x) & 0xFF)
 
-#define ELF64_R_INFO(s,t) (((U64)(s) << 32) | (U64)t)
-#define ELF64_R_SYM(x)    ((x) >> 32)
-#define ELF64_R_TYPE(x)   ((x) & 0xffffffff)
+#define ELdouble_R_INFO(s,t) (((uint64)(s) << 32) | (uint64)t)
+#define ELdouble_R_SYM(x)    ((x) >> 32)
+#define ELdouble_R_TYPE(x)   ((x) & 0xffffffff)
 
 // This flag is set to indicate that symbol is not available outside shared object
 #define ELF_EXTERNAL_VERSYM_HIDDEN 0x8000
@@ -891,61 +891,61 @@ typedef struct
 // Appears in .gnu.verdef (SHT_GNU_verdef)
 typedef struct
 {
-  U16 vd_version;
-  U16 vd_flags;
-  U16 vd_ndx;
-  U16 vd_cnt;
-  U32 vd_hash;
-  U32 vd_aux;
-  U32 vd_next;
+  uint16 vd_version;
+  uint16 vd_flags;
+  uint16 vd_ndx;
+  uint16 vd_cnt;
+  uint32 vd_hash;
+  uint32 vd_aux;
+  uint32 vd_next;
 } ELF_ExternalVerdef;
 
 // Appears in .gnu.verdef (SHT_GNU_verdef)
 typedef struct
 {
-  U32 vda_name;
-  U32 vda_next;
+  uint32 vda_name;
+  uint32 vda_next;
 } ELF_ExternalVerdaux;
 
 // Appears in .gnu.verneed (SHT_GNU_verneed)
 typedef struct
 {
-  U16 vn_version;
-  U16 vn_cnt;
-  U32 vn_file;
-  U32 vn_aux;
-  U32 vn_next;
+  uint16 vn_version;
+  uint16 vn_cnt;
+  uint32 vn_file;
+  uint32 vn_aux;
+  uint32 vn_next;
 } ELF_ExternalVerneed;
 
 // Appears in .gnu.verneed (SHT_GNU_verneed)
 typedef struct
 {
-  U32 vna_hash;
-  U16 vna_flags;
-  U16 vna_other;
-  U32 vna_name;
-  U32 vna_next;
+  uint32 vna_hash;
+  uint16 vna_flags;
+  uint16 vna_other;
+  uint32 vna_name;
+  uint32 vna_next;
 } ELF_ExternalVernaux;
 
 // Appears in .gnu.version (SHT_GNU_versym)
 typedef struct
 {
-  U16 vs_vers;
+  uint16 vs_vers;
 } ELF_ExternalVersym;
 
 typedef struct
 {
-  U32 name_size;
-  U32 desc_size;
-  U32 type;
+  uint32 name_size;
+  uint32 desc_size;
+  uint32 type;
   // name + desc
-  // U8  data[1];
+  // uint8  data[1];
 } ELF_Note;
 
 ////////////////////////////////
 // Extensions
 
-typedef U8 ELF_CompressType;
+typedef uint8 ELF_CompressType;
 enum ELF_CompressTypeEnum
 {
   ELF_CompressType_None = 0,
@@ -961,16 +961,16 @@ enum ELF_CompressTypeEnum
 
 typedef struct ELF_Chdr32
 {
-  U32 ch_type;
-  U32 ch_size;
-  U32 ch_addr_align;
+  uint32 ch_type;
+  uint32 ch_size;
+  uint32 ch_addr_align;
 } ELF_Chdr32;
 
 typedef struct ELF_Chdr64
 {
-  U64 ch_type;
-  U64 ch_size;
-  U64 ch_addr_align;
+  uint64 ch_type;
+  uint64 ch_size;
+  uint64 ch_addr_align;
 } ELF_Chdr64;
 
 ////////////////////////////////

@@ -33,12 +33,12 @@ typedef struct COFF_ObjSymbolSecDef
 typedef struct COFF_ObjSymbol
 {
   String8                 name;
-  U32                     value;
+  uint32                     value;
   COFF_SymbolLocation     loc;
   COFF_SymbolType         type;
   COFF_SymStorageClass    storage_class;
   String8List             aux_symbols;
-  U32                     idx;
+  uint32                     idx;
 } COFF_ObjSymbol;
 
 typedef struct COFF_ObjSymbolNode
@@ -49,7 +49,7 @@ typedef struct COFF_ObjSymbolNode
 
 typedef struct COFF_ObjReloc
 {
-  U32             apply_off;
+  uint32             apply_off;
   COFF_ObjSymbol *symbol;
   COFF_RelocType  type;
 } COFF_ObjReloc;
@@ -66,11 +66,11 @@ typedef struct COFF_ObjSection
   String8List       data;
   COFF_SectionFlags flags;
 
-  U64                reloc_count;
+  uint64                reloc_count;
   COFF_ObjRelocNode *reloc_first;
   COFF_ObjRelocNode *reloc_last;
 
-  U32 section_number;
+  uint32 section_number;
 } COFF_ObjSection;
 
 typedef struct COFF_ObjSectionNode
@@ -84,10 +84,10 @@ typedef struct COFF_ObjWriter
   Arena               *arena;
   COFF_TimeStamp       time_stamp;
   COFF_MachineType     machine;
-  U64                  symbol_count;
+  uint64                  symbol_count;
   COFF_ObjSymbolNode  *symbol_first;
   COFF_ObjSymbolNode  *symbol_last;
-  U64                  sect_count;
+  uint64                  sect_count;
   COFF_ObjSectionNode *sect_first;
   COFF_ObjSectionNode *sect_last;
   COFF_ObjSection     *drectve_sect;
@@ -101,23 +101,23 @@ internal String8          coff_obj_writer_serialize(Arena *arena, COFF_ObjWriter
 
 internal COFF_ObjSection * coff_obj_writer_push_section(COFF_ObjWriter *obj_writer, String8 name, COFF_SectionFlags flags, String8 data);
 
-internal COFF_ObjSymbol*  coff_obj_writer_push_symbol(COFF_ObjWriter *obj_writer, String8 name, U32 value, COFF_SymbolLocation loc, COFF_SymbolType type, COFF_SymStorageClass storage_class);
-internal COFF_ObjSymbol * coff_obj_writer_push_symbol_extern_func(COFF_ObjWriter *obj_writer, String8 name, U32 value, COFF_ObjSection *section);
-internal COFF_ObjSymbol * coff_obj_writer_push_symbol_extern(COFF_ObjWriter *obj_writer, String8 name, U32 value, COFF_ObjSection *section);
-internal COFF_ObjSymbol * coff_obj_writer_push_symbol_static(COFF_ObjWriter *obj_writer, String8 name, U32 off, COFF_ObjSection *section);
+internal COFF_ObjSymbol*  coff_obj_writer_push_symbol(COFF_ObjWriter *obj_writer, String8 name, uint32 value, COFF_SymbolLocation loc, COFF_SymbolType type, COFF_SymStorageClass storage_class);
+internal COFF_ObjSymbol * coff_obj_writer_push_symbol_extern_func(COFF_ObjWriter *obj_writer, String8 name, uint32 value, COFF_ObjSection *section);
+internal COFF_ObjSymbol * coff_obj_writer_push_symbol_extern(COFF_ObjWriter *obj_writer, String8 name, uint32 value, COFF_ObjSection *section);
+internal COFF_ObjSymbol * coff_obj_writer_push_symbol_static(COFF_ObjWriter *obj_writer, String8 name, uint32 off, COFF_ObjSection *section);
 internal COFF_ObjSymbol * coff_obj_writer_push_symbol_secdef(COFF_ObjWriter *obj_writer, COFF_ObjSection *section, COFF_ComdatSelectType selection);
 internal COFF_ObjSymbol * coff_obj_writer_push_symbol_associative(COFF_ObjWriter *obj_writer, COFF_ObjSection *head, COFF_ObjSection *associate);
 internal COFF_ObjSymbol * coff_obj_writer_push_symbol_weak(COFF_ObjWriter *obj_writer, String8 name, COFF_WeakExtType characteristics, COFF_ObjSymbol *tag);
-internal COFF_ObjSymbol * coff_obj_writer_push_symbol_abs(COFF_ObjWriter *obj_writer, String8 name, U32 value, COFF_SymStorageClass storage_class);
+internal COFF_ObjSymbol * coff_obj_writer_push_symbol_abs(COFF_ObjWriter *obj_writer, String8 name, uint32 value, COFF_SymStorageClass storage_class);
 internal COFF_ObjSymbol * coff_obj_writer_push_symbol_undef(COFF_ObjWriter *obj_writer, String8 name);
 internal COFF_ObjSymbol * coff_obj_writer_push_symbol_undef_func(COFF_ObjWriter *obj_writer, String8 name);
-internal COFF_ObjSymbol * coff_obj_writer_push_symbol_undef_sect(COFF_ObjWriter *obj_writer, String8 name, U32 value);
+internal COFF_ObjSymbol * coff_obj_writer_push_symbol_undef_sect(COFF_ObjWriter *obj_writer, String8 name, uint32 value);
 internal COFF_ObjSymbol * coff_obj_writer_push_symbol_sect(COFF_ObjWriter *obj_writer, String8 name, COFF_ObjSection *sect);
-internal COFF_ObjSymbol * coff_obj_writer_push_symbol_common(COFF_ObjWriter *obj_writer, String8 name, U32 size);
+internal COFF_ObjSymbol * coff_obj_writer_push_symbol_common(COFF_ObjWriter *obj_writer, String8 name, uint32 size);
 
-internal COFF_ObjReloc * coff_obj_writer_section_push_reloc(COFF_ObjWriter *obj_writer, COFF_ObjSection *sect, U32 apply_off, COFF_ObjSymbol *symbol, COFF_RelocType reloc_type);
-internal COFF_ObjReloc * coff_obj_writer_section_push_reloc_addr(COFF_ObjWriter *obj_writer, COFF_ObjSection *sect, U32 apply_off, COFF_ObjSymbol *symbol);
-internal COFF_ObjReloc * coff_obj_writer_section_push_reloc_voff(COFF_ObjWriter *obj_writer, COFF_ObjSection *sect, U32 apply_off, COFF_ObjSymbol *symbol);
+internal COFF_ObjReloc * coff_obj_writer_section_push_reloc(COFF_ObjWriter *obj_writer, COFF_ObjSection *sect, uint32 apply_off, COFF_ObjSymbol *symbol, COFF_RelocType reloc_type);
+internal COFF_ObjReloc * coff_obj_writer_section_push_reloc_addr(COFF_ObjWriter *obj_writer, COFF_ObjSection *sect, uint32 apply_off, COFF_ObjSymbol *symbol);
+internal COFF_ObjReloc * coff_obj_writer_section_push_reloc_voff(COFF_ObjWriter *obj_writer, COFF_ObjSection *sect, uint32 apply_off, COFF_ObjSymbol *symbol);
 
 internal void coff_obj_writer_push_directive(COFF_ObjWriter *obj_writer, String8 directive);
 

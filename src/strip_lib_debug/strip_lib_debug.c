@@ -72,14 +72,14 @@ sld_main(CmdLine *cmdl)
   }
 
   // convert big endian offsets
-  U32  member_offsets_count = parse.first_member.symbol_count;
-  U32 *member_offsets       = push_array(scratch.arena, U32, parse.first_member.member_offset_count);
-  for (U32 offset_idx = 0; offset_idx < member_offsets_count; offset_idx += 1) {
+  uint32  member_offsets_count = parse.first_member.symbol_count;
+  uint32 *member_offsets       = push_array(scratch.arena, uint32, parse.first_member.member_offset_count);
+  for (uint32 offset_idx = 0; offset_idx < member_offsets_count; offset_idx += 1) {
     member_offsets[offset_idx] = from_be_u32(parse.first_member.member_offsets[offset_idx]);
   }
 
   // fixup sections
-  for (U64 member_idx = 0; member_idx < member_offsets_count; member_idx += 1) {
+  for (uint64 member_idx = 0; member_idx < member_offsets_count; member_idx += 1) {
     COFF_ParsedArchiveMemberHeader member_header = {0};
     coff_parse_archive_member_header(out_lib, member_offsets[member_idx], &member_header);
     String8       member_data = str8_substr(out_lib, member_header.data_range);
@@ -88,7 +88,7 @@ sld_main(CmdLine *cmdl)
       COFF_FileHeaderInfo  file_header_info = coff_file_header_info_from_data(member_data);
       COFF_SectionHeader  *section_table    = (COFF_SectionHeader *)str8_substr(member_data, file_header_info.section_table_range).str;
       String8              string_table     = str8_substr(member_data, file_header_info.string_table_range);
-      for (U64 sect_idx = 0; sect_idx < file_header_info.section_count_no_null; sect_idx += 1) {
+      for (uint64 sect_idx = 0; sect_idx < file_header_info.section_count_no_null; sect_idx += 1) {
         COFF_SectionHeader *sect_header = &section_table[sect_idx];
         String8             name        = coff_name_from_section_header(string_table, sect_header);
         if (str8_match(str8_lit(".debug$S"), name, 0) || str8_match(str8_lit(".debug$T"), name, 0)) {

@@ -6,7 +6,7 @@
 #ifndef CODEVIEW_META_H
 #define CODEVIEW_META_H
 
-typedef U16 CV_NumericKind;
+typedef uint16 CV_NumericKind;
 typedef enum CV_NumericKindEnum
 {
 CV_NumericKind_CHAR = 0x8000,
@@ -34,7 +34,7 @@ CV_NumericKind_UTF8STRING = 0x801b,
 CV_NumericKind_FLOAT16 = 0x801c,
 } CV_NumericKindEnum;
 
-typedef U16 CV_Arch;
+typedef uint16 CV_Arch;
 typedef enum CV_ArchEnum
 {
 CV_Arch_8080 = 0x00,
@@ -46,9 +46,9 @@ CV_Arch_PENTIUM = 0x05,
 CV_Arch_PENTIUMII = 0x06,
 CV_Arch_PENTIUMIII = 0x07,
 CV_Arch_MIPS = 0x10,
-CV_Arch_MIPS16 = 0x11,
-CV_Arch_MIPS32 = 0x12,
-CV_Arch_MIPS64 = 0x13,
+CV_Arch_MIPuint16 = 0x11,
+CV_Arch_MIPuint32 = 0x12,
+CV_Arch_MIPuint64 = 0x13,
 CV_Arch_MIPSI = 0x14,
 CV_Arch_MIPSII = 0x15,
 CV_Arch_MIPSIII = 0x16,
@@ -104,7 +104,7 @@ CV_Arch_ALPHA_21064 = CV_Arch_ALPHA,
 CV_Arch_AMD64       = CV_Arch_X64,
 } CV_ArchEnum;
 
-typedef U16 CV_AllReg;
+typedef uint16 CV_AllReg;
 typedef enum CV_AllRegEnum
 {
 CV_AllReg_ERR = 30000,
@@ -122,7 +122,7 @@ CV_AllReg_ENV = 30011,
 CV_AllReg_CMDLN = 30012,
 } CV_AllRegEnum;
 
-typedef U16 CV_SymKind;
+typedef uint16 CV_SymKind;
 typedef enum CV_SymKindEnum
 {
 CV_SymKind_COMPILE = 0x0001,
@@ -320,7 +320,7 @@ CV_SymKind_FASTLINK = 0x1167,
 CV_SymKind_INLINEES = 0x1168,
 } CV_SymKindEnum;
 
-typedef U8 CV_BasicType;
+typedef uint8 CV_BasicType;
 typedef enum CV_BasicTypeEnum
 {
 CV_BasicType_NOTYPE = 0x00,
@@ -378,7 +378,7 @@ CV_BasicType_CHAR8 = 0x7c,
 CV_BasicType_PTR = 0xf0,
 } CV_BasicTypeEnum;
 
-typedef U16 CV_LeafKind;
+typedef uint16 CV_LeafKind;
 typedef enum CV_LeafKindEnum
 {
 CV_LeafKind_NOTYPE = 0x0000,
@@ -523,6 +523,6 @@ internal String8 cv_string_from_sym_kind(CV_SymKind v);
 internal String8 cv_string_from_basic_type(CV_BasicType v);
 internal String8 cv_type_name_from_basic_type(CV_BasicType v);
 internal String8 cv_string_from_leaf_kind(CV_LeafKind v);
-internal U64 cv_header_struct_size_from_sym_kind(CV_SymKind v);
-internal U64 cv_header_struct_size_from_leaf_kind(CV_LeafKind v);
+internal uint64 cv_header_struct_size_from_sym_kind(CV_SymKind v);
+internal uint64 cv_header_struct_size_from_leaf_kind(CV_LeafKind v);
 #endif // CODEVIEW_META_H

@@ -39,7 +39,7 @@ internal LNK_InputObj **
 lnk_array_from_input_obj_list(Arena *arena, LNK_InputObjList list)
 {
   LNK_InputObj **result = push_array_no_zero(arena, LNK_InputObj *, list.count);
-  U64 i = 0;
+  uint64 i = 0;
   for (LNK_InputObj *n = list.first; n != 0; n = n->next, ++i) {
     Assert(i < list.count);
     result[i] = n;
@@ -48,13 +48,13 @@ lnk_array_from_input_obj_list(Arena *arena, LNK_InputObjList list)
 }
 
 internal LNK_InputObj **
-lnk_thin_array_from_input_obj_list(Arena *arena, LNK_InputObjList list, U64 *count_out)
+lnk_thin_array_from_input_obj_list(Arena *arena, LNK_InputObjList list, uint64 *count_out)
 {
   for (LNK_InputObj *input = list.first; input != 0; input = input->next) {
     if (input->is_thin) { *count_out += 1; }
   }
   LNK_InputObj **thin_inputs = push_array(arena, LNK_InputObj *, *count_out);
-  U64            input_idx   = 0;
+  uint64            input_idx   = 0;
   for (LNK_InputObj *input = list.first; input != 0; input = input->next) {
     if (input->is_thin) { thin_inputs[input_idx++] = input; }
   }
@@ -62,12 +62,12 @@ lnk_thin_array_from_input_obj_list(Arena *arena, LNK_InputObjList list, U64 *cou
 }
 
 internal String8Array
-lnk_path_array_from_input_obj_array(Arena *arena, LNK_InputObj **arr, U64 count)
+lnk_path_array_from_input_obj_array(Arena *arena, LNK_InputObj **arr, uint64 count)
 {
   String8Array paths = {0};
   paths.count = count;
   paths.v     = push_array(arena, String8, count);
-  for (U64 i = 0; i < count; i += 1) {
+  for (uint64 i = 0; i < count; i += 1) {
     paths.v[i] = arr[i]->path;
   }
   return paths;
@@ -93,10 +93,10 @@ lnk_input_obj_compar_is_before(void *raw_a, void *raw_b)
 }
 
 internal LNK_InputObjList
-lnk_list_from_input_obj_arr(LNK_InputObj **arr, U64 count)
+lnk_list_from_input_obj_arr(LNK_InputObj **arr, uint64 count)
 {
   LNK_InputObjList list = {0};
-  for (U64 i = 0; i < count; ++i) {
+  for (uint64 i = 0; i < count; ++i) {
     SLLQueuePush(list.first, list.last, arr[i]);
     ++list.count;
   }
@@ -135,7 +135,7 @@ internal LNK_InputImportNode **
 lnk_input_import_arr_from_list(Arena *arena, LNK_InputImportList list)
 {
   LNK_InputImportNode **result = push_array_no_zero(arena, LNK_InputImportNode *, list.count);
-  U64 idx = 0;
+  uint64 idx = 0;
   for (LNK_InputImportNode *node = list.first; node != 0; node = node->next) {
     Assert(idx < list.count);
     result[idx++] = node;
@@ -144,10 +144,10 @@ lnk_input_import_arr_from_list(Arena *arena, LNK_InputImportList list)
 }
 
 internal LNK_InputImportList
-lnk_list_from_input_import_arr(LNK_InputImportNode **arr, U64 count)
+lnk_list_from_input_import_arr(LNK_InputImportNode **arr, uint64 count)
 {
   LNK_InputImportList list = {0};
-  for (U64 i = 0; i < count; i += 1) {
+  for (uint64 i = 0; i < count; i += 1) {
     SLLQueuePush(list.first, list.last, arr[i]);
     list.count += 1;
   }

@@ -17,7 +17,7 @@ async_init(CmdLine *cmdline)
   {
     ASYNC_Ring *ring = &async_shared->rings[p];
     ring->ring_size  = MB(8);
-    ring->ring_base  = push_array_no_zero(arena, U8, ring->ring_size);
+    ring->ring_base  = push_array_no_zero(arena, uint8, ring->ring_size);
     ring->ring_mutex = os_mutex_alloc();
     ring->ring_cv    = os_condition_variable_alloc();
   }
@@ -39,7 +39,7 @@ async_init(CmdLine *cmdline)
 ////////////////////////////////
 //~ rjf: Top-Level Accessors
 
-internal U64
+internal uint64
 async_thread_count(void)
 {
   return async_shared->work_threads_count;
@@ -70,20 +70,20 @@ async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params
   B32 need_to_execute_on_this_thread = 0;
   OS_MutexScope(ring->ring_mutex) for(;;)
   {
-    U64 num_available_work_threads = (async_shared->work_threads_count - ins_atomic_u64_eval(&async_shared->work_threads_live_count));
+    uint64 num_available_work_threads = (async_shared->work_threads_count - ins_atomic_u64_eval(&async_shared->work_threads_live_count));
     if(num_available_work_threads == 0 && async_work_thread_depth > 0)
     {
       need_to_execute_on_this_thread = 1;
       break;
     }
-    U64 unconsumed_size = ring->ring_write_pos - ring->ring_read_pos;
-    U64 available_size = ring->ring_size - unconsumed_size;
+    uint64 unconsumed_size = ring->ring_write_pos - ring->ring_read_pos;
+    uint64 available_size = ring->ring_size - unconsumed_size;
     if(available_size >= sizeof(work))
     {
       queued_in_ring_buffer = 1;
       if(!os_handle_match(params->semaphore, os_handle_zero()))
       {
-        os_semaphore_take(params->semaphore, max_U64);
+        os_semaphore_take(params->semaphore, max_uint64);
       }
       ring->ring_write_pos += ring_write_struct(ring->ring_base, ring->ring_size, ring->ring_write_pos, &work);
       break;
@@ -134,7 +134,7 @@ async_task_launch_(Arena *arena, ASYNC_WorkFunctionType *work_function, ASYNC_Wo
   task->semaphore = os_semaphore_alloc(1, 1, str8_zero());
   ASYNC_WorkParams params_refined = {0};
   MemoryCopyStruct(&params_refined, params);
-  params_refined.endt_us = max_U64;
+  params_refined.endt_us = max_uint64;
   params_refined.semaphore = task->semaphore;
   if(params_refined.output == 0)
   {
@@ -150,7 +150,7 @@ async_task_join(ASYNC_Task *task)
   void *result = 0;
   if(task != 0 && !os_handle_match(task->semaphore, os_handle_zero()))
   {
-    os_semaphore_take(task->semaphore, max_U64);
+    os_semaphore_take(task->semaphore, max_uint64);
     os_semaphore_release(task->semaphore);
     MemoryZeroStruct(&task->semaphore);
     result = (void *)ins_atomic_u64_eval(&task->output);
@@ -174,7 +174,7 @@ async_pop_work(void)
       ASYNC_Ring *ring = &async_shared->rings[priority];
       OS_MutexScope(ring->ring_mutex)
       {
-        U64 unconsumed_size = ring->ring_write_pos - ring->ring_read_pos;
+        uint64 unconsumed_size = ring->ring_write_pos - ring->ring_read_pos;
         if(unconsumed_size >= sizeof(work))
         {
           ring->ring_read_pos += ring_read_struct(ring->ring_base, ring->ring_size, ring->ring_read_pos, &work);
@@ -193,7 +193,7 @@ async_pop_work(void)
     }
     if(!done)
     {
-      os_condition_variable_wait(async_shared->ring_cv, async_shared->ring_mutex, max_U64);
+      os_condition_variable_wait(async_shared->ring_cv, async_shared->ring_mutex, max_uint64);
     }
   }
   os_condition_variable_broadcast(async_shared->ring_cv);
@@ -212,7 +212,7 @@ async_execute_work(ASYNC_Work work)
   //- rjf: store output
   if(work.output != 0)
   {
-    ins_atomic_u64_eval_assign((U64 *)work.output, (U64)work_out);
+    ins_atomic_u64_eval_assign((uint64 *)work.output, (uint64)work_out);
   }
   
   //- rjf: release semaphore
@@ -244,7 +244,7 @@ async_root_alloc(void)
   ASYNC_Root *root = push_array(arena, ASYNC_Root, 1);
   root->arenas = push_array(arena, Arena *, async_thread_count());
   root->arenas[0] = arena;
-  for(U64 idx = 1; idx < async_thread_count(); idx += 1)
+  for(uint64 idx = 1; idx < async_thread_count(); idx += 1)
   {
     root->arenas[idx] = arena_alloc();
   }
@@ -254,7 +254,7 @@ async_root_alloc(void)
 internal void
 async_root_release(ASYNC_Root *root)
 {
-  for(U64 idx = 1; idx < async_thread_count(); idx += 1)
+  for(uint64 idx = 1; idx < async_thread_count(); idx += 1)
   {
     arena_release(root->arenas[idx]);
   }
@@ -273,7 +273,7 @@ async_root_thread_arena(ASYNC_Root *root)
 internal void
 async_work_thread__entry_point(void *p)
 {
-  U64 thread_idx = (U64)p;
+  uint64 thread_idx = (uint64)p;
   ThreadNameF("[async] work thread #%I64u", thread_idx);
   async_work_thread_idx = thread_idx;
   for(;;)

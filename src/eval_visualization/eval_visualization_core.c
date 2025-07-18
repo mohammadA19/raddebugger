@@ -20,7 +20,7 @@ EV_EXPAND_RULE_INFO_FUNCTION_DEF(nil)
 #endif
 
 internal EV_Key
-ev_key_make(U64 parent_hash, U64 child_id)
+ev_key_make(uint64 parent_hash, uint64 child_id)
 {
   EV_Key key;
   {
@@ -51,21 +51,21 @@ ev_key_match(EV_Key a, EV_Key b)
   return result;
 }
 
-internal U64
-ev_hash_from_seed_string(U64 seed, String8 string)
+internal uint64
+ev_hash_from_seed_string(uint64 seed, String8 string)
 {
-  U64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
+  uint64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
   return result;
 }
 
-internal U64
+internal uint64
 ev_hash_from_key(EV_Key key)
 {
-  U64 data[] =
+  uint64 data[] =
   {
     key.child_id,
   };
-  U64 hash = ev_hash_from_seed_string(key.parent_hash, str8((U8 *)data, sizeof(data)));
+  uint64 hash = ev_hash_from_seed_string(key.parent_hash, str8((uint8 *)data, sizeof(data)));
   return hash;
 }
 
@@ -176,12 +176,12 @@ ev_type_key_is_editable(E_TypeKey type_key)
         else
         {
           E_TypeKind element_kind = e_type_kind_from_key(e_type_key_unwrap(t, E_TypeUnwrapFlag_All));
-          result = (element_kind == E_TypeKind_U8 ||
-                    element_kind == E_TypeKind_U16 ||
-                    element_kind == E_TypeKind_U32 ||
-                    element_kind == E_TypeKind_S8 ||
-                    element_kind == E_TypeKind_S16 ||
-                    element_kind == E_TypeKind_S32 ||
+          result = (element_kind == E_TypeKind_uint8 ||
+                    element_kind == E_TypeKind_uint16 ||
+                    element_kind == E_TypeKind_uint32 ||
+                    element_kind == E_TypeKind_uint8 ||
+                    element_kind == E_TypeKind_uint16 ||
+                    element_kind == E_TypeKind_uint32 ||
                     element_kind == E_TypeKind_UChar8 ||
                     element_kind == E_TypeKind_UChar16 ||
                     element_kind == E_TypeKind_UChar32 ||
@@ -225,8 +225,8 @@ ev_view_release(EV_View *view)
 internal EV_ExpandNode *
 ev_expand_node_from_key(EV_View *view, EV_Key key)
 {
-  U64 hash = ev_hash_from_key(key);
-  U64 slot_idx = hash%view->expand_slots_count;
+  uint64 hash = ev_hash_from_key(key);
+  uint64 slot_idx = hash%view->expand_slots_count;
   EV_ExpandSlot *slot = &view->expand_slots[slot_idx];
   EV_ExpandNode *node = 0;
   for(EV_ExpandNode *n = slot->first; n != 0; n = n->hash_next)
@@ -253,8 +253,8 @@ ev_view_rule_from_key(EV_View *view, EV_Key key)
   String8 result = {0};
   
   //- rjf: key -> hash * slot idx * slot
-  U64 hash = ev_hash_from_key(key);
-  U64 slot_idx = hash%view->key_view_rule_slots_count;
+  uint64 hash = ev_hash_from_key(key);
+  uint64 slot_idx = hash%view->key_view_rule_slots_count;
   EV_KeyViewRuleSlot *slot = &view->key_view_rule_slots[slot_idx];
   
   //- rjf: slot -> existing node
@@ -299,8 +299,8 @@ ev_key_set_expansion(EV_View *view, EV_Key parent_key, EV_Key key, B32 expanded)
     }
     
     // rjf: link into table
-    U64 hash = ev_hash_from_key(key);
-    U64 slot = hash % view->expand_slots_count;
+    uint64 hash = ev_hash_from_key(key);
+    uint64 slot = hash % view->expand_slots_count;
     DLLPushBack_NP(view->expand_slots[slot].first, view->expand_slots[slot].last, node, hash_next, hash_prev);
     
     // rjf: link into parent
@@ -334,8 +334,8 @@ ev_key_set_expansion(EV_View *view, EV_Key parent_key, EV_Key key, B32 expanded)
   if(expanded == 0 && node != 0 && node->first == 0)
   {
     // rjf: unlink from table
-    U64 hash = ev_hash_from_key(key);
-    U64 slot = hash % view->expand_slots_count;
+    uint64 hash = ev_hash_from_key(key);
+    uint64 slot = hash % view->expand_slots_count;
     DLLRemove_NP(view->expand_slots[slot].first, view->expand_slots[slot].last, node, hash_next, hash_prev);
     
     // rjf: unlink from tree
@@ -353,8 +353,8 @@ internal void
 ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_string)
 {
   //- rjf: key -> hash * slot idx * slot
-  U64 hash = ev_hash_from_key(key);
-  U64 slot_idx = hash%view->key_view_rule_slots_count;
+  uint64 hash = ev_hash_from_key(key);
+  uint64 slot_idx = hash%view->key_view_rule_slots_count;
   EV_KeyViewRuleSlot *slot = &view->key_view_rule_slots[slot_idx];
   
   //- rjf: slot -> existing node
@@ -376,7 +376,7 @@ ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_string)
     DLLPushBack_NP(slot->first, slot->last, node, hash_next, hash_prev);
     node->key = key;
     node->buffer_cap = 512;
-    node->buffer = push_array(view->arena, U8, node->buffer_cap);
+    node->buffer = push_array(view->arena, uint8, node->buffer_cap);
   }
   
   //- rjf: mutate node
@@ -398,8 +398,8 @@ ev_expand_rule_table_push(Arena *arena, EV_ExpandRuleTable *table, EV_ExpandRule
     table->slots_count = 512;
     table->slots = push_array(arena, EV_ExpandRuleSlot, table->slots_count);
   }
-  U64 hash = ev_hash_from_seed_string(5381, info->string);
-  U64 slot_idx = hash%table->slots_count;
+  uint64 hash = ev_hash_from_seed_string(5381, info->string);
+  uint64 slot_idx = hash%table->slots_count;
   EV_ExpandRuleSlot *slot = &table->slots[slot_idx];
   EV_ExpandRuleNode *n = push_array(arena, EV_ExpandRuleNode, 1);
   SLLQueuePush(slot->first, slot->last, n);
@@ -419,8 +419,8 @@ ev_expand_rule_from_string(String8 string)
   EV_ExpandRule *info = &ev_nil_expand_rule;
   if(ev_view_rule_info_table != 0 && ev_view_rule_info_table->slots_count != 0)
   {
-    U64 hash = ev_hash_from_seed_string(5381, string);
-    U64 slot_idx = hash%ev_view_rule_info_table->slots_count;
+    uint64 hash = ev_hash_from_seed_string(5381, string);
+    uint64 slot_idx = hash%ev_view_rule_info_table->slots_count;
     EV_ExpandRuleSlot *slot = &ev_view_rule_info_table->slots[slot_idx];
     EV_ExpandRuleNode *node = 0;
     for(EV_ExpandRuleNode *n = slot->first; n != 0; n = n->next)
@@ -495,11 +495,11 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
       EV_Block *parent_block;
       E_Eval eval;
       E_Expr *next_expr;
-      U64 child_id;
-      U64 split_relative_idx;
+      uint64 child_id;
+      uint64 split_relative_idx;
       B32 default_expanded;
       B32 force_expanded;
-      S32 depth;
+      uint32 depth;
     };
     BlockTreeBuildTask start_task = {0, tree.root, tree.root->eval, tree.root->eval.expr->next, 1, 0};
     BlockTreeBuildTask *first_task = &start_task;
@@ -552,7 +552,7 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
       EV_ExpandInfo viz_expand_info = viz_expand_rule->info(arena, view, task_filter, eval.expr);
       
       // rjf: determine expansion info
-      U64 expansion_row_count = type_expand_info.expr_count;
+      uint64 expansion_row_count = type_expand_info.expr_count;
       if(viz_expand_rule != &ev_nil_expand_rule)
       {
         expansion_row_count = viz_expand_info.row_count;
@@ -589,9 +589,9 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
       }
       
       // rjf: gather children expansions from expansion state
-      U64 child_count = 0;
+      uint64 child_count = 0;
       EV_Key *child_keys = 0;
-      U64 *child_nums = 0;
+      uint64 *child_nums = 0;
       if(allow_child_expansions && !child_count && !viz_expand_info.rows_default_expanded && expand_node != 0 && expansion_row_count != 0)
       {
         // rjf: count children
@@ -600,9 +600,9 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
         // rjf: gather children keys & numbers
         B32 needs_sort = 0;
         child_keys = push_array(scratch.arena, EV_Key, child_count);
-        child_nums = push_array(scratch.arena, U64, child_count);
+        child_nums = push_array(scratch.arena, uint64, child_count);
         {
-          U64 idx = 0;
+          uint64 idx = 0;
           for(EV_ExpandNode *child = expand_node->first; child != 0; child = child->next, idx += 1)
           {
             child_keys[idx] = child->key;
@@ -617,11 +617,11 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
         // rjf: sort children by number, if needed
         if(needs_sort)
         {
-          for(U64 idx1 = 0; idx1 < child_count; idx1 += 1)
+          for(uint64 idx1 = 0; idx1 < child_count; idx1 += 1)
           {
-            U64 min_idx2 = 0;
-            U64 min_num = child_nums[idx1];
-            for(U64 idx2 = idx1+1; idx2 < child_count; idx2 += 1)
+            uint64 min_idx2 = 0;
+            uint64 min_num = child_nums[idx1];
+            for(uint64 idx2 = idx1+1; idx2 < child_count; idx2 += 1)
             {
               if(child_nums[idx2] < min_num)
               {
@@ -632,7 +632,7 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
             if(min_idx2 != 0)
             {
               Swap(EV_Key, child_keys[idx1], child_keys[min_idx2]);
-              Swap(U64, child_nums[idx1], child_nums[min_idx2]);
+              Swap(uint64, child_nums[idx1], child_nums[min_idx2]);
             }
           }
         }
@@ -643,27 +643,27 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
       {
         child_count = viz_expand_info.row_count;
         child_keys  = push_array(scratch.arena, EV_Key, child_count);
-        child_nums  = push_array(scratch.arena, U64,    child_count);
-        for(U64 idx = 0; idx < child_count; idx += 1)
+        child_nums  = push_array(scratch.arena, uint64,    child_count);
+        for(uint64 idx = 0; idx < child_count; idx += 1)
         {
-          U64 child_id = type_expand_rule->id_from_num(type_expand_info.user_data, idx+1);
+          uint64 child_id = type_expand_rule->id_from_num(type_expand_info.user_data, idx+1);
           child_keys[idx] = ev_key_make(ev_hash_from_key(key), child_id);
           child_nums[idx] = idx+1;
         }
       }
       
       // rjf: iterate children expansions & generate recursion tasks
-      for(U64 idx = 0; idx < child_count; idx += 1)
+      for(uint64 idx = 0; idx < child_count; idx += 1)
       {
-        U64 split_num = child_nums[idx];
-        U64 split_relative_idx = split_num - 1;
+        uint64 split_num = child_nums[idx];
+        uint64 split_relative_idx = split_num - 1;
         if(split_relative_idx >= expansion_row_count)
         {
           continue;
         }
         if(viz_expand_info.rows_default_expanded || ev_expansion_from_key(view, child_keys[idx]))
         {
-          Rng1U64 child_range = r1u64(split_relative_idx, split_relative_idx+1);
+          Rng1uint64 child_range = r1u64(split_relative_idx, split_relative_idx+1);
           E_Eval child_eval = {0};
           type_expand_rule->range(arena, type_expand_info.user_data, eval, task_filter, r1u64(split_relative_idx, split_relative_idx+1), &child_eval);
           EV_Key child_key = child_keys[idx];
@@ -701,10 +701,10 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
   return tree;
 }
 
-internal U64
+internal uint64
 ev_depth_from_block(EV_Block *block)
 {
-  U64 depth = 0;
+  uint64 depth = 0;
   for(EV_Block *b = block->parent; b != &ev_nil_block; b = b->parent)
   {
     depth += 1;
@@ -715,17 +715,17 @@ ev_depth_from_block(EV_Block *block)
 ////////////////////////////////
 //~ rjf: Block Coordinate Spaces
 
-internal U64
-ev_block_id_from_num(EV_Block *block, U64 num)
+internal uint64
+ev_block_id_from_num(EV_Block *block, uint64 num)
 {
-  U64 result = block->type_expand_rule->id_from_num(block->type_expand_info.user_data, num);
+  uint64 result = block->type_expand_rule->id_from_num(block->type_expand_info.user_data, num);
   return result;
 }
 
-internal U64
-ev_block_num_from_id(EV_Block *block, U64 id)
+internal uint64
+ev_block_num_from_id(EV_Block *block, uint64 id)
 {
-  U64 result = block->type_expand_rule->num_from_id(block->type_expand_info.user_data, id);
+  uint64 result = block->type_expand_rule->num_from_id(block->type_expand_info.user_data, id);
   return result;
 }
 
@@ -741,18 +741,18 @@ ev_block_range_list_from_tree(Arena *arena, EV_BlockTree *block_tree)
       BlockTask *next;
       EV_Block *block;
       EV_Block *next_child;
-      Rng1U64 block_relative_range;
+      Rng1uint64 block_relative_range;
     };
     BlockTask start_task = {0, block_tree->root, block_tree->root->first, r1u64(0, block_tree->root->row_count)};
     for(BlockTask *t = &start_task; t != 0; t = t->next)
     {
       // rjf: get block-relative range, truncated by split position of next child
-      Rng1U64 block_relative_range = t->block_relative_range;
+      Rng1uint64 block_relative_range = t->block_relative_range;
       if(t->next_child != &ev_nil_block)
       {
         block_relative_range.max = t->next_child->split_relative_idx+1;
       }
-      U64 block_num_visual_rows = dim_1u64(block_relative_range);
+      uint64 block_num_visual_rows = dim_1u64(block_relative_range);
       
       // rjf: generate range node 
       if(block_num_visual_rows != 0)
@@ -776,7 +776,7 @@ ev_block_range_list_from_tree(Arena *arena, EV_BlockTree *block_tree)
         child_task->block_relative_range = r1u64(0, t->next_child->row_count);
         
         // rjf: generate task for post-child rows, if any, after children
-        Rng1U64 remainder_range = r1u64(t->next_child->split_relative_idx+1, t->block_relative_range.max);
+        Rng1uint64 remainder_range = r1u64(t->next_child->split_relative_idx+1, t->block_relative_range.max);
         if(remainder_range.max >= remainder_range.min)
         {
           BlockTask *remainder_task = push_array(scratch.arena, BlockTask, 1);
@@ -794,14 +794,14 @@ ev_block_range_list_from_tree(Arena *arena, EV_BlockTree *block_tree)
 }
 
 internal EV_BlockRange
-ev_block_range_from_num(EV_BlockRangeList *block_ranges, U64 num)
+ev_block_range_from_num(EV_BlockRangeList *block_ranges, uint64 num)
 {
   EV_BlockRange result = {&ev_nil_block};
-  U64 base_num = 1;
+  uint64 base_num = 1;
   for(EV_BlockRangeNode *n = block_ranges->first; n != 0; n = n->next)
   {
-    U64 range_size = n->v.block->viz_expand_info.single_item ? 1 : dim_1u64(n->v.range);
-    Rng1U64 global_range = r1u64(base_num, base_num + range_size);
+    uint64 range_size = n->v.block->viz_expand_info.single_item ? 1 : dim_1u64(n->v.range);
+    Rng1uint64 global_range = r1u64(base_num, base_num + range_size);
     if(contains_1u64(global_range, num))
     {
       result = n->v;
@@ -813,22 +813,22 @@ ev_block_range_from_num(EV_BlockRangeList *block_ranges, U64 num)
 }
 
 internal EV_Key
-ev_key_from_num(EV_BlockRangeList *block_ranges, U64 num)
+ev_key_from_num(EV_BlockRangeList *block_ranges, uint64 num)
 {
   EV_Key key = {0};
   if(block_ranges->first)
   {
     key = ev_key_make(ev_hash_from_key(ev_key_root()), 1);
   }
-  U64 base_num = 1;
+  uint64 base_num = 1;
   for(EV_BlockRangeNode *n = block_ranges->first; n != 0; n = n->next)
   {
-    U64 range_size = n->v.block->viz_expand_info.single_item ? 1 : dim_1u64(n->v.range);
-    Rng1U64 global_range = r1u64(base_num, base_num + range_size);
+    uint64 range_size = n->v.block->viz_expand_info.single_item ? 1 : dim_1u64(n->v.range);
+    Rng1uint64 global_range = r1u64(base_num, base_num + range_size);
     if(contains_1u64(global_range, num))
     {
-      U64 relative_num = (num - base_num) + n->v.range.min + 1;
-      U64 child_id = ev_block_id_from_num(n->v.block, relative_num);
+      uint64 relative_num = (num - base_num) + n->v.range.min + 1;
+      uint64 child_id = ev_block_id_from_num(n->v.block, relative_num);
       EV_Key block_key = n->v.block->key;
       key = ev_key_make(ev_hash_from_key(block_key), child_id);
       break;
@@ -838,18 +838,18 @@ ev_key_from_num(EV_BlockRangeList *block_ranges, U64 num)
   return key;
 }
 
-internal U64
+internal uint64
 ev_num_from_key(EV_BlockRangeList *block_ranges, EV_Key key)
 {
-  U64 result = 0;
-  U64 base_num = 1;
+  uint64 result = 0;
+  uint64 base_num = 1;
   for(EV_BlockRangeNode *n = block_ranges->first; n != 0; n = n->next)
   {
-    U64 hash = ev_hash_from_key(n->v.block->key);
+    uint64 hash = ev_hash_from_key(n->v.block->key);
     if(hash == key.parent_hash)
     {
-      U64 relative_num = ev_block_num_from_id(n->v.block, key.child_id);
-      Rng1U64 num_range = r1u64(n->v.range.min, n->v.block->viz_expand_info.single_item ? (n->v.range.min+1) : n->v.range.max);
+      uint64 relative_num = ev_block_num_from_id(n->v.block, key.child_id);
+      Rng1uint64 num_range = r1u64(n->v.range.min, n->v.block->viz_expand_info.single_item ? (n->v.range.min+1) : n->v.range.max);
       if(contains_1u64(num_range, relative_num-1))
       {
         result = base_num + (relative_num - 1 - n->v.range.min);
@@ -861,19 +861,19 @@ ev_num_from_key(EV_BlockRangeList *block_ranges, EV_Key key)
   return result;
 }
 
-internal U64
-ev_vnum_from_num(EV_BlockRangeList *block_ranges, U64 num)
+internal uint64
+ev_vnum_from_num(EV_BlockRangeList *block_ranges, uint64 num)
 {
-  U64 vnum = 0;
+  uint64 vnum = 0;
   {
-    U64 base_vnum = 1;
-    U64 base_num = 1;
+    uint64 base_vnum = 1;
+    uint64 base_num = 1;
     for(EV_BlockRangeNode *n = block_ranges->first; n != 0; n = n->next)
     {
-      U64 next_base_num = base_num + (n->v.block->viz_expand_info.single_item ? 1 : dim_1u64(n->v.range));
+      uint64 next_base_num = base_num + (n->v.block->viz_expand_info.single_item ? 1 : dim_1u64(n->v.range));
       if(base_num <= num && num < next_base_num)
       {
-        U64 relative_vnum = (n->v.block->viz_expand_info.single_item ? 0 : (num - base_num));
+        uint64 relative_vnum = (n->v.block->viz_expand_info.single_item ? 0 : (num - base_num));
         vnum = base_vnum + relative_vnum;
         break;
       }
@@ -888,19 +888,19 @@ ev_vnum_from_num(EV_BlockRangeList *block_ranges, U64 num)
   return vnum;
 }
 
-internal U64
-ev_num_from_vnum(EV_BlockRangeList *block_ranges, U64 vnum)
+internal uint64
+ev_num_from_vnum(EV_BlockRangeList *block_ranges, uint64 vnum)
 {
-  U64 num = 0;
+  uint64 num = 0;
   {
-    U64 base_vnum = 1;
-    U64 base_num = 1;
+    uint64 base_vnum = 1;
+    uint64 base_num = 1;
     for(EV_BlockRangeNode *n = block_ranges->first; n != 0; n = n->next)
     {
-      U64 next_base_vnum = base_vnum + dim_1u64(n->v.range);
+      uint64 next_base_vnum = base_vnum + dim_1u64(n->v.range);
       if(base_vnum <= vnum && vnum < next_base_vnum)
       {
-        U64 relative_num = (n->v.block->viz_expand_info.single_item ? 0 : (vnum - base_vnum));
+        uint64 relative_num = (n->v.block->viz_expand_info.single_item ? 0 : (vnum - base_vnum));
         num = base_num + relative_num;
         break;
       }
@@ -915,22 +915,22 @@ ev_num_from_vnum(EV_BlockRangeList *block_ranges, U64 vnum)
 //~ rjf: Row Building
 
 internal EV_WindowedRowList
-ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_BlockRangeList *block_ranges, Rng1U64 vnum_range)
+ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_BlockRangeList *block_ranges, Rng1uint64 vnum_range)
 {
   EV_WindowedRowList rows = {0};
   {
-    U64 base_vnum = 1;
+    uint64 base_vnum = 1;
     for(EV_BlockRangeNode *n = block_ranges->first; n != 0; n = n->next)
     {
       // rjf: unpack this block/range pair
-      Rng1U64 block_relative_range = n->v.range;
-      U64 block_num_visual_rows = dim_1u64(block_relative_range);
-      Rng1U64 block_global_range = r1u64(base_vnum, base_vnum + block_num_visual_rows);
+      Rng1uint64 block_relative_range = n->v.range;
+      uint64 block_num_visual_rows = dim_1u64(block_relative_range);
+      Rng1uint64 block_global_range = r1u64(base_vnum, base_vnum + block_num_visual_rows);
       String8 block_filter = n->v.block->filter;
       
       // rjf: get skip/chop of global range
-      U64 num_skipped = 0;
-      U64 num_chopped = 0;
+      uint64 num_skipped = 0;
+      uint64 num_chopped = 0;
       {
         if(vnum_range.min > block_global_range.min)
         {
@@ -945,7 +945,7 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
       }
       
       // rjf: get block-relative *windowed* range
-      Rng1U64 block_relative_range__windowed = r1u64(block_relative_range.min + num_skipped,
+      Rng1uint64 block_relative_range__windowed = r1u64(block_relative_range.min + num_skipped,
                                                      block_relative_range.max - num_chopped);
       
       // rjf: sum & advance
@@ -971,7 +971,7 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
       {
         // rjf: get info about expansion range
         B32 is_standalone_row = 0;
-        U64 range_exprs_count = dim_1u64(block_relative_range__windowed);
+        uint64 range_exprs_count = dim_1u64(block_relative_range__windowed);
         E_Eval *range_evals = push_array(arena, E_Eval, range_exprs_count);
         for EachIndex(idx, range_exprs_count)
         {
@@ -1005,8 +1005,8 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
         // rjf: expansion operator applied -> call, and add rows for all expressions in the viewable range
         else for EachIndex(idx, range_exprs_count)
         {
-          U64 child_num = block_relative_range.min + num_skipped + idx + 1;
-          U64 child_id = ev_block_id_from_num(n->v.block, child_num);
+          uint64 child_num = block_relative_range.min + num_skipped + idx + 1;
+          uint64 child_id = ev_block_id_from_num(n->v.block, child_num);
           EV_Key row_key = ev_key_make(ev_hash_from_key(n->v.block->key), child_id);
           E_Eval row_eval = range_evals[idx];
           EV_WindowedRowNode *row_node = push_array(arena, EV_WindowedRowNode, 1);
@@ -1026,9 +1026,9 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
 }
 
 internal EV_Row *
-ev_row_from_num(Arena *arena, EV_View *view, EV_BlockRangeList *block_ranges, U64 num)
+ev_row_from_num(Arena *arena, EV_View *view, EV_BlockRangeList *block_ranges, uint64 num)
 {
-  U64 vidx = ev_vnum_from_num(block_ranges, num);
+  uint64 vidx = ev_vnum_from_num(block_ranges, num);
   EV_WindowedRowList rows = ev_windowed_row_list_from_block_range_list(arena, view, block_ranges, r1u64(vidx, vidx+1));
   EV_Row *result = 0;
   if(rows.first != 0)
@@ -1045,9 +1045,9 @@ ev_row_from_num(Arena *arena, EV_View *view, EV_BlockRangeList *block_ranges, U6
 }
 
 internal EV_WindowedRowList
-ev_rows_from_num_range(Arena *arena, EV_View *view, EV_BlockRangeList *block_ranges, Rng1U64 num_range)
+ev_rows_from_num_range(Arena *arena, EV_View *view, EV_BlockRangeList *block_ranges, Rng1uint64 num_range)
 {
-  Rng1U64 vnum_range = r1u64(ev_vnum_from_num(block_ranges, num_range.min), ev_vnum_from_num(block_ranges, num_range.max)+1);
+  Rng1uint64 vnum_range = r1u64(ev_vnum_from_num(block_ranges, num_range.min), ev_vnum_from_num(block_ranges, num_range.max)+1);
   EV_WindowedRowList rows = ev_windowed_row_list_from_block_range_list(arena, view, block_ranges, vnum_range);
   return rows;
 }
@@ -1102,7 +1102,7 @@ ev_row_is_editable(EV_Row *row)
 //- rjf: leaf stringification
 
 internal String8
-ev_string_from_ascii_value(Arena *arena, U8 val)
+ev_string_from_ascii_value(Arena *arena, uint8 val)
 {
   String8 result = {0};
   switch(val)
@@ -1129,7 +1129,7 @@ ev_string_from_ascii_value(Arena *arena, U8 val)
 }
 
 internal String8
-ev_string_from_hresult_facility_code(U32 code)
+ev_string_from_hresult_facility_code(uint32 code)
 {
   String8 result = {0};
   switch(code)
@@ -1258,7 +1258,7 @@ ev_string_from_hresult_facility_code(U32 code)
 }
 
 internal String8
-ev_string_from_hresult_code(U32 code)
+ev_string_from_hresult_code(uint32 code)
 {
   String8 result = {0};
   switch(code)
@@ -1286,13 +1286,13 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
   String8 result = {0};
   E_TypeKey type_key = e_type_key_unwrap(eval.irtree.type_key, E_TypeUnwrapFlag_AllDecorative & ~E_TypeUnwrapFlag_Enums);
   E_TypeKind type_kind = e_type_kind_from_key(type_key);
-  U64 type_byte_size = e_type_byte_size_from_key(type_key);
-  U8 digit_group_separator = 0;
+  uint64 type_byte_size = e_type_byte_size_from_key(type_key);
+  uint8 digit_group_separator = 0;
   if(!(params->flags & EV_StringFlag_ReadOnlyDisplayRules))
   {
     digit_group_separator = 0;
   }
-  F64 f64 = 0;
+  double f64 = 0;
   switch(type_kind)
   {
     default:{}break;
@@ -1307,10 +1307,10 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
       if(params->flags & EV_StringFlag_ReadOnlyDisplayRules)
       {
         Temp scratch = scratch_begin(&arena, 1);
-        U32 hresult_value = (U32)eval.value.u64;
-        U32 is_error   = !!(hresult_value & (1ull<<31));
-        U32 error_code = (hresult_value);
-        U32 facility   = (hresult_value & 0x7ff0000) >> 16;
+        uint32 hresult_value = (uint32)eval.value.u64;
+        uint32 is_error   = !!(hresult_value & (1ull<<31));
+        uint32 error_code = (hresult_value);
+        uint32 facility   = (hresult_value & 0x7ff0000) >> 16;
         String8 value_string = str8_from_s64(scratch.arena, eval.value.u64, params->radix, params->min_digits, digit_group_separator);
         String8 facility_string = ev_string_from_hresult_facility_code(facility);
         String8 error_string = ev_string_from_hresult_code(error_code);
@@ -1366,23 +1366,23 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
       }
     }break;
     
-    case E_TypeKind_S8:
-    case E_TypeKind_S16:
-    case E_TypeKind_S32:
-    case E_TypeKind_S64:
+    case E_TypeKind_uint8:
+    case E_TypeKind_uint16:
+    case E_TypeKind_uint32:
+    case E_TypeKind_uint64:
     {
       result = str8_from_s64(arena, eval.value.s64, params->radix, params->min_digits, digit_group_separator);
     }break;
     
-    case E_TypeKind_U8:
-    case E_TypeKind_U16:
-    case E_TypeKind_U32:
-    case E_TypeKind_U64:
+    case E_TypeKind_uint8:
+    case E_TypeKind_uint16:
+    case E_TypeKind_uint32:
+    case E_TypeKind_uint64:
     {
       result = str8_from_u64(arena, eval.value.u64, params->radix, params->min_digits, digit_group_separator);
     }break;
     
-    case E_TypeKind_U128:
+    case E_TypeKind_uint128:
     {
       Temp scratch = scratch_begin(&arena, 1);
       String8 upper64 = str8_from_u64(scratch.arena, eval.value.u128.u64[0], params->radix, params->min_digits, digit_group_separator);
@@ -1391,13 +1391,13 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
       scratch_end(scratch);
     }break;
     
-    case E_TypeKind_F32:{f64 = (F64)eval.value.f32;}goto f64_path;
-    case E_TypeKind_F64:{f64 = eval.value.f64;}goto f64_path;
+    case E_TypeKind_float:{f64 = (double)eval.value.f32;}goto f64_path;
+    case E_TypeKind_double:{f64 = eval.value.f64;}goto f64_path;
     f64_path:;
     {
       result = push_str8f(arena, "%.*f", params->min_digits ? params->min_digits : 16, f64);
-      U64 num_to_chop = 0;
-      for(U64 num_trimmed = 0; num_trimmed < result.size; num_trimmed += 1)
+      uint64 num_to_chop = 0;
+      for(uint64 num_trimmed = 0; num_trimmed < result.size; num_trimmed += 1)
       {
         if(result.str[result.size - 1 - num_trimmed] != '0')
         {
@@ -1425,10 +1425,10 @@ ev_escaped_from_raw_string(Arena *arena, String8 raw)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List parts = {0};
-  U64 start_split_idx = 0;
-  for(U64 idx = 0; idx <= raw.size; idx += 1)
+  uint64 start_split_idx = 0;
+  for(uint64 idx = 0; idx <= raw.size; idx += 1)
   {
-    U8 byte = (idx < raw.size) ? raw.str[idx] : 0;
+    uint8 byte = (idx < raw.size) ? raw.str[idx] : 0;
     B32 split = 1;
     String8 separator_replace = {0};
     switch(byte)
@@ -1484,14 +1484,14 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
   B32 need_pop = 1;
   B32 need_new_task = 0;
   EV_StringIterTask new_task = {0};
-  S32 top_task_depth = 0;
+  uint32 top_task_depth = 0;
   if(it->top_task != 0)
   {
     result = 1;
     
     //- rjf: unpack task
-    U64 task_idx = it->top_task->idx;
-    S32 depth = top_task_depth = it->top_task->depth;
+    uint64 task_idx = it->top_task->idx;
+    uint32 depth = top_task_depth = it->top_task->depth;
     EV_StringParams *params = &it->top_task->params;
     E_Eval eval = it->top_task->eval;
     E_TypeKey type_key = eval.irtree.type_key;
@@ -1530,7 +1530,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
             E_Type *type = e_type_from_key(type_key);
             E_Eval value_eval = e_value_eval_from_eval(eval);
             String8 constant_name = {0};
-            for(U64 val_idx = 0; val_idx < type->count; val_idx += 1)
+            for(uint64 val_idx = 0; val_idx < type->count; val_idx += 1)
             {
               if(value_eval.value.u64 == type->enum_vals[val_idx].val)
               {
@@ -1627,8 +1627,8 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
         else if(str8_match(type->name, str8_lit("array"), 0) &&
                 type->count >= 1 &&
                 (((E_TypeKind_Char8 <= element_type_kind && element_type_kind <= E_TypeKind_UChar32) ||
-                  element_type_kind == E_TypeKind_S8 ||
-                  element_type_kind == E_TypeKind_U8)))
+                  element_type_kind == E_TypeKind_uint8 ||
+                  element_type_kind == E_TypeKind_uint8)))
         {
           E_ParentKey(eval.key)
           {
@@ -1788,8 +1788,8 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
           ptr_data->direct_type = e_type_from_key(e_type_key_unwrap(type_key, E_TypeUnwrapFlag_All));
           ptr_data->ptee_has_content = (ptr_data->value_eval.value.u64 != 0 && ptr_data->direct_type->kind != E_TypeKind_Null && ptr_data->direct_type->kind != E_TypeKind_Void);
           ptr_data->ptee_has_string  = ((E_TypeKind_Char8 <= ptr_data->direct_type->kind && ptr_data->direct_type->kind <= E_TypeKind_UChar32) ||
-                                        ptr_data->direct_type->kind == E_TypeKind_S8 ||
-                                        ptr_data->direct_type->kind == E_TypeKind_U8);
+                                        ptr_data->direct_type->kind == E_TypeKind_uint8 ||
+                                        ptr_data->direct_type->kind == E_TypeKind_uint8);
         }
         if(ptr_data->did_redirect)
         {
@@ -1814,8 +1814,8 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
               
               // rjf: read string data
 #define EV_STRING_ITER_STRING_BUFFER_CAPACITY 4096
-              U64 string_buffer_size = EV_STRING_ITER_STRING_BUFFER_CAPACITY;
-              U8 *string_buffer = push_array(scratch.arena, U8, string_buffer_size);
+              uint64 string_buffer_size = EV_STRING_ITER_STRING_BUFFER_CAPACITY;
+              uint8 *string_buffer = push_array(scratch.arena, uint8, string_buffer_size);
               if(type_kind == E_TypeKind_Array && eval.irtree.mode == E_Mode_Value)
               {
                 StaticAssert(sizeof(eval.value.u512.u8) <= EV_STRING_ITER_STRING_BUFFER_CAPACITY, ev_string_iter_value_string_buffer_size_check);
@@ -1823,8 +1823,8 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
               }
               else
               {
-                U64 string_memory_addr = ptr_data->value_eval.value.u64;
-                for(U64 try_size = string_buffer_size; try_size >= 16; try_size /= 2)
+                uint64 string_memory_addr = ptr_data->value_eval.value.u64;
+                for(uint64 try_size = string_buffer_size; try_size >= 16; try_size /= 2)
                 {
                   B32 read_good = e_space_read(eval.space, string_buffer, r1u64(string_memory_addr, string_memory_addr+try_size));
                   if(read_good)
@@ -1835,14 +1835,14 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                 string_buffer[string_buffer_size-1] = 0;
               }
               
-              // rjf: check element size - if non-U8, assume UTF-16 or UTF-32 based on type, and convert
-              U64 element_size = ptr_data->direct_type->byte_size;
+              // rjf: check element size - if non-uint8, assume UTF-16 or UTF-32 based on type, and convert
+              uint64 element_size = ptr_data->direct_type->byte_size;
               String8 string = {0};
               switch(element_size)
               {
                 default:{string = str8_cstring((char *)string_buffer);}break;
-                case 2: {string = str8_from_16(scratch.arena, str16_cstring((U16 *)string_buffer));}break;
-                case 4: {string = str8_from_32(scratch.arena, str32_cstring((U32 *)string_buffer));}break;
+                case 2: {string = str8_from_16(scratch.arena, str16_cstring((uint16 *)string_buffer));}break;
+                case 4: {string = str8_from_32(scratch.arena, str32_cstring((uint32 *)string_buffer));}break;
               }
               
               // rjf: apply string size limitation
@@ -1871,31 +1871,31 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
             // rjf: try symbols
             if(!ptr_data->did_prefix_content)
             {
-              U64 vaddr = ptr_data->value_eval.value.u64;
+              uint64 vaddr = ptr_data->value_eval.value.u64;
               E_Module *module = &e_module_nil;
-              U32 module_idx = 0;
+              uint32 module_idx = 0;
               for EachIndex(idx, e_base_ctx->modules_count)
               {
                 if(contains_1u64(e_base_ctx->modules[idx].vaddr_range, vaddr))
                 {
                   module = &e_base_ctx->modules[idx];
-                  module_idx = (U32)idx;
+                  module_idx = (uint32)idx;
                   break;
                 }
               }
               RDI_Parsed *rdi = module->rdi;
-              U64 voff = vaddr - module->vaddr_range.min;
+              uint64 voff = vaddr - module->vaddr_range.min;
               B32 good_symbol_match = 0;
               
               // NOTE(rjf): read-only -> generate non-parseable things, like type-info / inlines
               if(params->flags & EV_StringFlag_ReadOnlyDisplayRules)
               {
                 // rjf: voff -> scope
-                U64 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff);
+                uint64 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff);
                 
                 // rjf: scope -> # of max possible inline depth
-                U64 inline_site_count = 0;
-                for(U64 s_idx = scope_idx, s_idx_next = 0; s_idx != 0; s_idx = s_idx_next)
+                uint64 inline_site_count = 0;
+                for(uint64 s_idx = scope_idx, s_idx_next = 0; s_idx != 0; s_idx = s_idx_next)
                 {
                   RDI_Scope *s = rdi_element_from_name_idx(rdi, Scopes, s_idx);
                   s_idx_next = s->parent_scope_idx;
@@ -1913,8 +1913,8 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                 if(0 < ptr_data->type->depth && ptr_data->type->depth <= inline_site_count)
                 {
                   RDI_InlineSite *inline_site = 0;
-                  U64 s_inline_depth = inline_site_count;
-                  for(U64 s_idx = scope_idx, s_idx_next = 0; s_idx != 0; s_idx = s_idx_next)
+                  uint64 s_inline_depth = inline_site_count;
+                  for(uint64 s_idx = scope_idx, s_idx_next = 0; s_idx != 0; s_idx = s_idx_next)
                   {
                     RDI_Scope *s = rdi_element_from_name_idx(rdi, Scopes, s_idx);
                     s_idx_next = s->parent_scope_idx;
@@ -1958,7 +1958,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                 {
                   Temp scratch = scratch_begin(&arena, 1);
                   RDI_Scope *scope = rdi_element_from_name_idx(rdi, Scopes, scope_idx);
-                  U64 proc_idx = scope->proc_idx;
+                  uint64 proc_idx = scope->proc_idx;
                   RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, proc_idx);
                   E_TypeKey type = e_type_key_ext(E_TypeKind_Function, procedure->type_idx, module_idx);
                   String8 name = {0};
@@ -1992,7 +1992,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
               else
               {
                 // rjf: voff -> scope
-                U64 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff);
+                uint64 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff);
                 RDI_Scope *scope = rdi_scope_from_voff(rdi, voff);
                 
                 // rjf: scope -> procedure / string

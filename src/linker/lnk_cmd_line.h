@@ -12,7 +12,7 @@ typedef struct LNK_CmdOption
 
 typedef struct LNK_CmdLine
 {
-  U64            option_count;
+  uint64            option_count;
   LNK_CmdOption *first_option;
   LNK_CmdOption *last_option;
   String8List    input_list;

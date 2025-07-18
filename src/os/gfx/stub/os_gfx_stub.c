@@ -34,7 +34,7 @@ os_get_clipboard_text(Arena *arena)
 //~ rjf: @os_hooks Windows (Implemented Per-OS)
 
 internal OS_Handle
-os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title)
+os_window_open(Rng2float rect, OS_WindowFlags flags, String8 title)
 {
   OS_Handle handle = {1};
   return handle;
@@ -115,35 +115,35 @@ os_window_clear_custom_border_data(OS_Handle handle)
 }
 
 internal void
-os_window_push_custom_title_bar(OS_Handle handle, F32 thickness)
+os_window_push_custom_title_bar(OS_Handle handle, float thickness)
 {
 }
 
 internal void
-os_window_push_custom_edges(OS_Handle handle, F32 thickness)
+os_window_push_custom_edges(OS_Handle handle, float thickness)
 {
 }
 
 internal void
-os_window_push_custom_title_bar_client_area(OS_Handle handle, Rng2F32 rect)
+os_window_push_custom_title_bar_client_area(OS_Handle handle, Rng2float rect)
 {
 }
 
-internal Rng2F32
+internal Rng2float
 os_rect_from_window(OS_Handle window)
 {
-  Rng2F32 rect = r2f32(v2f32(0, 0), v2f32(500, 500));
+  Rng2float rect = r2f32(v2f32(0, 0), v2f32(500, 500));
   return rect;
 }
 
-internal Rng2F32
+internal Rng2float
 os_client_rect_from_window(OS_Handle window)
 {
-  Rng2F32 rect = r2f32(v2f32(0, 0), v2f32(500, 500));
+  Rng2float rect = r2f32(v2f32(0, 0), v2f32(500, 500));
   return rect;
 }
 
-internal F32
+internal float
 os_dpi_from_window(OS_Handle window)
 {
   return 96.f;
@@ -179,14 +179,14 @@ os_name_from_monitor(Arena *arena, OS_Handle monitor)
   return str8_zero();
 }
 
-internal Vec2F32
+internal Vec2float
 os_dim_from_monitor(OS_Handle monitor)
 {
-  Vec2F32 v = v2f32(1000, 1000);
+  Vec2float v = v2f32(1000, 1000);
   return v;
 }
 
-internal F32
+internal float
 os_dpi_from_monitor(OS_Handle monitor)
 {
   return 96.f;
@@ -220,7 +220,7 @@ os_key_is_down(OS_Key key)
   return 0;
 }
 
-internal Vec2F32
+internal Vec2float
 os_mouse_from_window(OS_Handle window)
 {
   return v2f32(0, 0);

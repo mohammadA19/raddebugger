@@ -29,20 +29,20 @@ dmn_ctrl_exclusive_access_end(void)
 {
 }
 
-internal U32
+internal uint32
 dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
 {
   return 0;
 }
 
 internal B32
-dmn_ctrl_attach(DMN_CtrlCtx *ctx, U32 pid)
+dmn_ctrl_attach(DMN_CtrlCtx *ctx, uint32 pid)
 {
   return 0;
 }
 
 internal B32
-dmn_ctrl_kill(DMN_CtrlCtx *ctx, DMN_Handle process, U32 exit_code)
+dmn_ctrl_kill(DMN_CtrlCtx *ctx, DMN_Handle process, uint32 exit_code)
 {
   return 0;
 }
@@ -64,7 +64,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
 //~ rjf: @dmn_os_hooks Halting (Implemented Per-OS)
 
 internal void
-dmn_halt(U64 code, U64 user_data)
+dmn_halt(uint64 code, uint64 user_data)
 {
 }
 
@@ -86,40 +86,40 @@ dmn_access_close(void)
 
 //- rjf: processes
 
-internal U64
-dmn_process_memory_reserve(DMN_Handle process, U64 vaddr, U64 size)
+internal uint64
+dmn_process_memory_reserve(DMN_Handle process, uint64 vaddr, uint64 size)
 {
   return 0;
 }
 
 internal void
-dmn_process_memory_commit(DMN_Handle process, U64 vaddr, U64 size)
+dmn_process_memory_commit(DMN_Handle process, uint64 vaddr, uint64 size)
 {
 }
 
 internal void
-dmn_process_memory_decommit(DMN_Handle process, U64 vaddr, U64 size)
+dmn_process_memory_decommit(DMN_Handle process, uint64 vaddr, uint64 size)
 {
 }
 
 internal void
-dmn_process_memory_release(DMN_Handle process, U64 vaddr, U64 size)
+dmn_process_memory_release(DMN_Handle process, uint64 vaddr, uint64 size)
 {
 }
 
 internal void
-dmn_process_memory_protect(DMN_Handle process, U64 vaddr, U64 size, OS_AccessFlags flags)
+dmn_process_memory_protect(DMN_Handle process, uint64 vaddr, uint64 size, OS_AccessFlags flags)
 {
 }
 
-internal U64
-dmn_process_read(DMN_Handle process, Rng1U64 range, void *dst)
+internal uint64
+dmn_process_read(DMN_Handle process, Rng1uint64 range, void *dst)
 {
   return 0;
 }
 
 internal B32
-dmn_process_write(DMN_Handle process, Rng1U64 range, void *src)
+dmn_process_write(DMN_Handle process, Rng1uint64 range, void *src)
 {
   return 0;
 }
@@ -132,13 +132,13 @@ dmn_arch_from_thread(DMN_Handle handle)
   return Arch_Null;
 }
 
-internal U64
+internal uint64
 dmn_stack_base_vaddr_from_thread(DMN_Handle handle)
 {
   return 0;
 }
 
-internal U64
+internal uint64
 dmn_tls_root_vaddr_from_thread(DMN_Handle handle)
 {
   return 0;

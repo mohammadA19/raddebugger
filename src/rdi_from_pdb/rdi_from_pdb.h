@@ -89,14 +89,14 @@ struct P2R_CompUnitContributionsParseIn
 typedef struct P2R_CompUnitContributionsBucketIn P2R_CompUnitContributionsBucketIn;
 struct P2R_CompUnitContributionsBucketIn
 {
-  U64 comp_unit_count;
+  uint64 comp_unit_count;
   PDB_CompUnitContributionArray contributions;
 };
 
 typedef struct P2R_CompUnitContributionsBucketOut P2R_CompUnitContributionsBucketOut;
 struct P2R_CompUnitContributionsBucketOut
 {
-  RDIM_Rng1U64ChunkList *unit_ranges;
+  RDIM_Rng1uint64ChunkList *unit_ranges;
 };
 
 ////////////////////////////////
@@ -108,7 +108,7 @@ typedef struct P2R_LinkNameNode P2R_LinkNameNode;
 struct P2R_LinkNameNode
 {
   P2R_LinkNameNode *next;
-  U64 voff;
+  uint64 voff;
   String8 name;
 };
 
@@ -116,9 +116,9 @@ typedef struct P2R_LinkNameMap P2R_LinkNameMap;
 struct P2R_LinkNameMap
 {
   P2R_LinkNameNode **buckets;
-  U64 buckets_count;
-  U64 bucket_collision_count;
-  U64 link_name_count;
+  uint64 buckets_count;
+  uint64 bucket_collision_count;
+  uint64 link_name_count;
 };
 
 //- rjf: normalized file path -> source file map
@@ -134,7 +134,7 @@ typedef struct P2R_SrcFileMap P2R_SrcFileMap;
 struct P2R_SrcFileMap
 {
   P2R_SrcFileNode **slots;
-  U64 slots_count;
+  uint64 slots_count;
 };
 
 //- rjf: per-unit source files conversion tasks
@@ -160,11 +160,11 @@ struct P2R_GatherUnitSrcFilesOut
 typedef struct P2R_UnitConvertIn P2R_UnitConvertIn;
 struct P2R_UnitConvertIn
 {
-  U64 comp_unit_idx;
+  uint64 comp_unit_idx;
   PDB_Strtbl *pdb_strtbl;
   COFF_SectionHeaderArray coff_sections;
   PDB_CompUnit *comp_unit;
-  RDIM_Rng1U64ChunkList comp_unit_ranges;
+  RDIM_Rng1uint64ChunkList comp_unit_ranges;
   CV_SymParsed *comp_unit_syms;
   CV_C13Parsed *comp_unit_c13s;
   P2R_SrcFileMap *src_file_map;
@@ -252,8 +252,8 @@ struct P2R_SymbolStreamConvertIn
   CV_LeafParsed *tpi_leaf;
   CV_LeafParsed *ipi_leaf;
   CV_SymParsed *sym;
-  U64 sym_ranges_first;
-  U64 sym_ranges_opl;
+  uint64 sym_ranges_first;
+  uint64 sym_ranges_opl;
   CV_TypeId *itype_fwd_map;
   RDIM_Type **itype_type_ptrs;
   P2R_LinkNameMap *link_name_map;
@@ -280,8 +280,8 @@ global ASYNC_Root *p2r_async_root = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 p2r_end_of_cplusplus_container_name(String8 str);
-internal U64 p2r_hash_from_voff(U64 voff);
+internal uint64 p2r_end_of_cplusplus_container_name(String8 str);
+internal uint64 p2r_hash_from_voff(uint64 voff);
 
 ////////////////////////////////
 //~ rjf: COFF => RDI Canonical Conversions
@@ -299,9 +299,9 @@ internal RDI_TypeKind p2r_rdi_type_kind_from_cv_basic_type(CV_BasicType basic_ty
 ////////////////////////////////
 //~ rjf: Location Info Building Helpers
 
-internal RDIM_Location *p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 extra_indirection);
+internal RDIM_Location *p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code, uint32 reg_byte_size, uint32 reg_byte_pos, uint64 offset, B32 extra_indirection);
 internal RDI_RegCode p2r_reg_code_from_arch_encoded_fp_reg(RDI_Arch arch, CV_EncodedFramePtrReg encoded_reg);
-internal void p2r_location_over_lvar_addr_range(Arena *arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Location *location, CV_LvarAddrRange *range, COFF_SectionHeader *section, CV_LvarAddrGap *gaps, U64 gap_count);
+internal void p2r_location_over_lvar_addr_range(Arena *arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Location *location, CV_LvarAddrRange *range, COFF_SectionHeader *section, CV_LvarAddrGap *gaps, uint64 gap_count);
 
 ////////////////////////////////
 //~ rjf: Initial Parsing & Preparation Pass Tasks

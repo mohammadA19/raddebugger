@@ -1,7 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-global U64 global_update_tick_idx = 0;
+global uint64 global_update_tick_idx = 0;
 
 internal void
 main_thread_base_entry_point(int arguments_count, char **arguments)
@@ -111,10 +111,10 @@ supplement_thread_base_entry_point(void (*entry_point)(void *params), void *para
   tctx_release();
 }
 
-internal U64
+internal uint64
 update_tick_idx(void)
 {
-  U64 result = ins_atomic_u64_eval(&global_update_tick_idx);
+  uint64 result = ins_atomic_u64_eval(&global_update_tick_idx);
   return result;
 }
 

@@ -10,7 +10,7 @@ dw_is_dwarf_present_elf_section_table(String8 raw_image, ELF_BinInfo *bin)
   
   ELF_Shdr64Array sections = elf_shdr64_array_from_bin(scratch.arena, raw_image, &bin->hdr);
   
-  for (U64 i = 0; i < sections.count; ++i) {
+  for (uint64 i = 0; i < sections.count; ++i) {
     ELF_Shdr64 *shdr = &sections.v[i];
     String8     name = elf_name_from_shdr64(raw_image, &bin->hdr, bin->sh_name_range, shdr);
     
@@ -46,7 +46,7 @@ dw_input_from_elf_section_table(Arena *arena, String8 raw_image, ELF_BinInfo *bi
   
   ELF_Shdr64Array sections = elf_shdr64_array_from_bin(scratch.arena, raw_image, &bin->hdr);
   
-  for (U64 sect_idx = 1; sect_idx < sections.count; ++sect_idx) {
+  for (uint64 sect_idx = 1; sect_idx < sections.count; ++sect_idx) {
     ELF_Shdr64 *shdr = &sections.v[sect_idx];
     
     // skip BSS sections
@@ -67,7 +67,7 @@ dw_input_from_elf_section_table(Arena *arena, String8 raw_image, ELF_BinInfo *bi
       if (sect_status[s]) {
         Assert(!"too many debug sections with identical name, picking first");
       } else {
-        Rng1U64 raw_data_range = rng_1u64(shdr->sh_offset, shdr->sh_offset + shdr->sh_size);
+        Rng1uint64 raw_data_range = rng_1u64(shdr->sh_offset, shdr->sh_offset + shdr->sh_size);
         String8 data           = str8_substr(raw_image, raw_data_range);
         
         // ELF was compiled with compressed debug info
@@ -76,7 +76,7 @@ dw_input_from_elf_section_table(Arena *arena, String8 raw_image, ELF_BinInfo *bi
           
           // read header
           ELF_Chdr64 chdr64    = {0};
-          U64        chdr_size = 0;
+          uint64        chdr_size = 0;
           if (ELF_HdrIs64Bit(bin->hdr.e_ident)) {
             chdr_size = str8_deserial_read_struct(comp_data_with_header, 0, &chdr64);
             if (chdr_size != sizeof(chdr64)) {
@@ -96,8 +96,8 @@ dw_input_from_elf_section_table(Arena *arena, String8 raw_image, ELF_BinInfo *bi
           String8 comp_data = str8_skip(comp_data_with_header, chdr_size);
           
           // push buffer for the decompressor
-          U8  *decomp_buffer      = push_array_no_zero_aligned(arena, U8, chdr64.ch_size, chdr64.ch_addr_align);
-          U64  actual_decomp_size = 0;
+          uint8  *decomp_buffer      = push_array_no_zero_aligned(arena, uint8, chdr64.ch_size, chdr64.ch_addr_align);
+          uint64  actual_decomp_size = 0;
           
           // decompress
           switch (chdr64.ch_type) {

@@ -1,11 +1,11 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal U64
+internal uint64
 coff_align_size_from_section_flags(COFF_SectionFlags flags)
 {
-  U32 align = 0;
-  U32 align_index = COFF_SectionFlags_ExtractAlign(flags);
+  uint32 align = 0;
+  uint32 align_index = COFF_SectionFlags_ExtractAlign(flags);
   switch (align_index) {
     default: break;
     case COFF_SectionAlign_1Bytes:    align = 1;    break;
@@ -27,7 +27,7 @@ coff_align_size_from_section_flags(COFF_SectionFlags flags)
 }
 
 internal COFF_SectionFlags
-coff_section_flag_from_align_size(U64 align)
+coff_section_flag_from_align_size(uint64 align)
 {
   COFF_SectionFlags flags = 0;
   switch (align) {
@@ -57,7 +57,7 @@ coff_name_from_section_header(String8 string_table, COFF_SectionHeader *header)
   String8 name = str8_cstring_capped(header->name, header->name + sizeof(header->name));
   if (name.str[0] == '/') {
     String8 name_off_str = str8_skip(name, 1);
-    U64     name_off     = u64_from_str8(name_off_str, 10);
+    uint64     name_off     = u64_from_str8(name_off_str, 10);
     name = str8_cstring_capped(string_table.str + name_off, string_table.str+string_table.size);
   }
   return name;
@@ -76,7 +76,7 @@ coff_parse_section_name(String8 full_name, String8 *name_out, String8 *postfix_o
   //    H: Clang extension produced with /debug:ghash, array of type hashes
   *name_out    = full_name;
   *postfix_out = str8_lit("");
-  for (U64 i = 0; i < full_name.size; ++i) {
+  for (uint64 i = 0; i < full_name.size; ++i) {
     if (full_name.str[i] == '$') {
       *name_out    = str8(full_name.str, i);
       *postfix_out = str8(full_name.str + i, full_name.size - i);
@@ -92,7 +92,7 @@ coff_read_symbol_name(String8 string_table, COFF_SymbolName *name)
   if (name->long_name.zeroes == 0) {
     str8_deserial_read_cstr(string_table, name->long_name.string_table_offset, &name_str);
   } else {
-    U32 i;
+    uint32 i;
     for (i = 0; i < sizeof(name->short_name); ++i) {
       if (name->short_name[i] == '\0') {
         break;
@@ -103,7 +103,7 @@ coff_read_symbol_name(String8 string_table, COFF_SymbolName *name)
   return name_str;
 }
 
-internal U64
+internal uint64
 coff_apply_size_from_reloc_x64(COFF_Reloc_X64 x)
 {
   switch (x) {
@@ -131,7 +131,7 @@ coff_apply_size_from_reloc_x64(COFF_Reloc_X64 x)
   return 0;
 }
 
-internal U64
+internal uint64
 coff_apply_size_from_reloc_x86(COFF_Reloc_X86 x)
 {
   switch (x) {
@@ -161,7 +161,7 @@ coff_apply_size_from_reloc_x86(COFF_Reloc_X86 x)
   return 0;
 }
 
-internal U64
+internal uint64
 coff_apply_size_from_reloc(COFF_MachineType machine, COFF_RelocType x)
 {
   switch (machine) {
@@ -174,24 +174,24 @@ coff_apply_size_from_reloc(COFF_MachineType machine, COFF_RelocType x)
 
 internal COFF_RelocValue
 coff_pick_reloc_value_x64(COFF_Reloc_X64 type,
-                          U64            image_base,
-                          U64            reloc_virtual_offset,
-                          U32            symbol_section_number,
-                          U32            symbol_section_offset,
-                          S64            symbol_virtual_offset)
+                          uint64            image_base,
+                          uint64            reloc_virtual_offset,
+                          uint32            symbol_section_number,
+                          uint32            symbol_section_offset,
+                          uint64            symbol_virtual_offset)
 {
-  U64 reloc_value_size = 0;
-  S64 reloc_value      = 0;
+  uint64 reloc_value_size = 0;
+  uint64 reloc_value      = 0;
 
   switch (type) {
   case COFF_Reloc_X64_Abs: {} break;
   case COFF_Reloc_X64_Addr64: {
     reloc_value_size = 8;
-    reloc_value      = symbol_virtual_offset + (S64)image_base;
+    reloc_value      = symbol_virtual_offset + (uint64)image_base;
   } break;
   case COFF_Reloc_X64_Addr32: {
     reloc_value_size = 4;
-    reloc_value      = safe_cast_s32(symbol_virtual_offset + (S64)image_base);
+    reloc_value      = safe_cast_s32(symbol_virtual_offset + (uint64)image_base);
   } break;
   case COFF_Reloc_X64_Addr32Nb: {
     reloc_value_size = 4;
@@ -247,7 +247,7 @@ coff_pick_reloc_value_x64(COFF_Reloc_X64 type,
 }
 
 internal String8
-coff_make_lib_member_header(Arena *arena, String8 name, COFF_TimeStamp time_stamp, U16 user_id, U16 group_id, U16 mode, U32 size)
+coff_make_lib_member_header(Arena *arena, String8 name, COFF_TimeStamp time_stamp, uint16 user_id, uint16 group_id, uint16 mode, uint32 size)
 {
   Assert(name.size < 16);
   Assert(user_id < 10000);
@@ -272,44 +272,44 @@ coff_make_lib_member_header(Arena *arena, String8 name, COFF_TimeStamp time_stam
 }
 
 internal String8
-coff_make_import_lookup(Arena *arena, U16 hint, String8 name)
+coff_make_import_lookup(Arena *arena, uint16 hint, String8 name)
 {
-  U64 buffer_size = sizeof(hint) + (name.size + 1);
-  U8 *buffer = push_array(arena, U8, buffer_size);
-  *(U16*)buffer = hint;
+  uint64 buffer_size = sizeof(hint) + (name.size + 1);
+  uint8 *buffer = push_array(arena, uint8, buffer_size);
+  *(uint16*)buffer = hint;
   MemoryCopy(buffer + sizeof(hint), name.str, name.size);
   buffer[buffer_size - 1] = 0;
   String8 result = str8(buffer, buffer_size);
   return result;
 }
 
-internal U32
-coff_make_ordinal32(U16 hint)
+internal uint32
+coff_make_ordinal32(uint16 hint)
 {
-  U32 ordinal = (1 << 31) | hint;
+  uint32 ordinal = (1 << 31) | hint;
   return ordinal;
 }
 
-internal U64
-coff_make_ordinal64(U16 hint)
+internal uint64
+coff_make_ordinal64(uint16 hint)
 {
-  U64 ordinal = (1ULL << 63) | hint;
+  uint64 ordinal = (1ULL << 63) | hint;
   return ordinal;
 }
 
 internal String8
-coff_ordinal_data_from_hint(Arena *arena, COFF_MachineType machine, U16 hint)
+coff_ordinal_data_from_hint(Arena *arena, COFF_MachineType machine, uint16 hint)
 {
   String8 ordinal_data = {0}; 
   switch (machine) {
   case COFF_MachineType_Unknown: break;
   case COFF_MachineType_X64: {
-    U64 *ordinal = push_array(arena, U64, 1);
+    uint64 *ordinal = push_array(arena, uint64, 1);
     *ordinal     = coff_make_ordinal64(hint);
     ordinal_data = str8_struct(ordinal);
   } break;
   case COFF_MachineType_X86: {
-    U32 *ordinal = push_array(arena, U32, 1);
+    uint32 *ordinal = push_array(arena, uint32, 1);
     *ordinal     = coff_make_ordinal32(hint);
     ordinal_data = str8_struct(ordinal);
   } break;
@@ -325,7 +325,7 @@ coff_make_import_header(Arena            *arena,
                         String8           dll_name,
                         COFF_ImportByType import_by,
                         String8           name,
-                        U16               hint_or_ordinal,
+                        uint16               hint_or_ordinal,
                         COFF_ImportType   type)
 {
   COFF_ImportHeaderFlags flags = 0;
@@ -334,7 +334,7 @@ coff_make_import_header(Arena            *arena,
 
   COFF_ImportHeader header = {0};
   header.sig1              = COFF_MachineType_Unknown;
-  header.sig2              = max_U16;
+  header.sig2              = max_uint16;
   header.version           = 0;
   header.machine           = machine;
   header.time_stamp        = time_stamp;
@@ -343,19 +343,19 @@ coff_make_import_header(Arena            *arena,
   header.flags             = flags;
   
   // alloc memory
-  U64  buffer_size = sizeof(header) + header.data_size;
-  U8  *buffer      = push_array_no_zero(arena, U8, buffer_size);
+  uint64  buffer_size = sizeof(header) + header.data_size;
+  uint8  *buffer      = push_array_no_zero(arena, uint8, buffer_size);
   
   // copy header
   MemoryCopy(buffer, &header, sizeof(header));
   
   // copy function name
-  U8 *func_name = buffer + sizeof(header);
+  uint8 *func_name = buffer + sizeof(header);
   MemoryCopy(func_name, name.str, name.size);
   func_name[name.size] = 0;
   
   // copy dll name
-  U8 *dll_name_buffer = buffer + sizeof(header) + name.size + 1;
+  uint8 *dll_name_buffer = buffer + sizeof(header) + name.size + 1;
   MemoryCopy(dll_name_buffer, dll_name.str, dll_name.size);
   dll_name_buffer[dll_name.size] = 0;
   
@@ -363,10 +363,10 @@ coff_make_import_header(Arena            *arena,
   return import_data;
 }
 
-internal U8
+internal uint8
 coff_code_align_byte_from_machine(COFF_MachineType machine)
 {
-  U8 align_byte = 0;
+  uint8 align_byte = 0;
   switch (machine) {
   case COFF_MachineType_Unknown: break;
   case COFF_MachineType_X64:
@@ -378,10 +378,10 @@ coff_code_align_byte_from_machine(COFF_MachineType machine)
   return align_byte;
 }
 
-internal U16
+internal uint16
 coff_default_align_from_machine(COFF_MachineType machine)
 {
-  U16 align = 0;
+  uint16 align = 0;
   switch (machine) {
   case COFF_MachineType_Unknown: break;
   case COFF_MachineType_X64: {
@@ -392,10 +392,10 @@ coff_default_align_from_machine(COFF_MachineType machine)
   return align;
 }
 
-internal U64
+internal uint64
 coff_word_size_from_machine(COFF_MachineType machine)
 {
-  U64 result = 0;
+  uint64 result = 0;
   switch (machine) {
     case COFF_MachineType_X64: result = 8; break;
     case COFF_MachineType_X86: result = 4; break;
@@ -403,10 +403,10 @@ coff_word_size_from_machine(COFF_MachineType machine)
   return result;
 }
 
-internal U64
+internal uint64
 coff_default_exe_base_from_machine(COFF_MachineType machine)
 {
-  U64 exe_base = 0;
+  uint64 exe_base = 0;
   switch (coff_word_size_from_machine(machine)) {
     case 4: exe_base = 0x400000;    break;
     case 8: exe_base = 0x140000000; break;
@@ -414,10 +414,10 @@ coff_default_exe_base_from_machine(COFF_MachineType machine)
   return exe_base;
 }
 
-internal U64
+internal uint64
 coff_default_dll_base_from_machine(COFF_MachineType machine)
 {
-  U64 dll_base = 0;
+  uint64 dll_base = 0;
   switch (coff_word_size_from_machine(machine)) {
     case 4: dll_base = 0x10000000;  break;
     case 8: dll_base = 0x180000000; break;
@@ -440,11 +440,11 @@ arch_from_coff_machine(COFF_MachineType machine)
   return result;
 }
 
-internal U64
-coff_foff_from_voff(COFF_SectionHeader *sections, U64 section_count, U64 voff)
+internal uint64
+coff_foff_from_voff(COFF_SectionHeader *sections, uint64 section_count, uint64 voff)
 {
-  U64 foff = 0;
-  for(U64 sect_idx = 0; sect_idx < section_count; sect_idx += 1)
+  uint64 foff = 0;
+  for(uint64 sect_idx = 0; sect_idx < section_count; sect_idx += 1)
   {
     COFF_SectionHeader *sect = &sections[sect_idx];
     if(sect->voff <= voff && voff < sect->voff+sect->vsize)
@@ -468,7 +468,7 @@ coff_string_from_time_stamp(Arena *arena, COFF_TimeStamp time_stamp)
   String8 result;
   if (time_stamp == 0) {
     result = str8_lit("0");
-  } else if (time_stamp >= max_U32) {
+  } else if (time_stamp >= max_uint32) {
     result = str8_lit("-1");
   } else {
     DateTime dt = date_time_from_unix_time(time_stamp);
@@ -537,7 +537,7 @@ coff_string_from_comdat_select_type(COFF_ComdatSelectType type)
 internal String8
 coff_string_from_machine_type(COFF_MachineType machine)
 {
-  for (U64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
+  for (uint64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
     if (g_coff_machine_map[i].machine == machine) {
       return g_coff_machine_map[i].string;
     }
@@ -658,7 +658,7 @@ coff_string_from_section_flags(Arena *arena, COFF_SectionFlags flags)
     str8_list_pushf(scratch.arena, &list, "MemWrite");
   }
   
-  U64 align = coff_align_size_from_section_flags(flags);
+  uint64 align = coff_align_size_from_section_flags(flags);
   if (align) {
     str8_list_pushf(scratch.arena, &list, "Align=%u", align);
   }
@@ -707,7 +707,7 @@ coff_string_from_resource_memory_flags(Arena *arena, COFF_ResourceMemoryFlags fl
 internal String8
 coff_string_from_import_header_type(COFF_ImportType type)
 {
-  for (U64 i = 0; i < ArrayCount(g_coff_import_header_type_map); ++i) {
+  for (uint64 i = 0; i < ArrayCount(g_coff_import_header_type_map); ++i) {
     if (g_coff_import_header_type_map[i].type == type) {
       return str8_cstring(g_coff_import_header_type_map[i].name);
     }
@@ -918,7 +918,7 @@ coff_string_from_reloc(COFF_MachineType machine, COFF_RelocType x)
 internal COFF_MachineType
 coff_machine_from_string(String8 string)
 {
-  for (U64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
+  for (uint64 i = 0; i < ArrayCount(g_coff_machine_map); ++i) {
     if (str8_match(g_coff_machine_map[i].string, string, StringMatchFlag_CaseInsensitive)) {
       return g_coff_machine_map[i].machine;
     }
@@ -929,7 +929,7 @@ coff_machine_from_string(String8 string)
 internal COFF_ImportType
 coff_import_header_type_from_string(String8 name)
 {
-  for (U64 i = 0; i < ArrayCount(g_coff_import_header_type_map); ++i) {
+  for (uint64 i = 0; i < ArrayCount(g_coff_import_header_type_map); ++i) {
     if (str8_match(str8_cstring(g_coff_import_header_type_map[i].name), name, StringMatchFlag_CaseInsensitive)) {
       return g_coff_import_header_type_map[i].type;
     }

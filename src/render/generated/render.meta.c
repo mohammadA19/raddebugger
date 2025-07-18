@@ -17,7 +17,7 @@ str8_lit_comp("RG32"),
 str8_lit_comp("RGBA32"),
 };
 
-U8 r_tex2d_format_bytes_per_pixel_table[9] =
+uint8 r_tex2d_format_bytes_per_pixel_table[9] =
 {
 1,
 2,
@@ -50,14 +50,14 @@ str8_lit_comp("Blur"),
 str8_lit_comp("Geo3D"),
 };
 
-U8 r_pass_kind_batch_table[3] =
+uint8 r_pass_kind_batch_table[3] =
 {
 1,
 0,
 1,
 };
 
-U64 r_pass_kind_params_size_table[3] =
+uint64 r_pass_kind_params_size_table[3] =
 {
 sizeof(R_PassParams_UI),
 sizeof(R_PassParams_Blur),

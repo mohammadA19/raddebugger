@@ -12,7 +12,7 @@ struct MTX_Node
 {
   MTX_Node *next;
   MTX_Node *prev;
-  U128 key;
+  uint128 key;
 };
 
 typedef struct MTX_Slot MTX_Slot;
@@ -36,17 +36,17 @@ struct MTX_Stripe
 typedef struct MTX_Op MTX_Op;
 struct MTX_Op
 {
-  Rng1U64 range;
+  Rng1uint64 range;
   String8 replace;
 };
 
 typedef struct MTX_MutThread MTX_MutThread;
 struct MTX_MutThread
 {
-  U64 ring_size;
-  U8 *ring_base;
-  U64 ring_read_pos;
-  U64 ring_write_pos;
+  uint64 ring_size;
+  uint8 *ring_base;
+  uint64 ring_read_pos;
+  uint64 ring_write_pos;
   OS_Handle cv;
   OS_Handle mutex;
   OS_Handle thread;
@@ -61,13 +61,13 @@ struct MTX_Shared
   Arena *arena;
   
   // rjf: buffer cache
-  U64 slots_count;
-  U64 stripes_count;
+  uint64 slots_count;
+  uint64 stripes_count;
   MTX_Slot *slots;
   MTX_Stripe *stripes;
   
   // rjf: mut threads
-  U64 mut_threads_count;
+  uint64 mut_threads_count;
   MTX_MutThread *mut_threads;
 };
 

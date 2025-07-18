@@ -46,7 +46,7 @@ UI_MouseButtonKind;
 ////////////////////////////////
 //~ rjf: Codepath Permissions
 
-typedef U32 UI_PermissionFlags;
+typedef uint32 UI_PermissionFlags;
 enum
 {
   UI_PermissionFlag_ClicksLeft        = (1<<0),
@@ -107,7 +107,7 @@ typedef enum UI_EventActionSlot
 }
 UI_EventActionSlot;
 
-typedef U32 UI_EventFlags;
+typedef uint32 UI_EventFlags;
 enum
 {
   UI_EventFlag_KeepMark            = (1<<0),
@@ -145,10 +145,10 @@ struct UI_Event
   OS_Modifiers modifiers;
   String8 string;
   String8List paths;
-  Vec2F32 pos;
-  Vec2F32 delta_2f32;
-  Vec2S32 delta_2s32;
-  U64 timestamp_us;
+  Vec2float pos;
+  Vec2float delta_2f32;
+  Vec2uint32 delta_2s32;
+  uint64 timestamp_us;
 };
 
 typedef struct UI_EventNode UI_EventNode;
@@ -164,13 +164,13 @@ struct UI_EventList
 {
   UI_EventNode *first;
   UI_EventNode *last;
-  U64 count;
+  uint64 count;
 };
 
 ////////////////////////////////
 //~ rjf: Textual Operations
 
-typedef U32 UI_TxtOpFlags;
+typedef uint32 UI_TxtOpFlags;
 enum
 {
   UI_TxtOpFlag_Invalid = (1<<0),
@@ -194,7 +194,7 @@ struct UI_TxtOp
 typedef struct UI_Key UI_Key;
 struct UI_Key
 {
-  U64 u64[1];
+  uint64 u64[1];
 };
 
 ////////////////////////////////
@@ -214,8 +214,8 @@ typedef struct UI_Size UI_Size;
 struct UI_Size
 {
   UI_SizeKind kind;
-  F32 value;
-  F32 strictness;
+  float value;
+  float strictness;
 };
 
 ////////////////////////////////
@@ -225,14 +225,14 @@ typedef struct UI_ThemePattern UI_ThemePattern;
 struct UI_ThemePattern
 {
   String8Array tags;
-  Vec4F32 linear;
+  Vec4float linear;
 };
 
 typedef struct UI_Theme UI_Theme;
 struct UI_Theme
 {
   UI_ThemePattern *patterns;
-  U64 patterns_count;
+  uint64 patterns_count;
 };
 
 ////////////////////////////////
@@ -241,12 +241,12 @@ struct UI_Theme
 typedef struct UI_AnimationInfo UI_AnimationInfo;
 struct UI_AnimationInfo
 {
-  F32 hot_animation_rate;
-  F32 active_animation_rate;
-  F32 focus_animation_rate;
-  F32 tooltip_animation_rate;
-  F32 menu_animation_rate;
-  F32 scroll_animation_rate;
+  float hot_animation_rate;
+  float active_animation_rate;
+  float focus_animation_rate;
+  float tooltip_animation_rate;
+  float menu_animation_rate;
+  float scroll_animation_rate;
 };
 
 ////////////////////////////////
@@ -255,8 +255,8 @@ struct UI_AnimationInfo
 typedef struct UI_ScrollPt UI_ScrollPt;
 struct UI_ScrollPt
 {
-  S64 idx;
-  F32 off;
+  uint64 idx;
+  float off;
 };
 
 typedef union UI_ScrollPt2 UI_ScrollPt2;
@@ -286,7 +286,7 @@ struct UI_Box;
 #define UI_BOX_CUSTOM_DRAW(name) void name(struct UI_Box *box, void *user_data)
 typedef UI_BOX_CUSTOM_DRAW(UI_BoxCustomDrawFunctionType);
 
-typedef U64 UI_BoxFlags;
+typedef uint64 UI_BoxFlags;
 //{
 //- rjf: interaction
 # define UI_BoxFlag_MouseClickable            (UI_BoxFlags)(1ull<<0)
@@ -375,7 +375,7 @@ struct UI_Box
   UI_Box *next;
   UI_Box *prev;
   UI_Box *parent;
-  U64 child_count;
+  uint64 child_count;
   
   //- rjf: per-build equipment
   UI_Key key;
@@ -383,51 +383,51 @@ struct UI_Box
   UI_Key tags_key;
   String8 string;
   UI_TextAlign text_align;
-  Vec2F32 fixed_position;
-  Vec2F32 fixed_size;
-  Vec2F32 min_size;
+  Vec2float fixed_position;
+  Vec2float fixed_size;
+  Vec2float min_size;
   UI_Size pref_size[Axis2_COUNT];
   Axis2 child_layout_axis;
   OS_Cursor hover_cursor;
-  U32 fastpath_codepoint;
+  uint32 fastpath_codepoint;
   UI_Key group_key;
   DR_Bucket *draw_bucket;
   UI_BoxCustomDrawFunctionType *custom_draw;
   void *custom_draw_user_data;
-  Vec4F32 background_color;
-  Vec4F32 text_color;
-  Vec4F32 border_color;
+  Vec4float background_color;
+  Vec4float text_color;
+  Vec4float border_color;
   FNT_Tag font;
-  F32 font_size;
-  F32 tab_size;
+  float font_size;
+  float tab_size;
   FNT_RasterFlags text_raster_flags;
-  F32 corner_radii[Corner_COUNT];
-  F32 blur_size;
-  F32 transparency;
-  F32 squish;
-  F32 text_padding;
+  float corner_radii[Corner_COUNT];
+  float blur_size;
+  float transparency;
+  float squish;
+  float text_padding;
   
   //- rjf: per-build artifacts
   DR_FStrList display_fstrs;
   DR_FRunList display_fruns;
-  Rng2F32 rect;
-  Vec2F32 fixed_position_animated;
-  Vec2F32 position_delta;
+  Rng2float rect;
+  Vec2float fixed_position_animated;
+  Vec2float position_delta;
   FuzzyMatchRangeList fuzzy_match_ranges;
   
   //- rjf: persistent data
-  U64 first_touched_build_index;
-  U64 last_touched_build_index;
-  U64 first_disabled_build_index;
-  F32 hot_t;
-  F32 active_t;
-  F32 disabled_t;
-  F32 focus_hot_t;
-  F32 focus_active_t;
-  F32 focus_active_disabled_t;
-  Vec2F32 view_off;
-  Vec2F32 view_off_target;
-  Vec2F32 view_bounds;
+  uint64 first_touched_build_index;
+  uint64 last_touched_build_index;
+  uint64 first_disabled_build_index;
+  float hot_t;
+  float active_t;
+  float disabled_t;
+  float focus_hot_t;
+  float focus_active_t;
+  float focus_active_disabled_t;
+  Vec2float view_off;
+  Vec2float view_off_target;
+  Vec2float view_bounds;
   UI_Key default_nav_focus_hot_key;
   UI_Key default_nav_focus_active_key;
   UI_Key default_nav_focus_next_hot_key;
@@ -438,8 +438,8 @@ typedef struct UI_BoxRec UI_BoxRec;
 struct UI_BoxRec
 {
   UI_Box *next;
-  S32 push_count;
-  S32 pop_count;
+  uint32 push_count;
+  uint32 pop_count;
 };
 
 typedef struct UI_BoxNode UI_BoxNode;
@@ -454,10 +454,10 @@ struct UI_BoxList
 {
   UI_BoxNode *first;
   UI_BoxNode *last;
-  U64 count;
+  uint64 count;
 };
 
-typedef U32 UI_SignalFlags;
+typedef uint32 UI_SignalFlags;
 enum
 {
   // rjf: mouse press -> box was pressed while hovering
@@ -524,7 +524,7 @@ struct UI_Signal
 {
   UI_Box *box;
   OS_Modifiers event_flags;
-  Vec2S16 scroll;
+  Vec2uint16 scroll;
   UI_SignalFlags f;
 };
 
@@ -544,7 +544,7 @@ typedef struct UI_Nav UI_Nav;
 struct UI_Nav
 {
   B32 moved;
-  Vec2S64 new_p;
+  Vec2uint64 new_p;
 };
 
 ////////////////////////////////
@@ -553,10 +553,10 @@ struct UI_Nav
 typedef struct UI_AnimParams UI_AnimParams;
 struct UI_AnimParams
 {
-  F32 initial;
-  F32 target;
-  F32 rate;
-  F32 epsilon;
+  float initial;
+  float target;
+  float rate;
+  float epsilon;
   B32 reset;
 };
 
@@ -567,11 +567,11 @@ struct UI_AnimNode
   UI_AnimNode *slot_prev;
   UI_AnimNode *lru_next;
   UI_AnimNode *lru_prev;
-  U64 first_touched_build_index;
-  U64 last_touched_build_index;
+  uint64 first_touched_build_index;
+  uint64 last_touched_build_index;
   UI_Key key;
   UI_AnimParams params;
-  F32 current;
+  float current;
 };
 
 typedef struct UI_AnimSlot UI_AnimSlot;
@@ -622,10 +622,10 @@ struct UI_ThemePatternCacheNode
   UI_ThemePatternCacheNode *slot_prev;
   UI_ThemePatternCacheNode *lru_next;
   UI_ThemePatternCacheNode *lru_prev;
-  U64 last_build_index_accessed;
+  uint64 last_build_index_accessed;
   UI_Key key;
-  Vec4F32 target_rgba;
-  Vec4F32 current_rgba;
+  Vec4float target_rgba;
+  Vec4float current_rgba;
 };
 
 typedef struct UI_ThemePatternCacheSlot UI_ThemePatternCacheSlot;
@@ -657,18 +657,18 @@ struct UI_State
   
   //- rjf: build arenas
   Arena *build_arenas[2];
-  U64 build_index;
+  uint64 build_index;
   
   //- rjf: box cache
   UI_Box *first_free_box;
-  U64 box_table_size;
+  uint64 box_table_size;
   UI_BoxHashSlot *box_table;
   
   //- rjf: anim cache
   UI_AnimNode *free_anim_node;
   UI_AnimNode *lru_anim_node;
   UI_AnimNode *mru_anim_node;
-  U64 anim_slots_count;
+  uint64 anim_slots_count;
   UI_AnimSlot *anim_slots;
   
   //- rjf: build state machine state
@@ -677,14 +677,14 @@ struct UI_State
   B32 tooltip_can_overflow_window;
   UI_Key tooltip_anchor_key;
   String8Array current_gen_tags;
-  U64 current_gen_tags_gen;
+  uint64 current_gen_tags_gen;
   UI_TagsKeyStackNode *tags_key_stack_top;
   UI_TagsKeyStackNode *tags_key_stack_free;
-  U64 tags_cache_slots_count;
+  uint64 tags_cache_slots_count;
   UI_TagsCacheSlot *tags_cache_slots;
   
   //- rjf: theme pattern cache
-  U64 theme_pattern_cache_slots_count;
+  uint64 theme_pattern_cache_slots_count;
   UI_ThemePatternCacheSlot *theme_pattern_cache_slots;
   UI_ThemePatternCacheNode *theme_pattern_cache_node_free;
   UI_ThemePatternCacheNode *lru_theme_pattern_cache_node;
@@ -695,8 +695,8 @@ struct UI_State
   UI_Box *tooltip_root;
   UI_Box *ctx_menu_root;
   UI_Key default_nav_root_key;
-  U64 build_box_count;
-  U64 last_build_box_count;
+  uint64 build_box_count;
+  uint64 last_build_box_count;
   B32 ctx_menu_touched_this_frame;
   B32 is_animating;
   
@@ -706,41 +706,41 @@ struct UI_State
   UI_AnimationInfo animation_info;
   OS_Handle window;
   UI_EventList *events;
-  Vec2F32 mouse;
-  F32 animation_dt;
-  F32 default_animation_rate;
+  Vec2float mouse;
+  float animation_dt;
+  float default_animation_rate;
   
   //- rjf: user interaction state
   UI_Key hot_box_key;
   UI_Key active_box_key[UI_MouseButtonKind_COUNT];
   UI_Key drop_hot_box_key;
   UI_Key clipboard_copy_key;
-  U64 press_timestamp_history_us[UI_MouseButtonKind_COUNT][3];
+  uint64 press_timestamp_history_us[UI_MouseButtonKind_COUNT][3];
   UI_Key press_key_history[UI_MouseButtonKind_COUNT][3];
-  Vec2F32 press_pos_history[UI_MouseButtonKind_COUNT][3];
-  Vec2F32 drag_start_mouse;
+  Vec2float press_pos_history[UI_MouseButtonKind_COUNT][3];
+  Vec2float drag_start_mouse;
   Arena *drag_state_arena;
   String8 drag_state_data;
   Arena *string_hover_arena;
   String8 string_hover_string;
-  F32 string_hover_size;
+  float string_hover_size;
   DR_FStrList string_hover_fstrs;
-  U64 string_hover_begin_us;
-  U64 string_hover_build_index;
-  U64 last_time_mousemoved_us;
+  uint64 string_hover_begin_us;
+  uint64 string_hover_build_index;
+  uint64 last_time_mousemoved_us;
   
   //- rjf: tooltip state
-  F32 tooltip_open_t;
+  float tooltip_open_t;
   B32 tooltip_open;
   
   //- rjf: context menu state
   UI_Key ctx_menu_anchor_key;
   UI_Key next_ctx_menu_anchor_key;
-  Vec2F32 ctx_menu_anchor_box_last_pos;
-  Vec2F32 ctx_menu_anchor_off;
+  Vec2float ctx_menu_anchor_box_last_pos;
+  Vec2float ctx_menu_anchor_off;
   B32 ctx_menu_open;
   B32 next_ctx_menu_open;
-  F32 ctx_menu_open_t;
+  float ctx_menu_open_t;
   UI_Key ctx_menu_key;
   B32 ctx_menu_changed;
   
@@ -755,7 +755,7 @@ struct UI_State
 internal String8 ui_hash_part_from_key_string(String8 string);
 internal String8 ui_display_part_from_key_string(String8 string);
 internal UI_Key  ui_key_zero(void);
-internal UI_Key  ui_key_make(U64 v);
+internal UI_Key  ui_key_make(uint64 v);
 internal UI_Key  ui_key_from_string(UI_Key seed_key, String8 string);
 internal UI_Key  ui_key_from_stringf(UI_Key seed_key, char *fmt, ...);
 internal B32     ui_key_match(UI_Key a, UI_Key b);
@@ -769,15 +769,15 @@ internal void ui_eat_event_node(UI_EventList *list, UI_EventNode *node);
 ////////////////////////////////
 //~ rjf: Text Operation Functions
 
-internal B32 ui_char_is_scan_boundary(U8 c);
-internal S64 ui_scanned_column_from_column(String8 string, S64 start_column, Side side);
+internal B32 ui_char_is_scan_boundary(uint8 c);
+internal uint64 ui_scanned_column_from_column(String8 string, uint64 start_column, Side side);
 internal UI_TxtOp ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, TxtPt cursor, TxtPt mark);
-internal String8 ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 range, String8 replace);
+internal String8 ui_push_string_replace_range(Arena *arena, String8 string, Rng1uint64 range, String8 replace);
 
 ////////////////////////////////
 //~ rjf: Size Type Functions
 
-internal UI_Size ui_size(UI_SizeKind kind, F32 value, F32 strictness);
+internal UI_Size ui_size(UI_SizeKind kind, float value, float strictness);
 #define ui_px(value, strictness)         ui_size(UI_SizeKind_Pixels, value, strictness)
 #define ui_em(value, strictness)         ui_size(UI_SizeKind_Pixels, (value) * ui_top_font_size(), strictness)
 #define ui_text_dim(padding, strictness) ui_size(UI_SizeKind_TextContent, padding, strictness)
@@ -787,9 +787,9 @@ internal UI_Size ui_size(UI_SizeKind kind, F32 value, F32 strictness);
 ////////////////////////////////
 //~ rjf: Scroll Point Type Functions
 
-internal UI_ScrollPt ui_scroll_pt(S64 idx, F32 off);
-internal void ui_scroll_pt_target_idx(UI_ScrollPt *v, S64 idx);
-internal void ui_scroll_pt_clamp_idx(UI_ScrollPt *v, Rng1S64 range);
+internal UI_ScrollPt ui_scroll_pt(uint64 idx, float off);
+internal void ui_scroll_pt_target_idx(UI_ScrollPt *v, uint64 idx);
+internal void ui_scroll_pt_clamp_idx(UI_ScrollPt *v, Rng1uint64 range);
 
 ////////////////////////////////
 //~ rjf: Box Type Functions
@@ -805,7 +805,7 @@ read_only global UI_Box ui_nil_box =
   &ui_nil_box,
 };
 internal B32 ui_box_is_nil(UI_Box *box);
-internal UI_BoxRec ui_box_rec_df(UI_Box *box, UI_Box *root, U64 sib_member_off, U64 child_member_off);
+internal UI_BoxRec ui_box_rec_df(UI_Box *box, UI_Box *root, uint64 sib_member_off, uint64 child_member_off);
 #define ui_box_rec_df_pre(box, root) ui_box_rec_df(box, root, OffsetOf(UI_Box, next), OffsetOf(UI_Box, first))
 #define ui_box_rec_df_post(box, root) ui_box_rec_df(box, root, OffsetOf(UI_Box, prev), OffsetOf(UI_Box, last))
 internal void ui_box_list_push(Arena *arena, UI_BoxList *list, UI_Box *box);
@@ -826,10 +826,10 @@ internal UI_State *ui_get_selected_state(void);
 //- rjf: per-frame info
 internal Arena *           ui_build_arena(void);
 internal OS_Handle         ui_window(void);
-internal Vec2F32           ui_mouse(void);
+internal Vec2float           ui_mouse(void);
 internal FNT_Tag           ui_icon_font(void);
 internal String8           ui_icon_string_from_kind(UI_IconKind icon_kind);
-internal F32               ui_dt(void);
+internal float               ui_dt(void);
 
 //- rjf: event pumping
 internal B32 ui_next_event(UI_Event **ev);
@@ -838,7 +838,7 @@ internal void ui_eat_event(UI_Event *ev);
 //- rjf: event consumption helpers
 internal B32 ui_key_press(OS_Modifiers mods, OS_Key key);
 internal B32 ui_key_release(OS_Modifiers mods, OS_Key key);
-internal B32 ui_text(U32 character);
+internal B32 ui_text(uint32 character);
 internal B32 ui_slot_press(UI_EventActionSlot slot);
 
 //- rjf: autocomplete info
@@ -847,10 +847,10 @@ internal String8 ui_autocomplete_string(void);
 internal String8 ui_autocomplete(void);
 
 //- rjf: drag data
-internal Vec2F32           ui_drag_start_mouse(void);
-internal Vec2F32           ui_drag_delta(void);
+internal Vec2float           ui_drag_start_mouse(void);
+internal Vec2float           ui_drag_delta(void);
 internal void              ui_store_drag_data(String8 string);
-internal String8           ui_get_drag_data(U64 min_required_size);
+internal String8           ui_get_drag_data(uint64 min_required_size);
 #define ui_store_drag_struct(ptr) ui_store_drag_data(str8_struct(ptr))
 #define ui_get_drag_struct(type) ((type *)ui_get_drag_data(sizeof(type)).str)
 
@@ -872,7 +872,7 @@ internal UI_Box *          ui_box_from_key(UI_Key key);
 ////////////////////////////////
 //~ rjf: Top-Level Building API
 
-internal void ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, UI_Theme *theme, UI_AnimationInfo *animation_info, F32 real_dt, F32 animation_dt);
+internal void ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, UI_Theme *theme, UI_AnimationInfo *animation_info, float real_dt, float animation_dt);
 internal void ui_end_build(void);
 internal void ui_calc_sizes_standalone__in_place(UI_Box *root, Axis2 axis);
 internal void ui_calc_sizes_upwards_dependent__in_place(UI_Box *root, Axis2 axis);
@@ -894,7 +894,7 @@ internal void              ui_tooltip_begin(void);
 internal void              ui_tooltip_end(void);
 
 //- rjf: context menus
-internal void              ui_ctx_menu_open(UI_Key key, UI_Key anchor_box_key, Vec2F32 anchor_off);
+internal void              ui_ctx_menu_open(UI_Key key, UI_Key anchor_box_key, Vec2float anchor_off);
 internal void              ui_ctx_menu_close(void);
 internal B32               ui_begin_ctx_menu(UI_Key key);
 internal void              ui_end_ctx_menu(void);
@@ -915,9 +915,9 @@ internal void              ui_set_auto_focus_hot_key(UI_Key key);
 internal UI_Key            ui_top_tags_key(void);
 
 //- rjf: theme color lookups
-internal Vec4F32           ui_color_from_name(String8 name);
-internal Vec4F32           ui_color_from_tags_key_extras(UI_Key key, String8Array extras);
-internal Vec4F32           ui_color_from_tags_key_name(UI_Key key, String8 name);
+internal Vec4float           ui_color_from_name(String8 name);
+internal Vec4float           ui_color_from_tags_key_extras(UI_Key key, String8Array extras);
+internal Vec4float           ui_color_from_tags_key_name(UI_Key key, String8 name);
 
 //- rjf: box node construction
 internal UI_Box *          ui_build_box_from_key(UI_BoxFlags flags, UI_Key key);
@@ -934,8 +934,8 @@ internal inline void       ui_box_equip_custom_draw(UI_Box *box, UI_BoxCustomDra
 
 //- rjf: box accessors / queries
 internal String8           ui_box_display_string(UI_Box *box);
-internal Vec2F32           ui_box_text_position(UI_Box *box);
-internal U64               ui_box_char_pos_from_xy(UI_Box *box, Vec2F32 xy);
+internal Vec2float           ui_box_text_position(UI_Box *box);
+internal uint64               ui_box_char_pos_from_xy(UI_Box *box, Vec2float xy);
 
 ////////////////////////////////
 //~ rjf: User Interaction
@@ -951,7 +951,7 @@ read_only global UI_AnimNode ui_nil_anim_node =
   &ui_nil_anim_node,
 };
 
-internal F32 ui_anim_(UI_Key key, UI_AnimParams *params);
+internal float ui_anim_(UI_Key key, UI_AnimParams *params);
 #define ui_anim(key, target_val, ...) ui_anim_((key), &(UI_AnimParams){.target = (target_val), .rate = (ui_state->default_animation_rate), __VA_ARGS__})
 
 ////////////////////////////////
@@ -963,191 +963,191 @@ internal void ui__pop_tags_key(void);
 //- rjf: base
 internal UI_Box *                   ui_top_parent(void);
 internal Axis2                      ui_top_child_layout_axis(void);
-internal F32                        ui_top_fixed_x(void);
-internal F32                        ui_top_fixed_y(void);
-internal F32                        ui_top_fixed_width(void);
-internal F32                        ui_top_fixed_height(void);
+internal float                        ui_top_fixed_x(void);
+internal float                        ui_top_fixed_y(void);
+internal float                        ui_top_fixed_width(void);
+internal float                        ui_top_fixed_height(void);
 internal UI_Size                    ui_top_pref_width(void);
 internal UI_Size                    ui_top_pref_height(void);
-internal F32                        ui_top_min_width(void);
-internal F32                        ui_top_min_height(void);
+internal float                        ui_top_min_width(void);
+internal float                        ui_top_min_height(void);
 internal UI_PermissionFlags         ui_top_permission_flags(void);
 internal UI_BoxFlags                ui_top_flags(void);
 internal UI_BoxFlags                ui_top_omit_flags(void);
 internal UI_FocusKind               ui_top_focus_hot(void);
 internal UI_FocusKind               ui_top_focus_active(void);
-internal U32                        ui_top_fastpath_codepoint(void);
+internal uint32                        ui_top_fastpath_codepoint(void);
 internal UI_Key                     ui_top_group_key(void);
-internal F32                        ui_top_transparency(void);
+internal float                        ui_top_transparency(void);
 internal String8                    ui_top_tag(void);
-internal Vec4F32                    ui_top_background_color(void);
-internal Vec4F32                    ui_top_text_color(void);
-internal Vec4F32                    ui_top_border_color(void);
-internal F32                        ui_top_squish(void);
+internal Vec4float                    ui_top_background_color(void);
+internal Vec4float                    ui_top_text_color(void);
+internal Vec4float                    ui_top_border_color(void);
+internal float                        ui_top_squish(void);
 internal OS_Cursor                  ui_top_hover_cursor(void);
 internal FNT_Tag                    ui_top_font(void);
-internal F32                        ui_top_font_size(void);
+internal float                        ui_top_font_size(void);
 internal FNT_RasterFlags            ui_top_text_raster_flags(void);
-internal F32                        ui_top_tab_size(void);
-internal F32                        ui_top_corner_radius_00(void);
-internal F32                        ui_top_corner_radius_01(void);
-internal F32                        ui_top_corner_radius_10(void);
-internal F32                        ui_top_corner_radius_11(void);
-internal F32                        ui_top_blur_size(void);
-internal F32                        ui_top_text_padding(void);
+internal float                        ui_top_tab_size(void);
+internal float                        ui_top_corner_radius_00(void);
+internal float                        ui_top_corner_radius_01(void);
+internal float                        ui_top_corner_radius_10(void);
+internal float                        ui_top_corner_radius_11(void);
+internal float                        ui_top_blur_size(void);
+internal float                        ui_top_text_padding(void);
 internal UI_TextAlign               ui_top_text_alignment(void);
 internal UI_Box *                   ui_bottom_parent(void);
 internal Axis2                      ui_bottom_child_layout_axis(void);
-internal F32                        ui_bottom_fixed_x(void);
-internal F32                        ui_bottom_fixed_y(void);
-internal F32                        ui_bottom_fixed_width(void);
-internal F32                        ui_bottom_fixed_height(void);
+internal float                        ui_bottom_fixed_x(void);
+internal float                        ui_bottom_fixed_y(void);
+internal float                        ui_bottom_fixed_width(void);
+internal float                        ui_bottom_fixed_height(void);
 internal UI_Size                    ui_bottom_pref_width(void);
 internal UI_Size                    ui_bottom_pref_height(void);
-internal F32                        ui_bottom_min_width(void);
-internal F32                        ui_bottom_min_height(void);
+internal float                        ui_bottom_min_width(void);
+internal float                        ui_bottom_min_height(void);
 internal UI_PermissionFlags         ui_bottom_permission_flags(void);
 internal UI_BoxFlags                ui_bottom_flags(void);
 internal UI_BoxFlags                ui_bottom_omit_flags(void);
 internal UI_FocusKind               ui_bottom_focus_hot(void);
 internal UI_FocusKind               ui_bottom_focus_active(void);
-internal U32                        ui_bottom_fastpath_codepoint(void);
+internal uint32                        ui_bottom_fastpath_codepoint(void);
 internal UI_Key                     ui_bottom_group_key(void);
-internal F32                        ui_bottom_transparency(void);
+internal float                        ui_bottom_transparency(void);
 internal String8                    ui_bottom_tag(void);
-internal Vec4F32                    ui_bottom_background_color(void);
-internal Vec4F32                    ui_bottom_text_color(void);
-internal Vec4F32                    ui_bottom_border_color(void);
-internal F32                        ui_bottom_squish(void);
+internal Vec4float                    ui_bottom_background_color(void);
+internal Vec4float                    ui_bottom_text_color(void);
+internal Vec4float                    ui_bottom_border_color(void);
+internal float                        ui_bottom_squish(void);
 internal OS_Cursor                  ui_bottom_hover_cursor(void);
 internal FNT_Tag                    ui_bottom_font(void);
-internal F32                        ui_bottom_font_size(void);
+internal float                        ui_bottom_font_size(void);
 internal FNT_RasterFlags            ui_bottom_text_raster_flags(void);
-internal F32                        ui_bottom_tab_size(void);
-internal F32                        ui_bottom_corner_radius_00(void);
-internal F32                        ui_bottom_corner_radius_01(void);
-internal F32                        ui_bottom_corner_radius_10(void);
-internal F32                        ui_bottom_corner_radius_11(void);
-internal F32                        ui_bottom_blur_size(void);
-internal F32                        ui_bottom_text_padding(void);
+internal float                        ui_bottom_tab_size(void);
+internal float                        ui_bottom_corner_radius_00(void);
+internal float                        ui_bottom_corner_radius_01(void);
+internal float                        ui_bottom_corner_radius_10(void);
+internal float                        ui_bottom_corner_radius_11(void);
+internal float                        ui_bottom_blur_size(void);
+internal float                        ui_bottom_text_padding(void);
 internal UI_TextAlign               ui_bottom_text_alignment(void);
 internal UI_Box *                   ui_push_parent(UI_Box * v);
 internal Axis2                      ui_push_child_layout_axis(Axis2 v);
-internal F32                        ui_push_fixed_x(F32 v);
-internal F32                        ui_push_fixed_y(F32 v);
-internal F32                        ui_push_fixed_width(F32 v);
-internal F32                        ui_push_fixed_height(F32 v);
+internal float                        ui_push_fixed_x(float v);
+internal float                        ui_push_fixed_y(float v);
+internal float                        ui_push_fixed_width(float v);
+internal float                        ui_push_fixed_height(float v);
 internal UI_Size                    ui_push_pref_width(UI_Size v);
 internal UI_Size                    ui_push_pref_height(UI_Size v);
-internal F32                        ui_push_min_width(F32 v);
-internal F32                        ui_push_min_height(F32 v);
+internal float                        ui_push_min_width(float v);
+internal float                        ui_push_min_height(float v);
 internal UI_PermissionFlags         ui_push_permission_flags(UI_PermissionFlags v);
 internal UI_BoxFlags                ui_push_flags(UI_BoxFlags v);
 internal UI_BoxFlags                ui_push_omit_flags(UI_BoxFlags v);
 internal UI_FocusKind               ui_push_focus_hot(UI_FocusKind v);
 internal UI_FocusKind               ui_push_focus_active(UI_FocusKind v);
-internal U32                        ui_push_fastpath_codepoint(U32 v);
+internal uint32                        ui_push_fastpath_codepoint(uint32 v);
 internal UI_Key                     ui_push_group_key(UI_Key v);
-internal F32                        ui_push_transparency(F32 v);
+internal float                        ui_push_transparency(float v);
 internal String8                    ui_push_tag(String8 v);
-internal Vec4F32                    ui_push_background_color(Vec4F32 v);
-internal Vec4F32                    ui_push_text_color(Vec4F32 v);
-internal Vec4F32                    ui_push_border_color(Vec4F32 v);
-internal F32                        ui_push_squish(F32 v);
+internal Vec4float                    ui_push_background_color(Vec4float v);
+internal Vec4float                    ui_push_text_color(Vec4float v);
+internal Vec4float                    ui_push_border_color(Vec4float v);
+internal float                        ui_push_squish(float v);
 internal OS_Cursor                  ui_push_hover_cursor(OS_Cursor v);
 internal FNT_Tag                    ui_push_font(FNT_Tag v);
-internal F32                        ui_push_font_size(F32 v);
+internal float                        ui_push_font_size(float v);
 internal FNT_RasterFlags            ui_push_text_raster_flags(FNT_RasterFlags v);
-internal F32                        ui_push_tab_size(F32 v);
-internal F32                        ui_push_corner_radius_00(F32 v);
-internal F32                        ui_push_corner_radius_01(F32 v);
-internal F32                        ui_push_corner_radius_10(F32 v);
-internal F32                        ui_push_corner_radius_11(F32 v);
-internal F32                        ui_push_blur_size(F32 v);
-internal F32                        ui_push_text_padding(F32 v);
+internal float                        ui_push_tab_size(float v);
+internal float                        ui_push_corner_radius_00(float v);
+internal float                        ui_push_corner_radius_01(float v);
+internal float                        ui_push_corner_radius_10(float v);
+internal float                        ui_push_corner_radius_11(float v);
+internal float                        ui_push_blur_size(float v);
+internal float                        ui_push_text_padding(float v);
 internal UI_TextAlign               ui_push_text_alignment(UI_TextAlign v);
 internal UI_Box *                   ui_pop_parent(void);
 internal Axis2                      ui_pop_child_layout_axis(void);
-internal F32                        ui_pop_fixed_x(void);
-internal F32                        ui_pop_fixed_y(void);
-internal F32                        ui_pop_fixed_width(void);
-internal F32                        ui_pop_fixed_height(void);
+internal float                        ui_pop_fixed_x(void);
+internal float                        ui_pop_fixed_y(void);
+internal float                        ui_pop_fixed_width(void);
+internal float                        ui_pop_fixed_height(void);
 internal UI_Size                    ui_pop_pref_width(void);
 internal UI_Size                    ui_pop_pref_height(void);
-internal F32                        ui_pop_min_width(void);
-internal F32                        ui_pop_min_height(void);
+internal float                        ui_pop_min_width(void);
+internal float                        ui_pop_min_height(void);
 internal UI_PermissionFlags         ui_pop_permission_flags(void);
 internal UI_BoxFlags                ui_pop_flags(void);
 internal UI_BoxFlags                ui_pop_omit_flags(void);
 internal UI_FocusKind               ui_pop_focus_hot(void);
 internal UI_FocusKind               ui_pop_focus_active(void);
-internal U32                        ui_pop_fastpath_codepoint(void);
+internal uint32                        ui_pop_fastpath_codepoint(void);
 internal UI_Key                     ui_pop_group_key(void);
-internal F32                        ui_pop_transparency(void);
+internal float                        ui_pop_transparency(void);
 internal String8                    ui_pop_tag(void);
-internal Vec4F32                    ui_pop_background_color(void);
-internal Vec4F32                    ui_pop_text_color(void);
-internal Vec4F32                    ui_pop_border_color(void);
-internal F32                        ui_pop_squish(void);
+internal Vec4float                    ui_pop_background_color(void);
+internal Vec4float                    ui_pop_text_color(void);
+internal Vec4float                    ui_pop_border_color(void);
+internal float                        ui_pop_squish(void);
 internal OS_Cursor                  ui_pop_hover_cursor(void);
 internal FNT_Tag                    ui_pop_font(void);
-internal F32                        ui_pop_font_size(void);
+internal float                        ui_pop_font_size(void);
 internal FNT_RasterFlags            ui_pop_text_raster_flags(void);
-internal F32                        ui_pop_tab_size(void);
-internal F32                        ui_pop_corner_radius_00(void);
-internal F32                        ui_pop_corner_radius_01(void);
-internal F32                        ui_pop_corner_radius_10(void);
-internal F32                        ui_pop_corner_radius_11(void);
-internal F32                        ui_pop_blur_size(void);
-internal F32                        ui_pop_text_padding(void);
+internal float                        ui_pop_tab_size(void);
+internal float                        ui_pop_corner_radius_00(void);
+internal float                        ui_pop_corner_radius_01(void);
+internal float                        ui_pop_corner_radius_10(void);
+internal float                        ui_pop_corner_radius_11(void);
+internal float                        ui_pop_blur_size(void);
+internal float                        ui_pop_text_padding(void);
 internal UI_TextAlign               ui_pop_text_alignment(void);
 internal UI_Box *                   ui_set_next_parent(UI_Box * v);
 internal Axis2                      ui_set_next_child_layout_axis(Axis2 v);
-internal F32                        ui_set_next_fixed_x(F32 v);
-internal F32                        ui_set_next_fixed_y(F32 v);
-internal F32                        ui_set_next_fixed_width(F32 v);
-internal F32                        ui_set_next_fixed_height(F32 v);
+internal float                        ui_set_next_fixed_x(float v);
+internal float                        ui_set_next_fixed_y(float v);
+internal float                        ui_set_next_fixed_width(float v);
+internal float                        ui_set_next_fixed_height(float v);
 internal UI_Size                    ui_set_next_pref_width(UI_Size v);
 internal UI_Size                    ui_set_next_pref_height(UI_Size v);
-internal F32                        ui_set_next_min_width(F32 v);
-internal F32                        ui_set_next_min_height(F32 v);
+internal float                        ui_set_next_min_width(float v);
+internal float                        ui_set_next_min_height(float v);
 internal UI_PermissionFlags         ui_set_next_permission_flags(UI_PermissionFlags v);
 internal UI_BoxFlags                ui_set_next_flags(UI_BoxFlags v);
 internal UI_BoxFlags                ui_set_next_omit_flags(UI_BoxFlags v);
 internal UI_FocusKind               ui_set_next_focus_hot(UI_FocusKind v);
 internal UI_FocusKind               ui_set_next_focus_active(UI_FocusKind v);
-internal U32                        ui_set_next_fastpath_codepoint(U32 v);
+internal uint32                        ui_set_next_fastpath_codepoint(uint32 v);
 internal UI_Key                     ui_set_next_group_key(UI_Key v);
-internal F32                        ui_set_next_transparency(F32 v);
+internal float                        ui_set_next_transparency(float v);
 internal String8                    ui_set_next_tag(String8 v);
-internal Vec4F32                    ui_set_next_background_color(Vec4F32 v);
-internal Vec4F32                    ui_set_next_text_color(Vec4F32 v);
-internal Vec4F32                    ui_set_next_border_color(Vec4F32 v);
-internal F32                        ui_set_next_squish(F32 v);
+internal Vec4float                    ui_set_next_background_color(Vec4float v);
+internal Vec4float                    ui_set_next_text_color(Vec4float v);
+internal Vec4float                    ui_set_next_border_color(Vec4float v);
+internal float                        ui_set_next_squish(float v);
 internal OS_Cursor                  ui_set_next_hover_cursor(OS_Cursor v);
 internal FNT_Tag                    ui_set_next_font(FNT_Tag v);
-internal F32                        ui_set_next_font_size(F32 v);
+internal float                        ui_set_next_font_size(float v);
 internal FNT_RasterFlags            ui_set_next_text_raster_flags(FNT_RasterFlags v);
-internal F32                        ui_set_next_tab_size(F32 v);
-internal F32                        ui_set_next_corner_radius_00(F32 v);
-internal F32                        ui_set_next_corner_radius_01(F32 v);
-internal F32                        ui_set_next_corner_radius_10(F32 v);
-internal F32                        ui_set_next_corner_radius_11(F32 v);
-internal F32                        ui_set_next_blur_size(F32 v);
-internal F32                        ui_set_next_text_padding(F32 v);
+internal float                        ui_set_next_tab_size(float v);
+internal float                        ui_set_next_corner_radius_00(float v);
+internal float                        ui_set_next_corner_radius_01(float v);
+internal float                        ui_set_next_corner_radius_10(float v);
+internal float                        ui_set_next_corner_radius_11(float v);
+internal float                        ui_set_next_blur_size(float v);
+internal float                        ui_set_next_text_padding(float v);
 internal UI_TextAlign               ui_set_next_text_alignment(UI_TextAlign v);
 
 //- rjf: helpers
-internal Rng2F32  ui_push_rect(Rng2F32 rect);
-internal Rng2F32  ui_pop_rect(void);
-internal void     ui_set_next_rect(Rng2F32 rect);
+internal Rng2float  ui_push_rect(Rng2float rect);
+internal Rng2float  ui_pop_rect(void);
+internal void     ui_set_next_rect(Rng2float rect);
 internal UI_Size  ui_push_pref_size(Axis2 axis, UI_Size v);
 internal UI_Size  ui_pop_pref_size(Axis2 axis);
 internal UI_Size  ui_set_next_pref_size(Axis2 axis, UI_Size v);
-internal void     ui_push_corner_radius(F32 v);
+internal void     ui_push_corner_radius(float v);
 internal void     ui_pop_corner_radius(void);
 internal void     ui_push_tagf(char *fmt, ...);
-internal F32      ui_top_px_height(void);
+internal float      ui_top_px_height(void);
 
 ////////////////////////////////
 //~ rjf: Macro Loop Wrappers

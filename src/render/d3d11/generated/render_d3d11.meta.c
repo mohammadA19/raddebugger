@@ -31,7 +31,7 @@ r_d3d11_g_mesh_ilay_elements,
 0,
 };
 
-U64 r_d3d11_g_vshad_kind_elements_count_table[5] =
+uint64 r_d3d11_g_vshad_kind_elements_count_table[5] =
 {
 ArrayCount(r_d3d11_g_rect_ilay_elements) ,
  0,
@@ -58,7 +58,7 @@ str8_lit_comp("r_d3d11_g_geo3dcomposite_shader_src"),
 str8_lit_comp("r_d3d11_g_finalize_shader_src"),
 };
 
-U64 r_d3d11_g_uniform_type_kind_size_table[3] =
+uint64 r_d3d11_g_uniform_type_kind_size_table[3] =
 {
 sizeof(R_D3D11_Uniforms_Rect),
 sizeof(R_D3D11_Uniforms_Blur),

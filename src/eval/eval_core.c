@@ -15,10 +15,10 @@
 # include "third_party/xxHash/xxhash.h"
 #endif
 
-internal U64
-e_hash_from_string(U64 seed, String8 string)
+internal uint64
+e_hash_from_string(uint64 seed, String8 string)
 {
-  U64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
+  uint64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
   return result;
 }
 
@@ -129,7 +129,7 @@ e_type_key_list_copy(Arena *arena, E_TypeKeyList *src)
 //~ rjf: Message Functions
 
 internal void
-e_msg(Arena *arena, E_MsgList *msgs, E_MsgKind kind, Rng1U64 range, String8 text)
+e_msg(Arena *arena, E_MsgList *msgs, E_MsgKind kind, Rng1uint64 range, String8 text)
 {
   E_Msg *msg = push_array(arena, E_Msg, 1);
   SLLQueuePush(msgs->first, msgs->last, msg);
@@ -141,7 +141,7 @@ e_msg(Arena *arena, E_MsgList *msgs, E_MsgKind kind, Rng1U64 range, String8 text
 }
 
 internal void
-e_msgf(Arena *arena, E_MsgList *msgs, E_MsgKind kind, Rng1U64 range, char *fmt, ...)
+e_msgf(Arena *arena, E_MsgList *msgs, E_MsgKind kind, Rng1uint64 range, char *fmt, ...)
 {
   va_list args;
   va_start(args, fmt);
@@ -202,7 +202,7 @@ e_space_match(E_Space a, E_Space b)
 //- rjf: string -> num
 
 internal E_String2NumMap
-e_string2num_map_make(Arena *arena, U64 slot_count)
+e_string2num_map_make(Arena *arena, uint64 slot_count)
 {
   E_String2NumMap map = {0};
   map.slots_count = slot_count;
@@ -211,10 +211,10 @@ e_string2num_map_make(Arena *arena, U64 slot_count)
 }
 
 internal void
-e_string2num_map_insert(Arena *arena, E_String2NumMap *map, String8 string, U64 num)
+e_string2num_map_insert(Arena *arena, E_String2NumMap *map, String8 string, uint64 num)
 {
-  U64 hash = e_hash_from_string(5381, string);
-  U64 slot_idx = hash%map->slots_count;
+  uint64 hash = e_hash_from_string(5381, string);
+  uint64 slot_idx = hash%map->slots_count;
   E_String2NumMapNode *existing_node = 0;
   for(E_String2NumMapNode *node = map->slots[slot_idx].first; node != 0; node = node->hash_next)
   {
@@ -235,14 +235,14 @@ e_string2num_map_insert(Arena *arena, E_String2NumMap *map, String8 string, U64 
   }
 }
 
-internal U64
+internal uint64
 e_num_from_string(E_String2NumMap *map, String8 string)
 {
-  U64 num = 0;
+  uint64 num = 0;
   if(map->slots_count != 0)
   {
-    U64 hash = e_hash_from_string(5381, string);
-    U64 slot_idx = hash%map->slots_count;
+    uint64 hash = e_hash_from_string(5381, string);
+    uint64 slot_idx = hash%map->slots_count;
     E_String2NumMapNode *existing_node = 0;
     for(E_String2NumMapNode *node = map->slots[slot_idx].first; node != 0; node = node->hash_next)
     {
@@ -266,7 +266,7 @@ e_string2num_map_node_array_from_map(Arena *arena, E_String2NumMap *map)
   E_String2NumMapNodeArray result = {0};
   result.count = map->node_count;
   result.v = push_array(arena, E_String2NumMapNode *, result.count);
-  U64 idx = 0;
+  uint64 idx = 0;
   for(E_String2NumMapNode *n = map->first; n != 0; n = n->order_next, idx += 1)
   {
     result.v[idx] = n;
@@ -298,7 +298,7 @@ e_string2num_map_node_array_sort__in_place(E_String2NumMapNodeArray *array)
 //- rjf: string -> expr
 
 internal E_String2ExprMap
-e_string2expr_map_make(Arena *arena, U64 slot_count)
+e_string2expr_map_make(Arena *arena, uint64 slot_count)
 {
   E_String2ExprMap map = {0};
   map.slots_count = slot_count;
@@ -309,8 +309,8 @@ e_string2expr_map_make(Arena *arena, U64 slot_count)
 internal void
 e_string2expr_map_insert(Arena *arena, E_String2ExprMap *map, String8 string, E_Expr *expr)
 {
-  U64 hash = e_hash_from_string(5381, string);
-  U64 slot_idx = hash%map->slots_count;
+  uint64 hash = e_hash_from_string(5381, string);
+  uint64 slot_idx = hash%map->slots_count;
   E_String2ExprMapNode *existing_node = 0;
   for(E_String2ExprMapNode *node = map->slots[slot_idx].first;
       node != 0;
@@ -335,8 +335,8 @@ e_string2expr_map_insert(Arena *arena, E_String2ExprMap *map, String8 string, E_
 internal void
 e_string2expr_map_inc_poison(E_String2ExprMap *map, String8 string)
 {
-  U64 hash = e_hash_from_string(5381, string);
-  U64 slot_idx = hash%map->slots_count;
+  uint64 hash = e_hash_from_string(5381, string);
+  uint64 slot_idx = hash%map->slots_count;
   for(E_String2ExprMapNode *node = map->slots[slot_idx].first;
       node != 0;
       node = node->hash_next)
@@ -352,8 +352,8 @@ e_string2expr_map_inc_poison(E_String2ExprMap *map, String8 string)
 internal void
 e_string2expr_map_dec_poison(E_String2ExprMap *map, String8 string)
 {
-  U64 hash = e_hash_from_string(5381, string);
-  U64 slot_idx = hash%map->slots_count;
+  uint64 hash = e_hash_from_string(5381, string);
+  uint64 slot_idx = hash%map->slots_count;
   for(E_String2ExprMapNode *node = map->slots[slot_idx].first;
       node != 0;
       node = node->hash_next)
@@ -372,8 +372,8 @@ e_string2expr_map_lookup(E_String2ExprMap *map, String8 string)
   E_Expr *expr = &e_expr_nil;
   if(map->slots_count != 0)
   {
-    U64 hash = e_hash_from_string(5381, string);
-    U64 slot_idx = hash%map->slots_count;
+    uint64 hash = e_hash_from_string(5381, string);
+    uint64 slot_idx = hash%map->slots_count;
     E_String2ExprMapNode *existing_node = 0;
     for(E_String2ExprMapNode *node = map->slots[slot_idx].first; node != 0; node = node->hash_next)
     {
@@ -394,7 +394,7 @@ e_string2expr_map_lookup(E_String2ExprMap *map, String8 string)
 //- rjf: string -> type-key
 
 internal E_String2TypeKeyMap
-e_string2typekey_map_make(Arena *arena, U64 slots_count)
+e_string2typekey_map_make(Arena *arena, uint64 slots_count)
 {
   E_String2TypeKeyMap map = {0};
   map.slots_count = slots_count;
@@ -406,8 +406,8 @@ internal void
 e_string2typekey_map_insert(Arena *arena, E_String2TypeKeyMap *map, String8 string, E_TypeKey key)
 {
   E_String2TypeKeyNode *n = push_array(arena, E_String2TypeKeyNode, 1);
-  U64 hash = e_hash_from_string(5381, string);
-  U64 slot_idx = hash%map->slots_count;
+  uint64 hash = e_hash_from_string(5381, string);
+  uint64 slot_idx = hash%map->slots_count;
   SLLQueuePush(map->slots[slot_idx].first, map->slots[slot_idx].last, n);
   n->string = push_str8_copy(arena, string);
   n->key = key;
@@ -417,8 +417,8 @@ internal E_TypeKey
 e_string2typekey_map_lookup(E_String2TypeKeyMap *map, String8 string)
 {
   E_TypeKey key = zero_struct;
-  U64 hash = e_hash_from_string(5381, string);
-  U64 slot_idx = hash%map->slots_count;
+  uint64 hash = e_hash_from_string(5381, string);
+  uint64 slot_idx = hash%map->slots_count;
   for(E_String2TypeKeyNode *n = map->slots[slot_idx].first; n != 0; n = n->next)
   {
     if(str8_match(n->string, string, 0))
@@ -433,7 +433,7 @@ e_string2typekey_map_lookup(E_String2TypeKeyMap *map, String8 string)
 //- rjf: auto hooks
 
 internal E_AutoHookMap
-e_auto_hook_map_make(Arena *arena, U64 slots_count)
+e_auto_hook_map_make(Arena *arena, uint64 slots_count)
 {
   E_AutoHookMap map = {0};
   map.slots_count = slots_count;
@@ -456,10 +456,10 @@ e_auto_hook_map_insert_new_(Arena *arena, E_AutoHookMap *map, E_AutoHookParams *
   E_Pattern pattern = {0};
   if(e_type_key_match(e_type_key_zero(), type_key))
   {
-    U64 start_string_off = 0;
-    for(U64 off = 0; off <= params->type_pattern.size; off += 1)
+    uint64 start_string_off = 0;
+    for(uint64 off = 0; off <= params->type_pattern.size; off += 1)
     {
-      U8 byte = (off < params->type_pattern.size ? params->type_pattern.str[off] : 0);
+      uint8 byte = (off < params->type_pattern.size ? params->type_pattern.str[off] : 0);
       if(byte == 0 || byte == '?')
       {
         String8 new_part = str8_substr(params->type_pattern, r1u64(start_string_off, off));
@@ -484,7 +484,7 @@ e_auto_hook_map_insert_new_(Arena *arena, E_AutoHookMap *map, E_AutoHookParams *
           if(wildcard_inst_names_string.size != 0)
           {
             Temp scratch = scratch_begin(&arena, 1);
-            U8 wildcard_inst_name_split_char = ',';
+            uint8 wildcard_inst_name_split_char = ',';
             String8List wildcard_inst_names = str8_split(scratch.arena, wildcard_inst_names_string, &wildcard_inst_name_split_char, 1, 0);
             for(String8Node *n = wildcard_inst_names.first; n != 0; n = n->next)
             {
@@ -510,8 +510,8 @@ e_auto_hook_map_insert_new_(Arena *arena, E_AutoHookMap *map, E_AutoHookParams *
     node->expr_string = push_str8_copy(arena, params->tag_expr_string);
     if(!e_type_key_match(e_type_key_zero(), type_key))
     {
-      U64 hash = e_hash_from_string(5381, node->type_string);
-      U64 slot_idx = hash%map->slots_count;
+      uint64 hash = e_hash_from_string(5381, node->type_string);
+      uint64 slot_idx = hash%map->slots_count;
       SLLQueuePush_N(map->slots[slot_idx].first, map->slots[slot_idx].last, node, hash_next);
     }
     else
@@ -525,7 +525,7 @@ e_auto_hook_map_insert_new_(Arena *arena, E_AutoHookMap *map, E_AutoHookParams *
 //~ rjf: Debug-Info-Driven Map Building Functions
 
 internal E_String2NumMap *
-e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
+e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, uint64 voff)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -542,7 +542,7 @@ e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
   //- rjf: voff -> tightest scope
   RDI_Scope *tightest_scope = 0;
   {
-    U64 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff);
+    uint64 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff);
     RDI_Scope *scope = rdi_element_from_name_idx(rdi, Scopes, scope_idx);
     Task *task = push_array(scratch.arena, Task, 1);
     task->scope = scope;
@@ -553,7 +553,7 @@ e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
   //- rjf: voff-1 -> scope
   if(voff > 0)
   {
-    U64 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff-1);
+    uint64 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff-1);
     RDI_Scope *scope = rdi_element_from_name_idx(rdi, Scopes, scope_idx);
     if(scope != tightest_scope)
     {
@@ -587,14 +587,14 @@ e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
     RDI_Scope *scope = task->scope;
     if(scope != 0)
     {
-      U32 local_opl_idx = scope->local_first + scope->local_count;
-      for(U32 local_idx = scope->local_first; local_idx < local_opl_idx; local_idx += 1)
+      uint32 local_opl_idx = scope->local_first + scope->local_count;
+      for(uint32 local_idx = scope->local_first; local_idx < local_opl_idx; local_idx += 1)
       {
         RDI_Local *local_var = rdi_element_from_name_idx(rdi, Locals, local_idx);
-        U64 local_name_size = 0;
-        U8 *local_name_str = rdi_string_from_idx(rdi, local_var->name_string_idx, &local_name_size);
+        uint64 local_name_size = 0;
+        uint8 *local_name_str = rdi_string_from_idx(rdi, local_var->name_string_idx, &local_name_size);
         String8 name = push_str8_copy(arena, str8(local_name_str, local_name_size));
-        e_string2num_map_insert(arena, map, name, (U64)local_idx+1);
+        e_string2num_map_insert(arena, map, name, (uint64)local_idx+1);
       }
     }
   }
@@ -604,18 +604,18 @@ e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
 }
 
 internal E_String2NumMap *
-e_push_member_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
+e_push_member_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, uint64 voff)
 {
   //- rjf: voff -> tightest scope
-  U64 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff);
+  uint64 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff);
   RDI_Scope *tightest_scope = rdi_element_from_name_idx(rdi, Scopes, scope_idx);
   
   //- rjf: tightest scope -> procedure
-  U32 proc_idx = tightest_scope->proc_idx;
+  uint32 proc_idx = tightest_scope->proc_idx;
   RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, proc_idx);
   
   //- rjf: procedure -> udt
-  U32 udt_idx = procedure->container_idx;
+  uint32 udt_idx = procedure->container_idx;
   RDI_UDT *udt = rdi_element_from_name_idx(rdi, UDTs, udt_idx);
   
   //- rjf: build blank map
@@ -625,8 +625,8 @@ e_push_member_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
   //- rjf: udt -> fill member map
   if(!(udt->flags & RDI_UDTFlag_EnumMembers))
   {
-    U64 data_member_num = 1;
-    for(U32 member_idx = udt->member_first;
+    uint64 data_member_num = 1;
+    for(uint32 member_idx = udt->member_first;
         member_idx < udt->member_first+udt->member_count;
         member_idx += 1)
     {
@@ -791,8 +791,8 @@ e_key_from_string(String8 string)
   {
     parent_key = e_cache->top_parent_node->key;
   }
-  U64 hash = e_hash_from_string(parent_key.u64, string);
-  U64 slot_idx = hash%e_cache->string_slots_count;
+  uint64 hash = e_hash_from_string(parent_key.u64, string);
+  uint64 slot_idx = hash%e_cache->string_slots_count;
   E_CacheSlot *slot = &e_cache->string_slots[slot_idx];
   E_CacheNode *node = 0;
   for(E_CacheNode *n = slot->first; n != 0; n = n->string_next)
@@ -810,8 +810,8 @@ e_key_from_string(String8 string)
   {
     e_cache->key_id_gen += 1;
     E_Key key = {e_cache->key_id_gen};
-    U64 key_hash = e_hash_from_string(5381, str8_struct(&key));
-    U64 key_slot_idx = key_hash%e_cache->key_slots_count;
+    uint64 key_hash = e_hash_from_string(5381, str8_struct(&key));
+    uint64 key_slot_idx = key_hash%e_cache->key_slots_count;
     E_CacheSlot *key_slot = &e_cache->key_slots[key_slot_idx];
     node = push_array(e_cache->arena, E_CacheNode, 1);
     SLLQueuePush_N(slot->first, slot->last, node, string_next);
@@ -851,8 +851,8 @@ e_key_from_expr(E_Expr *expr)
 internal E_CacheBundle *
 e_cache_bundle_from_key(E_Key key)
 {
-  U64 hash = e_hash_from_string(5381, str8_struct(&key));
-  U64 slot_idx = hash%e_cache->key_slots_count;
+  uint64 hash = e_hash_from_string(5381, str8_struct(&key));
+  uint64 slot_idx = hash%e_cache->key_slots_count;
   E_CacheSlot *slot = &e_cache->key_slots[slot_idx];
   E_CacheNode *node = 0;
   for(E_CacheNode *n = slot->first; n != 0; n = n->key_next)
@@ -1040,8 +1040,8 @@ e_value_eval_from_eval(E_Eval eval)
     }
     else
     {
-      U64 type_byte_size = e_type_byte_size_from_key(type_key);
-      Rng1U64 value_vaddr_range = r1u64(eval.value.u64, eval.value.u64 + type_byte_size);
+      uint64 type_byte_size = e_type_byte_size_from_key(type_key);
+      Rng1uint64 value_vaddr_range = r1u64(eval.value.u64, eval.value.u64 + type_byte_size);
       MemoryZeroStruct(&eval.value);
       if(!e_type_key_match(type_key, e_type_key_zero()) &&
          type_byte_size <= sizeof(E_Value) &&
@@ -1050,11 +1050,11 @@ e_value_eval_from_eval(E_Eval eval)
         eval.irtree.mode = E_Mode_Value;
         
         // rjf: mask&shift, for bitfields
-        if(type_kind == E_TypeKind_Bitfield && type_byte_size <= sizeof(U64))
+        if(type_kind == E_TypeKind_Bitfield && type_byte_size <= sizeof(uint64))
         {
           E_Type *type = e_type_from_key(type_key);
-          U64 valid_bits_mask = 0;
-          for(U64 idx = 0; idx < type->count; idx += 1)
+          uint64 valid_bits_mask = 0;
+          for(uint64 idx = 0; idx < type->count; idx += 1)
           {
             valid_bits_mask |= (1ull<<idx);
           }
@@ -1068,11 +1068,11 @@ e_value_eval_from_eval(E_Eval eval)
         {
           default: break;
           case E_TypeKind_Char8:
-          case E_TypeKind_S8:  {eval.value.s64 = (S64)*((S8 *)&eval.value.u64);}break;
+          case E_TypeKind_uint8:  {eval.value.s64 = (uint64)*((uint8 *)&eval.value.u64);}break;
           case E_TypeKind_Char16:
-          case E_TypeKind_S16: {eval.value.s64 = (S64)*((S16 *)&eval.value.u64);}break;
+          case E_TypeKind_uint16: {eval.value.s64 = (uint64)*((uint16 *)&eval.value.u64);}break;
           case E_TypeKind_Char32:
-          case E_TypeKind_S32: {eval.value.s64 = (S64)*((S32 *)&eval.value.u64);}break;
+          case E_TypeKind_uint32: {eval.value.s64 = (uint64)*((uint32 *)&eval.value.u64);}break;
         }
       }
     }
@@ -1099,8 +1099,8 @@ e_push_auto_hook_matches_from_type_key(Arena *arena, E_TypeKey type_key)
     //
     if(map != 0 && map->slots_count != 0)
     {
-      U64 hash = e_hash_from_string(5381, type_string);
-      U64 slot_idx = hash%map->slots_count;
+      uint64 hash = e_hash_from_string(5381, type_string);
+      uint64 slot_idx = hash%map->slots_count;
       for(E_AutoHookNode *n = map->slots[slot_idx].first; n != 0; n = n->hash_next)
       {
         if(str8_match(n->type_string, type_string, 0))
@@ -1129,7 +1129,7 @@ e_push_auto_hook_matches_from_type_key(Arena *arena, E_TypeKey type_key)
         E_AutoHookWildcardInst *last_wildcard_inst = 0;
         B32 fits_this_type_string = 1;
         {
-          U64 scan_pos = 0;
+          uint64 scan_pos = 0;
           for(E_PatternPart *part = auto_hook_node->type_pattern.first_part; part != 0 && fits_this_type_string; part = part->next)
           {
             String8 pattern_string = part->string;
@@ -1151,11 +1151,11 @@ e_push_auto_hook_matches_from_type_key(Arena *arena, E_TypeKey type_key)
             if(pattern_string.size == 0)
             {
               String8 terminator_pattern_string = part->next ? part->next->string : str8_zero();
-              U64 brace_nest_depth = 0;
-              U64 paren_nest_depth = 0;
-              U64 angle_nest_depth = 0;
-              U64 brack_nest_depth = 0;
-              U64 start_inst_off = scan_pos;
+              uint64 brace_nest_depth = 0;
+              uint64 paren_nest_depth = 0;
+              uint64 angle_nest_depth = 0;
+              uint64 brack_nest_depth = 0;
+              uint64 start_inst_off = scan_pos;
               String8Node *wildcard_inst_name_node = part->wildcard_inst_names.first;
               for(B32 done = 0; !done && scan_pos < type_string.size; scan_pos += 1)
               {
@@ -1246,8 +1246,8 @@ e_auto_hook_matches_from_type_key(E_TypeKey type_key)
 {
   E_AutoHookMatchList matches = {0};
   {
-    U64 hash = e_hash_from_string(5381, str8_struct(&type_key));
-    U64 slot_idx = hash%e_cache->type_auto_hook_cache_map->slots_count;
+    uint64 hash = e_hash_from_string(5381, str8_struct(&type_key));
+    uint64 slot_idx = hash%e_cache->type_auto_hook_cache_map->slots_count;
     E_TypeAutoHookCacheNode *node = 0;
     for(E_TypeAutoHookCacheNode *n = e_cache->type_auto_hook_cache_map->slots[slot_idx].first;
         n != 0;
@@ -1272,11 +1272,11 @@ e_auto_hook_matches_from_type_key(E_TypeKey type_key)
 
 //- rjf: string IDs
 
-internal U64
+internal uint64
 e_id_from_string(String8 string)
 {
-  U64 hash = e_hash_from_string(5381, string);
-  U64 hash_slot_idx = hash%e_cache->string_id_map->hash_slots_count;
+  uint64 hash = e_hash_from_string(5381, string);
+  uint64 hash_slot_idx = hash%e_cache->string_id_map->hash_slots_count;
   E_StringIDNode *node = 0;
   for(E_StringIDNode *n = e_cache->string_id_map->hash_slots[hash_slot_idx].first; n != 0; n = n->hash_next)
   {
@@ -1289,22 +1289,22 @@ e_id_from_string(String8 string)
   if(node == 0)
   {
     e_cache->string_id_gen += 1;
-    U64 id = e_cache->string_id_gen;
-    U64 id_slot_idx = id%e_cache->string_id_map->id_slots_count;
+    uint64 id = e_cache->string_id_gen;
+    uint64 id_slot_idx = id%e_cache->string_id_map->id_slots_count;
     node = push_array(e_cache->arena, E_StringIDNode, 1);
     SLLQueuePush_N(e_cache->string_id_map->hash_slots[hash_slot_idx].first, e_cache->string_id_map->hash_slots[hash_slot_idx].last, node, hash_next);
     SLLQueuePush_N(e_cache->string_id_map->id_slots[id_slot_idx].first, e_cache->string_id_map->hash_slots[id_slot_idx].last, node, id_next);
     node->id = id;
     node->string = push_str8_copy(e_cache->arena, string);
   }
-  U64 result = node->id;
+  uint64 result = node->id;
   return result;
 }
 
 internal String8
-e_string_from_id(U64 id)
+e_string_from_id(uint64 id)
 {
-  U64 id_slot_idx = id%e_cache->string_id_map->id_slots_count;
+  uint64 id_slot_idx = id%e_cache->string_id_map->id_slots_count;
   E_StringIDNode *node = 0;
   for(E_StringIDNode *n = e_cache->string_id_map->id_slots[id_slot_idx].first; n != 0; n = n->id_next)
   {
@@ -1350,7 +1350,7 @@ e_key_wrapf(E_Key key, char *fmt, ...)
 ////////////////////////////////
 //~ rjf: Eval Info Extraction
 
-internal U64
+internal uint64
 e_base_offset_from_eval(E_Eval eval)
 {
   if(e_type_kind_is_pointer_or_ref(e_type_kind_from_key(e_type_key_unwrap(eval.irtree.type_key, E_TypeUnwrapFlag_AllDecorative))))
@@ -1360,10 +1360,10 @@ e_base_offset_from_eval(E_Eval eval)
   return eval.value.u64;
 }
 
-internal U64
+internal uint64
 e_range_size_from_eval(E_Eval eval)
 {
-  U64 result = KB(16);
+  uint64 result = KB(16);
   {
     E_TypeKey type_core = e_type_key_unwrap(eval.irtree.type_key, E_TypeUnwrapFlag_AllDecorative);
     E_TypeKind type_core_kind = e_type_kind_from_key(type_core);
@@ -1407,7 +1407,7 @@ e_debug_log_from_expr_string(Arena *arena, String8 string)
     {
       Task *next;
       E_Expr *expr;
-      S32 indent;
+      uint32 indent;
     };
     E_TokenArray tokens = parse.tokens;
     str8_list_pushf(scratch.arena, &strings, "    tokens:\n");
@@ -1427,7 +1427,7 @@ e_debug_log_from_expr_string(Arena *arena, String8 string)
       switch(expr->kind)
       {
         default:{}break;
-        case E_ExprKind_LeafU64:
+        case E_ExprKind_Leafuint64:
         {
           str8_list_pushf(scratch.arena, &strings, " (%I64u)", expr->value.u64);
         }break;
@@ -1454,7 +1454,7 @@ e_debug_log_from_expr_string(Arena *arena, String8 string)
   E_IRTreeAndType irtree = e_push_irtree_and_type_from_expr(scratch.arena, 0, &e_default_identifier_resolution_rule, 0, 0, parse.expr);
   {
     str8_list_pushf(scratch.arena, &strings, "    type:\n");
-    S32 indent = 2;
+    uint32 indent = 2;
     for(E_TypeKey type_key = irtree.type_key;
         !e_type_key_match(e_type_key_zero(), type_key);
         type_key = e_type_key_direct(type_key),
@@ -1472,7 +1472,7 @@ e_debug_log_from_expr_string(Arena *arena, String8 string)
     {
       Task *next;
       E_IRNode *irnode;
-      S32 indent;
+      uint32 indent;
     };
     str8_list_pushf(scratch.arena, &strings, "    ir_tree:\n");
     Task start_task = {0, irtree.root, 2};

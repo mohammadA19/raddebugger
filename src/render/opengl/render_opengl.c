@@ -43,7 +43,7 @@ global read_only R_OGL_Attribute r_ogl_single_color_output_attributes[] =
 internal R_Handle
 r_ogl_handle_from_tex2d(R_OGL_Tex2D *t)
 {
-  R_Handle h = {(U64)t};
+  R_Handle h = {(uint64)t};
   return h;
 }
 
@@ -66,13 +66,13 @@ r_ogl_format_info_from_tex2dformat(R_Tex2DFormat fmt)
 }
 
 internal GLuint
-r_ogl_instance_buffer_from_size(U64 size)
+r_ogl_instance_buffer_from_size(uint64 size)
 {
   GLuint buffer = r_ogl_state->scratch_buffer_64kb;
   if(size > KB(64))
   {
     // rjf: build buffer
-    U64 flushed_buffer_size = size;
+    uint64 flushed_buffer_size = size;
     flushed_buffer_size += MB(1)-1;
     flushed_buffer_size -= flushed_buffer_size%MB(1);
     glGenBuffers(1, &buffer);
@@ -137,7 +137,7 @@ r_init(CmdLine *cmdln)
       glGetShaderiv(stages[idx].out, GL_INFO_LOG_LENGTH, &info_log_length);
       if(info_log_length != 0)
       {
-        stages[idx].errors.str = push_array(r_ogl_state->arena, U8, info_log_length+1);
+        stages[idx].errors.str = push_array(r_ogl_state->arena, uint8, info_log_length+1);
         stages[idx].errors.size = info_log_length;
         glGetShaderInfoLog(stages[idx].out, info_log_length, 0, (char *)stages[idx].errors.str);
       }
@@ -179,7 +179,7 @@ r_init(CmdLine *cmdln)
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glGenTextures(1, &r_ogl_state->white_texture);
   glBindTexture(GL_TEXTURE_2D, r_ogl_state->white_texture);
-  U32 white_pixel = 0xffffffff;
+  uint32 white_pixel = 0xffffffff;
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 1, 0, GL_RGBA, GL_UNSIGNED_BYTE, &white_pixel);
   glEnable(GL_FRAMEBUFFER_SRGB);
   
@@ -216,7 +216,7 @@ r_window_unequip(OS_Handle window, R_Handle window_equip)
 //- rjf: textures
 
 r_hook R_Handle
-r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void *data)
+r_tex2d_alloc(R_ResourceKind kind, Vec2uint32 size, R_Tex2DFormat format, void *data)
 {
   //- rjf: allocate texture record
   R_OGL_Tex2D *tex2d = r_ogl_state->free_tex2d;
@@ -273,10 +273,10 @@ r_kind_from_tex2d(R_Handle texture)
   return result;
 }
 
-r_hook Vec2S32
+r_hook Vec2uint32
 r_size_from_tex2d(R_Handle texture)
 {
-  Vec2S32 result = {0, 0};
+  Vec2uint32 result = {0, 0};
   R_OGL_Tex2D *t = r_ogl_tex2d_from_handle(texture);
   if(t)
   {
@@ -298,14 +298,14 @@ r_format_from_tex2d(R_Handle texture)
 }
 
 r_hook void
-r_fill_tex2d_region(R_Handle texture, Rng2S32 subrect, void *data)
+r_fill_tex2d_region(R_Handle texture, Rng2uint32 subrect, void *data)
 {
   R_OGL_Tex2D *t = r_ogl_tex2d_from_handle(texture);
   if(t)
   {
     R_OGL_FormatInfo fmt_info = r_ogl_format_info_from_tex2dformat(t->fmt);
     glBindTexture(GL_TEXTURE_2D, t->id);
-    Vec2S32 rect_size = dim_2s32(subrect);
+    Vec2uint32 rect_size = dim_2s32(subrect);
     glTexSubImage2D(GL_TEXTURE_2D, 0, subrect.x0, subrect.y0, rect_size.x, rect_size.y, fmt_info.format, fmt_info.base_type, data);
     glBindTexture(GL_TEXTURE_2D, 0);
   }
@@ -314,7 +314,7 @@ r_fill_tex2d_region(R_Handle texture, Rng2S32 subrect, void *data)
 //- rjf: buffers
 
 r_hook R_Handle
-r_buffer_alloc(R_ResourceKind kind, U64 size, void *data)
+r_buffer_alloc(R_ResourceKind kind, uint64 size, void *data)
 {
   R_Handle result = {0};
   return result;
@@ -346,13 +346,13 @@ r_window_begin_frame(OS_Handle os, R_Handle r)
   r_ogl_os_select_window(os, r);
   
   //- rjf: unpack window viewport info
-  Rng2F32 client_rect = os_client_rect_from_window(os);
-  Vec2F32 client_rect_dim = dim_2f32(client_rect);
+  Rng2float client_rect = os_client_rect_from_window(os);
+  Vec2float client_rect_dim = dim_2f32(client_rect);
   
   //- rjf: clear and reset state
   glClearColor(0, 0, 0, 0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-  glViewport(0, 0, (S32)client_rect_dim.x, (S32)client_rect_dim.y);
+  glViewport(0, 0, (uint32)client_rect_dim.x, (uint32)client_rect_dim.y);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
@@ -374,8 +374,8 @@ r_window_end_frame(OS_Handle os, R_Handle r)
 r_hook void
 r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
 {
-  Rng2F32 viewport_rect = os_client_rect_from_window(window);
-  Vec2F32 viewport_dim = dim_2f32(viewport_rect);
+  Rng2float viewport_rect = os_client_rect_from_window(window);
+  Vec2float viewport_dim = dim_2f32(viewport_rect);
   for(R_PassNode *pass_n = passes->first; pass_n != 0; pass_n = pass_n->next)
   {
     R_Pass *pass = &pass_n->v;
@@ -417,7 +417,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
             GLuint buffer = r_ogl_instance_buffer_from_size(batches->byte_count);
             {
               glBindBuffer(GL_ARRAY_BUFFER, buffer);
-              U64 off = 0;
+              uint64 off = 0;
               for(R_BatchNode *batch_n = batches->first; batch_n != 0; batch_n = batch_n->next)
               {
                 glBufferSubData(GL_ARRAY_BUFFER, off, batch_n->v.byte_count, batch_n->v.v);
@@ -428,14 +428,14 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
             //- rjf: bind input attributes
             {
               R_OGL_AttributeArray inputs = r_ogl_shader_kind_input_attributes_table[R_OGL_ShaderKind_Rect];
-              U64 off = 0;
+              uint64 off = 0;
               for EachIndex(idx, inputs.count)
               {
                 glEnableVertexAttribArray(inputs.v[idx].index);
                 glVertexAttribDivisor(inputs.v[idx].index, 1);
                 glVertexAttribPointer(inputs.v[idx].index, inputs.v[idx].count, inputs.v[idx].type, GL_FALSE, sizeof(R_Rect2DInst), (void *)(off));
                 // TODO(rjf): this is not correct if type != GL_FLOAT
-                off += inputs.v[idx].count*sizeof(F32);
+                off += inputs.v[idx].count*sizeof(float);
               }
             }
             
@@ -465,7 +465,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
             
             //- rjf: upload misc. uniforms
             {
-              Mat4x4F32 texture_sample_channel_map = r_sample_channel_map_from_tex2dformat(texture_fmt);
+              Mat4x4float texture_sample_channel_map = r_sample_channel_map_from_tex2dformat(texture_fmt);
               glUniformMatrix4fv(glGetUniformLocation(shader, "u_texture_sample_channel_map"), 1, 0, &texture_sample_channel_map.v[0][0]);
               glUniform2f(glGetUniformLocation(shader, "u_viewport_size_px"), viewport_dim.x, viewport_dim.y);
               glUniform1f(glGetUniformLocation(shader, "u_opacity"), 1.f - group_params->transparency);
@@ -477,7 +477,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
                group_params->clip.y0 != 0 ||
                group_params->clip.y1 != 0)
             {
-              Rng2F32 clip = group_params->clip;
+              Rng2float clip = group_params->clip;
               glScissor(clip.x0, viewport_dim.y - clip.y1, (clip.x1-clip.x0) + 1, (clip.y1-clip.y0)+1);
               glEnable(GL_SCISSOR_TEST);
             }
