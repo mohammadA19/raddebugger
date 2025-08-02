@@ -142,7 +142,7 @@ R_PassList :: struct {
 ////////////////////////////////
 //~ rjf: Helpers
 
-r_sample_channel_map_from_tex2dformat :: proc (fmt: R_Tex2DFormat) . Mat4x4F32 {
+r_sample_channel_map_from_tex2dformat :: proc (fmt: R_Tex2DFormat) -> Mat4x4F32 {
   result := Mat4x4F32 {
     {
       {1, 0, 0, 0},
@@ -163,25 +163,25 @@ r_sample_channel_map_from_tex2dformat :: proc (fmt: R_Tex2DFormat) . Mat4x4F32 {
 ////////////////////////////////
 //~ rjf: Basic Type Functions
 
-r_handle_zero :: proc () . R_Handle {
+r_handle_zero :: proc () -> R_Handle {
   handle := R_Handle {}
   return handle
 }
 
-r_handle_match :: proc (a: R_Handle, b: R_Handle) . bool {
+r_handle_match :: proc (a: R_Handle, b: R_Handle) -> bool {
   return MemoryMatchStruct(&a, &b)
 }
 
 ////////////////////////////////
 //~ rjf: Batch Type Functions
 
-r_batch_list_make :: proc (instance_size: u64) . R_BatchList {
+r_batch_list_make :: proc (instance_size: u64) -> R_BatchList {
   list := R_BatchList {}
   list.bytes_per_inst = instance_size
   return list
 }
 
-r_batch_list_push_inst :: proc (arena: ^Arena, list: ^R_BatchList, batch_inst_cap: u64) . rawptr {
+r_batch_list_push_inst :: proc (arena: ^Arena, list: ^R_BatchList, batch_inst_cap: u64) -> rawptr {
   inst : rawptr = nil
   {
     n := list.last
@@ -202,7 +202,7 @@ r_batch_list_push_inst :: proc (arena: ^Arena, list: ^R_BatchList, batch_inst_ca
 ////////////////////////////////
 //~ rjf: Pass Type Functions
 
-r_pass_from_kind :: proc (arena: ^Arena, list: ^R_PassList, kind: R_PassKind) . ^R_Pass {
+r_pass_from_kind :: proc (arena: ^Arena, list: ^R_PassList, kind: R_PassKind) -> ^R_Pass {
   n := list.last
   if !r_pass_kind_batch_table[kind] {
     n = nil
