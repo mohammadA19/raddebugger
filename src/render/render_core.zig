@@ -165,7 +165,7 @@ fn r_sample_channel_map_from_tex2dformat(fmt: R_Tex2DFormat) Mat4x4F32 {
 //~ rjf: Basic Type Functions
 
 fn r_handle_zero() R_Handle {
-  var handle = R_Handle {};
+  const handle = R_Handle {};
   return handle;
 }
 
@@ -177,7 +177,7 @@ fn r_handle_match(a: R_Handle, b: R_Handle) B32 {
 //~ rjf: Batch Type Functions
 
 fn r_batch_list_make(instance_size: u64) R_BatchList {
-  var list = R_BatchList{};
+  var list = R_BatchList {};
   list.bytes_per_inst = instance_size;
   return list;
 }

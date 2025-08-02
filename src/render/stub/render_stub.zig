@@ -6,7 +6,7 @@ export fn r_init(cmdln: *CmdLine) {
 //- rjf: window setup/teardown
 
 export fn r_window_equip(window: OS_Handle) R_Handle {
-  R_Handle handle = {0};
+  var handle = R_Handle {};
   handle.u64[0] = 1;
   return handle;
 }
@@ -17,7 +17,7 @@ export fn r_window_unequip(window: OS_Handle, window_equip: R_Handle) {
 //- rjf: textures
 
 export fn r_tex2d_alloc(kind: R_ResourceKind, size: Vec2S32, format: R_Tex2DFormat, data: *void) R_Handle {
-  R_Handle handle = {0};
+  var handle = R_Handle {};
   handle.u64[0] = 1;
   return handle;
 }
@@ -43,7 +43,7 @@ export fn r_fill_tex2d_region(texture: R_Handle, subrect: Rng2S32, data: *void) 
 //- rjf: buffers
 
 export fn r_buffer_alloc(kind: R_ResourceKind, size: u64, data: *void) R_Handle {
-  R_Handle handle = {0};
+  var handle = R_Handle {};
   handle.u64[0] = 1;
   return handle;
 }
