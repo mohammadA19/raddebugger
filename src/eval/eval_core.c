@@ -100,27 +100,27 @@ internal void
 e_type_key_list_push(Arena *arena, E_TypeKeyList *list, E_TypeKey key)
 {
     E_TypeKeyNode *n = push_array(arena, E_TypeKeyNode, 1);
-    n->v = key;
-    SLLQueuePush(list->first, list->last, n);
-    list->count += 1;
+    n.v = key;
+    SLLQueuePush(list.first, list.last, n);
+    list.count += 1;
 }
 
 internal void
 e_type_key_list_push_front(Arena *arena, E_TypeKeyList *list, E_TypeKey key)
 {
     E_TypeKeyNode *n = push_array(arena, E_TypeKeyNode, 1);
-    n->v = key;
-    SLLQueuePushFront(list->first, list->last, n);
-    list->count += 1;
+    n.v = key;
+    SLLQueuePushFront(list.first, list.last, n);
+    list.count += 1;
 }
 
 internal E_TypeKeyList
 e_type_key_list_copy(Arena *arena, E_TypeKeyList *src)
 {
     E_TypeKeyList dst = {0};
-    for (E_TypeKeyNode *n = src->first; n != 0; n = n->next)
+    for (E_TypeKeyNode *n = src.first; n != 0; n = n.next)
     {
-        e_type_key_list_push(arena, &dst, n->v);
+        e_type_key_list_push(arena, &dst, n.v);
     }
     return dst;
 }
@@ -132,12 +132,12 @@ internal void
 e_msg(Arena *arena, E_MsgList *msgs, E_MsgKind kind, Rng1U64 range, String8 text)
 {
     E_Msg *msg = push_array(arena, E_Msg, 1);
-    SLLQueuePush(msgs->first, msgs->last, msg);
-    msgs->count += 1;
-    msgs->max_kind = Max(kind, msgs->max_kind);
-    msg->kind = kind;
-    msg->range = range;
-    msg->text = text;
+    SLLQueuePush(msgs.first, msgs.last, msg);
+    msgs.count += 1;
+    msgs.max_kind = Max(kind, msgs.max_kind);
+    msg.kind = kind;
+    msg.range = range;
+    msg.text = text;
 }
 
 internal void
@@ -153,14 +153,14 @@ e_msgf(Arena *arena, E_MsgList *msgs, E_MsgKind kind, Rng1U64 range, char *fmt, 
 internal void
 e_msg_list_concat_in_place(E_MsgList *dst, E_MsgList *to_push)
 {
-    if (dst->last != 0 && to_push->first != 0)
+    if (dst.last != 0 && to_push.first != 0)
     {
-        dst->last->next = to_push->first;
-        dst->last = to_push->last;
-        dst->count += to_push->count;
-        dst->max_kind = Max(dst->max_kind, to_push->max_kind);
+        dst.last->next = to_push.first;
+        dst.last = to_push.last;
+        dst.count += to_push.count;
+        dst.max_kind = Max(dst.max_kind, to_push.max_kind);
     }
-    else if (to_push->first != 0)
+    else if (to_push.first != 0)
     {
         MemoryCopyStruct(dst, to_push);
     }
@@ -171,9 +171,9 @@ internal E_MsgList
 e_msg_list_copy(Arena *arena, E_MsgList *src)
 {
     E_MsgList dst = {0};
-    for (E_Msg *msg = src->first; msg != 0; msg = msg->next)
+    for (E_Msg *msg = src.first; msg != 0; msg = msg.next)
     {
-        e_msg(arena, &dst, msg->kind, msg->range, msg->text);
+        e_msg(arena, &dst, msg.kind, msg.range, msg.text);
     }
     return dst;
 }
@@ -214,11 +214,11 @@ internal void
 e_string2num_map_insert(Arena *arena, E_String2NumMap *map, String8 string, U64 num)
 {
     U64 hash = e_hash_from_string(5381, string);
-    U64 slot_idx = hash%map->slots_count;
+    U64 slot_idx = hash%map.slots_count;
     E_String2NumMapNode *existing_node = 0;
-    for (E_String2NumMapNode *node = map->slots[slot_idx].first; node != 0; node = node->hash_next)
+    for (E_String2NumMapNode *node = map.slots[slot_idx].first; node != 0; node = node.hash_next)
     {
-        if (str8_match(node->string, string, 0) && node->num == num)
+        if (str8_match(node.string, string, 0) && node.num == num)
         {
             existing_node = node;
             break;
@@ -227,11 +227,11 @@ e_string2num_map_insert(Arena *arena, E_String2NumMap *map, String8 string, U64 
     if (existing_node == 0)
     {
         E_String2NumMapNode *node = push_array(arena, E_String2NumMapNode, 1);
-        SLLQueuePush_N(map->slots[slot_idx].first, map->slots[slot_idx].last, node, hash_next);
-        SLLQueuePush_N(map->first, map->last, node, order_next);
-        node->string = push_str8_copy(arena, string);
-        node->num = num;
-        map->node_count += 1;
+        SLLQueuePush_N(map.slots[slot_idx].first, map.slots[slot_idx].last, node, hash_next);
+        SLLQueuePush_N(map.first, map.last, node, order_next);
+        node.string = push_str8_copy(arena, string);
+        node.num = num;
+        map.node_count += 1;
     }
 }
 
@@ -239,14 +239,14 @@ internal U64
 e_num_from_string(E_String2NumMap *map, String8 string)
 {
     U64 num = 0;
-    if (map->slots_count != 0)
+    if (map.slots_count != 0)
     {
         U64 hash = e_hash_from_string(5381, string);
-        U64 slot_idx = hash%map->slots_count;
+        U64 slot_idx = hash%map.slots_count;
         E_String2NumMapNode *existing_node = 0;
-        for (E_String2NumMapNode *node = map->slots[slot_idx].first; node != 0; node = node->hash_next)
+        for (E_String2NumMapNode *node = map.slots[slot_idx].first; node != 0; node = node.hash_next)
         {
-            if (str8_match(node->string, string, 0))
+            if (str8_match(node.string, string, 0))
             {
                 existing_node = node;
                 break;
@@ -254,7 +254,7 @@ e_num_from_string(E_String2NumMap *map, String8 string)
         }
         if (existing_node != 0)
         {
-            num = existing_node->num;
+            num = existing_node.num;
         }
     }
     return num;
@@ -264,10 +264,10 @@ internal E_String2NumMapNodeArray
 e_string2num_map_node_array_from_map(Arena *arena, E_String2NumMap *map)
 {
     E_String2NumMapNodeArray result = {0};
-    result.count = map->node_count;
+    result.count = map.node_count;
     result.v = push_array(arena, E_String2NumMapNode *, result.count);
     U64 idx = 0;
-    for (E_String2NumMapNode *n = map->first; n != 0; n = n->order_next, idx += 1)
+    for (E_String2NumMapNode *n = map.first; n != 0; n = n.order_next, idx += 1)
     {
         result.v[idx] = n;
     }
@@ -292,7 +292,7 @@ e_string2num_map_node_qsort_compare__num_ascending(E_String2NumMapNode **a, E_St
 internal void
 e_string2num_map_node_array_sort__in_place(E_String2NumMapNodeArray *array)
 {
-    quick_sort(array->v, array->count, sizeof(array->v[0]), e_string2num_map_node_qsort_compare__num_ascending);
+    quick_sort(array.v, array.count, sizeof(array.v[0]), e_string2num_map_node_qsort_compare__num_ascending);
 }
 
 //- rjf: string -> expr
@@ -310,13 +310,13 @@ internal void
 e_string2expr_map_insert(Arena *arena, E_String2ExprMap *map, String8 string, E_Expr *expr)
 {
     U64 hash = e_hash_from_string(5381, string);
-    U64 slot_idx = hash%map->slots_count;
+    U64 slot_idx = hash%map.slots_count;
     E_String2ExprMapNode *existing_node = 0;
-    for (E_String2ExprMapNode *node = map->slots[slot_idx].first;
+    for (E_String2ExprMapNode *node = map.slots[slot_idx].first;
             node != 0;
-            node = node->hash_next)
+            node = node.hash_next)
     {
-        if (str8_match(node->string, string, 0))
+        if (str8_match(node.string, string, 0))
         {
             existing_node = node;
             break;
@@ -325,10 +325,10 @@ e_string2expr_map_insert(Arena *arena, E_String2ExprMap *map, String8 string, E_
     if (existing_node == 0)
     {
         E_String2ExprMapNode *node = push_array(arena, E_String2ExprMapNode, 1);
-        SLLQueuePush_N(map->slots[slot_idx].first, map->slots[slot_idx].last, node, hash_next);
-        node->string = push_str8_copy(arena, string);
+        SLLQueuePush_N(map.slots[slot_idx].first, map.slots[slot_idx].last, node, hash_next);
+        node.string = push_str8_copy(arena, string);
         existing_node = node;
-        existing_node->expr = expr;
+        existing_node.expr = expr;
     }
 }
 
@@ -336,14 +336,14 @@ internal void
 e_string2expr_map_inc_poison(E_String2ExprMap *map, String8 string)
 {
     U64 hash = e_hash_from_string(5381, string);
-    U64 slot_idx = hash%map->slots_count;
-    for (E_String2ExprMapNode *node = map->slots[slot_idx].first;
+    U64 slot_idx = hash%map.slots_count;
+    for (E_String2ExprMapNode *node = map.slots[slot_idx].first;
             node != 0;
-            node = node->hash_next)
+            node = node.hash_next)
     {
-        if (str8_match(node->string, string, 0))
+        if (str8_match(node.string, string, 0))
         {
-            node->poison_count += 1;
+            node.poison_count += 1;
             break;
         }
     }
@@ -353,14 +353,14 @@ internal void
 e_string2expr_map_dec_poison(E_String2ExprMap *map, String8 string)
 {
     U64 hash = e_hash_from_string(5381, string);
-    U64 slot_idx = hash%map->slots_count;
-    for (E_String2ExprMapNode *node = map->slots[slot_idx].first;
+    U64 slot_idx = hash%map.slots_count;
+    for (E_String2ExprMapNode *node = map.slots[slot_idx].first;
             node != 0;
-            node = node->hash_next)
+            node = node.hash_next)
     {
-        if (str8_match(node->string, string, 0) && node->poison_count > 0)
+        if (str8_match(node.string, string, 0) && node.poison_count > 0)
         {
-            node->poison_count -= 1;
+            node.poison_count -= 1;
             break;
         }
     }
@@ -370,14 +370,14 @@ internal E_Expr *
 e_string2expr_map_lookup(E_String2ExprMap *map, String8 string)
 {
     E_Expr *expr = &e_expr_nil;
-    if (map->slots_count != 0)
+    if (map.slots_count != 0)
     {
         U64 hash = e_hash_from_string(5381, string);
-        U64 slot_idx = hash%map->slots_count;
+        U64 slot_idx = hash%map.slots_count;
         E_String2ExprMapNode *existing_node = 0;
-        for (E_String2ExprMapNode *node = map->slots[slot_idx].first; node != 0; node = node->hash_next)
+        for (E_String2ExprMapNode *node = map.slots[slot_idx].first; node != 0; node = node.hash_next)
         {
-            if (str8_match(node->string, string, 0) && node->poison_count == 0)
+            if (str8_match(node.string, string, 0) && node.poison_count == 0)
             {
                 existing_node = node;
                 break;
@@ -385,7 +385,7 @@ e_string2expr_map_lookup(E_String2ExprMap *map, String8 string)
         }
         if (existing_node != 0)
         {
-            expr = existing_node->expr;
+            expr = existing_node.expr;
         }
     }
     return expr;
@@ -407,10 +407,10 @@ e_string2typekey_map_insert(Arena *arena, E_String2TypeKeyMap *map, String8 stri
 {
     E_String2TypeKeyNode *n = push_array(arena, E_String2TypeKeyNode, 1);
     U64 hash = e_hash_from_string(5381, string);
-    U64 slot_idx = hash%map->slots_count;
-    SLLQueuePush(map->slots[slot_idx].first, map->slots[slot_idx].last, n);
-    n->string = push_str8_copy(arena, string);
-    n->key = key;
+    U64 slot_idx = hash%map.slots_count;
+    SLLQueuePush(map.slots[slot_idx].first, map.slots[slot_idx].last, n);
+    n.string = push_str8_copy(arena, string);
+    n.key = key;
 }
 
 internal E_TypeKey
@@ -418,12 +418,12 @@ e_string2typekey_map_lookup(E_String2TypeKeyMap *map, String8 string)
 {
     E_TypeKey key = zero_struct;
     U64 hash = e_hash_from_string(5381, string);
-    U64 slot_idx = hash%map->slots_count;
-    for (E_String2TypeKeyNode *n = map->slots[slot_idx].first; n != 0; n = n->next)
+    U64 slot_idx = hash%map.slots_count;
+    for (E_String2TypeKeyNode *n = map.slots[slot_idx].first; n != 0; n = n.next)
     {
-        if (str8_match(n->string, string, 0))
+        if (str8_match(n.string, string, 0))
         {
-            key = n->key;
+            key = n.key;
             break;
         }
     }
@@ -445,10 +445,10 @@ internal void
 e_auto_hook_map_insert_new_(Arena *arena, E_AutoHookMap *map, E_AutoHookParams *params)
 {
     // rjf: get type key
-    E_TypeKey type_key = params->type_key;
-    if (params->type_pattern.size != 0)
+    E_TypeKey type_key = params.type_key;
+    if (params.type_pattern.size != 0)
     {
-        E_Parse parse = e_push_parse_from_string(arena, params->type_pattern);
+        E_Parse parse = e_push_parse_from_string(arena, params.type_pattern);
         type_key = e_type_key_from_expr(parse.expr);
     }
     
@@ -457,17 +457,17 @@ e_auto_hook_map_insert_new_(Arena *arena, E_AutoHookMap *map, E_AutoHookParams *
     if (e_type_key_match(e_type_key_zero(), type_key))
     {
         U64 start_string_off = 0;
-        for (U64 off = 0; off <= params->type_pattern.size; off += 1)
+        for (U64 off = 0; off <= params.type_pattern.size; off += 1)
         {
-            U8 byte = (off < params->type_pattern.size ? params->type_pattern.str[off] : 0);
+            U8 byte = (off < params.type_pattern.size ? params.type_pattern.str[off] : 0);
             if (byte == 0 || byte == '?')
             {
-                String8 new_part = str8_substr(params->type_pattern, r1u64(start_string_off, off));
+                String8 new_part = str8_substr(params.type_pattern, r1u64(start_string_off, off));
                 if (new_part.size != 0)
                 {
                     E_PatternPart *p = push_array(arena, E_PatternPart, 1);
                     SLLQueuePush(pattern.first_part, pattern.last_part, p);
-                    p->string = new_part;
+                    p.string = new_part;
                     pattern.count += 1;
                 }
             }
@@ -476,19 +476,19 @@ e_auto_hook_map_insert_new_(Arena *arena, E_AutoHookMap *map, E_AutoHookParams *
                 E_PatternPart *p = push_array(arena, E_PatternPart, 1);
                 SLLQueuePush(pattern.first_part, pattern.last_part, p);
                 pattern.count += 1;
-                if (off+1 < params->type_pattern.size && params->type_pattern.str[off+1] == '{')
+                if (off+1 < params.type_pattern.size && params.type_pattern.str[off+1] == '{')
                 {
                     off += 2;
-                    String8 wildcard_inst_names_string = str8_skip(params->type_pattern, off);
+                    String8 wildcard_inst_names_string = str8_skip(params.type_pattern, off);
                     wildcard_inst_names_string = str8_prefix(wildcard_inst_names_string, str8_find_needle(wildcard_inst_names_string, 0, str8_lit("}"), 0));
                     if (wildcard_inst_names_string.size != 0)
                     {
                         Temp scratch = scratch_begin(&arena, 1);
                         U8 wildcard_inst_name_split_char = ',';
                         String8List wildcard_inst_names = str8_split(scratch.arena, wildcard_inst_names_string, &wildcard_inst_name_split_char, 1, 0);
-                        for (String8Node *n = wildcard_inst_names.first; n != 0; n = n->next)
+                        for (String8Node *n = wildcard_inst_names.first; n != 0; n = n.next)
                         {
-                            str8_list_push(arena, &p->wildcard_inst_names, str8_skip_chop_whitespace(n->string));
+                            str8_list_push(arena, &p.wildcard_inst_names, str8_skip_chop_whitespace(n.string));
                         }
                         scratch_end(scratch);
                         off += wildcard_inst_names_string.size;
@@ -505,18 +505,18 @@ e_auto_hook_map_insert_new_(Arena *arena, E_AutoHookMap *map, E_AutoHookParams *
           pattern.count != 0)
     {
         E_AutoHookNode *node = push_array(arena, E_AutoHookNode, 1);
-        node->type_string = str8_skip_chop_whitespace(e_type_string_from_key(arena, type_key));
-        node->type_pattern = pattern;
-        node->expr_string = push_str8_copy(arena, params->tag_expr_string);
+        node.type_string = str8_skip_chop_whitespace(e_type_string_from_key(arena, type_key));
+        node.type_pattern = pattern;
+        node.expr_string = push_str8_copy(arena, params.tag_expr_string);
         if (!e_type_key_match(e_type_key_zero(), type_key))
         {
-            U64 hash = e_hash_from_string(5381, node->type_string);
-            U64 slot_idx = hash%map->slots_count;
-            SLLQueuePush_N(map->slots[slot_idx].first, map->slots[slot_idx].last, node, hash_next);
+            U64 hash = e_hash_from_string(5381, node.type_string);
+            U64 slot_idx = hash%map.slots_count;
+            SLLQueuePush_N(map.slots[slot_idx].first, map.slots[slot_idx].last, node, hash_next);
         }
         else
         {
-            SLLQueuePush_N(map->first_pattern, map->last_pattern, node, pattern_order_next);
+            SLLQueuePush_N(map.first_pattern, map.last_pattern, node, pattern_order_next);
         }
     }
 }
@@ -545,7 +545,7 @@ e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
         U64 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff);
         RDI_Scope *scope = rdi_element_from_name_idx(rdi, Scopes, scope_idx);
         Task *task = push_array(scratch.arena, Task, 1);
-        task->scope = scope;
+        task.scope = scope;
         SLLQueuePush(first_task, last_task, task);
         tightest_scope = scope;
     }
@@ -558,7 +558,7 @@ e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
         if (scope != tightest_scope)
         {
             Task *task = push_array(scratch.arena, Task, 1);
-            task->scope = scope;
+            task.scope = scope;
             SLLQueuePush(first_task, last_task, task);
         }
     }
@@ -567,12 +567,12 @@ e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
     if (tightest_scope != 0)
     {
         RDI_Scope *nil_scope = rdi_element_from_name_idx(rdi, Scopes, 0);
-        for (RDI_Scope *scope = rdi_element_from_name_idx(rdi, Scopes, tightest_scope->parent_scope_idx);
+        for (RDI_Scope *scope = rdi_element_from_name_idx(rdi, Scopes, tightest_scope.parent_scope_idx);
                 scope != 0 && scope != nil_scope;
-                scope = rdi_element_from_name_idx(rdi, Scopes, scope->parent_scope_idx))
+                scope = rdi_element_from_name_idx(rdi, Scopes, scope.parent_scope_idx))
         {
             Task *task = push_array(scratch.arena, Task, 1);
-            task->scope = scope;
+            task.scope = scope;
             SLLQueuePush(first_task, last_task, task);
         }
     }
@@ -582,17 +582,17 @@ e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
     *map = e_string2num_map_make(arena, 1024);
     
     //- rjf: accumulate locals for all tasks
-    for (Task *task = first_task; task != 0; task = task->next)
+    for (Task *task = first_task; task != 0; task = task.next)
     {
-        RDI_Scope *scope = task->scope;
+        RDI_Scope *scope = task.scope;
         if (scope != 0)
         {
-            U32 local_opl_idx = scope->local_first + scope->local_count;
-            for (U32 local_idx = scope->local_first; local_idx < local_opl_idx; local_idx += 1)
+            U32 local_opl_idx = scope.local_first + scope.local_count;
+            for (U32 local_idx = scope.local_first; local_idx < local_opl_idx; local_idx += 1)
             {
                 RDI_Local *local_var = rdi_element_from_name_idx(rdi, Locals, local_idx);
                 U64 local_name_size = 0;
-                U8 *local_name_str = rdi_string_from_idx(rdi, local_var->name_string_idx, &local_name_size);
+                U8 *local_name_str = rdi_string_from_idx(rdi, local_var.name_string_idx, &local_name_size);
                 String8 name = push_str8_copy(arena, str8(local_name_str, local_name_size));
                 e_string2num_map_insert(arena, map, name, (U64)local_idx+1);
             }
@@ -611,11 +611,11 @@ e_push_member_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
     RDI_Scope *tightest_scope = rdi_element_from_name_idx(rdi, Scopes, scope_idx);
     
     //- rjf: tightest scope -> procedure
-    U32 proc_idx = tightest_scope->proc_idx;
+    U32 proc_idx = tightest_scope.proc_idx;
     RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, proc_idx);
     
     //- rjf: procedure -> udt
-    U32 udt_idx = procedure->container_idx;
+    U32 udt_idx = procedure.container_idx;
     RDI_UDT *udt = rdi_element_from_name_idx(rdi, UDTs, udt_idx);
     
     //- rjf: build blank map
@@ -623,18 +623,18 @@ e_push_member_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
     *map = e_string2num_map_make(arena, 64);
     
     //- rjf: udt -> fill member map
-    if (!(udt->flags & RDI_UDTFlag_EnumMembers))
+    if (!(udt.flags & RDI_UDTFlag_EnumMembers))
     {
         U64 data_member_num = 1;
-        for (U32 member_idx = udt->member_first;
-                member_idx < udt->member_first+udt->member_count;
+        for (U32 member_idx = udt.member_first;
+                member_idx < udt.member_first+udt.member_count;
                 member_idx += 1)
         {
             RDI_Member *m = rdi_element_from_name_idx(rdi, Members, member_idx);
-            if (m->kind == RDI_MemberKind_DataField)
+            if (m.kind == RDI_MemberKind_DataField)
             {
                 String8 name = {0};
-                name.str = rdi_string_from_idx(rdi, m->name_string_idx, &name.size);
+                name.str = rdi_string_from_idx(rdi, m.name_string_idx, &name.size);
                 e_string2num_map_insert(arena, map, name, data_member_num);
                 data_member_num += 1;
             }
@@ -652,15 +652,15 @@ e_cache_alloc(void)
 {
     Arena *arena = arena_alloc();
     E_Cache *cache = push_array(arena, E_Cache, 1);
-    cache->arena = arena;
-    cache->arena_eval_start_pos = arena_pos(arena);
+    cache.arena = arena;
+    cache.arena_eval_start_pos = arena_pos(arena);
     return cache;
 }
 
 internal void
 e_cache_release(E_Cache *cache)
 {
-    arena_release(cache->arena);
+    arena_release(cache.arena);
 }
 
 internal void
@@ -676,31 +676,31 @@ internal void
 e_select_base_ctx(E_BaseCtx *ctx)
 {
     //- rjf: select base context
-    if (ctx->modules == 0)        { ctx->modules = &e_module_nil; }
-    if (ctx->primary_module == 0) { ctx->primary_module = &e_module_nil; }
+    if (ctx.modules == 0)        { ctx.modules = &e_module_nil; }
+    if (ctx.primary_module == 0) { ctx.primary_module = &e_module_nil; }
     e_base_ctx = ctx;
     
     //- rjf: reset the evaluation cache
-    arena_pop_to(e_cache->arena, e_cache->arena_eval_start_pos);
-    e_cache->key_id_gen = 0;
-    e_cache->key_slots_count = 4096;
-    e_cache->key_slots = push_array(e_cache->arena, E_CacheSlot, e_cache->key_slots_count);
-    e_cache->string_slots_count = 4096;
-    e_cache->string_slots = push_array(e_cache->arena, E_CacheSlot, e_cache->string_slots_count);
-    e_cache->free_parent_node = 0;
-    e_cache->top_parent_node = 0;
-    e_cache->cons_id_gen = 0;
-    e_cache->cons_content_slots_count = 256;
-    e_cache->cons_key_slots_count = 256;
-    e_cache->cons_content_slots = push_array(e_cache->arena, E_ConsTypeSlot, e_cache->cons_content_slots_count);
-    e_cache->cons_key_slots = push_array(e_cache->arena, E_ConsTypeSlot, e_cache->cons_key_slots_count);
-    e_cache->member_cache_slots_count = 256;
-    e_cache->member_cache_slots = push_array(e_cache->arena, E_MemberCacheSlot, e_cache->member_cache_slots_count);
-    e_cache->enum_val_cache_slots_count = 256;
-    e_cache->enum_val_cache_slots = push_array(e_cache->arena, E_EnumValCacheSlot, e_cache->enum_val_cache_slots_count);
-    e_cache->type_cache_slots_count = 1024;
-    e_cache->type_cache_slots = push_array(e_cache->arena, E_TypeCacheSlot, e_cache->type_cache_slots_count);
-    e_cache->file_type_key = e_type_key_cons(.kind = E_TypeKind_Set,
+    arena_pop_to(e_cache.arena, e_cache.arena_eval_start_pos);
+    e_cache.key_id_gen = 0;
+    e_cache.key_slots_count = 4096;
+    e_cache.key_slots = push_array(e_cache.arena, E_CacheSlot, e_cache.key_slots_count);
+    e_cache.string_slots_count = 4096;
+    e_cache.string_slots = push_array(e_cache.arena, E_CacheSlot, e_cache.string_slots_count);
+    e_cache.free_parent_node = 0;
+    e_cache.top_parent_node = 0;
+    e_cache.cons_id_gen = 0;
+    e_cache.cons_content_slots_count = 256;
+    e_cache.cons_key_slots_count = 256;
+    e_cache.cons_content_slots = push_array(e_cache.arena, E_ConsTypeSlot, e_cache.cons_content_slots_count);
+    e_cache.cons_key_slots = push_array(e_cache.arena, E_ConsTypeSlot, e_cache.cons_key_slots_count);
+    e_cache.member_cache_slots_count = 256;
+    e_cache.member_cache_slots = push_array(e_cache.arena, E_MemberCacheSlot, e_cache.member_cache_slots_count);
+    e_cache.enum_val_cache_slots_count = 256;
+    e_cache.enum_val_cache_slots = push_array(e_cache.arena, E_EnumValCacheSlot, e_cache.enum_val_cache_slots_count);
+    e_cache.type_cache_slots_count = 1024;
+    e_cache.type_cache_slots = push_array(e_cache.arena, E_TypeCacheSlot, e_cache.type_cache_slots_count);
+    e_cache.file_type_key = e_type_key_cons(.kind = E_TypeKind_Set,
                                                                                       .name = str8_lit("file"),
                                                                                       .irext  = E_TYPE_IREXT_FUNCTION_NAME(file),
                                                                                       .access = E_TYPE_ACCESS_FUNCTION_NAME(file),
@@ -709,7 +709,7 @@ e_select_base_ctx(E_BaseCtx *ctx)
                                                                                           .info = E_TYPE_EXPAND_INFO_FUNCTION_NAME(file),
                                                                                           .range= E_TYPE_EXPAND_RANGE_FUNCTION_NAME(file),
                                                                                       });
-    e_cache->folder_type_key = e_type_key_cons(.kind = E_TypeKind_Set,
+    e_cache.folder_type_key = e_type_key_cons(.kind = E_TypeKind_Set,
                                                                                           .name = str8_lit("folder"),
                                                                                           .expand =
                                                                                           {
@@ -718,29 +718,29 @@ e_select_base_ctx(E_BaseCtx *ctx)
                                                                                               .id_from_num = E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_NAME(folder),
                                                                                               .num_from_id = E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_NAME(folder),
                                                                                           });
-    e_cache->thread_ip_procedure = rdi_procedure_from_voff(e_base_ctx->primary_module->rdi, e_base_ctx->thread_ip_voff);
-    e_cache->used_expr_map = push_array(e_cache->arena, E_UsedExprMap, 1);
-    e_cache->used_expr_map->slots_count = 64;
-    e_cache->used_expr_map->slots = push_array(e_cache->arena, E_UsedExprSlot, e_cache->used_expr_map->slots_count);
-    e_cache->type_auto_hook_cache_map = push_array(e_cache->arena, E_TypeAutoHookCacheMap, 1);
-    e_cache->type_auto_hook_cache_map->slots_count = 256;
-    e_cache->type_auto_hook_cache_map->slots = push_array(e_cache->arena, E_TypeAutoHookCacheSlot, e_cache->type_auto_hook_cache_map->slots_count);
-    e_cache->string_id_gen = 0;
-    e_cache->string_id_map = push_array(e_cache->arena, E_StringIDMap, 1);
-    e_cache->string_id_map->id_slots_count = 1024;
-    e_cache->string_id_map->id_slots = push_array(e_cache->arena, E_StringIDSlot, e_cache->string_id_map->id_slots_count);
-    e_cache->string_id_map->hash_slots_count = 1024;
-    e_cache->string_id_map->hash_slots = push_array(e_cache->arena, E_StringIDSlot, e_cache->string_id_map->hash_slots_count);
+    e_cache.thread_ip_procedure = rdi_procedure_from_voff(e_base_ctx.primary_module->rdi, e_base_ctx.thread_ip_voff);
+    e_cache.used_expr_map = push_array(e_cache.arena, E_UsedExprMap, 1);
+    e_cache.used_expr_map->slots_count = 64;
+    e_cache.used_expr_map->slots = push_array(e_cache.arena, E_UsedExprSlot, e_cache.used_expr_map->slots_count);
+    e_cache.type_auto_hook_cache_map = push_array(e_cache.arena, E_TypeAutoHookCacheMap, 1);
+    e_cache.type_auto_hook_cache_map->slots_count = 256;
+    e_cache.type_auto_hook_cache_map->slots = push_array(e_cache.arena, E_TypeAutoHookCacheSlot, e_cache.type_auto_hook_cache_map->slots_count);
+    e_cache.string_id_gen = 0;
+    e_cache.string_id_map = push_array(e_cache.arena, E_StringIDMap, 1);
+    e_cache.string_id_map->id_slots_count = 1024;
+    e_cache.string_id_map->id_slots = push_array(e_cache.arena, E_StringIDSlot, e_cache.string_id_map->id_slots_count);
+    e_cache.string_id_map->hash_slots_count = 1024;
+    e_cache.string_id_map->hash_slots = push_array(e_cache.arena, E_StringIDSlot, e_cache.string_id_map->hash_slots_count);
 }
 
 internal void
 e_select_ir_ctx(E_IRCtx *ctx)
 {
-    if (ctx->regs_map == 0)       { ctx->regs_map = &e_string2num_map_nil; }
-    if (ctx->reg_alias_map == 0)  { ctx->reg_alias_map = &e_string2num_map_nil; }
-    if (ctx->locals_map == 0)     { ctx->locals_map = &e_string2num_map_nil; }
-    if (ctx->member_map == 0)     { ctx->member_map = &e_string2num_map_nil; }
-    if (ctx->macro_map == 0)      { ctx->macro_map = push_array(e_cache->arena, E_String2ExprMap, 1); ctx->macro_map[0] = e_string2expr_map_make(e_cache->arena, 512); }
+    if (ctx.regs_map == 0)       { ctx.regs_map = &e_string2num_map_nil; }
+    if (ctx.reg_alias_map == 0)  { ctx.reg_alias_map = &e_string2num_map_nil; }
+    if (ctx.locals_map == 0)     { ctx.locals_map = &e_string2num_map_nil; }
+    if (ctx.member_map == 0)     { ctx.member_map = &e_string2num_map_nil; }
+    if (ctx.macro_map == 0)      { ctx.macro_map = push_array(e_cache.arena, E_String2ExprMap, 1); ctx.macro_map[0] = e_string2expr_map_make(e_cache.arena, 512); }
     e_ir_ctx = ctx;
 }
 
@@ -753,31 +753,31 @@ internal E_Key
 e_parent_key_push(E_Key key)
 {
     E_Key top = {0};
-    if (e_cache->top_parent_node != 0)
+    if (e_cache.top_parent_node != 0)
     {
-        top = e_cache->top_parent_node->key;
+        top = e_cache.top_parent_node->key;
     }
-    E_CacheParentNode *n = e_cache->free_parent_node;
+    E_CacheParentNode *n = e_cache.free_parent_node;
     if (n != 0)
     {
-        SLLStackPop(e_cache->free_parent_node);
+        SLLStackPop(e_cache.free_parent_node);
     }
     else
     {
-        n = push_array(e_cache->arena, E_CacheParentNode, 1);
+        n = push_array(e_cache.arena, E_CacheParentNode, 1);
     }
-    SLLStackPush(e_cache->top_parent_node, n);
-    n->key = key;
+    SLLStackPush(e_cache.top_parent_node, n);
+    n.key = key;
     return top;
 }
 
 internal E_Key
 e_parent_key_pop(void)
 {
-    E_CacheParentNode *n = e_cache->top_parent_node;
-    SLLStackPop(e_cache->top_parent_node);
-    SLLStackPush(e_cache->free_parent_node, n);
-    E_Key popped = n->key;
+    E_CacheParentNode *n = e_cache.top_parent_node;
+    SLLStackPop(e_cache.top_parent_node);
+    SLLStackPush(e_cache.free_parent_node, n);
+    E_Key popped = n.key;
     return popped;
 }
 
@@ -787,20 +787,20 @@ internal E_Key
 e_key_from_string(String8 string)
 {
     E_Key parent_key = {0};
-    if (e_cache->top_parent_node)
+    if (e_cache.top_parent_node)
     {
-        parent_key = e_cache->top_parent_node->key;
+        parent_key = e_cache.top_parent_node->key;
     }
     U64 hash = e_hash_from_string(parent_key.u64, string);
-    U64 slot_idx = hash%e_cache->string_slots_count;
-    E_CacheSlot *slot = &e_cache->string_slots[slot_idx];
+    U64 slot_idx = hash%e_cache.string_slots_count;
+    E_CacheSlot *slot = &e_cache.string_slots[slot_idx];
     E_CacheNode *node = 0;
-    for (E_CacheNode *n = slot->first; n != 0; n = n->string_next)
+    for (E_CacheNode *n = slot.first; n != 0; n = n.string_next)
     {
-        if (e_key_match(parent_key, n->bundle.parent_key) &&
-              str8_match(n->bundle.string, string, 0) &&
-              (n->bundle.interpretation.space.kind == E_SpaceKind_Null ||
-                e_space_gen(n->bundle.interpretation.space) == n->bundle.space_gen))
+        if (e_key_match(parent_key, n.bundle.parent_key) &&
+              str8_match(n.bundle.string, string, 0) &&
+              (n.bundle.interpretation.space.kind == E_SpaceKind_Null ||
+                e_space_gen(n.bundle.interpretation.space) == n.bundle.space_gen))
         {
             node = n;
             break;
@@ -808,19 +808,19 @@ e_key_from_string(String8 string)
     }
     if (node == 0)
     {
-        e_cache->key_id_gen += 1;
-        E_Key key = {e_cache->key_id_gen};
+        e_cache.key_id_gen += 1;
+        E_Key key = {e_cache.key_id_gen};
         U64 key_hash = e_hash_from_string(5381, str8_struct(&key));
-        U64 key_slot_idx = key_hash%e_cache->key_slots_count;
-        E_CacheSlot *key_slot = &e_cache->key_slots[key_slot_idx];
-        node = push_array(e_cache->arena, E_CacheNode, 1);
-        SLLQueuePush_N(slot->first, slot->last, node, string_next);
-        SLLQueuePush_N(key_slot->first, key_slot->last, node, key_next);
-        node->bundle.key = key;
-        node->bundle.parent_key = parent_key;
-        node->bundle.string = push_str8_copy(e_cache->arena, string);
+        U64 key_slot_idx = key_hash%e_cache.key_slots_count;
+        E_CacheSlot *key_slot = &e_cache.key_slots[key_slot_idx];
+        node = push_array(e_cache.arena, E_CacheNode, 1);
+        SLLQueuePush_N(slot.first, slot.last, node, string_next);
+        SLLQueuePush_N(key_slot.first, key_slot.last, node, key_next);
+        node.bundle.key = key;
+        node.bundle.parent_key = parent_key;
+        node.bundle.string = push_str8_copy(e_cache.arena, string);
     }
-    return node->bundle.key;
+    return node.bundle.key;
 }
 
 internal E_Key
@@ -852,12 +852,12 @@ internal E_CacheBundle *
 e_cache_bundle_from_key(E_Key key)
 {
     U64 hash = e_hash_from_string(5381, str8_struct(&key));
-    U64 slot_idx = hash%e_cache->key_slots_count;
-    E_CacheSlot *slot = &e_cache->key_slots[slot_idx];
+    U64 slot_idx = hash%e_cache.key_slots_count;
+    E_CacheSlot *slot = &e_cache.key_slots[slot_idx];
     E_CacheNode *node = 0;
-    for (E_CacheNode *n = slot->first; n != 0; n = n->key_next)
+    for (E_CacheNode *n = slot.first; n != 0; n = n.key_next)
     {
-        if (e_key_match(n->bundle.key, key))
+        if (e_key_match(n.bundle.key, key))
         {
             node = n;
             break;
@@ -866,7 +866,7 @@ e_cache_bundle_from_key(E_Key key)
     E_CacheBundle *bundle = &e_cache_bundle_nil;
     if (node != 0)
     {
-        bundle = &node->bundle;
+        bundle = &node.bundle;
     }
     return bundle;
 }
@@ -876,68 +876,68 @@ e_cache_bundle_from_key(E_Key key)
 internal E_Parse
 e_parse_from_bundle(E_CacheBundle *bundle)
 {
-    if (bundle != &e_cache_bundle_nil && !(bundle->flags & E_CacheBundleFlag_Parse))
+    if (bundle != &e_cache_bundle_nil && !(bundle.flags & E_CacheBundleFlag_Parse))
     {
-        bundle->flags |= E_CacheBundleFlag_Parse;
-        bundle->parse = e_push_parse_from_string(e_cache->arena, bundle->string);
-        E_MsgList msgs_copy = e_msg_list_copy(e_cache->arena, &bundle->parse.msgs);
-        e_msg_list_concat_in_place(&bundle->msgs, &msgs_copy);
+        bundle.flags |= E_CacheBundleFlag_Parse;
+        bundle.parse = e_push_parse_from_string(e_cache.arena, bundle.string);
+        E_MsgList msgs_copy = e_msg_list_copy(e_cache.arena, &bundle.parse.msgs);
+        e_msg_list_concat_in_place(&bundle.msgs, &msgs_copy);
     }
-    E_Parse parse = bundle->parse;
+    E_Parse parse = bundle.parse;
     return parse;
 }
 
 internal E_IRTreeAndType
 e_irtree_from_bundle(E_CacheBundle *bundle)
 {
-    if (bundle != &e_cache_bundle_nil && !(bundle->flags & E_CacheBundleFlag_IRTree))
+    if (bundle != &e_cache_bundle_nil && !(bundle.flags & E_CacheBundleFlag_IRTree))
     {
-        bundle->flags |= E_CacheBundleFlag_IRTree;
-        E_IRTreeAndType parent = e_irtree_from_key(bundle->parent_key);
+        bundle.flags |= E_CacheBundleFlag_IRTree;
+        E_IRTreeAndType parent = e_irtree_from_key(bundle.parent_key);
         E_Parse parse = e_parse_from_bundle(bundle);
-        ProfScope("irtree generation for '%.*s'", str8_varg(bundle->string))
+        ProfScope("irtree generation for '%.*s'", str8_varg(bundle.string))
         {
-            bundle->irtree = e_push_irtree_and_type_from_expr(e_cache->arena, &parent, &e_default_identifier_resolution_rule, 0, 0, parse.expr);
+            bundle.irtree = e_push_irtree_and_type_from_expr(e_cache.arena, &parent, &e_default_identifier_resolution_rule, 0, 0, parse.expr);
         }
-        E_MsgList msgs_copy = e_msg_list_copy(e_cache->arena, &bundle->irtree.msgs);
-        e_msg_list_concat_in_place(&bundle->msgs, &msgs_copy);
+        E_MsgList msgs_copy = e_msg_list_copy(e_cache.arena, &bundle.irtree.msgs);
+        e_msg_list_concat_in_place(&bundle.msgs, &msgs_copy);
     }
-    E_IRTreeAndType result = bundle->irtree;
+    E_IRTreeAndType result = bundle.irtree;
     return result;
 }
 
 internal String8
 e_bytecode_from_bundle(E_CacheBundle *bundle)
 {
-    if (bundle != &e_cache_bundle_nil && !(bundle->flags & E_CacheBundleFlag_Bytecode))
+    if (bundle != &e_cache_bundle_nil && !(bundle.flags & E_CacheBundleFlag_Bytecode))
     {
-        bundle->flags |= E_CacheBundleFlag_Bytecode;
+        bundle.flags |= E_CacheBundleFlag_Bytecode;
         Temp scratch = scratch_begin(0, 0);
         E_IRTreeAndType irtree = e_irtree_from_bundle(bundle);
         E_OpList oplist = e_oplist_from_irtree(scratch.arena, irtree.root);
-        bundle->bytecode = e_bytecode_from_oplist(e_cache->arena, &oplist);
+        bundle.bytecode = e_bytecode_from_oplist(e_cache.arena, &oplist);
         scratch_end(scratch);
     }
-    String8 result = bundle->bytecode;
+    String8 result = bundle.bytecode;
     return result;
 }
 
 internal E_Interpretation
 e_interpretation_from_bundle(E_CacheBundle *bundle)
 {
-    if (bundle != &e_cache_bundle_nil && !(bundle->flags & E_CacheBundleFlag_Interpret))
+    if (bundle != &e_cache_bundle_nil && !(bundle.flags & E_CacheBundleFlag_Interpret))
     {
-        bundle->flags |= E_CacheBundleFlag_Interpret;
+        bundle.flags |= E_CacheBundleFlag_Interpret;
         String8 bytecode = e_bytecode_from_bundle(bundle);
         E_Interpretation interpret = e_interpret(bytecode);
         if (E_InterpretationCode_Good < interpret.code && interpret.code < E_InterpretationCode_COUNT)
         {
-            e_msg(e_cache->arena, &bundle->msgs, E_MsgKind_InterpretationError, r1u64(0, 0), e_interpretation_code_display_strings[interpret.code]);
+            e_msg(e_cache.arena, &bundle.msgs, E_MsgKind_InterpretationError, r1u64(0, 0), e_interpretation_code_display_strings[interpret.code]);
         }
-        bundle->interpretation = interpret;
-        bundle->space_gen = e_space_gen(interpret.space);
+        bundle.interpretation = interpret;
+        bundle.space_gen = e_space_gen(interpret.space);
     }
-    E_Interpretation interpret = bundle->interpretation;
+    E_Interpretation interpret = bundle.interpretation;
     return interpret;
 }
 
@@ -947,8 +947,8 @@ internal String8
 e_full_expr_string_from_key(Arena *arena, E_Key key)
 {
     E_CacheBundle *bundle = e_cache_bundle_from_key(key);
-    String8 result = push_str8_copy(arena, bundle->string);
-    if (!e_key_match(bundle->parent_key, e_key_zero()))
+    String8 result = push_str8_copy(arena, bundle.string);
+    if (!e_key_match(bundle.parent_key, e_key_zero()))
     {
         Temp scratch = scratch_begin(&arena, 1);
         
@@ -978,11 +978,11 @@ e_full_expr_string_from_key(Arena *arena, E_Key key)
         ParentResolveTask *last_task = first_task;
         for (ParentResolveTask *t = first_task, *next = 0; t != 0; (t = next, next = 0))
         {
-            if (!e_key_match(t->bundle->parent_key, e_key_zero()))
+            if (!e_key_match(t.bundle->parent_key, e_key_zero()))
             {
                 ParentResolveTask *task = push_array(scratch.arena, ParentResolveTask, 1);
                 SLLQueuePushFront(first_task, last_task, task);
-                task->bundle = e_cache_bundle_from_key(t->bundle->parent_key);
+                task.bundle = e_cache_bundle_from_key(t.bundle->parent_key);
                 next = task;
             }
         }
@@ -990,9 +990,9 @@ e_full_expr_string_from_key(Arena *arena, E_Key key)
         //- rjf: walk the chain of tasks, from deepest -> shallowest, producing a
         // more fully resolved string at each step
         String8 parent_string = {0};
-        for (ParentResolveTask *t = first_task; t != 0; t = t->next)
+        for (ParentResolveTask *t = first_task; t != 0; t = t.next)
         {
-            E_Parse parse = e_parse_from_bundle(t->bundle);
+            E_Parse parse = e_parse_from_bundle(t.bundle);
             parent_string = e_string_from_expr(scratch.arena, parse.expr, parent_string);
         }
         
@@ -1011,13 +1011,13 @@ e_eval_from_bundle(E_CacheBundle *bundle)
 {
     E_Eval eval =
     {
-        .key       = bundle->key,
-        .parent_key= bundle->parent_key,
-        .string    = bundle->string,
+        .key       = bundle.key,
+        .parent_key= bundle.parent_key,
+        .string    = bundle.string,
         .expr      = e_parse_from_bundle(bundle).expr,
         .irtree    = e_irtree_from_bundle(bundle),
         .bytecode  = e_bytecode_from_bundle(bundle),
-        .msgs      = bundle->msgs,
+        .msgs      = bundle.msgs,
     };
     E_Interpretation interpretation = e_interpretation_from_bundle(bundle);
     eval.code = interpretation.code;
@@ -1054,13 +1054,13 @@ e_value_eval_from_eval(E_Eval eval)
                 {
                     E_Type *type = e_type_from_key(type_key);
                     U64 valid_bits_mask = 0;
-                    for (U64 idx = 0; idx < type->count; idx += 1)
+                    for (U64 idx = 0; idx < type.count; idx += 1)
                     {
                         valid_bits_mask |= (1ull<<idx);
                     }
-                    eval.value.u64 = eval.value.u64 >> type->off;
+                    eval.value.u64 = eval.value.u64 >> type.off;
                     eval.value.u64 = eval.value.u64 & valid_bits_mask;
-                    eval.irtree.type_key = type->direct_type_key;
+                    eval.irtree.type_key = type.direct_type_key;
                 }
                 
                 // rjf: manually sign-extend
@@ -1091,23 +1091,23 @@ e_push_auto_hook_matches_from_type_key(Arena *arena, E_TypeKey type_key)
     if (e_ir_ctx != 0)
     {
         Temp scratch = scratch_begin(&arena, 1);
-        E_AutoHookMap *map = e_ir_ctx->auto_hook_map;
+        E_AutoHookMap *map = e_ir_ctx.auto_hook_map;
         String8 type_string = str8_skip_chop_whitespace(e_type_string_from_key(scratch.arena, type_key));
         
         ////////////////////////////
         //- rjf: gather exact-type-key-matches from the map
         //
-        if (map != 0 && map->slots_count != 0)
+        if (map != 0 && map.slots_count != 0)
         {
             U64 hash = e_hash_from_string(5381, type_string);
-            U64 slot_idx = hash%map->slots_count;
-            for (E_AutoHookNode *n = map->slots[slot_idx].first; n != 0; n = n->hash_next)
+            U64 slot_idx = hash%map.slots_count;
+            for (E_AutoHookNode *n = map.slots[slot_idx].first; n != 0; n = n.hash_next)
             {
-                if (str8_match(n->type_string, type_string, 0))
+                if (str8_match(n.type_string, type_string, 0))
                 {
                     E_AutoHookMatch *match = push_array(arena, E_AutoHookMatch, 1);
                     SLLQueuePush(matches.first, matches.last, match);
-                    match->expr = e_parse_from_string(n->expr_string).expr;
+                    match.expr = e_parse_from_string(n.expr_string).expr;
                     matches.count += 1;
                 }
             }
@@ -1116,11 +1116,11 @@ e_push_auto_hook_matches_from_type_key(Arena *arena, E_TypeKey type_key)
         ////////////////////////////
         //- rjf: gather fuzzy matches from all patterns in the map
         //
-        if (map != 0 && map->first_pattern != 0)
+        if (map != 0 && map.first_pattern != 0)
         {
-            for (E_AutoHookNode *auto_hook_node = map->first_pattern;
+            for (E_AutoHookNode *auto_hook_node = map.first_pattern;
                     auto_hook_node != 0;
-                    auto_hook_node = auto_hook_node->pattern_order_next)
+                    auto_hook_node = auto_hook_node.pattern_order_next)
             {
                 ////////////////////////
                 //- rjf: determine if this pattern fits this type's string; gather wildcard instances
@@ -1130,9 +1130,9 @@ e_push_auto_hook_matches_from_type_key(Arena *arena, E_TypeKey type_key)
                 B32 fits_this_type_string = 1;
                 {
                     U64 scan_pos = 0;
-                    for (E_PatternPart *part = auto_hook_node->type_pattern.first_part; part != 0 && fits_this_type_string; part = part->next)
+                    for (E_PatternPart *part = auto_hook_node.type_pattern.first_part; part != 0 && fits_this_type_string; part = part.next)
                     {
-                        String8 pattern_string = part->string;
+                        String8 pattern_string = part.string;
                         
                         //- rjf: skip whitespace
                         for (;scan_pos < type_string.size;)
@@ -1150,13 +1150,13 @@ e_push_auto_hook_matches_from_type_key(Arena *arena, E_TypeKey type_key)
                         //- rjf: no pattern string -> wildcard. skip wildcard portion
                         if (pattern_string.size == 0)
                         {
-                            String8 terminator_pattern_string = part->next ? part->next->string : str8_zero();
+                            String8 terminator_pattern_string = part.next ? part.next->string : str8_zero();
                             U64 brace_nest_depth = 0;
                             U64 paren_nest_depth = 0;
                             U64 angle_nest_depth = 0;
                             U64 brack_nest_depth = 0;
                             U64 start_inst_off = scan_pos;
-                            String8Node *wildcard_inst_name_node = part->wildcard_inst_names.first;
+                            String8Node *wildcard_inst_name_node = part.wildcard_inst_names.first;
                             for (B32 done = 0; !done && scan_pos < type_string.size; scan_pos += 1)
                             {
                                 if (0){}
@@ -1168,7 +1168,7 @@ e_push_auto_hook_matches_from_type_key(Arena *arena, E_TypeKey type_key)
                                 else if (type_string.str[scan_pos] == ')' && paren_nest_depth > 0) { paren_nest_depth -= 1; }
                                 else if (type_string.str[scan_pos] == '>' && angle_nest_depth > 0) { angle_nest_depth -= 1; }
                                 else if (type_string.str[scan_pos] == ']' && brack_nest_depth > 0) { brack_nest_depth -= 1; }
-                                else if (part->next == 0)
+                                else if (part.next == 0)
                                 {
                                     done = 1;
                                     scan_pos = type_string.size;
@@ -1187,11 +1187,11 @@ e_push_auto_hook_matches_from_type_key(Arena *arena, E_TypeKey type_key)
                                     start_inst_off = scan_pos+1;
                                     E_AutoHookWildcardInst *inst = push_array(arena, E_AutoHookWildcardInst, 1);
                                     SLLQueuePush(first_wildcard_inst, last_wildcard_inst, inst);
-                                    inst->name = wildcard_inst_name_node ? wildcard_inst_name_node->string : str8_zero();
-                                    inst->inst_expr = e_parse_from_string(wildcard_inst_string).expr;
+                                    inst.name = wildcard_inst_name_node ? wildcard_inst_name_node.string : str8_zero();
+                                    inst.inst_expr = e_parse_from_string(wildcard_inst_string).expr;
                                     if (wildcard_inst_name_node)
                                     {
-                                        wildcard_inst_name_node = wildcard_inst_name_node->next;
+                                        wildcard_inst_name_node = wildcard_inst_name_node.next;
                                     }
                                 }
                                 if (done)
@@ -1227,9 +1227,9 @@ e_push_auto_hook_matches_from_type_key(Arena *arena, E_TypeKey type_key)
                 {
                     E_AutoHookMatch *match = push_array(arena, E_AutoHookMatch, 1);
                     SLLQueuePush(matches.first, matches.last, match);
-                    match->expr = e_parse_from_string(auto_hook_node->expr_string).expr;
-                    match->first_wildcard_inst = first_wildcard_inst;
-                    match->last_wildcard_inst = last_wildcard_inst;
+                    match.expr = e_parse_from_string(auto_hook_node.expr_string).expr;
+                    match.first_wildcard_inst = first_wildcard_inst;
+                    match.last_wildcard_inst = last_wildcard_inst;
                     matches.count += 1;
                 }
             }
@@ -1247,25 +1247,25 @@ e_auto_hook_matches_from_type_key(E_TypeKey type_key)
     E_AutoHookMatchList matches = {0};
     {
         U64 hash = e_hash_from_string(5381, str8_struct(&type_key));
-        U64 slot_idx = hash%e_cache->type_auto_hook_cache_map->slots_count;
+        U64 slot_idx = hash%e_cache.type_auto_hook_cache_map->slots_count;
         E_TypeAutoHookCacheNode *node = 0;
-        for (E_TypeAutoHookCacheNode *n = e_cache->type_auto_hook_cache_map->slots[slot_idx].first;
+        for (E_TypeAutoHookCacheNode *n = e_cache.type_auto_hook_cache_map->slots[slot_idx].first;
                 n != 0;
-                n = n->next)
+                n = n.next)
         {
-            if (e_type_key_match(n->key, type_key))
+            if (e_type_key_match(n.key, type_key))
             {
                 node = n;
             }
         }
         if (node == 0)
         {
-            node = push_array(e_cache->arena, E_TypeAutoHookCacheNode, 1);
-            SLLQueuePush(e_cache->type_auto_hook_cache_map->slots[slot_idx].first, e_cache->type_auto_hook_cache_map->slots[slot_idx].last, node);
-            node->key = type_key;
-            node->matches = e_push_auto_hook_matches_from_type_key(e_cache->arena, type_key);
+            node = push_array(e_cache.arena, E_TypeAutoHookCacheNode, 1);
+            SLLQueuePush(e_cache.type_auto_hook_cache_map->slots[slot_idx].first, e_cache.type_auto_hook_cache_map->slots[slot_idx].last, node);
+            node.key = type_key;
+            node.matches = e_push_auto_hook_matches_from_type_key(e_cache.arena, type_key);
         }
-        matches = node->matches;
+        matches = node.matches;
     }
     return matches;
 }
@@ -1276,11 +1276,11 @@ internal U64
 e_id_from_string(String8 string)
 {
     U64 hash = e_hash_from_string(5381, string);
-    U64 hash_slot_idx = hash%e_cache->string_id_map->hash_slots_count;
+    U64 hash_slot_idx = hash%e_cache.string_id_map->hash_slots_count;
     E_StringIDNode *node = 0;
-    for (E_StringIDNode *n = e_cache->string_id_map->hash_slots[hash_slot_idx].first; n != 0; n = n->hash_next)
+    for (E_StringIDNode *n = e_cache.string_id_map->hash_slots[hash_slot_idx].first; n != 0; n = n.hash_next)
     {
-        if (str8_match(n->string, string, 0))
+        if (str8_match(n.string, string, 0))
         {
             node = n;
             break;
@@ -1288,27 +1288,27 @@ e_id_from_string(String8 string)
     }
     if (node == 0)
     {
-        e_cache->string_id_gen += 1;
-        U64 id = e_cache->string_id_gen;
-        U64 id_slot_idx = id%e_cache->string_id_map->id_slots_count;
-        node = push_array(e_cache->arena, E_StringIDNode, 1);
-        SLLQueuePush_N(e_cache->string_id_map->hash_slots[hash_slot_idx].first, e_cache->string_id_map->hash_slots[hash_slot_idx].last, node, hash_next);
-        SLLQueuePush_N(e_cache->string_id_map->id_slots[id_slot_idx].first, e_cache->string_id_map->hash_slots[id_slot_idx].last, node, id_next);
-        node->id = id;
-        node->string = push_str8_copy(e_cache->arena, string);
+        e_cache.string_id_gen += 1;
+        U64 id = e_cache.string_id_gen;
+        U64 id_slot_idx = id%e_cache.string_id_map->id_slots_count;
+        node = push_array(e_cache.arena, E_StringIDNode, 1);
+        SLLQueuePush_N(e_cache.string_id_map->hash_slots[hash_slot_idx].first, e_cache.string_id_map->hash_slots[hash_slot_idx].last, node, hash_next);
+        SLLQueuePush_N(e_cache.string_id_map->id_slots[id_slot_idx].first, e_cache.string_id_map->hash_slots[id_slot_idx].last, node, id_next);
+        node.id = id;
+        node.string = push_str8_copy(e_cache.arena, string);
     }
-    U64 result = node->id;
+    U64 result = node.id;
     return result;
 }
 
 internal String8
 e_string_from_id(U64 id)
 {
-    U64 id_slot_idx = id%e_cache->string_id_map->id_slots_count;
+    U64 id_slot_idx = id%e_cache.string_id_map->id_slots_count;
     E_StringIDNode *node = 0;
-    for (E_StringIDNode *n = e_cache->string_id_map->id_slots[id_slot_idx].first; n != 0; n = n->id_next)
+    for (E_StringIDNode *n = e_cache.string_id_map->id_slots[id_slot_idx].first; n != 0; n = n.id_next)
     {
-        if (n->id == id)
+        if (n.id == id)
         {
             node = n;
             break;
@@ -1317,7 +1317,7 @@ e_string_from_id(U64 id)
     String8 result = {0};
     if (node != 0)
     {
-        result = node->string;
+        result = node.string;
     }
     return result;
 }
@@ -1423,31 +1423,31 @@ e_debug_log_from_expr_string(Arena *arena, String8 string)
         str8_list_pushf(scratch.arena, &strings, "    expr:\n");
         Task start_task = {0, parse.expr, 2};
         Task *first_task = &start_task;
-        for (Task *t = first_task; t != 0; t = t->next)
+        for (Task *t = first_task; t != 0; t = t.next)
         {
-            E_Expr *expr = t->expr;
-            str8_list_pushf(scratch.arena, &strings, "%.*s%S", (int)t->indent*4, indent_spaces, e_expr_kind_strings[expr->kind]);
-            switch (expr->kind)
+            E_Expr *expr = t.expr;
+            str8_list_pushf(scratch.arena, &strings, "%.*s%S", (int)t.indent*4, indent_spaces, e_expr_kind_strings[expr.kind]);
+            switch (expr.kind)
             {
                 default:{}break;
                 case E_ExprKind_LeafU64:
                 {
-                    str8_list_pushf(scratch.arena, &strings, " (%I64u)", expr->value.u64);
+                    str8_list_pushf(scratch.arena, &strings, " (%I64u)", expr.value.u64);
                 }break;
                 case E_ExprKind_LeafIdentifier:
                 {
-                    str8_list_pushf(scratch.arena, &strings, " (`%S`)", expr->string);
+                    str8_list_pushf(scratch.arena, &strings, " (`%S`)", expr.string);
                 }break;
             }
             str8_list_pushf(scratch.arena, &strings, "\n");
             Task *last_task = t;
-            for (E_Expr *child = expr->first; child != &e_expr_nil; child = child->next)
+            for (E_Expr *child = expr.first; child != &e_expr_nil; child = child.next)
             {
                 Task *task = push_array(scratch.arena, Task, 1);
-                task->next = last_task->next;
-                last_task->next = task;
-                task->expr = child;
-                task->indent = t->indent+1;
+                task.next = last_task.next;
+                last_task.next = task;
+                task.expr = child;
+                task.indent = t.indent+1;
                 last_task = task;
             }
         }
@@ -1464,7 +1464,7 @@ e_debug_log_from_expr_string(Arena *arena, String8 string)
                 indent += 1)
         {
             E_Type *type = e_push_type_from_key(scratch.arena, type_key);
-            str8_list_pushf(scratch.arena, &strings, "%.*s%S\n", (int)indent*4, indent_spaces, e_type_kind_basic_string_table[type->kind]);
+            str8_list_pushf(scratch.arena, &strings, "%.*s%S\n", (int)indent*4, indent_spaces, e_type_kind_basic_string_table[type.kind]);
         }
     }
     
@@ -1480,30 +1480,30 @@ e_debug_log_from_expr_string(Arena *arena, String8 string)
         str8_list_pushf(scratch.arena, &strings, "    ir_tree:\n");
         Task start_task = {0, irtree.root, 2};
         Task *first_task = &start_task;
-        for (Task *t = first_task; t != 0; t = t->next)
+        for (Task *t = first_task; t != 0; t = t.next)
         {
-            E_IRNode *irnode = t->irnode;
-            str8_list_pushf(scratch.arena, &strings, "%.*s", (int)t->indent*4, indent_spaces);
-            switch (irnode->op)
+            E_IRNode *irnode = t.irnode;
+            str8_list_pushf(scratch.arena, &strings, "%.*s", (int)t.indent*4, indent_spaces);
+            switch (irnode.op)
             {
                 default:{}break;
 #define X(name) case RDI_EvalOp_##name:{str8_list_pushf(scratch.arena, &strings, #name);}break;
                 RDI_EvalOp_XList
 #undef X
             }
-            if (irnode->value.u64 != 0)
+            if (irnode.value.u64 != 0)
             {
-                str8_list_pushf(scratch.arena, &strings, " (%I64u)", irnode->value.u64);
+                str8_list_pushf(scratch.arena, &strings, " (%I64u)", irnode.value.u64);
             }
             str8_list_pushf(scratch.arena, &strings, "\n");
             Task *last_task = t;
-            for (E_IRNode *child = irnode->first; child != &e_irnode_nil; child = child->next)
+            for (E_IRNode *child = irnode.first; child != &e_irnode_nil; child = child.next)
             {
                 Task *task = push_array(scratch.arena, Task, 1);
-                task->next = last_task->next;
-                last_task->next = task;
-                task->irnode = child;
-                task->indent = t->indent+1;
+                task.next = last_task.next;
+                last_task.next = task;
+                task.irnode = child;
+                task.indent = t.indent+1;
                 last_task = task;
             }
         }

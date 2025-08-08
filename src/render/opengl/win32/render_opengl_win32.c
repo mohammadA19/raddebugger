@@ -105,8 +105,8 @@ r_ogl_os_window_equip(OS_Handle window)
 {
     //- rjf: unpack window
     OS_W32_Window *w = os_w32_window_from_handle(window);
-    HWND hwnd = w->hwnd;
-    HDC hdc = w->hdc;
+    HWND hwnd = w.hwnd;
+    HDC hdc = w.hdc;
     
     //- rjf: select in ctx
     wglMakeCurrent(hdc, r_ogl_w32_hglrc);
@@ -165,8 +165,8 @@ r_ogl_os_select_window(OS_Handle os, R_Handle r)
     OS_W32_Window *w = os_w32_window_from_handle(os);
     if (w != 0)
     {
-        HWND hwnd = w->hwnd;
-        HDC hdc = w->hdc;
+        HWND hwnd = w.hwnd;
+        HDC hdc = w.hdc;
         wglMakeCurrent(hdc, r_ogl_w32_hglrc);
     }
 }
@@ -177,7 +177,7 @@ r_ogl_os_window_swap(OS_Handle os, R_Handle r)
     OS_W32_Window *w = os_w32_window_from_handle(os);
     if (w != 0)
     {
-        HDC dc = w->hdc;
+        HDC dc = w.hdc;
         SwapBuffers(dc);
     }
 }

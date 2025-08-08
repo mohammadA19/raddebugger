@@ -21,21 +21,21 @@ internal void
 os_handle_list_push(Arena *arena, OS_HandleList *handles, OS_Handle handle)
 {
     OS_HandleNode *n = push_array(arena, OS_HandleNode, 1);
-    n->v = handle;
-    SLLQueuePush(handles->first, handles->last, n);
-    handles->count += 1;
+    n.v = handle;
+    SLLQueuePush(handles.first, handles.last, n);
+    handles.count += 1;
 }
 
 internal OS_HandleArray
 os_handle_array_from_list(Arena *arena, OS_HandleList *list)
 {
     OS_HandleArray result = {0};
-    result.count = list->count;
+    result.count = list.count;
     result.v = push_array_no_zero(arena, OS_Handle, result.count);
     U64 idx = 0;
-    for (OS_HandleNode *n = list->first; n != 0; n = n->next, idx += 1)
+    for (OS_HandleNode *n = list.first; n != 0; n = n.next, idx += 1)
     {
-        result.v[idx] = n->v;
+        result.v[idx] = n.v;
     }
     return result;
 }
@@ -97,9 +97,9 @@ os_write_data_list_to_file_path(String8 path, String8List list)
         U64 file_off = 0;
         U64 total_bytes_written = 0;
         {
-            for (String8Node *n = list.first; n != 0; n = n->next)
+            for (String8Node *n = list.first; n != 0; n = n.next)
             {
-                for (U64 n_off = 0; n_off < n->string.size;)
+                for (U64 n_off = 0; n_off < n.string.size;)
                 {
                     U64 write_buffer_unconsumed_size = (write_buffer_write_pos - write_buffer_read_pos);
                     U64 write_buffer_available_size = (write_buffer_size - write_buffer_unconsumed_size);
@@ -111,8 +111,8 @@ os_write_data_list_to_file_path(String8 path, String8List list)
                     }
                     else
                     {
-                        U64 bytes_to_copy = Min(write_buffer_available_size, n->string.size - n_off);
-                        write_buffer_write_pos += ring_write(write_buffer, write_buffer_size, write_buffer_write_pos, n->string.str + n_off, bytes_to_copy);
+                        U64 bytes_to_copy = Min(write_buffer_available_size, n.string.size - n_off);
+                        write_buffer_write_pos += ring_write(write_buffer, write_buffer_size, write_buffer_write_pos, n.string.str + n_off, bytes_to_copy);
                         n_off += bytes_to_copy;
                     }
                 }
@@ -213,7 +213,7 @@ os_cmd_line_launch(String8 string)
     if (parts.node_count != 0)
     {
         // rjf: unpack exe part
-        String8 exe = parts.first->string;
+        String8 exe = parts.first.string;
         String8 exe_folder = str8_chop_last_slash(exe);
         if (exe_folder.size == 0)
         {
@@ -222,9 +222,9 @@ os_cmd_line_launch(String8 string)
         
         // rjf: find stdout delimiter
         String8Node *stdout_delimiter_n = 0;
-        for (String8Node *n = parts.first; n != 0; n = n->next)
+        for (String8Node *n = parts.first; n != 0; n = n.next)
         {
-            if (str8_match(n->string, str8_lit(">"), 0))
+            if (str8_match(n.string, str8_lit(">"), 0))
             {
                 stdout_delimiter_n = n;
                 break;
@@ -233,9 +233,9 @@ os_cmd_line_launch(String8 string)
         
         // rjf: read stdout path
         String8 stdout_path = {0};
-        if (stdout_delimiter_n && stdout_delimiter_n->next)
+        if (stdout_delimiter_n && stdout_delimiter_n.next)
         {
-            stdout_path = stdout_delimiter_n->next->string;
+            stdout_path = stdout_delimiter_n.next.string;
         }
         
         // rjf: open stdout handle
@@ -249,9 +249,9 @@ os_cmd_line_launch(String8 string)
         
         // rjf: form command line
         String8List cmdline = {0};
-        for (String8Node *n = parts.first; n != stdout_delimiter_n && n != 0; n = n->next)
+        for (String8Node *n = parts.first; n != stdout_delimiter_n && n != 0; n = n.next)
         {
-            str8_list_push(scratch.arena, &cmdline, n->string);
+            str8_list_push(scratch.arena, &cmdline, n.string);
         }
         
         // rjf: launch

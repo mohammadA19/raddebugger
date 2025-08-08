@@ -8,12 +8,12 @@ internal void
 md_msg_list_push(Arena *arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind, String8 string)
 {
     MD_Msg *msg = push_array(arena, MD_Msg, 1);
-    msg->node = node;
-    msg->kind = kind;
-    msg->string = string;
-    SLLQueuePush(msgs->first, msgs->last, msg);
-    msgs->count += 1;
-    msgs->worst_message_kind = Max(kind, msgs->worst_message_kind);
+    msg.node = node;
+    msg.kind = kind;
+    msg.string = string;
+    SLLQueuePush(msgs.first, msgs.last, msg);
+    msgs.count += 1;
+    msgs.worst_message_kind = Max(kind, msgs.worst_message_kind);
 }
 
 internal void
@@ -29,14 +29,14 @@ md_msg_list_pushf(Arena *arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind
 internal void
 md_msg_list_concat_in_place(MD_MsgList *dst, MD_MsgList *to_push)
 {
-    if (to_push->first != 0)
+    if (to_push.first != 0)
     {
-        if (dst->last)
+        if (dst.last)
         {
-            dst->last->next = to_push->first;
-            dst->last = to_push->last;
-            dst->count += to_push->count;
-            dst->worst_message_kind = Max(dst->worst_message_kind, to_push->worst_message_kind);
+            dst.last.next = to_push.first;
+            dst.last = to_push.last;
+            dst.count += to_push.count;
+            dst.worst_message_kind = Max(dst.worst_message_kind, to_push.worst_message_kind);
         }
         else
         {
@@ -85,31 +85,31 @@ md_string_list_from_token_flags(Arena *arena, MD_TokenFlags flags)
 internal void
 md_token_chunk_list_push(Arena *arena, MD_TokenChunkList *list, U64 cap, MD_Token token)
 {
-    MD_TokenChunkNode *node = list->last;
-    if (node == 0 || node->count >= node->cap)
+    MD_TokenChunkNode *node = list.last;
+    if (node == 0 || node.count >= node.cap)
     {
         node = push_array(arena, MD_TokenChunkNode, 1);
-        node->cap = cap;
-        node->v = push_array_no_zero(arena, MD_Token, cap);
-        SLLQueuePush(list->first, list->last, node);
-        list->chunk_count += 1;
+        node.cap = cap;
+        node.v = push_array_no_zero(arena, MD_Token, cap);
+        SLLQueuePush(list.first, list.last, node);
+        list.chunk_count += 1;
     }
-    MemoryCopyStruct(&node->v[node->count], &token);
-    node->count += 1;
-    list->total_token_count += 1;
+    MemoryCopyStruct(&node.v[node.count], &token);
+    node.count += 1;
+    list.total_token_count += 1;
 }
 
 internal MD_TokenArray
 md_token_array_from_chunk_list(Arena *arena, MD_TokenChunkList *chunks)
 {
     MD_TokenArray result = {0};
-    result.count = chunks->total_token_count;
+    result.count = chunks.total_token_count;
     result.v = push_array_no_zero(arena, MD_Token, result.count);
     U64 write_idx = 0;
-    for (MD_TokenChunkNode *n = chunks->first; n != 0; n = n->next)
+    for (MD_TokenChunkNode *n = chunks.first; n != 0; n = n.next)
     {
-        MemoryCopy(result.v+write_idx, n->v, sizeof(MD_Token)*n->count);
-        write_idx += n->count;
+        MemoryCopy(result.v+write_idx, n.v, sizeof(MD_Token)*n.count);
+        write_idx += n.count;
     }
     return result;
 }
@@ -156,7 +156,7 @@ md_node_flags_from_token_flags(MD_TokenFlags flags)
 internal B32
 md_node_is_nil(MD_Node *node)
 {
-    return (node == 0 || node == &md_nil_node || node->kind == MD_NodeKind_Nil);
+    return (node == 0 || node == &md_nil_node || node.kind == MD_NodeKind_Nil);
 }
 
 //- rjf: iteration
@@ -171,7 +171,7 @@ md_node_rec_depth_first(MD_Node *node, MD_Node *subtree_root, U64 child_off, U64
         rec.next = *MemberFromOffset(MD_Node **, node, child_off);
         rec.push_count = 1;
     }
-    else for (MD_Node *p = node; !md_node_is_nil(p) && p != subtree_root; p = p->parent, rec.pop_count += 1)
+    else for (MD_Node *p = node; !md_node_is_nil(p) && p != subtree_root; p = p.parent, rec.pop_count += 1)
     {
         if (!md_node_is_nil(*MemberFromOffset(MD_Node **, p, sib_off)))
         {
@@ -188,60 +188,60 @@ internal MD_Node *
 md_push_node(Arena *arena, MD_NodeKind kind, MD_NodeFlags flags, String8 string, String8 raw_string, U64 src_offset)
 {
     MD_Node *node = push_array(arena, MD_Node, 1);
-    node->first = node->last = node->parent = node->next = node->prev = node->first_tag = node->last_tag = &md_nil_node;
-    node->kind       = kind;
-    node->flags      = flags;
-    node->string     = string;
-    node->raw_string = raw_string;
-    node->src_offset = src_offset;
+    node.first = node.last = node.parent = node.next = node.prev = node.first_tag = node.last_tag = &md_nil_node;
+    node.kind       = kind;
+    node.flags      = flags;
+    node.string     = string;
+    node.raw_string = raw_string;
+    node.src_offset = src_offset;
     return node;
 }
 
 internal void
 md_node_insert_child(MD_Node *parent, MD_Node *prev_child, MD_Node *node)
 {
-    node->parent = parent;
-    DLLInsert_NPZ(&md_nil_node, parent->first, parent->last, prev_child, node, next, prev);
+    node.parent = parent;
+    DLLInsert_NPZ(&md_nil_node, parent.first, parent.last, prev_child, node, next, prev);
 }
 
 internal void
 md_node_insert_tag(MD_Node *parent, MD_Node *prev_child, MD_Node *node)
 {
-    node->kind = MD_NodeKind_Tag;
-    node->parent = parent;
-    DLLInsert_NPZ(&md_nil_node, parent->first_tag, parent->last_tag, prev_child, node, next, prev);
+    node.kind = MD_NodeKind_Tag;
+    node.parent = parent;
+    DLLInsert_NPZ(&md_nil_node, parent.first_tag, parent.last_tag, prev_child, node, next, prev);
 }
 
 internal void
 md_node_push_child(MD_Node *parent, MD_Node *node)
 {
-    node->parent = parent;
-    DLLPushBack_NPZ(&md_nil_node, parent->first, parent->last, node, next, prev);
+    node.parent = parent;
+    DLLPushBack_NPZ(&md_nil_node, parent.first, parent.last, node, next, prev);
 }
 
 internal void
 md_node_push_tag(MD_Node *parent, MD_Node *node)
 {
-    node->kind = MD_NodeKind_Tag;
-    node->parent = parent;
-    DLLPushBack_NPZ(&md_nil_node, parent->first_tag, parent->last_tag, node, next, prev);
+    node.kind = MD_NodeKind_Tag;
+    node.parent = parent;
+    DLLPushBack_NPZ(&md_nil_node, parent.first_tag, parent.last_tag, node, next, prev);
 }
 
 internal void
 md_unhook(MD_Node *node)
 {
-    MD_Node *parent = node->parent;
+    MD_Node *parent = node.parent;
     if (!md_node_is_nil(parent))
     {
-        if (node->kind == MD_NodeKind_Tag)
+        if (node.kind == MD_NodeKind_Tag)
         {
-            DLLRemove_NPZ(&md_nil_node, parent->first_tag, parent->last_tag, node, next, prev);
+            DLLRemove_NPZ(&md_nil_node, parent.first_tag, parent.last_tag, node, next, prev);
         }
         else
         {
-            DLLRemove_NPZ(&md_nil_node, parent->first, parent->last, node, next, prev);
+            DLLRemove_NPZ(&md_nil_node, parent.first, parent.last, node, next, prev);
         }
-        node->parent = &md_nil_node;
+        node.parent = &md_nil_node;
     }
 }
 
@@ -251,9 +251,9 @@ internal MD_Node *
 md_node_from_chain_string(MD_Node *first, MD_Node *opl, String8 string, StringMatchFlags flags)
 {
     MD_Node *result = &md_nil_node;
-    for (MD_Node *n = first; !md_node_is_nil(n) && n != opl; n = n->next)
+    for (MD_Node *n = first; !md_node_is_nil(n) && n != opl; n = n.next)
     {
-        if (str8_match(n->string, string, flags))
+        if (str8_match(n.string, string, flags))
         {
             result = n;
             break;
@@ -267,7 +267,7 @@ md_node_from_chain_index(MD_Node *first, MD_Node *opl, U64 index)
 {
     MD_Node *result = &md_nil_node;
     S64 idx = 0;
-    for (MD_Node *n = first; !md_node_is_nil(n) && n != opl; n = n->next, idx += 1)
+    for (MD_Node *n = first; !md_node_is_nil(n) && n != opl; n = n.next, idx += 1)
     {
         if (index == idx)
         {
@@ -282,9 +282,9 @@ internal MD_Node *
 md_node_from_chain_flags(MD_Node *first, MD_Node *opl, MD_NodeFlags flags)
 {
     MD_Node *result = &md_nil_node;
-    for (MD_Node *n = first; !md_node_is_nil(n) && n != opl; n = n->next)
+    for (MD_Node *n = first; !md_node_is_nil(n) && n != opl; n = n.next)
     {
-        if (n->flags & flags)
+        if (n.flags & flags)
         {
             result = n;
             break;
@@ -297,7 +297,7 @@ internal U64
 md_index_from_node(MD_Node *node)
 {
     U64 index = 0;
-    for (MD_Node *n = node->prev; !md_node_is_nil(n); n = n->prev)
+    for (MD_Node *n = node.prev; !md_node_is_nil(n); n = n.prev)
     {
         index += 1;
     }
@@ -308,7 +308,7 @@ internal MD_Node *
 md_root_from_node(MD_Node *node)
 {
     MD_Node *result = node;
-    for (MD_Node *p = node->parent; (p->kind == MD_NodeKind_Main || p->kind == MD_NodeKind_Tag) && !md_node_is_nil(p); p = p->parent)
+    for (MD_Node *p = node.parent; (p.kind == MD_NodeKind_Main || p.kind == MD_NodeKind_Tag) && !md_node_is_nil(p); p = p.parent)
     {
         result = p;
     }
@@ -318,25 +318,25 @@ md_root_from_node(MD_Node *node)
 internal MD_Node *
 md_child_from_string(MD_Node *node, String8 child_string, StringMatchFlags flags)
 {
-    return md_node_from_chain_string(node->first, &md_nil_node, child_string, flags);
+    return md_node_from_chain_string(node.first, &md_nil_node, child_string, flags);
 }
 
 internal MD_Node *
 md_tag_from_string(MD_Node *node, String8 tag_string, StringMatchFlags flags)
 {
-    return md_node_from_chain_string(node->first_tag, &md_nil_node, tag_string, flags);
+    return md_node_from_chain_string(node.first_tag, &md_nil_node, tag_string, flags);
 }
 
 internal MD_Node *
 md_child_from_index(MD_Node *node, U64 index)
 {
-    return md_node_from_chain_index(node->first, &md_nil_node, index);
+    return md_node_from_chain_index(node.first, &md_nil_node, index);
 }
 
 internal MD_Node *
 md_tag_from_index(MD_Node *node, U64 index)
 {
-    return md_node_from_chain_index(node->first_tag, &md_nil_node, index);
+    return md_node_from_chain_index(node.first_tag, &md_nil_node, index);
 }
 
 internal MD_Node *
@@ -370,7 +370,7 @@ internal U64
 md_child_count_from_node(MD_Node *node)
 {
     U64 result = 0;
-    for (MD_Node *child = node->first; !md_node_is_nil(child); child = child->next)
+    for (MD_Node *child = node.first; !md_node_is_nil(child); child = child.next)
     {
         result += 1;
     }
@@ -381,7 +381,7 @@ internal U64
 md_tag_count_from_node(MD_Node *node)
 {
     U64 result = 0;
-    for (MD_Node *child = node->first_tag; !md_node_is_nil(child); child = child->next)
+    for (MD_Node *child = node.first_tag; !md_node_is_nil(child); child = child.next)
     {
         result += 1;
     }
@@ -393,13 +393,13 @@ md_string_from_children(Arena *arena, MD_Node *root)
 {
     Temp scratch = scratch_begin(&arena, 1);
     String8List strs = {0};
-    for MD_EachNode(child, root->first)
+    for MD_EachNode(child, root.first)
     {
-        if (child->flags == child->prev->flags)
+        if (child.flags == child.prev.flags)
         {
             str8_list_push(scratch.arena, &strs, str8_lit(" "));
         }
-        str8_list_push(scratch.arena, &strs, child->string);
+        str8_list_push(scratch.arena, &strs, child.string);
     }
     String8 result = str8_list_join(arena, &strs, 0);
     scratch_end(scratch);
@@ -412,24 +412,24 @@ internal B32
 md_node_match(MD_Node *a, MD_Node *b, StringMatchFlags flags)
 {
     B32 result = 0;
-    if (a->kind == b->kind && str8_match(a->string, b->string, flags))
+    if (a.kind == b.kind && str8_match(a.string, b.string, flags))
     {
         result = 1;
         if (result)
         {
-            result = result && a->flags == b->flags;
+            result = result && a.flags == b.flags;
         }
-        if (result && a->kind != MD_NodeKind_Tag)
+        if (result && a.kind != MD_NodeKind_Tag)
         {
-            for (MD_Node *a_tag = a->first_tag, *b_tag = b->first_tag;
+            for (MD_Node *a_tag = a.first_tag, *b_tag = b.first_tag;
                     !md_node_is_nil(a_tag) || !md_node_is_nil(b_tag);
-                    a_tag = a_tag->next, b_tag = b_tag->next)
+                    a_tag = a_tag.next, b_tag = b_tag.next)
             {
                 if (md_node_match(a_tag, b_tag, flags))
                 {
-                    for (MD_Node *a_tag_arg = a_tag->first, *b_tag_arg = b_tag->first;
+                    for (MD_Node *a_tag_arg = a_tag.first, *b_tag_arg = b_tag.first;
                             !md_node_is_nil(a_tag_arg) || !md_node_is_nil(b_tag_arg);
-                            a_tag_arg = a_tag_arg->next, b_tag_arg = b_tag_arg->next)
+                            a_tag_arg = a_tag_arg.next, b_tag_arg = b_tag_arg.next)
                     {
                         if (!md_tree_match(a_tag_arg, b_tag_arg, flags))
                         {
@@ -456,9 +456,9 @@ md_tree_match(MD_Node *a, MD_Node *b, StringMatchFlags flags)
     B32 result = md_node_match(a, b, flags);
     if (result)
     {
-        for (MD_Node *a_child = a->first, *b_child = b->first;
+        for (MD_Node *a_child = a.first, *b_child = b.first;
                 !md_node_is_nil(a_child) || !md_node_is_nil(b_child);
-                a_child = a_child->next, b_child = b_child->next)
+                a_child = a_child.next, b_child = b_child.next)
         {
             if (!md_tree_match(a_child, b_child, flags))
             {
@@ -483,17 +483,17 @@ md_tree_copy(Arena *arena, MD_Node *src_root)
         for (MD_Node *src = src_root; !md_node_is_nil(src); src = rec.next)
         {
             MD_Node *dst = push_array(arena, MD_Node, 1);
-            dst->first = dst->last = dst->parent = dst->next = dst->prev = &md_nil_node;
-            dst->first_tag = dst->last_tag = &md_nil_node;
-            dst->kind  = src->kind;
-            dst->flags = src->flags;
-            dst->string = push_str8_copy(arena, src->string);
-            dst->raw_string = push_str8_copy(arena, src->raw_string);
-            dst->src_offset = src->src_offset;
-            dst->parent = dst_parent;
+            dst.first = dst.last = dst.parent = dst.next = dst.prev = &md_nil_node;
+            dst.first_tag = dst.last_tag = &md_nil_node;
+            dst.kind  = src.kind;
+            dst.flags = src.flags;
+            dst.string = push_str8_copy(arena, src.string);
+            dst.raw_string = push_str8_copy(arena, src.raw_string);
+            dst.src_offset = src.src_offset;
+            dst.parent = dst_parent;
             if (dst_parent != &md_nil_node)
             {
-                DLLPushBack_NPZ(&md_nil_node, dst_parent->first, dst_parent->last, dst, next, prev);
+                DLLPushBack_NPZ(&md_nil_node, dst_parent.first, dst_parent.last, dst, next, prev);
             }
             else
             {
@@ -506,7 +506,7 @@ md_tree_copy(Arena *arena, MD_Node *src_root)
             }
             else for (U64 idx = 0; idx < rec.pop_count; idx += 1)
             {
-                dst_parent = dst_parent->parent;
+                dst_parent = dst_parent.parent;
             }
         }
     }
@@ -857,8 +857,8 @@ md_parse_from_text_tokens(Arena *arena, String8 filename, String8 text, MD_Token
 MD_ParseWorkNode *work_node = work_free;\
 if (work_node == 0) {work_node = push_array(scratch.arena, MD_ParseWorkNode, 1);}\
 else { SLLStackPop(work_free); }\
-work_node->kind = (work_kind);\
-work_node->parent = (work_parent);\
+work_node.kind = (work_kind);\
+work_node.parent = (work_parent);\
 SLLStackPush(work_top, work_node);\
 }while (0)
 #define MD_ParseWorkPop() do\
@@ -877,14 +877,14 @@ if (work_top == 0) {work_top = &broken_work;}\
         String8 token_string = str8_substr(text, token[0].range);
         
         //- rjf: whitespace -> always no-op & inc
-        if (token->flags & MD_TokenFlag_Whitespace)
+        if (token.flags & MD_TokenFlag_Whitespace)
         {
             token += 1;
             goto end_consume;
         }
         
         //- rjf: comments -> always no-op & inc
-        if (token->flags & MD_TokenGroup_Comment)
+        if (token.flags & MD_TokenGroup_Comment)
         {
             token += 1;
             goto end_consume;
@@ -892,9 +892,9 @@ if (work_top == 0) {work_top = &broken_work;}\
         
         //- rjf: [node follow up] : following label -> work top parent has children. we need
         // to scan for explicit delimiters, else parse an implicitly delimited set of children
-        if (work_top->kind == MD_ParseWorkKind_NodeOptionalFollowUp && str8_match(token_string, str8_lit(":"), 0))
+        if (work_top.kind == MD_ParseWorkKind_NodeOptionalFollowUp && str8_match(token_string, str8_lit(":"), 0))
         {
-            MD_Node *parent = work_top->parent;
+            MD_Node *parent = work_top.parent;
             MD_ParseWorkPop();
             MD_ParseWorkPush(MD_ParseWorkKind_NodeChildrenStyleScan, parent);
             token += 1;
@@ -903,31 +903,31 @@ if (work_top == 0) {work_top = &broken_work;}\
         
         //- rjf: [node follow up] anything but : following label -> node has no children. just
         // pop & move on
-        if (work_top->kind == MD_ParseWorkKind_NodeOptionalFollowUp)
+        if (work_top.kind == MD_ParseWorkKind_NodeOptionalFollowUp)
         {
             MD_ParseWorkPop();
             goto end_consume;
         }
         
         //- rjf: [main] separators -> mark & inc
-        if (work_top->kind == MD_ParseWorkKind_Main && token->flags & MD_TokenFlag_Reserved &&
+        if (work_top.kind == MD_ParseWorkKind_Main && token.flags & MD_TokenFlag_Reserved &&
               (str8_match(token_string, str8_lit(","), 0) ||
                 str8_match(token_string, str8_lit(";"), 0)))
         {
-            MD_Node *parent = work_top->parent;
-            if (!md_node_is_nil(parent->last))
+            MD_Node *parent = work_top.parent;
+            if (!md_node_is_nil(parent.last))
             {
-                parent->last->flags |=     MD_NodeFlag_IsBeforeComma*!!str8_match(token_string, str8_lit(","), 0);
-                parent->last->flags |= MD_NodeFlag_IsBeforeSemicolon*!!str8_match(token_string, str8_lit(";"), 0);
-                work_top->gathered_node_flags |=     MD_NodeFlag_IsAfterComma*!!str8_match(token_string, str8_lit(","), 0);
-                work_top->gathered_node_flags |= MD_NodeFlag_IsAfterSemicolon*!!str8_match(token_string, str8_lit(";"), 0);
+                parent.last.flags |=     MD_NodeFlag_IsBeforeComma*!!str8_match(token_string, str8_lit(","), 0);
+                parent.last.flags |= MD_NodeFlag_IsBeforeSemicolon*!!str8_match(token_string, str8_lit(";"), 0);
+                work_top.gathered_node_flags |=     MD_NodeFlag_IsAfterComma*!!str8_match(token_string, str8_lit(","), 0);
+                work_top.gathered_node_flags |= MD_NodeFlag_IsAfterSemicolon*!!str8_match(token_string, str8_lit(";"), 0);
             }
             token += 1;
             goto end_consume;
         }
         
         //- rjf: [main_implicit] separators -> pop
-        if (work_top->kind == MD_ParseWorkKind_MainImplicit && token->flags & MD_TokenFlag_Reserved &&
+        if (work_top.kind == MD_ParseWorkKind_MainImplicit && token.flags & MD_TokenFlag_Reserved &&
               (str8_match(token_string, str8_lit(","), 0) ||
                 str8_match(token_string, str8_lit(";"), 0)))
         {
@@ -936,13 +936,13 @@ if (work_top == 0) {work_top = &broken_work;}\
         }
         
         //- rjf: [main, main_implicit] unexpected reserved tokens
-        if ((work_top->kind == MD_ParseWorkKind_Main || work_top->kind == MD_ParseWorkKind_MainImplicit) &&
-              token->flags & MD_TokenFlag_Reserved &&
+        if ((work_top.kind == MD_ParseWorkKind_Main || work_top.kind == MD_ParseWorkKind_MainImplicit) &&
+              token.flags & MD_TokenFlag_Reserved &&
               (str8_match(token_string, str8_lit("#"), 0) ||
                 str8_match(token_string, str8_lit("\\"), 0) ||
                 str8_match(token_string, str8_lit(":"), 0)))
         {
-            MD_Node *error = md_push_node(arena, MD_NodeKind_ErrorMarker, 0, token_string, token_string, token->range.min);
+            MD_Node *error = md_push_node(arena, MD_NodeKind_ErrorMarker, 0, token_string, token_string, token.range.min);
             String8 error_string = push_str8f(arena, "Unexpected reserved symbol \"%S\".", token_string);
             md_msg_list_push(arena, &msgs, error, MD_MsgKind_Error, error_string);
             token += 1;
@@ -950,13 +950,13 @@ if (work_top == 0) {work_top = &broken_work;}\
         }
         
         //- rjf: [main, main_implicit] tag signifier -> create new tag
-        if ((work_top->kind == MD_ParseWorkKind_Main || work_top->kind == MD_ParseWorkKind_MainImplicit) &&
+        if ((work_top.kind == MD_ParseWorkKind_Main || work_top.kind == MD_ParseWorkKind_MainImplicit) &&
               token[0].flags & MD_TokenFlag_Reserved && str8_match(token_string, str8_lit("@"), 0))
         {
             if (token+1 >= tokens_opl ||
                   !(token[1].flags & MD_TokenGroup_Label))
             {
-                MD_Node *error = md_push_node(arena, MD_NodeKind_ErrorMarker, 0, token_string, token_string, token->range.min);
+                MD_Node *error = md_push_node(arena, MD_NodeKind_ErrorMarker, 0, token_string, token_string, token.range.min);
                 String8 error_string = str8_lit("Tag label expected after @ symbol.");
                 md_msg_list_push(arena, &msgs, error, MD_MsgKind_Error, error_string);
                 token += 1;
@@ -967,7 +967,7 @@ if (work_top == 0) {work_top = &broken_work;}\
                 String8 tag_name_raw = str8_substr(text, token[1].range);
                 String8 tag_name = md_content_string_from_token_flags_str8(token[1].flags, tag_name_raw);
                 MD_Node *node = md_push_node(arena, MD_NodeKind_Tag, md_node_flags_from_token_flags(token[1].flags), tag_name, tag_name_raw, token[0].range.min);
-                DLLPushBack_NPZ(&md_nil_node, work_top->first_gathered_tag, work_top->last_gathered_tag, node, next, prev);
+                DLLPushBack_NPZ(&md_nil_node, work_top.first_gathered_tag, work_top.last_gathered_tag, node, next, prev);
                 if (token+2 < tokens_opl && token[2].flags & MD_TokenFlag_Reserved &&
                       (str8_match(str8_substr(text, token[2].range), str8_lit("("), 0) ||
                         str8_match(str8_substr(text, token[2].range), str8_lit("["), 0) ||
@@ -985,62 +985,62 @@ if (work_top == 0) {work_top = &broken_work;}\
         }
         
         //- rjf: [main, main_implicit] label -> create new main
-        if ((work_top->kind == MD_ParseWorkKind_Main || work_top->kind == MD_ParseWorkKind_MainImplicit) &&
-              token->flags & MD_TokenGroup_Label)
+        if ((work_top.kind == MD_ParseWorkKind_Main || work_top.kind == MD_ParseWorkKind_MainImplicit) &&
+              token.flags & MD_TokenGroup_Label)
         {
             String8 node_string_raw = token_string;
-            String8 node_string = md_content_string_from_token_flags_str8(token->flags, node_string_raw);
-            MD_NodeFlags flags = md_node_flags_from_token_flags(token->flags)|work_top->gathered_node_flags;
-            work_top->gathered_node_flags = 0;
+            String8 node_string = md_content_string_from_token_flags_str8(token.flags, node_string_raw);
+            MD_NodeFlags flags = md_node_flags_from_token_flags(token.flags)|work_top.gathered_node_flags;
+            work_top.gathered_node_flags = 0;
             MD_Node *node = md_push_node(arena, MD_NodeKind_Main, flags, node_string, node_string_raw, token[0].range.min);
-            node->first_tag = work_top->first_gathered_tag;
-            node->last_tag = work_top->last_gathered_tag;
-            for (MD_Node *tag = work_top->first_gathered_tag; !md_node_is_nil(tag); tag = tag->next)
+            node.first_tag = work_top.first_gathered_tag;
+            node.last_tag = work_top.last_gathered_tag;
+            for (MD_Node *tag = work_top.first_gathered_tag; !md_node_is_nil(tag); tag = tag.next)
             {
-                tag->parent = node;
+                tag.parent = node;
             }
-            work_top->first_gathered_tag = work_top->last_gathered_tag = &md_nil_node;
-            md_node_push_child(work_top->parent, node);
+            work_top.first_gathered_tag = work_top.last_gathered_tag = &md_nil_node;
+            md_node_push_child(work_top.parent, node);
             MD_ParseWorkPush(MD_ParseWorkKind_NodeOptionalFollowUp, node);
             token += 1;
             goto end_consume;
         }
         
         //- rjf: [main] {s, [s, and (s -> create new main
-        if (work_top->kind == MD_ParseWorkKind_Main && token->flags & MD_TokenFlag_Reserved &&
+        if (work_top.kind == MD_ParseWorkKind_Main && token.flags & MD_TokenFlag_Reserved &&
               (str8_match(token_string, str8_lit("{"), 0) ||
                 str8_match(token_string, str8_lit("["), 0) ||
                 str8_match(token_string, str8_lit("("), 0)))
         {
-            MD_NodeFlags flags = md_node_flags_from_token_flags(token->flags)|work_top->gathered_node_flags;
+            MD_NodeFlags flags = md_node_flags_from_token_flags(token.flags)|work_top.gathered_node_flags;
             flags |=   MD_NodeFlag_HasBraceLeft*!!str8_match(token_string, str8_lit("{"), 0);
             flags |= MD_NodeFlag_HasBracketLeft*!!str8_match(token_string, str8_lit("["), 0);
             flags |=   MD_NodeFlag_HasParenLeft*!!str8_match(token_string, str8_lit("("), 0);
-            work_top->gathered_node_flags = 0;
+            work_top.gathered_node_flags = 0;
             MD_Node *node = md_push_node(arena, MD_NodeKind_Main, flags, str8_lit(""), str8_lit(""), token[0].range.min);
-            node->first_tag = work_top->first_gathered_tag;
-            node->last_tag = work_top->last_gathered_tag;
-            for (MD_Node *tag = work_top->first_gathered_tag; !md_node_is_nil(tag); tag = tag->next)
+            node.first_tag = work_top.first_gathered_tag;
+            node.last_tag = work_top.last_gathered_tag;
+            for (MD_Node *tag = work_top.first_gathered_tag; !md_node_is_nil(tag); tag = tag.next)
             {
-                tag->parent = node;
+                tag.parent = node;
             }
-            work_top->first_gathered_tag = work_top->last_gathered_tag = &md_nil_node;
-            md_node_push_child(work_top->parent, node);
+            work_top.first_gathered_tag = work_top.last_gathered_tag = &md_nil_node;
+            md_node_push_child(work_top.parent, node);
             MD_ParseWorkPush(MD_ParseWorkKind_Main, node);
             token += 1;
             goto end_consume;
         }
         
         //- rjf: [node children style scan] {s, [s, and (s -> explicitly delimited children
-        if (work_top->kind == MD_ParseWorkKind_NodeChildrenStyleScan && token->flags & MD_TokenFlag_Reserved &&
+        if (work_top.kind == MD_ParseWorkKind_NodeChildrenStyleScan && token.flags & MD_TokenFlag_Reserved &&
               (str8_match(token_string, str8_lit("{"), 0) ||
                 str8_match(token_string, str8_lit("["), 0) ||
                 str8_match(token_string, str8_lit("("), 0)))
         {
-            MD_Node *parent = work_top->parent;
-            parent->flags |=   MD_NodeFlag_HasBraceLeft*!!str8_match(token_string, str8_lit("{"), 0);
-            parent->flags |= MD_NodeFlag_HasBracketLeft*!!str8_match(token_string, str8_lit("["), 0);
-            parent->flags |=   MD_NodeFlag_HasParenLeft*!!str8_match(token_string, str8_lit("("), 0);
+            MD_Node *parent = work_top.parent;
+            parent.flags |=   MD_NodeFlag_HasBraceLeft*!!str8_match(token_string, str8_lit("{"), 0);
+            parent.flags |= MD_NodeFlag_HasBracketLeft*!!str8_match(token_string, str8_lit("["), 0);
+            parent.flags |=   MD_NodeFlag_HasParenLeft*!!str8_match(token_string, str8_lit("("), 0);
             MD_ParseWorkPop();
             MD_ParseWorkPush(MD_ParseWorkKind_Main, parent);
             token += 1;
@@ -1048,17 +1048,17 @@ if (work_top == 0) {work_top = &broken_work;}\
         }
         
         //- rjf: [node children style scan] count newlines
-        if (work_top->kind == MD_ParseWorkKind_NodeChildrenStyleScan && token->flags & MD_TokenFlag_Newline)
+        if (work_top.kind == MD_ParseWorkKind_NodeChildrenStyleScan && token.flags & MD_TokenFlag_Newline)
         {
-            work_top->counted_newlines += 1;
+            work_top.counted_newlines += 1;
             token += 1;
             goto end_consume;
         }
         
         //- rjf: [main_implicit] newline -> pop *all* current implicit work tasks
-        if (work_top->kind == MD_ParseWorkKind_MainImplicit && token->flags & MD_TokenFlag_Newline)
+        if (work_top.kind == MD_ParseWorkKind_MainImplicit && token.flags & MD_TokenFlag_Newline)
         {
-            for (;work_top->kind == MD_ParseWorkKind_MainImplicit;)
+            for (;work_top.kind == MD_ParseWorkKind_MainImplicit;)
             {
                 MD_ParseWorkPop();
             }
@@ -1067,7 +1067,7 @@ if (work_top == 0) {work_top = &broken_work;}\
         }
         
         //- rjf: [all but main_implicit] newline -> no-op & inc
-        if (work_top->kind != MD_ParseWorkKind_MainImplicit && token->flags & MD_TokenFlag_Newline)
+        if (work_top.kind != MD_ParseWorkKind_MainImplicit && token.flags & MD_TokenFlag_Newline)
         {
             token += 1;
             goto end_consume;
@@ -1075,19 +1075,19 @@ if (work_top == 0) {work_top = &broken_work;}\
         
         //- rjf: [node children style scan] anything causing implicit set -> <2 newlines, all good,
         // >=2 newlines, houston we have a problem
-        if (work_top->kind == MD_ParseWorkKind_NodeChildrenStyleScan)
+        if (work_top.kind == MD_ParseWorkKind_NodeChildrenStyleScan)
         {
-            if (work_top->counted_newlines >= 2)
+            if (work_top.counted_newlines >= 2)
             {
-                MD_Node *node = work_top->parent;
-                MD_Node *error = md_push_node(arena, MD_NodeKind_ErrorMarker, 0, token_string, token_string, token->range.min);
-                String8 error_string = push_str8f(arena, "More than two newlines following \"%S\", which has implicitly-delimited children, resulting in an empty list of children.", node->string);
+                MD_Node *node = work_top.parent;
+                MD_Node *error = md_push_node(arena, MD_NodeKind_ErrorMarker, 0, token_string, token_string, token.range.min);
+                String8 error_string = push_str8f(arena, "More than two newlines following \"%S\", which has implicitly-delimited children, resulting in an empty list of children.", node.string);
                 md_msg_list_push(arena, &msgs, error, MD_MsgKind_Warning, error_string);
                 MD_ParseWorkPop();
             }
             else
             {
-                MD_Node *parent = work_top->parent;
+                MD_Node *parent = work_top.parent;
                 MD_ParseWorkPop();
                 MD_ParseWorkPush(MD_ParseWorkKind_MainImplicit, parent);
             }
@@ -1095,22 +1095,22 @@ if (work_top == 0) {work_top = &broken_work;}\
         }
         
         //- rjf: [main] }s, ]s, and )s -> pop
-        if (work_top->kind == MD_ParseWorkKind_Main && token->flags & MD_TokenFlag_Reserved &&
+        if (work_top.kind == MD_ParseWorkKind_Main && token.flags & MD_TokenFlag_Reserved &&
               (str8_match(token_string, str8_lit("}"), 0) ||
                 str8_match(token_string, str8_lit("]"), 0) ||
                 str8_match(token_string, str8_lit(")"), 0)))
         {
-            MD_Node *parent = work_top->parent;
-            parent->flags |=   MD_NodeFlag_HasBraceRight*!!str8_match(token_string, str8_lit("}"), 0);
-            parent->flags |= MD_NodeFlag_HasBracketRight*!!str8_match(token_string, str8_lit("]"), 0);
-            parent->flags |=   MD_NodeFlag_HasParenRight*!!str8_match(token_string, str8_lit(")"), 0);
+            MD_Node *parent = work_top.parent;
+            parent.flags |=   MD_NodeFlag_HasBraceRight*!!str8_match(token_string, str8_lit("}"), 0);
+            parent.flags |= MD_NodeFlag_HasBracketRight*!!str8_match(token_string, str8_lit("]"), 0);
+            parent.flags |=   MD_NodeFlag_HasParenRight*!!str8_match(token_string, str8_lit(")"), 0);
             MD_ParseWorkPop();
             token += 1;
             goto end_consume;
         }
         
         //- rjf: [main implicit] }s, ]s, and )s -> pop without advancing
-        if (work_top->kind == MD_ParseWorkKind_MainImplicit && token->flags & MD_TokenFlag_Reserved &&
+        if (work_top.kind == MD_ParseWorkKind_MainImplicit && token.flags & MD_TokenFlag_Reserved &&
               (str8_match(token_string, str8_lit("}"), 0) ||
                 str8_match(token_string, str8_lit("]"), 0) ||
                 str8_match(token_string, str8_lit(")"), 0)))
@@ -1121,7 +1121,7 @@ if (work_top == 0) {work_top = &broken_work;}\
         
         //- rjf: no consumption -> unexpected token! we don't know what to do with this.
         {
-            MD_Node *error = md_push_node(arena, MD_NodeKind_ErrorMarker, 0, token_string, token_string, token->range.min);
+            MD_Node *error = md_push_node(arena, MD_NodeKind_ErrorMarker, 0, token_string, token_string, token.range.min);
             String8 error_string = push_str8f(arena, "Unexpected \"%S\" token.", token_string);
             md_msg_list_push(arena, &msgs, error, MD_MsgKind_Error, error_string);
             token += 1;
@@ -1169,7 +1169,7 @@ md_debug_string_list_from_tree(Arena *arena, MD_Node *root)
             
             // rjf: extract node info
             String8 kind_string = str8_lit("Unknown");
-            switch (node->kind)
+            switch (node.kind)
             {
                 default:{}break;
                 case MD_NodeKind_File:       {kind_string = str8_lit("File");       }break;
@@ -1181,7 +1181,7 @@ md_debug_string_list_from_tree(Arena *arena, MD_Node *root)
             }
             
             // rjf: push node line
-            str8_list_pushf(arena, &strings, "%.*s\"%S\" : %S", depth, indentation, node->string, kind_string);
+            str8_list_pushf(arena, &strings, "%.*s\"%S\" : %S", depth, indentation, node.string, kind_string);
             
             // rjf: children -> open brace
             if (rec.push_count != 0)
@@ -1212,17 +1212,17 @@ internal void
 md_node_ptr_list_push(Arena *arena, MD_NodePtrList *list, MD_Node *node)
 {
     MD_NodePtrNode *n = push_array(arena, MD_NodePtrNode, 1);
-    n->v = node;
-    SLLQueuePush(list->first, list->last, n);
-    list->count += 1;
+    n.v = node;
+    SLLQueuePush(list.first, list.last, n);
+    list.count += 1;
 }
 
 internal void
 md_node_ptr_list_push_front(Arena *arena, MD_NodePtrList *list, MD_Node *node)
 {
     MD_NodePtrNode *n = push_array(arena, MD_NodePtrNode, 1);
-    n->v = node;
-    SLLQueuePushFront(list->first, list->last, n);
-    list->count += 1;
+    n.v = node;
+    SLLQueuePushFront(list.first, list.last, n);
+    list.count += 1;
 }
 

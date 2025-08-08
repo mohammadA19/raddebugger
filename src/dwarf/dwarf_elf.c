@@ -5,10 +5,10 @@ internal B32
 dw_is_dwarf_present_from_elf_bin(String8 data, ELF_Bin *bin)
 {
     B32 is_dwarf_present = 0;
-    for EachIndex(idx, bin->shdrs.count)
+    for EachIndex(idx, bin.shdrs.count)
     {
-        ELF_Shdr64 *shdr = &bin->shdrs.v[idx];
-        if (shdr->sh_type != ELF_SectionCode_ProgBits) { continue; }
+        ELF_Shdr64 *shdr = &bin.shdrs.v[idx];
+        if (shdr.sh_type != ELF_SectionCode_ProgBits) { continue; }
         String8 name = elf_name_from_shdr64(data, bin, shdr);
         DW_SectionKind s = dw_section_kind_from_string(name);
         if (s == DW_Section_Null)
@@ -33,15 +33,15 @@ dw_input_from_elf_bin(Arena *arena, String8 data, ELF_Bin *bin)
     DW_Input result = {0};
     B32 is_section_present[ArrayCount(result.sec)] = {0};
     Temp scratch = scratch_begin(&arena, 1);
-    for (U64 section_idx = 1; section_idx < bin->shdrs.count; section_idx += 1)
+    for (U64 section_idx = 1; section_idx < bin.shdrs.count; section_idx += 1)
     {
-        ELF_Shdr64 *shdr = &bin->shdrs.v[section_idx];
-        if (shdr->sh_type != ELF_SectionCode_ProgBits) { continue; } // skip BSS sections
+        ELF_Shdr64 *shdr = &bin.shdrs.v[section_idx];
+        if (shdr.sh_type != ELF_SectionCode_ProgBits) { continue; } // skip BSS sections
         
         //- rjf: unpack section
         String8 section_name = elf_name_from_shdr64(data, bin, shdr);
         DW_SectionKind section_kind = dw_section_kind_from_string(section_name);
-        String8 section_data__maybe_compressed = str8_substr(data, r1u64(shdr->sh_offset, shdr->sh_offset + shdr->sh_size));
+        String8 section_data__maybe_compressed = str8_substr(data, r1u64(shdr.sh_offset, shdr.sh_offset + shdr.sh_size));
         B32 is_dwo = 0;
         if (section_kind == DW_Section_Null)
         {
@@ -53,7 +53,7 @@ dw_input_from_elf_bin(Arena *arena, String8 data, ELF_Bin *bin)
         String8 section_data__uncompressed = {0};
         if (section_kind != DW_Section_Null)
         {
-            if (!(shdr->sh_flags & ELF_Shf_Compressed))
+            if (!(shdr.sh_flags & ELF_Shf_Compressed))
             {
                 section_data__uncompressed = section_data__maybe_compressed;
             }
@@ -62,11 +62,11 @@ dw_input_from_elf_bin(Arena *arena, String8 data, ELF_Bin *bin)
                 // rjf: read compressed-section header
                 ELF_Chdr64 chdr64 = {0};
                 U64 chdr_size = 0;
-                if (ELF_HdrIs64Bit(bin->hdr.e_ident))
+                if (ELF_HdrIs64Bit(bin.hdr.e_ident))
                 {
                     chdr_size = str8_deserial_read_struct(section_data__maybe_compressed, 0, &chdr64);
                 }
-                else if (ELF_HdrIs32Bit(bin->hdr.e_ident))
+                else if (ELF_HdrIs32Bit(bin.hdr.e_ident))
                 {
                     ELF_Chdr32 chdr32 = {0};
                     chdr_size = str8_deserial_read_struct(section_data__maybe_compressed, 0, &chdr32);
@@ -107,9 +107,9 @@ dw_input_from_elf_bin(Arena *arena, String8 data, ELF_Bin *bin)
         {
             is_section_present[section_kind] = 1;
             DW_Section *d = &result.sec[section_kind];
-            d->name   = push_str8_copy(arena, section_name);
-            d->data   = section_data__uncompressed;
-            d->is_dwo = is_dwo;
+            d.name   = push_str8_copy(arena, section_name);
+            d.data   = section_data__uncompressed;
+            d.is_dwo = is_dwo;
         }
     }
     scratch_end(scratch);

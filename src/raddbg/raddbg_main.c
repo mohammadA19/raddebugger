@@ -356,7 +356,7 @@ ipc_signaler_thread__entry_point(void *p)
             if (os_semaphore_take(ipc_sender2main_lock_semaphore, max_U64))
             {
                 IPCInfo *ipc_info = (IPCInfo *)ipc_sender2main_shared_memory_base;
-                String8 msg = str8((U8 *)(ipc_info+1), ipc_info->msg_size);
+                String8 msg = str8((U8 *)(ipc_info+1), ipc_info.msg_size);
                 msg.size = Min(msg.size, IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo));
                 OS_MutexScope(ipc_s2m_ring_mutex) for (;;)
                 {
@@ -372,7 +372,7 @@ ipc_signaler_thread__entry_point(void *p)
                 }
                 os_condition_variable_broadcast(ipc_s2m_ring_cv);
                 os_send_wakeup_event();
-                ipc_info->msg_size = 0;
+                ipc_info.msg_size = 0;
                 os_semaphore_drop(ipc_sender2main_lock_semaphore);
             }
         }
@@ -394,7 +394,7 @@ internal B32
 frame(void)
 {
     rd_frame();
-    return rd_state->quit;
+    return rd_state.quit;
 }
 
 ////////////////////////////////
@@ -560,10 +560,10 @@ entry_point(CmdLine *cmd_line)
                         if (msg.size != 0)
                         {
                             log_infof("ipc_msg: \"%S\"", msg);
-                            RD_WindowState *dst_ws = rd_state->first_window_state;
-                            for (RD_WindowState *ws = dst_ws; ws != &rd_nil_window_state; ws = ws->order_next)
+                            RD_WindowState *dst_ws = rd_state.first_window_state;
+                            for (RD_WindowState *ws = dst_ws; ws != &rd_nil_window_state; ws = ws.order_next)
                             {
-                                if (os_window_is_focused(ws->os))
+                                if (os_window_is_focused(ws.os))
                                 {
                                     dst_ws = ws;
                                     break;
@@ -571,17 +571,17 @@ entry_point(CmdLine *cmd_line)
                             }
                             if (dst_ws != &rd_nil_window_state)
                             {
-                                dst_ws->window_temporarily_focused_ipc = 1;
+                                dst_ws.window_temporarily_focused_ipc = 1;
                                 RD_RegsScope()
                                 {
-                                    if (dst_ws->cfg_id != rd_regs()->window)
+                                    if (dst_ws.cfg_id != rd_regs()->window)
                                     {
                                         Temp scratch = scratch_begin(0, 0);
-                                        RD_PanelTree panel_tree = rd_panel_tree_from_cfg(scratch.arena, rd_cfg_from_id(dst_ws->cfg_id));
-                                        rd_regs()->window = dst_ws->cfg_id;
-                                        rd_regs()->panel  = panel_tree.focused->cfg->id;
-                                        rd_regs()->tab    = panel_tree.focused->selected_tab->id;
-                                        rd_regs()->view   = panel_tree.focused->selected_tab->id;
+                                        RD_PanelTree panel_tree = rd_panel_tree_from_cfg(scratch.arena, rd_cfg_from_id(dst_ws.cfg_id));
+                                        rd_regs()->window = dst_ws.cfg_id;
+                                        rd_regs()->panel  = panel_tree.focused.cfg.id;
+                                        rd_regs()->tab    = panel_tree.focused.selected_tab.id;
+                                        rd_regs()->view   = panel_tree.focused.selected_tab.id;
                                         scratch_end(scratch);
                                     }
                                     rd_cmd(RD_CmdKind_RunExternalDriverTextCommand, .string = msg);
@@ -626,9 +626,9 @@ entry_point(CmdLine *cmd_line)
                             U8 *buffer = (U8 *)(ipc_info+1);
                             U64 buffer_max = IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo);
                             StringJoin join = {str8_lit(""), str8_lit("\0"), str8_lit("")};
-                            String8 msg = str8_list_join(scratch.arena, &rd_state->cmd_outputs, &join);
-                            ipc_info->msg_size = Min(buffer_max, msg.size);
-                            MemoryCopy(buffer, msg.str, ipc_info->msg_size);
+                            String8 msg = str8_list_join(scratch.arena, &rd_state.cmd_outputs, &join);
+                            ipc_info.msg_size = Min(buffer_max, msg.size);
+                            MemoryCopy(buffer, msg.str, ipc_info.msg_size);
                             os_semaphore_drop(ipc_main2sender_signal_semaphore);
                             os_semaphore_drop(ipc_main2sender_lock_semaphore);
                         }
@@ -664,7 +664,7 @@ entry_point(CmdLine *cmd_line)
                 dmn_process_iter_begin(&it);
                 for (DMN_ProcessInfo info = {0}; dmn_process_iter_next(scratch.arena, &it, &info);)
                 {
-                    if (str8_match(str8_skip_last_slash(str8_chop_last_dot(cmd_line->exe_name)), str8_skip_last_slash(str8_chop_last_dot(info.name)), StringMatchFlag_CaseInsensitive) &&
+                    if (str8_match(str8_skip_last_slash(str8_chop_last_dot(cmd_line.exe_name)), str8_skip_last_slash(str8_chop_last_dot(info.name)), StringMatchFlag_CaseInsensitive) &&
                           this_pid != info.pid)
                     {
                         dst_pid = info.pid;
@@ -700,11 +700,11 @@ entry_point(CmdLine *cmd_line)
                 IPCInfo *ipc_info = (IPCInfo *)ipc_sender2main_shared_memory_base;
                 U8 *buffer = (U8 *)(ipc_info+1);
                 U64 buffer_max = IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo);
-                String8List parts = os_string_list_from_argcv(scratch.arena, cmd_line->argc - 1, cmd_line->argv + 1);
+                String8List parts = os_string_list_from_argcv(scratch.arena, cmd_line.argc - 1, cmd_line.argv + 1);
                 StringJoin join = {str8_lit(""), str8_lit(" "), str8_lit("")};
                 String8 msg = str8_list_join(scratch.arena, &parts, &join);
-                ipc_info->msg_size = Min(buffer_max, msg.size);
-                MemoryCopy(buffer, msg.str, ipc_info->msg_size);
+                ipc_info.msg_size = Min(buffer_max, msg.size);
+                MemoryCopy(buffer, msg.str, ipc_info.msg_size);
                 os_semaphore_drop(ipc_sender2main_signal_semaphore);
                 os_semaphore_drop(ipc_sender2main_lock_semaphore);
             }
@@ -718,7 +718,7 @@ entry_point(CmdLine *cmd_line)
                 if (os_semaphore_take(ipc_main2sender_lock_semaphore, max_U64))
                 {
                     IPCInfo *ipc_info = (IPCInfo *)ipc_main2sender_shared_memory_base;
-                    String8 msg = str8((U8 *)(ipc_info+1), ipc_info->msg_size);
+                    String8 msg = str8((U8 *)(ipc_info+1), ipc_info.msg_size);
                     msg.size = Min(msg.size, IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo));
                     U8 split_char = 0;
                     outputs = str8_split(scratch.arena, msg, &split_char, 1, 0);
@@ -727,9 +727,9 @@ entry_point(CmdLine *cmd_line)
             }
             
             //- rjf: write outputs to stdout
-            for (String8Node *n = outputs.first; n != 0; n = n->next)
+            for (String8Node *n = outputs.first; n != 0; n = n.next)
             {
-                fwrite(n->string.str, 1, n->string.size, stdout);
+                fwrite(n.string.str, 1, n.string.size, stdout);
             }
             fflush(stdout);
             

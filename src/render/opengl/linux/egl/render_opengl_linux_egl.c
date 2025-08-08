@@ -15,13 +15,13 @@ r_ogl_os_init(CmdLine *cmdln)
     {
         Arena *arena = arena_alloc();
         r_ogl_lnx_state = push_array(arena, R_OGL_LNX_State, 1);
-        r_ogl_lnx_state->arena = arena;
+        r_ogl_lnx_state.arena = arena;
     }
     
     //- rjf: get EGL display
     {
-        r_ogl_lnx_state->display = eglGetDisplay((EGLNativeDisplayType)os_lnx_gfx_state->display);
-        if (r_ogl_lnx_state->display == EGL_NO_DISPLAY)
+        r_ogl_lnx_state.display = eglGetDisplay((EGLNativeDisplayType)os_lnx_gfx_state.display);
+        if (r_ogl_lnx_state.display == EGL_NO_DISPLAY)
         {
             os_graphical_message(1, str8_lit("Fatal Error"), str8_lit("Failed to get EGL display."));
             os_abort(1);
@@ -31,7 +31,7 @@ r_ogl_os_init(CmdLine *cmdln)
     //- rjf: initialize GL version
     EGLint egl_version_major = 0;
     EGLint egl_version_minor = 0;
-    if (!eglInitialize(r_ogl_lnx_state->display, &egl_version_major, &egl_version_minor))
+    if (!eglInitialize(r_ogl_lnx_state.display, &egl_version_major, &egl_version_minor))
     {
         os_graphical_message(1, str8_lit("Fatal Error"), str8_lit("Couldn't initialize EGL display."));
         os_abort(1);
@@ -66,15 +66,15 @@ r_ogl_os_init(CmdLine *cmdln)
             debug_mode ? EGL_CONTEXT_OPENGL_DEBUG : EGL_NONE, EGL_TRUE,
             EGL_NONE,
         };
-        r_ogl_lnx_state->context = eglCreateContext(r_ogl_lnx_state->display, 0, EGL_NO_CONTEXT, options);
-        if (r_ogl_lnx_state->context == EGL_NO_CONTEXT)
+        r_ogl_lnx_state.context = eglCreateContext(r_ogl_lnx_state.display, 0, EGL_NO_CONTEXT, options);
+        if (r_ogl_lnx_state.context == EGL_NO_CONTEXT)
         {
             os_graphical_message(1, str8_lit("Fatal Error"), str8_lit("Couldn't create OpenGL context with EGL."));
             os_abort(1);
         }
     }
     
-    eglMakeCurrent(r_ogl_lnx_state->display, 0, 0, r_ogl_lnx_state->context);
+    eglMakeCurrent(r_ogl_lnx_state.display, 0, 0, r_ogl_lnx_state.context);
     glDrawBuffer(GL_BACK);
 }
 
@@ -82,14 +82,14 @@ internal R_Handle
 r_ogl_os_window_equip(OS_Handle window)
 {
     OS_LNX_Window *window_os = (OS_LNX_Window *)window.u64[0];
-    R_OGL_LNX_Window *w = r_ogl_lnx_state->free_window;
+    R_OGL_LNX_Window *w = r_ogl_lnx_state.free_window;
     if (w != 0)
     {
-        SLLStackPop(r_ogl_lnx_state->free_window);
+        SLLStackPop(r_ogl_lnx_state.free_window);
     }
     else
     {
-        w = push_array(r_ogl_lnx_state->arena, R_OGL_LNX_Window, 1);
+        w = push_array(r_ogl_lnx_state.arena, R_OGL_LNX_Window, 1);
     }
     {
         EGLint surface_options[] =
@@ -97,7 +97,7 @@ r_ogl_os_window_equip(OS_Handle window)
             EGL_GL_COLORSPACE, EGL_GL_COLORSPACE_SRGB,
             EGL_NONE,
         };
-        if (r_ogl_lnx_state->config == 0)
+        if (r_ogl_lnx_state.config == 0)
         {
             //- rjf: get all EGL configs
             EGLConfig configs[256] = {0};
@@ -118,7 +118,7 @@ r_ogl_os_window_equip(OS_Handle window)
                     
                     EGL_NONE,
                 };
-                if (!eglChooseConfig(r_ogl_lnx_state->display, options, configs, ArrayCount(configs), &configs_count) || configs_count == 0)
+                if (!eglChooseConfig(r_ogl_lnx_state.display, options, configs, ArrayCount(configs), &configs_count) || configs_count == 0)
                 {
                     os_graphical_message(1, str8_lit("Fatal Error"), str8_lit("Couldn't choose EGL configuration."));
                     os_abort(1);
@@ -134,14 +134,14 @@ r_ogl_os_window_equip(OS_Handle window)
                 };
                 for (U32 idx = 0; idx < configs_count; idx += 1)
                 {
-                    w->surface = eglCreateWindowSurface(r_ogl_lnx_state->display, configs[idx], window_os->window, config_options);
-                    if (w->surface != EGL_NO_SURFACE)
+                    w.surface = eglCreateWindowSurface(r_ogl_lnx_state.display, configs[idx], window_os.window, config_options);
+                    if (w.surface != EGL_NO_SURFACE)
                     {
-                        r_ogl_lnx_state->config = configs[idx];
+                        r_ogl_lnx_state.config = configs[idx];
                         break;
                     }
                 }
-                if (r_ogl_lnx_state->config == 0)
+                if (r_ogl_lnx_state.config == 0)
                 {
                     os_graphical_message(1, str8_lit("Fatal Error"), str8_lit("Couldn't find a suitable EGL configuration."));
                     os_abort(1);
@@ -150,9 +150,9 @@ r_ogl_os_window_equip(OS_Handle window)
         }
         else
         {
-            w->surface = eglCreateWindowSurface(r_ogl_lnx_state->display, r_ogl_lnx_state->config, window_os->window, surface_options);
+            w.surface = eglCreateWindowSurface(r_ogl_lnx_state.display, r_ogl_lnx_state.config, window_os.window, surface_options);
         }
-        if (w->surface == EGL_NO_SURFACE)
+        if (w.surface == EGL_NO_SURFACE)
         {
             os_graphical_message(1, str8_lit("Fatal Error"), str8_lit("Couldn't create EGL surface."));
             os_abort(1);
@@ -169,7 +169,7 @@ r_ogl_os_window_unequip(OS_Handle os, R_Handle r)
     {
         
     }
-    SLLStackPush(r_ogl_lnx_state->free_window, w);
+    SLLStackPush(r_ogl_lnx_state.free_window, w);
 }
 
 internal void
@@ -177,7 +177,7 @@ r_ogl_os_select_window(OS_Handle os, R_Handle r)
 {
     OS_LNX_Window *w = (OS_LNX_Window *)os.u64[0];
     R_OGL_LNX_Window *w_r = (R_OGL_LNX_Window *)r.u64[0];
-    eglMakeCurrent(r_ogl_lnx_state->display, w_r->surface, w_r->surface, r_ogl_lnx_state->context);
+    eglMakeCurrent(r_ogl_lnx_state.display, w_r.surface, w_r.surface, r_ogl_lnx_state.context);
 }
 
 internal void
@@ -185,5 +185,5 @@ r_ogl_os_window_swap(OS_Handle os, R_Handle r)
 {
     OS_LNX_Window *w = (OS_LNX_Window *)os.u64[0];
     R_OGL_LNX_Window *w_r = (R_OGL_LNX_Window *)r.u64[0];
-    eglSwapBuffers(r_ogl_lnx_state->display, w_r->surface);
+    eglSwapBuffers(r_ogl_lnx_state.display, w_r.surface);
 }

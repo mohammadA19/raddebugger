@@ -112,8 +112,8 @@ lnk_supplement_error(char *fmt, ...)
 internal void
 lnk_supplement_error_list(String8List list)
 {
-    for (String8Node *node = list.first; node != 0; node = node->next) {
-        lnk_supplement_error("%.*s", str8_varg(node->string));
+    for (String8Node *node = list.first; node != 0; node = node.next) {
+        lnk_supplement_error("%.*s", str8_varg(node.string));
     }
 }
 

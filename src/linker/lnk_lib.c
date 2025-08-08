@@ -5,10 +5,10 @@ internal LNK_LibNode *
 lnk_lib_list_pop_node_atomic(LNK_LibList *list)
 {
     for (;;) {
-        LNK_LibNode *expected = list->first;
-        LNK_LibNode *current  = ins_atomic_ptr_eval_cond_assign(&list->first, expected->next, expected);
+        LNK_LibNode *expected = list.first;
+        LNK_LibNode *current  = ins_atomic_ptr_eval_cond_assign(&list.first, expected.next, expected);
         if (expected == current) { 
-            ins_atomic_u64_dec_eval(&list->count);
+            ins_atomic_u64_dec_eval(&list.count);
             return expected;
         }
     }
@@ -18,11 +18,11 @@ internal void
 lnk_lib_list_push_node_atomic(LNK_LibList *list, LNK_LibNode *node)
 {
     for (;;) {
-        LNK_LibNode *expected = list->first;
-        LNK_LibNode *current  = ins_atomic_ptr_eval_cond_assign(&list->first, node, expected);
+        LNK_LibNode *expected = list.first;
+        LNK_LibNode *current  = ins_atomic_ptr_eval_cond_assign(&list.first, node, expected);
         if (current == expected) {
-            node->next = expected;
-            ins_atomic_u64_inc_eval(&list->count);
+            node.next = expected;
+            ins_atomic_u64_inc_eval(&list.count);
             return;
         }
     }
@@ -31,8 +31,8 @@ lnk_lib_list_push_node_atomic(LNK_LibList *list, LNK_LibNode *node)
 internal void
 lnk_lib_list_push_node(LNK_LibList *list, LNK_LibNode *node)
 {
-    SLLStackPush(list->first, node);
-    list->count += 1;
+    SLLStackPush(list.first, node);
+    list.count += 1;
 }
 
 internal LNK_LibList
@@ -49,7 +49,7 @@ lnk_array_from_lib_list(Arena *arena, LNK_LibList list)
 {
     LNK_LibNodeArray result = {0};
     result.v = push_array(arena, LNK_LibNode, list.count);
-    for (LNK_LibNode *n = list.first; n != 0; n = n->next) { result.v[result.count++] = *n; }
+    for (LNK_LibNode *n = list.first; n != 0; n = n.next) { result.v[result.count++] = *n; }
     return result;
 }
 
@@ -120,13 +120,13 @@ lnk_lib_from_data(Arena *arena, String8 data, String8 path, LNK_Lib *lib_out)
     symbol_count = Min(symbol_count, symbol_name_list.node_count);
     
     // init lib
-    lib_out->path             = push_str8_copy(arena, path);
-    lib_out->data             = data;
-    lib_out->type             = type;
-    lib_out->symbol_count     = symbol_count;
-    lib_out->member_off_arr   = member_off_arr;
-    lib_out->symbol_name_list = symbol_name_list;
-    lib_out->long_names       = parse.long_names;
+    lib_out.path             = push_str8_copy(arena, path);
+    lib_out.data             = data;
+    lib_out.type             = type;
+    lib_out.symbol_count     = symbol_count;
+    lib_out.member_off_arr   = member_off_arr;
+    lib_out.symbol_name_list = symbol_name_list;
+    lib_out.long_names       = parse.long_names;
     
     ProfEnd();
     return 1;
@@ -137,14 +137,14 @@ THREAD_POOL_TASK_FUNC(lnk_lib_initer)
 {
     LNK_LibIniter *task = raw_task;
 
-    LNK_LibNode *lib_node = lnk_lib_list_pop_node_atomic(&task->free_libs);
-    lib_node->data.input_idx = task_id;
+    LNK_LibNode *lib_node = lnk_lib_list_pop_node_atomic(&task.free_libs);
+    lib_node.data.input_idx = task_id;
 
-    B32 is_valid_lib = lnk_lib_from_data(arena, task->data_arr[task_id], task->path_arr[task_id], &lib_node->data);
+    B32 is_valid_lib = lnk_lib_from_data(arena, task.data_arr[task_id], task.path_arr[task_id], &lib_node.data);
     if (is_valid_lib) {
-        lnk_lib_list_push_node_atomic(&task->valid_libs, lib_node);
+        lnk_lib_list_push_node_atomic(&task.valid_libs, lib_node);
     } else {
-        lnk_lib_list_push_node_atomic(&task->invalid_libs, lib_node);
+        lnk_lib_list_push_node_atomic(&task.invalid_libs, lib_node);
     }
 }
 
@@ -157,7 +157,7 @@ lnk_lib_node_is_before(void *a, void *b)
 internal LNK_LibNodeArray
 lnk_lib_list_push_parallel(TP_Context *tp, TP_Arena *arena, LNK_LibList *list, String8Array data_arr, String8Array path_arr)
 {
-    Temp scratch = scratch_begin(arena->v, arena->count);
+    Temp scratch = scratch_begin(arena.v, arena.count);
 
     Assert(data_arr.count == path_arr.count);
     U64 lib_count = data_arr.count;
@@ -178,10 +178,10 @@ lnk_lib_list_push_parallel(TP_Context *tp, TP_Arena *arena, LNK_LibList *list, S
     }
 
     // push parsed libs
-    LNK_LibNodeArray result = lnk_array_from_lib_list(arena->v[0], task.valid_libs);
+    LNK_LibNodeArray result = lnk_array_from_lib_list(arena.v[0], task.valid_libs);
     radsort(result.v, result.count, lnk_lib_node_is_before);
     for (U64 i = result.count; i > 0; i -= 1) {
-        result.v[i-1].data.input_idx = list->count;
+        result.v[i-1].data.input_idx = list.count;
         lnk_lib_list_push_node(list, &result.v[i-1]);
     }
 
@@ -193,12 +193,12 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_push_lib_symbols_task)
 {
     LNK_SymbolPusher *task   = raw_task;
-    LNK_SymbolTable  *symtab = task->symtab;
-    LNK_Lib          *lib    = &task->u.libs.v[task_id].data;
+    LNK_SymbolTable  *symtab = task.symtab;
+    LNK_Lib          *lib    = &task.u.libs.v[task_id].data;
 
-    String8Node *name_node = lib->symbol_name_list.first;
-    for (U64 symbol_idx = 0; symbol_idx < lib->symbol_count; ++symbol_idx, name_node = name_node->next) {
-        LNK_Symbol *symbol = lnk_make_lib_symbol(arena, name_node->string, lib, lib->member_off_arr[symbol_idx]);
+    String8Node *name_node = lib.symbol_name_list.first;
+    for (U64 symbol_idx = 0; symbol_idx < lib.symbol_count; ++symbol_idx, name_node = name_node.next) {
+        LNK_Symbol *symbol = lnk_make_lib_symbol(arena, name_node.string, lib, lib.member_off_arr[symbol_idx]);
         lnk_symbol_table_push_(symtab, arena, worker_id, LNK_SymbolScope_Lib, symbol);
     }
 }
@@ -210,7 +210,7 @@ lnk_input_lib_symbols(TP_Context *tp, LNK_SymbolTable *symtab, LNK_LibNodeArray 
     LNK_SymbolPusher task = {0};
     task.symtab           = symtab;
     task.u.libs           = libs;
-    tp_for_parallel(tp, symtab->arena, libs.count, lnk_push_lib_symbols_task, &task);
+    tp_for_parallel(tp, symtab.arena, libs.count, lnk_push_lib_symbols_task, &task);
     ProfEnd();
 }
 

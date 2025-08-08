@@ -945,35 +945,35 @@ f64_from_str8(String8 string)
 
 internal String8Node*
 str8_list_push_node(String8List *list, String8Node *node){
-    SLLQueuePush(list->first, list->last, node);
-    list->node_count += 1;
-    list->total_size += node->string.size;
+    SLLQueuePush(list.first, list.last, node);
+    list.node_count += 1;
+    list.total_size += node.string.size;
     return (node);
 }
 
 internal String8Node*
 str8_list_push_node_set_string(String8List *list, String8Node *node, String8 string){
-    SLLQueuePush(list->first, list->last, node);
-    list->node_count += 1;
-    list->total_size += string.size;
-    node->string = string;
+    SLLQueuePush(list.first, list.last, node);
+    list.node_count += 1;
+    list.total_size += string.size;
+    node.string = string;
     return (node);
 }
 
 internal String8Node*
 str8_list_push_node_front(String8List *list, String8Node *node){
-    SLLQueuePushFront(list->first, list->last, node);
-    list->node_count += 1;
-    list->total_size += node->string.size;
+    SLLQueuePushFront(list.first, list.last, node);
+    list.node_count += 1;
+    list.total_size += node.string.size;
     return (node);
 }
 
 internal String8Node*
 str8_list_push_node_front_set_string(String8List *list, String8Node *node, String8 string){
-    SLLQueuePushFront(list->first, list->last, node);
-    list->node_count += 1;
-    list->total_size += string.size;
-    node->string = string;
+    SLLQueuePushFront(list.first, list.last, node);
+    list.node_count += 1;
+    list.total_size += string.size;
+    node.string = string;
     return (node);
 }
 
@@ -1002,12 +1002,12 @@ str8_list_push_front(Arena *arena, String8List *list, String8 string){
 
 internal void
 str8_list_concat_in_place(String8List *list, String8List *to_push){
-    if (to_push->node_count != 0){
-        if (list->last){
-            list->node_count += to_push->node_count;
-            list->total_size += to_push->total_size;
-            list->last->next = to_push->first;
-            list->last = to_push->last;
+    if (to_push.node_count != 0){
+        if (list.last){
+            list.node_count += to_push.node_count;
+            list.total_size += to_push.total_size;
+            list.last->next = to_push.first;
+            list.last = to_push.last;
         }
         else{
             *list = *to_push;
@@ -1019,7 +1019,7 @@ str8_list_concat_in_place(String8List *list, String8List *to_push){
 internal String8Node*
 str8_list_push_aligner(Arena *arena, String8List *list, U64 min, U64 align){
     String8Node *node = push_array_no_zero(arena, String8Node, 1);
-    U64 new_size = list->total_size + min;
+    U64 new_size = list.total_size + min;
     U64 increase_size = 0;
     if (align > 1){
         // NOTE(allen): assert is power of 2
@@ -1027,15 +1027,15 @@ str8_list_push_aligner(Arena *arena, String8List *list, U64 min, U64 align){
         U64 mask = align - 1;
         new_size += mask;
         new_size &= (~mask);
-        increase_size = new_size - list->total_size;
+        increase_size = new_size - list.total_size;
     }
     local_persist const U8 zeroes_buffer[64] = {0};
     Assert(increase_size <= ArrayCount(zeroes_buffer));
-    SLLQueuePush(list->first, list->last, node);
-    list->node_count += 1;
-    list->total_size = new_size;
-    node->string.str = (U8*)zeroes_buffer;
-    node->string.size = increase_size;
+    SLLQueuePush(list.first, list.last, node);
+    list.node_count += 1;
+    list.total_size = new_size;
+    node.string.str = (U8*)zeroes_buffer;
+    node.string.size = increase_size;
     return (node);
 }
 
@@ -1062,11 +1062,11 @@ str8_list_push_frontf(Arena *arena, String8List *list, char *fmt, ...){
 internal String8List
 str8_list_copy(Arena *arena, String8List *list){
     String8List result = {0};
-    for (String8Node *node = list->first;
+    for (String8Node *node = list.first;
               node != 0;
-              node = node->next){
+              node = node.next){
         String8Node *new_node = push_array_no_zero(arena, String8Node, 1);
-        String8 new_string = push_str8_copy(arena, node->string);
+        String8 new_string = push_str8_copy(arena, node.string);
         str8_list_push_node_set_string(&result, new_node, new_string);
     }
     return (result);
@@ -1115,8 +1115,8 @@ str8_split_by_string_chars(Arena *arena, String8 string, String8 split_chars, St
 internal String8List
 str8_list_split_by_string_chars(Arena *arena, String8List list, String8 split_chars, StringSplitFlags flags){
     String8List result = {0};
-    for (String8Node *node = list.first; node != 0; node = node->next){
-        String8List split = str8_split_by_string_chars(arena, node->string, split_chars, flags);
+    for (String8Node *node = list.first; node != 0; node = node.next){
+        String8List split = str8_split_by_string_chars(arena, node.string, split_chars, flags);
         str8_list_concat_in_place(&result, &split);
     }
     return result;
@@ -1130,22 +1130,22 @@ str8_list_join(Arena *arena, String8List *list, StringJoin *optional_params){
     }
     
     U64 sep_count = 0;
-    if (list->node_count > 0){
-        sep_count = list->node_count - 1;
+    if (list.node_count > 0){
+        sep_count = list.node_count - 1;
     }
     
     String8 result;
-    result.size = join.pre.size + join.post.size + sep_count*join.sep.size + list->total_size;
+    result.size = join.pre.size + join.post.size + sep_count*join.sep.size + list.total_size;
     U8 *ptr = result.str = push_array_no_zero(arena, U8, result.size + 1);
     
     MemoryCopy(ptr, join.pre.str, join.pre.size);
     ptr += join.pre.size;
-    for (String8Node *node = list->first;
+    for (String8Node *node = list.first;
               node != 0;
-              node = node->next){
-        MemoryCopy(ptr, node->string.str, node->string.size);
-        ptr += node->string.size;
-        if (node->next != 0){
+              node = node.next){
+        MemoryCopy(ptr, node.string.str, node.string.size);
+        ptr += node.string.size;
+        if (node.next != 0){
             MemoryCopy(ptr, join.sep.str, join.sep.size);
             ptr += join.sep.size;
         }
@@ -1200,12 +1200,12 @@ internal String8Array
 str8_array_from_list(Arena *arena, String8List *list)
 {
     String8Array array;
-    array.count   = list->node_count;
+    array.count   = list.node_count;
     array.v = push_array_no_zero(arena, String8, array.count);
     U64 idx = 0;
-    for (String8Node *n = list->first; n != 0; n = n->next, idx += 1)
+    for (String8Node *n = list.first; n != 0; n = n.next, idx += 1)
     {
-        array.v[idx] = n->string;
+        array.v[idx] = n.string;
     }
     return array;
 }
@@ -1255,12 +1255,12 @@ version_from_str8(String8 string)
     U64 version_patch = 0;
     String8List version_parts = str8_split(scratch.arena, string, (U8 *)".", 1, 0);
     if (version_parts.first &&
-          version_parts.first->next &&
-          version_parts.first->next->next)
+          version_parts.first.next &&
+          version_parts.first.next->next)
     {
-        try_u64_from_str8_c_rules(version_parts.first->string, &version_major);
-        try_u64_from_str8_c_rules(version_parts.first->next->string, &version_minor);
-        try_u64_from_str8_c_rules(version_parts.first->next->next->string, &version_patch);
+        try_u64_from_str8_c_rules(version_parts.first.string, &version_major);
+        try_u64_from_str8_c_rules(version_parts.first.next->string, &version_minor);
+        try_u64_from_str8_c_rules(version_parts.first.next->next.string, &version_patch);
         result = Version(version_major, version_minor, version_patch);
     }
     scratch_end(scratch);
@@ -1395,25 +1395,25 @@ str8_path_list_resolve_dots_in_place(String8List *path, PathStyle style)
     Temp scratch = scratch_begin(0, 0);
     String8MetaNode *stack = 0;
     String8MetaNode *free_meta_node = 0;
-    String8Node *first = path->first;
+    String8Node *first = path.first;
     MemoryZeroStruct(path);
     for (String8Node *node = first, *next = 0;
             node != 0;
             node = next)
     {
         // save next now
-        next = node->next;
+        next = node.next;
         
         // cases:
         if (node == first && style == PathStyle_WindowsAbsolute)
         {
             goto save_without_stack;
         }
-        if (node->string.size == 1 && node->string.str[0] == '.')
+        if (node.string.size == 1 && node.string.str[0] == '.')
         {
             goto do_nothing;
         }
-        if (node->string.size == 2 && node->string.str[0] == '.' && node->string.str[1] == '.')
+        if (node.string.size == 2 && node.string.str[0] == '.' && node.string.str[1] == '.')
         {
             if (stack != 0)
             {
@@ -1441,7 +1441,7 @@ str8_path_list_resolve_dots_in_place(String8List *path, PathStyle style)
                 stack_node = push_array_no_zero(scratch.arena, String8MetaNode, 1);
             }
             SLLStackPush(stack, stack_node);
-            stack_node->node = node;
+            stack_node.node = node;
             continue;
         }
         
@@ -1453,16 +1453,16 @@ str8_path_list_resolve_dots_in_place(String8List *path, PathStyle style)
         
         eliminate_stack_top:
         {
-            path->node_count -= 1;
-            path->total_size -= stack->node->string.size;
+            path.node_count -= 1;
+            path.total_size -= stack.node->string.size;
             SLLStackPop(stack);
             if (stack == 0)
             {
-                path->last = path->first;
+                path.last = path.first;
             }
             else
             {
-                path->last = stack->node;
+                path.last = stack.node;
             }
             continue;
         }
@@ -1566,9 +1566,9 @@ path_relative_dst_from_absolute_dst_src(Arena *arena, String8 dst, String8 src)
     U64 num_backtracks = src_folders.node_count;
     for (String8Node *src_n = src_folders.first, *bp_n = dst_folders.first;
             src_n != 0 && bp_n != 0;
-            src_n = src_n->next, bp_n = bp_n->next)
+            src_n = src_n.next, bp_n = bp_n.next)
     {
-        if (str8_match(src_n->string, bp_n->string, path_match_flags_from_os(operating_system_from_context())))
+        if (str8_match(src_n.string, bp_n.string, path_match_flags_from_os(operating_system_from_context())))
         {
             num_backtracks -= 1;
         }
@@ -1600,19 +1600,19 @@ path_relative_dst_from_absolute_dst_src(Arena *arena, String8 dst, String8 src)
             B32 unique_from_src = 0;
             for (String8Node *src_n = src_folders.first, *bp_n = dst_folders.first;
                     bp_n != 0;
-                    bp_n = bp_n->next)
+                    bp_n = bp_n.next)
             {
-                if (!unique_from_src && (src_n == 0 || !str8_match(src_n->string, bp_n->string, path_match_flags_from_os(operating_system_from_context()))))
+                if (!unique_from_src && (src_n == 0 || !str8_match(src_n.string, bp_n.string, path_match_flags_from_os(operating_system_from_context()))))
                 {
                     unique_from_src = 1;
                 }
                 if (unique_from_src)
                 {
-                    str8_list_push(scratch.arena, &dst_path_strs, bp_n->string);
+                    str8_list_push(scratch.arena, &dst_path_strs, bp_n.string);
                 }
                 if (src_n != 0)
                 {
-                    src_n = src_n->next;
+                    src_n = src_n.next;
                 }
             }
         }
@@ -2134,27 +2134,27 @@ string_from_month(Month month){
 
 internal String8
 push_date_time_string(Arena *arena, DateTime *date_time){
-    char *mon_str = (char*)string_from_month(date_time->month).str;
-    U32 adjusted_hour = date_time->hour%12;
+    char *mon_str = (char*)string_from_month(date_time.month).str;
+    U32 adjusted_hour = date_time.hour%12;
     if (adjusted_hour == 0){
         adjusted_hour = 12;
     }
     char *ampm = "am";
-    if (date_time->hour >= 12){
+    if (date_time.hour >= 12){
         ampm = "pm";
     }
     String8 result = push_str8f(arena, "%d %s %d, %02d:%02d:%02d %s",
-                                                            date_time->day, mon_str, date_time->year,
-                                                            adjusted_hour, date_time->min, date_time->sec, ampm);
+                                                            date_time.day, mon_str, date_time.year,
+                                                            adjusted_hour, date_time.min, date_time.sec, ampm);
     return (result);
 }
 
 internal String8
 push_file_name_date_time_string(Arena *arena, DateTime *date_time){
-    char *mon_str = (char*)string_from_month(date_time->month).str;
+    char *mon_str = (char*)string_from_month(date_time.month).str;
     String8 result = push_str8f(arena, "%d-%s-%0d--%02d-%02d-%02d",
-                                                            date_time->year, mon_str, date_time->day,
-                                                            date_time->hour, date_time->min, date_time->sec);
+                                                            date_time.year, mon_str, date_time.day,
+                                                            date_time.hour, date_time.min, date_time.sec);
     return (result);
 }
 
@@ -2208,11 +2208,11 @@ try_guid_from_string(String8 string, Guid *guid_out)
     String8List list = str8_split_by_string_chars(scratch.arena, string, str8_lit("-"), StringSplitFlag_KeepEmpties);
     if (list.node_count == 5)
     {
-        String8 data1_str    = list.first->string;
-        String8 data2_str    = list.first->next->string;
-        String8 data3_str    = list.first->next->next->string;
-        String8 data4_hi_str = list.first->next->next->next->string;
-        String8 data4_lo_str = list.first->next->next->next->next->string;
+        String8 data1_str    = list.first.string;
+        String8 data2_str    = list.first.next->string;
+        String8 data3_str    = list.first.next->next.string;
+        String8 data4_hi_str = list.first.next->next.next->string;
+        String8 data4_lo_str = list.first.next->next.next->next.string;
         if (str8_is_integer(data1_str, 16) && 
               str8_is_integer(data2_str, 16) &&
               str8_is_integer(data3_str, 16) &&
@@ -2230,11 +2230,11 @@ try_guid_from_string(String8 string, Guid *guid_out)
                   data4_hi <= max_U16 &&
                   data4_lo <= 0xffffffffffff)
             {
-                guid_out->data1 = (U32)data1;
-                guid_out->data2 = (U16)data2;
-                guid_out->data3 = (U16)data3;
+                guid_out.data1 = (U32)data1;
+                guid_out.data2 = (U16)data2;
+                guid_out.data3 = (U16)data3;
                 U64 data4 = (data4_hi << 48) | data4_lo;
-                MemoryCopy(&guid_out->data4[0], &data4, sizeof(data4));
+                MemoryCopy(&guid_out.data4[0], &data4, sizeof(data4));
                 is_parsed = 1;
             }
         }
@@ -2486,19 +2486,19 @@ fuzzy_match_find(Arena *arena, String8 needle, String8 haystack)
     Temp scratch = scratch_begin(&arena, 1);
     String8List needles = str8_split(scratch.arena, needle, (U8*)" ", 1, 0);
     result.needle_part_count = needles.node_count;
-    for (String8Node *needle_n = needles.first; needle_n != 0; needle_n = needle_n->next)
+    for (String8Node *needle_n = needles.first; needle_n != 0; needle_n = needle_n.next)
     {
         U64 find_pos = 0;
         for (;find_pos < haystack.size;)
         {
-            find_pos = str8_find_needle(haystack, find_pos, needle_n->string, StringMatchFlag_CaseInsensitive|StringMatchFlag_SlashInsensitive);
+            find_pos = str8_find_needle(haystack, find_pos, needle_n.string, StringMatchFlag_CaseInsensitive|StringMatchFlag_SlashInsensitive);
             B32 is_in_gathered_ranges = 0;
-            for (FuzzyMatchRangeNode *n = result.first; n != 0; n = n->next)
+            for (FuzzyMatchRangeNode *n = result.first; n != 0; n = n.next)
             {
-                if (n->range.min <= find_pos && find_pos < n->range.max)
+                if (n.range.min <= find_pos && find_pos < n.range.max)
                 {
                     is_in_gathered_ranges = 1;
-                    find_pos = n->range.max;
+                    find_pos = n.range.max;
                     break;
                 }
             }
@@ -2509,9 +2509,9 @@ fuzzy_match_find(Arena *arena, String8 needle, String8 haystack)
         }
         if (find_pos < haystack.size)
         {
-            Rng1U64 range = r1u64(find_pos, find_pos+needle_n->string.size);
+            Rng1U64 range = r1u64(find_pos, find_pos+needle_n.string.size);
             FuzzyMatchRangeNode *n = push_array(arena, FuzzyMatchRangeNode, 1);
-            n->range = range;
+            n.range = range;
             SLLQueuePush(result.first, result.last, n);
             result.count += 1;
             result.total_dim += dim_1u64(range);
@@ -2525,15 +2525,15 @@ internal FuzzyMatchRangeList
 fuzzy_match_range_list_copy(Arena *arena, FuzzyMatchRangeList *src)
 {
     FuzzyMatchRangeList dst = {0};
-    for (FuzzyMatchRangeNode *src_n = src->first; src_n != 0; src_n = src_n->next)
+    for (FuzzyMatchRangeNode *src_n = src.first; src_n != 0; src_n = src_n.next)
     {
         FuzzyMatchRangeNode *dst_n = push_array(arena, FuzzyMatchRangeNode, 1);
         SLLQueuePush(dst.first, dst.last, dst_n);
-        dst_n->range = src_n->range;
+        dst_n.range = src_n.range;
     }
-    dst.count = src->count;
-    dst.needle_part_count = src->needle_part_count;
-    dst.total_dim = src->total_dim;
+    dst.count = src.count;
+    dst.needle_part_count = src.needle_part_count;
+    dst.total_dim = src.total_dim;
     return dst;
 }
 
@@ -2543,15 +2543,15 @@ fuzzy_match_range_list_copy(Arena *arena, FuzzyMatchRangeList *src)
 internal void
 str8_serial_begin(Arena *arena, String8List *srl){
     String8Node *node = push_array(arena, String8Node, 1);
-    node->string.str = push_array_no_zero(arena, U8, 0);
-    srl->first = srl->last = node;
-    srl->node_count = 1;
-    srl->total_size = 0;
+    node.string.str = push_array_no_zero(arena, U8, 0);
+    srl.first = srl.last = node;
+    srl.node_count = 1;
+    srl.total_size = 0;
 }
 
 internal String8
 str8_serial_end(Arena *arena, String8List *srl){
-    U64 size = srl->total_size;
+    U64 size = srl.total_size;
     U8 *out = push_array_no_zero(arena, U8, size);
     str8_serial_write_to_dst(srl, out);
     String8 result = str8(out, size);
@@ -2561,11 +2561,11 @@ str8_serial_end(Arena *arena, String8List *srl){
 internal void
 str8_serial_write_to_dst(String8List *srl, void *out){
     U8 *ptr = (U8*)out;
-    for (String8Node *node = srl->first;
+    for (String8Node *node = srl.first;
               node != 0;
-              node = node->next){
-        U64 size = node->string.size;
-        MemoryCopy(ptr, node->string.str, size);
+              node = node.next){
+        U64 size = node.string.size;
+        MemoryCopy(ptr, node.string.str, size);
         ptr += size;
     }
 }
@@ -2574,7 +2574,7 @@ internal U64
 str8_serial_push_align(Arena *arena, String8List *srl, U64 align){
     Assert(IsPow2(align));
     
-    U64 pos = srl->total_size;
+    U64 pos = srl.total_size;
     U64 new_pos = AlignPow2(pos, align);
     U64 size = (new_pos - pos);
     
@@ -2582,10 +2582,10 @@ str8_serial_push_align(Arena *arena, String8List *srl, U64 align){
     {
         U8 *buf = push_array(arena, U8, size);
         
-        String8 *str = &srl->last->string;
-        if (str->str + str->size == buf){
-            srl->last->string.size += size;
-            srl->total_size += size;
+        String8 *str = &srl.last->string;
+        if (str.str + str.size == buf){
+            srl.last->string.size += size;
+            srl.total_size += size;
         }
         else{
             str8_list_push(arena, srl, str8(buf, size));
@@ -2601,10 +2601,10 @@ str8_serial_push_size(Arena *arena, String8List *srl, U64 size)
     if (size != 0)
     {
         U8 *buf = push_array_no_zero(arena, U8, size);
-        String8 *str = &srl->last->string;
-        if (str->str + str->size == buf){
-            srl->last->string.size += size;
-            srl->total_size += size;
+        String8 *str = &srl.last->string;
+        if (str.str + str.size == buf){
+            srl.last->string.size += size;
+            srl.total_size += size;
         }
         else{
             str8_list_push(arena, srl, str8(buf, size));
@@ -2628,8 +2628,8 @@ internal void
 str8_serial_push_data_list(Arena *arena, String8List *srl, String8Node *first){
     for (String8Node *node = first;
               node != 0;
-              node = node->next){
-        str8_serial_push_data(arena, srl, node->string.str, node->string.size);
+              node = node.next){
+        str8_serial_push_data(arena, srl, node.string.str, node.string.size);
     }
 }
 
@@ -2637,10 +2637,10 @@ internal void
 str8_serial_push_u64(Arena *arena, String8List *srl, U64 x){
     U8 *buf = push_array_no_zero(arena, U8, 8);
     MemoryCopy(buf, &x, 8);
-    String8 *str = &srl->last->string;
-    if (str->str + str->size == buf){
-        srl->last->string.size += 8;
-        srl->total_size += 8;
+    String8 *str = &srl.last->string;
+    if (str.str + str.size == buf){
+        srl.last->string.size += 8;
+        srl.total_size += 8;
     }
     else{
         str8_list_push(arena, srl, str8(buf, 8));
@@ -2651,10 +2651,10 @@ internal void
 str8_serial_push_u32(Arena *arena, String8List *srl, U32 x){
     U8 *buf = push_array_no_zero(arena, U8, 4);
     MemoryCopy(buf, &x, 4);
-    String8 *str = &srl->last->string;
-    if (str->str + str->size == buf){
-        srl->last->string.size += 4;
-        srl->total_size += 4;
+    String8 *str = &srl.last->string;
+    if (str.str + str.size == buf){
+        srl.last->string.size += 4;
+        srl.total_size += 4;
     }
     else{
         str8_list_push(arena, srl, str8(buf, 4));
@@ -2731,7 +2731,7 @@ str8_deserial_read_cstr(String8 string, U64 off, String8 *cstr_out)
         U8 *ptr = string.str + off;
         U8 *cap = string.str + string.size;
         *cstr_out = str8_cstring_capped(ptr, cap);
-        cstr_size = (cstr_out->size + 1);
+        cstr_size = (cstr_out.size + 1);
     }
     return cstr_size;
 }
@@ -2754,7 +2754,7 @@ str8_deserial_read_block(String8 string, U64 off, U64 size, String8 *block_out)
 {
     Rng1U64 range = rng_1u64(off, off + size);
     *block_out = str8_substr(string, range);
-    return block_out->size;
+    return block_out.size;
 }
 
 ////////////////////////////////

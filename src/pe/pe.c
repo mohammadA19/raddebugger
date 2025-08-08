@@ -511,14 +511,14 @@ pe_bin_info_from_data(Arena *arena, String8 data)
                 PE_OptionalHeader32 *pe_optional = str8_deserial_get_raw_ptr(data, optional_range.min, sizeof(*pe_optional));
                 if (pe_optional)
                 {
-                    image_base               = pe_optional->image_base;
-                    entry_point              = pe_optional->entry_point_va;
-                    subsystem                = pe_optional->subsystem;
-                    check_sum                = &pe_optional->check_sum;
-                    virt_section_align       = pe_optional->section_alignment;
-                    file_section_align       = pe_optional->file_alignment;
+                    image_base               = pe_optional.image_base;
+                    entry_point              = pe_optional.entry_point_va;
+                    subsystem                = pe_optional.subsystem;
+                    check_sum                = &pe_optional.check_sum;
+                    virt_section_align       = pe_optional.section_alignment;
+                    file_section_align       = pe_optional.file_alignment;
                     reported_data_dir_offset = sizeof(*pe_optional);
-                    reported_data_dir_count  = pe_optional->data_dir_count;
+                    reported_data_dir_count  = pe_optional.data_dir_count;
                 }
                 else
                 {
@@ -530,14 +530,14 @@ pe_bin_info_from_data(Arena *arena, String8 data)
                 PE_OptionalHeader32Plus *pe_optional = str8_deserial_get_raw_ptr(data, optional_range.min, sizeof(*pe_optional));
                 if (pe_optional)
                 {
-                    image_base               = pe_optional->image_base;
-                    entry_point              = pe_optional->entry_point_va;
-                    subsystem                = pe_optional->subsystem;
-                    check_sum                = &pe_optional->check_sum;
-                    virt_section_align       = pe_optional->section_alignment;
-                    file_section_align       = pe_optional->file_alignment;
+                    image_base               = pe_optional.image_base;
+                    entry_point              = pe_optional.entry_point_va;
+                    subsystem                = pe_optional.subsystem;
+                    check_sum                = &pe_optional.check_sum;
+                    virt_section_align       = pe_optional.section_alignment;
+                    file_section_align       = pe_optional.file_alignment;
                     reported_data_dir_offset = sizeof(*pe_optional);
-                    reported_data_dir_count  = pe_optional->data_dir_count;
+                    reported_data_dir_count  = pe_optional.data_dir_count;
                 }
                 else
                 {
@@ -672,49 +672,49 @@ pe_debug_info_list_from_raw_debug_dir(Arena *arena, String8 raw_image, String8 r
         PE_DebugInfoNode *n = push_array(arena, PE_DebugInfoNode, 1);
         SLLQueuePush(result.first, result.last, n);
         result.count += 1;
-        n->v.header = *entry;
-        switch (entry->type)
+        n.v.header = *entry;
+        switch (entry.type)
         {
             default:{}break;
             case PE_DebugDirectoryType_CODEVIEW:
             {
-                str8_deserial_read_struct(raw_image, entry->foff, &n->v.cv_magic);
-                switch (n->v.cv_magic)
+                str8_deserial_read_struct(raw_image, entry.foff, &n.v.cv_magic);
+                switch (n.v.cv_magic)
                 {
                     case PE_CODEVIEW_PDB20_MAGIC:
                     {
                         PE_CvHeaderPDB20 cv = {0};
-                        U64 cv_read_size = str8_deserial_read_struct(raw_image, entry->foff, &cv);
+                        U64 cv_read_size = str8_deserial_read_struct(raw_image, entry.foff, &cv);
                         if (cv_read_size == sizeof(cv))
                         {
                             String8 path = {0};
-                            str8_deserial_read_cstr(raw_image, entry->foff+sizeof(cv), &path);
-                            n->v.cv_pdb20_header = cv;
-                            n->v.path = path;
+                            str8_deserial_read_cstr(raw_image, entry.foff+sizeof(cv), &path);
+                            n.v.cv_pdb20_header = cv;
+                            n.v.path = path;
                         }
                     }break;
                     case PE_CODEVIEW_PDB70_MAGIC:
                     {
                         PE_CvHeaderPDB70 cv = {0};
-                        U64 cv_read_size = str8_deserial_read_struct(raw_image, entry->foff, &cv);
+                        U64 cv_read_size = str8_deserial_read_struct(raw_image, entry.foff, &cv);
                         if (cv_read_size == sizeof(cv))
                         {
                             String8 path = {0};
-                            str8_deserial_read_cstr(raw_image, entry->foff+sizeof(cv), &path);
-                            n->v.cv_pdb70_header = cv;
-                            n->v.path = path;
+                            str8_deserial_read_cstr(raw_image, entry.foff+sizeof(cv), &path);
+                            n.v.cv_pdb70_header = cv;
+                            n.v.path = path;
                         }
                     }break;
                     case PE_CODEVIEW_RDI_MAGIC:
                     {
                         PE_CvHeaderRDI cv = {0};
-                        U64 cv_read_size = str8_deserial_read_struct(raw_image, entry->foff, &cv);
+                        U64 cv_read_size = str8_deserial_read_struct(raw_image, entry.foff, &cv);
                         if (cv_read_size == sizeof(cv))
                         {
                             String8 path = {0};
-                            str8_deserial_read_cstr(raw_image, entry->foff+sizeof(cv), &path);
-                            n->v.cv_rdi_header = cv;
-                            n->v.path = path;
+                            str8_deserial_read_cstr(raw_image, entry.foff+sizeof(cv), &path);
+                            n.v.cv_rdi_header = cv;
+                            n.v.path = path;
                         }
                     }break;
                     default:{}break;
@@ -749,11 +749,11 @@ pe_pdata_off_from_voff__binary_search_x8664(String8 raw_pdata, U64 voff)
             {
                 U64            mid   = (min + opl)/2;
                 PE_IntelPdata *pdata = pdata_array + mid;
-                if (voff < pdata->voff_first)
+                if (voff < pdata.voff_first)
                 {
                     opl = mid;
                 }
-                else if (pdata->voff_first < voff)
+                else if (pdata.voff_first < voff)
                 {
                     min = mid;
                 }
@@ -772,7 +772,7 @@ pe_pdata_off_from_voff__binary_search_x8664(String8 raw_pdata, U64 voff)
             // if we are in range fill result
             {
                 PE_IntelPdata *pdata = pdata_array + index;
-                if (pdata->voff_first <= voff && voff < pdata->voff_one_past_last)
+                if (pdata.voff_first <= voff && voff < pdata.voff_one_past_last)
                 {
                     result = index*sizeof(PE_IntelPdata);
                 }
@@ -787,16 +787,16 @@ internal U64
 pe_foff_from_voff(String8 data, PE_BinInfo *bin, U64 voff)
 {
     U64                 foff              = 0;
-    String8             raw_section_table = str8_substr(data, bin->section_table_range);
+    String8             raw_section_table = str8_substr(data, bin.section_table_range);
     COFF_SectionHeader *section_table     = (COFF_SectionHeader *)raw_section_table.str;
-    for (U64 sect_idx = 0; sect_idx < bin->section_count; sect_idx += 1)
+    for (U64 sect_idx = 0; sect_idx < bin.section_count; sect_idx += 1)
     {
         COFF_SectionHeader *sect = &section_table[sect_idx];
-        if (sect->voff <= voff && voff < sect->voff + sect->vsize)
+        if (sect.voff <= voff && voff < sect.voff + sect.vsize)
         {
-            if (!(sect->flags & COFF_SectionFlag_CntUninitializedData))
+            if (!(sect.flags & COFF_SectionFlag_CntUninitializedData))
             {
-                foff = sect->foff + (voff - sect->voff);
+                foff = sect.foff + (voff - sect.voff);
             }
             break;
         }
@@ -830,12 +830,12 @@ pe_base_reloc_block_list_from_data(Arena *arena, String8 raw_base_relocs)
         U64 entries_size = block_size - (sizeof(block_size) + sizeof(page_virt_off));
         
         // rjf: fill block
-        PE_BaseRelocBlock *block = &node->v;
-        block->page_virt_off     = page_virt_off;
-        block->entry_count       = entries_size / sizeof(U16);
-        block->entries           = push_array(arena, U16, block->entry_count);
-        U64 entry_read_size = str8_deserial_read_array(raw_base_relocs, off, &block->entries[0], block->entry_count);
-        Assert(entry_read_size == sizeof(block->entries[0]) * block->entry_count);
+        PE_BaseRelocBlock *block = &node.v;
+        block.page_virt_off     = page_virt_off;
+        block.entry_count       = entries_size / sizeof(U16);
+        block.entries           = push_array(arena, U16, block.entry_count);
+        U64 entry_read_size = str8_deserial_read_array(raw_base_relocs, off, &block.entries[0], block.entry_count);
+        Assert(entry_read_size == sizeof(block.entries[0]) * block.entry_count);
         
         off += entry_read_size;
     }
@@ -845,29 +845,29 @@ pe_base_reloc_block_list_from_data(Arena *arena, String8 raw_base_relocs)
 internal Rng1U64
 pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo *bin, U64 base_vaddr)
 {
-    U64 result_addr = (bin->tls_header.index_address - bin->image_base);
+    U64 result_addr = (bin.tls_header.index_address - bin.image_base);
     U64 result_size = sizeof(U32);
-    if (bin->arch != Arch_Null)
+    if (bin.arch != Arch_Null)
     {
-        U64 addr_size = bit_size_from_arch(bin->arch)/8;
+        U64 addr_size = bit_size_from_arch(bin.arch)/8;
         Temp scratch = scratch_begin(0, 0);
-        String8 raw_relocs = str8_substr(data, bin->data_dir_franges[PE_DataDirectoryIndex_BASE_RELOC]);
+        String8 raw_relocs = str8_substr(data, bin.data_dir_franges[PE_DataDirectoryIndex_BASE_RELOC]);
         PE_BaseRelocBlockList relocs = pe_base_reloc_block_list_from_data(scratch.arena, raw_relocs);
-        for (PE_BaseRelocBlockNode *n = relocs.first; n != 0; n = n->next)
+        for (PE_BaseRelocBlockNode *n = relocs.first; n != 0; n = n.next)
         {
-            PE_BaseRelocBlock *block = &n->v;
-            for (U64 ientry = 0; ientry < block->entry_count;)
+            PE_BaseRelocBlock *block = &n.v;
+            for (U64 ientry = 0; ientry < block.entry_count;)
             {
-                U32 reloc = block->entries[ientry];
+                U32 reloc = block.entries[ientry];
                 U16 kind = PE_BaseRelocKindFromEntry(reloc);
                 U16 offset = PE_BaseRelocOffsetFromEntry(reloc);
-                U64 apply_to_voff = block->page_virt_off + offset;
+                U64 apply_to_voff = block.page_virt_off + offset;
                 U64 apply_to_foff = pe_foff_from_voff(data, bin, apply_to_voff);
                 U64 apply_to      = 0;
                 str8_deserial_read(data, apply_to_foff, &apply_to, addr_size, 1);
-                if (apply_to == bin->tls_header.index_address)
+                if (apply_to == bin.tls_header.index_address)
                 {
-                    U64 base_diff = base_vaddr-bin->image_base;
+                    U64 base_diff = base_vaddr-bin.image_base;
                     switch (kind)
                     {
                         default:
@@ -894,14 +894,14 @@ pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo *bin, U64 base_vaddr)
                         }break;
                         case PE_BaseRelocKind_HIGHADJ:
                         {
-                            if (ientry + 1 >= block->entry_count)
+                            if (ientry + 1 >= block.entry_count)
                             {
                                 // NOTE(rjf): malformed relocation, expected two 16-bit entries
                                 break;
                             }
                             
                             // rjf: relocate high bits and adjust sign bit on lower half.
-                            U16 adj_offset = PE_BaseRelocOffsetFromEntry(block->entries[ientry + 1]);
+                            U16 adj_offset = PE_BaseRelocOffsetFromEntry(block.entries[ientry + 1]);
                             result_addr  = (apply_to & max_U16) << 16;
                             result_addr += adj_offset;
                             result_addr += (base_diff & max_U32);
@@ -1025,8 +1025,8 @@ pe_parsed_imports_from_data(Arena              *arena,
             if (is_ordinal) {
                 // fill out ordinal import
                 PE_ParsedImport *imp = imports+imp_idx;
-                imp->type      = PE_ParsedImport_Ordinal;
-                imp->u.ordinal = Extract16(raw_entry, 0);
+                imp.type      = PE_ParsedImport_Ordinal;
+                imp.u.ordinal = Extract16(raw_entry, 0);
             } else {
                 // map voff -> foff
                 U64 off = coff_foff_from_voff(sections, section_count, raw_entry);
@@ -1039,9 +1039,9 @@ pe_parsed_imports_from_data(Arena              *arena,
                 
                 // fill out named import
                 PE_ParsedImport *imp = imports+imp_idx;
-                imp->type          = PE_ParsedImport_Name;
-                imp->u.name.hint   = hint;
-                imp->u.name.string = name;
+                imp.type          = PE_ParsedImport_Name;
+                imp.u.name.hint   = hint;
+                imp.u.name.string = name;
             }
         }
     } else {
@@ -1057,8 +1057,8 @@ pe_parsed_imports_from_data(Arena              *arena,
             if (is_ordinal) {
                 // fill out ordinal import
                 PE_ParsedImport *imp = imports+imp_idx;
-                imp->type      = PE_ParsedImport_Ordinal;
-                imp->u.ordinal = Extract16(raw_entry, 0);
+                imp.type      = PE_ParsedImport_Ordinal;
+                imp.u.ordinal = Extract16(raw_entry, 0);
             } else {
                 // map voff -> foff
                 U64 off = coff_foff_from_voff(sections, section_count, raw_entry);
@@ -1071,9 +1071,9 @@ pe_parsed_imports_from_data(Arena              *arena,
                 
                 // fill out named import
                 PE_ParsedImport *imp = imports+imp_idx;
-                imp->type          = PE_ParsedImport_Name;
-                imp->u.name.hint   = hint;
-                imp->u.name.string = name;
+                imp.type          = PE_ParsedImport_Name;
+                imp.u.name.hint   = hint;
+                imp.u.name.string = name;
             }
         }
     }
@@ -1148,7 +1148,7 @@ pe_static_imports_from_data(Arena              *arena,
         PE_ImportEntry *raw_dll = str8_deserial_get_raw_ptr(raw_data, dir_file_range.min+(dll_idx*sizeof(*raw_dll)), sizeof(*raw_dll));
         
         // get name
-        U64     name_off = coff_foff_from_voff(sections, section_count, raw_dll->name_voff);
+        U64     name_off = coff_foff_from_voff(sections, section_count, raw_dll.name_voff);
         String8 name     = str8_zero();
         str8_deserial_read_cstr(raw_data, name_off, &name);
         
@@ -1158,17 +1158,17 @@ pe_static_imports_from_data(Arena              *arena,
                                                                                                                                 section_count,
                                                                                                                                 sections,
                                                                                                                                 raw_data,
-                                                                                                                                raw_dll->lookup_table_voff,
+                                                                                                                                raw_dll.lookup_table_voff,
                                                                                                                                 &import_count);
         
         PE_ParsedStaticDLLImport *dll  = dlls+dll_idx;
-        dll->name                      = name;
-        dll->import_address_table_voff = raw_dll->import_addr_table_voff;
-        dll->import_name_table_voff    = raw_dll->lookup_table_voff;
-        dll->time_stamp                = raw_dll->time_stamp;
-        dll->forwarder_chain           = raw_dll->forwarder_chain;
-        dll->import_count              = import_count;
-        dll->imports                   = imports;
+        dll.name                      = name;
+        dll.import_address_table_voff = raw_dll.import_addr_table_voff;
+        dll.import_name_table_voff    = raw_dll.lookup_table_voff;
+        dll.time_stamp                = raw_dll.time_stamp;
+        dll.forwarder_chain           = raw_dll.forwarder_chain;
+        dll.import_count              = import_count;
+        dll.imports                   = imports;
     }
     
     PE_ParsedStaticImportTable imptab = {0};
@@ -1201,7 +1201,7 @@ pe_delay_imports_from_data(Arena              *arena,
     for (U64 dll_idx = 0; dll_idx < dll_count; ++dll_idx) {
         PE_DelayedImportEntry *raw_dll = str8_deserial_get_raw_ptr(raw_data, dir_file_range.min+(dll_idx*sizeof(*raw_dll)), sizeof(*raw_dll));
         
-        U64     name_off = coff_foff_from_voff(sections, section_count, raw_dll->name_voff);
+        U64     name_off = coff_foff_from_voff(sections, section_count, raw_dll.name_voff);
         String8 name     = str8_zero();
         str8_deserial_read_cstr(raw_data, name_off, &name);
         
@@ -1212,14 +1212,14 @@ pe_delay_imports_from_data(Arena              *arena,
                                                                                                                                 section_count,
                                                                                                                                 sections,
                                                                                                                                 raw_data,
-                                                                                                                                raw_dll->name_table_voff,
+                                                                                                                                raw_dll.name_table_voff,
                                                                                                                                 &import_count);
         
 
         // parse bound table
         Rng1U64 bound_table_range = {0};
-        if (raw_dll->bound_table_voff) {
-            U64 bound_table_foff = coff_foff_from_voff(sections, section_count, raw_dll->bound_table_voff);
+        if (raw_dll.bound_table_voff) {
+            U64 bound_table_foff = coff_foff_from_voff(sections, section_count, raw_dll.bound_table_voff);
             bound_table_range = rng_1u64(bound_table_foff, raw_data.size);
         }
         U64  bound_table_count;
@@ -1227,8 +1227,8 @@ pe_delay_imports_from_data(Arena              *arena,
 
         // parse unload table
         Rng1U64 unload_table_range = {0};
-        if (raw_dll->unload_table_voff) {
-            U64 unload_table_foff  = coff_foff_from_voff(sections, section_count, raw_dll->unload_table_voff);
+        if (raw_dll.unload_table_voff) {
+            U64 unload_table_foff  = coff_foff_from_voff(sections, section_count, raw_dll.unload_table_voff);
             unload_table_range = rng_1u64(unload_table_foff, raw_data.size);
         }
         U64 unload_table_count;
@@ -1236,20 +1236,20 @@ pe_delay_imports_from_data(Arena              *arena,
 
         // fill out DLL
         PE_ParsedDelayDLLImport *dll = dlls+dll_idx;
-        dll->attributes              = raw_dll->attributes;
-        dll->name                    = name;
-        dll->module_handle_voff      = raw_dll->module_handle_voff;
-        dll->iat_voff                = raw_dll->iat_voff;
-        dll->name_table_voff         = raw_dll->name_table_voff;
-        dll->bound_table_voff        = raw_dll->bound_table_voff;
-        dll->unload_table_voff       = raw_dll->unload_table_voff;
-        dll->time_stamp              = raw_dll->time_stamp;
-        dll->bound_table_count       = bound_table_count;
-        dll->bound_table             = bound_table;
-        dll->unload_table_count      = unload_table_count;
-        dll->unload_table            = unload_table;
-        dll->import_count            = import_count;
-        dll->imports                 = imports;
+        dll.attributes              = raw_dll.attributes;
+        dll.name                    = name;
+        dll.module_handle_voff      = raw_dll.module_handle_voff;
+        dll.iat_voff                = raw_dll.iat_voff;
+        dll.name_table_voff         = raw_dll.name_table_voff;
+        dll.bound_table_voff        = raw_dll.bound_table_voff;
+        dll.unload_table_voff       = raw_dll.unload_table_voff;
+        dll.time_stamp              = raw_dll.time_stamp;
+        dll.bound_table_count       = bound_table_count;
+        dll.bound_table             = bound_table;
+        dll.unload_table_count      = unload_table_count;
+        dll.unload_table            = unload_table;
+        dll.import_count            = import_count;
+        dll.imports                 = imports;
     }
     
     // fill out result
@@ -1270,33 +1270,33 @@ pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sectio
     String8               raw_dir = str8_substr(raw_data, dir_file_range);
     PE_ExportTableHeader *header  = str8_deserial_get_raw_ptr(raw_dir, 0, sizeof(*header));
     if (header) {
-        U64 name_table_off    = coff_foff_from_voff(sections, section_count, header->name_pointer_table_voff);
-        U64 export_table_off  = coff_foff_from_voff(sections, section_count, header->export_address_table_voff);
-        U64 ordinal_table_off = coff_foff_from_voff(sections, section_count, header->ordinal_table_voff);
+        U64 name_table_off    = coff_foff_from_voff(sections, section_count, header.name_pointer_table_voff);
+        U64 export_table_off  = coff_foff_from_voff(sections, section_count, header.export_address_table_voff);
+        U64 ordinal_table_off = coff_foff_from_voff(sections, section_count, header.ordinal_table_voff);
         
-        U32 *name_table    = str8_deserial_get_raw_ptr(raw_data, name_table_off,    sizeof(*name_table   )*header->name_pointer_table_count);
-        U32 *export_table  = str8_deserial_get_raw_ptr(raw_data, export_table_off,  sizeof(*export_table )*header->export_address_table_count);
-        U16 *ordinal_table = str8_deserial_get_raw_ptr(raw_data, ordinal_table_off, sizeof(*ordinal_table)*header->name_pointer_table_count);
+        U32 *name_table    = str8_deserial_get_raw_ptr(raw_data, name_table_off,    sizeof(*name_table   )*header.name_pointer_table_count);
+        U32 *export_table  = str8_deserial_get_raw_ptr(raw_data, export_table_off,  sizeof(*export_table )*header.export_address_table_count);
+        U16 *ordinal_table = str8_deserial_get_raw_ptr(raw_data, ordinal_table_off, sizeof(*ordinal_table)*header.name_pointer_table_count);
         
         if (name_table && export_table && ordinal_table) {
             // Scan export address table to get accruate count of ordinals. 
             // We can't rely on "name_pointer_table_count" becuase it is possible
             // to define an export without a name through NONAME attribute in DEF file
             U64 ordinal_count = 0;
-            for (U64 voff_idx = 0; voff_idx < header->export_address_table_count; ++voff_idx) {
+            for (U64 voff_idx = 0; voff_idx < header.export_address_table_count; ++voff_idx) {
                 if (export_table[voff_idx] != 0) {
                     ++ordinal_count;
                 }
             }
             
-            U64  ordinal_max     = header->export_address_table_count;
+            U64  ordinal_max     = header.export_address_table_count;
             B32 *is_ordinal_used = push_array(scratch.arena, B32, ordinal_max);
             
             PE_ParsedExport *exports  = push_array(arena, PE_ParsedExport, ordinal_count);
             PE_ParsedExport *curr_exp = exports;
             
             // parse exports with name
-            for (U64 i = 0; i < header->name_pointer_table_count; ++i) {
+            for (U64 i = 0; i < header.name_pointer_table_count; ++i) {
                 // get name
                 U32     name_voff = name_table[i];
                 U64     name_foff = coff_foff_from_voff(sections, section_count, name_voff);
@@ -1311,12 +1311,12 @@ pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sectio
                 
                 // get voff
                 U32 export_voff = 0;
-                if (ordinal_nb < header->export_address_table_count) {
+                if (ordinal_nb < header.export_address_table_count) {
                     export_voff = export_table[ordinal_nb];
                 }
                 
                 // make ordinal
-                U16 ordinal = header->ordinal_base + ordinal_nb;
+                U16 ordinal = header.ordinal_base + ordinal_nb;
                 
                 String8 forwarder = str8_zero();
                 {
@@ -1327,32 +1327,32 @@ pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sectio
                     }
                 }
                 
-                curr_exp->forwarder = forwarder;
-                curr_exp->name      = name;
-                curr_exp->voff      = export_voff;
-                curr_exp->ordinal   = ordinal;
+                curr_exp.forwarder = forwarder;
+                curr_exp.name      = name;
+                curr_exp.voff      = export_voff;
+                curr_exp.ordinal   = ordinal;
                 ++curr_exp;
             }
             
             // parse exports with ordinal
-            for (U64 ordinal_nb = 0; ordinal_nb < header->export_address_table_count; ++ordinal_nb) {
+            for (U64 ordinal_nb = 0; ordinal_nb < header.export_address_table_count; ++ordinal_nb) {
                 U32 voff            = export_table[ordinal_nb];
                 B32 is_voff_taken   = (voff != 0);
                 B32 is_ordinal_free = !is_ordinal_used[ordinal_nb];
                 if (is_voff_taken && is_ordinal_free) {
-                    curr_exp->name      = str8_zero();
-                    curr_exp->voff      = voff;
-                    curr_exp->ordinal   = header->ordinal_base;
+                    curr_exp.name      = str8_zero();
+                    curr_exp.voff      = voff;
+                    curr_exp.ordinal   = header.ordinal_base;
                     ++curr_exp;
                 }
             }
             
             // fill out result
-            exptab.flags          = header->flags;
-            exptab.time_stamp     = header->time_stamp;
-            exptab.major_ver      = header->major_ver;
-            exptab.minor_ver      = header->minor_ver;
-            exptab.ordinal_base   = header->ordinal_base;
+            exptab.flags          = header.flags;
+            exptab.time_stamp     = header.time_stamp;
+            exptab.major_ver      = header.major_ver;
+            exptab.minor_ver      = header.minor_ver;
+            exptab.ordinal_base   = header.ordinal_base;
             exptab.export_count   = ordinal_count;
             exptab.exports        = exports;
         }
@@ -1449,24 +1449,24 @@ pe_resource_dir_push_dir_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID
     switch (id.type) {
         default:
         case COFF_ResourceIDType_Null: break;
-        case COFF_ResourceIDType_String: list = &dir->named_list; break;
-        case COFF_ResourceIDType_Number: list = &dir->id_list;    break;
+        case COFF_ResourceIDType_String: list = &dir.named_list; break;
+        case COFF_ResourceIDType_Number: list = &dir.id_list;    break;
     }
     
     PE_ResourceNode *res_node = push_array(arena, PE_ResourceNode, 1);
-    SLLQueuePush(list->first, list->last, res_node);
-    list->count += 1;
+    SLLQueuePush(list.first, list.last, res_node);
+    list.count += 1;
     
     PE_ResourceDir *sub_dir = push_array(arena, PE_ResourceDir, 1);
-    sub_dir->characteristics = characteristics;
-    sub_dir->time_stamp      = time_stamp;
-    sub_dir->major_version   = major_version;
-    sub_dir->minor_version   = minor_version;
+    sub_dir.characteristics = characteristics;
+    sub_dir.time_stamp      = time_stamp;
+    sub_dir.major_version   = major_version;
+    sub_dir.minor_version   = minor_version;
     
-    PE_Resource *res = &res_node->data;
-    res->id    = id;
-    res->kind  = PE_ResDataKind_DIR;
-    res->u.dir = sub_dir;
+    PE_Resource *res = &res_node.data;
+    res.id    = id;
+    res.kind  = PE_ResDataKind_DIR;
+    res.u.dir = sub_dir;
     
     return res_node;
 }
@@ -1478,22 +1478,22 @@ pe_resource_dir_push_entry_node(Arena *arena, PE_ResourceDir *dir, COFF_Resource
     switch (id.type) {
         default:
         case COFF_ResourceIDType_Null: break;
-        case COFF_ResourceIDType_String: list = &dir->named_list; break;
-        case COFF_ResourceIDType_Number: list = &dir->id_list;    break;
+        case COFF_ResourceIDType_String: list = &dir.named_list; break;
+        case COFF_ResourceIDType_Number: list = &dir.id_list;    break;
     }
     
     PE_ResourceNode *res_node = push_array(arena, PE_ResourceNode, 1);
-    SLLQueuePush(list->first, list->last, res_node);
-    list->count += 1;
+    SLLQueuePush(list.first, list.last, res_node);
+    list.count += 1;
     
-    PE_Resource *res = &res_node->data;
-    res->id   = id;
-    res->kind = PE_ResDataKind_COFF_RESOURCE;
-    res->u.coff_res.type         = type;
-    res->u.coff_res.data_version = data_version;
-    res->u.coff_res.version      = version;
-    res->u.coff_res.memory_flags = memory_flags;
-    res->u.coff_res.data         = data;
+    PE_Resource *res = &res_node.data;
+    res.id   = id;
+    res.kind = PE_ResDataKind_COFF_RESOURCE;
+    res.u.coff_res.type         = type;
+    res.u.coff_res.data_version = data_version;
+    res.u.coff_res.version      = version;
+    res.u.coff_res.memory_flags = memory_flags;
+    res.u.coff_res.data         = data;
     
     return res_node;
 }
@@ -1502,21 +1502,21 @@ internal PE_Resource *
 pe_resource_dir_push_entry(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, String8 data)
 {
     PE_ResourceNode *node = pe_resource_dir_push_entry_node(arena, dir, id, type, data_version, version, memory_flags, data);
-    return &node->data;
+    return &node.data;
 }
 
 internal PE_Resource *
 pe_resource_dir_push_dir(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version)
 {
     PE_ResourceNode *dir_node = pe_resource_dir_push_dir_node(arena, dir, id, characteristics, time_stamp, major_version, minor_version); 
-    return &dir_node->data;
+    return &dir_node.data;
 }
 
 internal PE_ResourceNode *
 pe_resource_dir_search_node(PE_ResourceDir *dir, COFF_ResourceID id)
 {
-    for (PE_ResourceNode *i = dir->id_list.first; i != 0; i = i->next) {
-        if (coff_resource_id_compar(&i->data.id, &id) == 0) {
+    for (PE_ResourceNode *i = dir.id_list.first; i != 0; i = i.next) {
+        if (coff_resource_id_compar(&i.data.id, &id) == 0) {
             return i;
         }
     }
@@ -1527,7 +1527,7 @@ internal PE_Resource *
 pe_resource_dir_search(PE_ResourceDir *dir, COFF_ResourceID id)
 {
     PE_ResourceNode *node = pe_resource_dir_search_node(dir, id);
-    return node ? &node->data : NULL;
+    return node ? &node.data : NULL;
 }
 
 internal PE_ResourceArray
@@ -1535,9 +1535,9 @@ pe_resource_list_to_array(Arena *arena, PE_ResourceList *list)
 {
     PE_ResourceArray result;
     result.count = 0;
-    result.v = push_array(arena, PE_Resource, list->count);
-    for (PE_ResourceNode *n = list->first; n != NULL; n = n->next) {
-        result.v[result.count++] = n->data;
+    result.v = push_array(arena, PE_Resource, list.count);
+    for (PE_ResourceNode *n = list.first; n != NULL; n = n.next) {
+        result.v[result.count++] = n.data;
     }
     return result;
 }
@@ -1550,20 +1550,20 @@ pe_resource_dir_push_res_file(Arena *arena, PE_ResourceDir *root_dir, String8 re
     COFF_ParsedResourceList list = coff_resource_list_from_data(arena, res_data);
     
     // move resources to directories based on type
-    for (COFF_ParsedResourceNode *res_node = list.first; res_node != NULL; res_node = res_node->next) {
-        COFF_ParsedResource *res = &res_node->data;
+    for (COFF_ParsedResourceNode *res_node = list.first; res_node != NULL; res_node = res_node.next) {
+        COFF_ParsedResource *res = &res_node.data;
         
         // search existing directories
-        PE_Resource *dir_res = pe_resource_dir_search(root_dir, res->type);
+        PE_Resource *dir_res = pe_resource_dir_search(root_dir, res.type);
         
         // create new directory
         if (dir_res == NULL) {
-            dir_res = pe_resource_dir_push_dir(arena, root_dir, res->type, 0, 0, 0, 0);
+            dir_res = pe_resource_dir_push_dir(arena, root_dir, res.type, 0, 0, 0, 0);
         }
-        PE_ResourceDir *dir = dir_res->u.dir;
+        PE_ResourceDir *dir = dir_res.u.dir;
         
         // check for name collisions
-        PE_Resource *check_res = pe_resource_dir_search(dir, res->name);
+        PE_Resource *check_res = pe_resource_dir_search(dir, res.name);
         if (check_res != NULL) {
             // TODO: how do we handle name conflicts?
             Assert(!"name collision");
@@ -1571,11 +1571,11 @@ pe_resource_dir_push_res_file(Arena *arena, PE_ResourceDir *root_dir, String8 re
         }
         
         // push entry
-        PE_Resource *sub_dir_res = pe_resource_dir_push_dir(arena, dir, res->name, 0, 0, 0, 0);
+        PE_Resource *sub_dir_res = pe_resource_dir_push_dir(arena, dir, res.name, 0, 0, 0, 0);
         COFF_ResourceID id;
         id.type = COFF_ResourceIDType_Number;
-        id.u.number = res->language_id;
-        pe_resource_dir_push_entry(arena, sub_dir_res->u.dir, id, res->type, res->data_version, res->version, res->memory_flags, res->data);
+        id.u.number = res.language_id;
+        pe_resource_dir_push_entry(arena, sub_dir_res.u.dir, id, res.type, res.data_version, res.version, res.memory_flags, res.data);
     }
 }
 
@@ -1600,35 +1600,35 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
     struct stack_s *stack = bottom_frame;
     
     while (stack) {
-        if (stack->table == NULL) {
+        if (stack.table == NULL) {
             COFF_ResourceDirTable coff_table = {0};
-            str8_deserial_read_struct(data, stack->table_offset, &coff_table);
+            str8_deserial_read_struct(data, stack.table_offset, &coff_table);
             
             PE_ResourceDir *table = push_array(arena, PE_ResourceDir, 1);
-            table->characteristics = coff_table.characteristics;
-            table->time_stamp = coff_table.time_stamp;
-            table->major_version = coff_table.major_version;
-            table->minor_version = coff_table.minor_version;
+            table.characteristics = coff_table.characteristics;
+            table.time_stamp = coff_table.time_stamp;
+            table.major_version = coff_table.major_version;
+            table.minor_version = coff_table.minor_version;
             
-            stack->table = table;
-            stack->name_base_offset = stack->table_offset + sizeof(COFF_ResourceDirTable);
-            stack->id_base_offset = stack->table_offset + sizeof(COFF_ResourceDirTable) + sizeof(COFF_ResourceDirEntry) * coff_table.name_entry_count;
-            stack->name_entry_count = coff_table.name_entry_count;
-            stack->id_entry_count = coff_table.id_entry_count;
+            stack.table = table;
+            stack.name_base_offset = stack.table_offset + sizeof(COFF_ResourceDirTable);
+            stack.id_base_offset = stack.table_offset + sizeof(COFF_ResourceDirTable) + sizeof(COFF_ResourceDirEntry) * coff_table.name_entry_count;
+            stack.name_entry_count = coff_table.name_entry_count;
+            stack.id_entry_count = coff_table.id_entry_count;
             
-            if (stack->directory_ptr) {
-                *stack->directory_ptr = table;
+            if (stack.directory_ptr) {
+                *stack.directory_ptr = table;
             }
         }
         
-        while (stack->name_ientry < stack->name_entry_count) {
-            U64 entry_offset = stack->name_base_offset + stack->name_ientry * sizeof(COFF_ResourceDirEntry);
-            ++stack->name_ientry;
+        while (stack.name_ientry < stack.name_entry_count) {
+            U64 entry_offset = stack.name_base_offset + stack.name_ientry * sizeof(COFF_ResourceDirEntry);
+            ++stack.name_ientry;
             
             PE_ResourceNode *named_node = push_array(arena, PE_ResourceNode, 1);
-            SLLQueuePush(stack->table->named_list.first, stack->table->named_list.last, named_node);
-            ++stack->table->named_list.count;
-            PE_Resource *entry = &named_node->data;
+            SLLQueuePush(stack.table.named_list.first, stack.table.named_list.last, named_node);
+            ++stack.table.named_list.count;
+            PE_Resource *entry = &named_node.data;
             
             COFF_ResourceDirEntry coff_entry = {0};
             str8_deserial_read_struct(data, entry_offset, &coff_entry);
@@ -1644,47 +1644,47 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
             
             B32 is_dir = !!(coff_entry.id.data_entry_offset & COFF_Resource_SubDirFlag);
             
-            entry->id.type = COFF_ResourceIDType_String;
-            entry->id.u.string = str8_from_16(arena, name16);
-            entry->kind = is_dir ? PE_ResDataKind_DIR : PE_ResDataKind_COFF_LEAF;
+            entry.id.type = COFF_ResourceIDType_String;
+            entry.id.u.string = str8_from_16(arena, name16);
+            entry.kind = is_dir ? PE_ResDataKind_DIR : PE_ResDataKind_COFF_LEAF;
             
             if (is_dir) {
                 struct stack_s *frame = push_array(scratch.arena, struct stack_s, 1);
-                frame->table_offset = coff_entry.id.sub_dir_offset & ~COFF_Resource_SubDirFlag;
-                frame->directory_ptr = &entry->u.dir;
+                frame.table_offset = coff_entry.id.sub_dir_offset & ~COFF_Resource_SubDirFlag;
+                frame.directory_ptr = &entry.u.dir;
                 SLLStackPush(stack, frame);
                 goto yeild;
             } else {
-                str8_deserial_read_struct(data, coff_entry.id.data_entry_offset, &entry->u.leaf);
+                str8_deserial_read_struct(data, coff_entry.id.data_entry_offset, &entry.u.leaf);
             }
         }
         
-        while (stack->id_ientry < stack->id_entry_count) {
-            U64 entry_offset = stack->id_base_offset + stack->id_ientry * sizeof(COFF_ResourceDirEntry);
-            ++stack->id_ientry;
+        while (stack.id_ientry < stack.id_entry_count) {
+            U64 entry_offset = stack.id_base_offset + stack.id_ientry * sizeof(COFF_ResourceDirEntry);
+            ++stack.id_ientry;
             
             PE_ResourceNode *id_node = push_array(arena, PE_ResourceNode, 1);
-            SLLQueuePush(stack->table->id_list.first, stack->table->id_list.last, id_node);
-            ++stack->table->id_list.count;
-            PE_Resource *entry = &id_node->data;
+            SLLQueuePush(stack.table.id_list.first, stack.table.id_list.last, id_node);
+            ++stack.table.id_list.count;
+            PE_Resource *entry = &id_node.data;
             
             COFF_ResourceDirEntry coff_entry = {0};
             str8_deserial_read_struct(data, entry_offset, &coff_entry);
             
             B32 is_dir = !!(coff_entry.id.sub_dir_offset & COFF_Resource_SubDirFlag);
             
-            entry->id.type = COFF_ResourceIDType_Number;
-            entry->id.u.number = coff_entry.name.id;
-            entry->kind = is_dir ? PE_ResDataKind_DIR : PE_ResDataKind_COFF_LEAF;
+            entry.id.type = COFF_ResourceIDType_Number;
+            entry.id.u.number = coff_entry.name.id;
+            entry.kind = is_dir ? PE_ResDataKind_DIR : PE_ResDataKind_COFF_LEAF;
             
             if (is_dir) {
                 struct stack_s *frame = push_array(scratch.arena, struct stack_s, 1);
-                frame->table_offset = coff_entry.id.sub_dir_offset & ~COFF_Resource_SubDirFlag;
-                frame->directory_ptr = &entry->u.dir;
+                frame.table_offset = coff_entry.id.sub_dir_offset & ~COFF_Resource_SubDirFlag;
+                frame.directory_ptr = &entry.u.dir;
                 SLLStackPush(stack, frame);
                 goto yeild;
             } else {
-                str8_deserial_read_struct(data, coff_entry.id.sub_dir_offset, &entry->u.leaf);
+                str8_deserial_read_struct(data, coff_entry.id.sub_dir_offset, &entry.u.leaf);
             }
         }
         
@@ -1694,7 +1694,7 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
     }
     
     scratch_end(scratch);
-    return bottom_frame->table;
+    return bottom_frame.table;
 }
 
 internal String8
@@ -1798,7 +1798,7 @@ internal int
 pe_pdata_is_before_x86_64(void *raw_a, void *raw_b)
 {
     PE_IntelPdata *a = raw_a, *b = raw_b;
-    return a->voff_first < b->voff_first;
+    return a.voff_first < b.voff_first;
 }
 
 internal void

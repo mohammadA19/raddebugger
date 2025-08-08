@@ -33,31 +33,31 @@ e_token_zero(void)
 internal void
 e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_Token *token)
 {
-    E_TokenChunkNode *node = list->last;
-    if (node == 0 || node->count >= node->cap)
+    E_TokenChunkNode *node = list.last;
+    if (node == 0 || node.count >= node.cap)
     {
         node = push_array(arena, E_TokenChunkNode, 1);
-        SLLQueuePush(list->first, list->last, node);
-        node->cap = chunk_size;
-        node->v = push_array_no_zero(arena, E_Token, node->cap);
-        list->node_count += 1;
+        SLLQueuePush(list.first, list.last, node);
+        node.cap = chunk_size;
+        node.v = push_array_no_zero(arena, E_Token, node.cap);
+        list.node_count += 1;
     }
-    MemoryCopyStruct(&node->v[node->count], token);
-    node->count += 1;
-    list->total_count += 1;
+    MemoryCopyStruct(&node.v[node.count], token);
+    node.count += 1;
+    list.total_count += 1;
 }
 
 internal E_TokenArray
 e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list)
 {
     E_TokenArray array = {0};
-    array.count = list->total_count;
+    array.count = list.total_count;
     array.v = push_array_no_zero(arena, E_Token, array.count);
     U64 idx = 0;
-    for (E_TokenChunkNode *node = list->first; node != 0; node = node->next)
+    for (E_TokenChunkNode *node = list.first; node != 0; node = node.next)
     {
-        MemoryCopy(array.v+idx, node->v, sizeof(E_Token)*node->count);
-        idx += node->count;
+        MemoryCopy(array.v+idx, node.v, sizeof(E_Token)*node.count);
+        idx += node.count;
     }
     return array;
 }
@@ -303,35 +303,35 @@ internal E_Expr *
 e_push_expr(Arena *arena, E_ExprKind kind, Rng1U64 range)
 {
     E_Expr *e = push_array(arena, E_Expr, 1);
-    e->first = e->last = e->next = e->prev = e->ref = &e_expr_nil;
-    e->range = range;
-    e->kind = kind;
+    e.first = e.last = e.next = e.prev = e.ref = &e_expr_nil;
+    e.range = range;
+    e.kind = kind;
     return e;
 }
 
 internal void
 e_expr_insert_child(E_Expr *parent, E_Expr *prev, E_Expr *child)
 {
-    DLLInsert_NPZ(&e_expr_nil, parent->first, parent->last, prev, child, next, prev);
+    DLLInsert_NPZ(&e_expr_nil, parent.first, parent.last, prev, child, next, prev);
 }
 
 internal void
 e_expr_push_child(E_Expr *parent, E_Expr *child)
 {
-    DLLPushBack_NPZ(&e_expr_nil, parent->first, parent->last, child, next, prev);
+    DLLPushBack_NPZ(&e_expr_nil, parent.first, parent.last, child, next, prev);
 }
 
 internal void
 e_expr_remove_child(E_Expr *parent, E_Expr *child)
 {
-    DLLRemove_NPZ(&e_expr_nil, parent->first, parent->last, child, next, prev);
+    DLLRemove_NPZ(&e_expr_nil, parent.first, parent.last, child, next, prev);
 }
 
 internal E_Expr *
 e_expr_ref(Arena *arena, E_Expr *ref)
 {
-    E_Expr *expr = e_push_expr(arena, E_ExprKind_Ref, ref->range);
-    expr->ref = ref;
+    E_Expr *expr = e_push_expr(arena, E_ExprKind_Ref, ref.range);
+    expr.ref = ref;
     return expr;
 }
 
@@ -354,54 +354,54 @@ e_expr_copy(Arena *arena, E_Expr *src)
         Task start_task = {0, &e_expr_nil, src};
         Task *first_task = &start_task;
         Task *last_task = first_task;
-        for (Task *t = first_task; t != 0; t = t->next)
+        for (Task *t = first_task; t != 0; t = t.next)
         {
-            E_Expr *dst = e_push_expr(arena, t->src->kind, t->src->range);
-            dst->mode      = t->src->mode;
-            dst->space     = t->src->space;
-            dst->type_key  = t->src->type_key;
-            dst->value     = t->src->value;
-            dst->string    = push_str8_copy(arena, t->src->string);
-            dst->bytecode  = push_str8_copy(arena, t->src->bytecode);
-            dst->qualifier = push_str8_copy(arena, t->src->qualifier);
-            if (t->dst_parent == &e_expr_nil)
+            E_Expr *dst = e_push_expr(arena, t.src->kind, t.src->range);
+            dst.mode      = t.src->mode;
+            dst.space     = t.src->space;
+            dst.type_key  = t.src->type_key;
+            dst.value     = t.src->value;
+            dst.string    = push_str8_copy(arena, t.src->string);
+            dst.bytecode  = push_str8_copy(arena, t.src->bytecode);
+            dst.qualifier = push_str8_copy(arena, t.src->qualifier);
+            if (t.dst_parent == &e_expr_nil)
             {
                 result = dst;
             }
-            else if (t->is_ref)
+            else if (t.is_ref)
             {
-                t->dst_parent->ref = dst;
+                t.dst_parent->ref = dst;
             }
-            else if (t->is_sib)
+            else if (t.is_sib)
             {
-                t->dst_parent->next = dst;
-                dst->prev = t->dst_parent;
+                t.dst_parent->next = dst;
+                dst.prev = t.dst_parent;
             }
             else
             {
-                e_expr_push_child(t->dst_parent, dst);
+                e_expr_push_child(t.dst_parent, dst);
             }
-            if (t->src->next != &e_expr_nil)
+            if (t.src->next != &e_expr_nil)
             {
                 Task *task = push_array(scratch.arena, Task, 1);
-                task->dst_parent = dst;
-                task->src = t->src->next;
-                task->is_sib = 1;
+                task.dst_parent = dst;
+                task.src = t.src->next;
+                task.is_sib = 1;
                 SLLQueuePush(first_task, last_task, task);
             }
-            if (t->src->ref != &e_expr_nil)
+            if (t.src->ref != &e_expr_nil)
             {
                 Task *task = push_array(scratch.arena, Task, 1);
-                task->dst_parent = dst;
-                task->src = t->src->ref;
-                task->is_ref = 1;
+                task.dst_parent = dst;
+                task.src = t.src->ref;
+                task.is_ref = 1;
                 SLLQueuePush(first_task, last_task, task);
             }
-            for (E_Expr *src_child = t->src->first; src_child != &e_expr_nil; src_child = src_child->next)
+            for (E_Expr *src_child = t.src->first; src_child != &e_expr_nil; src_child = src_child.next)
             {
                 Task *task = push_array(scratch.arena, Task, 1);
-                task->dst_parent = dst;
-                task->src = src_child;
+                task.dst_parent = dst;
+                task.src = src_child;
                 SLLQueuePush(first_task, last_task, task);
             }
         }
@@ -414,9 +414,9 @@ internal void
 e_expr_list_push(Arena *arena, E_ExprList *list, E_Expr *expr)
 {
     E_ExprNode *n = push_array(arena, E_ExprNode, 1);
-    n->v = expr;
-    SLLQueuePush(list->first, list->last, n);
-    list->count +=1;
+    n.v = expr;
+    SLLQueuePush(list.first, list.last, n);
+    list.count +=1;
 }
 
 ////////////////////////////////
@@ -425,23 +425,23 @@ e_expr_list_push(Arena *arena, E_ExprList *list, E_Expr *expr)
 internal void
 e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_string, String8List *out)
 {
-    switch (expr->kind)
+    switch (expr.kind)
     {
         default:
         {
-            E_OpInfo *op_info = &e_expr_kind_op_info_table[expr->kind];
+            E_OpInfo *op_info = &e_expr_kind_op_info_table[expr.kind];
             String8 seps[] =
             {
-                op_info->pre,
-                op_info->sep,
-                op_info->post,
+                op_info.pre,
+                op_info.sep,
+                op_info.post,
             };
             U64 sep_idx = 0;
-            for (E_Expr *child = expr->first;; child = child->next)
+            for (E_Expr *child = expr.first;; child = child.next)
             {
                 if (sep_idx == ArrayCount(seps)-1 && child != &e_expr_nil)
                 {
-                    str8_list_push(arena, out, op_info->chain);
+                    str8_list_push(arena, out, op_info.chain);
                 }
                 else
                 {
@@ -452,8 +452,8 @@ e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_strin
                 {
                     break;
                 }
-                E_OpInfo *child_op_info = &e_expr_kind_op_info_table[child->kind];
-                B32 need_parens = (child_op_info->precedence > op_info->precedence);
+                E_OpInfo *child_op_info = &e_expr_kind_op_info_table[child.kind];
+                B32 need_parens = (child_op_info.precedence > op_info.precedence);
                 if (need_parens)
                 {
                     str8_list_pushf(arena, out, "(");
@@ -468,47 +468,47 @@ e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_strin
         case E_ExprKind_LeafBytecode:
         case E_ExprKind_LeafIdentifier:
         {
-            if (str8_match(expr->string, str8_lit("$"), 0) && parent_expr_string.size != 0)
+            if (str8_match(expr.string, str8_lit("$"), 0) && parent_expr_string.size != 0)
             {
                 str8_list_push(arena, out, parent_expr_string);
             }
             else
             {
-                str8_list_push(arena, out, expr->string);
+                str8_list_push(arena, out, expr.string);
             }
         }break;
         case E_ExprKind_LeafStringLiteral:
         {
-            str8_list_pushf(arena, out, "\"%S\"", expr->string);
+            str8_list_pushf(arena, out, "\"%S\"", expr.string);
         }break;
         case E_ExprKind_LeafU64:
         {
-            str8_list_pushf(arena, out, "%I64u", expr->value.u64);
+            str8_list_pushf(arena, out, "%I64u", expr.value.u64);
         }break;
         case E_ExprKind_LeafOffset:
         {
-            str8_list_pushf(arena, out, "0x%I64x", expr->value.u64);
+            str8_list_pushf(arena, out, "0x%I64x", expr.value.u64);
         }break;
         case E_ExprKind_LeafFilePath:
         {
-            str8_list_pushf(arena, out, "file:\"%S\"", escaped_from_raw_str8(arena, expr->string));
+            str8_list_pushf(arena, out, "file:\"%S\"", escaped_from_raw_str8(arena, expr.string));
         }break;
         case E_ExprKind_LeafF64:
         {
-            str8_list_pushf(arena, out, "%f", expr->value.f64);
+            str8_list_pushf(arena, out, "%f", expr.value.f64);
         }break;
         case E_ExprKind_LeafF32:
         {
-            str8_list_pushf(arena, out, "%f", expr->value.f32);
+            str8_list_pushf(arena, out, "%f", expr.value.f32);
         }break;
         case E_ExprKind_TypeIdent:
         {
-            String8 type_string = e_type_string_from_key(arena, expr->type_key);
+            String8 type_string = e_type_string_from_key(arena, expr.type_key);
             str8_list_push(arena, out, type_string);
         }break;
         case E_ExprKind_Ref:
         {
-            e_append_strings_from_expr(arena, expr->ref, parent_expr_string, out);
+            e_append_strings_from_expr(arena, expr.ref, parent_expr_string, out);
         }break;
     }
 }
@@ -585,14 +585,14 @@ e_leaf_type_key_from_name(String8 name)
     E_TypeKey key = e_leaf_builtin_type_key_from_name(name);
     if (!e_type_key_match(e_type_key_zero(), key))
     {
-        DI_Match match = di_match_from_name(e_base_ctx->dbgi_match_store, name, 0);
+        DI_Match match = di_match_from_name(e_base_ctx.dbgi_match_store, name, 0);
         if (match.section == RDI_SectionKind_TypeNodes)
         {
-            E_Module *module = &e_base_ctx->modules[match.dbgi_idx];
-            RDI_Parsed *rdi = module->rdi;
+            E_Module *module = &e_base_ctx.modules[match.dbgi_idx];
+            RDI_Parsed *rdi = module.rdi;
             U32 type_idx = match.idx;
             RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, type_idx);
-            key = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), type_idx, (U32)match.dbgi_idx);
+            key = e_type_key_ext(e_type_kind_from_rdi(type_node.kind), type_idx, (U32)match.dbgi_idx);
         }
     }
     return key;
@@ -602,29 +602,29 @@ internal E_TypeKey
 e_type_key_from_expr(E_Expr *expr)
 {
     E_TypeKey result = zero_struct;
-    E_ExprKind kind = expr->kind;
+    E_ExprKind kind = expr.kind;
     switch (kind)
     {
         // TODO(rjf): do we support E_ExprKind_Func here?
         default:{}break;
         case E_ExprKind_LeafIdentifier:
         {
-            result = e_leaf_type_key_from_name(expr->string);
+            result = e_leaf_type_key_from_name(expr.string);
         }break;
         case E_ExprKind_TypeIdent:
         {
-            result = expr->type_key;
+            result = expr.type_key;
         }break;
         case E_ExprKind_Ptr:
         {
-            E_TypeKey direct_type_key = e_type_key_from_expr(expr->first);
-            result = e_type_key_cons_ptr(e_base_ctx->primary_module->arch, direct_type_key, 1, 0);
+            E_TypeKey direct_type_key = e_type_key_from_expr(expr.first);
+            result = e_type_key_cons_ptr(e_base_ctx.primary_module->arch, direct_type_key, 1, 0);
         }break;
         case E_ExprKind_Array:
         {
-            E_Expr *child_expr = expr->first;
+            E_Expr *child_expr = expr.first;
             E_TypeKey direct_type_key = e_type_key_from_expr(child_expr);
-            result = e_type_key_cons_array(direct_type_key, expr->value.u64, 0);
+            result = e_type_key_cons_array(direct_type_key, expr.value.u64, 0);
         }break;
     }
     return result;
@@ -686,7 +686,7 @@ e_push_type_parse_from_text_tokens(Arena *arena, String8 text, E_TokenArray toke
                 
                 // rjf: construct leaf type
                 parse.expr = e_push_expr(arena, E_ExprKind_TypeIdent, token.range);
-                parse.expr->type_key = type_key;
+                parse.expr.type_key = type_key;
             }
         }
     }
@@ -801,9 +801,9 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
                 for EachNonZeroEnumVal(E_ExprKind, k)
                 {
                     E_OpInfo *op_info = &e_expr_kind_op_info_table[k];
-                    if (op_info->kind == E_OpKind_UnaryPrefix && str8_match(str8_skip_chop_whitespace(op_info->pre), token_string, 0))
+                    if (op_info.kind == E_OpKind_UnaryPrefix && str8_match(str8_skip_chop_whitespace(op_info.pre), token_string, 0))
                     {
-                        prefix_unary_precedence = op_info->precedence;
+                        prefix_unary_precedence = op_info.precedence;
                         prefix_unary_kind = k;
                         break;
                     }
@@ -870,9 +870,9 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
                 if (prefix_unary_precedence != 0)
                 {
                     PrefixUnaryTask *prefix_unary_task = push_array(scratch.arena, PrefixUnaryTask, 1);
-                    prefix_unary_task->kind = prefix_unary_kind;
-                    prefix_unary_task->range = token.range;
-                    prefix_unary_task->cast_type_expr = prefix_unary_cast_expr;
+                    prefix_unary_task.kind = prefix_unary_kind;
+                    prefix_unary_task.range = token.range;
+                    prefix_unary_task.cast_type_expr = prefix_unary_cast_expr;
                     SLLQueuePush(first_prefix_unary, last_prefix_unary, prefix_unary_task);
                     it += 1;
                 }
@@ -969,7 +969,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
                         else
                         {
                             E_Expr *type = e_push_expr(arena, E_ExprKind_TypeIdent, token.range);
-                            type->type_key = e_type_key_cons_ptr(e_base_ctx->primary_module->arch, e_type_key_basic(E_TypeKind_U64), 1, 0);
+                            type.type_key = e_type_key_cons_ptr(e_base_ctx.primary_module->arch, e_type_key_basic(E_TypeKind_U64), 1, 0);
                             E_Expr *casted = atom;
                             E_Expr *cast = e_push_expr(arena, E_ExprKind_Cast, token.range);
                             e_expr_push_child(cast, type);
@@ -1024,7 +1024,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
                             identifier_string = str8_skip(str8_chop(identifier_string, 1), 1);
                         }
                         atom = e_push_expr(arena, E_ExprKind_LeafIdentifier, token.range);
-                        atom->string = identifier_string;
+                        atom.string = identifier_string;
                         it += 1;
                         got_new_atom = 1;
                     }
@@ -1048,7 +1048,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
                             U64 val = 0;
                             try_u64_from_str8_c_rules(token_string, &val);
                             atom = e_push_expr(arena, E_ExprKind_LeafU64, token.range);
-                            atom->value.u64 = val;
+                            atom.value.u64 = val;
                         }
                         
                         // rjf: presence of . => double or float
@@ -1061,14 +1061,14 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
                             if (f_pos < token_string.size)
                             {
                                 atom = e_push_expr(arena, E_ExprKind_LeafF32, token.range);
-                                atom->value.f32 = val;
+                                atom.value.f32 = val;
                             }
                             
                             // rjf: no f => f64
                             else
                             {
                                 atom = e_push_expr(arena, E_ExprKind_LeafF64, token.range);
-                                atom->value.f64 = val;
+                                atom.value.f64 = val;
                             }
                         }
                         
@@ -1092,7 +1092,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
                             String8 char_literal_raw = raw_from_escaped_str8(scratch.arena, char_literal_escaped);
                             U8 char_val = char_literal_raw.size > 0 ? char_literal_raw.str[0] : 0;
                             atom = e_push_expr(arena, E_ExprKind_LeafU64, token.range);
-                            atom->value.u64 = (U64)char_val;
+                            atom.value.u64 = (U64)char_val;
                             got_new_atom = 1;
                         }
                         else
@@ -1116,7 +1116,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
                         String8 string_value_escaped = str8_chop(str8_skip(token_string, 1), 1);
                         String8 string_value_raw = raw_from_escaped_str8(arena, string_value_escaped);
                         atom = e_push_expr(arena, E_ExprKind_LeafFilePath, token.range);
-                        atom->string = string_value_raw;
+                        atom.string = string_value_raw;
                         it += 1;
                         got_new_atom = 1;
                     }
@@ -1134,7 +1134,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
                         String8 string_value_escaped = str8_chop(str8_skip(token_string, 1), 1);
                         String8 string_value_raw = raw_from_escaped_str8(arena, string_value_escaped);
                         atom = e_push_expr(arena, E_ExprKind_LeafStringLiteral, token.range);
-                        atom->string = string_value_raw;
+                        atom.string = string_value_raw;
                         it += 1;
                         got_new_atom = 1;
                     }
@@ -1145,7 +1145,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
                 //
                 if (atom != &e_expr_nil && resolution_qualifier.size != 0)
                 {
-                    atom->qualifier = resolution_qualifier;
+                    atom.qualifier = resolution_qualifier;
                 }
                 
                 ////////////////////////
@@ -1154,9 +1154,9 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
                 if (got_new_atom && maybe_cast != &e_expr_nil)
                 {
                     PrefixUnaryTask *prefix_unary_task = push_array(scratch.arena, PrefixUnaryTask, 1);
-                    prefix_unary_task->kind = E_ExprKind_Cast;
-                    prefix_unary_task->range = maybe_cast->range;
-                    prefix_unary_task->cast_type_expr = maybe_cast;
+                    prefix_unary_task.kind = E_ExprKind_Cast;
+                    prefix_unary_task.range = maybe_cast.range;
+                    prefix_unary_task.cast_type_expr = maybe_cast;
                     SLLQueuePush(first_prefix_unary, last_prefix_unary, prefix_unary_task);
                 }
             }
@@ -1199,7 +1199,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
                 if (member_name_is_good)
                 {
                     rhs = e_push_expr(arena, E_ExprKind_LeafIdentifier, member_name_maybe.range);
-                    rhs->string = member_name_maybe_string;
+                    rhs.string = member_name_maybe_string;
                 }
                 atom = e_push_expr(arena, E_ExprKind_MemberAccess, token.range);
                 e_expr_push_child(atom, lhs);
@@ -1270,18 +1270,18 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
                 // rjf: parse all argument expressions
                 E_Expr *callee_expr = atom;
                 E_Expr *call_expr = e_push_expr(arena, E_ExprKind_Call, token.range);
-                call_expr->string = callee_expr->string;
+                call_expr.string = callee_expr.string;
                 e_expr_push_child(call_expr, callee_expr);
                 E_Parse args_parse = e_push_parse_from_string_tokens__prec(arena, text, e_token_array_make_first_opl(it, it_opl), e_max_precedence, max_U64);
                 e_msg_list_concat_in_place(&result.msgs, &args_parse.msgs);
                 it = args_parse.last_token;
                 if (args_parse.expr != &e_expr_nil)
                 {
-                    call_expr->last->next = args_parse.expr;
-                    args_parse.expr->prev = call_expr->last;
-                    for (E_Expr *arg = args_parse.expr; arg != &e_expr_nil; arg = arg->next)
+                    call_expr.last->next = args_parse.expr;
+                    args_parse.expr.prev = call_expr.last;
+                    for (E_Expr *arg = args_parse.expr; arg != &e_expr_nil; arg = arg.next)
                     {
-                        call_expr->last = arg;
+                        call_expr.last = arg;
                     }
                 }
                 atom = call_expr;
@@ -1293,11 +1293,11 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
                     if (close_paren_maybe.kind != E_TokenKind_Symbol || !str8_match(close_paren_maybe_string, str8_lit(")"), 0))
                     {
                         e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token.range, "Unclosed `(`.");
-                        call_expr->range.max = text.size;
+                        call_expr.range.max = text.size;
                     }
                     else
                     {
-                        call_expr->range = union_1u64(call_expr->range, close_paren_maybe.range);
+                        call_expr.range = union_1u64(call_expr.range, close_paren_maybe.range);
                         it += 1;
                     }
                 }
@@ -1317,26 +1317,26 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         {
             for (PrefixUnaryTask *prefix_unary = first_prefix_unary;
                     prefix_unary != 0;
-                    prefix_unary = prefix_unary->next)
+                    prefix_unary = prefix_unary.next)
             {
-                if (prefix_unary->kind == E_ExprKind_Cast)
+                if (prefix_unary.kind == E_ExprKind_Cast)
                 {
                     E_Expr *rhs = atom;
-                    atom = e_push_expr(arena, prefix_unary->kind, prefix_unary->range);
-                    e_expr_push_child(atom, prefix_unary->cast_type_expr);
+                    atom = e_push_expr(arena, prefix_unary.kind, prefix_unary.range);
+                    e_expr_push_child(atom, prefix_unary.cast_type_expr);
                     e_expr_push_child(atom, rhs);
                 }
                 else
                 {
                     E_Expr *rhs = atom;
-                    atom = e_push_expr(arena, prefix_unary->kind, prefix_unary->range);
+                    atom = e_push_expr(arena, prefix_unary.kind, prefix_unary.range);
                     e_expr_push_child(atom, rhs);
                 }
             }
         }
         else if (first_prefix_unary != 0)
         {
-            e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, last_prefix_unary->range, "Missing expression.");
+            e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, last_prefix_unary.range, "Missing expression.");
         }
         
         ////////////////////////////
@@ -1356,9 +1356,9 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
                 for EachNonZeroEnumVal(E_ExprKind, k)
                 {
                     E_OpInfo *op_info = &e_expr_kind_op_info_table[k];
-                    if (op_info->kind == E_OpKind_Binary && str8_match(str8_skip_chop_whitespace(op_info->sep), token_string, 0))
+                    if (op_info.kind == E_OpKind_Binary && str8_match(str8_skip_chop_whitespace(op_info.sep), token_string, 0))
                     {
-                        binary_precedence = op_info->precedence;
+                        binary_precedence = op_info.precedence;
                         binary_kind = k;
                         break;
                     }

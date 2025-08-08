@@ -93,7 +93,7 @@ rd_proc_name_from_voff(RDI_Parsed *rdi, U64 voff)
   RDI_Scope     *scope = rdi_scope_from_voff(rdi, voff);
   RDI_Procedure *proc  = rdi_procedure_from_scope(rdi, scope);
   String8        name  = {0};
-  name.str = rdi_string_from_idx(rdi, proc->name_string_idx, &name.size);
+  name.str = rdi_string_from_idx(rdi, proc.name_string_idx, &name.size);
   return name;
 }
 
@@ -103,8 +103,8 @@ rd_format_proc_line(Arena *arena, RDI_Parsed *rdi, U64 voff)
   RDI_Scope     *scope = rdi_scope_from_voff(rdi, voff);
   RDI_Procedure *proc  = rdi_procedure_from_scope(rdi, scope);
   String8        name  = {0};
-  name.str = rdi_string_from_idx(rdi, proc->name_string_idx, &name.size);
-  U64            rel   = voff - scope->voff_range_first;
+  name.str = rdi_string_from_idx(rdi, proc.name_string_idx, &name.size);
+  U64            rel   = voff - scope.voff_range_first;
   String8 result = str8_zero();
   if (name.size) {
     if (rel) {
@@ -123,9 +123,9 @@ rd_path_from_file_path_node_idx(Arena *arena, RDI_Parsed *rdi, U32 file_path_nod
   String8List parts = {0};
   for (RDI_FilePathNode *fpn = rdi_element_from_name_idx(rdi, FilePathNodes, file_path_node_idx);
       fpn != rdi_element_from_name_idx(rdi, FilePathNodes, 0);
-      fpn = rdi_element_from_name_idx(rdi, FilePathNodes, fpn->parent_path_node)) {
+      fpn = rdi_element_from_name_idx(rdi, FilePathNodes, fpn.parent_path_node)) {
     String8 p;
-    p.str = rdi_string_from_idx(rdi, fpn->name_string_idx, &p.size);
+    p.str = rdi_string_from_idx(rdi, fpn.name_string_idx, &p.size);
     str8_list_push_front(scratch.arena, &parts, p);
   }
   String8 path = str8_path_list_join_by_style(arena, &parts, style);
@@ -138,7 +138,7 @@ rd_line_from_voff(Arena *arena, RDI_Parsed *rdi, U64 voff, PathStyle path_style)
 {
   RDI_Line        line      = rdi_line_from_voff(rdi, voff);
   RDI_SourceFile *src_file  = rdi_source_file_from_line(rdi, &line);
-  String8         file_path = rd_path_from_file_path_node_idx(arena, rdi, src_file->file_path_node_idx, path_style);
+  String8         file_path = rd_path_from_file_path_node_idx(arena, rdi, src_file.file_path_node_idx, path_style);
   
   RD_Line result   = {0};
   result.file_path = file_path;
@@ -293,7 +293,7 @@ rd_range_min_is_before(void *raw_a, void *raw_b)
 {
   Rng1U64 *a = raw_a;
   Rng1U64 *b = raw_b;
-  return a->min < b->min;
+  return a.min < b.min;
 }
 
 internal U64
@@ -354,12 +354,12 @@ rd_section_markers_from_rdi(Arena *arena, RDI_Parsed *rdi)
       name.str = rdi_name_from_procedure(rdi, proc, &name.size);
       
       RD_MarkerNode *n = push_array(scratch.arena, RD_MarkerNode, 1);
-      n->v.off         = proc_voff_lo - sect_range.min;
-      n->v.string      = name;
+      n.v.off         = proc_voff_lo - sect_range.min;
+      n.v.string      = name;
       
       RD_MarkerList *list = &markers[sect_idx];
-      SLLQueuePush(list->first, list->last, n);
-      ++list->count;
+      SLLQueuePush(list.first, list.last, n);
+      ++list.count;
     }
   }
   
@@ -368,8 +368,8 @@ rd_section_markers_from_rdi(Arena *arena, RDI_Parsed *rdi)
   for (U64 i = 0; i < sect_count; ++i) {
     result[i].count = 0;
     result[i].v     = push_array(arena, RD_Marker, markers[i].count);
-    for (RD_MarkerNode *n = markers[i].first; n != 0; n = n->next) {
-      result[i].v[result[i].count++] = n->v;
+    for (RD_MarkerNode *n = markers[i].first; n != 0; n = n.next) {
+      result[i].v[result[i].count++] = n.v;
     }
   }
   
@@ -392,24 +392,24 @@ rd_section_markers_from_coff_symbol_table(Arena *arena, String8 string_table, U6
   for (U64 symbol_idx = 0; symbol_idx < symbols.count; ++symbol_idx) {
     COFF_Symbol32 *symbol = &symbols.v[symbol_idx];
     
-    COFF_SymbolValueInterpType interp = coff_interp_symbol(symbol->section_number, symbol->value, symbol->storage_class);
+    COFF_SymbolValueInterpType interp = coff_interp_symbol(symbol.section_number, symbol.value, symbol.storage_class);
     B32 is_marker = interp == COFF_SymbolValueInterp_Regular &&
-      symbol->aux_symbol_count == 0 &&
-    (symbol->storage_class == COFF_SymStorageClass_External || symbol->storage_class == COFF_SymStorageClass_Static);
+      symbol.aux_symbol_count == 0 &&
+    (symbol.storage_class == COFF_SymStorageClass_External || symbol.storage_class == COFF_SymStorageClass_Static);
     
     if (is_marker) {
-      String8 name = coff_read_symbol_name(string_table, &symbol->name);
+      String8 name = coff_read_symbol_name(string_table, &symbol.name);
       
       RD_MarkerNode *n = push_array(scratch.arena, RD_MarkerNode, 1);
-      n->v.off         = symbol->value;
-      n->v.string      = name;
+      n.v.off         = symbol.value;
+      n.v.string      = name;
       
-      RD_MarkerList *list = &markers[symbol->section_number];
-      SLLQueuePush(list->first, list->last, n);
-      ++list->count;
+      RD_MarkerList *list = &markers[symbol.section_number];
+      SLLQueuePush(list.first, list.last, n);
+      ++list.count;
     }
     
-    symbol_idx += symbol->aux_symbol_count;
+    symbol_idx += symbol.aux_symbol_count;
   }
   
   // lists -> arrays
@@ -417,8 +417,8 @@ rd_section_markers_from_coff_symbol_table(Arena *arena, String8 string_table, U6
   for (U64 i = 0; i < section_count; ++i) {
     result[i].count = 0;
     result[i].v     = push_array(arena, RD_Marker, markers[i].count);
-    for (RD_MarkerNode *n = markers[i].first; n != 0; n = n->next) {
-      result[i].v[result[i].count++] = n->v;
+    for (RD_MarkerNode *n = markers[i].first; n != 0; n = n.next) {
+      result[i].v[result[i].count++] = n.v;
     }
   }
   
@@ -497,12 +497,12 @@ rd_print_disasm(Arena            *arena,
     if (marker_cursor < marker_count) {
       RD_Marker *m = &markers[marker_cursor];
       // NOTE: markers must be sorted on address
-      if (decode_off <= m->off && m->off < decode_off + disasm_result.size) {
-        if (m->off != decode_off) {
-          U64 off = m->off - decode_off;
-          rd_printf("; %S+%#llx", m->string, addr);
+      if (decode_off <= m.off && m.off < decode_off + disasm_result.size) {
+        if (m.off != decode_off) {
+          U64 off = m.off - decode_off;
+          rd_printf("; %S+%#llx", m.string, addr);
         } else {
-          rd_printf("; %S", m->string);
+          rd_printf("; %S", m.string);
         }
         marker_cursor += 1;
       }
@@ -2464,22 +2464,22 @@ cv_format_debug_sections(Arena *arena, String8List *out, String8 indent, String8
     for (U64 i = 0; i < section_count && keep_parsing; ++i) {
       COFF_SectionHeader *header      = &sections[i];
       String8             sect_name   = coff_name_from_section_header(string_table, header);
-      Rng1U64             sect_frange = rng_1u64(header->foff, header->foff+header->fsize);
+      Rng1U64             sect_frange = rng_1u64(header.foff, header.foff+header.fsize);
       String8             raw_sect    = str8_substr(raw_image, sect_frange);
       if (str8_match_lit(".debug$S", sect_name, 0)) {
         Temp scratch = scratch_begin(&arena, 1);
         CV_DebugS debug_s = cv_parse_debug_s(scratch.arena, raw_sect);
         for (String8Node *string_n = debug_s.data_list[CV_C13SubSectionIdxKind_Symbols].first;
-             string_n != 0 && keep_parsing; string_n = string_n->next) {
+             string_n != 0 && keep_parsing; string_n = string_n.next) {
           Temp temp = temp_begin(scratch.arena);
           CV_SymbolList symbol_list = {0};
-          cv_parse_symbol_sub_section(temp.arena, &symbol_list, 0, string_n->string, CV_SymbolAlign);
-          for (CV_SymbolNode *symbol_n = symbol_list.first; symbol_n != 0 && keep_parsing; symbol_n = symbol_n->next) {
-            CV_Symbol symbol = symbol_n->data;
+          cv_parse_symbol_sub_section(temp.arena, &symbol_list, 0, string_n.string, CV_SymbolAlign);
+          for (CV_SymbolNode *symbol_n = symbol_list.first; symbol_n != 0 && keep_parsing; symbol_n = symbol_n.next) {
+            CV_Symbol symbol = symbol_n.data;
             if (symbol.kind == CV_SymKind_COMPILE) {
               if (symbol.data.size >= sizeof(CV_SymCompile)) {
                 CV_SymCompile *comp = str8_deserial_get_raw_ptr(symbol.data, 0, sizeof(*comp));
-                arch = comp->machine;
+                arch = comp.machine;
               } else {
                 rd_printf("not enough bytes to read S_COMPILE");
               }
@@ -2487,7 +2487,7 @@ cv_format_debug_sections(Arena *arena, String8List *out, String8 indent, String8
             } else if (symbol.kind == CV_SymKind_COMPILE2) {
               if (symbol.data.size >= sizeof(CV_SymCompile2)) {
                 CV_SymCompile2 *comp = str8_deserial_get_raw_ptr(symbol.data, 0, sizeof(*comp));
-                arch = comp->machine;
+                arch = comp.machine;
               } else {
                 rd_printf("not enough bytes to read S_COMPILE2");
               }
@@ -2495,7 +2495,7 @@ cv_format_debug_sections(Arena *arena, String8List *out, String8 indent, String8
             } else if (symbol.kind == CV_SymKind_COMPILE3) {
               if (symbol.data.size >= sizeof(CV_SymCompile3)) {
                 CV_SymCompile3 *comp = str8_deserial_get_raw_ptr(symbol.data, 0, sizeof(*comp));
-                arch = comp->machine;
+                arch = comp.machine;
               } else {
                 rd_printf("not enough bytes to read S_COMPILE3");
               }
@@ -2512,7 +2512,7 @@ cv_format_debug_sections(Arena *arena, String8List *out, String8 indent, String8
   for (U64 i = 0; i < section_count; ++i) {
     COFF_SectionHeader *header      = &sections[i];
     String8             sect_name   = coff_name_from_section_header(string_table, header);
-    Rng1U64             sect_frange = rng_1u64(header->foff, header->foff+header->fsize);
+    Rng1U64             sect_frange = rng_1u64(header.foff, header.foff+header.fsize);
     String8             raw_sect    = str8_substr(raw_image, sect_frange);
     if (str8_match_lit(".debug$S", sect_name, 0)) {
       rd_printf("# .debug$S No. %llx", i+1);
@@ -2547,13 +2547,13 @@ internal void
 mscrt_print_eh_handler_type32(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, MSCRT_EhHandlerType32 *handler)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  String8 catch_line     = rd_format_line_from_voff(scratch.arena, rdi, handler->catch_handler_voff, PathStyle_WindowsAbsolute);
-  String8 adjectives_str = mscrt_string_from_eh_adjectives(scratch.arena, handler->adjectives);
-  rd_printf("Adjectives               : %#x (%S)", handler->adjectives, adjectives_str);
-  rd_printf("Descriptor               : %#x",      handler->descriptor_voff);
-  rd_printf("Catch Object Frame Offset: %#x",      handler->catch_obj_frame_offset);
-  rd_printf("Catch Handler            : %#x%s%S",  handler->catch_handler_voff, catch_line.size ? " " : "", catch_line);
-  rd_printf("Delta to FP Handler      : %#x",      handler->fp_distance);
+  String8 catch_line     = rd_format_line_from_voff(scratch.arena, rdi, handler.catch_handler_voff, PathStyle_WindowsAbsolute);
+  String8 adjectives_str = mscrt_string_from_eh_adjectives(scratch.arena, handler.adjectives);
+  rd_printf("Adjectives               : %#x (%S)", handler.adjectives, adjectives_str);
+  rd_printf("Descriptor               : %#x",      handler.descriptor_voff);
+  rd_printf("Catch Object Frame Offset: %#x",      handler.catch_obj_frame_offset);
+  rd_printf("Catch Handler            : %#x%s%S",  handler.catch_handler_voff, catch_line.size ? " " : "", catch_line);
+  rd_printf("Delta to FP Handler      : %#x",      handler.fp_distance);
   scratch_end(scratch);
 }
 
@@ -2583,40 +2583,40 @@ internal void
 pe_print_optional_header32(Arena *arena, String8List *out, String8 indent, PE_OptionalHeader32 *opt_header, PE_DataDirectory *dirs)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  String8 subsystem = pe_string_from_subsystem(opt_header->subsystem);
-  String8 dll_chars = pe_string_from_dll_characteristics(scratch.arena, opt_header->dll_characteristics);
+  String8 subsystem = pe_string_from_subsystem(opt_header.subsystem);
+  String8 dll_chars = pe_string_from_dll_characteristics(scratch.arena, opt_header.dll_characteristics);
   
   rd_printf("# PE Optional Header 32");
   rd_indent();
-  rd_printf("Magic                : %#x",        opt_header->magic);
-  rd_printf("Linker version       : %u.%u",      opt_header->major_linker_version, opt_header->minor_linker_version);
-  rd_printf("Size of code         : %#-8x (%m)", opt_header->sizeof_code, opt_header->sizeof_code);
-  rd_printf("Size of inited data  : %#-8x (%m)", opt_header->sizeof_inited_data, opt_header->sizeof_inited_data);
-  rd_printf("Size of uninited data: %#-8x (%m)", opt_header->sizeof_uninited_data, opt_header->sizeof_uninited_data);
-  rd_printf("Entry point          : %#x",        opt_header->entry_point_va);
-  rd_printf("Code base            : %#x",        opt_header->code_base);
-  rd_printf("Data base            : %#x",        opt_header->data_base);
-  rd_printf("Image base           : %#x",        opt_header->image_base);
-  rd_printf("Section align        : %#x",        opt_header->section_alignment);
-  rd_printf("File align           : %#x",        opt_header->file_alignment);
-  rd_printf("OS version           : %u.%u",      opt_header->major_os_ver, opt_header->minor_os_ver);
-  rd_printf("Image Version        : %u.%u",      opt_header->major_img_ver, opt_header->minor_img_ver);
-  rd_printf("Subsystem version    : %u.%u",      opt_header->major_subsystem_ver, opt_header->minor_subsystem_ver);
-  rd_printf("Win32 version        : %u",         opt_header->win32_version_value);
-  rd_printf("Size of image        : %#x (%m)",   opt_header->sizeof_image, opt_header->sizeof_image);
-  rd_printf("Size of headers      : %#x (%m)",   opt_header->sizeof_headers, opt_header->sizeof_headers);
-  rd_printf("Checksum             : %#x",        opt_header->check_sum);
-  rd_printf("Subsystem            : %#x (%S)",   opt_header->subsystem, subsystem);
-  rd_printf("DLL Characteristics  : %#x (%S)",   opt_header->dll_characteristics, dll_chars);
-  rd_printf("Stack reserve        : %#-8x (%m)", opt_header->sizeof_stack_reserve, opt_header->sizeof_stack_reserve);
-  rd_printf("Stack commit         : %#-8x (%m)", opt_header->sizeof_stack_commit, opt_header->sizeof_stack_commit);
-  rd_printf("Heap reserve         : %#-8x (%m)", opt_header->sizeof_heap_reserve, opt_header->sizeof_heap_reserve);
-  rd_printf("Heap commit          : %#-8x (%m)", opt_header->sizeof_heap_commit, opt_header->sizeof_heap_commit);
-  rd_printf("Loader flags         : %#x",        opt_header->loader_flags);
-  rd_printf("RVA and offset count : %u",         opt_header->data_dir_count);
+  rd_printf("Magic                : %#x",        opt_header.magic);
+  rd_printf("Linker version       : %u.%u",      opt_header.major_linker_version, opt_header.minor_linker_version);
+  rd_printf("Size of code         : %#-8x (%m)", opt_header.sizeof_code, opt_header.sizeof_code);
+  rd_printf("Size of inited data  : %#-8x (%m)", opt_header.sizeof_inited_data, opt_header.sizeof_inited_data);
+  rd_printf("Size of uninited data: %#-8x (%m)", opt_header.sizeof_uninited_data, opt_header.sizeof_uninited_data);
+  rd_printf("Entry point          : %#x",        opt_header.entry_point_va);
+  rd_printf("Code base            : %#x",        opt_header.code_base);
+  rd_printf("Data base            : %#x",        opt_header.data_base);
+  rd_printf("Image base           : %#x",        opt_header.image_base);
+  rd_printf("Section align        : %#x",        opt_header.section_alignment);
+  rd_printf("File align           : %#x",        opt_header.file_alignment);
+  rd_printf("OS version           : %u.%u",      opt_header.major_os_ver, opt_header.minor_os_ver);
+  rd_printf("Image Version        : %u.%u",      opt_header.major_img_ver, opt_header.minor_img_ver);
+  rd_printf("Subsystem version    : %u.%u",      opt_header.major_subsystem_ver, opt_header.minor_subsystem_ver);
+  rd_printf("Win32 version        : %u",         opt_header.win32_version_value);
+  rd_printf("Size of image        : %#x (%m)",   opt_header.sizeof_image, opt_header.sizeof_image);
+  rd_printf("Size of headers      : %#x (%m)",   opt_header.sizeof_headers, opt_header.sizeof_headers);
+  rd_printf("Checksum             : %#x",        opt_header.check_sum);
+  rd_printf("Subsystem            : %#x (%S)",   opt_header.subsystem, subsystem);
+  rd_printf("DLL Characteristics  : %#x (%S)",   opt_header.dll_characteristics, dll_chars);
+  rd_printf("Stack reserve        : %#-8x (%m)", opt_header.sizeof_stack_reserve, opt_header.sizeof_stack_reserve);
+  rd_printf("Stack commit         : %#-8x (%m)", opt_header.sizeof_stack_commit, opt_header.sizeof_stack_commit);
+  rd_printf("Heap reserve         : %#-8x (%m)", opt_header.sizeof_heap_reserve, opt_header.sizeof_heap_reserve);
+  rd_printf("Heap commit          : %#-8x (%m)", opt_header.sizeof_heap_commit, opt_header.sizeof_heap_commit);
+  rd_printf("Loader flags         : %#x",        opt_header.loader_flags);
+  rd_printf("RVA and offset count : %u",         opt_header.data_dir_count);
   rd_newline();
   
-  pe_print_data_directory_ranges(arena, out, indent, opt_header->data_dir_count, dirs);
+  pe_print_data_directory_ranges(arena, out, indent, opt_header.data_dir_count, dirs);
   rd_newline();
   
   rd_unindent();
@@ -2627,39 +2627,39 @@ internal void
 pe_print_optional_header32plus(Arena *arena, String8List *out, String8 indent, PE_OptionalHeader32Plus *opt_header, PE_DataDirectory *dirs)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  String8 subsystem = pe_string_from_subsystem(opt_header->subsystem);
-  String8 dll_chars = pe_string_from_dll_characteristics(scratch.arena, opt_header->dll_characteristics);
+  String8 subsystem = pe_string_from_subsystem(opt_header.subsystem);
+  String8 dll_chars = pe_string_from_dll_characteristics(scratch.arena, opt_header.dll_characteristics);
   
   rd_printf("# PE Optional Header 32+");
   rd_indent();
-  rd_printf("Magic                : %#x",          opt_header->magic);
-  rd_printf("Linker version       : %u.%u",        opt_header->major_linker_version, opt_header->minor_linker_version);
-  rd_printf("Size of code         : %#-8x (%m)",   opt_header->sizeof_code, opt_header->sizeof_code);
-  rd_printf("Size of inited data  : %#-8x (%m)",   opt_header->sizeof_inited_data, opt_header->sizeof_inited_data);
-  rd_printf("Size of uninited data: %#-8x (%m)",   opt_header->sizeof_uninited_data, opt_header->sizeof_uninited_data);
-  rd_printf("Entry point          : %#x",          opt_header->entry_point_va);
-  rd_printf("Code base            : %#x",          opt_header->code_base);
-  rd_printf("Image base           : %#llx",        opt_header->image_base);
-  rd_printf("Section align        : %#x",          opt_header->section_alignment);
-  rd_printf("File align           : %#x",          opt_header->file_alignment);
-  rd_printf("OS version           : %u.%u",        opt_header->major_os_ver, opt_header->minor_os_ver);
-  rd_printf("Image Version        : %u.%u",        opt_header->major_img_ver, opt_header->minor_img_ver);
-  rd_printf("Subsystem version    : %u.%u",        opt_header->major_subsystem_ver, opt_header->minor_subsystem_ver);
-  rd_printf("Win32 version        : %u",           opt_header->win32_version_value);
-  rd_printf("Size of image        : %#x (%m)",     opt_header->sizeof_image, opt_header->sizeof_image);
-  rd_printf("Size of headers      : %#x (%m)",     opt_header->sizeof_headers, opt_header->sizeof_headers);
-  rd_printf("Checksum             : %#x",          opt_header->check_sum);
-  rd_printf("Subsystem            : %#llx (%S)",   opt_header->subsystem, subsystem);
-  rd_printf("DLL Characteristics  : %#llx (%S)",   opt_header->dll_characteristics, dll_chars);
-  rd_printf("Stack reserve        : %#-8llx (%M)", opt_header->sizeof_stack_reserve, opt_header->sizeof_stack_reserve);
-  rd_printf("Stack commit         : %#-8llx (%M)", opt_header->sizeof_stack_commit, opt_header->sizeof_stack_commit);
-  rd_printf("Heap reserve         : %#-8llx (%M)", opt_header->sizeof_heap_reserve, opt_header->sizeof_heap_reserve);
-  rd_printf("Heap commit          : %#-8llx (%M)", opt_header->sizeof_heap_commit, opt_header->sizeof_heap_commit);
-  rd_printf("Loader flags         : %#x",          opt_header->loader_flags);
-  rd_printf("RVA and offset count : %u",           opt_header->data_dir_count);
+  rd_printf("Magic                : %#x",          opt_header.magic);
+  rd_printf("Linker version       : %u.%u",        opt_header.major_linker_version, opt_header.minor_linker_version);
+  rd_printf("Size of code         : %#-8x (%m)",   opt_header.sizeof_code, opt_header.sizeof_code);
+  rd_printf("Size of inited data  : %#-8x (%m)",   opt_header.sizeof_inited_data, opt_header.sizeof_inited_data);
+  rd_printf("Size of uninited data: %#-8x (%m)",   opt_header.sizeof_uninited_data, opt_header.sizeof_uninited_data);
+  rd_printf("Entry point          : %#x",          opt_header.entry_point_va);
+  rd_printf("Code base            : %#x",          opt_header.code_base);
+  rd_printf("Image base           : %#llx",        opt_header.image_base);
+  rd_printf("Section align        : %#x",          opt_header.section_alignment);
+  rd_printf("File align           : %#x",          opt_header.file_alignment);
+  rd_printf("OS version           : %u.%u",        opt_header.major_os_ver, opt_header.minor_os_ver);
+  rd_printf("Image Version        : %u.%u",        opt_header.major_img_ver, opt_header.minor_img_ver);
+  rd_printf("Subsystem version    : %u.%u",        opt_header.major_subsystem_ver, opt_header.minor_subsystem_ver);
+  rd_printf("Win32 version        : %u",           opt_header.win32_version_value);
+  rd_printf("Size of image        : %#x (%m)",     opt_header.sizeof_image, opt_header.sizeof_image);
+  rd_printf("Size of headers      : %#x (%m)",     opt_header.sizeof_headers, opt_header.sizeof_headers);
+  rd_printf("Checksum             : %#x",          opt_header.check_sum);
+  rd_printf("Subsystem            : %#llx (%S)",   opt_header.subsystem, subsystem);
+  rd_printf("DLL Characteristics  : %#llx (%S)",   opt_header.dll_characteristics, dll_chars);
+  rd_printf("Stack reserve        : %#-8llx (%M)", opt_header.sizeof_stack_reserve, opt_header.sizeof_stack_reserve);
+  rd_printf("Stack commit         : %#-8llx (%M)", opt_header.sizeof_stack_commit, opt_header.sizeof_stack_commit);
+  rd_printf("Heap reserve         : %#-8llx (%M)", opt_header.sizeof_heap_reserve, opt_header.sizeof_heap_reserve);
+  rd_printf("Heap commit          : %#-8llx (%M)", opt_header.sizeof_heap_commit, opt_header.sizeof_heap_commit);
+  rd_printf("Loader flags         : %#x",          opt_header.loader_flags);
+  rd_printf("RVA and offset count : %u",           opt_header.data_dir_count);
   rd_newline();
   
-  pe_print_data_directory_ranges(arena, out, indent, opt_header->data_dir_count, dirs);
+  pe_print_data_directory_ranges(arena, out, indent, opt_header.data_dir_count, dirs);
   rd_newline();
   
   rd_unindent();
@@ -2671,78 +2671,78 @@ pe_print_load_config32(Arena *arena, String8List *out, String8 indent, PE_LoadCo
 {
   Temp scratch = scratch_begin(&arena, 1);
   
-  String8 time_stamp        = coff_string_from_time_stamp(scratch.arena, lc->time_stamp);
-  String8 global_flag_clear = pe_string_from_global_flags(scratch.arena, lc->global_flag_clear);
-  String8 global_flag_set   = pe_string_from_global_flags(scratch.arena, lc->global_flag_set);
+  String8 time_stamp        = coff_string_from_time_stamp(scratch.arena, lc.time_stamp);
+  String8 global_flag_clear = pe_string_from_global_flags(scratch.arena, lc.global_flag_clear);
+  String8 global_flag_set   = pe_string_from_global_flags(scratch.arena, lc.global_flag_set);
   
   rd_printf("# Load Config 32");
   rd_indent();
   
-  rd_printf("Size:                          %m",       lc->size);
-  rd_printf("Time stamp:                    %#x (%S)", lc->time_stamp, time_stamp);
-  rd_printf("Version:                       %u.%u",    lc->major_version, lc->minor_version);
+  rd_printf("Size:                          %m",       lc.size);
+  rd_printf("Time stamp:                    %#x (%S)", lc.time_stamp, time_stamp);
+  rd_printf("Version:                       %u.%u",    lc.major_version, lc.minor_version);
   rd_printf("Global flag clear:             %#x %S",   global_flag_clear);
   rd_printf("Global flag set:               %#x %S",   global_flag_set);
-  rd_printf("Critical section timeout:      %u",       lc->critical_section_timeout);
-  rd_printf("Decommit free block threshold: %#x",      lc->decommit_free_block_threshold);
-  rd_printf("Decommit total free threshold: %#x",      lc->decommit_total_free_threshold);
-  rd_printf("Lock prefix table:             %#x",      lc->lock_prefix_table);
-  rd_printf("Maximum alloc size:            %m",       lc->maximum_allocation_size);
-  rd_printf("Virtual memory threshold:      %m",       lc->virtual_memory_threshold);
-  rd_printf("Process affinity mask:         %#x",      lc->process_affinity_mask);
-  rd_printf("Process heap flags:            %#x",      lc->process_heap_flags);
-  rd_printf("CSD version:                   %u",       lc->csd_version);
-  rd_printf("Edit list:                     %#x",      lc->edit_list);
-  rd_printf("Security Cookie:               %#x",      lc->security_cookie);
-  if (lc->size < OffsetOf(PE_LoadConfig64, seh_handler_table)) {
+  rd_printf("Critical section timeout:      %u",       lc.critical_section_timeout);
+  rd_printf("Decommit free block threshold: %#x",      lc.decommit_free_block_threshold);
+  rd_printf("Decommit total free threshold: %#x",      lc.decommit_total_free_threshold);
+  rd_printf("Lock prefix table:             %#x",      lc.lock_prefix_table);
+  rd_printf("Maximum alloc size:            %m",       lc.maximum_allocation_size);
+  rd_printf("Virtual memory threshold:      %m",       lc.virtual_memory_threshold);
+  rd_printf("Process affinity mask:         %#x",      lc.process_affinity_mask);
+  rd_printf("Process heap flags:            %#x",      lc.process_heap_flags);
+  rd_printf("CSD version:                   %u",       lc.csd_version);
+  rd_printf("Edit list:                     %#x",      lc.edit_list);
+  rd_printf("Security Cookie:               %#x",      lc.security_cookie);
+  if (lc.size < OffsetOf(PE_LoadConfig64, seh_handler_table)) {
     goto exit;
   }
   rd_newline();
   
-  rd_printf("SEH Handler Table: %#x", lc->seh_handler_table);
-  rd_printf("SEH Handler Count: %u",   lc->seh_handler_count);
-  if (lc->size < OffsetOf(PE_LoadConfig64, guard_cf_check_func_ptr)) {
+  rd_printf("SEH Handler Table: %#x", lc.seh_handler_table);
+  rd_printf("SEH Handler Count: %u",   lc.seh_handler_count);
+  if (lc.size < OffsetOf(PE_LoadConfig64, guard_cf_check_func_ptr)) {
     goto exit;
   }
   rd_newline();
   
-  rd_printf("Guard CF Check Function:    %#x", lc->guard_cf_check_func_ptr);
-  rd_printf("Guard CF Dispatch Function: %#x", lc->guard_cf_dispatch_func_ptr);
-  rd_printf("Guard CF Function Table:    %#x", lc->guard_cf_func_table);
-  rd_printf("Guard CF Function Count:    %u",  lc->guard_cf_func_count);
-  rd_printf("Guard Flags:                %#x", lc->guard_flags);
-  if (lc->size < OffsetOf(PE_LoadConfig64, code_integrity)) {
+  rd_printf("Guard CF Check Function:    %#x", lc.guard_cf_check_func_ptr);
+  rd_printf("Guard CF Dispatch Function: %#x", lc.guard_cf_dispatch_func_ptr);
+  rd_printf("Guard CF Function Table:    %#x", lc.guard_cf_func_table);
+  rd_printf("Guard CF Function Count:    %u",  lc.guard_cf_func_count);
+  rd_printf("Guard Flags:                %#x", lc.guard_flags);
+  if (lc.size < OffsetOf(PE_LoadConfig64, code_integrity)) {
     goto exit;
   }
   rd_newline();
   
   rd_printf("Code integrity:                        { Flags = %#x, Catalog = %#x, Catalog Offset = %#x }",
-            lc->code_integrity.flags, lc->code_integrity.catalog, lc->code_integrity.catalog_offset);
-  rd_printf("Guard address taken IAT entry table:   %#x", lc->guard_address_taken_iat_entry_table);
-  rd_printf("Guard address taken IAT entry count:   %u",  lc->guard_address_taken_iat_entry_count);
-  rd_printf("Guard long jump target table:          %#x", lc->guard_long_jump_target_table);
-  rd_printf("Guard long jump target count:          %u",  lc->guard_long_jump_target_count);
-  rd_printf("Dynamic value reloc table:             %#x", lc->dynamic_value_reloc_table);
-  rd_printf("CHPE Metadata ptr:                     %#x", lc->chpe_metadata_ptr);
-  rd_printf("Guard RF failure routine:              %#x", lc->guard_rf_failure_routine);
-  rd_printf("Guard RF failure routine func ptr:     %#x", lc->guard_rf_failure_routine_func_ptr);
-  rd_printf("Dynamic value reloc section:           %#x", lc->dynamic_value_reloc_table_section);
-  rd_printf("Dynamic value reloc section offset:    %#x", lc->dynamic_value_reloc_table_offset);
-  rd_printf("Guard RF verify SP func ptr:           %#x", lc->guard_rf_verify_stack_pointer_func_ptr);
-  rd_printf("Hot patch table offset:                %#x", lc->hot_patch_table_offset);
-  if (lc->size < OffsetOf(PE_LoadConfig64, enclave_config_ptr)) {
+            lc.code_integrity.flags, lc.code_integrity.catalog, lc.code_integrity.catalog_offset);
+  rd_printf("Guard address taken IAT entry table:   %#x", lc.guard_address_taken_iat_entry_table);
+  rd_printf("Guard address taken IAT entry count:   %u",  lc.guard_address_taken_iat_entry_count);
+  rd_printf("Guard long jump target table:          %#x", lc.guard_long_jump_target_table);
+  rd_printf("Guard long jump target count:          %u",  lc.guard_long_jump_target_count);
+  rd_printf("Dynamic value reloc table:             %#x", lc.dynamic_value_reloc_table);
+  rd_printf("CHPE Metadata ptr:                     %#x", lc.chpe_metadata_ptr);
+  rd_printf("Guard RF failure routine:              %#x", lc.guard_rf_failure_routine);
+  rd_printf("Guard RF failure routine func ptr:     %#x", lc.guard_rf_failure_routine_func_ptr);
+  rd_printf("Dynamic value reloc section:           %#x", lc.dynamic_value_reloc_table_section);
+  rd_printf("Dynamic value reloc section offset:    %#x", lc.dynamic_value_reloc_table_offset);
+  rd_printf("Guard RF verify SP func ptr:           %#x", lc.guard_rf_verify_stack_pointer_func_ptr);
+  rd_printf("Hot patch table offset:                %#x", lc.hot_patch_table_offset);
+  if (lc.size < OffsetOf(PE_LoadConfig64, enclave_config_ptr)) {
     goto exit;
   }
   rd_newline();
   
-  rd_printf("Enclave config ptr:                    %#x", lc->enclave_config_ptr);
-  rd_printf("Volatile metadata ptr:                 %#x", lc->volatile_metadata_ptr);
-  rd_printf("Guard EH continuation table:           %#x", lc->guard_eh_continue_table);
-  rd_printf("Guard EH continuation count:           %u",  lc->guard_eh_continue_count);
-  rd_printf("Guard XFG check func ptr:              %#x", lc->guard_xfg_check_func_ptr);
-  rd_printf("Guard XFG dispatch func ptr:           %#x", lc->guard_xfg_dispatch_func_ptr);
-  rd_printf("Guard XFG table dispatch func ptr:     %#x", lc->guard_xfg_table_dispatch_func_ptr);
-  rd_printf("Cast guard OS determined failure mode: %#x", lc->cast_guard_os_determined_failure_mode);
+  rd_printf("Enclave config ptr:                    %#x", lc.enclave_config_ptr);
+  rd_printf("Volatile metadata ptr:                 %#x", lc.volatile_metadata_ptr);
+  rd_printf("Guard EH continuation table:           %#x", lc.guard_eh_continue_table);
+  rd_printf("Guard EH continuation count:           %u",  lc.guard_eh_continue_count);
+  rd_printf("Guard XFG check func ptr:              %#x", lc.guard_xfg_check_func_ptr);
+  rd_printf("Guard XFG dispatch func ptr:           %#x", lc.guard_xfg_dispatch_func_ptr);
+  rd_printf("Guard XFG table dispatch func ptr:     %#x", lc.guard_xfg_table_dispatch_func_ptr);
+  rd_printf("Cast guard OS determined failure mode: %#x", lc.cast_guard_os_determined_failure_mode);
   rd_newline();
   
   exit:;
@@ -2755,78 +2755,78 @@ pe_print_load_config64(Arena *arena, String8List *out, String8 indent, PE_LoadCo
 {
   Temp scratch = scratch_begin(&arena, 1);
   
-  String8 time_stamp        = coff_string_from_time_stamp(scratch.arena, lc->time_stamp);
-  String8 global_flag_clear = pe_string_from_global_flags(scratch.arena, lc->global_flag_clear);
-  String8 global_flag_set   = pe_string_from_global_flags(scratch.arena, lc->global_flag_set);
+  String8 time_stamp        = coff_string_from_time_stamp(scratch.arena, lc.time_stamp);
+  String8 global_flag_clear = pe_string_from_global_flags(scratch.arena, lc.global_flag_clear);
+  String8 global_flag_set   = pe_string_from_global_flags(scratch.arena, lc.global_flag_set);
   
   rd_printf("# Load Config 64");
   rd_indent();
   
-  rd_printf("Size:                          %m",       lc->size);
-  rd_printf("Time stamp:                    %#x (%S)", lc->time_stamp, time_stamp);
-  rd_printf("Version:                       %u.%u",    lc->major_version, lc->minor_version);
-  rd_printf("Global flag clear:             %#x %S",   lc->global_flag_clear, global_flag_clear);
-  rd_printf("Global flag set:               %#x %S",   lc->global_flag_set, global_flag_set);
-  rd_printf("Critical section timeout:      %u",       lc->critical_section_timeout);
-  rd_printf("Decommit free block threshold: %#llx",    lc->decommit_free_block_threshold);
-  rd_printf("Decommit total free threshold: %#llx",    lc->decommit_total_free_threshold);
-  rd_printf("Lock prefix table:             %#llx",    lc->lock_prefix_table);
-  rd_printf("Maximum alloc size:            %M",       lc->maximum_allocation_size);
-  rd_printf("Virtual memory threshold:      %M",       lc->virtual_memory_threshold);
-  rd_printf("Process affinity mask:         %#x",      lc->process_affinity_mask);
-  rd_printf("Process heap flags:            %#x",      lc->process_heap_flags);
-  rd_printf("CSD version:                   %u",       lc->csd_version);
-  rd_printf("Edit list:                     %#llx",    lc->edit_list);
-  rd_printf("Security Cookie:               %#llx",    lc->security_cookie);
-  if (lc->size < OffsetOf(PE_LoadConfig64, seh_handler_table)) {
+  rd_printf("Size:                          %m",       lc.size);
+  rd_printf("Time stamp:                    %#x (%S)", lc.time_stamp, time_stamp);
+  rd_printf("Version:                       %u.%u",    lc.major_version, lc.minor_version);
+  rd_printf("Global flag clear:             %#x %S",   lc.global_flag_clear, global_flag_clear);
+  rd_printf("Global flag set:               %#x %S",   lc.global_flag_set, global_flag_set);
+  rd_printf("Critical section timeout:      %u",       lc.critical_section_timeout);
+  rd_printf("Decommit free block threshold: %#llx",    lc.decommit_free_block_threshold);
+  rd_printf("Decommit total free threshold: %#llx",    lc.decommit_total_free_threshold);
+  rd_printf("Lock prefix table:             %#llx",    lc.lock_prefix_table);
+  rd_printf("Maximum alloc size:            %M",       lc.maximum_allocation_size);
+  rd_printf("Virtual memory threshold:      %M",       lc.virtual_memory_threshold);
+  rd_printf("Process affinity mask:         %#x",      lc.process_affinity_mask);
+  rd_printf("Process heap flags:            %#x",      lc.process_heap_flags);
+  rd_printf("CSD version:                   %u",       lc.csd_version);
+  rd_printf("Edit list:                     %#llx",    lc.edit_list);
+  rd_printf("Security Cookie:               %#llx",    lc.security_cookie);
+  if (lc.size < OffsetOf(PE_LoadConfig64, seh_handler_table)) {
     goto exit;
   }
   rd_newline();
   
-  rd_printf("SEH Handler Table: %#llx", lc->seh_handler_table);
-  rd_printf("SEH Handler Count: %llu",  lc->seh_handler_count);
-  if (lc->size < OffsetOf(PE_LoadConfig64, guard_cf_check_func_ptr)) {
+  rd_printf("SEH Handler Table: %#llx", lc.seh_handler_table);
+  rd_printf("SEH Handler Count: %llu",  lc.seh_handler_count);
+  if (lc.size < OffsetOf(PE_LoadConfig64, guard_cf_check_func_ptr)) {
     goto exit;
   }
   rd_newline();
   
-  rd_printf("Guard CF Check Function:    %#llx", lc->guard_cf_check_func_ptr);
-  rd_printf("Guard CF Dispatch Function: %#llx", lc->guard_cf_dispatch_func_ptr);
-  rd_printf("Guard CF Function Table:    %#llx", lc->guard_cf_func_table);
-  rd_printf("Guard CF Function Count:    %llu",  lc->guard_cf_func_count);
-  rd_printf("Guard Flags:                %#x",   lc->guard_flags);
-  if (lc->size < OffsetOf(PE_LoadConfig64, code_integrity)) {
+  rd_printf("Guard CF Check Function:    %#llx", lc.guard_cf_check_func_ptr);
+  rd_printf("Guard CF Dispatch Function: %#llx", lc.guard_cf_dispatch_func_ptr);
+  rd_printf("Guard CF Function Table:    %#llx", lc.guard_cf_func_table);
+  rd_printf("Guard CF Function Count:    %llu",  lc.guard_cf_func_count);
+  rd_printf("Guard Flags:                %#x",   lc.guard_flags);
+  if (lc.size < OffsetOf(PE_LoadConfig64, code_integrity)) {
     goto exit;
   }
   rd_newline();
   
   rd_printf("Code integrity:                      { Flags = %#x, Catalog = %#x, Catalog Offset = %#x }",
-            lc->code_integrity.flags, lc->code_integrity.catalog, lc->code_integrity.catalog_offset);
-  rd_printf("Guard address taken IAT entry table: %#llx", lc->guard_address_taken_iat_entry_table);
-  rd_printf("Guard address taken IAT entry count: %llu",  lc->guard_address_taken_iat_entry_count);
-  rd_printf("Guard long jump target table:        %#llx", lc->guard_long_jump_target_table);
-  rd_printf("Guard long jump target count:        %llu",  lc->guard_long_jump_target_count);
-  rd_printf("Dynamic value reloc table:           %#llx", lc->dynamic_value_reloc_table);
-  rd_printf("CHPE Metadata ptr:                   %#llx", lc->chpe_metadata_ptr);
-  rd_printf("Guard RF failure routine:            %#llx", lc->guard_rf_failure_routine);
-  rd_printf("Guard RF failure routine func ptr:   %#llx", lc->guard_rf_failure_routine_func_ptr);
-  rd_printf("Dynamic value reloc section:         %#llx", lc->dynamic_value_reloc_table_section);
-  rd_printf("Dynamic value reloc section offset:  %#llx", lc->dynamic_value_reloc_table_offset);
-  rd_printf("Guard RF verify SP func ptr:         %#llx", lc->guard_rf_verify_stack_pointer_func_ptr);
-  rd_printf("Hot patch table offset:              %#llx", lc->hot_patch_table_offset);
-  if (lc->size < OffsetOf(PE_LoadConfig64, enclave_config_ptr)) {
+            lc.code_integrity.flags, lc.code_integrity.catalog, lc.code_integrity.catalog_offset);
+  rd_printf("Guard address taken IAT entry table: %#llx", lc.guard_address_taken_iat_entry_table);
+  rd_printf("Guard address taken IAT entry count: %llu",  lc.guard_address_taken_iat_entry_count);
+  rd_printf("Guard long jump target table:        %#llx", lc.guard_long_jump_target_table);
+  rd_printf("Guard long jump target count:        %llu",  lc.guard_long_jump_target_count);
+  rd_printf("Dynamic value reloc table:           %#llx", lc.dynamic_value_reloc_table);
+  rd_printf("CHPE Metadata ptr:                   %#llx", lc.chpe_metadata_ptr);
+  rd_printf("Guard RF failure routine:            %#llx", lc.guard_rf_failure_routine);
+  rd_printf("Guard RF failure routine func ptr:   %#llx", lc.guard_rf_failure_routine_func_ptr);
+  rd_printf("Dynamic value reloc section:         %#llx", lc.dynamic_value_reloc_table_section);
+  rd_printf("Dynamic value reloc section offset:  %#llx", lc.dynamic_value_reloc_table_offset);
+  rd_printf("Guard RF verify SP func ptr:         %#llx", lc.guard_rf_verify_stack_pointer_func_ptr);
+  rd_printf("Hot patch table offset:              %#llx", lc.hot_patch_table_offset);
+  if (lc.size < OffsetOf(PE_LoadConfig64, enclave_config_ptr)) {
     goto exit;
   }
   rd_newline();
   
-  rd_printf("Enclave config ptr:                    %#llx", lc->enclave_config_ptr);
-  rd_printf("Volatile metadata ptr:                 %#llx", lc->volatile_metadata_ptr);
-  rd_printf("Guard EH continuation table:           %#llx", lc->guard_eh_continue_table);
-  rd_printf("Guard EH continuation count:           %llu",  lc->guard_eh_continue_count);
-  rd_printf("Guard XFG check func ptr:              %#llx", lc->guard_xfg_check_func_ptr);
-  rd_printf("Guard XFG dispatch func ptr:           %#llx", lc->guard_xfg_dispatch_func_ptr);
-  rd_printf("Guard XFG table dispatch func ptr:     %#llx", lc->guard_xfg_table_dispatch_func_ptr);
-  rd_printf("Cast guard OS determined failure mode: %#llx", lc->cast_guard_os_determined_failure_mode);
+  rd_printf("Enclave config ptr:                    %#llx", lc.enclave_config_ptr);
+  rd_printf("Volatile metadata ptr:                 %#llx", lc.volatile_metadata_ptr);
+  rd_printf("Guard EH continuation table:           %#llx", lc.guard_eh_continue_table);
+  rd_printf("Guard EH continuation count:           %llu",  lc.guard_eh_continue_count);
+  rd_printf("Guard XFG check func ptr:              %#llx", lc.guard_xfg_check_func_ptr);
+  rd_printf("Guard XFG dispatch func ptr:           %#llx", lc.guard_xfg_dispatch_func_ptr);
+  rd_printf("Guard XFG table dispatch func ptr:     %#llx", lc.guard_xfg_table_dispatch_func_ptr);
+  rd_printf("Cast guard OS determined failure mode: %#llx", lc.cast_guard_os_determined_failure_mode);
   rd_newline();
   
   exit:;
@@ -2876,8 +2876,8 @@ pe_print_debug_diretory(Arena *arena, String8List *out, String8 indent, String8 
   
   PE_DebugInfoList debug_info_list = pe_debug_info_list_from_raw_debug_dir(scratch.arena, raw_data, raw_dir);
   U64 i = 0;
-  for (PE_DebugInfoNode *entry = debug_info_list.first; entry != 0; entry = entry->next, ++i) {
-    PE_DebugInfo *de = &entry->v;
+  for (PE_DebugInfoNode *entry = debug_info_list.first; entry != 0; entry = entry.next, ++i) {
+    PE_DebugInfo *de = &entry.v;
     
     if (entry != debug_info_list.first) {
       rd_newline();
@@ -2887,18 +2887,18 @@ pe_print_debug_diretory(Arena *arena, String8List *out, String8 indent, String8 
     rd_indent();
     
     // print header
-    rd_printf("Characteristics: %#x",   de->header.characteristics);
-    rd_printf("Time Stamp:      %S",    coff_string_from_time_stamp(scratch.arena, de->header.time_stamp));
-    rd_printf("Version:         %u.%u", de->header.major_ver, de->header.minor_ver);
-    rd_printf("Type:            %S",    pe_string_from_debug_directory_type(de->header.type));
-    rd_printf("Size:            %u",    de->header.size);
-    rd_printf("Data virt off:   %#x",   de->header.voff);
-    rd_printf("Data file off:   %#x",   de->header.foff);
+    rd_printf("Characteristics: %#x",   de.header.characteristics);
+    rd_printf("Time Stamp:      %S",    coff_string_from_time_stamp(scratch.arena, de.header.time_stamp));
+    rd_printf("Version:         %u.%u", de.header.major_ver, de.header.minor_ver);
+    rd_printf("Type:            %S",    pe_string_from_debug_directory_type(de.header.type));
+    rd_printf("Size:            %u",    de.header.size);
+    rd_printf("Data virt off:   %#x",   de.header.voff);
+    rd_printf("Data file off:   %#x",   de.header.foff);
     rd_newline();
     
     // print directory contents
     rd_indent();
-    switch (de->header.type) {
+    switch (de.header.type) {
       case PE_DebugDirectoryType_ILTCG:
       case PE_DebugDirectoryType_MPX:
       case PE_DebugDirectoryType_EXCEPTION:
@@ -2916,55 +2916,55 @@ pe_print_debug_diretory(Arena *arena, String8List *out, String8 indent, String8 
         
         // TODO: is this version?
         U32 unknown  = 0;
-        off += str8_deserial_read_struct(de->u.raw_data, off, &unknown);
+        off += str8_deserial_read_struct(de.u.raw_data, off, &unknown);
         if (unknown != 0) {
           rd_printf("TODO: unknown: %u", unknown);
         }
         
         rd_printf("%-8s %-8s %-8s", "VOFF", "Size", "Name");
-        for (; off < de->u.raw_data.size; ) {
+        for (; off < de.u.raw_data.size; ) {
           U32     voff = 0;
           U32     size = 0;
           String8 name = str8_zero();
           
-          off += str8_deserial_read_struct(de->u.raw_data, off, &voff);
-          off += str8_deserial_read_struct(de->u.raw_data, off, &size);
+          off += str8_deserial_read_struct(de.u.raw_data, off, &voff);
+          off += str8_deserial_read_struct(de.u.raw_data, off, &size);
           if (voff == 0 && size == 0) {
             break;
           }
-          off += str8_deserial_read_cstr(de->u.raw_data, off, &name);
+          off += str8_deserial_read_cstr(de.u.raw_data, off, &name);
           off = AlignPow2(off, 4);
           
           rd_printf("%08x %08x %S", voff, size, name);
         }
       } break;
       case PE_DebugDirectoryType_VC_FEATURE: {
-        MSCRT_VCFeatures *feat = str8_deserial_get_raw_ptr(de->u.raw_data, 0, sizeof(*feat));
+        MSCRT_VCFeatures *feat = str8_deserial_get_raw_ptr(de.u.raw_data, 0, sizeof(*feat));
         if (feat) {
-          rd_printf("Pre-VC++ 11.0: %u", feat->pre_vcpp);
-          rd_printf("C/C++:         %u", feat->c_cpp);
-          rd_printf("/GS:           %u", feat->gs);
-          rd_printf("/sdl:          %u", feat->sdl);
-          rd_printf("guardN:        %u", feat->guard_n);
+          rd_printf("Pre-VC++ 11.0: %u", feat.pre_vcpp);
+          rd_printf("C/C++:         %u", feat.c_cpp);
+          rd_printf("/GS:           %u", feat.gs);
+          rd_printf("/sdl:          %u", feat.sdl);
+          rd_printf("guardN:        %u", feat.guard_n);
         } else {
           rd_errorf("not enough bytes to read VC Features");
         }
       } break;
       case PE_DebugDirectoryType_FPO: {
-        PE_DebugFPO *fpo = str8_deserial_get_raw_ptr(de->u.raw_data, 0, sizeof(*fpo));
+        PE_DebugFPO *fpo = str8_deserial_get_raw_ptr(de.u.raw_data, 0, sizeof(*fpo));
         if (fpo) {
-          U8          prolog_size     = PE_FPOEncoded_Extract_PROLOG_SIZE(fpo->flags);
-          U8          saved_regs_size = PE_FPOEncoded_Extract_SAVED_REGS_SIZE(fpo->flags);
-          PE_FPOType  type            = PE_FPOEncoded_Extract_FRAME_TYPE(fpo->flags);
-          PE_FPOFlags flags           = PE_FPOEncoded_Extract_FLAGS(fpo->flags);
+          U8          prolog_size     = PE_FPOEncoded_Extract_PROLOG_SIZE(fpo.flags);
+          U8          saved_regs_size = PE_FPOEncoded_Extract_SAVED_REGS_SIZE(fpo.flags);
+          PE_FPOType  type            = PE_FPOEncoded_Extract_FRAME_TYPE(fpo.flags);
+          PE_FPOFlags flags           = PE_FPOEncoded_Extract_FLAGS(fpo.flags);
           
           String8 type_string  = pe_string_from_fpo_type(type);
           String8 flags_string = pe_string_from_fpo_flags(scratch.arena, flags);
           
-          rd_printf("Function offset: %#x", fpo->func_code_off);
-          rd_printf("Function size:   %#x", fpo->func_size);
-          rd_printf("Locals size:     %u",  fpo->locals_size);
-          rd_printf("Params size:     %u",  fpo->params_size);
+          rd_printf("Function offset: %#x", fpo.func_code_off);
+          rd_printf("Function size:   %#x", fpo.func_size);
+          rd_printf("Locals size:     %u",  fpo.locals_size);
+          rd_printf("Params size:     %u",  fpo.params_size);
           rd_printf("Prolog size:     %u",  prolog_size);
           rd_printf("Saved regs size: %u",  saved_regs_size);
           rd_printf("Type:            %S",  type_string);
@@ -2974,45 +2974,45 @@ pe_print_debug_diretory(Arena *arena, String8List *out, String8 indent, String8 
         }
       } break;
       case PE_DebugDirectoryType_CODEVIEW: {
-        switch (de->u.codeview.magic) {
+        switch (de.u.codeview.magic) {
           case PE_CODEVIEW_PDB20_MAGIC: {
-            PE_CvHeaderPDB20 *header = &de->u.codeview.pdb20.header;
+            PE_CvHeaderPDB20 *header = &de.u.codeview.pdb20.header;
             
-            rd_printf("Time stamp: %S", coff_string_from_time_stamp(scratch.arena, header->time_stamp));
-            rd_printf("Age:        %u", header->age);
-            rd_printf("Name:       %S", de->u.codeview.pdb20.path);
+            rd_printf("Time stamp: %S", coff_string_from_time_stamp(scratch.arena, header.time_stamp));
+            rd_printf("Age:        %u", header.age);
+            rd_printf("Name:       %S", de.u.codeview.pdb20.path);
           } break;
           case PE_CODEVIEW_PDB70_MAGIC: {
-            PE_CvHeaderPDB70 *header = &de->u.codeview.pdb70.header;
+            PE_CvHeaderPDB70 *header = &de.u.codeview.pdb70.header;
             
-            rd_printf("GUID: %S", string_from_guid(scratch.arena, header->guid));
-            rd_printf("Age:  %u", header->age);
-            rd_printf("Name: %S", de->u.codeview.pdb70.path);
+            rd_printf("GUID: %S", string_from_guid(scratch.arena, header.guid));
+            rd_printf("Age:  %u", header.age);
+            rd_printf("Name: %S", de.u.codeview.pdb70.path);
           } break;
           case PE_CODEVIEW_RDI_MAGIC: {
-            PE_CvHeaderRDI *header = &de->u.codeview.rdi.header;
+            PE_CvHeaderRDI *header = &de.u.codeview.rdi.header;
             
-            rd_printf("GUID: %S", string_from_guid(scratch.arena, header->guid));
-            rd_printf("Name: %S", de->u.codeview.rdi.path);
+            rd_printf("GUID: %S", string_from_guid(scratch.arena, header.guid));
+            rd_printf("Name: %S", de.u.codeview.rdi.path);
           } break;
           default: {
-            rd_errorf("unknown CodeView magic %#x", de->u.codeview.magic);
+            rd_errorf("unknown CodeView magic %#x", de.u.codeview.magic);
           } break;
         }
       } break;
       case PE_DebugDirectoryType_MISC: {
-        PE_DebugMisc *misc = str8_deserial_get_raw_ptr(de->u.raw_data, 0, sizeof(*misc));
+        PE_DebugMisc *misc = str8_deserial_get_raw_ptr(de.u.raw_data, 0, sizeof(*misc));
         
-        String8 type_string = pe_string_from_misc_type(misc->data_type);
+        String8 type_string = pe_string_from_misc_type(misc.data_type);
         
         rd_printf("Data type: %S", type_string);
-        rd_printf("Size:      %u", misc->size);
-        rd_printf("Unicode:   %u", misc->unicode);
+        rd_printf("Size:      %u", misc.size);
+        rd_printf("Unicode:   %u", misc.unicode);
         
-        switch (misc->data_type) {
+        switch (misc.data_type) {
           case PE_DebugMiscType_EXE_NAME: {
             String8 name;
-            str8_deserial_read_cstr(de->u.raw_data, sizeof(*misc), &name);
+            str8_deserial_read_cstr(de.u.raw_data, sizeof(*misc), &name);
             rd_printf("Name: %S", name);
           } break;
           default: {
@@ -3051,10 +3051,10 @@ pe_print_export_table(Arena *arena, String8List *out, String8 indent, PE_ParsedE
   
   for (U64 i = 0; i < exptab.export_count; ++i) {
     PE_ParsedExport *exp = exptab.exports+i;
-    if (exp->forwarder.size) {
-      rd_printf("%4u %8u %8x %S (forwarded to %S)", i, exp->ordinal, exp->voff, exp->name, exp->forwarder);
+    if (exp.forwarder.size) {
+      rd_printf("%4u %8u %8x %S (forwarded to %S)", i, exp.ordinal, exp.voff, exp.name, exp.forwarder);
     } else {
-      rd_printf("%4u %8u %8x %S", i, exp->ordinal, exp->voff, exp->name);
+      rd_printf("%4u %8u %8x %S", i, exp.ordinal, exp.voff, exp.name);
     }
   }
   
@@ -3073,20 +3073,20 @@ pe_print_static_import_table(Arena *arena, String8List *out, String8 indent, U64
     for (U64 dll_idx = 0; dll_idx < imptab.count; ++dll_idx) {
       PE_ParsedStaticDLLImport *dll = imptab.v+dll_idx;
       
-      rd_printf("Name:                 %S",    dll->name);
-      rd_printf("Import address table: %#llx", image_base + dll->import_address_table_voff);
-      rd_printf("Import name table:    %#llx", image_base + dll->import_name_table_voff);
-      rd_printf("Time stamp:           %#x",   dll->time_stamp);
+      rd_printf("Name:                 %S",    dll.name);
+      rd_printf("Import address table: %#llx", image_base + dll.import_address_table_voff);
+      rd_printf("Import name table:    %#llx", image_base + dll.import_name_table_voff);
+      rd_printf("Time stamp:           %#x",   dll.time_stamp);
       rd_newline();
       
-      if (dll->import_count) {
+      if (dll.import_count) {
         rd_indent();
-        for (U64 imp_idx = 0; imp_idx < dll->import_count; ++imp_idx) {
-          PE_ParsedImport *imp = dll->imports+imp_idx;
-          if (imp->type == PE_ParsedImport_Ordinal) {
-            rd_printf("%#-6x", imp->u.ordinal);
-          } else if (imp->type == PE_ParsedImport_Name) {
-            rd_printf("%#-6x %S", imp->u.name.hint, imp->u.name.string);
+        for (U64 imp_idx = 0; imp_idx < dll.import_count; ++imp_idx) {
+          PE_ParsedImport *imp = dll.imports+imp_idx;
+          if (imp.type == PE_ParsedImport_Ordinal) {
+            rd_printf("%#-6x", imp.u.ordinal);
+          } else if (imp.type == PE_ParsedImport_Name) {
+            rd_printf("%#-6x %S", imp.u.name.hint, imp.u.name.string);
           }
         }
         rd_unindent();
@@ -3110,38 +3110,38 @@ pe_print_delay_import_table(Arena *arena, String8List *out, String8 indent, U64 
     for (U64 dll_idx = 0; dll_idx < imptab.count; ++dll_idx) {
       PE_ParsedDelayDLLImport *dll = imptab.v+dll_idx;
       
-      rd_printf("Attributes:               %#08x", dll->attributes);
-      rd_printf("Name:                     %S",    dll->name);
-      rd_printf("HMODULE address:          %#llx", dll->module_handle_voff ? image_base + dll->module_handle_voff : 0);
-      rd_printf("Import address table:     %#llx", dll->iat_voff ? image_base + dll->iat_voff : 0);
-      rd_printf("Import name table:        %#llx", dll->name_table_voff ? image_base + dll->name_table_voff : 0);
-      rd_printf("Bound import name table:  %#llx", dll->bound_table_voff ? image_base + dll->bound_table_voff : 0);
-      rd_printf("Unload import name table: %#llx", dll->unload_table_voff ? image_base + dll->unload_table_voff : 0);
-      rd_printf("Time stamp:               %#x",   dll->time_stamp);
+      rd_printf("Attributes:               %#08x", dll.attributes);
+      rd_printf("Name:                     %S",    dll.name);
+      rd_printf("HMODULE address:          %#llx", dll.module_handle_voff ? image_base + dll.module_handle_voff : 0);
+      rd_printf("Import address table:     %#llx", dll.iat_voff ? image_base + dll.iat_voff : 0);
+      rd_printf("Import name table:        %#llx", dll.name_table_voff ? image_base + dll.name_table_voff : 0);
+      rd_printf("Bound import name table:  %#llx", dll.bound_table_voff ? image_base + dll.bound_table_voff : 0);
+      rd_printf("Unload import name table: %#llx", dll.unload_table_voff ? image_base + dll.unload_table_voff : 0);
+      rd_printf("Time stamp:               %#x",   dll.time_stamp);
       rd_newline();
       
       rd_indent();
       rd_printf("%-16s %-16s %-8s %s", "BIAT", "UIAT", "Hint/Ord", "Name");
       rd_printf("---------------- ---------------- -------- ----");
-      for (U64 imp_idx = 0; imp_idx < dll->import_count; ++imp_idx) {
-        PE_ParsedImport *imp = dll->imports+imp_idx;
+      for (U64 imp_idx = 0; imp_idx < dll.import_count; ++imp_idx) {
+        PE_ParsedImport *imp = dll.imports+imp_idx;
         
         String8 bound = str8_lit("NULL");
-        if (imp_idx < dll->bound_table_count) {
-          U64 bound_addr = dll->bound_table[imp_idx];
+        if (imp_idx < dll.bound_table_count) {
+          U64 bound_addr = dll.bound_table[imp_idx];
           bound = push_str8f(scratch.arena, "%#llx", bound_addr);
         }
         
         String8 unload = str8_lit("NULL");
-        if (imp_idx < dll->unload_table_count) {
-          U64 unload_addr = dll->unload_table[imp_idx];
+        if (imp_idx < dll.unload_table_count) {
+          U64 unload_addr = dll.unload_table[imp_idx];
           unload = push_str8f(scratch.arena, "%#llx", unload_addr);
         }
         
-        if (imp->type == PE_ParsedImport_Ordinal) {
-          rd_printf("%-16S %-16S 0x%-6x %S", bound, unload, imp->u.ordinal, str8_lit("[NONAME]"));
-        } else if (imp->type == PE_ParsedImport_Name) {
-          rd_printf("%-16S %-16S 0x%-6x %S", bound, unload, imp->u.name.hint, imp->u.name.string);
+        if (imp.type == PE_ParsedImport_Ordinal) {
+          rd_printf("%-16S %-16S 0x%-6x %S", bound, unload, imp.u.ordinal, str8_lit("[NONAME]"));
+        } else if (imp.type == PE_ParsedImport_Name) {
+          rd_printf("%-16S %-16S 0x%-6x %S", bound, unload, imp.u.name.hint, imp.u.name.string);
         }
       }
       rd_unindent();
@@ -3173,106 +3173,106 @@ pe_print_resources(Arena *arena, String8List *out, String8 indent, PE_ResourceDi
     String8          dir_name;
     PE_ResourceDir  *table;
   } *stack = push_array(scratch.arena, struct stack_s, 1);
-  stack->table          = root;
-  stack->print_table    = 1;
-  stack->is_named       = 1;
-  stack->dir_name       = str8_lit("ROOT");
-  stack->curr_name_node = root->named_list.first;
-  stack->curr_id_node   = root->id_list.first;
+  stack.table          = root;
+  stack.print_table    = 1;
+  stack.is_named       = 1;
+  stack.dir_name       = str8_lit("ROOT");
+  stack.curr_name_node = root.named_list.first;
+  stack.curr_id_node   = root.id_list.first;
   
   if (stack) {
     rd_printf("# Resources");
     
     // traverse resource tree
     while (stack) {
-      if (stack->print_table) {
-        stack->print_table = 0;
+      if (stack.print_table) {
+        stack.print_table = 0;
         rd_indent();
         
-        if (stack->is_named) {
+        if (stack.is_named) {
           rd_printf("[%u] %S { Time Stamp: %u, Version %u.%u Name Count: %u, ID Count %u, Characteristics: %u }", 
-                    stack->dir_idx,
-                    stack->dir_name,
-                    stack->table->time_stamp, 
-                    stack->table->major_version, stack->table->minor_version, 
-                    stack->table->named_list.count, stack->table->id_list.count,
-                    stack->table->characteristics);
+                    stack.dir_idx,
+                    stack.dir_name,
+                    stack.table.time_stamp, 
+                    stack.table.major_version, stack.table.minor_version, 
+                    stack.table.named_list.count, stack.table.id_list.count,
+                    stack.table.characteristics);
         } else {
-          B32 is_actually_leaf = stack->table->id_list.count == 1 && 
-            stack->table->id_list.first->data.kind != PE_ResDataKind_DIR;
+          B32 is_actually_leaf = stack.table.id_list.count == 1 && 
+            stack.table.id_list.first.data.kind != PE_ResDataKind_DIR;
           if (is_actually_leaf) {
             rd_printf("[%u] %u { Time Stamp: %u, Version %u.%u Name Count: %u, ID Count %u, Characteristics: %u }", 
-                      stack->dir_idx,
-                      stack->dir_id,
-                      stack->table->time_stamp, 
-                      stack->table->major_version, stack->table->minor_version, 
-                      stack->table->named_list.count, stack->table->id_list.count,
-                      stack->table->characteristics);
+                      stack.dir_idx,
+                      stack.dir_id,
+                      stack.table.time_stamp, 
+                      stack.table.major_version, stack.table.minor_version, 
+                      stack.table.named_list.count, stack.table.id_list.count,
+                      stack.table.characteristics);
           } else {
-            String8 id_str = pe_resource_kind_to_string(stack->dir_id);
+            String8 id_str = pe_resource_kind_to_string(stack.dir_id);
             rd_printf("[%u] %S { Time Stamp: %u, Version %u.%u Name Count: %u, ID Count %u, Characteristics: %u }", 
-                      stack->dir_idx,
+                      stack.dir_idx,
                       id_str,
-                      stack->dir_id,
-                      stack->table->time_stamp, 
-                      stack->table->major_version, stack->table->minor_version, 
-                      stack->table->named_list.count, stack->table->id_list.count,
-                      stack->table->characteristics);
+                      stack.dir_id,
+                      stack.table.time_stamp, 
+                      stack.table.major_version, stack.table.minor_version, 
+                      stack.table.named_list.count, stack.table.id_list.count,
+                      stack.table.characteristics);
           }
         }
       }
       
-      while (stack->curr_name_node) {
-        PE_ResourceNode *named_node = stack->curr_name_node;
-        stack->curr_name_node = stack->curr_name_node->next;
-        U64 name_idx = stack->name_idx++;
+      while (stack.curr_name_node) {
+        PE_ResourceNode *named_node = stack.curr_name_node;
+        stack.curr_name_node = stack.curr_name_node.next;
+        U64 name_idx = stack.name_idx++;
         
-        PE_Resource *res = &named_node->data;
-        if (res->kind == PE_ResDataKind_DIR) {
+        PE_Resource *res = &named_node.data;
+        if (res.kind == PE_ResDataKind_DIR) {
           struct stack_s *frame = push_array(scratch.arena, struct stack_s, 1);
-          frame->table          = res->u.dir;
-          frame->print_table    = 1;
-          frame->dir_idx        = stack->name_idx;
-          frame->dir_name       = res->id.u.string;
-          frame->is_named       = 1;
-          frame->curr_name_node = frame->table->named_list.first;
-          frame->curr_id_node   = frame->table->id_list.first;
+          frame.table          = res.u.dir;
+          frame.print_table    = 1;
+          frame.dir_idx        = stack.name_idx;
+          frame.dir_name       = res.id.u.string;
+          frame.is_named       = 1;
+          frame.curr_name_node = frame.table.named_list.first;
+          frame.curr_id_node   = frame.table.id_list.first;
           SLLStackPush(stack, frame);
           goto yield;
-        } else if (res->kind == PE_ResDataKind_COFF_LEAF) {
-          COFF_ResourceDataEntry *entry = &res->u.leaf;
+        } else if (res.kind == PE_ResDataKind_COFF_LEAF) {
+          COFF_ResourceDataEntry *entry = &res.u.leaf;
           rd_printf("[%u] %S Data VOFF: %#08x, Data Size: %#08x, Code Page: %u", 
-                    name_idx, res->id.u.string, entry->data_voff, entry->data_size, entry->code_page);
+                    name_idx, res.id.u.string, entry.data_voff, entry.data_size, entry.code_page);
         } else {
           InvalidPath;
         }
       }
       
-      while (stack->curr_id_node) {
-        PE_ResourceNode *id_node = stack->curr_id_node;
-        PE_Resource     *res     = &id_node->data;
-        stack->curr_id_node = stack->curr_id_node->next;
-        U64 id_idx = stack->id_idx++;
+      while (stack.curr_id_node) {
+        PE_ResourceNode *id_node = stack.curr_id_node;
+        PE_Resource     *res     = &id_node.data;
+        stack.curr_id_node = stack.curr_id_node.next;
+        U64 id_idx = stack.id_idx++;
         
-        if (res->kind == PE_ResDataKind_DIR) {
+        if (res.kind == PE_ResDataKind_DIR) {
           struct stack_s *frame = push_array(scratch.arena, struct stack_s, 1);
-          frame->table          = res->u.dir;
-          frame->print_table    = 1;
-          frame->dir_idx        = stack->table->named_list.count + id_idx;
-          frame->dir_id         = res->id.u.number;
-          frame->curr_name_node = frame->table->named_list.first;
-          frame->curr_id_node   = frame->table->id_list.first;
+          frame.table          = res.u.dir;
+          frame.print_table    = 1;
+          frame.dir_idx        = stack.table.named_list.count + id_idx;
+          frame.dir_id         = res.id.u.number;
+          frame.curr_name_node = frame.table.named_list.first;
+          frame.curr_id_node   = frame.table.id_list.first;
           SLLStackPush(stack, frame);
           goto yield;
-        } else if (res->kind == PE_ResDataKind_COFF_LEAF) {
-          COFF_ResourceDataEntry *entry = &res->u.leaf;
-          rd_printf("[%u] ID: %u Data VOFF: %#08x, Data Size: %#08x, Code Page: %u", id_idx, res->id.u.number, entry->data_voff, entry->data_size, entry->code_page);
+        } else if (res.kind == PE_ResDataKind_COFF_LEAF) {
+          COFF_ResourceDataEntry *entry = &res.u.leaf;
+          rd_printf("[%u] ID: %u Data VOFF: %#08x, Data Size: %#08x, Code Page: %u", id_idx, res.id.u.number, entry.data_voff, entry.data_size, entry.code_page);
         } else {
           InvalidPath;
         }
       }
       
-      if (stack->curr_id_node == 0 && stack->curr_name_node == 0) {
+      if (stack.curr_id_node == 0 && stack.curr_name_node == 0) {
         rd_unindent();
       }
       
@@ -3306,15 +3306,15 @@ pe_print_exceptions_x8664(Arena              *arena,
     
     U64            pdata_offset = i * sizeof(PE_IntelPdata);
     PE_IntelPdata *pdata        = str8_deserial_get_raw_ptr(raw_except, pdata_offset, sizeof(*pdata));
-    String8        pdata_name   = rd_proc_name_from_voff(rdi, pdata->voff_first);
+    String8        pdata_name   = rd_proc_name_from_voff(rdi, pdata.voff_first);
     
-    U64            unwind_info_offset = coff_foff_from_voff(sections, section_count, pdata->voff_unwind_info);
+    U64            unwind_info_offset = coff_foff_from_voff(sections, section_count, pdata.voff_unwind_info);
     PE_UnwindInfo *uwinfo             = str8_deserial_get_raw_ptr(raw_data, unwind_info_offset, sizeof(*uwinfo));
     
-    U8 version        = PE_UNWIND_INFO_VERSION_FROM_HDR(uwinfo->header);
-    U8 flags          = PE_UNWIND_INFO_FLAGS_FROM_HDR(uwinfo->header);
-    U8 frame_register = PE_UNWIND_INFO_REG_FROM_FRAME(uwinfo->frame);
-    U8 frame_offset   = PE_UNWIND_INFO_OFF_FROM_FRAME(uwinfo->frame);
+    U8 version        = PE_UNWIND_INFO_VERSION_FROM_HDR(uwinfo.header);
+    U8 flags          = PE_UNWIND_INFO_FLAGS_FROM_HDR(uwinfo.header);
+    U8 frame_register = PE_UNWIND_INFO_REG_FROM_FRAME(uwinfo.frame);
+    U8 frame_offset   = PE_UNWIND_INFO_OFF_FROM_FRAME(uwinfo.frame);
     
     B32 is_chained       = (flags & PE_UnwindInfoFlag_CHAINED) != 0;
     B32 has_handler_data = !is_chained && (flags & (PE_UnwindInfoFlag_EHANDLER | PE_UnwindInfoFlag_UHANDLER)) != 0;
@@ -3346,23 +3346,23 @@ pe_print_exceptions_x8664(Arena              *arena,
     }
     
     U64            codes_offset = unwind_info_offset + sizeof(PE_UnwindInfo);
-    PE_UnwindCode *code_ptr     = str8_deserial_get_raw_ptr(raw_data, codes_offset, sizeof(*code_ptr) * uwinfo->codes_num);
-    PE_UnwindCode *code_opl     = code_ptr + uwinfo->codes_num;
+    PE_UnwindCode *code_ptr     = str8_deserial_get_raw_ptr(raw_data, codes_offset, sizeof(*code_ptr) * uwinfo.codes_num);
+    PE_UnwindCode *code_opl     = code_ptr + uwinfo.codes_num;
     
     if (i > 0) {
       rd_newline();
     }
     rd_printf("%08x %08x %08x %08x%s%S",
               pdata_offset,
-              pdata->voff_first,
-              pdata->voff_one_past_last,
-              pdata->voff_unwind_info,
+              pdata.voff_first,
+              pdata.voff_one_past_last,
+              pdata.voff_unwind_info,
               pdata_name.size ? " " : "", pdata_name);
     rd_printf("Version:     %u",  version);
     rd_printf("Flags:       %S",  flags_str);
-    rd_printf("Prolog Size: %#x", uwinfo->prolog_size);
-    rd_printf("Code Count:  %u",  uwinfo->codes_num);
-    rd_printf("Frame:       %u",  uwinfo->frame);
+    rd_printf("Prolog Size: %#x", uwinfo.prolog_size);
+    rd_printf("Code Count:  %u",  uwinfo.codes_num);
+    rd_printf("Frame:       %u",  uwinfo.frame);
     rd_printf("Codes:");
     rd_indent();
     for (; code_ptr < code_opl;) {
@@ -3454,9 +3454,9 @@ pe_print_exceptions_x8664(Arena              *arena,
     rd_unindent();
     
     if (is_chained) {
-      U64            next_pdata_offset = codes_offset + sizeof(PE_UnwindCode) * AlignPow2(uwinfo->codes_num, 2);
+      U64            next_pdata_offset = codes_offset + sizeof(PE_UnwindCode) * AlignPow2(uwinfo.codes_num, 2);
       PE_IntelPdata *next_pdata        = str8_deserial_get_raw_ptr(raw_data, next_pdata_offset, sizeof(*next_pdata));
-      rd_printf("Chained: %#08x %#08x %#08x", next_pdata->voff_first, next_pdata->voff_one_past_last, next_pdata->voff_unwind_info);
+      rd_printf("Chained: %#08x %#08x %#08x", next_pdata.voff_first, next_pdata.voff_one_past_last, next_pdata.voff_unwind_info);
     }
     
     if (has_handler_data) {
@@ -3465,7 +3465,7 @@ pe_print_exceptions_x8664(Arena              *arena,
 #define ExceptionHandlerDataFlag_ScopeTable (1 << 2)
 #define ExceptionHandlerDataFlag_GS         (1 << 3u)
       
-      U64 actual_code_count = PE_UNWIND_INFO_GET_CODE_COUNT(uwinfo->codes_num);
+      U64 actual_code_count = PE_UNWIND_INFO_GET_CODE_COUNT(uwinfo.codes_num);
       U64 read_cursor       = codes_offset + actual_code_count * sizeof(PE_UnwindCode);
       
       U32 handler = 0; 
@@ -3568,7 +3568,7 @@ pe_print_exceptions_x8664(Arena              *arena,
         
         U64                    func_info_foff = coff_foff_from_voff(sections, section_count, func_info_voff);
         MSCRT_ParsedFuncInfoV4 func_info      = {0};
-        mscrt_parse_func_info_v4(arena, raw_data, section_count, sections, func_info_foff, pdata->voff_first, &func_info);
+        mscrt_parse_func_info_v4(arena, raw_data, section_count, sections, func_info_foff, pdata.voff_first, &func_info);
         
         String8 header_str = str8_zero();
         {
@@ -3619,18 +3619,18 @@ pe_print_exceptions_x8664(Arena              *arena,
           for (U32 i = 0; i < unwind_map.count; ++i) {
             MSCRT_UnwindEntryV4 *ue       = &unwind_map.v[i];
             String8                 type_str = str8_zero();
-            switch (ue->type) {
+            switch (ue.type) {
               case MSCRT_UnwindMapV4Type_NoUW:             type_str = str8_lit("NoUW");             break;
               case MSCRT_UnwindMapV4Type_DtorWithObj:      type_str = str8_lit("DtorWithObj");      break;
               case MSCRT_UnwindMapV4Type_DtorWithPtrToObj: type_str = str8_lit("DtorWithPtrToObj"); break;
               case MSCRT_UnwindMapV4Type_VOFF:             type_str = str8_lit("VOFF");             break;
             }
-            if (ue->type == MSCRT_UnwindMapV4Type_DtorWithObj || ue->type == MSCRT_UnwindMapV4Type_DtorWithPtrToObj) {
-              rd_printf("[%2u] NextOff=%u Type=%-16S Action=%#08x Object=%#x", i, ue->next_off, type_str, ue->action, ue->object);
-            } else if (ue->type == MSCRT_UnwindMapV4Type_VOFF) {
-              rd_printf("[%2u] NextOff=%u Type=%-16S Action=%#08x", i, ue->next_off, type_str, ue->action);
+            if (ue.type == MSCRT_UnwindMapV4Type_DtorWithObj || ue.type == MSCRT_UnwindMapV4Type_DtorWithPtrToObj) {
+              rd_printf("[%2u] NextOff=%u Type=%-16S Action=%#08x Object=%#x", i, ue.next_off, type_str, ue.action, ue.object);
+            } else if (ue.type == MSCRT_UnwindMapV4Type_VOFF) {
+              rd_printf("[%2u] NextOff=%u Type=%-16S Action=%#08x", i, ue.next_off, type_str, ue.action);
             } else {
-              rd_printf("[%2u] NextOff=%u Type=%S", i, ue->next_off, type_str);
+              rd_printf("[%2u] NextOff=%u Type=%S", i, ue.next_off, type_str);
             }
           }
           rd_unindent();
@@ -3642,29 +3642,29 @@ pe_print_exceptions_x8664(Arena              *arena,
           rd_indent();
           for (U32 i = 0; i < try_block_map.count; ++i) {
             MSCRT_TryBlockMapV4 *try_block = &try_block_map.v[i];
-            rd_printf("[%2u] TryLow %u TryHigh %u CatchHigh %u", i, try_block->try_low, try_block->try_high, try_block->catch_high);
-            if (try_block->handlers.count) {
-              for (U32 k = 0; k < try_block->handlers.count; ++k) {
-                MSCRT_EhHandlerTypeV4 *handler = &try_block->handlers.v[k];
+            rd_printf("[%2u] TryLow %u TryHigh %u CatchHigh %u", i, try_block.try_low, try_block.try_high, try_block.catch_high);
+            if (try_block.handlers.count) {
+              for (U32 k = 0; k < try_block.handlers.count; ++k) {
+                MSCRT_EhHandlerTypeV4 *handler = &try_block.handlers.v[k];
                 
                 String8List line_list = {0};
                 str8_list_pushf(arena, &line_list, "  ");
-                str8_list_pushf(arena, &line_list, "CatchCodeVOff=%#08X", handler->catch_code_voff);
-                if (handler->flags & MSCRT_EhHandlerV4Flag_Adjectives) {
-                  String8 adjectives = mscrt_string_from_eh_adjectives(arena, handler->adjectives);
+                str8_list_pushf(arena, &line_list, "CatchCodeVOff=%#08X", handler.catch_code_voff);
+                if (handler.flags & MSCRT_EhHandlerV4Flag_Adjectives) {
+                  String8 adjectives = mscrt_string_from_eh_adjectives(arena, handler.adjectives);
                   str8_list_pushf(arena, &line_list, "Adjectives=%S", adjectives);
                 }
-                if (handler->flags & MSCRT_EhHandlerV4Flag_DispType) {
-                  str8_list_pushf(arena, &line_list, "TypeVOff=%#x", handler->type_voff);
+                if (handler.flags & MSCRT_EhHandlerV4Flag_DispType) {
+                  str8_list_pushf(arena, &line_list, "TypeVOff=%#x", handler.type_voff);
                 }
-                if (handler->flags & MSCRT_EhHandlerV4Flag_DispCatchObj) {
-                  str8_list_pushf(arena, &line_list, "CacthObjVOff=%#x", handler->catch_obj_voff);
+                if (handler.flags & MSCRT_EhHandlerV4Flag_DispCatchObj) {
+                  str8_list_pushf(arena, &line_list, "CacthObjVOff=%#x", handler.catch_obj_voff);
                 }
-                if (handler->flags & MSCRT_EhHandlerV4Flag_ContIsVOff) {
+                if (handler.flags & MSCRT_EhHandlerV4Flag_ContIsVOff) {
                   str8_list_pushf(arena, &line_list, "ContIsVOff");
                 }
-                for (U32 icont = 0; icont < handler->catch_funclet_cont_addr_count; ++icont) {
-                  str8_list_pushf(arena, &line_list, "ContAddr[%u]=%#llx", icont, handler->catch_funclet_cont_addr[icont]);
+                for (U32 icont = 0; icont < handler.catch_funclet_cont_addr_count; ++icont) {
+                  str8_list_pushf(arena, &line_list, "ContAddr[%u]=%#llx", icont, handler.catch_funclet_cont_addr[icont]);
                 }
                 
                 String8 handler_str = str8_list_join(arena, &line_list, &(StringJoin){.sep=str8_lit(" ")});
@@ -3799,15 +3799,15 @@ pe_print_base_relocs(Arena              *arena,
     
     // convert blocks to string list
     U64 iblock = 0;
-    for (PE_BaseRelocBlockNode *node = base_relocs.first; node != 0; node = node->next) {
-      PE_BaseRelocBlock *block = &node->v;
-      rd_printf("Block No. %u, Virt Off %#x, Reloc Count %u", iblock++, block->page_virt_off, block->entry_count);
+    for (PE_BaseRelocBlockNode *node = base_relocs.first; node != 0; node = node.next) {
+      PE_BaseRelocBlock *block = &node.v;
+      rd_printf("Block No. %u, Virt Off %#x, Reloc Count %u", iblock++, block.page_virt_off, block.entry_count);
       rd_indent();
-      for (U64 ientry = 0; ientry < block->entry_count; ++ientry) {
-        PE_BaseRelocKind type   = PE_BaseRelocKindFromEntry(block->entries[ientry]);
-        U16              offset = PE_BaseRelocOffsetFromEntry(block->entries[ientry]);
+      for (U64 ientry = 0; ientry < block.entry_count; ++ientry) {
+        PE_BaseRelocKind type   = PE_BaseRelocKindFromEntry(block.entries[ientry]);
+        U16              offset = PE_BaseRelocOffsetFromEntry(block.entries[ientry]);
         
-        U64 apply_to_voff = block->page_virt_off + offset;
+        U64 apply_to_voff = block.page_virt_off + offset;
         U64 apply_to_foff = coff_foff_from_voff(sections, section_count, apply_to_voff);
         U64 apply_to      = 0;
         str8_deserial_read(raw_data, apply_to_foff, &apply_to, addr_size, 1);
@@ -3865,16 +3865,16 @@ pe_print(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Op
     rd_errorf("not enough bytes to read DOS header");
     goto exit;
   }
-  Assert(dos_header->magic == PE_DOS_MAGIC);
+  Assert(dos_header.magic == PE_DOS_MAGIC);
   
   U32 pe_magic = 0;
-  str8_deserial_read_struct(raw_data, dos_header->coff_file_offset, &pe_magic);
+  str8_deserial_read_struct(raw_data, dos_header.coff_file_offset, &pe_magic);
   if (pe_magic != PE_MAGIC) {
     rd_errorf("PE magic check failure, input file is not of PE format");
     goto exit;
   }
   
-  U64              file_header_off = dos_header->coff_file_offset+sizeof(pe_magic);
+  U64              file_header_off = dos_header.coff_file_offset+sizeof(pe_magic);
   COFF_FileHeader *file_header     = str8_deserial_get_raw_ptr(raw_data, file_header_off, sizeof(*file_header));
   if (!file_header) {
     rd_errorf("not enough bytes to read COFF header");
@@ -3889,46 +3889,46 @@ pe_print(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Op
     goto exit;
   }
   
-  if (opt_header_magic == PE_PE32_MAGIC && file_header->optional_header_size < sizeof(PE_OptionalHeader32)) {
-    rd_errorf("unexpected optional header size in COFF header %m, expected at least %m", file_header->optional_header_size, sizeof(PE_OptionalHeader32));
+  if (opt_header_magic == PE_PE32_MAGIC && file_header.optional_header_size < sizeof(PE_OptionalHeader32)) {
+    rd_errorf("unexpected optional header size in COFF header %m, expected at least %m", file_header.optional_header_size, sizeof(PE_OptionalHeader32));
     goto exit;
   }
   
-  if (opt_header_magic == PE_PE32PLUS_MAGIC && file_header->optional_header_size < sizeof(PE_OptionalHeader32Plus)) {
-    rd_errorf("unexpected optional header size %m, expected at least %m", file_header->optional_header_size, sizeof(PE_OptionalHeader32Plus));
+  if (opt_header_magic == PE_PE32PLUS_MAGIC && file_header.optional_header_size < sizeof(PE_OptionalHeader32Plus)) {
+    rd_errorf("unexpected optional header size %m, expected at least %m", file_header.optional_header_size, sizeof(PE_OptionalHeader32Plus));
     goto exit;
   }
   
-  U64                 sections_off = file_header_off + sizeof(*file_header) + file_header->optional_header_size;
-  COFF_SectionHeader *sections     = str8_deserial_get_raw_ptr(raw_data, sections_off, sizeof(*sections)*file_header->section_count);
+  U64                 sections_off = file_header_off + sizeof(*file_header) + file_header.optional_header_size;
+  COFF_SectionHeader *sections     = str8_deserial_get_raw_ptr(raw_data, sections_off, sizeof(*sections)*file_header.section_count);
   if (!sections) {
     rd_errorf("not enough bytes to read COFF section headers");
     goto exit;
   }
   
-  U64     string_table_off = file_header->symbol_table_foff + sizeof(COFF_Symbol16) * file_header->symbol_count;
+  U64     string_table_off = file_header.symbol_table_foff + sizeof(COFF_Symbol16) * file_header.symbol_count;
   String8 raw_string_table = str8_substr(raw_data, rng_1u64(string_table_off, raw_data.size));
   
-  COFF_Symbol32Array symbols = coff_symbol_array_from_data_16(scratch.arena, raw_data, file_header->symbol_table_foff, file_header->symbol_count);
+  COFF_Symbol32Array symbols = coff_symbol_array_from_data_16(scratch.arena, raw_data, file_header.symbol_table_foff, file_header.symbol_count);
   
-  U8 *raw_opt_header = push_array(scratch.arena, U8, file_header->optional_header_size);
-  str8_deserial_read_array(raw_data, opt_header_off, raw_opt_header, file_header->optional_header_size);
+  U8 *raw_opt_header = push_array(scratch.arena, U8, file_header.optional_header_size);
+  str8_deserial_read_array(raw_data, opt_header_off, raw_opt_header, file_header.optional_header_size);
   
   if (opts & RD_Option_Headers) {
     coff_print_file_header(arena, out, indent, file_header);
     rd_newline();
   }
   
-  Arch              arch       = arch_from_coff_machine(file_header->machine);
+  Arch              arch       = arch_from_coff_machine(file_header.machine);
   U64               image_base = 0;
   U64               dir_count  = 0;
   PE_DataDirectory *dirs       = 0;
   
   if (opt_header_magic == PE_PE32_MAGIC) {
     PE_OptionalHeader32 *opt_header = (PE_OptionalHeader32 *)raw_opt_header;
-    image_base = opt_header->image_base;
-    dir_count  = opt_header->data_dir_count;
-    dirs       = str8_deserial_get_raw_ptr(raw_data, opt_header_off+sizeof(*opt_header), sizeof(*dirs) * opt_header->data_dir_count);
+    image_base = opt_header.image_base;
+    dir_count  = opt_header.data_dir_count;
+    dirs       = str8_deserial_get_raw_ptr(raw_data, opt_header_off+sizeof(*opt_header), sizeof(*dirs) * opt_header.data_dir_count);
     if (!dirs) {
       rd_errorf("unable to read data directories");
       goto exit;
@@ -3939,9 +3939,9 @@ pe_print(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Op
     }
   } else if (opt_header_magic == PE_PE32PLUS_MAGIC) {
     PE_OptionalHeader32Plus *opt_header = (PE_OptionalHeader32Plus *)raw_opt_header;
-    image_base = opt_header->image_base;
-    dir_count  = opt_header->data_dir_count;
-    dirs       = str8_deserial_get_raw_ptr(raw_data, opt_header_off+sizeof(*opt_header), sizeof(*dirs) * opt_header->data_dir_count);
+    image_base = opt_header.image_base;
+    dir_count  = opt_header.data_dir_count;
+    dirs       = str8_deserial_get_raw_ptr(raw_data, opt_header_off+sizeof(*opt_header), sizeof(*dirs) * opt_header.data_dir_count);
     if (!dirs) {
       rd_errorf("unable to read data directories");
       goto exit;
@@ -3957,17 +3957,17 @@ pe_print(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Op
   Rng1U64 *dirs_virt_ranges = push_array(scratch.arena, Rng1U64, dir_count);
   for (U64 i = 0; i < dir_count; ++i) {
     PE_DataDirectory dir = dirs[i];
-    U64 file_off = coff_foff_from_voff(sections, file_header->section_count, dir.virt_off);
+    U64 file_off = coff_foff_from_voff(sections, file_header.section_count, dir.virt_off);
     dirs_file_ranges[i] = r1u64(file_off, file_off+dir.virt_size);
     dirs_virt_ranges[i] = r1u64(dir.virt_off, dir.virt_off+dir.virt_size);
   }
   
   if (opts & RD_Option_Sections) {
-    coff_print_section_table(arena, out, indent, raw_string_table, symbols, file_header->section_count, sections);
+    coff_print_section_table(arena, out, indent, raw_string_table, symbols, file_header.section_count, sections);
   }
   
   if (opts & RD_Option_Relocs) {
-    coff_print_relocs(arena, out, indent, raw_data, raw_string_table, file_header->machine, file_header->section_count, sections, symbols);
+    coff_print_relocs(arena, out, indent, raw_data, raw_string_table, file_header.machine, file_header.section_count, sections, symbols);
   }
   
   if (opts & RD_Option_Symbols) {
@@ -3976,7 +3976,7 @@ pe_print(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Op
   
   if (opts & RD_Option_Exports) {
     PE_ParsedExportTable exptab = pe_exports_from_data(arena,
-                                                       file_header->section_count,
+                                                       file_header.section_count,
                                                        sections,
                                                        raw_data,
                                                        dirs_file_ranges[PE_DataDirectoryIndex_EXPORT],
@@ -3986,8 +3986,8 @@ pe_print(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Op
   
   if (opts & RD_Option_Imports) {
     B32                        is_pe32       = opt_header_magic == PE_PE32_MAGIC;
-    PE_ParsedStaticImportTable static_imptab = pe_static_imports_from_data(arena, is_pe32, file_header->section_count, sections, raw_data, dirs_file_ranges[PE_DataDirectoryIndex_IMPORT]);
-    PE_ParsedDelayImportTable  delay_imptab  = pe_delay_imports_from_data(arena, is_pe32, file_header->section_count, sections, raw_data, dirs_file_ranges[PE_DataDirectoryIndex_DELAY_IMPORT]);
+    PE_ParsedStaticImportTable static_imptab = pe_static_imports_from_data(arena, is_pe32, file_header.section_count, sections, raw_data, dirs_file_ranges[PE_DataDirectoryIndex_IMPORT]);
+    PE_ParsedDelayImportTable  delay_imptab  = pe_delay_imports_from_data(arena, is_pe32, file_header.section_count, sections, raw_data, dirs_file_ranges[PE_DataDirectoryIndex_DELAY_IMPORT]);
     pe_print_static_import_table(arena, out, indent, image_base, static_imptab);
     pe_print_delay_import_table(arena, out, indent, image_base, delay_imptab);
   }
@@ -3999,11 +3999,11 @@ pe_print(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Op
   }
   
   if (opts & RD_Option_Exceptions) {
-    pe_print_exceptions(arena, out, indent, file_header->machine, file_header->section_count, sections, raw_data, dirs_file_ranges[PE_DataDirectoryIndex_EXCEPTIONS], rdi);
+    pe_print_exceptions(arena, out, indent, file_header.machine, file_header.section_count, sections, raw_data, dirs_file_ranges[PE_DataDirectoryIndex_EXCEPTIONS], rdi);
   }
   
   if (opts & RD_Option_Relocs) {
-    pe_print_base_relocs(arena, out, indent, file_header->machine, image_base, file_header->section_count, sections, raw_data, dirs_file_ranges[PE_DataDirectoryIndex_BASE_RELOC], rdi);
+    pe_print_base_relocs(arena, out, indent, file_header.machine, image_base, file_header.section_count, sections, raw_data, dirs_file_ranges[PE_DataDirectoryIndex_BASE_RELOC], rdi);
   }
   
   if (opts & RD_Option_Debug) {
@@ -4015,7 +4015,7 @@ pe_print(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Op
   
   if (opts & RD_Option_Tls) {
     if (dim_1u64(dirs_file_ranges[PE_DataDirectoryIndex_TLS])) {
-      PE_ParsedTLS tls = pe_tls_from_data(scratch.arena, file_header->machine, image_base, file_header->section_count, sections, raw_data, dirs_file_ranges[PE_DataDirectoryIndex_TLS]);
+      PE_ParsedTLS tls = pe_tls_from_data(scratch.arena, file_header.machine, image_base, file_header.section_count, sections, raw_data, dirs_file_ranges[PE_DataDirectoryIndex_TLS]);
       pe_print_tls(arena, out, indent, tls);
     }
   }
@@ -4023,7 +4023,7 @@ pe_print(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Op
   if (opts & RD_Option_LoadConfig) {
     String8 raw_lc = str8_substr(raw_data, dirs_file_ranges[PE_DataDirectoryIndex_LOAD_CONFIG]);
     if (raw_lc.size) {
-      switch (file_header->machine) {
+      switch (file_header.machine) {
         case COFF_MachineType_Unknown: break;
         case COFF_MachineType_X86: {
           PE_LoadConfig32 *lc = str8_deserial_get_raw_ptr(raw_lc, 0, sizeof(*lc));
@@ -4051,20 +4051,20 @@ pe_print(Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Op
     if (rdi) {
       section_markers = rd_section_markers_from_rdi(scratch.arena, rdi);
     } else {
-      section_markers = rd_section_markers_from_coff_symbol_table(scratch.arena, raw_string_table, file_header->section_count, symbols);
+      section_markers = rd_section_markers_from_coff_symbol_table(scratch.arena, raw_string_table, file_header.section_count, symbols);
     }
   }
   
   if (opts & RD_Option_Rawdata) {
-    coff_raw_data_sections(arena, out, indent, raw_data, 0, section_markers, file_header->section_count, sections);
+    coff_raw_data_sections(arena, out, indent, raw_data, 0, section_markers, file_header.section_count, sections);
   }
   
   if (opts & RD_Option_Disasm) {
-    coff_disasm_sections(arena, out, indent, raw_data, file_header->machine, 0, 1, section_markers, file_header->section_count, sections);
+    coff_disasm_sections(arena, out, indent, raw_data, file_header.machine, 0, 1, section_markers, file_header.section_count, sections);
   }
   
   if (opts & RD_Option_Dwarf) {
-    DW_Input dwarf_input = dw_input_from_coff_section_table(scratch.arena, raw_data, raw_string_table, file_header->section_count, sections);
+    DW_Input dwarf_input = dw_input_from_coff_section_table(scratch.arena, raw_data, raw_string_table, file_header.section_count, sections);
     dw_format(arena, out, indent, opts, &dwarf_input, arch, ExecutableImageKind_CoffPe);
   }
   
@@ -4089,11 +4089,11 @@ elf_print_dwarf_expressions(Arena *arena, String8List *out, String8 indent, Stri
   
   if (bin.hdr.e_type == ELF_Type_Exec || bin.hdr.e_type == ELF_Type_Dyn) {
     U64 cu_idx = 0;
-    for (Rng1U64Node *cu_range_n = cu_ranges.first; cu_range_n != 0; cu_range_n = cu_range_n->next, ++cu_idx) {
+    for (Rng1U64Node *cu_range_n = cu_ranges.first; cu_range_n != 0; cu_range_n = cu_range_n.next, ++cu_idx) {
       Temp comp_temp = temp_begin(scratch.arena);
       
-      U64         cu_base   = cu_range_n->v.min;
-      Rng1U64     cu_range  = cu_range_n->v;
+      U64         cu_base   = cu_range_n.v.min;
+      Rng1U64     cu_range  = cu_range_n.v;
       DW_CompUnit cu        = dw_cu_from_info_off(comp_temp.arena, &dwarf_input, lu_input, cu_range.min, relaxed);
       
       struct TagNode {
@@ -4115,14 +4115,14 @@ elf_print_dwarf_expressions(Arena *arena, String8List *out, String8 indent, Stri
           } else {
             SLLStackPop(free_tags);
           }
-          n->tag = tag;
+          n.tag = tag;
           SLLStackPush(tag_stack, n);
         }
         
         if (tag.kind == DW_TagKind_Null) {
           if (tag_stack) {
             struct TagNode *n = tag_stack;
-            if ((n->tag.kind == DW_TagKind_SubProgram || n->tag.kind == DW_TagKind_LexicalBlock)) {
+            if ((n.tag.kind == DW_TagKind_SubProgram || n.tag.kind == DW_TagKind_LexicalBlock)) {
               Assert(lexical_block_depth > 0);
               --lexical_block_depth;
             }
@@ -4155,9 +4155,9 @@ elf_print_dwarf_expressions(Arena *arena, String8List *out, String8 indent, Stri
             rd_indent();
             if (value_class == DW_AttribClass_LocListPtr || value_class == DW_AttribClass_LocList) {
               DW_LocList location = dw_loclist_from_tag_attrib_kind(comp_temp.arena, &dwarf_input, &cu, location_attrib);
-              for (DW_LocNode *loc_n = location.first; loc_n != 0; loc_n = loc_n->next) {
-                String8 expr_str = dw_single_line_string_from_expression(comp_temp.arena, loc_n->v.expr, cu_base, cu.address_size, arch, cu.version, cu.ext, cu.format);
-                rd_printf("[%llx-%llx] %S", loc_n->v.range.min, loc_n->v.range.max, expr_str);
+              for (DW_LocNode *loc_n = location.first; loc_n != 0; loc_n = loc_n.next) {
+                String8 expr_str = dw_single_line_string_from_expression(comp_temp.arena, loc_n.v.expr, cu_base, cu.address_size, arch, cu.version, cu.ext, cu.format);
+                rd_printf("[%llx-%llx] %S", loc_n.v.range.min, loc_n.v.range.max, expr_str);
               }
             } else if (value_class == DW_AttribClass_ExprLoc) {
               String8 expr = dw_exprloc_from_tag_attrib_kind(&dwarf_input, &cu, location_attrib);
@@ -4173,7 +4173,7 @@ elf_print_dwarf_expressions(Arena *arena, String8List *out, String8 indent, Stri
         if (tag.kind == DW_TagKind_LexicalBlock || tag.kind == DW_TagKind_CompileUnit || tag.kind == DW_TagKind_InlinedSubroutine || tag.kind == DW_TagKind_SubProgram) {
           Temp temp = temp_begin(comp_temp.arena);
           DW_Attrib *ranges_attrib = dw_attrib_from_tag(&dwarf_input, &cu, tag, DW_AttribKind_Ranges);
-          if (ranges_attrib->attrib_kind == DW_AttribKind_Ranges) {
+          if (ranges_attrib.attrib_kind == DW_AttribKind_Ranges) {
             Rng1U64List ranges = dw_rnglist_from_tag_attrib_kind(temp.arena, &dwarf_input, &cu, ranges_attrib);
           }
           temp_end(temp);

@@ -26,7 +26,7 @@ sld_main(CmdLine *cmdl)
     B32 do_help = cmd_line_has_flag(cmdl, str8_lit("help")) ||
                                 cmd_line_has_flag(cmdl, str8_lit("h"))    ||
                                 cmd_line_has_flag(cmdl, str8_lit("?"))    ||
-                                cmdl->argc == 1;
+                                cmdl.argc == 1;
     if (do_help) {    fprintf(stderr, "--- Help ---------------------------------------------------------------------\n");
         fprintf(stderr, " %s\n\n", BUILD_TITLE_STRING_LITERAL);
         fprintf(stderr, " Usage: strip_lib_debug [Options]\n\n");
@@ -92,8 +92,8 @@ sld_main(CmdLine *cmdl)
                 COFF_SectionHeader *sect_header = &section_table[sect_idx];
                 String8             name        = coff_name_from_section_header(string_table, sect_header);
                 if (str8_match(str8_lit(".debug$S"), name, 0) || str8_match(str8_lit(".debug$T"), name, 0)) {
-                    sect_header->flags = COFF_SectionFlag_LnkRemove;
-                    MemorySet(sect_header->name, 'x', sizeof(sect_header->name));
+                    sect_header.flags = COFF_SectionFlag_LnkRemove;
+                    MemorySet(sect_header.name, 'x', sizeof(sect_header.name));
                 }
             }
         }

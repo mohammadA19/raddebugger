@@ -90,8 +90,8 @@ ev_expansion_type_from_key(E_TypeKey type_key)
         if (kind == E_TypeKind_Lens)
         {
             E_Type *type = e_type_from_key(key);
-            if (type->expand.info != 0 ||
-                  ev_expand_rule_from_string(type->name) != &ev_nil_expand_rule)
+            if (type.expand.info != 0 ||
+                  ev_expand_rule_from_string(type.name) != &ev_nil_expand_rule)
             {
                 done = 1;
                 result = key;
@@ -168,7 +168,7 @@ ev_type_key_is_editable(E_TypeKey type_key)
             case E_TypeKind_Array:
             {
                 E_Type *type = e_type_from_key(t);
-                if (type->flags & E_TypeFlag_IsNotText)
+                if (type.flags & E_TypeFlag_IsNotText)
                 {
                     result = 0;
                     done = 1;
@@ -206,18 +206,18 @@ ev_view_alloc(void)
 {
     Arena *arena = arena_alloc();
     EV_View *view = push_array(arena, EV_View, 1);
-    view->arena = arena;
-    view->expand_slots_count = 256;
-    view->expand_slots = push_array(arena, EV_ExpandSlot, view->expand_slots_count);
-    view->key_view_rule_slots_count = 256;
-    view->key_view_rule_slots = push_array(arena, EV_KeyViewRuleSlot, view->key_view_rule_slots_count);
+    view.arena = arena;
+    view.expand_slots_count = 256;
+    view.expand_slots = push_array(arena, EV_ExpandSlot, view.expand_slots_count);
+    view.key_view_rule_slots_count = 256;
+    view.key_view_rule_slots = push_array(arena, EV_KeyViewRuleSlot, view.key_view_rule_slots_count);
     return view;
 }
 
 internal void
 ev_view_release(EV_View *view)
 {
-    arena_release(view->arena);
+    arena_release(view.arena);
 }
 
 //- rjf: lookups / mutations
@@ -226,12 +226,12 @@ internal EV_ExpandNode *
 ev_expand_node_from_key(EV_View *view, EV_Key key)
 {
     U64 hash = ev_hash_from_key(key);
-    U64 slot_idx = hash%view->expand_slots_count;
-    EV_ExpandSlot *slot = &view->expand_slots[slot_idx];
+    U64 slot_idx = hash%view.expand_slots_count;
+    EV_ExpandSlot *slot = &view.expand_slots[slot_idx];
     EV_ExpandNode *node = 0;
-    for (EV_ExpandNode *n = slot->first; n != 0; n = n->hash_next)
+    for (EV_ExpandNode *n = slot.first; n != 0; n = n.hash_next)
     {
-        if (ev_key_match(n->key, key))
+        if (ev_key_match(n.key, key))
         {
             node = n;
             break;
@@ -244,7 +244,7 @@ internal B32
 ev_expansion_from_key(EV_View *view, EV_Key key)
 {
     EV_ExpandNode *node = ev_expand_node_from_key(view, key);
-    return (node != 0 && node->expanded);
+    return (node != 0 && node.expanded);
 }
 
 internal String8
@@ -254,14 +254,14 @@ ev_view_rule_from_key(EV_View *view, EV_Key key)
     
     //- rjf: key -> hash * slot idx * slot
     U64 hash = ev_hash_from_key(key);
-    U64 slot_idx = hash%view->key_view_rule_slots_count;
-    EV_KeyViewRuleSlot *slot = &view->key_view_rule_slots[slot_idx];
+    U64 slot_idx = hash%view.key_view_rule_slots_count;
+    EV_KeyViewRuleSlot *slot = &view.key_view_rule_slots[slot_idx];
     
     //- rjf: slot -> existing node
     EV_KeyViewRuleNode *existing_node = 0;
-    for (EV_KeyViewRuleNode *n = slot->first; n != 0; n = n->hash_next)
+    for (EV_KeyViewRuleNode *n = slot.first; n != 0; n = n.hash_next)
     {
-        if (ev_key_match(n->key, key))
+        if (ev_key_match(n.key, key))
         {
             existing_node = n;
             break;
@@ -271,7 +271,7 @@ ev_view_rule_from_key(EV_View *view, EV_Key key)
     //- rjf: node -> result
     if (existing_node != 0)
     {
-        result = str8(existing_node->buffer, existing_node->buffer_string_size);
+        result = str8(existing_node.buffer, existing_node.buffer_string_size);
     }
     
     return result;
@@ -287,29 +287,29 @@ ev_key_set_expansion(EV_View *view, EV_Key parent_key, EV_Key key, B32 expanded)
     // rjf: make node if we don't have one, and we need one
     if (node == 0 && expanded)
     {
-        node = view->free_expand_node;
+        node = view.free_expand_node;
         if (node != 0)
         {
-            SLLStackPop(view->free_expand_node);
+            SLLStackPop(view.free_expand_node);
             MemoryZeroStruct(node);
         }
         else
         {
-            node = push_array(view->arena, EV_ExpandNode, 1);
+            node = push_array(view.arena, EV_ExpandNode, 1);
         }
         
         // rjf: link into table
         U64 hash = ev_hash_from_key(key);
-        U64 slot = hash % view->expand_slots_count;
-        DLLPushBack_NP(view->expand_slots[slot].first, view->expand_slots[slot].last, node, hash_next, hash_prev);
+        U64 slot = hash % view.expand_slots_count;
+        DLLPushBack_NP(view.expand_slots[slot].first, view.expand_slots[slot].last, node, hash_next, hash_prev);
         
         // rjf: link into parent
         if (parent_node != 0)
         {
             EV_ExpandNode *prev = 0;
-            for (EV_ExpandNode *n = parent_node->first; n != 0; n = n->next)
+            for (EV_ExpandNode *n = parent_node.first; n != 0; n = n.next)
             {
-                if (n->key.child_id < key.child_id)
+                if (n.key.child_id < key.child_id)
                 {
                     prev = n;
                 }
@@ -318,34 +318,34 @@ ev_key_set_expansion(EV_View *view, EV_Key parent_key, EV_Key key, B32 expanded)
                     break;
                 }
             }
-            DLLInsert_NP(parent_node->first, parent_node->last, prev, node, next, prev);
-            node->parent = parent_node;
+            DLLInsert_NP(parent_node.first, parent_node.last, prev, node, next, prev);
+            node.parent = parent_node;
         }
     }
     
     // rjf: fill
     if (node != 0)
     {
-        node->key = key;
-        node->expanded = expanded;
+        node.key = key;
+        node.expanded = expanded;
     }
     
     // rjf: unlink node & free if we don't need it anymore
-    if (expanded == 0 && node != 0 && node->first == 0)
+    if (expanded == 0 && node != 0 && node.first == 0)
     {
         // rjf: unlink from table
         U64 hash = ev_hash_from_key(key);
-        U64 slot = hash % view->expand_slots_count;
-        DLLRemove_NP(view->expand_slots[slot].first, view->expand_slots[slot].last, node, hash_next, hash_prev);
+        U64 slot = hash % view.expand_slots_count;
+        DLLRemove_NP(view.expand_slots[slot].first, view.expand_slots[slot].last, node, hash_next, hash_prev);
         
         // rjf: unlink from tree
         if (parent_node != 0)
         {
-            DLLRemove_NP(parent_node->first, parent_node->last, node, next, prev);
+            DLLRemove_NP(parent_node.first, parent_node.last, node, next, prev);
         }
         
         // rjf: free
-        SLLStackPush(view->free_expand_node, node);
+        SLLStackPush(view.free_expand_node, node);
     }
 }
 
@@ -354,14 +354,14 @@ ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_string)
 {
     //- rjf: key -> hash * slot idx * slot
     U64 hash = ev_hash_from_key(key);
-    U64 slot_idx = hash%view->key_view_rule_slots_count;
-    EV_KeyViewRuleSlot *slot = &view->key_view_rule_slots[slot_idx];
+    U64 slot_idx = hash%view.key_view_rule_slots_count;
+    EV_KeyViewRuleSlot *slot = &view.key_view_rule_slots[slot_idx];
     
     //- rjf: slot -> existing node
     EV_KeyViewRuleNode *existing_node = 0;
-    for (EV_KeyViewRuleNode *n = slot->first; n != 0; n = n->hash_next)
+    for (EV_KeyViewRuleNode *n = slot.first; n != 0; n = n.hash_next)
     {
-        if (ev_key_match(n->key, key))
+        if (ev_key_match(n.key, key))
         {
             existing_node = n;
             break;
@@ -372,18 +372,18 @@ ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_string)
     EV_KeyViewRuleNode *node = existing_node;
     if (node == 0)
     {
-        node = push_array(view->arena, EV_KeyViewRuleNode, 1);
-        DLLPushBack_NP(slot->first, slot->last, node, hash_next, hash_prev);
-        node->key = key;
-        node->buffer_cap = 512;
-        node->buffer = push_array(view->arena, U8, node->buffer_cap);
+        node = push_array(view.arena, EV_KeyViewRuleNode, 1);
+        DLLPushBack_NP(slot.first, slot.last, node, hash_next, hash_prev);
+        node.key = key;
+        node.buffer_cap = 512;
+        node.buffer = push_array(view.arena, U8, node.buffer_cap);
     }
     
     //- rjf: mutate node
     if (node != 0)
     {
-        node->buffer_string_size = ClampTop(view_rule_string.size, node->buffer_cap);
-        MemoryCopy(node->buffer, view_rule_string.str, node->buffer_string_size);
+        node.buffer_string_size = ClampTop(view_rule_string.size, node.buffer_cap);
+        MemoryCopy(node.buffer, view_rule_string.str, node.buffer_string_size);
     }
 }
 
@@ -393,18 +393,18 @@ ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_string)
 internal void
 ev_expand_rule_table_push(Arena *arena, EV_ExpandRuleTable *table, EV_ExpandRule *info)
 {
-    if (table->slots_count == 0)
+    if (table.slots_count == 0)
     {
-        table->slots_count = 512;
-        table->slots = push_array(arena, EV_ExpandRuleSlot, table->slots_count);
+        table.slots_count = 512;
+        table.slots = push_array(arena, EV_ExpandRuleSlot, table.slots_count);
     }
-    U64 hash = ev_hash_from_seed_string(5381, info->string);
-    U64 slot_idx = hash%table->slots_count;
-    EV_ExpandRuleSlot *slot = &table->slots[slot_idx];
+    U64 hash = ev_hash_from_seed_string(5381, info.string);
+    U64 slot_idx = hash%table.slots_count;
+    EV_ExpandRuleSlot *slot = &table.slots[slot_idx];
     EV_ExpandRuleNode *n = push_array(arena, EV_ExpandRuleNode, 1);
-    SLLQueuePush(slot->first, slot->last, n);
-    MemoryCopyStruct(&n->v, info);
-    n->v.string = push_str8_copy(arena, n->v.string);
+    SLLQueuePush(slot.first, slot.last, n);
+    MemoryCopyStruct(&n.v, info);
+    n.v.string = push_str8_copy(arena, n.v.string);
 }
 
 internal void
@@ -417,15 +417,15 @@ internal EV_ExpandRule *
 ev_expand_rule_from_string(String8 string)
 {
     EV_ExpandRule *info = &ev_nil_expand_rule;
-    if (ev_view_rule_info_table != 0 && ev_view_rule_info_table->slots_count != 0)
+    if (ev_view_rule_info_table != 0 && ev_view_rule_info_table.slots_count != 0)
     {
         U64 hash = ev_hash_from_seed_string(5381, string);
-        U64 slot_idx = hash%ev_view_rule_info_table->slots_count;
-        EV_ExpandRuleSlot *slot = &ev_view_rule_info_table->slots[slot_idx];
+        U64 slot_idx = hash%ev_view_rule_info_table.slots_count;
+        EV_ExpandRuleSlot *slot = &ev_view_rule_info_table.slots[slot_idx];
         EV_ExpandRuleNode *node = 0;
-        for (EV_ExpandRuleNode *n = slot->first; n != 0; n = n->next)
+        for (EV_ExpandRuleNode *n = slot.first; n != 0; n = n.next)
         {
-            if (str8_match(n->v.string, string, 0))
+            if (str8_match(n.v.string, string, 0))
             {
                 node = n;
                 break;
@@ -433,7 +433,7 @@ ev_expand_rule_from_string(String8 string)
         }
         if (node != 0)
         {
-            info = &node->v;
+            info = &node.v;
         }
     }
     return info;
@@ -449,7 +449,7 @@ ev_expand_rule_from_type_key(E_TypeKey type_key)
         for (;kind == E_TypeKind_Lens; k = e_type_key_direct(e_type_key_unwrap(k, E_TypeUnwrapFlag_Meta)), kind = e_type_kind_from_key(k))
         {
             E_Type *type = e_type_from_key(k);
-            EV_ExpandRule *candidate = ev_expand_rule_from_string(type->name);
+            EV_ExpandRule *candidate = ev_expand_rule_from_string(type.name);
             if (candidate != &ev_nil_expand_rule)
             {
                 rule = candidate;
@@ -478,12 +478,12 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
         //- rjf: generate root block
         tree.root = push_array(arena, EV_Block, 1);
         MemoryCopyStruct(tree.root, &ev_nil_block);
-        tree.root->key              = root_key;
-        tree.root->string           = str8_zero();
-        tree.root->eval             = root_eval;
-        tree.root->type_expand_rule = &e_type_expand_rule__default;
-        tree.root->viz_expand_rule  = &ev_nil_expand_rule;
-        tree.root->row_count  = 1;
+        tree.root.key              = root_key;
+        tree.root.string           = str8_zero();
+        tree.root.eval             = root_eval;
+        tree.root.type_expand_rule = &e_type_expand_rule__default;
+        tree.root.viz_expand_rule  = &ev_nil_expand_rule;
+        tree.root.row_count  = 1;
         tree.total_row_count += 1;
         tree.total_item_count += 1;
         
@@ -501,20 +501,20 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
             B32 force_expanded;
             S32 depth;
         };
-        BlockTreeBuildTask start_task = {0, tree.root, tree.root->eval, tree.root->eval.expr->next, 1, 0};
+        BlockTreeBuildTask start_task = {0, tree.root, tree.root.eval, tree.root.eval.expr.next, 1, 0};
         BlockTreeBuildTask *first_task = &start_task;
         BlockTreeBuildTask *last_task = first_task;
         
         //- rjf: iterate all expansions & generate blocks for each
-        for (BlockTreeBuildTask *t = first_task; t != 0; t = t->next)
+        for (BlockTreeBuildTask *t = first_task; t != 0; t = t.next)
         {
             // rjf: get task key
-            EV_Key key = ev_key_make(ev_hash_from_key(t->parent_block->key), t->child_id);
+            EV_Key key = ev_key_make(ev_hash_from_key(t.parent_block->key), t.child_id);
             
             // rjf: obtain expansion node & expansion state
             EV_ExpandNode *expand_node = ev_expand_node_from_key(view, key);
-            B32 is_expanded = (expand_node != 0 && expand_node->expanded);
-            if (t->default_expanded || t->force_expanded)
+            B32 is_expanded = (expand_node != 0 && expand_node.expanded);
+            if (t.default_expanded || t.force_expanded)
             {
                 is_expanded ^= 1;
             }
@@ -526,8 +526,8 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
             }
             
             // rjf: unpack eval
-            E_Mode mode = t->eval.irtree.mode;
-            E_Eval eval = t->eval;
+            E_Mode mode = t.eval.irtree.mode;
+            E_Eval eval = t.eval;
             
             // rjf: pointers/reference evaluations -> dereference for expansion
             {
@@ -557,11 +557,11 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
             }
             
             // rjf: get filter for this task
-            String8 task_filter = t->depth == 0 ? filter : str8_zero();
+            String8 task_filter = t.depth == 0 ? filter : str8_zero();
             
             // rjf: get top-level lookup/expansion info
-            E_TypeExpandInfo type_expand_info = type_expand_rule->info(arena, eval, task_filter);
-            EV_ExpandInfo viz_expand_info = viz_expand_rule->info(arena, view, task_filter, eval.expr);
+            E_TypeExpandInfo type_expand_info = type_expand_rule.info(arena, eval, task_filter);
+            EV_ExpandInfo viz_expand_info = viz_expand_rule.info(arena, view, task_filter, eval.expr);
             
             // rjf: determine expansion info
             U64 expansion_row_count = type_expand_info.expr_count;
@@ -585,17 +585,17 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
             {
                 expansion_block = push_array(arena, EV_Block, 1);
                 MemoryCopyStruct(expansion_block, &ev_nil_block);
-                DLLPushBack_NPZ(&ev_nil_block, t->parent_block->first, t->parent_block->last, expansion_block, next, prev);
-                expansion_block->parent                   = t->parent_block;
-                expansion_block->key                      = key;
-                expansion_block->split_relative_idx       = t->split_relative_idx;
-                expansion_block->eval                     = eval;
-                expansion_block->filter                   = task_filter;
-                expansion_block->type_expand_info         = type_expand_info;
-                expansion_block->type_expand_rule         = type_expand_rule;
-                expansion_block->viz_expand_info          = viz_expand_info;
-                expansion_block->viz_expand_rule          = viz_expand_rule;
-                expansion_block->row_count                = expansion_row_count;
+                DLLPushBack_NPZ(&ev_nil_block, t.parent_block->first, t.parent_block->last, expansion_block, next, prev);
+                expansion_block.parent                   = t.parent_block;
+                expansion_block.key                      = key;
+                expansion_block.split_relative_idx       = t.split_relative_idx;
+                expansion_block.eval                     = eval;
+                expansion_block.filter                   = task_filter;
+                expansion_block.type_expand_info         = type_expand_info;
+                expansion_block.type_expand_rule         = type_expand_rule;
+                expansion_block.viz_expand_info          = viz_expand_info;
+                expansion_block.viz_expand_rule          = viz_expand_rule;
+                expansion_block.row_count                = expansion_row_count;
                 tree.total_row_count += expansion_row_count;
                 tree.total_item_count += viz_expand_info.single_item ? 1 : expansion_row_count;
             }
@@ -607,7 +607,7 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
             if (allow_child_expansions && !child_count && !viz_expand_info.rows_default_expanded && expand_node != 0 && expansion_row_count != 0)
             {
                 // rjf: count children
-                for (EV_ExpandNode *child = expand_node->first; child != 0; child = child->next, child_count += 1){}
+                for (EV_ExpandNode *child = expand_node.first; child != 0; child = child.next, child_count += 1){}
                 
                 // rjf: gather children keys & numbers
                 B32 needs_sort = 0;
@@ -615,10 +615,10 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
                 child_nums = push_array(scratch.arena, U64, child_count);
                 {
                     U64 idx = 0;
-                    for (EV_ExpandNode *child = expand_node->first; child != 0; child = child->next, idx += 1)
+                    for (EV_ExpandNode *child = expand_node.first; child != 0; child = child.next, idx += 1)
                     {
-                        child_keys[idx] = child->key;
-                        child_nums[idx] = type_expand_rule->num_from_id(type_expand_info.user_data, child->key.child_id);
+                        child_keys[idx] = child.key;
+                        child_nums[idx] = type_expand_rule.num_from_id(type_expand_info.user_data, child.key.child_id);
                         if (child_nums[idx] != child_keys[idx].child_id)
                         {
                             needs_sort = 1;
@@ -658,7 +658,7 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
                 child_nums  = push_array(scratch.arena, U64,    child_count);
                 for (U64 idx = 0; idx < child_count; idx += 1)
                 {
-                    U64 child_id = type_expand_rule->id_from_num(type_expand_info.user_data, idx+1);
+                    U64 child_id = type_expand_rule.id_from_num(type_expand_info.user_data, idx+1);
                     child_keys[idx] = ev_key_make(ev_hash_from_key(key), child_id);
                     child_nums[idx] = idx+1;
                 }
@@ -677,34 +677,34 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
                 {
                     Rng1U64 child_range = r1u64(split_relative_idx, split_relative_idx+1);
                     E_Eval child_eval = {0};
-                    type_expand_rule->range(arena, type_expand_info.user_data, eval, task_filter, r1u64(split_relative_idx, split_relative_idx+1), &child_eval);
+                    type_expand_rule.range(arena, type_expand_info.user_data, eval, task_filter, r1u64(split_relative_idx, split_relative_idx+1), &child_eval);
                     EV_Key child_key = child_keys[idx];
                     BlockTreeBuildTask *task = push_array(scratch.arena, BlockTreeBuildTask, 1);
                     SLLQueuePush(first_task, last_task, task);
-                    task->parent_block       = expansion_block;
-                    task->eval               = child_eval;
-                    task->next_expr          = &e_expr_nil;
-                    task->child_id           = child_key.child_id;
-                    task->split_relative_idx = split_relative_idx;
-                    task->default_expanded   = viz_expand_info.rows_default_expanded;
-                    task->depth              = t->depth+1;
+                    task.parent_block       = expansion_block;
+                    task.eval               = child_eval;
+                    task.next_expr          = &e_expr_nil;
+                    task.child_id           = child_key.child_id;
+                    task.split_relative_idx = split_relative_idx;
+                    task.default_expanded   = viz_expand_info.rows_default_expanded;
+                    task.depth              = t.depth+1;
                 }
             }
             
             // rjf: if this expr has a sibling, push another task to continue the chain
-            if (t->next_expr != &e_expr_nil)
+            if (t.next_expr != &e_expr_nil)
             {
                 BlockTreeBuildTask *task = push_array(scratch.arena, BlockTreeBuildTask, 1);
-                task->next = t->next;
-                t->next = task;
-                task->parent_block       = t->parent_block;
-                task->eval               = e_eval_from_expr(t->next_expr);
-                task->next_expr          = t->next_expr->next;
-                task->child_id           = t->child_id + 1;
-                task->split_relative_idx = 0;
-                task->default_expanded   = t->default_expanded;
-                task->force_expanded     = 1;
-                task->depth              = t->depth;
+                task.next = t.next;
+                t.next = task;
+                task.parent_block       = t.parent_block;
+                task.eval               = e_eval_from_expr(t.next_expr);
+                task.next_expr          = t.next_expr->next;
+                task.child_id           = t.child_id + 1;
+                task.split_relative_idx = 0;
+                task.default_expanded   = t.default_expanded;
+                task.force_expanded     = 1;
+                task.depth              = t.depth;
             }
         }
         scratch_end(scratch);
@@ -717,7 +717,7 @@ internal U64
 ev_depth_from_block(EV_Block *block)
 {
     U64 depth = 0;
-    for (EV_Block *b = block->parent; b != &ev_nil_block; b = b->parent)
+    for (EV_Block *b = block.parent; b != &ev_nil_block; b = b.parent)
     {
         depth += 1;
     }
@@ -730,14 +730,14 @@ ev_depth_from_block(EV_Block *block)
 internal U64
 ev_block_id_from_num(EV_Block *block, U64 num)
 {
-    U64 result = block->type_expand_rule->id_from_num(block->type_expand_info.user_data, num);
+    U64 result = block.type_expand_rule->id_from_num(block.type_expand_info.user_data, num);
     return result;
 }
 
 internal U64
 ev_block_num_from_id(EV_Block *block, U64 id)
 {
-    U64 result = block->type_expand_rule->num_from_id(block->type_expand_info.user_data, id);
+    U64 result = block.type_expand_rule->num_from_id(block.type_expand_info.user_data, id);
     return result;
 }
 
@@ -755,14 +755,14 @@ ev_block_range_list_from_tree(Arena *arena, EV_BlockTree *block_tree)
             EV_Block *next_child;
             Rng1U64 block_relative_range;
         };
-        BlockTask start_task = {0, block_tree->root, block_tree->root->first, r1u64(0, block_tree->root->row_count)};
-        for (BlockTask *t = &start_task; t != 0; t = t->next)
+        BlockTask start_task = {0, block_tree.root, block_tree.root->first, r1u64(0, block_tree.root->row_count)};
+        for (BlockTask *t = &start_task; t != 0; t = t.next)
         {
             // rjf: get block-relative range, truncated by split position of next child
-            Rng1U64 block_relative_range = t->block_relative_range;
-            if (t->next_child != &ev_nil_block)
+            Rng1U64 block_relative_range = t.block_relative_range;
+            if (t.next_child != &ev_nil_block)
             {
-                block_relative_range.max = t->next_child->split_relative_idx+1;
+                block_relative_range.max = t.next_child->split_relative_idx+1;
             }
             U64 block_num_visual_rows = dim_1u64(block_relative_range);
             
@@ -770,33 +770,33 @@ ev_block_range_list_from_tree(Arena *arena, EV_BlockTree *block_tree)
             if (block_num_visual_rows != 0)
             {
                 EV_BlockRangeNode *n = push_array(arena, EV_BlockRangeNode, 1);
-                n->v.block = t->block;
-                n->v.range = block_relative_range;
+                n.v.block = t.block;
+                n.v.range = block_relative_range;
                 SLLQueuePush(list.first, list.last, n);
                 list.count += 1;
             }
             
             // rjf: generate task for child, + for post-child parts of this block
-            if (t->next_child != &ev_nil_block)
+            if (t.next_child != &ev_nil_block)
             {
                 // rjf: generate task for child - do *before* remainder (descend block tree depth first)
                 BlockTask *child_task = push_array(scratch.arena, BlockTask, 1);
-                child_task->next = t->next;
-                t->next = child_task;
-                child_task->block = t->next_child;
-                child_task->next_child = t->next_child->first;
-                child_task->block_relative_range = r1u64(0, t->next_child->row_count);
+                child_task.next = t.next;
+                t.next = child_task;
+                child_task.block = t.next_child;
+                child_task.next_child = t.next_child->first;
+                child_task.block_relative_range = r1u64(0, t.next_child->row_count);
                 
                 // rjf: generate task for post-child rows, if any, after children
-                Rng1U64 remainder_range = r1u64(t->next_child->split_relative_idx+1, t->block_relative_range.max);
+                Rng1U64 remainder_range = r1u64(t.next_child->split_relative_idx+1, t.block_relative_range.max);
                 if (remainder_range.max >= remainder_range.min)
                 {
                     BlockTask *remainder_task = push_array(scratch.arena, BlockTask, 1);
-                    remainder_task->next = child_task->next;
-                    child_task->next = remainder_task;
-                    remainder_task->block = t->block;
-                    remainder_task->next_child = t->next_child->next;
-                    remainder_task->block_relative_range = remainder_range;
+                    remainder_task.next = child_task.next;
+                    child_task.next = remainder_task;
+                    remainder_task.block = t.block;
+                    remainder_task.next_child = t.next_child->next;
+                    remainder_task.block_relative_range = remainder_range;
                 }
             }
         }
@@ -810,13 +810,13 @@ ev_block_range_from_num(EV_BlockRangeList *block_ranges, U64 num)
 {
     EV_BlockRange result = {&ev_nil_block};
     U64 base_num = 1;
-    for (EV_BlockRangeNode *n = block_ranges->first; n != 0; n = n->next)
+    for (EV_BlockRangeNode *n = block_ranges.first; n != 0; n = n.next)
     {
-        U64 range_size = n->v.block->viz_expand_info.single_item ? 1 : dim_1u64(n->v.range);
+        U64 range_size = n.v.block.viz_expand_info.single_item ? 1 : dim_1u64(n.v.range);
         Rng1U64 global_range = r1u64(base_num, base_num + range_size);
         if (contains_1u64(global_range, num))
         {
-            result = n->v;
+            result = n.v;
             break;
         }
         base_num += range_size;
@@ -828,20 +828,20 @@ internal EV_Key
 ev_key_from_num(EV_BlockRangeList *block_ranges, U64 num)
 {
     EV_Key key = {0};
-    if (block_ranges->first)
+    if (block_ranges.first)
     {
         key = ev_key_make(ev_hash_from_key(ev_key_root()), 1);
     }
     U64 base_num = 1;
-    for (EV_BlockRangeNode *n = block_ranges->first; n != 0; n = n->next)
+    for (EV_BlockRangeNode *n = block_ranges.first; n != 0; n = n.next)
     {
-        U64 range_size = n->v.block->viz_expand_info.single_item ? 1 : dim_1u64(n->v.range);
+        U64 range_size = n.v.block.viz_expand_info.single_item ? 1 : dim_1u64(n.v.range);
         Rng1U64 global_range = r1u64(base_num, base_num + range_size);
         if (contains_1u64(global_range, num))
         {
-            U64 relative_num = (num - base_num) + n->v.range.min + 1;
-            U64 child_id = ev_block_id_from_num(n->v.block, relative_num);
-            EV_Key block_key = n->v.block->key;
+            U64 relative_num = (num - base_num) + n.v.range.min + 1;
+            U64 child_id = ev_block_id_from_num(n.v.block, relative_num);
+            EV_Key block_key = n.v.block.key;
             key = ev_key_make(ev_hash_from_key(block_key), child_id);
             break;
         }
@@ -855,20 +855,20 @@ ev_num_from_key(EV_BlockRangeList *block_ranges, EV_Key key)
 {
     U64 result = 0;
     U64 base_num = 1;
-    for (EV_BlockRangeNode *n = block_ranges->first; n != 0; n = n->next)
+    for (EV_BlockRangeNode *n = block_ranges.first; n != 0; n = n.next)
     {
-        U64 hash = ev_hash_from_key(n->v.block->key);
+        U64 hash = ev_hash_from_key(n.v.block.key);
         if (hash == key.parent_hash)
         {
-            U64 relative_num = ev_block_num_from_id(n->v.block, key.child_id);
-            Rng1U64 num_range = r1u64(n->v.range.min, n->v.block->viz_expand_info.single_item ? (n->v.range.min+1) : n->v.range.max);
+            U64 relative_num = ev_block_num_from_id(n.v.block, key.child_id);
+            Rng1U64 num_range = r1u64(n.v.range.min, n.v.block.viz_expand_info.single_item ? (n.v.range.min+1) : n.v.range.max);
             if (contains_1u64(num_range, relative_num-1))
             {
-                result = base_num + (relative_num - 1 - n->v.range.min);
+                result = base_num + (relative_num - 1 - n.v.range.min);
                 break;
             }
         }
-        base_num += n->v.block->viz_expand_info.single_item ? 1 : dim_1u64(n->v.range);
+        base_num += n.v.block.viz_expand_info.single_item ? 1 : dim_1u64(n.v.range);
     }
     return result;
 }
@@ -880,17 +880,17 @@ ev_vnum_from_num(EV_BlockRangeList *block_ranges, U64 num)
     {
         U64 base_vnum = 1;
         U64 base_num = 1;
-        for (EV_BlockRangeNode *n = block_ranges->first; n != 0; n = n->next)
+        for (EV_BlockRangeNode *n = block_ranges.first; n != 0; n = n.next)
         {
-            U64 next_base_num = base_num + (n->v.block->viz_expand_info.single_item ? 1 : dim_1u64(n->v.range));
+            U64 next_base_num = base_num + (n.v.block.viz_expand_info.single_item ? 1 : dim_1u64(n.v.range));
             if (base_num <= num && num < next_base_num)
             {
-                U64 relative_vnum = (n->v.block->viz_expand_info.single_item ? 0 : (num - base_num));
+                U64 relative_vnum = (n.v.block.viz_expand_info.single_item ? 0 : (num - base_num));
                 vnum = base_vnum + relative_vnum;
                 break;
             }
             base_num = next_base_num;
-            base_vnum += dim_1u64(n->v.range);
+            base_vnum += dim_1u64(n.v.range);
         }
         if (vnum == 0)
         {
@@ -907,17 +907,17 @@ ev_num_from_vnum(EV_BlockRangeList *block_ranges, U64 vnum)
     {
         U64 base_vnum = 1;
         U64 base_num = 1;
-        for (EV_BlockRangeNode *n = block_ranges->first; n != 0; n = n->next)
+        for (EV_BlockRangeNode *n = block_ranges.first; n != 0; n = n.next)
         {
-            U64 next_base_vnum = base_vnum + dim_1u64(n->v.range);
+            U64 next_base_vnum = base_vnum + dim_1u64(n.v.range);
             if (base_vnum <= vnum && vnum < next_base_vnum)
             {
-                U64 relative_num = (n->v.block->viz_expand_info.single_item ? 0 : (vnum - base_vnum));
+                U64 relative_num = (n.v.block.viz_expand_info.single_item ? 0 : (vnum - base_vnum));
                 num = base_num + relative_num;
                 break;
             }
             base_vnum = next_base_vnum;
-            base_num += (n->v.block->viz_expand_info.single_item ? 1 : dim_1u64(n->v.range));
+            base_num += (n.v.block.viz_expand_info.single_item ? 1 : dim_1u64(n.v.range));
         }
     }
     return num;
@@ -932,13 +932,13 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
     EV_WindowedRowList rows = {0};
     {
         U64 base_vnum = 1;
-        for (EV_BlockRangeNode *n = block_ranges->first; n != 0; n = n->next)
+        for (EV_BlockRangeNode *n = block_ranges.first; n != 0; n = n.next)
         {
             // rjf: unpack this block/range pair
-            Rng1U64 block_relative_range = n->v.range;
+            Rng1U64 block_relative_range = n.v.range;
             U64 block_num_visual_rows = dim_1u64(block_relative_range);
             Rng1U64 block_global_range = r1u64(base_vnum, base_vnum + block_num_visual_rows);
-            String8 block_filter = n->v.block->filter;
+            String8 block_filter = n.v.block.filter;
             
             // rjf: get skip/chop of global range
             U64 num_skipped = 0;
@@ -965,7 +965,7 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
             rows.count_before_visual += num_skipped;
             if (block_num_visual_rows != 0 && num_skipped != 0)
             {
-                if (n->v.block->viz_expand_info.single_item)
+                if (n.v.block.viz_expand_info.single_item)
                 {
                     if (num_skipped >= block_num_visual_rows)
                     {
@@ -989,13 +989,13 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
                 {
                     range_evals[idx] = e_eval_nil;
                 }
-                if (n->v.block->viz_expand_info.single_item || n->v.block->parent == &ev_nil_block)
+                if (n.v.block.viz_expand_info.single_item || n.v.block.parent == &ev_nil_block)
                 {
                     is_standalone_row = 1;
                 }
                 else
                 {
-                    n->v.block->type_expand_rule->range(arena, n->v.block->type_expand_info.user_data, n->v.block->eval, block_filter, block_relative_range__windowed, range_evals);
+                    n.v.block.type_expand_rule->range(arena, n.v.block.type_expand_info.user_data, n.v.block.eval, block_filter, block_relative_range__windowed, range_evals);
                 }
                 
                 // rjf: no expansion operator applied -> push row for block expression; pass through block info
@@ -1004,32 +1004,32 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
                     EV_WindowedRowNode *row_node = push_array(arena, EV_WindowedRowNode, 1);
                     SLLQueuePush(rows.first, rows.last, row_node);
                     rows.count += 1;
-                    row_node->visual_size_skipped = num_skipped;
-                    row_node->visual_size_chopped = num_chopped;
-                    EV_Row *row = &row_node->row;
-                    row->block         = n->v.block;
-                    row->key           = ev_key_make(ev_hash_from_key(row->block->key), 1);
-                    row->visual_size   = n->v.block->viz_expand_info.single_item ? (n->v.block->row_count - (num_skipped + num_chopped)) : 1;
-                    row->edit_string   = n->v.block->string;
-                    row->eval          = n->v.block->eval;
+                    row_node.visual_size_skipped = num_skipped;
+                    row_node.visual_size_chopped = num_chopped;
+                    EV_Row *row = &row_node.row;
+                    row.block         = n.v.block;
+                    row.key           = ev_key_make(ev_hash_from_key(row.block->key), 1);
+                    row.visual_size   = n.v.block.viz_expand_info.single_item ? (n.v.block.row_count - (num_skipped + num_chopped)) : 1;
+                    row.edit_string   = n.v.block.string;
+                    row.eval          = n.v.block.eval;
                 }
                 
                 // rjf: expansion operator applied -> call, and add rows for all expressions in the viewable range
                 else for EachIndex(idx, range_exprs_count)
                 {
                     U64 child_num = block_relative_range.min + num_skipped + idx + 1;
-                    U64 child_id = ev_block_id_from_num(n->v.block, child_num);
-                    EV_Key row_key = ev_key_make(ev_hash_from_key(n->v.block->key), child_id);
+                    U64 child_id = ev_block_id_from_num(n.v.block, child_num);
+                    EV_Key row_key = ev_key_make(ev_hash_from_key(n.v.block.key), child_id);
                     E_Eval row_eval = range_evals[idx];
                     EV_WindowedRowNode *row_node = push_array(arena, EV_WindowedRowNode, 1);
                     SLLQueuePush(rows.first, rows.last, row_node);
                     rows.count += 1;
-                    EV_Row *row = &row_node->row;
-                    row->block                = n->v.block;
-                    row->key                  = row_key;
-                    row->visual_size          = 1;
-                    row->edit_string          = row_eval.string;
-                    row->eval                 = row_eval;
+                    EV_Row *row = &row_node.row;
+                    row.block                = n.v.block;
+                    row.key                  = row_key;
+                    row.visual_size          = 1;
+                    row.edit_string          = row_eval.string;
+                    row.eval                 = row_eval;
                 }
             }
         }
@@ -1045,13 +1045,13 @@ ev_row_from_num(Arena *arena, EV_View *view, EV_BlockRangeList *block_ranges, U6
     EV_Row *result = 0;
     if (rows.first != 0)
     {
-        result = &rows.first->row;
+        result = &rows.first.row;
     }
     else
     {
         result = push_array(arena, EV_Row, 1);
-        result->block = &ev_nil_block;
-        result->eval = e_eval_nil;
+        result.block = &ev_nil_block;
+        result.eval = e_eval_nil;
     }
     return result;
 }
@@ -1092,9 +1092,9 @@ internal B32
 ev_row_is_expandable(EV_Row *row)
 {
     B32 result = 0;
-    if (!ev_key_match(ev_key_root(), row->block->key))
+    if (!ev_key_match(ev_key_root(), row.block->key))
     {
-        result = ev_eval_is_expandable(row->eval);
+        result = ev_eval_is_expandable(row.eval);
     }
     return result;
 }
@@ -1103,7 +1103,7 @@ internal B32
 ev_row_is_editable(EV_Row *row)
 {
     B32 result = 0;
-    E_IRTreeAndType irtree = row->eval.irtree;
+    E_IRTreeAndType irtree = row.eval.irtree;
     result = ev_type_key_is_editable(irtree.type_key);
     return result;
 }
@@ -1300,7 +1300,7 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
     E_TypeKind type_kind = e_type_kind_from_key(type_key);
     U64 type_byte_size = e_type_byte_size_from_key(type_key);
     U8 digit_group_separator = 0;
-    if (!(params->flags & EV_StringFlag_ReadOnlyDisplayRules))
+    if (!(params.flags & EV_StringFlag_ReadOnlyDisplayRules))
     {
         digit_group_separator = 0;
     }
@@ -1313,19 +1313,19 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
         
         case E_TypeKind_Handle:
         {
-            result = str8_from_s64(arena, eval.value.s64, params->radix, params->min_digits, digit_group_separator);
+            result = str8_from_s64(arena, eval.value.s64, params.radix, params.min_digits, digit_group_separator);
         }break;
         
         case E_TypeKind_HResult:
         {
-            if (params->flags & EV_StringFlag_ReadOnlyDisplayRules)
+            if (params.flags & EV_StringFlag_ReadOnlyDisplayRules)
             {
                 Temp scratch = scratch_begin(&arena, 1);
                 U32 hresult_value = (U32)eval.value.u64;
                 U32 is_error   = !!(hresult_value & (1ull<<31));
                 U32 error_code = (hresult_value);
                 U32 facility   = (hresult_value & 0x7ff0000) >> 16;
-                String8 value_string = str8_from_s64(scratch.arena, eval.value.u64, params->radix, params->min_digits, digit_group_separator);
+                String8 value_string = str8_from_s64(scratch.arena, eval.value.u64, params.radix, params.min_digits, digit_group_separator);
                 String8 facility_string = ev_string_from_hresult_facility_code(facility);
                 String8 error_string = ev_string_from_hresult_code(error_code);
                 result = push_str8f(arena, "%S%s%s%S%s%s%S%s",
@@ -1341,7 +1341,7 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
             }
             else
             {
-                result = str8_from_s64(arena, eval.value.u64, params->radix, params->min_digits, digit_group_separator);
+                result = str8_from_s64(arena, eval.value.u64, params.radix, params.min_digits, digit_group_separator);
             }
         }break;
         
@@ -1354,17 +1354,17 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
         {
             B32 type_is_unsigned = (E_TypeKind_UChar8 <= type_kind && type_kind <= E_TypeKind_UChar32);
             String8 char_str = {0};
-            if (!(params->flags & EV_StringFlag_DisableChars))
+            if (!(params.flags & EV_StringFlag_DisableChars))
             {
                 char_str = ev_string_from_ascii_value(arena, eval.value.s64);
             }
             if (char_str.size != 0)
             {
-                if (params->flags & EV_StringFlag_ReadOnlyDisplayRules)
+                if (params.flags & EV_StringFlag_ReadOnlyDisplayRules)
                 {
                     String8 imm_string = (type_is_unsigned
-                                                                ? str8_from_u64(arena, eval.value.u64, params->radix, params->min_digits, digit_group_separator)
-                                                                : str8_from_s64(arena, eval.value.s64, params->radix, params->min_digits, digit_group_separator));
+                                                                ? str8_from_u64(arena, eval.value.u64, params.radix, params.min_digits, digit_group_separator)
+                                                                : str8_from_s64(arena, eval.value.s64, params.radix, params.min_digits, digit_group_separator));
                     result = push_str8f(arena, "'%S' (%S)", char_str, imm_string);
                 }
                 else
@@ -1375,8 +1375,8 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
             else
             {
                 result = (type_is_unsigned
-                                    ? str8_from_u64(arena, eval.value.u64, params->radix, params->min_digits, digit_group_separator)
-                                    : str8_from_s64(arena, eval.value.s64, params->radix, params->min_digits, digit_group_separator));
+                                    ? str8_from_u64(arena, eval.value.u64, params.radix, params.min_digits, digit_group_separator)
+                                    : str8_from_s64(arena, eval.value.s64, params.radix, params.min_digits, digit_group_separator));
             }
         }break;
         
@@ -1386,7 +1386,7 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
         case E_TypeKind_S64: s64 = (S64)eval.value.s64; goto sint_path;
         sint_path:;
         {
-            result = str8_from_s64(arena, s64, params->radix, params->min_digits, digit_group_separator);
+            result = str8_from_s64(arena, s64, params.radix, params.min_digits, digit_group_separator);
         }break;
         
         case E_TypeKind_U8:  u64 = (U64)eval.value.u8; goto uint_path;
@@ -1395,14 +1395,14 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
         case E_TypeKind_U64: u64 = (U64)eval.value.u64; goto uint_path;
         uint_path:;
         {
-            result = str8_from_u64(arena, u64, params->radix, params->min_digits, digit_group_separator);
+            result = str8_from_u64(arena, u64, params.radix, params.min_digits, digit_group_separator);
         }break;
         
         case E_TypeKind_U128:
         {
             Temp scratch = scratch_begin(&arena, 1);
-            String8 upper64 = str8_from_u64(scratch.arena, eval.value.u128.u64[0], params->radix, params->min_digits, digit_group_separator);
-            String8 lower64 = str8_from_u64(scratch.arena, eval.value.u128.u64[1], params->radix, params->min_digits, digit_group_separator);
+            String8 upper64 = str8_from_u64(scratch.arena, eval.value.u128.u64[0], params.radix, params.min_digits, digit_group_separator);
+            String8 lower64 = str8_from_u64(scratch.arena, eval.value.u128.u64[1], params.radix, params.min_digits, digit_group_separator);
             result = push_str8f(arena, "%S:%S", upper64, lower64);
             scratch_end(scratch);
         }break;
@@ -1411,7 +1411,7 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
         case E_TypeKind_F64:{f64 = eval.value.f64;}goto f64_path;
         f64_path:;
         {
-            result = push_str8f(arena, "%.*f", params->min_digits ? params->min_digits : 16, f64);
+            result = push_str8f(arena, "%.*f", params.min_digits ? params.min_digits : 16, f64);
             U64 num_to_chop = 0;
             for (U64 num_trimmed = 0; num_trimmed < result.size; num_trimmed += 1)
             {
@@ -1484,9 +1484,9 @@ internal EV_StringIter *
 ev_string_iter_begin(Arena *arena, E_Eval eval, EV_StringParams *params)
 {
     EV_StringIter *it = push_array(arena, EV_StringIter, 1);
-    it->top_task = push_array(arena, EV_StringIterTask, 1);
-    it->top_task->eval = eval;
-    MemoryCopyStruct(&it->top_task->params, params);
+    it.top_task = push_array(arena, EV_StringIterTask, 1);
+    it.top_task->eval = eval;
+    MemoryCopyStruct(&it.top_task->params, params);
     return it;
 }
 
@@ -1501,15 +1501,15 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
     B32 need_new_task = 0;
     EV_StringIterTask new_task = {0};
     S32 top_task_depth = 0;
-    if (it->top_task != 0)
+    if (it.top_task != 0)
     {
         result = 1;
         
         //- rjf: unpack task
-        U64 task_idx = it->top_task->idx;
-        S32 depth = top_task_depth = it->top_task->depth;
-        EV_StringParams *params = &it->top_task->params;
-        E_Eval eval = it->top_task->eval;
+        U64 task_idx = it.top_task->idx;
+        S32 depth = top_task_depth = it.top_task->depth;
+        EV_StringParams *params = &it.top_task->params;
+        E_Eval eval = it.top_task->eval;
         E_TypeKey type_key = eval.irtree.type_key;
         E_TypeKind type_kind = e_type_kind_from_key(type_key);
         String8 expansion_opener_symbol = str8_lit("{");
@@ -1546,18 +1546,18 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                         E_Type *type = e_type_from_key(type_key);
                         E_Eval value_eval = e_value_eval_from_eval(eval);
                         String8 constant_name = {0};
-                        for (U64 val_idx = 0; val_idx < type->count; val_idx += 1)
+                        for (U64 val_idx = 0; val_idx < type.count; val_idx += 1)
                         {
-                            if (value_eval.value.u64 == type->enum_vals[val_idx].val)
+                            if (value_eval.value.u64 == type.enum_vals[val_idx].val)
                             {
-                                constant_name = type->enum_vals[val_idx].name;
+                                constant_name = type.enum_vals[val_idx].name;
                                 break;
                             }
                         }
                         String8 sufficient_suffix = constant_name;
-                        if (str8_match(sufficient_suffix, type->name, StringMatchFlag_RightSideSloppy))
+                        if (str8_match(sufficient_suffix, type.name, StringMatchFlag_RightSideSloppy))
                         {
-                            sufficient_suffix = str8_skip(sufficient_suffix, type->name.size);
+                            sufficient_suffix = str8_skip(sufficient_suffix, type.name.size);
                             if (str8_match(sufficient_suffix, str8_lit("_"), StringMatchFlag_RightSideSloppy))
                             {
                                 sufficient_suffix = str8_skip(sufficient_suffix, 1);
@@ -1565,8 +1565,8 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                         }
                         if (sufficient_suffix.size != 0)
                         {
-                            *out_string = push_str8f(arena, "%S.%S", type->name, sufficient_suffix);
-                            if (params->flags & EV_StringFlag_ReadOnlyDisplayRules)
+                            *out_string = push_str8f(arena, "%S.%S", type.name, sufficient_suffix);
+                            if (params.flags & EV_StringFlag_ReadOnlyDisplayRules)
                             {
                                 need_pop = 0;
                             }
@@ -1601,10 +1601,10 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
             //
             case E_TypeKind_Lens:
             {
-                if (it->top_task->redirect_to_sets_and_structs)
+                if (it.top_task->redirect_to_sets_and_structs)
                 {
                     E_Type *type = e_type_from_key(type_key);
-                    if (type->flags & E_TypeFlag_ArrayLikeExpansion)
+                    if (type.flags & E_TypeFlag_ArrayLikeExpansion)
                     {
                         expansion_opener_symbol = str8_lit("[");
                         expansion_closer_symbol = str8_lit("]");
@@ -1612,36 +1612,36 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                     goto arrays_and_sets_and_structs;
                 }
                 E_Type *type = e_type_from_key(type_key);
-                E_TypeKind element_type_kind = e_type_kind_from_key(e_type_key_unwrap(type->direct_type_key, E_TypeUnwrapFlag_All));
+                E_TypeKind element_type_kind = e_type_kind_from_key(e_type_key_unwrap(type.direct_type_key, E_TypeUnwrapFlag_All));
                 B32 lens_applied = 1;
                 EV_StringParams lens_params = *params;
                 if (0){}
-                else if (str8_match(type->name, str8_lit("bin"), 0)) { lens_params.radix = 2; }
-                else if (str8_match(type->name, str8_lit("oct"), 0)) { lens_params.radix = 8; }
-                else if (str8_match(type->name, str8_lit("dec"), 0)) { lens_params.radix = 10; }
-                else if (str8_match(type->name, str8_lit("hex"), 0)) { lens_params.radix = 16; }
-                else if (str8_match(type->name, str8_lit("digits"), 0) && type->count >= 1)
+                else if (str8_match(type.name, str8_lit("bin"), 0)) { lens_params.radix = 2; }
+                else if (str8_match(type.name, str8_lit("oct"), 0)) { lens_params.radix = 8; }
+                else if (str8_match(type.name, str8_lit("dec"), 0)) { lens_params.radix = 10; }
+                else if (str8_match(type.name, str8_lit("hex"), 0)) { lens_params.radix = 16; }
+                else if (str8_match(type.name, str8_lit("digits"), 0) && type.count >= 1)
                 {
                     E_ParentKey(eval.key)
                     {
-                        E_Value value = e_value_from_expr(type->args[0]);
+                        E_Value value = e_value_from_expr(type.args[0]);
                         lens_params.min_digits = value.u64;
                     }
                 }
-                else if (str8_match(type->name, str8_lit("no_string"), 0))
+                else if (str8_match(type.name, str8_lit("no_string"), 0))
                 {
                     lens_params.flags |= EV_StringFlag_DisableStrings;
                 }
-                else if (str8_match(type->name, str8_lit("no_char"), 0))
+                else if (str8_match(type.name, str8_lit("no_char"), 0))
                 {
                     lens_params.flags |= EV_StringFlag_DisableChars;
                 }
-                else if (str8_match(type->name, str8_lit("no_addr"), 0))
+                else if (str8_match(type.name, str8_lit("no_addr"), 0))
                 {
                     lens_params.flags |= EV_StringFlag_DisableAddresses;
                 }
-                else if (str8_match(type->name, str8_lit("array"), 0) &&
-                                type->count >= 1 &&
+                else if (str8_match(type.name, str8_lit("array"), 0) &&
+                                type.count >= 1 &&
                                 (((E_TypeKind_Char8 <= element_type_kind && element_type_kind <= E_TypeKind_UChar32) ||
                                     element_type_kind == E_TypeKind_S8 ||
                                     element_type_kind == E_TypeKind_U8)))
@@ -1649,7 +1649,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                     E_ParentKey(eval.key)
                     {
                         lens_params.limit_strings = 1;
-                        lens_params.limit_strings_size = e_value_from_expr(type->args[0]).u64;
+                        lens_params.limit_strings_size = e_value_from_expr(type.args[0]).u64;
                     }
                 }
                 else
@@ -1664,7 +1664,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                     new_task.eval = eval;
                     new_task.eval.irtree.type_key = e_type_key_direct(eval.irtree.type_key);
                 }
-                else if (type->kind != E_TypeKind_Lens || type->expand.info != 0)
+                else if (type.kind != E_TypeKind_Lens || type.expand.info != 0)
                 {
                     need_new_task = 1;
                     need_pop = 1;
@@ -1690,12 +1690,12 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                             Temp scratch = scratch_begin(&arena, 1);
                             String8List strings = {0};
                             {
-                                str8_list_pushf(scratch.arena, &strings, "%S(", type->name);
-                                for EachIndex(idx, type->count)
+                                str8_list_pushf(scratch.arena, &strings, "%S(", type.name);
+                                for EachIndex(idx, type.count)
                                 {
-                                    String8 string = e_string_from_expr(scratch.arena, type->args[idx]);
+                                    String8 string = e_string_from_expr(scratch.arena, type.args[idx]);
                                     str8_list_push(scratch.arena, &strings, string);
-                                    if (idx+1 < type->count)
+                                    if (idx+1 < type.count)
                                     {
                                         str8_list_pushf(scratch.arena, &strings, ", ");
                                     }
@@ -1726,7 +1726,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
             //
             case E_TypeKind_MetaExpr:
             {
-                if (params->flags & EV_StringFlag_ReadOnlyDisplayRules)
+                if (params.flags & EV_StringFlag_ReadOnlyDisplayRules)
                 {
                     switch (task_idx)
                     {
@@ -1734,7 +1734,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                         case 0:
                         {
                             E_Type *type = e_type_from_key(type_key);
-                            *out_string = push_str8f(arena, "%S (", type->name);
+                            *out_string = push_str8f(arena, "%S (", type.name);
                             need_pop = 0;
                             need_new_task = 1;
                             new_task.params = *params;
@@ -1750,7 +1750,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                 else
                 {
                     E_Type *type = e_type_from_key(type_key);
-                    *out_string = type->name;
+                    *out_string = type.name;
                 }
             }break;
             
@@ -1777,7 +1777,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
             case E_TypeKind_RRef:
             case E_TypeKind_Array:
             {
-                if (type_kind == E_TypeKind_Array && it->top_task->redirect_to_sets_and_structs)
+                if (type_kind == E_TypeKind_Array && it.top_task->redirect_to_sets_and_structs)
                 {
                     expansion_opener_symbol = str8_lit("[");
                     expansion_closer_symbol = str8_lit("]");
@@ -1795,19 +1795,19 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                     B32 did_prefix_string;
                     B32 did_redirect;
                 };
-                EV_StringPtrData *ptr_data = it->top_task->user_data;
+                EV_StringPtrData *ptr_data = it.top_task->user_data;
                 if (ptr_data == 0)
                 {
-                    ptr_data = it->top_task->user_data = push_array(arena, EV_StringPtrData, 1);
-                    ptr_data->value_eval = e_value_eval_from_eval(eval);
-                    ptr_data->type = e_type_from_key(type_key);
-                    ptr_data->direct_type = e_type_from_key(e_type_key_unwrap(type_key, E_TypeUnwrapFlag_All));
-                    ptr_data->ptee_has_content = (ptr_data->value_eval.value.u64 != 0 && ptr_data->direct_type->kind != E_TypeKind_Null && ptr_data->direct_type->kind != E_TypeKind_Void);
-                    ptr_data->ptee_has_string  = ((E_TypeKind_Char8 <= ptr_data->direct_type->kind && ptr_data->direct_type->kind <= E_TypeKind_UChar32) ||
-                                                                                ptr_data->direct_type->kind == E_TypeKind_S8 ||
-                                                                                ptr_data->direct_type->kind == E_TypeKind_U8);
+                    ptr_data = it.top_task->user_data = push_array(arena, EV_StringPtrData, 1);
+                    ptr_data.value_eval = e_value_eval_from_eval(eval);
+                    ptr_data.type = e_type_from_key(type_key);
+                    ptr_data.direct_type = e_type_from_key(e_type_key_unwrap(type_key, E_TypeUnwrapFlag_All));
+                    ptr_data.ptee_has_content = (ptr_data.value_eval.value.u64 != 0 && ptr_data.direct_type->kind != E_TypeKind_Null && ptr_data.direct_type->kind != E_TypeKind_Void);
+                    ptr_data.ptee_has_string  = ((E_TypeKind_Char8 <= ptr_data.direct_type->kind && ptr_data.direct_type->kind <= E_TypeKind_UChar32) ||
+                                                                                ptr_data.direct_type->kind == E_TypeKind_S8 ||
+                                                                                ptr_data.direct_type->kind == E_TypeKind_U8);
                 }
-                if (ptr_data->did_redirect)
+                if (ptr_data.did_redirect)
                 {
                     need_pop = 1;
                 }
@@ -1820,11 +1820,11 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                     case 0:
                     {
                         // rjf: try strings
-                        if (!(ptr_data->type->flags & E_TypeFlag_IsNotText) &&
-                              !ptr_data->did_prefix_content && ptr_data->ptee_has_string &&
-                              !(params->flags & EV_StringFlag_DisableStrings) &&
+                        if (!(ptr_data.type->flags & E_TypeFlag_IsNotText) &&
+                              !ptr_data.did_prefix_content && ptr_data.ptee_has_string &&
+                              !(params.flags & EV_StringFlag_DisableStrings) &&
                               (type_kind == E_TypeKind_Array ||
-                                params->flags & EV_StringFlag_ReadOnlyDisplayRules))
+                                params.flags & EV_StringFlag_ReadOnlyDisplayRules))
                         {
                             Temp scratch = scratch_begin(&arena, 1);
                             
@@ -1839,7 +1839,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                             }
                             else
                             {
-                                U64 string_memory_addr = ptr_data->value_eval.value.u64;
+                                U64 string_memory_addr = ptr_data.value_eval.value.u64;
                                 for (U64 try_size = string_buffer_size; try_size >= 16; try_size /= 2)
                                 {
                                     B32 read_good = e_space_read(eval.space, string_buffer, r1u64(string_memory_addr, string_memory_addr+try_size));
@@ -1852,7 +1852,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                             }
                             
                             // rjf: check element size - if non-U8, assume UTF-16 or UTF-32 based on type, and convert
-                            U64 element_size = ptr_data->direct_type->byte_size;
+                            U64 element_size = ptr_data.direct_type->byte_size;
                             String8 string = {0};
                             switch (element_size)
                             {
@@ -1862,17 +1862,17 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                             }
                             
                             // rjf: apply string size limitation
-                            if (params->limit_strings)
+                            if (params.limit_strings)
                             {
-                                string = str8_prefix(string, params->limit_strings_size);
+                                string = str8_prefix(string, params.limit_strings_size);
                             }
-                            else if (type_kind == E_TypeKind_Array && ptr_data->type->count != 0)
+                            else if (type_kind == E_TypeKind_Array && ptr_data.type->count != 0)
                             {
-                                string = str8_prefix(string, ptr_data->type->count);
+                                string = str8_prefix(string, ptr_data.type->count);
                             }
                             
                             // rjf: escape and quote
-                            B32 string__is_escaped_and_quoted = (!(params->flags & EV_StringFlag_DisableStringQuotes) || depth > 0);
+                            B32 string__is_escaped_and_quoted = (!(params.flags & EV_StringFlag_DisableStringQuotes) || depth > 0);
                             String8 string__escaped_and_quoted = string;
                             if (string__is_escaped_and_quoted)
                             {
@@ -1882,33 +1882,33 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                             
                             // rjf: report
                             *out_string = push_str8_copy(arena, string__escaped_and_quoted);
-                            ptr_data->did_prefix_content = 1;
-                            ptr_data->did_prefix_string = 1;
+                            ptr_data.did_prefix_content = 1;
+                            ptr_data.did_prefix_string = 1;
                             
                             scratch_end(scratch);
                         }
                         
                         // rjf: try symbols
-                        if (!ptr_data->did_prefix_content)
+                        if (!ptr_data.did_prefix_content)
                         {
-                            U64 vaddr = ptr_data->value_eval.value.u64;
+                            U64 vaddr = ptr_data.value_eval.value.u64;
                             E_Module *module = &e_module_nil;
                             U32 module_idx = 0;
-                            for EachIndex(idx, e_base_ctx->modules_count)
+                            for EachIndex(idx, e_base_ctx.modules_count)
                             {
-                                if (contains_1u64(e_base_ctx->modules[idx].vaddr_range, vaddr))
+                                if (contains_1u64(e_base_ctx.modules[idx].vaddr_range, vaddr))
                                 {
-                                    module = &e_base_ctx->modules[idx];
+                                    module = &e_base_ctx.modules[idx];
                                     module_idx = (U32)idx;
                                     break;
                                 }
                             }
-                            RDI_Parsed *rdi = module->rdi;
-                            U64 voff = vaddr - module->vaddr_range.min;
+                            RDI_Parsed *rdi = module.rdi;
+                            U64 voff = vaddr - module.vaddr_range.min;
                             B32 good_symbol_match = 0;
                             
                             // NOTE(rjf): read-only -> generate non-parseable things, like type-info / inlines
-                            if (params->flags & EV_StringFlag_ReadOnlyDisplayRules)
+                            if (params.flags & EV_StringFlag_ReadOnlyDisplayRules)
                             {
                                 // rjf: voff -> scope
                                 U64 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff);
@@ -1918,8 +1918,8 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                                 for (U64 s_idx = scope_idx, s_idx_next = 0; s_idx != 0; s_idx = s_idx_next)
                                 {
                                     RDI_Scope *s = rdi_element_from_name_idx(rdi, Scopes, s_idx);
-                                    s_idx_next = s->parent_scope_idx;
-                                    if (s->inline_site_idx != 0)
+                                    s_idx_next = s.parent_scope_idx;
+                                    if (s.inline_site_idx != 0)
                                     {
                                         inline_site_count += 1;
                                     }
@@ -1930,17 +1930,17 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                                 }
                                 
                                 // rjf: depth in [1, max]? -> form name from inline site
-                                if (0 < ptr_data->type->depth && ptr_data->type->depth <= inline_site_count)
+                                if (0 < ptr_data.type->depth && ptr_data.type->depth <= inline_site_count)
                                 {
                                     RDI_InlineSite *inline_site = 0;
                                     U64 s_inline_depth = inline_site_count;
                                     for (U64 s_idx = scope_idx, s_idx_next = 0; s_idx != 0; s_idx = s_idx_next)
                                     {
                                         RDI_Scope *s = rdi_element_from_name_idx(rdi, Scopes, s_idx);
-                                        s_idx_next = s->parent_scope_idx;
-                                        if (s_inline_depth == ptr_data->type->depth)
+                                        s_idx_next = s.parent_scope_idx;
+                                        if (s_inline_depth == ptr_data.type->depth)
                                         {
-                                            inline_site = rdi_element_from_name_idx(rdi, InlineSites, s->inline_site_idx);
+                                            inline_site = rdi_element_from_name_idx(rdi, InlineSites, s.inline_site_idx);
                                             break;
                                         }
                                         s_inline_depth -= 1;
@@ -1951,11 +1951,11 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                                     }
                                     if (inline_site != 0)
                                     {
-                                        RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, inline_site->type_idx);
-                                        E_TypeKey type = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), inline_site->type_idx, module_idx);
+                                        RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, inline_site.type_idx);
+                                        E_TypeKey type = e_type_key_ext(e_type_kind_from_rdi(type_node.kind), inline_site.type_idx, module_idx);
                                         String8 name = {0};
-                                        name.str = rdi_string_from_idx(rdi, inline_site->name_string_idx, &name.size);
-                                        if (inline_site->type_idx != 0)
+                                        name.str = rdi_string_from_idx(rdi, inline_site.name_string_idx, &name.size);
+                                        if (inline_site.type_idx != 0)
                                         {
                                             Temp scratch = scratch_begin(&arena, 1);
                                             String8List list = {0};
@@ -1979,13 +1979,13 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                                 {
                                     Temp scratch = scratch_begin(&arena, 1);
                                     RDI_Scope *scope = rdi_element_from_name_idx(rdi, Scopes, scope_idx);
-                                    U64 proc_idx = scope->proc_idx;
+                                    U64 proc_idx = scope.proc_idx;
                                     RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, proc_idx);
-                                    RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, procedure->type_idx);
-                                    E_TypeKey type = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), procedure->type_idx, module_idx);
+                                    RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, procedure.type_idx);
+                                    E_TypeKey type = e_type_key_ext(e_type_kind_from_rdi(type_node.kind), procedure.type_idx, module_idx);
                                     String8 name = {0};
-                                    name.str = rdi_string_from_idx(rdi, procedure->name_string_idx, &name.size);
-                                    if (procedure->type_idx != 0)
+                                    name.str = rdi_string_from_idx(rdi, procedure.name_string_idx, &name.size);
+                                    if (procedure.type_idx != 0)
                                     {
                                         String8List list = {0};
                                         e_type_lhs_string_from_key(scratch.arena, type, &list, 0, 0);
@@ -1998,12 +1998,12 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                                         *out_string = push_str8_copy(arena, name);
                                     }
                                     
-                                    good_symbol_match = (out_string->size != 0);
+                                    good_symbol_match = (out_string.size != 0);
                                     scratch_end(scratch);
                                 }
                                 
                                 // rjf: if we have a function type, but we did not generate any name, then just put a ???
-                                if (out_string->size == 0 && e_type_kind_from_key(ptr_data->type->direct_type_key) == E_TypeKind_Function)
+                                if (out_string.size == 0 && e_type_kind_from_key(ptr_data.type->direct_type_key) == E_TypeKind_Function)
                                 {
                                     *out_string = str8_lit("???");
                                     good_symbol_match = 1;
@@ -2026,24 +2026,24 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                                 good_symbol_match = (procedure_name.size != 0);
                             }
                             
-                            ptr_data->did_prefix_content = good_symbol_match;
+                            ptr_data.did_prefix_content = good_symbol_match;
                         }
                         
                         // rjf: if this is an array, and we do not have a prefix, then we need to
                         // generate a new task which redirects array types -> sets and structs.
-                        if (type_kind == E_TypeKind_Array && !ptr_data->did_prefix_content)
+                        if (type_kind == E_TypeKind_Array && !ptr_data.did_prefix_content)
                         {
                             need_new_task = 1;
                             need_pop = 0;
                             new_task.params = *params;
                             new_task.eval = eval;
                             new_task.redirect_to_sets_and_structs = 1;
-                            ptr_data->did_redirect = 1;
+                            ptr_data.did_redirect = 1;
                         }
                         
                         // rjf: if this is an array, and we *did* prefix content, then we are
                         // just done.
-                        else if (type_kind == E_TypeKind_Array && ptr_data->did_prefix_content)
+                        else if (type_kind == E_TypeKind_Array && ptr_data.did_prefix_content)
                         {
                             // NOTE(rjf): no-op, task is done.
                         }
@@ -2059,7 +2059,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                     case 1:
                     {
                         Temp scratch = scratch_begin(&arena, 1);
-                        String8 ptr_value_string = str8_from_u64(scratch.arena, ptr_data->value_eval.value.u64, 16, 0, 0);
+                        String8 ptr_value_string = str8_from_u64(scratch.arena, ptr_data.value_eval.value.u64, 16, 0, 0);
                         //
                         // NOTE(rjf): currently, we are not using the string-generation radix parameter when
                         // generating a pointer value - it is weird to want to change pointer value visualization
@@ -2067,24 +2067,24 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                         //
                         
                         // rjf: [read only] if we did prefix content, do a parenthesized pointer value
-                        if (!(params->flags & EV_StringFlag_DisableAddresses) && params->flags & EV_StringFlag_ReadOnlyDisplayRules &&
-                              ptr_data->did_prefix_content &&
-                              (!ptr_data->did_prefix_string || ptr_data->value_eval.value.u64 == 0))
+                        if (!(params.flags & EV_StringFlag_DisableAddresses) && params.flags & EV_StringFlag_ReadOnlyDisplayRules &&
+                              ptr_data.did_prefix_content &&
+                              (!ptr_data.did_prefix_string || ptr_data.value_eval.value.u64 == 0))
                         {
                             *out_string = push_str8f(arena, " (%S)", ptr_value_string);
                         }
                         
                         // rjf: [read only] if we did *not* do any prefix content, but we have content,
                         // do "<pointer value> -> " then descend
-                        else if (params->flags & EV_StringFlag_ReadOnlyDisplayRules && !ptr_data->did_prefix_content && ptr_data->ptee_has_content)
+                        else if (params.flags & EV_StringFlag_ReadOnlyDisplayRules && !ptr_data.did_prefix_content && ptr_data.ptee_has_content)
                         {
-                            if (!(params->flags & EV_StringFlag_DisableAddresses))
+                            if (!(params.flags & EV_StringFlag_DisableAddresses))
                             {
                                 *out_string = push_str8f(arena, "%S -> ", ptr_value_string);
                             }
                             
                             // rjf: single-length pointers -> just gen new task for deref'd expr
-                            if (ptr_data->type->count == 1)
+                            if (ptr_data.type->count == 1)
                             {
                                 E_Eval deref_eval = e_eval_wrapf(eval, "*$");
                                 need_new_task = 1;
@@ -2101,7 +2101,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                         }
                         
                         // rjf: [writeable, catchall] if we did *not* do any prefix content, do "<pointer value>"
-                        else if (!ptr_data->did_prefix_content)
+                        else if (!ptr_data.did_prefix_content)
                         {
                             *out_string = push_str8_copy(arena, ptr_value_string);
                         }
@@ -2130,33 +2130,33 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                     E_TypeExpandRule *expand_rule;
                     E_TypeExpandInfo expand_info;
                 };
-                EV_ExpandedTypeData *expand_data = (EV_ExpandedTypeData *)it->top_task->user_data;
+                EV_ExpandedTypeData *expand_data = (EV_ExpandedTypeData *)it.top_task->user_data;
                 if (expand_data == 0)
                 {
-                    expand_data = it->top_task->user_data = push_array(arena, EV_ExpandedTypeData, 1);
-                    expand_data->type = e_type_from_key(type_key);
+                    expand_data = it.top_task->user_data = push_array(arena, EV_ExpandedTypeData, 1);
+                    expand_data.type = e_type_from_key(type_key);
                 }
                 switch (task_idx)
                 {
                     //- rjf: step 0 -> generate opener symbol
                     case 0:
                     {
-                        if (expand_data->type->flags & E_TypeFlag_StubSingleLineExpansion)
+                        if (expand_data.type->flags & E_TypeFlag_StubSingleLineExpansion)
                         {
                             *out_string = push_str8f(arena, "%S...%S", expansion_opener_symbol, expansion_closer_symbol);
                         }
                         else
                         {
                             need_pop = 0;
-                            expand_data->expand_rule = e_expand_rule_from_type_key(type_key);
-                            expand_data->expand_info = expand_data->expand_rule->info(arena, eval, params->filter);
+                            expand_data.expand_rule = e_expand_rule_from_type_key(type_key);
+                            expand_data.expand_info = expand_data.expand_rule->info(arena, eval, params.filter);
                             *out_string = expansion_opener_symbol;
                         }
                     }break;
                     
                     default:
                     //- rjf: last step -> generate closer symbol
-                    if (task_idx == expand_data->expand_info.expr_count+1)
+                    if (task_idx == expand_data.expand_info.expr_count+1)
                     {
                         *out_string = expansion_closer_symbol;
                     }
@@ -2165,7 +2165,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                     else
                     {
                         E_Eval next_eval = e_eval_nil;
-                        expand_data->expand_rule->range(arena, expand_data->expand_info.user_data, eval, params->filter, r1u64(task_idx-1, task_idx), &next_eval);
+                        expand_data.expand_rule->range(arena, expand_data.expand_info.user_data, eval, params.filter, r1u64(task_idx-1, task_idx), &next_eval);
                         if (next_eval.expr != &e_expr_nil)
                         {
                             need_new_task = 1;
@@ -2188,35 +2188,35 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
     }
     
     //- rjf: bump task counter
-    if (it->top_task != 0)
+    if (it.top_task != 0)
     {
-        it->top_task->idx += 1;
+        it.top_task->idx += 1;
     }
     
     //- rjf: if result is good, and we want to pop? -> pop
     if (result && need_pop)
     {
-        EV_StringIterTask *task = it->top_task;
-        SLLStackPop(it->top_task);
-        SLLStackPush(it->free_task, task);
+        EV_StringIterTask *task = it.top_task;
+        SLLStackPop(it.top_task);
+        SLLStackPush(it.free_task, task);
     }
     
     //- rjf: if result is good, and we have a new task? -> push
     if (result && need_new_task)
     {
-        EV_StringIterTask *new_t = it->free_task;
+        EV_StringIterTask *new_t = it.free_task;
         if (new_t != 0)
         {
-            SLLStackPop(it->free_task);
+            SLLStackPop(it.free_task);
         }
         else
         {
             new_t = push_array(arena, EV_StringIterTask, 1);
         }
         MemoryCopyStruct(new_t, &new_task);
-        new_t->depth = top_task_depth + 1*(!need_pop);
-        SLLStackPush(it->top_task, new_t);
-        new_t->idx = 0;
+        new_t.depth = top_task_depth + 1*(!need_pop);
+        SLLStackPush(it.top_task, new_t);
+        new_t.idx = 0;
     }
     
     return result;

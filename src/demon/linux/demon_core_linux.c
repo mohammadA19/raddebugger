@@ -303,12 +303,12 @@ dmn_lnx_phdr_info_from_memory(int memory_fd, B32 is_32bit, U64 phvaddr, U64 phsi
 internal DMN_LNX_ModuleInfoList
 dmn_lnx_module_info_list_from_process(Arena *arena, DMN_LNX_Entity *process)
 {
-    Arch arch = process->arch;
+    Arch arch = process.arch;
     B32 is_32bit = (arch == Arch_x86 || arch == Arch_arm32);
-    int memory_fd = (int)process->fd;
+    int memory_fd = (int)process.fd;
     
     //- rjf: pid => aux
-    DMN_LNX_ProcessAux aux = dmn_lnx_aux_from_pid((pid_t)process->id, arch);
+    DMN_LNX_ProcessAux aux = dmn_lnx_aux_from_pid((pid_t)process.id, arch);
     
     //- rjf: memory => phdr info
     DMN_LNX_PhdrInfo phdr_info = dmn_lnx_phdr_info_from_memory(memory_fd, is_32bit, aux.phdr, aux.phent, aux.phnum);
@@ -367,8 +367,8 @@ dmn_lnx_module_info_list_from_process(Arena *arena, DMN_LNX_Entity *process)
         DMN_LNX_ModuleInfoNode *n = push_array(arena, DMN_LNX_ModuleInfoNode, 1);
         SLLQueuePush(list.first, list.last, n);
         list.count += 1;
-        n->v.vaddr_range = shift_1u64(phdr_info.range, base_vaddr);
-        n->v.name = aux.execfn;
+        n.v.vaddr_range = shift_1u64(phdr_info.range, base_vaddr);
+        n.v.name = aux.execfn;
     }
     
     //- rjf: iterate link maps
@@ -425,8 +425,8 @@ dmn_lnx_module_info_list_from_process(Arena *arena, DMN_LNX_Entity *process)
                 DMN_LNX_ModuleInfoNode *n = push_array(arena, DMN_LNX_ModuleInfoNode, 1);
                 SLLQueuePush(list.first, list.last, n);
                 list.count += 1;
-                n->v.vaddr_range = r1u64(linkmap.base, linkmap.base + dim_1u64(module_phdr_info.range));
-                n->v.name = linkmap.name;
+                n.v.vaddr_range = r1u64(linkmap.base, linkmap.base + dim_1u64(module_phdr_info.range));
+                n.v.name = linkmap.name;
             }
             
             // rjf: iterate
@@ -443,49 +443,49 @@ dmn_lnx_module_info_list_from_process(Arena *arena, DMN_LNX_Entity *process)
 internal DMN_LNX_Entity *
 dmn_lnx_entity_alloc(DMN_LNX_Entity *parent, DMN_LNX_EntityKind kind)
 {
-    DMN_LNX_Entity *entity = dmn_lnx_state->free_entity;
+    DMN_LNX_Entity *entity = dmn_lnx_state.free_entity;
     if (entity != 0)
     {
-        SLLStackPop(dmn_lnx_state->free_entity);
+        SLLStackPop(dmn_lnx_state.free_entity);
     }
     else
     {
-        entity = push_array(dmn_lnx_state->entities_arena, DMN_LNX_Entity, 1);
-        dmn_lnx_state->entities_count += 1;
+        entity = push_array(dmn_lnx_state.entities_arena, DMN_LNX_Entity, 1);
+        dmn_lnx_state.entities_count += 1;
     }
-    U32 gen = entity->gen;
+    U32 gen = entity.gen;
     MemoryCopyStruct(entity, &dmn_lnx_nil_entity);
-    entity->gen += 1;
+    entity.gen += 1;
     if (parent != &dmn_lnx_nil_entity)
     {
-        DLLPushBack_NPZ(&dmn_lnx_nil_entity, parent->first, parent->last, entity, next, prev);
-        entity->parent = parent;
+        DLLPushBack_NPZ(&dmn_lnx_nil_entity, parent.first, parent.last, entity, next, prev);
+        entity.parent = parent;
     }
-    entity->kind = kind;
+    entity.kind = kind;
     return entity;
 }
 
 internal void
 dmn_lnx_entity_release(DMN_LNX_Entity *entity)
 {
-    if (entity->parent != &dmn_lnx_nil_entity)
+    if (entity.parent != &dmn_lnx_nil_entity)
     {
-        DLLRemove_NPZ(&dmn_lnx_nil_entity, entity->parent->first, entity->parent->last, entity, next, prev);
-        entity->parent = &dmn_lnx_nil_entity;
+        DLLRemove_NPZ(&dmn_lnx_nil_entity, entity.parent->first, entity.parent->last, entity, next, prev);
+        entity.parent = &dmn_lnx_nil_entity;
     }
     {
         Temp scratch = scratch_begin(0, 0);
         DMN_LNX_EntityNode start_task = {0, entity};
         DMN_LNX_EntityNode *first_task = &start_task;
-        for (DMN_LNX_EntityNode *t = first_task; t != 0; t = t->next)
+        for (DMN_LNX_EntityNode *t = first_task; t != 0; t = t.next)
         {
-            SLLStackPush(dmn_lnx_state->free_entity, t->v);
-            for (DMN_LNX_Entity *child = t->v->first; child != &dmn_lnx_nil_entity; child = child->next)
+            SLLStackPush(dmn_lnx_state.free_entity, t.v);
+            for (DMN_LNX_Entity *child = t.v->first; child != &dmn_lnx_nil_entity; child = child.next)
             {
                 DMN_LNX_EntityNode *task = push_array(scratch.arena, DMN_LNX_EntityNode, 1);
-                task->next = t->next;
-                t->next = task;
-                task->v = child;
+                task.next = t.next;
+                t.next = task;
+                task.v = child;
             }
         }
         scratch_end(scratch);
@@ -496,11 +496,11 @@ internal DMN_Handle
 dmn_lnx_handle_from_entity(DMN_LNX_Entity *entity)
 {
     DMN_Handle handle = {0};
-    U64 index = (U64)(entity - dmn_lnx_state->entities_base);
+    U64 index = (U64)(entity - dmn_lnx_state.entities_base);
     if (index <= 0xffffffffu)
     {
         handle.u32[0] = index;
-        handle.u32[1] = entity->gen;
+        handle.u32[1] = entity.gen;
     }
     return handle;
 }
@@ -510,10 +510,10 @@ dmn_lnx_entity_from_handle(DMN_Handle handle)
 {
     DMN_LNX_Entity *result = &dmn_lnx_nil_entity;
     U64 index = (U64)handle.u32[0];
-    if (index < dmn_lnx_state->entities_count &&
-          dmn_lnx_state->entities_base[index].gen == handle.u32[1])
+    if (index < dmn_lnx_state.entities_count &&
+          dmn_lnx_state.entities_base[index].gen == handle.u32[1])
     {
-        result = &dmn_lnx_state->entities_base[index];
+        result = &dmn_lnx_state.entities_base[index];
     }
     return result;
 }
@@ -524,11 +524,11 @@ dmn_lnx_thread_from_pid(pid_t pid)
     DMN_LNX_Entity *result = &dmn_lnx_nil_entity;
     if (pid != 0)
     {
-        for EachIndex(idx, dmn_lnx_state->entities_count)
+        for EachIndex(idx, dmn_lnx_state.entities_count)
         {
-            if (dmn_lnx_state->entities_base[idx].kind == DMN_LNX_EntityKind_Thread && (pid_t)dmn_lnx_state->entities_base[idx].id == pid)
+            if (dmn_lnx_state.entities_base[idx].kind == DMN_LNX_EntityKind_Thread && (pid_t)dmn_lnx_state.entities_base[idx].id == pid)
             {
-                result = &dmn_lnx_state->entities_base[idx];
+                result = &dmn_lnx_state.entities_base[idx];
                 break;
             }
         }
@@ -540,7 +540,7 @@ internal B32
 dmn_lnx_thread_read_reg_block(DMN_LNX_Entity *thread, void *reg_block)
 {
     B32 result = 0;
-    switch (thread->arch)
+    switch (thread.arch)
     {
         case Arch_Null:
         case Arch_COUNT:{}break;
@@ -555,7 +555,7 @@ dmn_lnx_thread_read_reg_block(DMN_LNX_Entity *thread, void *reg_block)
         case Arch_x64:
         {
             REGS_RegBlockX64 *dst = (REGS_RegBlockX64 *)reg_block;
-            pid_t tid = (pid_t)thread->id;
+            pid_t tid = (pid_t)thread.id;
             
             //- rjf: read GPR
             B32 got_gpr = 0;
@@ -569,32 +569,32 @@ dmn_lnx_thread_read_reg_block(DMN_LNX_Entity *thread, void *reg_block)
                 {
                     got_gpr = 1;
                     DMN_LNX_UserRegsX64 *src = &ctx.regs;
-                    dst->rax.u64    = src->rax;
-                    dst->rcx.u64    = src->rcx;
-                    dst->rdx.u64    = src->rdx;
-                    dst->rbx.u64    = src->rbx;
-                    dst->rsp.u64    = src->rsp;
-                    dst->rbp.u64    = src->rbp;
-                    dst->rsi.u64    = src->rsi;
-                    dst->rdi.u64    = src->rdi;
-                    dst->r8.u64     = src->r8;
-                    dst->r9.u64     = src->r9;
-                    dst->r10.u64    = src->r10;
-                    dst->r11.u64    = src->r11;
-                    dst->r12.u64    = src->r12;
-                    dst->r13.u64    = src->r13;
-                    dst->r14.u64    = src->r14;
-                    dst->r15.u64    = src->r15;
-                    dst->cs.u16     = src->cs;
-                    dst->ds.u16     = src->ds;
-                    dst->es.u16     = src->es;
-                    dst->fs.u16     = src->fs;
-                    dst->gs.u16     = src->gs;
-                    dst->ss.u16     = src->ss;
-                    dst->fsbase.u64 = src->fsbase;
-                    dst->gsbase.u64 = src->gsbase;
-                    dst->rip.u64    = src->rip;
-                    dst->rflags.u64 = src->rflags;
+                    dst.rax.u64    = src.rax;
+                    dst.rcx.u64    = src.rcx;
+                    dst.rdx.u64    = src.rdx;
+                    dst.rbx.u64    = src.rbx;
+                    dst.rsp.u64    = src.rsp;
+                    dst.rbp.u64    = src.rbp;
+                    dst.rsi.u64    = src.rsi;
+                    dst.rdi.u64    = src.rdi;
+                    dst.r8.u64     = src.r8;
+                    dst.r9.u64     = src.r9;
+                    dst.r10.u64    = src.r10;
+                    dst.r11.u64    = src.r11;
+                    dst.r12.u64    = src.r12;
+                    dst.r13.u64    = src.r13;
+                    dst.r14.u64    = src.r14;
+                    dst.r15.u64    = src.r15;
+                    dst.cs.u16     = src.cs;
+                    dst.ds.u16     = src.ds;
+                    dst.es.u16     = src.es;
+                    dst.fs.u16     = src.fs;
+                    dst.gs.u16     = src.gs;
+                    dst.ss.u16     = src.ss;
+                    dst.fsbase.u64 = src.fsbase;
+                    dst.gsbase.u64 = src.gsbase;
+                    dst.rip.u64    = src.rip;
+                    dst.rflags.u64 = src.rflags;
                 }
                 else
                 {
@@ -625,7 +625,7 @@ dmn_lnx_thread_read_reg_block(DMN_LNX_Entity *thread, void *reg_block)
                     {
                         xsave = push_array_no_zero(scratch.arena, DMN_LNX_XSave, 1);
                         MemoryCopy(xsave, xsave_buffer, sizeof(*xsave));
-                        xsave_legacy = &xsave->legacy;
+                        xsave_legacy = &xsave.legacy;
                     }
                     else
                     {
@@ -662,28 +662,28 @@ dmn_lnx_thread_read_reg_block(DMN_LNX_Entity *thread, void *reg_block)
                 if (xsave_legacy)
                 {
                     DMN_LNX_XSaveLegacy *src = xsave_legacy;
-                    dst->fcw.u16 = src->fcw;
-                    dst->fsw.u16 = src->fsw;
-                    dst->ftw.u16 = src->ftw; // TODO(rjf): old: fix tag word (?)
-                    dst->fop.u16 = src->fop;
-                    dst->fip.u64 = src->b64.fip;
+                    dst.fcw.u16 = src.fcw;
+                    dst.fsw.u16 = src.fsw;
+                    dst.ftw.u16 = src.ftw; // TODO(rjf): old: fix tag word (?)
+                    dst.fop.u16 = src.fop;
+                    dst.fip.u64 = src.b64.fip;
                     // TODO(rjf): these 16-bit registers do not belong in x64
-                    dst->fcs.u16 = 0;
-                    dst->fdp.u64 = src->b64.fdp;
-                    dst->fds.u16 = 0;
-                    dst->mxcsr.u32 = src->mxcsr;
-                    dst->mxcsr_mask.u32 = src->mxcsr_mask;
+                    dst.fcs.u16 = 0;
+                    dst.fdp.u64 = src.b64.fdp;
+                    dst.fds.u16 = 0;
+                    dst.mxcsr.u32 = src.mxcsr;
+                    dst.mxcsr_mask.u32 = src.mxcsr_mask;
                     {
-                        U8 *float_s = src->st_space.u8;
-                        REGS_Reg80 *float_d = &dst->st0;
+                        U8 *float_s = src.st_space.u8;
+                        REGS_Reg80 *float_d = &dst.st0;
                         for (U32 n = 0; n < 8; n += 1, float_s += 16, float_d += 1)
                         {
                             MemoryCopy(float_d, float_s, sizeof(*float_d));
                         }
                     }
                     {
-                        U8 *xmm_s = src->xmm_space.u8;
-                        REGS_Reg512 *xmm_d = &dst->zmm0;
+                        U8 *xmm_s = src.xmm_space.u8;
+                        REGS_Reg512 *xmm_d = &dst.zmm0;
                         for (U32 n = 0; n < 16; n += 1, xmm_s += 16, xmm_d += 1)
                         {
                             MemoryCopy(xmm_d, xmm_s, 16);
@@ -695,11 +695,11 @@ dmn_lnx_thread_read_reg_block(DMN_LNX_Entity *thread, void *reg_block)
                 // TODO(rjf): this is a lie; ymm can technically move around. study & fix.
                 if (xsave)
                 {
-                    B32 has_ymm_registers = ((xsave->header.xstate_bv & 4) != 0);
+                    B32 has_ymm_registers = ((xsave.header.xstate_bv & 4) != 0);
                     if (has_ymm_registers)
                     {
-                        U8 *ymm_s = (U8 *)xsave->ymmh;
-                        REGS_Reg512 *ymm_d = &dst->zmm0;
+                        U8 *ymm_s = (U8 *)xsave.ymmh;
+                        REGS_Reg512 *ymm_d = &dst.zmm0;
                         for (U32 n = 0; n < 16; n += 1, ymm_s += 16, ymm_d += 1)
                         {
                             MemoryCopy(((U8*)ymm_d) + 16, ymm_s, 16);
@@ -716,7 +716,7 @@ dmn_lnx_thread_read_reg_block(DMN_LNX_Entity *thread, void *reg_block)
             if (got_fpr)
             {
                 got_debug = 1;
-                REGS_Reg64 *dr_d = &dst->dr0;
+                REGS_Reg64 *dr_d = &dst.dr0;
                 for (U32 i = 0; i < 8; i += 1, dr_d += 1)
                 {
                     if (i != 4 && i != 5)
@@ -726,7 +726,7 @@ dmn_lnx_thread_read_reg_block(DMN_LNX_Entity *thread, void *reg_block)
                         int peek_result = ptrace(PTRACE_PEEKUSER, tid, PtrFromInt(offset), 0);
                         if (errno == 0)
                         {
-                            dr_d->u64 = (U64)peek_result;
+                            dr_d.u64 = (U64)peek_result;
                         }
                         else
                         {
@@ -746,7 +746,7 @@ internal B32
 dmn_lnx_thread_write_reg_block(DMN_LNX_Entity *thread, void *reg_block)
 {
     B32 result = 0;
-    switch (thread->arch)
+    switch (thread.arch)
     {
         case Arch_Null:
         case Arch_COUNT:{}break;
@@ -761,38 +761,38 @@ dmn_lnx_thread_write_reg_block(DMN_LNX_Entity *thread, void *reg_block)
         case Arch_x64:
         {
             REGS_RegBlockX64 *src = (REGS_RegBlockX64 *)reg_block;
-            pid_t tid = (pid_t)thread->id;
+            pid_t tid = (pid_t)thread.id;
             
             //- rjf: write GPR
             B32 did_gpr = 0;
             {
                 DMN_LNX_UserX64 dst = {0};
-                dst.regs.rax       = src->rax.u64;
-                dst.regs.rcx       = src->rcx.u64;
-                dst.regs.rdx       = src->rdx.u64;
-                dst.regs.rbx       = src->rbx.u64;
-                dst.regs.rsp       = src->rsp.u64;
-                dst.regs.rbp       = src->rbp.u64;
-                dst.regs.rsi       = src->rsi.u64;
-                dst.regs.rdi       = src->rdi.u64;
-                dst.regs.r8        = src->r8.u64;
-                dst.regs.r9        = src->r9.u64;
-                dst.regs.r10       = src->r10.u64;
-                dst.regs.r11       = src->r11.u64;
-                dst.regs.r12       = src->r12.u64;
-                dst.regs.r13       = src->r13.u64;
-                dst.regs.r14       = src->r14.u64;
-                dst.regs.r15       = src->r15.u64;
-                dst.regs.cs        = src->cs.u16;
-                dst.regs.ds        = src->ds.u16;
-                dst.regs.es        = src->es.u16;
-                dst.regs.fs        = src->fs.u16;
-                dst.regs.gs        = src->gs.u16;
-                dst.regs.ss        = src->ss.u16;
-                dst.regs.fsbase    = src->fsbase.u64;
-                dst.regs.gsbase    = src->gsbase.u64;
-                dst.regs.rip       = src->rip.u64;
-                dst.regs.rflags    = src->rflags.u64;
+                dst.regs.rax       = src.rax.u64;
+                dst.regs.rcx       = src.rcx.u64;
+                dst.regs.rdx       = src.rdx.u64;
+                dst.regs.rbx       = src.rbx.u64;
+                dst.regs.rsp       = src.rsp.u64;
+                dst.regs.rbp       = src.rbp.u64;
+                dst.regs.rsi       = src.rsi.u64;
+                dst.regs.rdi       = src.rdi.u64;
+                dst.regs.r8        = src.r8.u64;
+                dst.regs.r9        = src.r9.u64;
+                dst.regs.r10       = src.r10.u64;
+                dst.regs.r11       = src.r11.u64;
+                dst.regs.r12       = src.r12.u64;
+                dst.regs.r13       = src.r13.u64;
+                dst.regs.r14       = src.r14.u64;
+                dst.regs.r15       = src.r15.u64;
+                dst.regs.cs        = src.cs.u16;
+                dst.regs.ds        = src.ds.u16;
+                dst.regs.es        = src.es.u16;
+                dst.regs.fs        = src.fs.u16;
+                dst.regs.gs        = src.gs.u16;
+                dst.regs.ss        = src.ss.u16;
+                dst.regs.fsbase    = src.fsbase.u64;
+                dst.regs.gsbase    = src.gsbase.u64;
+                dst.regs.rip       = src.rip.u64;
+                dst.regs.rflags    = src.rflags.u64;
                 struct iovec iov_gpr = {0};
                 iov_gpr.iov_base = &dst;
                 iov_gpr.iov_len = sizeof(dst);
@@ -807,17 +807,17 @@ dmn_lnx_thread_write_reg_block(DMN_LNX_Entity *thread, void *reg_block)
                 // rjf: fill xsave structure
                 DMN_LNX_XSave xsave = {0};
                 {
-                    xsave.legacy.fcw          = src->fcw.u16;
-                    xsave.legacy.fsw          = src->fsw.u16;
-                    xsave.legacy.ftw          = src->ftw.u16;
-                    xsave.legacy.fop          = src->fop.u16;
-                    xsave.legacy.b64.fip      = src->fip.u64;
-                    xsave.legacy.b64.fdp      = src->fdp.u64;
-                    xsave.legacy.mxcsr        = src->mxcsr.u32;
-                    xsave.legacy.mxcsr_mask   = src->mxcsr_mask.u32;
+                    xsave.legacy.fcw          = src.fcw.u16;
+                    xsave.legacy.fsw          = src.fsw.u16;
+                    xsave.legacy.ftw          = src.ftw.u16;
+                    xsave.legacy.fop          = src.fop.u16;
+                    xsave.legacy.b64.fip      = src.fip.u64;
+                    xsave.legacy.b64.fdp      = src.fdp.u64;
+                    xsave.legacy.mxcsr        = src.mxcsr.u32;
+                    xsave.legacy.mxcsr_mask   = src.mxcsr_mask.u32;
                     {
                         U8 *float_d = xsave.legacy.st_space.u8;
-                        REGS_Reg80 *float_s = &src->st0;
+                        REGS_Reg80 *float_s = &src.st0;
                         for (U32 n = 0; n < 8; n += 1, float_s += 1, float_d += 16)
                         {
                             MemoryCopy(float_d, float_s, sizeof(*float_s));
@@ -825,7 +825,7 @@ dmn_lnx_thread_write_reg_block(DMN_LNX_Entity *thread, void *reg_block)
                     }
                     {
                         U8 *xmm_d = xsave.legacy.xmm_space.u8;
-                        REGS_Reg512 *xmm_s = &src->zmm0;
+                        REGS_Reg512 *xmm_s = &src.zmm0;
                         for (U32 n = 0; n < 16; n += 1, xmm_s += 1, xmm_d += 16)
                         {
                             MemoryCopy(xmm_d, xmm_s, 16);
@@ -835,7 +835,7 @@ dmn_lnx_thread_write_reg_block(DMN_LNX_Entity *thread, void *reg_block)
                     {
                         // TODO(rjf): this is a lie; ymm can technically move around. study & fix.
                         U8 *ymm_d = xsave.ymmh;
-                        REGS_Reg512 *ymm_s = &src->zmm0;
+                        REGS_Reg512 *ymm_s = &src.zmm0;
                         for (U32 n = 0; n < 16; n += 1, ymm_s += 1, ymm_d += 16)
                         {
                             MemoryCopy(ymm_d, ((U8 *)ymm_s) + 16, 16);
@@ -871,13 +871,13 @@ dmn_lnx_thread_write_reg_block(DMN_LNX_Entity *thread, void *reg_block)
             if (did_fpr)
             {
                 did_dbg = 1;
-                REGS_Reg64 *dr_s = &src->dr0;
+                REGS_Reg64 *dr_s = &src.dr0;
                 for (U32 i = 0; i < 8; i += 1, dr_s += 1)
                 {
                     if (i != 4 && i != 5)
                     {
                         U64 offset = OffsetOf(DMN_LNX_UserX64, u_debugreg[i]);
-                        int poke_result = ptrace(PTRACE_POKEUSER, tid, PtrFromInt(offset), dr_s->u64);
+                        int poke_result = ptrace(PTRACE_POKEUSER, tid, PtrFromInt(offset), dr_s.u64);
                         if (poke_result == -1)
                         {
                             did_dbg = 0;
@@ -900,12 +900,12 @@ dmn_init(void)
 {
     Arena *arena = arena_alloc();
     dmn_lnx_state = push_array(arena, DMN_LNX_State, 1);
-    dmn_lnx_state->arena = arena;
-    dmn_lnx_state->deferred_events_arena = arena_alloc();
-    dmn_lnx_state->entities_arena = arena_alloc(.reserve_size = GB(32), .commit_size = KB(64), .flags = ArenaFlag_NoChain);
-    dmn_lnx_state->entities_base = push_array(dmn_lnx_state->entities_arena, DMN_LNX_Entity, 0);
+    dmn_lnx_state.arena = arena;
+    dmn_lnx_state.deferred_events_arena = arena_alloc();
+    dmn_lnx_state.entities_arena = arena_alloc(.reserve_size = GB(32), .commit_size = KB(64), .flags = ArenaFlag_NoChain);
+    dmn_lnx_state.entities_base = push_array(dmn_lnx_state.entities_arena, DMN_LNX_Entity, 0);
     dmn_lnx_entity_alloc(&dmn_lnx_nil_entity, DMN_LNX_EntityKind_Root);
-    dmn_lnx_state->access_mutex = os_mutex_alloc();
+    dmn_lnx_state.access_mutex = os_mutex_alloc();
 }
 
 ////////////////////////////////
@@ -922,18 +922,18 @@ dmn_ctrl_begin(void)
 internal void
 dmn_ctrl_exclusive_access_begin(void)
 {
-    OS_MutexScope(dmn_lnx_state->access_mutex)
+    OS_MutexScope(dmn_lnx_state.access_mutex)
     {
-        dmn_lnx_state->access_run_state = 1;
+        dmn_lnx_state.access_run_state = 1;
     }
 }
 
 internal void
 dmn_ctrl_exclusive_access_end(void)
 {
-    OS_MutexScope(dmn_lnx_state->access_mutex)
+    OS_MutexScope(dmn_lnx_state.access_mutex)
     {
-        dmn_lnx_state->access_run_state = 0;
+        dmn_lnx_state.access_run_state = 0;
     }
 }
 
@@ -946,29 +946,29 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
     char **argv = 0;
     int argc = 0;
     {
-        argc = (int)(params->cmd_line.node_count);
+        argc = (int)(params.cmd_line.node_count);
         argv = push_array(scratch.arena, char *, argc+1);
         {
             U64 idx = 0;
-            for (String8Node *n = params->cmd_line.first; n != 0; n = n->next, idx += 1)
+            for (String8Node *n = params.cmd_line.first; n != 0; n = n.next, idx += 1)
             {
-                argv[idx] = (char *)push_str8_copy(scratch.arena, n->string).str;
+                argv[idx] = (char *)push_str8_copy(scratch.arena, n.string).str;
             }
         }
     }
     
     //- rjf: unpack path
-    char *path = (char *)push_str8_copy(scratch.arena, params->path).str;
+    char *path = (char *)push_str8_copy(scratch.arena, params.path).str;
     
     //- rjf: unpack environment
     char **env = 0;
     {
-        env = push_array(scratch.arena, char *, params->env.node_count+1);
+        env = push_array(scratch.arena, char *, params.env.node_count+1);
         {
             U64 idx = 0;
-            for (String8Node *n = params->env.first; n != 0; n = n->next, idx += 1)
+            for (String8Node *n = params.env.first; n != 0; n = n.next, idx += 1)
             {
-                env[idx] = (char *)push_str8_copy(scratch.arena, n->string).str;
+                env[idx] = (char *)push_str8_copy(scratch.arena, n.string).str;
             }
         }
     }
@@ -1072,60 +1072,60 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
                     DMN_LNX_Entity *main_thread = &dmn_lnx_nil_entity;
                     {
                         // rjf: build process
-                        process = dmn_lnx_entity_alloc(dmn_lnx_state->entities_base, DMN_LNX_EntityKind_Process);
-                        process->arch = dmn_lnx_arch_from_pid(pid);
-                        process->id = pid;
-                        process->fd = open((char*)str8f(scratch.arena, "/proc/%d/mem", pid).str, O_RDWR);
+                        process = dmn_lnx_entity_alloc(dmn_lnx_state.entities_base, DMN_LNX_EntityKind_Process);
+                        process.arch = dmn_lnx_arch_from_pid(pid);
+                        process.id = pid;
+                        process.fd = open((char*)str8f(scratch.arena, "/proc/%d/mem", pid).str, O_RDWR);
                         {
-                            DMN_Event *e = dmn_event_list_push(dmn_lnx_state->deferred_events_arena, &dmn_lnx_state->deferred_events);
-                            e->kind    = DMN_EventKind_CreateProcess;
-                            e->process = dmn_lnx_handle_from_entity(process);
-                            e->arch    = process->arch;
-                            e->code    = pid;
+                            DMN_Event *e = dmn_event_list_push(dmn_lnx_state.deferred_events_arena, &dmn_lnx_state.deferred_events);
+                            e.kind    = DMN_EventKind_CreateProcess;
+                            e.process = dmn_lnx_handle_from_entity(process);
+                            e.arch    = process.arch;
+                            e.code    = pid;
                         }
                         
                         // rjf: build thread
                         {
                             DMN_LNX_Entity *thread = dmn_lnx_entity_alloc(process, DMN_LNX_EntityKind_Thread);
-                            thread->id = pid;
-                            thread->arch = process->arch;
+                            thread.id = pid;
+                            thread.arch = process.arch;
                             {
-                                DMN_Event *e = dmn_event_list_push(dmn_lnx_state->deferred_events_arena, &dmn_lnx_state->deferred_events);
-                                e->kind    = DMN_EventKind_CreateThread;
-                                e->process = dmn_lnx_handle_from_entity(process);
-                                e->thread  = dmn_lnx_handle_from_entity(thread);
-                                e->arch    = thread->arch;
-                                e->code    = thread->id;
+                                DMN_Event *e = dmn_event_list_push(dmn_lnx_state.deferred_events_arena, &dmn_lnx_state.deferred_events);
+                                e.kind    = DMN_EventKind_CreateThread;
+                                e.process = dmn_lnx_handle_from_entity(process);
+                                e.thread  = dmn_lnx_handle_from_entity(thread);
+                                e.arch    = thread.arch;
+                                e.code    = thread.id;
                             }
                             main_thread = thread;
                         }
                         
                         // rjf: gather all process module infos
                         DMN_LNX_ModuleInfoList module_infos = dmn_lnx_module_info_list_from_process(scratch.arena, process);
-                        for (DMN_LNX_ModuleInfoNode *n = module_infos.first; n != 0; n = n->next)
+                        for (DMN_LNX_ModuleInfoNode *n = module_infos.first; n != 0; n = n.next)
                         {
                             DMN_LNX_Entity *module = dmn_lnx_entity_alloc(process, DMN_LNX_EntityKind_Module);
-                            module->id = n->v.name;
+                            module.id = n.v.name;
                             {
-                                DMN_Event *e = dmn_event_list_push(dmn_lnx_state->deferred_events_arena, &dmn_lnx_state->deferred_events);
-                                e->kind    = DMN_EventKind_LoadModule;
-                                e->process = dmn_lnx_handle_from_entity(process);
-                                e->thread  = dmn_lnx_handle_from_entity(main_thread);
-                                e->module  = dmn_lnx_handle_from_entity(module);
-                                e->arch    = process->arch;
-                                e->address = n->v.vaddr_range.min;
-                                e->size    = dim_1u64(n->v.vaddr_range);
-                                e->string  = dmn_lnx_read_string(dmn_lnx_state->deferred_events_arena, process->fd, n->v.name);
+                                DMN_Event *e = dmn_event_list_push(dmn_lnx_state.deferred_events_arena, &dmn_lnx_state.deferred_events);
+                                e.kind    = DMN_EventKind_LoadModule;
+                                e.process = dmn_lnx_handle_from_entity(process);
+                                e.thread  = dmn_lnx_handle_from_entity(main_thread);
+                                e.module  = dmn_lnx_handle_from_entity(module);
+                                e.arch    = process.arch;
+                                e.address = n.v.vaddr_range.min;
+                                e.size    = dim_1u64(n.v.vaddr_range);
+                                e.string  = dmn_lnx_read_string(dmn_lnx_state.deferred_events_arena, process.fd, n.v.name);
                             }
                         }
                         
                         // rjf: handshake event
                         {
-                            DMN_Event *e = dmn_event_list_push(dmn_lnx_state->deferred_events_arena, &dmn_lnx_state->deferred_events);
-                            e->kind    = DMN_EventKind_HandshakeComplete;
-                            e->process = dmn_lnx_handle_from_entity(process);
-                            e->thread  = dmn_lnx_handle_from_entity(main_thread);
-                            e->arch    = process->arch;
+                            DMN_Event *e = dmn_event_list_push(dmn_lnx_state.deferred_events_arena, &dmn_lnx_state.deferred_events);
+                            e.kind    = DMN_EventKind_HandshakeComplete;
+                            e.process = dmn_lnx_handle_from_entity(process);
+                            e.thread  = dmn_lnx_handle_from_entity(main_thread);
+                            e.arch    = process.arch;
                         }
                     }
                 }break;
@@ -1162,7 +1162,7 @@ dmn_ctrl_kill(DMN_CtrlCtx *ctx, DMN_Handle process, U32 exit_code)
     B32 result = 0;
     DMN_LNX_Entity *process_entity = dmn_lnx_entity_from_handle(process);
     if (process_entity != &dmn_lnx_nil_entity &&
-          kill(process_entity->id, SIGKILL) != -1)
+          kill(process_entity.id, SIGKILL) != -1)
     {
         result = 1;
     }
@@ -1175,7 +1175,7 @@ dmn_ctrl_detach(DMN_CtrlCtx *ctx, DMN_Handle process)
     B32 result = 0;
     DMN_LNX_Entity *process_entity = dmn_lnx_entity_from_handle(process);
     if (process_entity != &dmn_lnx_nil_entity &&
-          ptrace(PTRACE_DETACH, process_entity->id, 0, 0) != -1)
+          ptrace(PTRACE_DETACH, process_entity.id, 0, 0) != -1)
     {
         result = 1;
     }
@@ -1192,31 +1192,31 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
         ////////////////////////////
         //- rjf: unpack controls
         //
-        DMN_LNX_Entity *single_step_thread = dmn_lnx_entity_from_handle(ctrls->single_step_thread);
+        DMN_LNX_Entity *single_step_thread = dmn_lnx_entity_from_handle(ctrls.single_step_thread);
         
         ////////////////////////////
         //- rjf: push any deferred events
         //
         {
-            for (DMN_EventNode *n = dmn_lnx_state->deferred_events.first; n != 0; n = n->next)
+            for (DMN_EventNode *n = dmn_lnx_state.deferred_events.first; n != 0; n = n.next)
             {
-                DMN_Event *e_src = &n->v;
+                DMN_Event *e_src = &n.v;
                 DMN_Event *e_dst = dmn_event_list_push(arena, &evts);
                 MemoryCopyStruct(e_dst, e_src);
-                e_dst->string = str8_copy(arena, e_dst->string);
+                e_dst.string = str8_copy(arena, e_dst.string);
             }
-            MemoryZeroStruct(&dmn_lnx_state->deferred_events);
-            arena_clear(dmn_lnx_state->deferred_events_arena);
+            MemoryZeroStruct(&dmn_lnx_state.deferred_events);
+            arena_clear(dmn_lnx_state.deferred_events_arena);
         }
         
         ////////////////////////////
         //- rjf: no processes, no output events -> not attached
         //
-        if (evts.count == 0 && dmn_lnx_state->entities_base->first == &dmn_lnx_nil_entity)
+        if (evts.count == 0 && dmn_lnx_state.entities_base->first == &dmn_lnx_nil_entity)
         {
             DMN_Event *e = dmn_event_list_push(arena, &evts);
-            e->kind       = DMN_EventKind_Error;
-            e->error_kind = DMN_ErrorKind_NotAttached;
+            e.kind       = DMN_EventKind_Error;
+            e.error_kind = DMN_ErrorKind_NotAttached;
         }
         
         ////////////////////////////
@@ -1227,21 +1227,21 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
         ////////////////////////////
         //- rjf: write all traps into memory
         //
-        U8 *trap_swap_bytes = push_array_no_zero(scratch.arena, U8, ctrls->traps.trap_count);
+        U8 *trap_swap_bytes = push_array_no_zero(scratch.arena, U8, ctrls.traps.trap_count);
         ProfScope("write all traps into memory")
         {
             U64 trap_idx = 0;
-            for (DMN_TrapChunkNode *n = ctrls->traps.first; n != 0; n = n->next)
+            for (DMN_TrapChunkNode *n = ctrls.traps.first; n != 0; n = n.next)
             {
-                for (U64 n_idx = 0; n_idx < n->count; n_idx += 1, trap_idx += 1)
+                for (U64 n_idx = 0; n_idx < n.count; n_idx += 1, trap_idx += 1)
                 {
-                    DMN_Trap *trap = n->v+n_idx;
-                    if (trap->flags == 0)
+                    DMN_Trap *trap = n.v+n_idx;
+                    if (trap.flags == 0)
                     {
                         trap_swap_bytes[trap_idx] = 0xCC;
-                        dmn_process_read(trap->process, r1u64(trap->vaddr, trap->vaddr+1), trap_swap_bytes+trap_idx);
+                        dmn_process_read(trap.process, r1u64(trap.vaddr, trap.vaddr+1), trap_swap_bytes+trap_idx);
                         U8 int3 = 0xCC;
-                        dmn_process_write(trap->process, r1u64(trap->vaddr, trap->vaddr+1), &int3);
+                        dmn_process_write(trap.process, r1u64(trap.vaddr, trap.vaddr+1), &int3);
                     }
                 }
             }
@@ -1255,19 +1255,19 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
         if (need_wait_on_events) ProfScope("gather all threads which we should run")
         {
             //- rjf: scan all processes
-            for (DMN_LNX_Entity *process = dmn_lnx_state->entities_base->first;
+            for (DMN_LNX_Entity *process = dmn_lnx_state.entities_base->first;
                     process != &dmn_lnx_nil_entity;
-                    process = process->next)
+                    process = process.next)
             {
-                if (process->kind != DMN_LNX_EntityKind_Process) {continue;}
+                if (process.kind != DMN_LNX_EntityKind_Process) {continue;}
                 
                 //- rjf: determine if this process is frozen
                 B32 process_is_frozen = 0;
-                if (ctrls->run_entities_are_processes)
+                if (ctrls.run_entities_are_processes)
                 {
-                    for (U64 idx = 0; idx < ctrls->run_entity_count; idx += 1)
+                    for (U64 idx = 0; idx < ctrls.run_entity_count; idx += 1)
                     {
-                        if (dmn_handle_match(ctrls->run_entities[idx], dmn_lnx_handle_from_entity(process)))
+                        if (dmn_handle_match(ctrls.run_entities[idx], dmn_lnx_handle_from_entity(process)))
                         {
                             process_is_frozen = 1;
                             break;
@@ -1276,37 +1276,37 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                 }
                 
                 //- rjf: scan all threads in this process
-                for (DMN_LNX_Entity *thread = process->first;
+                for (DMN_LNX_Entity *thread = process.first;
                         thread != &dmn_lnx_nil_entity;
-                        thread = thread->next)
+                        thread = thread.next)
                 {
-                    if (thread->kind != DMN_LNX_EntityKind_Thread) {continue;}
+                    if (thread.kind != DMN_LNX_EntityKind_Thread) {continue;}
                     
                     //- rjf: determine if this thread is frozen
                     B32 is_frozen = 0;
                     {
                         // rjf: single-step? freeze if not the single-step thread.
-                        if (!dmn_handle_match(dmn_handle_zero(), ctrls->single_step_thread))
+                        if (!dmn_handle_match(dmn_handle_zero(), ctrls.single_step_thread))
                         {
-                            is_frozen = !dmn_handle_match(dmn_lnx_handle_from_entity(thread), ctrls->single_step_thread);
+                            is_frozen = !dmn_handle_match(dmn_lnx_handle_from_entity(thread), ctrls.single_step_thread);
                         }
                         
                         // rjf: not single-stepping? determine based on run controls freezing info
                         else
                         {
-                            if (ctrls->run_entities_are_processes)
+                            if (ctrls.run_entities_are_processes)
                             {
                                 is_frozen = process_is_frozen;
                             }
-                            else for (U64 idx = 0; idx < ctrls->run_entity_count; idx += 1)
+                            else for (U64 idx = 0; idx < ctrls.run_entity_count; idx += 1)
                             {
-                                if (dmn_handle_match(ctrls->run_entities[idx], dmn_lnx_handle_from_entity(thread)))
+                                if (dmn_handle_match(ctrls.run_entities[idx], dmn_lnx_handle_from_entity(thread)))
                                 {
                                     is_frozen = 1;
                                     break;
                                 }
                             }
-                            if (ctrls->run_entities_are_unfrozen)
+                            if (ctrls.run_entities_are_unfrozen)
                             {
                                 is_frozen ^= 1;
                             }
@@ -1316,7 +1316,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                     //- rjf: disregard all other rules if this is the halter thread
                     // TODO(rjf): halting - here is what we do on windows...
 #if 0
-                    if (dmn_w32_shared->halter_tid == thread->id)
+                    if (dmn_w32_shared.halter_tid == thread.id)
                     {
                         is_frozen = 0;
                     }
@@ -1326,7 +1326,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                     if (!is_frozen)
                     {
                         DMN_LNX_EntityNode *n = push_array(scratch.arena, DMN_LNX_EntityNode, 1);
-                        n->v = thread;
+                        n.v = thread;
                         SLLQueuePush(first_run_thread, last_run_thread, n);
                     }
                 }
@@ -1338,12 +1338,12 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
         //
         DMN_LNX_EntityNode *first_ran_thread = 0;
         DMN_LNX_EntityNode *last_ran_thread = 0;
-        for (DMN_LNX_EntityNode *n = first_run_thread; n != 0; n = n->next)
+        for (DMN_LNX_EntityNode *n = first_run_thread; n != 0; n = n.next)
         {
-            ptrace(PTRACE_CONT, (pid_t)n->v->id, 0, 0);
+            ptrace(PTRACE_CONT, (pid_t)n.v->id, 0, 0);
             DMN_LNX_EntityNode *n2 = push_array_no_zero(scratch.arena, DMN_LNX_EntityNode, 1);
             SLLQueuePush(first_ran_thread, last_ran_thread, n2);
-            n2->v = n->v;
+            n2.v = n.v;
         }
         
         ////////////////////////////
@@ -1391,18 +1391,18 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             int wstopsig          = WSTOPSIG(status);
             int ptrace_event_code = (status>>16);
             DMN_LNX_Entity *thread = dmn_lnx_thread_from_pid(wait_id);
-            DMN_LNX_Entity *process = thread->parent;
-            B32 thread_is_process_root = (thread->id == process->id);
+            DMN_LNX_Entity *process = thread.parent;
+            B32 thread_is_process_root = (thread.id == process.id);
             
             //- rjf: unpack thread's registers
             U64 rip = 0;
             void *regs_block = 0;
             if (thread != &dmn_lnx_nil_entity)
             {
-                U64 regs_block_size = regs_block_size_from_arch(thread->arch);
+                U64 regs_block_size = regs_block_size_from_arch(thread.arch);
                 regs_block = push_array(scratch.arena, U8, regs_block_size);
                 dmn_lnx_thread_read_reg_block(thread, regs_block);
-                rip = regs_rip_from_arch_block(thread->arch, regs_block);
+                rip = regs_rip_from_arch_block(thread.arch, regs_block);
             }
             
             //- rjf: WIFEXITED(status) -> thread exit
@@ -1463,10 +1463,10 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                 
                 // rjf: push event
                 DMN_Event *e = dmn_event_list_push(arena, &evts);
-                e->kind                = e_kind;
-                e->process             = dmn_lnx_handle_from_entity(process);
-                e->thread              = dmn_lnx_handle_from_entity(thread);
-                e->instruction_pointer = rip;
+                e.kind                = e_kind;
+                e.process             = dmn_lnx_handle_from_entity(process);
+                e.thread              = dmn_lnx_handle_from_entity(thread);
+                e.instruction_pointer = rip;
             }
             
             //- rjf: WSTOPSIG(status) is SIGSTOP
@@ -1482,17 +1482,17 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                 // the first one that comes back is our "dummy" sigstop. this is likely not
                 // necessarily true.
                 //
-                if (thread->expecting_dummy_sigstop)
+                if (thread.expecting_dummy_sigstop)
                 {
-                    thread->expecting_dummy_sigstop = 0;
+                    thread.expecting_dummy_sigstop = 0;
                     done = 0;
                 }
-                else if (dmn_lnx_state->has_halt_injection)
+                else if (dmn_lnx_state.has_halt_injection)
                 {
                     DMN_Event *e = dmn_event_list_push(arena, &evts);
-                    e->kind    = DMN_EventKind_Halt;
-                    e->process = dmn_lnx_handle_from_entity(process);
-                    e->thread  = dmn_lnx_handle_from_entity(thread);
+                    e.kind    = DMN_EventKind_Halt;
+                    e.process = dmn_lnx_handle_from_entity(process);
+                    e.thread  = dmn_lnx_handle_from_entity(thread);
                 }
                 else
                 {
@@ -1512,36 +1512,36 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                 // SIGSEGV
                 // SIGILL
                 DMN_Event *e = dmn_event_list_push(arena, &evts);
-                e->kind                = DMN_EventKind_Exception;
-                e->process             = dmn_lnx_handle_from_entity(process);
-                e->thread              = dmn_lnx_handle_from_entity(thread);
-                e->instruction_pointer = rip;
-                e->signo               = wstopsig;
+                e.kind                = DMN_EventKind_Exception;
+                e.process             = dmn_lnx_handle_from_entity(process);
+                e.thread              = dmn_lnx_handle_from_entity(thread);
+                e.instruction_pointer = rip;
+                e.signo               = wstopsig;
             }
             
             //- rjf: thread exit, thread is process' "root thread" -> eliminate this entire entity subtree
             if (thread_exit && thread_is_process_root)
             {
                 // rjf: generate exit-thread / unload-module events
-                for (DMN_LNX_Entity *child = process->first; child != &dmn_lnx_nil_entity; child = child->next)
+                for (DMN_LNX_Entity *child = process.first; child != &dmn_lnx_nil_entity; child = child.next)
                 {
-                    switch (child->kind)
+                    switch (child.kind)
                     {
                         default:{}break;
                         case DMN_LNX_EntityKind_Thread:
                         {
                             DMN_Event *e = dmn_event_list_push(arena, &evts);
-                            e->kind    = DMN_EventKind_ExitThread;
-                            e->process = dmn_lnx_handle_from_entity(process);
-                            e->thread  = dmn_lnx_handle_from_entity(child);
+                            e.kind    = DMN_EventKind_ExitThread;
+                            e.process = dmn_lnx_handle_from_entity(process);
+                            e.thread  = dmn_lnx_handle_from_entity(child);
                         }break;
                         case DMN_LNX_EntityKind_Module:
                         {
                             DMN_Event *e = dmn_event_list_push(arena, &evts);
-                            e->kind    = DMN_EventKind_UnloadModule;
-                            e->process = dmn_lnx_handle_from_entity(process);
-                            e->module  = dmn_lnx_handle_from_entity(child);
-                            // TODO(rjf): e->string = ...;
+                            e.kind    = DMN_EventKind_UnloadModule;
+                            e.process = dmn_lnx_handle_from_entity(process);
+                            e.module  = dmn_lnx_handle_from_entity(child);
+                            // TODO(rjf): e.string = ...;
                         }break;
                     }
                 }
@@ -1549,9 +1549,9 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                 // rjf: generate exit process event
                 {
                     DMN_Event *e = dmn_event_list_push(arena, &evts);
-                    e->kind    = DMN_EventKind_ExitProcess;
-                    e->process = dmn_lnx_handle_from_entity(process);
-                    e->code    = exit_code;
+                    e.kind    = DMN_EventKind_ExitProcess;
+                    e.process = dmn_lnx_handle_from_entity(process);
+                    e.code    = exit_code;
                 }
                 
                 // rjf: eliminate entity tree
@@ -1562,9 +1562,9 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             if (thread_exit && !thread_is_process_root)
             {
                 DMN_Event *e = dmn_event_list_push(arena, &evts);
-                e->kind    = DMN_EventKind_ExitThread;
-                e->process = dmn_lnx_handle_from_entity(process);
-                e->thread  = dmn_lnx_handle_from_entity(thread);
+                e.kind    = DMN_EventKind_ExitThread;
+                e.process = dmn_lnx_handle_from_entity(process);
+                e.thread  = dmn_lnx_handle_from_entity(thread);
                 dmn_lnx_entity_release(thread);
             }
         }
@@ -1572,15 +1572,15 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
         ////////////////////////////
         //- rjf: stop all threads
         //
-        for (DMN_LNX_EntityNode *n = first_ran_thread; n != 0; n = n->next)
+        for (DMN_LNX_EntityNode *n = first_ran_thread; n != 0; n = n.next)
         {
-            DMN_LNX_Entity *thread = n->v;
-            pid_t thread_id = (pid_t)thread->id;
+            DMN_LNX_Entity *thread = n.v;
+            pid_t thread_id = (pid_t)thread.id;
             if (thread_id != final_wait_pid)
             {
                 union sigval sv = {0};
                 sigqueue(thread_id, SIGSTOP, sv);
-                thread->expecting_dummy_sigstop = 1;
+                thread.expecting_dummy_sigstop = 1;
             }
         }
         
@@ -1590,17 +1590,17 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
         ProfScope("restore original memory at trap locations")
         {
             U64 trap_idx = 0;
-            for (DMN_TrapChunkNode *n = ctrls->traps.first; n != 0; n = n->next)
+            for (DMN_TrapChunkNode *n = ctrls.traps.first; n != 0; n = n.next)
             {
-                for (U64 n_idx = 0; n_idx < n->count; n_idx += 1, trap_idx += 1)
+                for (U64 n_idx = 0; n_idx < n.count; n_idx += 1, trap_idx += 1)
                 {
-                    DMN_Trap *trap = n->v+n_idx;
-                    if (trap->flags == 0)
+                    DMN_Trap *trap = n.v+n_idx;
+                    if (trap.flags == 0)
                     {
                         U8 og_byte = trap_swap_bytes[trap_idx];
                         if (og_byte != 0xCC)
                         {
-                            dmn_process_write(trap->process, r1u64(trap->vaddr, trap->vaddr+1), &og_byte);
+                            dmn_process_write(trap.process, r1u64(trap.vaddr, trap.vaddr+1), &og_byte);
                         }
                     }
                 }
@@ -1618,17 +1618,17 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
 internal void
 dmn_halt(U64 code, U64 user_data)
 {
-    if (!dmn_lnx_state->has_halt_injection)
+    if (!dmn_lnx_state.has_halt_injection)
     {
-        DMN_LNX_Entity *process = dmn_lnx_state->entities_base->first;
+        DMN_LNX_Entity *process = dmn_lnx_state.entities_base->first;
         if (process != &dmn_lnx_nil_entity)
         {
             union sigval sv = {0};
-            if (sigqueue(process->id, SIGSTOP, sv) != -1)
+            if (sigqueue(process.id, SIGSTOP, sv) != -1)
             {
-                dmn_lnx_state->has_halt_injection = 1;
-                dmn_lnx_state->halt_code          = code;
-                dmn_lnx_state->halt_user_data     = user_data;
+                dmn_lnx_state.has_halt_injection = 1;
+                dmn_lnx_state.halt_code          = code;
+                dmn_lnx_state.halt_user_data     = user_data;
             }
         }
     }
@@ -1649,8 +1649,8 @@ dmn_access_open(void)
     }
     else
     {
-        os_mutex_take(dmn_lnx_state->access_mutex);
-        result = !dmn_lnx_state->access_run_state;
+        os_mutex_take(dmn_lnx_state.access_mutex);
+        result = !dmn_lnx_state.access_run_state;
     }
     return result;
 }
@@ -1660,7 +1660,7 @@ dmn_access_close(void)
 {
     if (!dmn_lnx_ctrl_thread)
     {
-        os_mutex_drop(dmn_lnx_state->access_mutex);
+        os_mutex_drop(dmn_lnx_state.access_mutex);
     }
 }
 
@@ -1696,7 +1696,7 @@ internal U64
 dmn_process_read(DMN_Handle process, Rng1U64 range, void *dst)
 {
     DMN_LNX_Entity *entity = dmn_lnx_entity_from_handle(process);
-    U64 result = dmn_lnx_read(entity->fd, range, dst);
+    U64 result = dmn_lnx_read(entity.fd, range, dst);
     return result;
 }
 
@@ -1704,7 +1704,7 @@ internal B32
 dmn_process_write(DMN_Handle process, Rng1U64 range, void *src)
 {
     DMN_LNX_Entity *entity = dmn_lnx_entity_from_handle(process);
-    B32 result = dmn_lnx_write(entity->fd, range, src);
+    B32 result = dmn_lnx_write(entity.fd, range, src);
     return result;
 }
 
@@ -1714,7 +1714,7 @@ internal Arch
 dmn_arch_from_thread(DMN_Handle handle)
 {
     DMN_LNX_Entity *thread = dmn_lnx_entity_from_handle(handle);
-    return thread->arch;
+    return thread.arch;
 }
 
 internal U64
@@ -1760,7 +1760,7 @@ dmn_process_iter_begin(DMN_ProcessIter *iter)
 {
     DIR *dir = opendir("/proc");
     MemoryZeroStruct(iter);
-    iter->v[0] = IntFromPtr(dir);
+    iter.v[0] = IntFromPtr(dir);
 }
 
 internal B32
@@ -1770,8 +1770,8 @@ dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info
     B32 got_pid = 0;
     String8 pid_string = {0};
     {
-        DIR *dir = (DIR*)PtrFromInt(iter->v[0]);
-        if (dir != 0 && iter->v[1] == 0)
+        DIR *dir = (DIR*)PtrFromInt(iter.v[0]);
+        if (dir != 0 && iter.v[1] == 0)
         {
             for (;;)
             {
@@ -1783,7 +1783,7 @@ dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info
                 }
                 
                 // rjf: check file name is integer
-                String8 file_name = str8_cstring((char*)d->d_name);
+                String8 file_name = str8_cstring((char*)d.d_name);
                 B32 is_integer = str8_is_integer(file_name, 10);
                 
                 // rjf: break on integers (which represent processes)
@@ -1807,8 +1807,8 @@ dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info
         {
             name = str8_lit("(unknown process)");
         }
-        info_out->name = name;
-        info_out->pid = pid;
+        info_out.name = name;
+        info_out.pid = pid;
         result = 1;
     }
     
@@ -1818,7 +1818,7 @@ dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info
 internal void
 dmn_process_iter_end(DMN_ProcessIter *iter)
 {
-    DIR *dir = (DIR*)PtrFromInt(iter->v[0]);
+    DIR *dir = (DIR*)PtrFromInt(iter.v[0]);
     if (dir != 0)
     {
         closedir(dir);

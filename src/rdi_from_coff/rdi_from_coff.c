@@ -66,12 +66,12 @@ c2r_rdi_binary_sections_from_coff_sections(Arena *arena, String8 image_data, Str
         COFF_SectionHeader *coff_sec = &sectab[isec];
         RDIM_BinarySection *sec      = rdim_binary_section_list_push(arena, &binary_sections);
         
-        sec->name       = coff_name_from_section_header(string_table, coff_sec);
-        sec->flags      = c2r_rdi_binary_section_flags_from_coff_section_flags(coff_sec->flags);
-        sec->voff_first = coff_sec->voff;
-        sec->voff_opl   = coff_sec->voff + coff_sec->vsize;
-        sec->foff_first = coff_sec->foff;
-        sec->foff_opl   = coff_sec->foff + coff_sec->fsize;
+        sec.name       = coff_name_from_section_header(string_table, coff_sec);
+        sec.flags      = c2r_rdi_binary_section_flags_from_coff_section_flags(coff_sec.flags);
+        sec.voff_first = coff_sec.voff;
+        sec.voff_opl   = coff_sec.voff + coff_sec.vsize;
+        sec.foff_first = coff_sec.foff;
+        sec.foff_opl   = coff_sec.foff + coff_sec.fsize;
     }
     
     ProfEnd();

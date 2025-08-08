@@ -58,10 +58,10 @@ internal FileProperties
 os_lnx_file_properties_from_stat(struct stat *s)
 {
     FileProperties props = {0};
-    props.size     = s->st_size;
-    props.created  = os_lnx_dense_time_from_timespec(s->st_ctim);
-    props.modified = os_lnx_dense_time_from_timespec(s->st_mtim);
-    if (s->st_mode & S_IFDIR)
+    props.size     = s.st_size;
+    props.created  = os_lnx_dense_time_from_timespec(s.st_ctim);
+    props.modified = os_lnx_dense_time_from_timespec(s.st_mtim);
+    if (s.st_mode & S_IFDIR)
     {
         props.flags |= FilePropertyFlag_IsFolder;
     }
@@ -72,9 +72,9 @@ internal void
 os_lnx_safe_call_sig_handler(int x)
 {
     OS_LNX_SafeCallChain *chain = os_lnx_safe_call_chain;
-    if (chain != 0 && chain->fail_handler != 0)
+    if (chain != 0 && chain.fail_handler != 0)
     {
-        chain->fail_handler(chain->ptr);
+        chain.fail_handler(chain.ptr);
     }
     abort();
 }
@@ -100,7 +100,7 @@ os_lnx_entity_alloc(OS_LNX_EntityKind kind)
         }
     }
     MemoryZeroStruct(entity);
-    entity->kind = kind;
+    entity.kind = kind;
     return entity;
 }
 
@@ -121,8 +121,8 @@ internal void *
 os_lnx_thread_entry_point(void *ptr)
 {
     OS_LNX_Entity *entity = (OS_LNX_Entity *)ptr;
-    OS_ThreadFunctionType *func = entity->thread.func;
-    void *thread_ptr = entity->thread.ptr;
+    OS_ThreadFunctionType *func = entity.thread.func;
+    void *thread_ptr = entity.thread.ptr;
     TCTX tctx_;
     tctx_init_and_equip(&tctx_);
     func(thread_ptr);
@@ -554,12 +554,12 @@ internal OS_FileIter *
 os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags)
 {
     OS_FileIter *base_iter = push_array(arena, OS_FileIter, 1);
-    base_iter->flags = flags;
-    OS_LNX_FileIter *iter = (OS_LNX_FileIter *)base_iter->memory;
+    base_iter.flags = flags;
+    OS_LNX_FileIter *iter = (OS_LNX_FileIter *)base_iter.memory;
     {
         String8 path_copy = push_str8_copy(arena, path);
-        iter->dir = opendir((char *)path_copy.str);
-        iter->path = path_copy;
+        iter.dir = opendir((char *)path_copy.str);
+        iter.path = path_copy;
     }
     return base_iter;
 }
@@ -568,12 +568,12 @@ internal B32
 os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
 {
     B32 good = 0;
-    OS_LNX_FileIter *lnx_iter = (OS_LNX_FileIter *)iter->memory;
+    OS_LNX_FileIter *lnx_iter = (OS_LNX_FileIter *)iter.memory;
     for (;;)
     {
         // rjf: get next entry
-        lnx_iter->dp = readdir(lnx_iter->dir);
-        good = (lnx_iter->dp != 0);
+        lnx_iter.dp = readdir(lnx_iter.dir);
+        good = (lnx_iter.dp != 0);
         
         // rjf: unpack entry info
         struct stat st = {0};
@@ -581,7 +581,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
         if (good)
         {
             Temp scratch = scratch_begin(&arena, 1);
-            String8 full_path = push_str8f(scratch.arena, "%S/%s", lnx_iter->path, lnx_iter->dp->d_name);
+            String8 full_path = push_str8f(scratch.arena, "%S/%s", lnx_iter.path, lnx_iter.dp.d_name);
             stat_result = stat((char *)full_path.str, &st);
             scratch_end(scratch);
         }
@@ -590,19 +590,19 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
         B32 filtered = 0;
         if (good)
         {
-            filtered = ((st.st_mode == S_IFDIR && iter->flags & OS_FileIterFlag_SkipFolders) ||
-                                    (st.st_mode == S_IFREG && iter->flags & OS_FileIterFlag_SkipFiles) ||
-                                    (lnx_iter->dp->d_name[0] == '.' && lnx_iter->dp->d_name[1] == 0) ||
-                                    (lnx_iter->dp->d_name[0] == '.' && lnx_iter->dp->d_name[1] == '.' && lnx_iter->dp->d_name[2] == 0));
+            filtered = ((st.st_mode == S_IFDIR && iter.flags & OS_FileIterFlag_SkipFolders) ||
+                                    (st.st_mode == S_IFREG && iter.flags & OS_FileIterFlag_SkipFiles) ||
+                                    (lnx_iter.dp.d_name[0] == '.' && lnx_iter.dp.d_name[1] == 0) ||
+                                    (lnx_iter.dp.d_name[0] == '.' && lnx_iter.dp.d_name[1] == '.' && lnx_iter.dp.d_name[2] == 0));
         }
         
         // rjf: output & exit, if good & unfiltered
         if (good && !filtered)
         {
-            info_out->name = push_str8_copy(arena, str8_cstring(lnx_iter->dp->d_name));
+            info_out.name = push_str8_copy(arena, str8_cstring(lnx_iter.dp.d_name));
             if (stat_result != -1)
             {
-                info_out->props = os_lnx_file_properties_from_stat(&st);
+                info_out.props = os_lnx_file_properties_from_stat(&st);
             }
             break;
         }
@@ -619,8 +619,8 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
 internal void
 os_file_iter_end(OS_FileIter *iter)
 {
-    OS_LNX_FileIter *lnx_iter = (OS_LNX_FileIter *)iter->memory;
-    closedir(lnx_iter->dir);
+    OS_LNX_FileIter *lnx_iter = (OS_LNX_FileIter *)iter.memory;
+    closedir(lnx_iter.dir);
 }
 
 //- rjf: directory creation
@@ -787,10 +787,10 @@ internal OS_Handle
 os_thread_launch(OS_ThreadFunctionType *func, void *ptr, void *params)
 {
     OS_LNX_Entity *entity = os_lnx_entity_alloc(OS_LNX_EntityKind_Thread);
-    entity->thread.func = func;
-    entity->thread.ptr = ptr;
+    entity.thread.func = func;
+    entity.thread.ptr = ptr;
     {
-        int pthread_result = pthread_create(&entity->thread.handle, 0, os_lnx_thread_entry_point, entity);
+        int pthread_result = pthread_create(&entity.thread.handle, 0, os_lnx_thread_entry_point, entity);
         if (pthread_result == -1)
         {
             os_lnx_entity_release(entity);
@@ -806,7 +806,7 @@ os_thread_join(OS_Handle handle, U64 endt_us)
 {
     if (os_handle_match(handle, os_handle_zero())) { return 0; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)handle.u64[0];
-    int join_result = pthread_join(entity->thread.handle, 0);
+    int join_result = pthread_join(entity.thread.handle, 0);
     B32 result = (join_result == 0);
     os_lnx_entity_release(entity);
     return result;
@@ -832,7 +832,7 @@ os_mutex_alloc(void)
     pthread_mutexattr_t attr;
     pthread_mutexattr_init(&attr);
     pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
-    int init_result = pthread_mutex_init(&entity->mutex_handle, &attr);
+    int init_result = pthread_mutex_init(&entity.mutex_handle, &attr);
     pthread_mutexattr_destroy(&attr);
     if (init_result == -1)
     {
@@ -848,7 +848,7 @@ os_mutex_release(OS_Handle mutex)
 {
     if (os_handle_match(mutex, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)mutex.u64[0];
-    pthread_mutex_destroy(&entity->mutex_handle);
+    pthread_mutex_destroy(&entity.mutex_handle);
     os_lnx_entity_release(entity);
 }
 
@@ -857,7 +857,7 @@ os_mutex_take(OS_Handle mutex)
 {
     if (os_handle_match(mutex, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)mutex.u64[0];
-    pthread_mutex_lock(&entity->mutex_handle);
+    pthread_mutex_lock(&entity.mutex_handle);
 }
 
 internal void
@@ -865,7 +865,7 @@ os_mutex_drop(OS_Handle mutex)
 {
     if (os_handle_match(mutex, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)mutex.u64[0];
-    pthread_mutex_unlock(&entity->mutex_handle);
+    pthread_mutex_unlock(&entity.mutex_handle);
 }
 
 //- rjf: reader/writer mutexes
@@ -874,7 +874,7 @@ internal OS_Handle
 os_rw_mutex_alloc(void)
 {
     OS_LNX_Entity *entity = os_lnx_entity_alloc(OS_LNX_EntityKind_RWMutex);
-    int init_result = pthread_rwlock_init(&entity->rwmutex_handle, 0);
+    int init_result = pthread_rwlock_init(&entity.rwmutex_handle, 0);
     if (init_result == -1)
     {
         os_lnx_entity_release(entity);
@@ -889,7 +889,7 @@ os_rw_mutex_release(OS_Handle rw_mutex)
 {
     if (os_handle_match(rw_mutex, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)rw_mutex.u64[0];
-    pthread_rwlock_destroy(&entity->rwmutex_handle);
+    pthread_rwlock_destroy(&entity.rwmutex_handle);
     os_lnx_entity_release(entity);
 }
 
@@ -898,7 +898,7 @@ os_rw_mutex_take_r(OS_Handle rw_mutex)
 {
     if (os_handle_match(rw_mutex, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)rw_mutex.u64[0];
-    pthread_rwlock_rdlock(&entity->rwmutex_handle);
+    pthread_rwlock_rdlock(&entity.rwmutex_handle);
 }
 
 internal void
@@ -906,7 +906,7 @@ os_rw_mutex_drop_r(OS_Handle rw_mutex)
 {
     if (os_handle_match(rw_mutex, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)rw_mutex.u64[0];
-    pthread_rwlock_unlock(&entity->rwmutex_handle);
+    pthread_rwlock_unlock(&entity.rwmutex_handle);
 }
 
 internal void
@@ -914,7 +914,7 @@ os_rw_mutex_take_w(OS_Handle rw_mutex)
 {
     if (os_handle_match(rw_mutex, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)rw_mutex.u64[0];
-    pthread_rwlock_wrlock(&entity->rwmutex_handle);
+    pthread_rwlock_wrlock(&entity.rwmutex_handle);
 }
 
 internal void
@@ -922,7 +922,7 @@ os_rw_mutex_drop_w(OS_Handle rw_mutex)
 {
     if (os_handle_match(rw_mutex, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)rw_mutex.u64[0];
-    pthread_rwlock_unlock(&entity->rwmutex_handle);
+    pthread_rwlock_unlock(&entity.rwmutex_handle);
 }
 
 //- rjf: condition variables
@@ -931,7 +931,7 @@ internal OS_Handle
 os_condition_variable_alloc(void)
 {
     OS_LNX_Entity *entity = os_lnx_entity_alloc(OS_LNX_EntityKind_ConditionVariable);
-    int init_result = pthread_cond_init(&entity->cv.cond_handle, 0);
+    int init_result = pthread_cond_init(&entity.cv.cond_handle, 0);
     if (init_result == -1)
     {
         os_lnx_entity_release(entity);
@@ -940,11 +940,11 @@ os_condition_variable_alloc(void)
     int init2_result = 0;
     if (entity)
     {
-        init2_result = pthread_mutex_init(&entity->cv.rwlock_mutex_handle, 0);
+        init2_result = pthread_mutex_init(&entity.cv.rwlock_mutex_handle, 0);
     }
     if (init2_result == -1)
     {
-        pthread_cond_destroy(&entity->cv.cond_handle);
+        pthread_cond_destroy(&entity.cv.cond_handle);
         os_lnx_entity_release(entity);
         entity = 0;
     }
@@ -957,8 +957,8 @@ os_condition_variable_release(OS_Handle cv)
 {
     if (os_handle_match(cv, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)cv.u64[0];
-    pthread_cond_destroy(&entity->cv.cond_handle);
-    pthread_mutex_destroy(&entity->cv.rwlock_mutex_handle);
+    pthread_cond_destroy(&entity.cv.cond_handle);
+    pthread_mutex_destroy(&entity.cv.rwlock_mutex_handle);
     os_lnx_entity_release(entity);
 }
 
@@ -972,7 +972,7 @@ os_condition_variable_wait(OS_Handle cv, OS_Handle mutex, U64 endt_us)
     struct timespec endt_timespec;
     endt_timespec.tv_sec = endt_us/Million(1);
     endt_timespec.tv_nsec = Thousand(1) * (endt_us - (endt_us/Million(1))*Million(1));
-    int wait_result = pthread_cond_timedwait(&cv_entity->cv.cond_handle, &mutex_entity->mutex_handle, &endt_timespec);
+    int wait_result = pthread_cond_timedwait(&cv_entity.cv.cond_handle, &mutex_entity.mutex_handle, &endt_timespec);
     B32 result = (wait_result != ETIMEDOUT);
     return result;
 }
@@ -994,16 +994,16 @@ os_condition_variable_wait_rw_r(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
     B32 result = 0;
     for (;;)
     {
-        pthread_mutex_lock(&cv_entity->cv.rwlock_mutex_handle);
-        int wait_result = pthread_cond_timedwait(&cv_entity->cv.cond_handle, &cv_entity->cv.rwlock_mutex_handle, &endt_timespec);
+        pthread_mutex_lock(&cv_entity.cv.rwlock_mutex_handle);
+        int wait_result = pthread_cond_timedwait(&cv_entity.cv.cond_handle, &cv_entity.cv.rwlock_mutex_handle, &endt_timespec);
         if (wait_result != ETIMEDOUT)
         {
-            pthread_rwlock_rdlock(&rw_mutex_entity->rwmutex_handle);
-            pthread_mutex_unlock(&cv_entity->cv.rwlock_mutex_handle);
+            pthread_rwlock_rdlock(&rw_mutex_entity.rwmutex_handle);
+            pthread_mutex_unlock(&cv_entity.cv.rwlock_mutex_handle);
             result = 1;
             break;
         }
-        pthread_mutex_unlock(&cv_entity->cv.rwlock_mutex_handle);
+        pthread_mutex_unlock(&cv_entity.cv.rwlock_mutex_handle);
         if (wait_result == ETIMEDOUT)
         {
             break;
@@ -1029,16 +1029,16 @@ os_condition_variable_wait_rw_w(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
     B32 result = 0;
     for (;;)
     {
-        pthread_mutex_lock(&cv_entity->cv.rwlock_mutex_handle);
-        int wait_result = pthread_cond_timedwait(&cv_entity->cv.cond_handle, &cv_entity->cv.rwlock_mutex_handle, &endt_timespec);
+        pthread_mutex_lock(&cv_entity.cv.rwlock_mutex_handle);
+        int wait_result = pthread_cond_timedwait(&cv_entity.cv.cond_handle, &cv_entity.cv.rwlock_mutex_handle, &endt_timespec);
         if (wait_result != ETIMEDOUT)
         {
-            pthread_rwlock_wrlock(&rw_mutex_entity->rwmutex_handle);
-            pthread_mutex_unlock(&cv_entity->cv.rwlock_mutex_handle);
+            pthread_rwlock_wrlock(&rw_mutex_entity.rwmutex_handle);
+            pthread_mutex_unlock(&cv_entity.cv.rwlock_mutex_handle);
             result = 1;
             break;
         }
-        pthread_mutex_unlock(&cv_entity->cv.rwlock_mutex_handle);
+        pthread_mutex_unlock(&cv_entity.cv.rwlock_mutex_handle);
         if (wait_result == ETIMEDOUT)
         {
             break;
@@ -1052,7 +1052,7 @@ os_condition_variable_signal(OS_Handle cv)
 {
     if (os_handle_match(cv, os_handle_zero())) { return; }
     OS_LNX_Entity *cv_entity = (OS_LNX_Entity *)cv.u64[0];
-    pthread_cond_signal(&cv_entity->cv.cond_handle);
+    pthread_cond_signal(&cv_entity.cv.cond_handle);
 }
 
 internal void
@@ -1060,7 +1060,7 @@ os_condition_variable_broadcast(OS_Handle cv)
 {
     if (os_handle_match(cv, os_handle_zero())) { return; }
     OS_LNX_Entity *cv_entity = (OS_LNX_Entity *)cv.u64[0];
-    pthread_cond_broadcast(&cv_entity->cv.cond_handle);
+    pthread_cond_broadcast(&cv_entity.cv.cond_handle);
 }
 
 //- rjf: cross-process semaphores
@@ -1233,14 +1233,14 @@ main(int argc, char **argv)
         //- rjf: get statically-allocated system/process info
         {
             OS_SystemInfo *info = &os_lnx_state.system_info;
-            info->logical_processor_count = (U32)get_nprocs();
-            info->page_size               = (U64)getpagesize();
-            info->large_page_size         = MB(2);
-            info->allocation_granularity  = info->page_size;
+            info.logical_processor_count = (U32)get_nprocs();
+            info.page_size               = (U64)getpagesize();
+            info.large_page_size         = MB(2);
+            info.allocation_granularity  = info.page_size;
         }
         {
             OS_ProcessInfo *info = &os_lnx_state.process_info;
-            info->pid = (U32)getpid();
+            info.pid = (U32)getpid();
         }
         
         //- rjf: set up thread context
@@ -1276,10 +1276,10 @@ main(int argc, char **argv)
             // rjf: save name to info
             if (got_final_result && size > 0)
             {
-                info->machine_name.size = size;
-                info->machine_name.str = push_array_no_zero(os_lnx_state.arena, U8, info->machine_name.size + 1);
-                MemoryCopy(info->machine_name.str, buffer, info->machine_name.size);
-                info->machine_name.str[info->machine_name.size] = 0;
+                info.machine_name.size = size;
+                info.machine_name.str = push_array_no_zero(os_lnx_state.arena, U8, info.machine_name.size + 1);
+                MemoryCopy(info.machine_name.str, buffer, info.machine_name.size);
+                info.machine_name.str[info.machine_name.size] = 0;
             }
             
             scratch_end(scratch);
@@ -1313,19 +1313,19 @@ main(int argc, char **argv)
                 {
                     String8 full_name = str8(buffer, size);
                     String8 name_chopped = str8_chop_last_slash(full_name);
-                    info->binary_path = push_str8_copy(os_lnx_state.arena, name_chopped);
+                    info.binary_path = push_str8_copy(os_lnx_state.arena, name_chopped);
                 }
             }
             
             // rjf: grab initial directory
             {
-                info->initial_path = os_get_current_path(os_lnx_state.arena);
+                info.initial_path = os_get_current_path(os_lnx_state.arena);
             }
             
             // rjf: grab home directory
             {
                 char *home = getenv("HOME");
-                info->user_program_data_path = str8_cstring(home);
+                info.user_program_data_path = str8_cstring(home);
             }
             
             scratch_end(scratch);

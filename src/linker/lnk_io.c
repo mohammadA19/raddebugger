@@ -65,17 +65,17 @@ lnk_file_search(Arena *arena, String8List dir_list, String8 file_path)
                                         file_path_style != PathStyle_UnixAbsolute;
 
     if (is_relative) {
-        for (String8Node *i = dir_list.first; i != 0; i = i->next) {
+        for (String8Node *i = dir_list.first; i != 0; i = i.next) {
             String8List path_list = {0};
-            str8_list_push(scratch.arena, &path_list, i->string);
+            str8_list_push(scratch.arena, &path_list, i.string);
             str8_list_push(scratch.arena, &path_list, file_path);
             String8 path = str8_path_list_join_by_style(scratch.arena, &path_list, PathStyle_SystemAbsolute);
             B32 file_exists = os_file_path_exists(path);
             if (file_exists) {
                 B32 is_unique = 1;
                 OS_FileID file_id = os_id_from_file_path(path);
-                for (String8Node *k = match_list.first; k != 0; k = k->next) {
-                    OS_FileID test_id = os_id_from_file_path(k->string);
+                for (String8Node *k = match_list.first; k != 0; k = k.next) {
+                    OS_FileID test_id = os_id_from_file_path(k.string);
                     int cmp = os_file_id_compare(test_id, file_id) != 0;
                     if (cmp == 0) {
                         is_unique = 0;
@@ -148,9 +148,9 @@ lnk_file_rename(OS_Handle handle, String8 new_name)
     U8 *buffer                = push_array(scratch.arena, U8, buffer_size);
 
     FILE_RENAME_INFO *rename_info = (FILE_RENAME_INFO *)buffer;
-    rename_info->ReplaceIfExists  = 1;
-    rename_info->FileNameLength   = new_name16.size * sizeof(new_name16.str[0]);
-    MemoryCopy(rename_info->FileName, new_name16.str, new_name16.size * sizeof(new_name16.str[0]));
+    rename_info.ReplaceIfExists  = 1;
+    rename_info.FileNameLength   = new_name16.size * sizeof(new_name16.str[0]);
+    MemoryCopy(rename_info.FileName, new_name16.str, new_name16.size * sizeof(new_name16.str[0]));
 
     B32 is_renamed = SetFileInformationByHandle((HANDLE)handle.u64[0], FileRenameInfo, buffer, buffer_size);
 #else
@@ -180,7 +180,7 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_data_size_from_file_path_task)
 {
     LNK_DiskReader *task = raw_task;
-    String8         path = task->path_arr.v[task_id];
+    String8         path = task.path_arr.v[task_id];
 
     OS_Handle handle = {0};
     U64       size   = 0;
@@ -190,8 +190,8 @@ THREAD_POOL_TASK_FUNC(lnk_data_size_from_file_path_task)
         size = lnk_size_from_file(&handle);
     }
 
-    task->handle_arr[task_id] = handle;
-    task->size_arr[task_id]   = size;
+    task.handle_arr[task_id] = handle;
+    task.size_arr[task_id]   = size;
 }
 
 internal
@@ -199,14 +199,14 @@ THREAD_POOL_TASK_FUNC(lnk_data_from_file_path_task)
 {
     LNK_DiskReader *task = raw_task;
 
-    OS_Handle handle      = task->handle_arr[task_id];
-    U64       buffer_size = task->size_arr[task_id];
-    U8       *buffer      = task->buffer + task->off_arr[task_id];
+    OS_Handle handle      = task.handle_arr[task_id];
+    U64       buffer_size = task.size_arr[task_id];
+    U8       *buffer      = task.buffer + task.off_arr[task_id];
 
     U64 read_size = lnk_read_file(&handle, buffer, buffer_size);
     Assert(read_size == buffer_size);
 
-    task->data_arr.v[task_id] = str8(buffer, read_size);
+    task.data_arr.v[task_id] = str8(buffer, read_size);
 }
 
 internal
@@ -215,7 +215,7 @@ THREAD_POOL_TASK_FUNC(lnk_memory_map_file_task)
     LNK_DiskReader *task = raw_task;
 #if OS_WINDOWS
     Temp scratch = scratch_begin(&arena, 1);
-    String16 path16      = str16_from_8(scratch.arena, task->path_arr.v[task_id]);
+    String16 path16      = str16_from_8(scratch.arena, task.path_arr.v[task_id]);
     HANDLE   file_handle = CreateFileW(path16.str, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
     if (file_handle != INVALID_HANDLE_VALUE) {
         HANDLE mapping_handle = CreateFileMappingA(file_handle, 0, PAGE_WRITECOPY, 0, 0, 0);
@@ -226,7 +226,7 @@ THREAD_POOL_TASK_FUNC(lnk_memory_map_file_task)
             if (file_data) {
                 // asan crashes for an unknown reason on memory-mapped files, even though the allocation is perfectly fine
                 AsanUnpoisonMemoryRegion(file_data, file_size.QuadPart);
-                task->data_arr.v[task_id] = str8(file_data, file_size.QuadPart);
+                task.data_arr.v[task_id] = str8(file_data, file_size.QuadPart);
             }
             CloseHandle(mapping_handle);
         }
@@ -320,12 +320,12 @@ lnk_write_data_list_to_file_path(String8 path, String8 temp_path, String8List da
 
         // write data nodes
         U64 bytes_written = 0;
-        for (String8Node *data_n = data.first; data_n != 0; data_n = data_n->next) {
-            U64 write_size = lnk_write_file(&file_handle, bytes_written, data_n->string.str, data_n->string.size);
-            if (write_size != data_n->string.size) {
+        for (String8Node *data_n = data.first; data_n != 0; data_n = data_n.next) {
+            U64 write_size = lnk_write_file(&file_handle, bytes_written, data_n.string.str, data_n.string.size);
+            if (write_size != data_n.string.size) {
                 break;
             }
-            bytes_written += data_n->string.size;
+            bytes_written += data_n.string.size;
         }
         B32 is_write_complete = (bytes_written == data.total_size);
 
