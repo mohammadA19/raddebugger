@@ -14,44 +14,44 @@
 
 enum ArenaFlags : U64
 {
-  ArenaFlag_NoChain    = (1<<0),
-  ArenaFlag_LargePages = (1<<1),
+    ArenaFlag_NoChain    = (1<<0),
+    ArenaFlag_LargePages = (1<<1),
 };
 
 struct ArenaParams
 {
-  ArenaFlags flags;
-  U64 reserve_size;
-  U64 commit_size;
-  void *optional_backing_buffer;
-  char *allocation_site_file;
-  int allocation_site_line;
+    ArenaFlags flags;
+    U64 reserve_size;
+    U64 commit_size;
+    void *optional_backing_buffer;
+    char *allocation_site_file;
+    int allocation_site_line;
 };
 
 struct Arena
 {
-  Arena *prev;    // previous arena in chain
-  Arena *current; // current arena in chain
-  ArenaFlags flags;
-  U64 cmt_size;
-  U64 res_size;
-  U64 base_pos;
-  U64 pos;
-  U64 cmt;
-  U64 res;
-  char *allocation_site_file;
-  int allocation_site_line;
+    Arena *prev;    // previous arena in chain
+    Arena *current; // current arena in chain
+    ArenaFlags flags;
+    U64 cmt_size;
+    U64 res_size;
+    U64 base_pos;
+    U64 pos;
+    U64 cmt;
+    U64 res;
+    char *allocation_site_file;
+    int allocation_site_line;
 #if ARENA_FREE_LIST
-  U64 free_size;
-  Arena *free_last;
+    U64 free_size;
+    Arena *free_last;
 #endif
 };
 StaticAssert(sizeof(Arena) <= ARENA_HEADER_SIZE, arena_header_size_check);
 
 struct Temp
 {
-  Arena *arena;
-  U64 pos;
+    Arena *arena;
+    U64 pos;
 };
 
 ////////////////////////////////

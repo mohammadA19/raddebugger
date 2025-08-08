@@ -16,42 +16,42 @@
 
 struct TweakB32Info
 {
-  String8 name;
-  B32 default_value;
-  B32 *value_ptr;
+    String8 name;
+    B32 default_value;
+    B32 *value_ptr;
 };
 
 struct TweakF32Info
 {
-  String8 name;
-  F32 default_value;
-  Rng1F32 value_range;
-  F32 *value_ptr;
+    String8 name;
+    F32 default_value;
+    Rng1F32 value_range;
+    F32 *value_ptr;
 };
 
 struct TweakB32InfoTable
 {
-  TweakB32Info *v;
-  U64 count;
+    TweakB32Info *v;
+    U64 count;
 };
 
 struct TweakF32InfoTable
 {
-  TweakF32Info *v;
-  U64 count;
+    TweakF32Info *v;
+    U64 count;
 };
 
 struct EmbedInfo
 {
-  String8 name;
-  String8 *data;
-  U128 *hash;
+    String8 name;
+    String8 *data;
+    U128 *hash;
 };
 
 struct EmbedInfoTable
 {
-  EmbedInfo *v;
-  U64 count;
+    EmbedInfo *v;
+    U64 count;
 };
 
 ////////////////////////////////
@@ -59,70 +59,70 @@ struct EmbedInfoTable
 
 enum TypeKind
 {
-  TypeKind_Null,
-  
-  // rjf: leaves
-  TypeKind_Void, TypeKind_FirstLeaf = TypeKind_Void,
-  TypeKind_U8,
-  TypeKind_U16,
-  TypeKind_U32,
-  TypeKind_U64,
-  TypeKind_S8,
-  TypeKind_S16,
-  TypeKind_S32,
-  TypeKind_S64,
-  TypeKind_B8,
-  TypeKind_B16,
-  TypeKind_B32,
-  TypeKind_B64,
-  TypeKind_F32,
-  TypeKind_F64, TypeKind_LastLeaf = TypeKind_F64,
-  
-  // rjf: operators
-  TypeKind_Ptr,
-  TypeKind_Array,
-  
-  // rjf: user-defined-types
-  TypeKind_Struct,
-  TypeKind_Union,
-  TypeKind_Enum,
-  
-  TypeKind_COUNT
+    TypeKind_Null,
+    
+    // rjf: leaves
+    TypeKind_Void, TypeKind_FirstLeaf = TypeKind_Void,
+    TypeKind_U8,
+    TypeKind_U16,
+    TypeKind_U32,
+    TypeKind_U64,
+    TypeKind_S8,
+    TypeKind_S16,
+    TypeKind_S32,
+    TypeKind_S64,
+    TypeKind_B8,
+    TypeKind_B16,
+    TypeKind_B32,
+    TypeKind_B64,
+    TypeKind_F32,
+    TypeKind_F64, TypeKind_LastLeaf = TypeKind_F64,
+    
+    // rjf: operators
+    TypeKind_Ptr,
+    TypeKind_Array,
+    
+    // rjf: user-defined-types
+    TypeKind_Struct,
+    TypeKind_Union,
+    TypeKind_Enum,
+    
+    TypeKind_COUNT
 }
 TypeKind;
 
 enum TypeFlags : U32
 {
-  TypeFlag_IsExternal  = (1<<0),
-  TypeFlag_IsPlainText = (1<<1),
-  TypeFlag_IsCodeText  = (1<<2),
-  TypeFlag_IsPathText  = (1<<3),
+    TypeFlag_IsExternal  = (1<<0),
+    TypeFlag_IsPlainText = (1<<1),
+    TypeFlag_IsCodeText  = (1<<2),
+    TypeFlag_IsPathText  = (1<<3),
 };
 
 enum MemberFlags : U32
 {
-  MemberFlag_DoNotSerialize  = (1<<0),
+    MemberFlag_DoNotSerialize  = (1<<0),
 };
 
 struct Member
 {
-  String8 name;
-  String8 pretty_name;
-  Type *type;
-  U64 value;
-  MemberFlags flags;
+    String8 name;
+    String8 pretty_name;
+    Type *type;
+    U64 value;
+    MemberFlags flags;
 };
 
 struct Type
 {
-  TypeKind kind;
-  TypeFlags flags;
-  U64 size;
-  Type *direct;
-  String8 name;
-  String8 count_delimiter_name; // gathered from surrounding members, turns *->[1] into *->[N]
-  U64 count;
-  Member *members;
+    TypeKind kind;
+    TypeFlags flags;
+    U64 size;
+    Type *direct;
+    String8 name;
+    String8 count_delimiter_name; // gathered from surrounding members, turns *->[1] into *->[N]
+    U64 count;
+    Member *members;
 };
 
 ////////////////////////////////
@@ -130,17 +130,17 @@ struct Type
 
 struct TypeSerializePtrRefInfo
 {
-  Type *type;           // pointers to this
-  void *indexify_base;  // can be indexified using this
-  void *offsetify_base; // can be offsetified using this
-  void *nil_ptr;        // is terminal if matching 0 or this
+    Type *type;           // pointers to this
+    void *indexify_base;  // can be indexified using this
+    void *offsetify_base; // can be offsetified using this
+    void *nil_ptr;        // is terminal if matching 0 or this
 };
 
 struct TypeSerializeParams
 {
-  U64 *advance_out;
-  TypeSerializePtrRefInfo *ptr_ref_infos;
-  U64 ptr_ref_infos_count;
+    U64 *advance_out;
+    TypeSerializePtrRefInfo *ptr_ref_infos;
+    U64 ptr_ref_infos_count;
 };
 
 ////////////////////////////////
@@ -184,34 +184,34 @@ read_only global Type F32__type  = {TypeKind_F32,  0, sizeof(F32), &type_nil, st
 read_only global Type F64__type  = {TypeKind_F64,  0, sizeof(F64), &type_nil, str8_lit_comp("F64")};
 read_only global Type *type_kind_type_table[] =
 {
-  &type_nil,
-  type(void),
-  type(U8),
-  type(U16),
-  type(U32),
-  type(U64),
-  type(S8),
-  type(S16),
-  type(S32),
-  type(S64),
-  type(B8),
-  type(B16),
-  type(B32),
-  type(B64),
-  type(F32),
-  type(F64),
-  &type_nil,
-  &type_nil,
-  &type_nil,
-  &type_nil,
-  &type_nil,
+    &type_nil,
+    type(void),
+    type(U8),
+    type(U16),
+    type(U32),
+    type(U64),
+    type(S8),
+    type(S16),
+    type(S32),
+    type(S64),
+    type(B8),
+    type(B16),
+    type(B32),
+    type(B64),
+    type(F32),
+    type(F64),
+    &type_nil,
+    &type_nil,
+    &type_nil,
+    &type_nil,
+    &type_nil,
 };
 
 //- rjf: Rng1U64
 struct_members(Rng1U64)
 {
-  member_lit_comp(Rng1U64, type(U64), min),
-  member_lit_comp(Rng1U64, type(U64), max),
+    member_lit_comp(Rng1U64, type(U64), min),
+    member_lit_comp(Rng1U64, type(U64), max),
 };
 struct_type(Rng1U64);
 
@@ -219,8 +219,8 @@ struct_type(Rng1U64);
 ptr_type(String8__str_ptr_type, type(U8), str8_lit_comp("size"));
 struct_members(String8)
 {
-  member_lit_comp(String8, &String8__str_ptr_type, str),
-  member_lit_comp(String8, type(U64),              size),
+    member_lit_comp(String8, &String8__str_ptr_type, str),
+    member_lit_comp(String8, type(U64),              size),
 };
 struct_type(String8);
 
@@ -229,39 +229,39 @@ extern Type String8Node__type;
 Type String8Node__ptr_type = {TypeKind_Ptr, 0, sizeof(void *), &String8Node__type};
 Member String8Node__members[] =
 {
-  {str8_lit_comp("next"),   {0}, &String8Node__ptr_type,     OffsetOf(String8Node, next)},
-  {str8_lit_comp("string"), {0}, type(String8),              OffsetOf(String8Node, string)},
+    {str8_lit_comp("next"),   {0}, &String8Node__ptr_type,     OffsetOf(String8Node, next)},
+    {str8_lit_comp("string"), {0}, type(String8),              OffsetOf(String8Node, string)},
 };
 Type String8Node__type =
 {
-  TypeKind_Struct,
-  0,
-  sizeof(String8Node),
-  &type_nil,
-  str8_lit_comp("String8Node"),
-  {0},
-  ArrayCount(String8Node__members),
-  String8Node__members,
+    TypeKind_Struct,
+    0,
+    sizeof(String8Node),
+    &type_nil,
+    str8_lit_comp("String8Node"),
+    {0},
+    ArrayCount(String8Node__members),
+    String8Node__members,
 };
 
 //- rjf: String8List
 Member String8List__members[] =
 {
-  {str8_lit_comp("first"),      {0}, &String8Node__ptr_type,     OffsetOf(String8List, first)},
-  {str8_lit_comp("last"),       {0}, &String8Node__ptr_type,     OffsetOf(String8List, last), MemberFlag_DoNotSerialize},
-  {str8_lit_comp("node_count"), {0}, type(U64), OffsetOf(String8List, node_count)},
-  {str8_lit_comp("total_size"), {0}, type(U64), OffsetOf(String8List, total_size)},
+    {str8_lit_comp("first"),      {0}, &String8Node__ptr_type,     OffsetOf(String8List, first)},
+    {str8_lit_comp("last"),       {0}, &String8Node__ptr_type,     OffsetOf(String8List, last), MemberFlag_DoNotSerialize},
+    {str8_lit_comp("node_count"), {0}, type(U64), OffsetOf(String8List, node_count)},
+    {str8_lit_comp("total_size"), {0}, type(U64), OffsetOf(String8List, total_size)},
 };
 Type String8List__type =
 {
-  TypeKind_Struct,
-  0,
-  sizeof(String8List),
-  &type_nil,
-  str8_lit_comp("String8List"),
-  {0},
-  ArrayCount(String8List__members),
-  String8List__members,
+    TypeKind_Struct,
+    0,
+    sizeof(String8List),
+    &type_nil,
+    str8_lit_comp("String8List"),
+    {0},
+    ArrayCount(String8List__members),
+    String8List__members,
 };
 
 ////////////////////////////////

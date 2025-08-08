@@ -5,7 +5,7 @@
 
 typedef struct MD5Hash
 {
-  U8 value[16];
+    U8 value[16];
 } MD5Hash;
 
 

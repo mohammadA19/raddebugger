@@ -14,114 +14,114 @@
 
 typedef struct MSF_PageNumberArray
 {
-  U64             count;
-  MSF_PageNumber *v;
+    U64             count;
+    MSF_PageNumber *v;
 } MSF_PageNumberArray;
 
 typedef struct MSF_PageNode
 {
-  struct MSF_PageNode *next;
-  struct MSF_PageNode *prev;
-  MSF_PageNumber       pn;
+    struct MSF_PageNode *next;
+    struct MSF_PageNode *prev;
+    MSF_PageNumber       pn;
 } MSF_PageNode;
 
 typedef struct MSF_PageList
 {
-  MSF_PageNode *first;
-  MSF_PageNode *last;
-  MSF_UInt      count;
+    MSF_PageNode *first;
+    MSF_PageNode *last;
+    MSF_UInt      count;
 } MSF_PageList;
 
 typedef struct MSF_Stream
 {
-  MSF_StreamNumber sn;
-  MSF_UInt         size;
-  MSF_UInt         pos;
-  MSF_PageNode    *pos_page;
-  MSF_PageList     page_list;
+    MSF_StreamNumber sn;
+    MSF_UInt         size;
+    MSF_UInt         pos;
+    MSF_PageNode    *pos_page;
+    MSF_PageList     page_list;
 } MSF_Stream;
 
 typedef struct MSF_StreamNode
 {
-  struct MSF_StreamNode *next;
-  struct MSF_StreamNode *prev;
-  MSF_Stream             data;
+    struct MSF_StreamNode *next;
+    struct MSF_StreamNode *prev;
+    MSF_Stream             data;
 } MSF_StreamNode;
 
 typedef struct MSF_StreamList
 {
-  MSF_UInt        count;
-  MSF_StreamNode *first;
-  MSF_StreamNode *last;
+    MSF_UInt        count;
+    MSF_StreamNode *first;
+    MSF_StreamNode *last;
 } MSF_StreamList;
 
 typedef struct MSF_PageDataNode
 {
-  struct MSF_PageDataNode *next;
-  struct MSF_PageDataNode *prev;
-  U8                      *data;
+    struct MSF_PageDataNode *next;
+    struct MSF_PageDataNode *prev;
+    U8                      *data;
 } MSF_PageDataNode;
 
 typedef struct MSF_PageDataList
 {
-  MSF_PageDataNode *first;
-  MSF_PageDataNode *last;
-  MSF_UInt          count;
+    MSF_PageDataNode *first;
+    MSF_PageDataNode *last;
+    MSF_UInt          count;
 } MSF_PageDataList;
 
 typedef struct MSF_Context
 {
-  Arena           *arena;
-  MSF_UInt         page_size;
-  MSF_UInt         active_fpm;
-  MSF_UInt         fpm_rover;
-  MSF_PageNumber   page_count;
-  MSF_PageDataList page_data_list;
-  MSF_PageDataList page_data_pool;
-  MSF_PageList     header_page_list;
-  MSF_PageList     root_page_list;
-  MSF_PageList     st_page_list;
-  MSF_PageList     page_pool;
-  MSF_StreamList   sectab;
+    Arena           *arena;
+    MSF_UInt         page_size;
+    MSF_UInt         active_fpm;
+    MSF_UInt         fpm_rover;
+    MSF_PageNumber   page_count;
+    MSF_PageDataList page_data_list;
+    MSF_PageDataList page_data_pool;
+    MSF_PageList     header_page_list;
+    MSF_PageList     root_page_list;
+    MSF_PageList     st_page_list;
+    MSF_PageList     page_pool;
+    MSF_StreamList   sectab;
 } MSF_Context;
 
 enum MSF_Error
 {
-  MSF_Error_OK,
-  
-  // if you get this error this means stream table was divided into too many
-  // pages, and to fix this you need to bump up the page size
-  MSF_Error_STREAM_TABLE_HAS_TOO_MANY_PAGES,
-  
-  MSF_OpenError_NOT_ENOUGH_BYTES_TO_READ_HEADER,
-  MSF_OpenError_INVALID_MAGIC,
-  MSF_OpenError_PAGE_SIZE_IS_NOT_POW2,
-  MSF_OpenError_INVALID_PAGE_SIZE,
-  MSF_OpenError_NOT_ENOUGH_PAGES_TO_INIT,
-  MSF_OpenError_INVALID_ROOT_STREAM_PAGE_NUMBER,
-  MSF_OpenError_UNABLE_TO_READ_STREAM_TABLE_PAGE_NUMBERS,
-  MSF_OpenError_STREAM_COUNT_OVERFLOW,
-  MSF_OpenError_UNABLE_TO_READ_STREAM_SIZES,
-  MSF_OpenError_INVALID_STREAM_TABLE,
-  MSF_OpenError_INVALID_ACTIVE_FPM,
-  MSF_OpenError_PAGE_COUNT_DOESNT_MATCH_DATA_SIZE,
-  
-  MSF_BuildError_UNABLE_TO_WRITE_STREAM_TABLE,
-  MSF_BuildError_UNABLE_TO_WRITE_STREAM_TABLE_PAGE_NUMBER_DIRECTORY,
-  MSF_BuildError_UNABLE_TO_WRITE_ROOT_DIRECTORY,
-  MSF_BuildError_UNABLE_TO_WRITE_HEADER,
+    MSF_Error_OK,
+    
+    // if you get this error this means stream table was divided into too many
+    // pages, and to fix this you need to bump up the page size
+    MSF_Error_STREAM_TABLE_HAS_TOO_MANY_PAGES,
+    
+    MSF_OpenError_NOT_ENOUGH_BYTES_TO_READ_HEADER,
+    MSF_OpenError_INVALID_MAGIC,
+    MSF_OpenError_PAGE_SIZE_IS_NOT_POW2,
+    MSF_OpenError_INVALID_PAGE_SIZE,
+    MSF_OpenError_NOT_ENOUGH_PAGES_TO_INIT,
+    MSF_OpenError_INVALID_ROOT_STREAM_PAGE_NUMBER,
+    MSF_OpenError_UNABLE_TO_READ_STREAM_TABLE_PAGE_NUMBERS,
+    MSF_OpenError_STREAM_COUNT_OVERFLOW,
+    MSF_OpenError_UNABLE_TO_READ_STREAM_SIZES,
+    MSF_OpenError_INVALID_STREAM_TABLE,
+    MSF_OpenError_INVALID_ACTIVE_FPM,
+    MSF_OpenError_PAGE_COUNT_DOESNT_MATCH_DATA_SIZE,
+    
+    MSF_BuildError_UNABLE_TO_WRITE_STREAM_TABLE,
+    MSF_BuildError_UNABLE_TO_WRITE_STREAM_TABLE_PAGE_NUMBER_DIRECTORY,
+    MSF_BuildError_UNABLE_TO_WRITE_ROOT_DIRECTORY,
+    MSF_BuildError_UNABLE_TO_WRITE_HEADER,
 } MSF_Error;
 
 ////////////////////////////////
 
 typedef struct
 {
-  MSF_UInt         page_size;
-  MSF_PageDataList page_data_list;
-  MSF_PageList     page_list;
-  MSF_UInt         stream_pos;
-  String8          data;
-  Rng1U64         *range_arr;
+    MSF_UInt         page_size;
+    MSF_PageDataList page_data_list;
+    MSF_PageList     page_list;
+    MSF_UInt         stream_pos;
+    String8          data;
+    Rng1U64         *range_arr;
 } MSF_WriteTask;
 
 ////////////////////////////////

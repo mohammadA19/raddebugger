@@ -112,51 +112,51 @@ RD_Option_RdiStrings)
 
 typedef struct RD_Marker
 {
-  U64     off;
-  String8 string;
+    U64     off;
+    String8 string;
 } RD_Marker;
 
 typedef struct RD_MarkerArray
 {
-  U64        count;
-  RD_Marker *v;
+    U64        count;
+    RD_Marker *v;
 } RD_MarkerArray;
 
 typedef struct MarkerNode
 {
-  struct MarkerNode *next;
-  RD_Marker          v;
+    struct MarkerNode *next;
+    RD_Marker          v;
 } RD_MarkerNode;
 
 typedef struct RD_MarkerList
 {
-  U64            count;
-  RD_MarkerNode *first;
-  RD_MarkerNode *last;
+    U64            count;
+    RD_MarkerNode *first;
+    RD_MarkerNode *last;
 } RD_MarkerList;
 
 typedef struct RD_DisasmResult
 {
-  String8 text;
-  U64     size;
+    String8 text;
+    U64     size;
 } RD_DisasmResult;
 
 typedef struct RD_Section
 {
-  String8 name;
-  String8 raw_data;
+    String8 name;
+    String8 raw_data;
 } RD_Section;
 
 typedef struct RD_SectionArray
 {
-  U64         count;
-  RD_Section *v;
+    U64         count;
+    RD_Section *v;
 } RD_SectionArray;
 
 typedef struct RD_Line
 {
-  String8 file_path;
-  U32     line_num;
+    String8 file_path;
+    U32     line_num;
 } RD_Line;
 
 ////////////////////////////////

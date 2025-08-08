@@ -88,71 +88,71 @@ DMN_W32_CTX_INTEL_DEBUG)
 
 enum DMN_W32_EntityKind
 {
-  DMN_W32_EntityKind_Null,
-  DMN_W32_EntityKind_Root,
-  DMN_W32_EntityKind_Process,
-  DMN_W32_EntityKind_Thread,
-  DMN_W32_EntityKind_Module,
-  DMN_W32_EntityKind_COUNT
+    DMN_W32_EntityKind_Null,
+    DMN_W32_EntityKind_Root,
+    DMN_W32_EntityKind_Process,
+    DMN_W32_EntityKind_Thread,
+    DMN_W32_EntityKind_Module,
+    DMN_W32_EntityKind_COUNT
 }
 DMN_W32_EntityKind;
 
 struct DMN_W32_Entity
 {
-  DMN_W32_Entity *first;
-  DMN_W32_Entity *last;
-  DMN_W32_Entity *next;
-  DMN_W32_Entity *prev;
-  DMN_W32_Entity *parent;
-  DMN_W32_EntityKind kind;
-  U32 gen;
-  U64 id;
-  HANDLE handle;
-  Arch arch;
-  union
-  {
-    struct
+    DMN_W32_Entity *first;
+    DMN_W32_Entity *last;
+    DMN_W32_Entity *next;
+    DMN_W32_Entity *prev;
+    DMN_W32_Entity *parent;
+    DMN_W32_EntityKind kind;
+    U32 gen;
+    U64 id;
+    HANDLE handle;
+    Arch arch;
+    union
     {
-      U64 injection_address;
-      B32 did_first_bp;
-    }
-    proc;
-    struct
-    {
-      U64 thread_local_base;
-      U64 last_name_hash;
-      U64 name_gather_time_us;
-    }
-    thread;
-    struct
-    {
-      Rng1U64 vaddr_range;
-      U64 address_of_name_pointer;
-      B32 is_main;
-      B32 name_is_unicode;
-    }
-    module;
-  };
+        struct
+        {
+            U64 injection_address;
+            B32 did_first_bp;
+        }
+        proc;
+        struct
+        {
+            U64 thread_local_base;
+            U64 last_name_hash;
+            U64 name_gather_time_us;
+        }
+        thread;
+        struct
+        {
+            Rng1U64 vaddr_range;
+            U64 address_of_name_pointer;
+            B32 is_main;
+            B32 name_is_unicode;
+        }
+        module;
+    };
 };
 
 struct DMN_W32_EntityNode
 {
-  DMN_W32_EntityNode *next;
-  DMN_W32_Entity *v;
+    DMN_W32_EntityNode *next;
+    DMN_W32_Entity *v;
 };
 
 struct DMN_W32_EntityIDHashNode
 {
-  DMN_W32_EntityIDHashNode *next;
-  DMN_W32_EntityIDHashNode *prev;
-  U64 id;
-  DMN_W32_Entity *entity;
+    DMN_W32_EntityIDHashNode *next;
+    DMN_W32_EntityIDHashNode *prev;
+    U64 id;
+    DMN_W32_Entity *entity;
 };
 
 struct DMN_W32_EntityIDHashSlot
 {
-  DMN_W32_EntityIDHashNode *first;
-  DMN_W32_EntityIDHashNode *last;
+    DMN_W32_EntityIDHashNode *first;
+    DMN_W32_EntityIDHashNode *last;
 };
 
 ////////////////////////////////
@@ -160,8 +160,8 @@ struct DMN_W32_EntityIDHashSlot
 
 struct DMN_W32_InjectedBreak
 {
-  U64 code;
-  U64 user_data;
+    U64 code;
+    U64 user_data;
 };
 
 #define DMN_W32_INJECTED_CODE_SIZE 32
@@ -171,8 +171,8 @@ struct DMN_W32_InjectedBreak
 
 struct DMN_W32_ImageInfo
 {
-  Arch arch;
-  U32 size;
+    Arch arch;
+    U32 size;
 };
 
 ////////////////////////////////
@@ -185,39 +185,39 @@ typedef HRESULT DMN_W32_GetThreadDescriptionFunctionType(HANDLE hThread, WCHAR *
 
 struct DMN_W32_Shared
 {
-  // rjf: top-level info
-  Arena *arena;
-  String8List env_strings;
-  
-  // rjf: access locking mechanism
-  OS_Handle access_mutex;
-  B32 access_run_state;
-  
-  // rjf: detaching info
-  Arena *detach_arena;
-  DMN_HandleList detach_processes;
-  
-  // rjf: entity state
-  Arena *entities_arena;
-  DMN_W32_Entity *entities_base;
-  DMN_W32_Entity *entities_first_free;
-  U64 entities_count;
-  DMN_W32_EntityIDHashSlot *entities_id_hash_slots;
-  U64 entities_id_hash_slots_count;
-  DMN_W32_EntityIDHashNode *entities_id_hash_node_free;
-  
-  // rjf: launch state
-  B32 new_process_pending;
-  
-  // rjf: run results
-  B32 resume_needed;
-  U32 resume_pid;
-  U32 resume_tid;
-  B32 exception_not_handled;
-  
-  // rjf: halting info
-  DMN_Handle halter_process;
-  U32 halter_tid;
+    // rjf: top-level info
+    Arena *arena;
+    String8List env_strings;
+    
+    // rjf: access locking mechanism
+    OS_Handle access_mutex;
+    B32 access_run_state;
+    
+    // rjf: detaching info
+    Arena *detach_arena;
+    DMN_HandleList detach_processes;
+    
+    // rjf: entity state
+    Arena *entities_arena;
+    DMN_W32_Entity *entities_base;
+    DMN_W32_Entity *entities_first_free;
+    U64 entities_count;
+    DMN_W32_EntityIDHashSlot *entities_id_hash_slots;
+    U64 entities_id_hash_slots_count;
+    DMN_W32_EntityIDHashNode *entities_id_hash_node_free;
+    
+    // rjf: launch state
+    B32 new_process_pending;
+    
+    // rjf: run results
+    B32 resume_needed;
+    U32 resume_pid;
+    U32 resume_tid;
+    B32 exception_not_handled;
+    
+    // rjf: halting info
+    DMN_Handle halter_process;
+    U32 halter_tid;
 };
 
 ////////////////////////////////

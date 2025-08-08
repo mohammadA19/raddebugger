@@ -9,53 +9,53 @@
 
 enum UI_ScrollListFlags : U32
 {
-  UI_ScrollListFlag_Nav  = (1<<0),
-  UI_ScrollListFlag_Snap = (1<<1),
-  UI_ScrollListFlag_All  = 0xffffffff,
+    UI_ScrollListFlag_Nav  = (1<<0),
+    UI_ScrollListFlag_Snap = (1<<1),
+    UI_ScrollListFlag_All  = 0xffffffff,
 };
 
 struct UI_ScrollListRowBlock
 {
-  U64 row_count;
-  U64 item_count;
+    U64 row_count;
+    U64 item_count;
 };
 
 struct UI_ScrollListRowBlockChunkNode
 {
-  UI_ScrollListRowBlockChunkNode *next;
-  UI_ScrollListRowBlock *v;
-  U64 count;
-  U64 cap;
+    UI_ScrollListRowBlockChunkNode *next;
+    UI_ScrollListRowBlock *v;
+    U64 count;
+    U64 cap;
 };
 
 struct UI_ScrollListRowBlockChunkList
 {
-  UI_ScrollListRowBlockChunkNode *first;
-  UI_ScrollListRowBlockChunkNode *last;
-  U64 chunk_count;
-  U64 total_count;
+    UI_ScrollListRowBlockChunkNode *first;
+    UI_ScrollListRowBlockChunkNode *last;
+    U64 chunk_count;
+    U64 total_count;
 };
 
 struct UI_ScrollListRowBlockArray
 {
-  UI_ScrollListRowBlock *v;
-  U64 count;
+    UI_ScrollListRowBlock *v;
+    U64 count;
 };
 
 struct UI_ScrollListParams
 {
-  UI_ScrollListFlags flags;
-  Vec2F32 dim_px;
-  F32 row_height_px;
-  UI_ScrollListRowBlockArray row_blocks;
-  Rng2S64 cursor_range;
-  Rng1S64 item_range;
-  B32 cursor_min_is_empty_selection[Axis2_COUNT];
+    UI_ScrollListFlags flags;
+    Vec2F32 dim_px;
+    F32 row_height_px;
+    UI_ScrollListRowBlockArray row_blocks;
+    Rng2S64 cursor_range;
+    Rng1S64 item_range;
+    B32 cursor_min_is_empty_selection[Axis2_COUNT];
 };
 
 struct UI_ScrollListSignal
 {
-  B32 cursor_moved;
+    B32 cursor_moved;
 };
 
 ////////////////////////////////

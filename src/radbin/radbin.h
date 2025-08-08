@@ -14,28 +14,28 @@
 
 enum RB_FileFormatFlags : U32
 {
-  RB_FileFormatFlag_HasDWARF = (1<<0),
+    RB_FileFormatFlag_HasDWARF = (1<<0),
 };
 
 struct RB_File
 {
-  RB_FileFormat format;
-  RB_FileFormatFlags format_flags;
-  String8 path;
-  String8 data;
+    RB_FileFormat format;
+    RB_FileFormatFlags format_flags;
+    String8 path;
+    String8 data;
 };
 
 struct RB_FileNode
 {
-  RB_FileNode *next;
-  RB_File *v;
+    RB_FileNode *next;
+    RB_File *v;
 };
 
 struct RB_FileList
 {
-  RB_FileNode *first;
-  RB_FileNode *last;
-  U64 count;
+    RB_FileNode *first;
+    RB_FileNode *last;
+    U64 count;
 };
 
 read_only global RB_File rb_file_nil = {0};

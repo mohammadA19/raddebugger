@@ -13,9 +13,9 @@ r_init(CmdLine *cmdln)
 r_hook R_Handle
 r_window_equip(OS_Handle window)
 {
-  R_Handle handle = {0};
-  handle.u64[0] = 1;
-  return handle;
+    R_Handle handle = {0};
+    handle.u64[0] = 1;
+    return handle;
 }
 
 r_hook void
@@ -28,9 +28,9 @@ r_window_unequip(OS_Handle window, R_Handle window_equip)
 r_hook R_Handle
 r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void *data)
 {
-  R_Handle handle = {0};
-  handle.u64[0] = 1;
-  return handle;
+    R_Handle handle = {0};
+    handle.u64[0] = 1;
+    return handle;
 }
 
 r_hook void
@@ -41,19 +41,19 @@ r_tex2d_release(R_Handle texture)
 r_hook R_ResourceKind
 r_kind_from_tex2d(R_Handle texture)
 {
-  return R_ResourceStatic;
+    return R_ResourceStatic;
 }
 
 r_hook Vec2S32
 r_size_from_tex2d(R_Handle texture)
 {
-  return v2s32(1, 1);
+    return v2s32(1, 1);
 }
 
 r_hook R_Tex2DFormat
 r_format_from_tex2d(R_Handle texture)
 {
-  return R_Tex2DFormat_RGBA8;
+    return R_Tex2DFormat_RGBA8;
 }
 
 r_hook void
@@ -66,9 +66,9 @@ r_fill_tex2d_region(R_Handle texture, Rng2S32 subrect, void *data)
 r_hook R_Handle
 r_buffer_alloc(R_ResourceKind kind, U64 size, void *data)
 {
-  R_Handle handle = {0};
-  handle.u64[0] = 1;
-  return handle;
+    R_Handle handle = {0};
+    handle.u64[0] = 1;
+    return handle;
 }
 
 r_hook void

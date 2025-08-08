@@ -9,11 +9,11 @@
 
 struct OS_SystemInfo
 {
-  U32 logical_processor_count;
-  U64 page_size;
-  U64 large_page_size;
-  U64 allocation_granularity;
-  String8 machine_name;
+    U32 logical_processor_count;
+    U64 page_size;
+    U64 large_page_size;
+    U64 allocation_granularity;
+    String8 machine_name;
 };
 
 ////////////////////////////////
@@ -21,13 +21,13 @@ struct OS_SystemInfo
 
 struct OS_ProcessInfo
 {
-  U32 pid;
-  B32 large_pages_allowed;
-  String8 binary_path;
-  String8 initial_path;
-  String8 user_program_data_path;
-  String8List module_load_paths;
-  String8List environment;
+    U32 pid;
+    B32 large_pages_allowed;
+    String8 binary_path;
+    String8 initial_path;
+    String8 user_program_data_path;
+    String8List module_load_paths;
+    String8List environment;
 };
 
 ////////////////////////////////
@@ -35,13 +35,13 @@ struct OS_ProcessInfo
 
 enum OS_AccessFlags : U32
 {
-  OS_AccessFlag_Read        = (1<<0),
-  OS_AccessFlag_Write       = (1<<1),
-  OS_AccessFlag_Execute     = (1<<2),
-  OS_AccessFlag_Append      = (1<<3),
-  OS_AccessFlag_ShareRead   = (1<<4),
-  OS_AccessFlag_ShareWrite  = (1<<5),
-  OS_AccessFlag_Inherited   = (1<<6),
+    OS_AccessFlag_Read        = (1<<0),
+    OS_AccessFlag_Write       = (1<<1),
+    OS_AccessFlag_Execute     = (1<<2),
+    OS_AccessFlag_Append      = (1<<3),
+    OS_AccessFlag_ShareRead   = (1<<4),
+    OS_AccessFlag_ShareWrite  = (1<<5),
+    OS_AccessFlag_Inherited   = (1<<6),
 };
 
 ////////////////////////////////
@@ -49,28 +49,28 @@ enum OS_AccessFlags : U32
 
 enum OS_FileIterFlags : U32
 {
-  OS_FileIterFlag_SkipFolders     = (1 << 0),
-  OS_FileIterFlag_SkipFiles       = (1 << 1),
-  OS_FileIterFlag_SkipHiddenFiles = (1 << 2),
-  OS_FileIterFlag_Done            = (1 << 31),
+    OS_FileIterFlag_SkipFolders     = (1 << 0),
+    OS_FileIterFlag_SkipFiles       = (1 << 1),
+    OS_FileIterFlag_SkipHiddenFiles = (1 << 2),
+    OS_FileIterFlag_Done            = (1 << 31),
 };
 
 struct OS_FileIter
 {
-  OS_FileIterFlags flags;
-  U8 memory[800];
+    OS_FileIterFlags flags;
+    U8 memory[800];
 };
 
 struct OS_FileInfo
 {
-  String8 name;
-  FileProperties props;
+    String8 name;
+    FileProperties props;
 };
 
 // nick: on-disk file identifier
 struct OS_FileID
 {
-  U64 v[3];
+    U64 v[3];
 };
 
 ////////////////////////////////
@@ -78,26 +78,26 @@ struct OS_FileID
 
 struct OS_Handle
 {
-  U64 u64[1];
+    U64 u64[1];
 };
 
 struct OS_HandleNode
 {
-  OS_HandleNode *next;
-  OS_Handle v;
+    OS_HandleNode *next;
+    OS_Handle v;
 };
 
 struct OS_HandleList
 {
-  OS_HandleNode *first;
-  OS_HandleNode *last;
-  U64 count;
+    OS_HandleNode *first;
+    OS_HandleNode *last;
+    U64 count;
 };
 
 struct OS_HandleArray
 {
-  OS_Handle *v;
-  U64 count;
+    OS_Handle *v;
+    U64 count;
 };
 
 ////////////////////////////////
@@ -105,15 +105,15 @@ struct OS_HandleArray
 
 struct OS_ProcessLaunchParams
 {
-  String8List cmd_line;
-  String8 path;
-  String8List env;
-  B32 inherit_env;
-  B32 debug_subprocesses;
-  B32 consoleless;
-  OS_Handle stdout_file;
-  OS_Handle stderr_file;
-  OS_Handle stdin_file;
+    String8List cmd_line;
+    String8 path;
+    String8List env;
+    B32 inherit_env;
+    B32 debug_subprocesses;
+    B32 consoleless;
+    OS_Handle stdout_file;
+    OS_Handle stderr_file;
+    OS_Handle stdin_file;
 };
 
 ////////////////////////////////

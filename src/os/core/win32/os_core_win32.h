@@ -27,11 +27,11 @@
 
 struct OS_W32_FileIter
 {
-  HANDLE handle;
-  WIN32_FIND_DATAW find_data;
-  B32 is_volume_iter;
-  String8Array drive_strings;
-  U64 drive_strings_iter_idx;
+    HANDLE handle;
+    WIN32_FIND_DATAW find_data;
+    B32 is_volume_iter;
+    String8Array drive_strings;
+    U64 drive_strings_iter_idx;
 };
 StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(OS_W32_FileIter), file_iter_memory_size);
 
@@ -40,31 +40,31 @@ StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(OS_W32_FileIter), fil
 
 enum OS_W32_EntityKind
 {
-  OS_W32_EntityKind_Null,
-  OS_W32_EntityKind_Thread,
-  OS_W32_EntityKind_Mutex,
-  OS_W32_EntityKind_RWMutex,
-  OS_W32_EntityKind_ConditionVariable,
+    OS_W32_EntityKind_Null,
+    OS_W32_EntityKind_Thread,
+    OS_W32_EntityKind_Mutex,
+    OS_W32_EntityKind_RWMutex,
+    OS_W32_EntityKind_ConditionVariable,
 }
 OS_W32_EntityKind;
 
 struct OS_W32_Entity
 {
-  OS_W32_Entity *next;
-  OS_W32_EntityKind kind;
-  union
-  {
-    struct
+    OS_W32_Entity *next;
+    OS_W32_EntityKind kind;
+    union
     {
-      OS_ThreadFunctionType *func;
-      void *ptr;
-      HANDLE handle;
-      DWORD tid;
-    } thread;
-    CRITICAL_SECTION mutex;
-    SRWLOCK rw_mutex;
-    CONDITION_VARIABLE cv;
-  };
+        struct
+        {
+            OS_ThreadFunctionType *func;
+            void *ptr;
+            HANDLE handle;
+            DWORD tid;
+        } thread;
+        CRITICAL_SECTION mutex;
+        SRWLOCK rw_mutex;
+        CONDITION_VARIABLE cv;
+    };
 };
 
 ////////////////////////////////
@@ -72,17 +72,17 @@ struct OS_W32_Entity
 
 struct OS_W32_State
 {
-  Arena *arena;
-  
-  // rjf: info
-  OS_SystemInfo system_info;
-  OS_ProcessInfo process_info;
-  U64 microsecond_resolution;
-  
-  // rjf: entity storage
-  CRITICAL_SECTION entity_mutex;
-  Arena *entity_arena;
-  OS_W32_Entity *entity_free;
+    Arena *arena;
+    
+    // rjf: info
+    OS_SystemInfo system_info;
+    OS_ProcessInfo process_info;
+    U64 microsecond_resolution;
+    
+    // rjf: entity storage
+    CRITICAL_SECTION entity_mutex;
+    Arena *entity_arena;
+    OS_W32_Entity *entity_free;
 };
 
 ////////////////////////////////

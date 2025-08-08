@@ -11,7 +11,7 @@
 
 struct P2B_BakeUnitVMapIn
 {
-  RDIM_UnitChunkList *units;
+    RDIM_UnitChunkList *units;
 };
 ASYNC_WORK_DEF(p2b_bake_unit_vmap_work);
 
@@ -19,7 +19,7 @@ ASYNC_WORK_DEF(p2b_bake_unit_vmap_work);
 
 struct P2B_BakeLineTablesIn
 {
-  RDIM_LineTableChunkList *line_tables;
+    RDIM_LineTableChunkList *line_tables;
 };
 ASYNC_WORK_DEF(p2b_bake_line_table_work);
 
@@ -27,12 +27,12 @@ ASYNC_WORK_DEF(p2b_bake_line_table_work);
 
 struct P2B_DumpProcChunkIn
 {
-  RDI_VMapEntry *unit_vmap;
-  U32 unit_vmap_count;
-  U32 *unit_line_table_idxs;
-  U64 unit_count;
-  RDIM_LineTableBakeResult *line_tables_bake;
-  RDIM_SymbolChunkNode *chunk;
+    RDI_VMapEntry *unit_vmap;
+    U32 unit_vmap_count;
+    U32 *unit_line_table_idxs;
+    U64 unit_count;
+    RDIM_LineTableBakeResult *line_tables_bake;
+    RDIM_SymbolChunkNode *chunk;
 };
 ASYNC_WORK_DEF(p2b_dump_proc_chunk_work);
 

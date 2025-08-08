@@ -9,28 +9,28 @@
 
 struct ELF_Shdr64Array
 {
-  ELF_Shdr64 *v;
-  U64 count;
+    ELF_Shdr64 *v;
+    U64 count;
 };
 
 struct ELF_Phdr64Array
 {
-  ELF_Phdr64 *v;
-  U64 count;
+    ELF_Phdr64 *v;
+    U64 count;
 };
 
 struct ELF_Bin
 {
-  ELF_Hdr64 hdr;
-  Rng1U64 sh_name_range;
-  ELF_Shdr64Array shdrs;
-  ELF_Phdr64Array phdrs;
+    ELF_Hdr64 hdr;
+    Rng1U64 sh_name_range;
+    ELF_Shdr64Array shdrs;
+    ELF_Phdr64Array phdrs;
 };
 
 struct ELF_GnuDebugLink
 {
-  String8 path;
-  U32 checksum;
+    String8 path;
+    U32 checksum;
 };
 
 ////////////////////////////////

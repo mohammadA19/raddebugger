@@ -2,18 +2,18 @@
 
 enum LNK_IO_Flags : U32
 {
-  LNK_IO_Flags_MemoryMapFiles = (1 << 0),
+    LNK_IO_Flags_MemoryMapFiles = (1 << 0),
 };
 
 typedef struct
 {
-  LNK_IO_Flags io_flags;
-  String8Array path_arr;
-  String8Array data_arr;
-  OS_Handle   *handle_arr;
-  U64         *size_arr;
-  U64         *off_arr;
-  U8          *buffer;
+    LNK_IO_Flags io_flags;
+    String8Array path_arr;
+    String8Array data_arr;
+    OS_Handle   *handle_arr;
+    U64         *size_arr;
+    U64         *off_arr;
+    U8          *buffer;
 } LNK_DiskReader;
 
 // --- Shared File API ---------------------------------------------------------

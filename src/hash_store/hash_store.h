@@ -45,19 +45,19 @@
 
 struct HS_Root
 {
-  U64 u64[1];
+    U64 u64[1];
 };
 
 struct HS_ID
 {
-  U128 u128[1];
+    U128 u128[1];
 };
 
 struct HS_Key
 {
-  HS_Root root;
-  U64 _padding_;
-  HS_ID id;
+    HS_Root root;
+    U64 _padding_;
+    HS_ID id;
 };
 
 ////////////////////////////////
@@ -65,33 +65,33 @@ struct HS_Key
 
 struct HS_RootIDChunkNode
 {
-  HS_RootIDChunkNode *next;
-  HS_ID *v;
-  U64 count;
-  U64 cap;
+    HS_RootIDChunkNode *next;
+    HS_ID *v;
+    U64 count;
+    U64 cap;
 };
 
 struct HS_RootIDChunkList
 {
-  HS_RootIDChunkNode *first;
-  HS_RootIDChunkNode *last;
-  U64 chunk_count;
-  U64 total_count;
+    HS_RootIDChunkNode *first;
+    HS_RootIDChunkNode *last;
+    U64 chunk_count;
+    U64 total_count;
 };
 
 struct HS_RootNode
 {
-  HS_RootNode *next;
-  HS_RootNode *prev;
-  Arena *arena;
-  HS_Root root;
-  HS_RootIDChunkList ids;
+    HS_RootNode *next;
+    HS_RootNode *prev;
+    Arena *arena;
+    HS_Root root;
+    HS_RootIDChunkList ids;
 };
 
 struct HS_RootSlot
 {
-  HS_RootNode *first;
-  HS_RootNode *last;
+    HS_RootNode *first;
+    HS_RootNode *last;
 };
 
 #define HS_KEY_HASH_HISTORY_COUNT 64
@@ -99,42 +99,42 @@ struct HS_RootSlot
 
 struct HS_KeyNode
 {
-  HS_KeyNode *next;
-  HS_KeyNode *prev;
-  HS_Key key;
-  U128 hash_history[HS_KEY_HASH_HISTORY_COUNT];
-  U64 hash_history_gen;
+    HS_KeyNode *next;
+    HS_KeyNode *prev;
+    HS_Key key;
+    U128 hash_history[HS_KEY_HASH_HISTORY_COUNT];
+    U64 hash_history_gen;
 };
 
 struct HS_KeySlot
 {
-  HS_KeyNode *first;
-  HS_KeyNode *last;
+    HS_KeyNode *first;
+    HS_KeyNode *last;
 };
 
 struct HS_Node
 {
-  HS_Node *next;
-  HS_Node *prev;
-  U128 hash;
-  Arena *arena;
-  String8 data;
-  U64 scope_ref_count;
-  U64 key_ref_count;
-  U64 downstream_ref_count;
+    HS_Node *next;
+    HS_Node *prev;
+    U128 hash;
+    Arena *arena;
+    String8 data;
+    U64 scope_ref_count;
+    U64 key_ref_count;
+    U64 downstream_ref_count;
 };
 
 struct HS_Slot
 {
-  HS_Node *first;
-  HS_Node *last;
+    HS_Node *first;
+    HS_Node *last;
 };
 
 struct HS_Stripe
 {
-  Arena *arena;
-  OS_Handle rw_mutex;
-  OS_Handle cv;
+    Arena *arena;
+    OS_Handle rw_mutex;
+    OS_Handle cv;
 };
 
 ////////////////////////////////
@@ -142,14 +142,14 @@ struct HS_Stripe
 
 struct HS_Touch
 {
-  HS_Touch *next;
-  U128 hash;
+    HS_Touch *next;
+    U128 hash;
 };
 
 struct HS_Scope
 {
-  HS_Scope *next;
-  HS_Touch *top_touch;
+    HS_Scope *next;
+    HS_Touch *top_touch;
 };
 
 ////////////////////////////////
@@ -157,9 +157,9 @@ struct HS_Scope
 
 struct HS_TCTX
 {
-  Arena *arena;
-  HS_Scope *free_scope;
-  HS_Touch *free_touch;
+    Arena *arena;
+    HS_Scope *free_scope;
+    HS_Touch *free_touch;
 };
 
 ////////////////////////////////
@@ -167,32 +167,32 @@ struct HS_TCTX
 
 struct HS_Shared
 {
-  Arena *arena;
-  
-  // rjf: main data cache
-  U64 slots_count;
-  U64 stripes_count;
-  HS_Slot *slots;
-  HS_Stripe *stripes;
-  HS_Node **stripes_free_nodes;
-  
-  // rjf: key cache
-  U64 key_slots_count;
-  U64 key_stripes_count;
-  HS_KeySlot *key_slots;
-  HS_Stripe *key_stripes;
-  HS_KeyNode **key_stripes_free_nodes;
-  
-  // rjf: root cache
-  U64 root_slots_count;
-  U64 root_stripes_count;
-  HS_RootSlot *root_slots;
-  HS_Stripe *root_stripes;
-  HS_RootNode **root_stripes_free_nodes;
-  U64 root_id_gen;
-  
-  // rjf: evictor thread
-  OS_Handle evictor_thread;
+    Arena *arena;
+    
+    // rjf: main data cache
+    U64 slots_count;
+    U64 stripes_count;
+    HS_Slot *slots;
+    HS_Stripe *stripes;
+    HS_Node **stripes_free_nodes;
+    
+    // rjf: key cache
+    U64 key_slots_count;
+    U64 key_stripes_count;
+    HS_KeySlot *key_slots;
+    HS_Stripe *key_stripes;
+    HS_KeyNode **key_stripes_free_nodes;
+    
+    // rjf: root cache
+    U64 root_slots_count;
+    U64 root_stripes_count;
+    HS_RootSlot *root_slots;
+    HS_Stripe *root_stripes;
+    HS_RootNode **root_stripes_free_nodes;
+    U64 root_id_gen;
+    
+    // rjf: evictor thread
+    OS_Handle evictor_thread;
 };
 
 ////////////////////////////////

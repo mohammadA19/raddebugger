@@ -9,57 +9,57 @@
 
 struct D_Target
 {
-  String8 exe;
-  String8 args;
-  String8 working_directory;
-  String8 custom_entry_point_name;
-  String8 stdout_path;
-  String8 stderr_path;
-  String8 stdin_path;
-  B32 debug_subprocesses;
-  String8List env;
+    String8 exe;
+    String8 args;
+    String8 working_directory;
+    String8 custom_entry_point_name;
+    String8 stdout_path;
+    String8 stderr_path;
+    String8 stdin_path;
+    B32 debug_subprocesses;
+    String8List env;
 };
 
 struct D_TargetArray
 {
-  D_Target *v;
-  U64 count;
+    D_Target *v;
+    U64 count;
 };
 
 enum D_BreakpointFlags : U32
 {
-  D_BreakpointFlag_BreakOnWrite   = (1<<0),
-  D_BreakpointFlag_BreakOnRead    = (1<<1),
-  D_BreakpointFlag_BreakOnExecute = (1<<2),
+    D_BreakpointFlag_BreakOnWrite   = (1<<0),
+    D_BreakpointFlag_BreakOnRead    = (1<<1),
+    D_BreakpointFlag_BreakOnExecute = (1<<2),
 };
 
 struct D_Breakpoint
 {
-  D_BreakpointFlags flags;
-  U64 id;
-  String8 file_path;
-  TxtPt pt;
-  String8 vaddr_expr;
-  String8 condition;
-  U64 size;
+    D_BreakpointFlags flags;
+    U64 id;
+    String8 file_path;
+    TxtPt pt;
+    String8 vaddr_expr;
+    String8 condition;
+    U64 size;
 };
 
 struct D_BreakpointArray
 {
-  D_Breakpoint *v;
-  U64 count;
+    D_Breakpoint *v;
+    U64 count;
 };
 
 struct D_PathMap
 {
-  String8 src;
-  String8 dst;
+    String8 src;
+    String8 dst;
 };
 
 struct D_PathMapArray
 {
-  D_PathMap *v;
-  U64 count;
+    D_PathMap *v;
+    U64 count;
 };
 
 ////////////////////////////////
@@ -67,44 +67,44 @@ struct D_PathMapArray
 
 enum D_EventKind
 {
-  D_EventKind_Null,
-  D_EventKind_ProcessEnd,
-  D_EventKind_Stop,
-  D_EventKind_COUNT
+    D_EventKind_Null,
+    D_EventKind_ProcessEnd,
+    D_EventKind_Stop,
+    D_EventKind_COUNT
 }
 D_EventKind;
 
 enum D_EventCause
 {
-  D_EventCause_Null,
-  D_EventCause_UserBreakpoint,
-  D_EventCause_Halt,
-  D_EventCause_SoftHalt,
-  D_EventCause_COUNT
+    D_EventCause_Null,
+    D_EventCause_UserBreakpoint,
+    D_EventCause_Halt,
+    D_EventCause_SoftHalt,
+    D_EventCause_COUNT
 }
 D_EventCause;
 
 struct D_Event
 {
-  D_EventKind kind;
-  D_EventCause cause;
-  CTRL_Handle thread;
-  U64 vaddr;
-  U64 code;
-  U64 id;
+    D_EventKind kind;
+    D_EventCause cause;
+    CTRL_Handle thread;
+    U64 vaddr;
+    U64 code;
+    U64 id;
 };
 
 struct D_EventNode
 {
-  D_EventNode *next;
-  D_Event v;
+    D_EventNode *next;
+    D_Event v;
 };
 
 struct D_EventList
 {
-  D_EventNode *first;
-  D_EventNode *last;
-  U64 count;
+    D_EventNode *first;
+    D_EventNode *last;
+    U64 count;
 };
 
 ////////////////////////////////
@@ -112,30 +112,30 @@ struct D_EventList
 
 struct D_Line
 {
-  String8 file_path;
-  TxtPt pt;
-  Rng1U64 voff_range;
-  DI_Key dbgi_key;
+    String8 file_path;
+    TxtPt pt;
+    Rng1U64 voff_range;
+    DI_Key dbgi_key;
 };
 
 struct D_LineNode
 {
-  D_LineNode *next;
-  D_Line v;
+    D_LineNode *next;
+    D_Line v;
 };
 
 struct D_LineList
 {
-  D_LineNode *first;
-  D_LineNode *last;
-  U64 count;
+    D_LineNode *first;
+    D_LineNode *last;
+    U64 count;
 };
 
 struct D_LineListArray
 {
-  D_LineList *v;
-  U64 count;
-  DI_KeyList dbgi_keys;
+    D_LineList *v;
+    U64 count;
+    DI_KeyList dbgi_keys;
 };
 
 ////////////////////////////////
@@ -143,10 +143,10 @@ struct D_LineListArray
 
 enum D_RunKind
 {
-  D_RunKind_Run,
-  D_RunKind_SingleStep,
-  D_RunKind_Step,
-  D_RunKind_COUNT
+    D_RunKind_Run,
+    D_RunKind_SingleStep,
+    D_RunKind_Step,
+    D_RunKind_COUNT
 }
 D_RunKind;
 
@@ -160,38 +160,38 @@ D_RunKind;
 
 struct D_CmdParams
 {
-  CTRL_Handle machine;
-  CTRL_Handle process;
-  CTRL_Handle thread;
-  CTRL_Handle entity;
-  String8 string;
-  String8 file_path;
-  TxtPt cursor;
-  U64 vaddr;
-  B32 prefer_disasm;
-  U32 pid;
-  U32 rgba;
-  D_TargetArray targets;
+    CTRL_Handle machine;
+    CTRL_Handle process;
+    CTRL_Handle thread;
+    CTRL_Handle entity;
+    String8 string;
+    String8 file_path;
+    TxtPt cursor;
+    U64 vaddr;
+    B32 prefer_disasm;
+    U32 pid;
+    U32 rgba;
+    D_TargetArray targets;
 };
 
 struct D_Cmd
 {
-  D_CmdKind kind;
-  D_CmdParams params;
+    D_CmdKind kind;
+    D_CmdParams params;
 };
 
 struct D_CmdNode
 {
-  D_CmdNode *next;
-  D_CmdNode *prev;
-  D_Cmd cmd;
+    D_CmdNode *next;
+    D_CmdNode *prev;
+    D_Cmd cmd;
 };
 
 struct D_CmdList
 {
-  D_CmdNode *first;
-  D_CmdNode *last;
-  U64 count;
+    D_CmdNode *first;
+    D_CmdNode *last;
+    U64 count;
 };
 
 ////////////////////////////////
@@ -201,47 +201,47 @@ struct D_CmdList
 
 struct D_RunTLSBaseCacheNode
 {
-  D_RunTLSBaseCacheNode *hash_next;
-  CTRL_Handle process;
-  U64 root_vaddr;
-  U64 rip_vaddr;
-  U64 tls_base_vaddr;
+    D_RunTLSBaseCacheNode *hash_next;
+    CTRL_Handle process;
+    U64 root_vaddr;
+    U64 rip_vaddr;
+    U64 tls_base_vaddr;
 };
 
 struct D_RunTLSBaseCacheSlot
 {
-  D_RunTLSBaseCacheNode *first;
-  D_RunTLSBaseCacheNode *last;
+    D_RunTLSBaseCacheNode *first;
+    D_RunTLSBaseCacheNode *last;
 };
 
 struct D_RunTLSBaseCache
 {
-  Arena *arena;
-  U64 slots_count;
-  D_RunTLSBaseCacheSlot *slots;
+    Arena *arena;
+    U64 slots_count;
+    D_RunTLSBaseCacheSlot *slots;
 };
 
 //- rjf: per-run locals cache
 
 struct D_RunLocalsCacheNode
 {
-  D_RunLocalsCacheNode *hash_next;
-  DI_Key dbgi_key;
-  U64 voff;
-  E_String2NumMap *locals_map;
+    D_RunLocalsCacheNode *hash_next;
+    DI_Key dbgi_key;
+    U64 voff;
+    E_String2NumMap *locals_map;
 };
 
 struct D_RunLocalsCacheSlot
 {
-  D_RunLocalsCacheNode *first;
-  D_RunLocalsCacheNode *last;
+    D_RunLocalsCacheNode *first;
+    D_RunLocalsCacheNode *last;
 };
 
 struct D_RunLocalsCache
 {
-  Arena *arena;
-  U64 table_size;
-  D_RunLocalsCacheSlot *table;
+    Arena *arena;
+    U64 table_size;
+    D_RunLocalsCacheSlot *table;
 };
 
 ////////////////////////////////
@@ -249,48 +249,48 @@ struct D_RunLocalsCache
 
 struct D_State
 {
-  // rjf: top-level state
-  Arena *arena;
-  U64 frame_index;
-  
-  // rjf: commands
-  Arena *cmds_arena;
-  D_CmdList cmds;
-  
-  // rjf: output log key
-  HS_Key output_log_key;
-  
-  // rjf: per-run caches
-  U64 tls_base_cache_reggen_idx;
-  U64 tls_base_cache_memgen_idx;
-  D_RunTLSBaseCache tls_base_caches[2];
-  U64 tls_base_cache_gen;
-  U64 locals_cache_reggen_idx;
-  D_RunLocalsCache locals_caches[2];
-  U64 locals_cache_gen;
-  U64 member_cache_reggen_idx;
-  D_RunLocalsCache member_caches[2];
-  U64 member_cache_gen;
-  
-  // rjf: user -> ctrl driving state
-  Arena *ctrl_last_run_arena;
-  D_RunKind ctrl_last_run_kind;
-  U64 ctrl_last_run_frame_idx;
-  CTRL_Handle ctrl_last_run_thread_handle;
-  CTRL_RunFlags ctrl_last_run_flags;
-  CTRL_TrapList ctrl_last_run_traps;
-  D_BreakpointArray ctrl_last_run_extra_bps;
-  U128 ctrl_last_run_param_state_hash;
-  B32 ctrl_is_running;
-  B32 ctrl_thread_run_state;
-  B32 ctrl_soft_halt_issued;
-  Arena *ctrl_msg_arena;
-  CTRL_MsgList ctrl_msgs;
-  
-  // rjf: ctrl -> user reading state
-  CTRL_EntityCtxRWStore *ctrl_entity_store;
-  Arena *ctrl_stop_arena;
-  CTRL_Event ctrl_last_stop_event;
+    // rjf: top-level state
+    Arena *arena;
+    U64 frame_index;
+    
+    // rjf: commands
+    Arena *cmds_arena;
+    D_CmdList cmds;
+    
+    // rjf: output log key
+    HS_Key output_log_key;
+    
+    // rjf: per-run caches
+    U64 tls_base_cache_reggen_idx;
+    U64 tls_base_cache_memgen_idx;
+    D_RunTLSBaseCache tls_base_caches[2];
+    U64 tls_base_cache_gen;
+    U64 locals_cache_reggen_idx;
+    D_RunLocalsCache locals_caches[2];
+    U64 locals_cache_gen;
+    U64 member_cache_reggen_idx;
+    D_RunLocalsCache member_caches[2];
+    U64 member_cache_gen;
+    
+    // rjf: user -> ctrl driving state
+    Arena *ctrl_last_run_arena;
+    D_RunKind ctrl_last_run_kind;
+    U64 ctrl_last_run_frame_idx;
+    CTRL_Handle ctrl_last_run_thread_handle;
+    CTRL_RunFlags ctrl_last_run_flags;
+    CTRL_TrapList ctrl_last_run_traps;
+    D_BreakpointArray ctrl_last_run_extra_bps;
+    U128 ctrl_last_run_param_state_hash;
+    B32 ctrl_is_running;
+    B32 ctrl_thread_run_state;
+    B32 ctrl_soft_halt_issued;
+    Arena *ctrl_msg_arena;
+    CTRL_MsgList ctrl_msgs;
+    
+    // rjf: ctrl -> user reading state
+    CTRL_EntityCtxRWStore *ctrl_entity_store;
+    Arena *ctrl_stop_arena;
+    CTRL_Event ctrl_last_stop_event;
 };
 
 ////////////////////////////////

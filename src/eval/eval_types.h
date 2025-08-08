@@ -9,15 +9,15 @@
 
 enum E_TypeUnwrapFlags : U32
 {
-  E_TypeUnwrapFlag_Modifiers     = (1<<0),
-  E_TypeUnwrapFlag_Pointers      = (1<<1),
-  E_TypeUnwrapFlag_Lenses        = (1<<2),
-  E_TypeUnwrapFlag_Meta          = (1<<3),
-  E_TypeUnwrapFlag_Enums         = (1<<4),
-  E_TypeUnwrapFlag_Aliases       = (1<<5),
-  E_TypeUnwrapFlag_Bitfields     = (1<<6),
-  E_TypeUnwrapFlag_All           = 0xffffffff,
-  E_TypeUnwrapFlag_AllDecorative = (E_TypeUnwrapFlag_All & ~(E_TypeUnwrapFlag_Pointers|E_TypeUnwrapFlag_Bitfields))
+    E_TypeUnwrapFlag_Modifiers     = (1<<0),
+    E_TypeUnwrapFlag_Pointers      = (1<<1),
+    E_TypeUnwrapFlag_Lenses        = (1<<2),
+    E_TypeUnwrapFlag_Meta          = (1<<3),
+    E_TypeUnwrapFlag_Enums         = (1<<4),
+    E_TypeUnwrapFlag_Aliases       = (1<<5),
+    E_TypeUnwrapFlag_Bitfields     = (1<<6),
+    E_TypeUnwrapFlag_All           = 0xffffffff,
+    E_TypeUnwrapFlag_AllDecorative = (E_TypeUnwrapFlag_All & ~(E_TypeUnwrapFlag_Pointers|E_TypeUnwrapFlag_Bitfields))
 };
 
 ////////////////////////////////
@@ -31,10 +31,10 @@ E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(identity);
 E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(identity);
 global read_only E_TypeExpandRule e_type_expand_rule__default =
 {
-  E_TYPE_EXPAND_INFO_FUNCTION_NAME(default),
-  E_TYPE_EXPAND_RANGE_FUNCTION_NAME(default),
-  E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_NAME(identity),
-  E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_NAME(identity),
+    E_TYPE_EXPAND_INFO_FUNCTION_NAME(default),
+    E_TYPE_EXPAND_RANGE_FUNCTION_NAME(default),
+    E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_NAME(identity),
+    E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_NAME(identity),
 };
 
 ////////////////////////////////

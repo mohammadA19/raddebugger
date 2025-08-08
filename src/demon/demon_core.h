@@ -14,7 +14,7 @@
 
 struct DMN_CtrlCtx
 {
-  U64 u64[1];
+    U64 u64[1];
 };
 
 ////////////////////////////////
@@ -22,27 +22,27 @@ struct DMN_CtrlCtx
 
 union DMN_Handle
 {
-  U32 u32[2];
-  U64 u64[1];
+    U32 u32[2];
+    U64 u64[1];
 };
 
 struct DMN_HandleNode
 {
-  DMN_HandleNode *next;
-  DMN_Handle v;
+    DMN_HandleNode *next;
+    DMN_Handle v;
 };
 
 struct DMN_HandleList
 {
-  DMN_HandleNode *first;
-  DMN_HandleNode *last;
-  U64 count;
+    DMN_HandleNode *first;
+    DMN_HandleNode *last;
+    U64 count;
 };
 
 struct DMN_HandleArray
 {
-  DMN_Handle *handles;
-  U64 count;
+    DMN_Handle *handles;
+    U64 count;
 };
 
 ////////////////////////////////
@@ -55,38 +55,38 @@ struct DMN_HandleArray
 
 struct DMN_Event
 {
-  DMN_EventKind kind;
-  DMN_ErrorKind error_kind;
-  DMN_MemoryEventKind memory_kind;
-  DMN_ExceptionKind exception_kind;
-  DMN_Handle process;
-  DMN_Handle thread;
-  DMN_Handle module;
-  Arch arch;
-  U64 address;
-  U64 size;
-  String8 string;
-  U32 code; // code gives pid & tid on CreateProcess and CreateThread (respectfully)
-  U32 flags; // DMN_TrapFlags, if `DMN_EventKind_SetBreakpoint`
-  S32 signo;
-  S32 sigcode;
-  U64 instruction_pointer;
-  U64 stack_pointer;
-  U64 user_data;
-  B32 exception_repeated;
+    DMN_EventKind kind;
+    DMN_ErrorKind error_kind;
+    DMN_MemoryEventKind memory_kind;
+    DMN_ExceptionKind exception_kind;
+    DMN_Handle process;
+    DMN_Handle thread;
+    DMN_Handle module;
+    Arch arch;
+    U64 address;
+    U64 size;
+    String8 string;
+    U32 code; // code gives pid & tid on CreateProcess and CreateThread (respectfully)
+    U32 flags; // DMN_TrapFlags, if `DMN_EventKind_SetBreakpoint`
+    S32 signo;
+    S32 sigcode;
+    U64 instruction_pointer;
+    U64 stack_pointer;
+    U64 user_data;
+    B32 exception_repeated;
 };
 
 struct DMN_EventNode
 {
-  DMN_EventNode *next;
-  DMN_Event v;
+    DMN_EventNode *next;
+    DMN_Event v;
 };
 
 struct DMN_EventList
 {
-  DMN_EventNode *first;
-  DMN_EventNode *last;
-  U64 count;
+    DMN_EventNode *first;
+    DMN_EventNode *last;
+    U64 count;
 };
 
 ////////////////////////////////
@@ -94,46 +94,46 @@ struct DMN_EventList
 
 enum DMN_TrapFlags : U32
 {
-  DMN_TrapFlag_BreakOnWrite   = (1<<0),
-  DMN_TrapFlag_BreakOnRead    = (1<<1),
-  DMN_TrapFlag_BreakOnExecute = (1<<2),
+    DMN_TrapFlag_BreakOnWrite   = (1<<0),
+    DMN_TrapFlag_BreakOnRead    = (1<<1),
+    DMN_TrapFlag_BreakOnExecute = (1<<2),
 };
 
 struct DMN_Trap
 {
-  DMN_Handle process;
-  U64 vaddr;
-  U64 id;
-  DMN_TrapFlags flags;
-  U32 size;
+    DMN_Handle process;
+    U64 vaddr;
+    U64 id;
+    DMN_TrapFlags flags;
+    U32 size;
 };
 
 struct DMN_TrapChunkNode
 {
-  DMN_TrapChunkNode *next;
-  DMN_Trap *v;
-  U64 cap;
-  U64 count;
+    DMN_TrapChunkNode *next;
+    DMN_Trap *v;
+    U64 cap;
+    U64 count;
 };
 
 struct DMN_TrapChunkList
 {
-  DMN_TrapChunkNode *first;
-  DMN_TrapChunkNode *last;
-  U64 node_count;
-  U64 trap_count;
+    DMN_TrapChunkNode *first;
+    DMN_TrapChunkNode *last;
+    U64 node_count;
+    U64 trap_count;
 };
 
 struct DMN_RunCtrls
 {
-  DMN_Handle priority_thread;
-  DMN_Handle single_step_thread;
-  B8 ignore_previous_exception;
-  B8 run_entities_are_unfrozen;
-  B8 run_entities_are_processes;
-  DMN_Handle *run_entities;
-  U64 run_entity_count;
-  DMN_TrapChunkList traps;
+    DMN_Handle priority_thread;
+    DMN_Handle single_step_thread;
+    B8 ignore_previous_exception;
+    B8 run_entities_are_unfrozen;
+    B8 run_entities_are_processes;
+    DMN_Handle *run_entities;
+    U64 run_entity_count;
+    DMN_TrapChunkList traps;
 };
 
 ////////////////////////////////
@@ -141,13 +141,13 @@ struct DMN_RunCtrls
 
 struct DMN_ProcessIter
 {
-  U64 v[2];
+    U64 v[2];
 };
 
 struct DMN_ProcessInfo
 {
-  String8 name;
-  U32 pid;
+    String8 name;
+    U32 pid;
 };
 
 ////////////////////////////////

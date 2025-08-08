@@ -381,7 +381,7 @@ typedef double   F64;
 typedef void VoidProc(void);
 struct U128
 {
-  U64 u64[2];
+    U64 u64[2];
 };
 
 ////////////////////////////////
@@ -389,52 +389,52 @@ struct U128
 
 enum Dimension
 {
-  Dimension_X,
-  Dimension_Y,
-  Dimension_Z,
-  Dimension_W,
+    Dimension_X,
+    Dimension_Y,
+    Dimension_Z,
+    Dimension_W,
 }
 Dimension;
 
 enum Side
 {
-  Side_Invalid = -1,
-  Side_Min,
-  Side_Max,
-  Side_COUNT,
+    Side_Invalid = -1,
+    Side_Min,
+    Side_Max,
+    Side_COUNT,
 }
 Side;
 #define side_flip(s) ((Side)(!(s)))
 
 enum Axis2
 {
-  Axis2_Invalid = -1,
-  Axis2_X,
-  Axis2_Y,
-  Axis2_COUNT,
+    Axis2_Invalid = -1,
+    Axis2_X,
+    Axis2_Y,
+    Axis2_COUNT,
 }
 Axis2;
 #define axis2_flip(a) ((Axis2)(!(a)))
 
 enum Corner
 {
-  Corner_Invalid = -1,
-  Corner_00,
-  Corner_01,
-  Corner_10,
-  Corner_11,
-  Corner_COUNT
+    Corner_Invalid = -1,
+    Corner_00,
+    Corner_01,
+    Corner_10,
+    Corner_11,
+    Corner_COUNT
 }
 Corner;
 
 enum Dir2
 {
-  Dir2_Invalid = -1,
-  Dir2_Left,
-  Dir2_Up,
-  Dir2_Right,
-  Dir2_Down,
-  Dir2_COUNT
+    Dir2_Invalid = -1,
+    Dir2_Left,
+    Dir2_Up,
+    Dir2_Right,
+    Dir2_Down,
+    Dir2_COUNT
 }
 Dir2;
 #define axis2_from_dir2(d) (((d) & 1) ? Axis2_Y : Axis2_X)
@@ -445,41 +445,41 @@ Dir2;
 
 enum OperatingSystem
 {
-  OperatingSystem_Null,
-  OperatingSystem_Windows,
-  OperatingSystem_Linux,
-  OperatingSystem_Mac,
-  OperatingSystem_COUNT,
+    OperatingSystem_Null,
+    OperatingSystem_Windows,
+    OperatingSystem_Linux,
+    OperatingSystem_Mac,
+    OperatingSystem_COUNT,
 }
 OperatingSystem;
 
 enum ImageType
 {
-  Image_Null,
-  Image_CoffPe,
-  Image_Elf32,
-  Image_Elf64,
-  Image_Macho
+    Image_Null,
+    Image_CoffPe,
+    Image_Elf32,
+    Image_Elf64,
+    Image_Macho
 } ImageType;
 
 enum Arch
 {
-  Arch_Null,
-  Arch_x64,
-  Arch_x86,
-  Arch_arm64,
-  Arch_arm32,
-  Arch_COUNT,
+    Arch_Null,
+    Arch_x64,
+    Arch_x86,
+    Arch_arm64,
+    Arch_arm32,
+    Arch_COUNT,
 }
 Arch;
 
 enum Compiler
 {
-  Compiler_Null,
-  Compiler_msvc,
-  Compiler_gcc,
-  Compiler_clang,
-  Compiler_COUNT,
+    Compiler_Null,
+    Compiler_msvc,
+    Compiler_gcc,
+    Compiler_clang,
+    Compiler_COUNT,
 }
 Compiler;
 
@@ -488,14 +488,14 @@ Compiler;
 
 struct TxtPt
 {
-  S64 line;
-  S64 column;
+    S64 line;
+    S64 column;
 };
 
 struct TxtRng
 {
-  TxtPt min;
-  TxtPt max;
+    TxtPt min;
+    TxtPt max;
 };
 
 ////////////////////////////////
@@ -503,14 +503,14 @@ struct TxtRng
 
 union Guid
 {
-  struct
-  {
-    U32 data1;
-    U16 data2;
-    U16 data3;
-    U8  data4[8];
-  };
-  U8 v[16];
+    struct
+    {
+        U32 data1;
+        U16 data2;
+        U16 data3;
+        U8  data4[8];
+    };
+    U8 v[16];
 };
 StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
 
@@ -519,23 +519,23 @@ StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
 
 struct U16Array
 {
-  U64  count;
-  U16 *v;
+    U64  count;
+    U16 *v;
 };
 struct U32Array
 {
-  U64  count;
-  U32 *v;
+    U64  count;
+    U32 *v;
 };
 struct U64Array
 {
-  U64  count;
-  U64 *v;
+    U64  count;
+    U64 *v;
 };
 struct U128Array
 {
-  U64   count;
-  U128 *v;
+    U64   count;
+    U128 *v;
 };
 
 ////////////////////////////////
@@ -704,54 +704,54 @@ global const U64 bit64 = (1ull<<63);
 
 enum WeekDay
 {
-  WeekDay_Sun,
-  WeekDay_Mon,
-  WeekDay_Tue,
-  WeekDay_Wed,
-  WeekDay_Thu,
-  WeekDay_Fri,
-  WeekDay_Sat,
-  WeekDay_COUNT,
+    WeekDay_Sun,
+    WeekDay_Mon,
+    WeekDay_Tue,
+    WeekDay_Wed,
+    WeekDay_Thu,
+    WeekDay_Fri,
+    WeekDay_Sat,
+    WeekDay_COUNT,
 }
 WeekDay;
 
 enum Month
 {
-  Month_Jan,
-  Month_Feb,
-  Month_Mar,
-  Month_Apr,
-  Month_May,
-  Month_Jun,
-  Month_Jul,
-  Month_Aug,
-  Month_Sep,
-  Month_Oct,
-  Month_Nov,
-  Month_Dec,
-  Month_COUNT,
+    Month_Jan,
+    Month_Feb,
+    Month_Mar,
+    Month_Apr,
+    Month_May,
+    Month_Jun,
+    Month_Jul,
+    Month_Aug,
+    Month_Sep,
+    Month_Oct,
+    Month_Nov,
+    Month_Dec,
+    Month_COUNT,
 }
 Month;
 
 struct DateTime
 {
-  U16 micro_sec; // [0,999]
-  U16 msec; // [0,999]
-  U16 sec;  // [0,60]
-  U16 min;  // [0,59]
-  U16 hour; // [0,24]
-  U16 day;  // [0,30]
-  union
-  {
-    WeekDay week_day;
-    U32 wday;
-  };
-  union
-  {
-    Month month;
-    U32 mon;
-  };
-  U32 year; // 1 = 1 CE, 0 = 1 BC
+    U16 micro_sec; // [0,999]
+    U16 msec; // [0,999]
+    U16 sec;  // [0,60]
+    U16 min;  // [0,59]
+    U16 hour; // [0,24]
+    U16 day;  // [0,30]
+    union
+    {
+        WeekDay week_day;
+        U32 wday;
+    };
+    union
+    {
+        Month month;
+        U32 mon;
+    };
+    U32 year; // 1 = 1 CE, 0 = 1 BC
 };
 
 typedef U64 DenseTime;
@@ -761,15 +761,15 @@ typedef U64 DenseTime;
 
 enum FilePropertyFlags : U32
 {
-  FilePropertyFlag_IsFolder = (1 << 0),
+    FilePropertyFlag_IsFolder = (1 << 0),
 };
 
 struct FileProperties
 {
-  U64 size;
-  DenseTime modified;
-  DenseTime created;
-  FilePropertyFlags flags;
+    U64 size;
+    DenseTime modified;
+    DenseTime created;
+    FilePropertyFlags flags;
 };
 
 ////////////////////////////////

@@ -33,9 +33,9 @@
 static void
 blake3(void* out, size_t outlen, void* in, size_t inlen)
 {
-  blake3_hasher hasher;
-  blake3_hasher_init(&hasher);
-  blake3_hasher_update(&hasher, in, inlen);
-  blake3_hasher_finalize(&hasher, (uint8_t*)out, outlen);
+    blake3_hasher hasher;
+    blake3_hasher_init(&hasher);
+    blake3_hasher_update(&hasher, in, inlen);
+    blake3_hasher_finalize(&hasher, (uint8_t*)out, outlen);
 }
 

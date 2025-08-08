@@ -5,41 +5,41 @@
 
 typedef struct LNK_Lib
 {
-  String8          path;
-  String8          data;
-  COFF_ArchiveType type;
-  U32              symbol_count;
-  U32             *member_off_arr;
-  String8List      symbol_name_list;
-  String8          long_names;
-  U64              input_idx;
+    String8          path;
+    String8          data;
+    COFF_ArchiveType type;
+    U32              symbol_count;
+    U32             *member_off_arr;
+    String8List      symbol_name_list;
+    String8          long_names;
+    U64              input_idx;
 } LNK_Lib;
 
 typedef struct LNK_LibNode
 {
-  LNK_Lib             data;
-  struct LNK_LibNode *next;
+    LNK_Lib             data;
+    struct LNK_LibNode *next;
 } LNK_LibNode;
 
 typedef struct LNK_LibNodeArray
 {
-  U64          count;
-  LNK_LibNode *v;
+    U64          count;
+    LNK_LibNode *v;
 } LNK_LibNodeArray;
 
 typedef struct LNK_LibList
 {
-  U64                 count;
-  struct LNK_LibNode *first;
+    U64                 count;
+    struct LNK_LibNode *first;
 } LNK_LibList;
- 
+  
 typedef struct
 {
-  String8     *data_arr;
-  String8     *path_arr;
-  LNK_LibList  free_libs;
-  LNK_LibList  valid_libs;
-  LNK_LibList  invalid_libs;
+    String8     *data_arr;
+    String8     *path_arr;
+    LNK_LibList  free_libs;
+    LNK_LibList  valid_libs;
+    LNK_LibList  invalid_libs;
 } LNK_LibIniter;
 
 

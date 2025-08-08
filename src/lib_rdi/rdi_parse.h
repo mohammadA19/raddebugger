@@ -13,28 +13,28 @@
 #if 0
 // Procedure Name -> Line
 {
-  RDI_Parsed *rdi = ...;
-  char *name = "mule_main";
-  RDI_Procedure *procedure = rdi_procedure_from_name_cstr(rdi, name);                  // 1. name -> procedure
-  RDI_U64 procedure_first_voff = rdi_first_voff_from_procedure(rdi, procedure);        // 2. procedure -> virtual offset
-  RDI_Line line = rdi_line_from_voff(rdi, procedure_first_voff);                       // 3. virtual offset -> line
-  RDI_SourceFile *file = rdi_source_file_from_line(rdi, &line);                        // 4. line -> source file
-  RDI_U64 file_path_size = 0;                                                          // 5. source file -> path
-  RDI_U8 *file_path = rdi_normal_path_from_source_file(rdi, file, &file_path_size);
-  printf("%s is at %.*s:%u\n", name, (int)file_path_size, file_path, line.line_num);
+    RDI_Parsed *rdi = ...;
+    char *name = "mule_main";
+    RDI_Procedure *procedure = rdi_procedure_from_name_cstr(rdi, name);                  // 1. name -> procedure
+    RDI_U64 procedure_first_voff = rdi_first_voff_from_procedure(rdi, procedure);        // 2. procedure -> virtual offset
+    RDI_Line line = rdi_line_from_voff(rdi, procedure_first_voff);                       // 3. virtual offset -> line
+    RDI_SourceFile *file = rdi_source_file_from_line(rdi, &line);                        // 4. line -> source file
+    RDI_U64 file_path_size = 0;                                                          // 5. source file -> path
+    RDI_U8 *file_path = rdi_normal_path_from_source_file(rdi, file, &file_path_size);
+    printf("%s is at %.*s:%u\n", name, (int)file_path_size, file_path, line.line_num);
 }
 
 // Line -> Procedure Name
 {
-  RDI_Parsed *rdi = ...;
-  char *path = "c:/devel/raddebugger/src/mule/mule_main.cpp";
-  RDI_U32 line_num = 2557;
-  RDI_SourceFile *file = rdi_source_file_from_normal_path_cstr(rdi, path);      // 1. path -> source file
-  RDI_U64 voff = rdi_first_voff_from_source_file_line_num(rdi, file, line_num); // 2. (source file, line) -> virtual offset
-  RDI_Procedure *procedure = rdi_procedure_from_voff(rdi, voff);                // 3. virtual offset -> procedure
-  RDI_U64 name_size = 0;                                                        // 4. procedure -> name
-  RDI_U8 *name = rdi_name_from_procedure(rdi, procedure, &name_size);
-  printf("%s:%u is inside %.*s\n", path, line_num, (int)name_size, name);
+    RDI_Parsed *rdi = ...;
+    char *path = "c:/devel/raddebugger/src/mule/mule_main.cpp";
+    RDI_U32 line_num = 2557;
+    RDI_SourceFile *file = rdi_source_file_from_normal_path_cstr(rdi, path);      // 1. path -> source file
+    RDI_U64 voff = rdi_first_voff_from_source_file_line_num(rdi, file, line_num); // 2. (source file, line) -> virtual offset
+    RDI_Procedure *procedure = rdi_procedure_from_voff(rdi, voff);                // 3. virtual offset -> procedure
+    RDI_U64 name_size = 0;                                                        // 4. procedure -> name
+    RDI_U8 *name = rdi_name_from_procedure(rdi, procedure, &name_size);
+    printf("%s:%u is inside %.*s\n", path, line_num, (int)name_size, name);
 }
 #endif
 
@@ -46,58 +46,58 @@
 
 enum RDI_ParseStatus
 {
-  RDI_ParseStatus_Good = 0,
-  RDI_ParseStatus_HeaderDoesNotMatch = 1,
-  RDI_ParseStatus_UnsupportedVersionNumber = 2,
-  RDI_ParseStatus_InvalidDataSecionLayout = 3,
-  RDI_ParseStatus_MissingRequiredSection = 4,
+    RDI_ParseStatus_Good = 0,
+    RDI_ParseStatus_HeaderDoesNotMatch = 1,
+    RDI_ParseStatus_UnsupportedVersionNumber = 2,
+    RDI_ParseStatus_InvalidDataSecionLayout = 3,
+    RDI_ParseStatus_MissingRequiredSection = 4,
 }
 RDI_ParseStatus;
 
 struct RDI_Parsed
 {
-  RDI_U8 *raw_data;
-  RDI_U64 raw_data_size;
-  RDI_Section *sections;
-  RDI_U64 sections_count;
+    RDI_U8 *raw_data;
+    RDI_U64 raw_data_size;
+    RDI_Section *sections;
+    RDI_U64 sections_count;
 };
 
 struct RDI_ParsedLineTable
 {
-  // NOTE: Mapping VOFF -> LINE_INFO
-  //
-  // * [ voff[i], voff[i + 1] ) forms the voff range
-  // * for the line info at lines[i] (and cols[i] if i < col_count)
-  RDI_U64*    voffs; // [count + 1] sorted
-  RDI_Line*   lines; // [count]
-  RDI_Column* cols;  // [col_count]
-  RDI_U64 count;
-  RDI_U64 col_count;
+    // NOTE: Mapping VOFF -> LINE_INFO
+    //
+    // * [ voff[i], voff[i + 1] ) forms the voff range
+    // * for the line info at lines[i] (and cols[i] if i < col_count)
+    RDI_U64*    voffs; // [count + 1] sorted
+    RDI_Line*   lines; // [count]
+    RDI_Column* cols;  // [col_count]
+    RDI_U64 count;
+    RDI_U64 col_count;
 };
 
 struct RDI_ParsedSourceLineMap
 {
-  // NOTE: Mapping LINE_NUMBER -> VOFFs
-  //
-  // * nums[i] gives a line number
-  // * that line number has one or more associated voffs
-  //
-  // * to find all associated voffs for the line number nums[i] :
-  // * let k span over the range [ ranges[i], ranges[i + 1] )
-  // * voffs[k] gives the associated voffs
-  RDI_U32* nums;   // [count] sorted
-  RDI_U32* ranges; // [count + 1]
-  RDI_U64* voffs;  // [voff_count]
-  RDI_U64 count;
-  RDI_U64 voff_count;
+    // NOTE: Mapping LINE_NUMBER -> VOFFs
+    //
+    // * nums[i] gives a line number
+    // * that line number has one or more associated voffs
+    //
+    // * to find all associated voffs for the line number nums[i] :
+    // * let k span over the range [ ranges[i], ranges[i + 1] )
+    // * voffs[k] gives the associated voffs
+    RDI_U32* nums;   // [count] sorted
+    RDI_U32* ranges; // [count + 1]
+    RDI_U64* voffs;  // [voff_count]
+    RDI_U64 count;
+    RDI_U64 voff_count;
 };
 
 struct RDI_ParsedNameMap
 {
-  RDI_NameMapBucket *buckets;
-  RDI_NameMapNode *nodes;
-  RDI_U64 bucket_count;
-  RDI_U64 node_count;
+    RDI_NameMapBucket *buckets;
+    RDI_NameMapNode *nodes;
+    RDI_U64 bucket_count;
+    RDI_U64 node_count;
 };
 
 ////////////////////////////////
@@ -105,27 +105,27 @@ struct RDI_ParsedNameMap
 
 static union
 {
-  RDI_TopLevelInfo top_level_info;
-  RDI_BinarySection binary_section;
-  RDI_FilePathNode file_path_node;
-  RDI_SourceFile source_file;
-  RDI_LineTable line_table;
-  RDI_SourceLineMap source_line_map;
-  RDI_Line line;
-  RDI_Column column;
-  RDI_Unit unit;
-  RDI_VMapEntry vmap_entry;
-  RDI_TypeNode type_node;
-  RDI_UDT udt;
-  RDI_Member member;
-  RDI_EnumMember enum_member;
-  RDI_GlobalVariable global_variable;
-  RDI_ThreadVariable thread_variable;
-  RDI_Procedure procedure;
-  RDI_Scope scope;
-  RDI_U64 voff;
-  RDI_LocationBlock location_block;
-  RDI_Local local;
+    RDI_TopLevelInfo top_level_info;
+    RDI_BinarySection binary_section;
+    RDI_FilePathNode file_path_node;
+    RDI_SourceFile source_file;
+    RDI_LineTable line_table;
+    RDI_SourceLineMap source_line_map;
+    RDI_Line line;
+    RDI_Column column;
+    RDI_Unit unit;
+    RDI_VMapEntry vmap_entry;
+    RDI_TypeNode type_node;
+    RDI_UDT udt;
+    RDI_Member member;
+    RDI_EnumMember enum_member;
+    RDI_GlobalVariable global_variable;
+    RDI_ThreadVariable thread_variable;
+    RDI_Procedure procedure;
+    RDI_Scope scope;
+    RDI_U64 voff;
+    RDI_LocationBlock location_block;
+    RDI_Local local;
 }
 rdi_nil_element_union = {0};
 static RDI_Parsed rdi_parsed_nil = {0};

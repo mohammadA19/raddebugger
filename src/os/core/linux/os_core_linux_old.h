@@ -27,8 +27,8 @@
 //~ NOTE(allen): File Iterator
 
 struct LNX_FileIter{
-  int fd;
-  DIR *dir;
+    int fd;
+    DIR *dir;
 };
 StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(LNX_FileIter), file_iter_memory_size);
 
@@ -36,34 +36,34 @@ StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(LNX_FileIter), file_i
 //~ NOTE(allen): Threading Entities
 
 enum LNX_EntityKind{
-  LNX_EntityKind_Null,
-  LNX_EntityKind_Thread,
-  LNX_EntityKind_Mutex,
-  LNX_EntityKind_ConditionVariable,
+    LNX_EntityKind_Null,
+    LNX_EntityKind_Thread,
+    LNX_EntityKind_Mutex,
+    LNX_EntityKind_ConditionVariable,
 };
 
 struct LNX_Entity{
-  LNX_Entity *next;
-  LNX_EntityKind kind;
-  volatile U32 reference_mask;
-  union{
-    struct{
-      OS_ThreadFunctionType *func;
-      void *ptr;
-      pthread_t handle;
-    } thread;
-    pthread_mutex_t mutex;
-    pthread_cond_t cond;
-  };
+    LNX_Entity *next;
+    LNX_EntityKind kind;
+    volatile U32 reference_mask;
+    union{
+        struct{
+            OS_ThreadFunctionType *func;
+            void *ptr;
+            pthread_t handle;
+        } thread;
+        pthread_mutex_t mutex;
+        pthread_cond_t cond;
+    };
 };
 
 ////////////////////////////////
 //~ NOTE(allen): Safe Call Chain
 
 struct LNX_SafeCallChain{
-  LNX_SafeCallChain *next;
-  OS_ThreadFunctionType *fail_handler;
-  void *ptr;
+    LNX_SafeCallChain *next;
+    OS_ThreadFunctionType *fail_handler;
+    void *ptr;
 };
 
 ////////////////////////////////

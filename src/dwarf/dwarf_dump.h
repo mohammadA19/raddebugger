@@ -26,7 +26,7 @@ X(DebugStrOffsets,     debug_stroff,        "DEBUG STROFF")\
 enum DW_DumpSubset
 {
 #define X(name, name_lower, title) DW_DumpSubset_##name,
-  DW_DumpSubset_XList
+    DW_DumpSubset_XList
 #undef X
 }
 DW_DumpSubset;
@@ -34,22 +34,22 @@ DW_DumpSubset;
 enum DW_DumpSubsetFlags : U32
 {
 #define X(name, name_lower, title) DW_DumpSubsetFlag_##name = (1<<DW_DumpSubset_##name),
-  DW_DumpSubset_XList
+    DW_DumpSubset_XList
 #undef X
-  DW_DumpSubsetFlag_All = 0xffffffffu,
+    DW_DumpSubsetFlag_All = 0xffffffffu,
 };
 
 read_only global String8 dw_name_lowercase_from_dump_subset_table[] =
 {
 #define X(name, name_lower, title) str8_lit_comp(#name_lower),
-  DW_DumpSubset_XList
+    DW_DumpSubset_XList
 #undef X
 };
 
 read_only global String8 dw_name_title_from_dump_subset_table[] =
 {
 #define X(name, name_lower, title) str8_lit_comp(title),
-  DW_DumpSubset_XList
+    DW_DumpSubset_XList
 #undef X
 };
 

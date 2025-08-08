@@ -9,28 +9,28 @@
 
 enum LogMsgKind
 {
-  LogMsgKind_Info,
-  LogMsgKind_UserError,
-  LogMsgKind_COUNT
+    LogMsgKind_Info,
+    LogMsgKind_UserError,
+    LogMsgKind_COUNT
 }
 LogMsgKind;
 
 struct LogScope
 {
-  LogScope *next;
-  U64 pos;
-  String8List strings[LogMsgKind_COUNT];
+    LogScope *next;
+    U64 pos;
+    String8List strings[LogMsgKind_COUNT];
 };
 
 struct LogScopeResult
 {
-  String8 strings[LogMsgKind_COUNT];
+    String8 strings[LogMsgKind_COUNT];
 };
 
 struct Log
 {
-  Arena *arena;
-  LogScope *top_scope;
+    Arena *arena;
+    LogScope *top_scope;
 };
 
 ////////////////////////////////

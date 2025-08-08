@@ -9,25 +9,25 @@
 
 enum UI_IconKind
 {
-  UI_IconKind_Null,
-  UI_IconKind_RightArrow,
-  UI_IconKind_DownArrow,
-  UI_IconKind_LeftArrow,
-  UI_IconKind_UpArrow,
-  UI_IconKind_RightCaret,
-  UI_IconKind_DownCaret,
-  UI_IconKind_LeftCaret,
-  UI_IconKind_UpCaret,
-  UI_IconKind_CheckHollow,
-  UI_IconKind_CheckFilled,
-  UI_IconKind_COUNT
+    UI_IconKind_Null,
+    UI_IconKind_RightArrow,
+    UI_IconKind_DownArrow,
+    UI_IconKind_LeftArrow,
+    UI_IconKind_UpArrow,
+    UI_IconKind_RightCaret,
+    UI_IconKind_DownCaret,
+    UI_IconKind_LeftCaret,
+    UI_IconKind_UpCaret,
+    UI_IconKind_CheckHollow,
+    UI_IconKind_CheckFilled,
+    UI_IconKind_COUNT
 }
 UI_IconKind;
 
 struct UI_IconInfo
 {
-  FNT_Tag icon_font;
-  String8 icon_kind_text_map[UI_IconKind_COUNT];
+    FNT_Tag icon_font;
+    String8 icon_kind_text_map[UI_IconKind_COUNT];
 };
 
 ////////////////////////////////
@@ -35,10 +35,10 @@ struct UI_IconInfo
 
 enum UI_MouseButtonKind
 {
-  UI_MouseButtonKind_Left,
-  UI_MouseButtonKind_Middle,
-  UI_MouseButtonKind_Right,
-  UI_MouseButtonKind_COUNT
+    UI_MouseButtonKind_Left,
+    UI_MouseButtonKind_Middle,
+    UI_MouseButtonKind_Right,
+    UI_MouseButtonKind_COUNT
 }
 UI_MouseButtonKind;
 
@@ -47,19 +47,19 @@ UI_MouseButtonKind;
 
 enum UI_PermissionFlags : U32
 {
-  UI_PermissionFlag_ClicksLeft        = (1<<0),
-  UI_PermissionFlag_ClicksMiddle      = (1<<1),
-  UI_PermissionFlag_ClicksRight       = (1<<2),
-  UI_PermissionFlag_ScrollX           = (1<<3),
-  UI_PermissionFlag_ScrollY           = (1<<4),
-  UI_PermissionFlag_KeyboardPrimary   = (1<<5),
-  UI_PermissionFlag_KeyboardSecondary = (1<<6),
-  UI_PermissionFlag_Text              = (1<<7),
-  
-  //- rjf bundles
-  UI_PermissionFlag_Keyboard = (UI_PermissionFlag_KeyboardPrimary|UI_PermissionFlag_KeyboardSecondary),
-  UI_PermissionFlag_Clicks = (UI_PermissionFlag_ClicksLeft|UI_PermissionFlag_ClicksMiddle|UI_PermissionFlag_ClicksRight),
-  UI_PermissionFlag_All = 0xffffffff,
+    UI_PermissionFlag_ClicksLeft        = (1<<0),
+    UI_PermissionFlag_ClicksMiddle      = (1<<1),
+    UI_PermissionFlag_ClicksRight       = (1<<2),
+    UI_PermissionFlag_ScrollX           = (1<<3),
+    UI_PermissionFlag_ScrollY           = (1<<4),
+    UI_PermissionFlag_KeyboardPrimary   = (1<<5),
+    UI_PermissionFlag_KeyboardSecondary = (1<<6),
+    UI_PermissionFlag_Text              = (1<<7),
+    
+    //- rjf bundles
+    UI_PermissionFlag_Keyboard = (UI_PermissionFlag_KeyboardPrimary|UI_PermissionFlag_KeyboardSecondary),
+    UI_PermissionFlag_Clicks = (UI_PermissionFlag_ClicksLeft|UI_PermissionFlag_ClicksMiddle|UI_PermissionFlag_ClicksRight),
+    UI_PermissionFlag_All = 0xffffffff,
 };
 
 ////////////////////////////////
@@ -67,11 +67,11 @@ enum UI_PermissionFlags : U32
 
 enum UI_FocusKind
 {
-  UI_FocusKind_Null,
-  UI_FocusKind_Off,
-  UI_FocusKind_On,
-  UI_FocusKind_Root,
-  UI_FocusKind_COUNT
+    UI_FocusKind_Null,
+    UI_FocusKind_Off,
+    UI_FocusKind_On,
+    UI_FocusKind_Root,
+    UI_FocusKind_COUNT
 }
 UI_FocusKind;
 
@@ -82,83 +82,83 @@ UI_FocusKind;
 
 enum UI_EventKind
 {
-  UI_EventKind_Null,
-  UI_EventKind_Press,
-  UI_EventKind_Release,
-  UI_EventKind_Text,
-  UI_EventKind_Navigate,
-  UI_EventKind_Edit,
-  UI_EventKind_MouseMove,
-  UI_EventKind_Scroll,
-  UI_EventKind_FileDrop,
-  UI_EventKind_COUNT
+    UI_EventKind_Null,
+    UI_EventKind_Press,
+    UI_EventKind_Release,
+    UI_EventKind_Text,
+    UI_EventKind_Navigate,
+    UI_EventKind_Edit,
+    UI_EventKind_MouseMove,
+    UI_EventKind_Scroll,
+    UI_EventKind_FileDrop,
+    UI_EventKind_COUNT
 }
 UI_EventKind;
 
 enum UI_EventActionSlot
 {
-  UI_EventActionSlot_Null,
-  UI_EventActionSlot_Accept,
-  UI_EventActionSlot_Cancel,
-  UI_EventActionSlot_Edit,
-  UI_EventActionSlot_COUNT
+    UI_EventActionSlot_Null,
+    UI_EventActionSlot_Accept,
+    UI_EventActionSlot_Cancel,
+    UI_EventActionSlot_Edit,
+    UI_EventActionSlot_COUNT
 }
 UI_EventActionSlot;
 
 enum UI_EventFlags : U32
 {
-  UI_EventFlag_KeepMark            = (1<<0),
-  UI_EventFlag_Delete              = (1<<1),
-  UI_EventFlag_Copy                = (1<<2),
-  UI_EventFlag_Paste               = (1<<3),
-  UI_EventFlag_ZeroDeltaOnSelect   = (1<<4),
-  UI_EventFlag_PickSelectSide      = (1<<5),
-  UI_EventFlag_CapAtLine           = (1<<6),
-  UI_EventFlag_ExplicitDirectional = (1<<7),
-  UI_EventFlag_Reorder             = (1<<8),
-  UI_EventFlag_Secondary           = (1<<9),
+    UI_EventFlag_KeepMark            = (1<<0),
+    UI_EventFlag_Delete              = (1<<1),
+    UI_EventFlag_Copy                = (1<<2),
+    UI_EventFlag_Paste               = (1<<3),
+    UI_EventFlag_ZeroDeltaOnSelect   = (1<<4),
+    UI_EventFlag_PickSelectSide      = (1<<5),
+    UI_EventFlag_CapAtLine           = (1<<6),
+    UI_EventFlag_ExplicitDirectional = (1<<7),
+    UI_EventFlag_Reorder             = (1<<8),
+    UI_EventFlag_Secondary           = (1<<9),
 };
 
 enum UI_EventDeltaUnit
 {
-  UI_EventDeltaUnit_Null,
-  UI_EventDeltaUnit_Char,
-  UI_EventDeltaUnit_Word,
-  UI_EventDeltaUnit_Line,
-  UI_EventDeltaUnit_Page,
-  UI_EventDeltaUnit_Whole,
-  UI_EventDeltaUnit_COUNT
+    UI_EventDeltaUnit_Null,
+    UI_EventDeltaUnit_Char,
+    UI_EventDeltaUnit_Word,
+    UI_EventDeltaUnit_Line,
+    UI_EventDeltaUnit_Page,
+    UI_EventDeltaUnit_Whole,
+    UI_EventDeltaUnit_COUNT
 }
 UI_EventDeltaUnit;
 
 struct UI_Event
 {
-  UI_EventKind kind;
-  UI_EventActionSlot slot;
-  UI_EventFlags flags;
-  UI_EventDeltaUnit delta_unit;
-  OS_Key key;
-  OS_Modifiers modifiers;
-  String8 string;
-  String8List paths;
-  Vec2F32 pos;
-  Vec2F32 delta_2f32;
-  Vec2S32 delta_2s32;
-  U64 timestamp_us;
+    UI_EventKind kind;
+    UI_EventActionSlot slot;
+    UI_EventFlags flags;
+    UI_EventDeltaUnit delta_unit;
+    OS_Key key;
+    OS_Modifiers modifiers;
+    String8 string;
+    String8List paths;
+    Vec2F32 pos;
+    Vec2F32 delta_2f32;
+    Vec2S32 delta_2s32;
+    U64 timestamp_us;
 };
 
 struct UI_EventNode
 {
-  UI_EventNode *next;
-  UI_EventNode *prev;
-  UI_Event v;
+    UI_EventNode *next;
+    UI_EventNode *prev;
+    UI_Event v;
 };
 
 struct UI_EventList
 {
-  UI_EventNode *first;
-  UI_EventNode *last;
-  U64 count;
+    UI_EventNode *first;
+    UI_EventNode *last;
+    U64 count;
 };
 
 ////////////////////////////////
@@ -166,18 +166,18 @@ struct UI_EventList
 
 enum UI_TxtOpFlags : U32
 {
-  UI_TxtOpFlag_Invalid = (1<<0),
-  UI_TxtOpFlag_Copy    = (1<<1),
+    UI_TxtOpFlag_Invalid = (1<<0),
+    UI_TxtOpFlag_Copy    = (1<<1),
 };
 
 struct UI_TxtOp
 {
-  UI_TxtOpFlags flags;
-  String8 replace;
-  String8 copy;
-  TxtRng range;
-  TxtPt cursor;
-  TxtPt mark;
+    UI_TxtOpFlags flags;
+    String8 replace;
+    String8 copy;
+    TxtRng range;
+    TxtPt cursor;
+    TxtPt mark;
 };
 
 ////////////////////////////////
@@ -185,7 +185,7 @@ struct UI_TxtOp
 
 struct UI_Key
 {
-  U64 u64[1];
+    U64 u64[1];
 };
 
 ////////////////////////////////
@@ -193,19 +193,19 @@ struct UI_Key
 
 enum UI_SizeKind
 {
-  UI_SizeKind_Null,
-  UI_SizeKind_Pixels,      // size is computed via a preferred pixel value
-  UI_SizeKind_TextContent, // size is computed via the dimensions of box's rendered string
-  UI_SizeKind_ParentPct,   // size is computed via a well-determined parent or grandparent size
-  UI_SizeKind_ChildrenSum, // size is computed via summing well-determined sizes of children
+    UI_SizeKind_Null,
+    UI_SizeKind_Pixels,      // size is computed via a preferred pixel value
+    UI_SizeKind_TextContent, // size is computed via the dimensions of box's rendered string
+    UI_SizeKind_ParentPct,   // size is computed via a well-determined parent or grandparent size
+    UI_SizeKind_ChildrenSum, // size is computed via summing well-determined sizes of children
 }
 UI_SizeKind;
 
 struct UI_Size
 {
-  UI_SizeKind kind;
-  F32 value;
-  F32 strictness;
+    UI_SizeKind kind;
+    F32 value;
+    F32 strictness;
 };
 
 ////////////////////////////////
@@ -213,14 +213,14 @@ struct UI_Size
 
 struct UI_ThemePattern
 {
-  String8Array tags;
-  Vec4F32 linear;
+    String8Array tags;
+    Vec4F32 linear;
 };
 
 struct UI_Theme
 {
-  UI_ThemePattern *patterns;
-  U64 patterns_count;
+    UI_ThemePattern *patterns;
+    U64 patterns_count;
 };
 
 ////////////////////////////////
@@ -228,12 +228,12 @@ struct UI_Theme
 
 struct UI_AnimationInfo
 {
-  F32 hot_animation_rate;
-  F32 active_animation_rate;
-  F32 focus_animation_rate;
-  F32 tooltip_animation_rate;
-  F32 menu_animation_rate;
-  F32 scroll_animation_rate;
+    F32 hot_animation_rate;
+    F32 active_animation_rate;
+    F32 focus_animation_rate;
+    F32 tooltip_animation_rate;
+    F32 menu_animation_rate;
+    F32 scroll_animation_rate;
 };
 
 ////////////////////////////////
@@ -241,18 +241,18 @@ struct UI_AnimationInfo
 
 struct UI_ScrollPt
 {
-  S64 idx;
-  F32 off;
+    S64 idx;
+    F32 off;
 };
 
 union UI_ScrollPt2
 {
-  UI_ScrollPt v[2];
-  struct
-  {
-    UI_ScrollPt x;
-    UI_ScrollPt y;
-  };
+    UI_ScrollPt v[2];
+    struct
+    {
+        UI_ScrollPt x;
+        UI_ScrollPt y;
+    };
 };
 
 ////////////////////////////////
@@ -260,10 +260,10 @@ union UI_ScrollPt2
 
 enum UI_TextAlign
 {
-  UI_TextAlign_Left,
-  UI_TextAlign_Center,
-  UI_TextAlign_Right,
-  UI_TextAlign_COUNT
+    UI_TextAlign_Left,
+    UI_TextAlign_Center,
+    UI_TextAlign_Right,
+    UI_TextAlign_COUNT
 }
 UI_TextAlign;
 
@@ -348,162 +348,162 @@ typedef U64 UI_BoxFlags;
 
 struct UI_Box
 {
-  //- rjf: persistent links
-  UI_Box *hash_next;
-  UI_Box *hash_prev;
-  
-  //- rjf: per-build links/data
-  UI_Box *first;
-  UI_Box *last;
-  UI_Box *next;
-  UI_Box *prev;
-  UI_Box *parent;
-  U64 child_count;
-  
-  //- rjf: per-build equipment
-  UI_Key key;
-  UI_BoxFlags flags;
-  UI_Key tags_key;
-  String8 string;
-  UI_TextAlign text_align;
-  Vec2F32 fixed_position;
-  Vec2F32 fixed_size;
-  Vec2F32 min_size;
-  UI_Size pref_size[Axis2_COUNT];
-  Axis2 child_layout_axis;
-  OS_Cursor hover_cursor;
-  U32 fastpath_codepoint;
-  UI_Key group_key;
-  DR_Bucket *draw_bucket;
-  UI_BoxCustomDrawFunctionType *custom_draw;
-  void *custom_draw_user_data;
-  Vec4F32 background_color;
-  Vec4F32 text_color;
-  Vec4F32 border_color;
-  FNT_Tag font;
-  F32 font_size;
-  F32 tab_size;
-  FNT_RasterFlags text_raster_flags;
-  F32 corner_radii[Corner_COUNT];
-  F32 blur_size;
-  F32 transparency;
-  F32 squish;
-  F32 text_padding;
-  
-  //- rjf: per-build artifacts
-  DR_FStrList display_fstrs;
-  DR_FRunList display_fruns;
-  Rng2F32 rect;
-  Vec2F32 fixed_position_animated;
-  Vec2F32 position_delta;
-  FuzzyMatchRangeList fuzzy_match_ranges;
-  
-  //- rjf: persistent data
-  U64 first_touched_build_index;
-  U64 last_touched_build_index;
-  U64 first_disabled_build_index;
-  F32 hot_t;
-  F32 active_t;
-  F32 disabled_t;
-  F32 focus_hot_t;
-  F32 focus_active_t;
-  F32 focus_active_disabled_t;
-  Vec2F32 view_off;
-  Vec2F32 view_off_target;
-  Vec2F32 view_bounds;
-  UI_Key default_nav_focus_hot_key;
-  UI_Key default_nav_focus_active_key;
-  UI_Key default_nav_focus_next_hot_key;
-  UI_Key default_nav_focus_next_active_key;
+    //- rjf: persistent links
+    UI_Box *hash_next;
+    UI_Box *hash_prev;
+    
+    //- rjf: per-build links/data
+    UI_Box *first;
+    UI_Box *last;
+    UI_Box *next;
+    UI_Box *prev;
+    UI_Box *parent;
+    U64 child_count;
+    
+    //- rjf: per-build equipment
+    UI_Key key;
+    UI_BoxFlags flags;
+    UI_Key tags_key;
+    String8 string;
+    UI_TextAlign text_align;
+    Vec2F32 fixed_position;
+    Vec2F32 fixed_size;
+    Vec2F32 min_size;
+    UI_Size pref_size[Axis2_COUNT];
+    Axis2 child_layout_axis;
+    OS_Cursor hover_cursor;
+    U32 fastpath_codepoint;
+    UI_Key group_key;
+    DR_Bucket *draw_bucket;
+    UI_BoxCustomDrawFunctionType *custom_draw;
+    void *custom_draw_user_data;
+    Vec4F32 background_color;
+    Vec4F32 text_color;
+    Vec4F32 border_color;
+    FNT_Tag font;
+    F32 font_size;
+    F32 tab_size;
+    FNT_RasterFlags text_raster_flags;
+    F32 corner_radii[Corner_COUNT];
+    F32 blur_size;
+    F32 transparency;
+    F32 squish;
+    F32 text_padding;
+    
+    //- rjf: per-build artifacts
+    DR_FStrList display_fstrs;
+    DR_FRunList display_fruns;
+    Rng2F32 rect;
+    Vec2F32 fixed_position_animated;
+    Vec2F32 position_delta;
+    FuzzyMatchRangeList fuzzy_match_ranges;
+    
+    //- rjf: persistent data
+    U64 first_touched_build_index;
+    U64 last_touched_build_index;
+    U64 first_disabled_build_index;
+    F32 hot_t;
+    F32 active_t;
+    F32 disabled_t;
+    F32 focus_hot_t;
+    F32 focus_active_t;
+    F32 focus_active_disabled_t;
+    Vec2F32 view_off;
+    Vec2F32 view_off_target;
+    Vec2F32 view_bounds;
+    UI_Key default_nav_focus_hot_key;
+    UI_Key default_nav_focus_active_key;
+    UI_Key default_nav_focus_next_hot_key;
+    UI_Key default_nav_focus_next_active_key;
 };
 
 struct UI_BoxRec
 {
-  UI_Box *next;
-  S32 push_count;
-  S32 pop_count;
+    UI_Box *next;
+    S32 push_count;
+    S32 pop_count;
 };
 
 struct UI_BoxNode
 {
-  UI_BoxNode *next;
-  UI_Box *box;
+    UI_BoxNode *next;
+    UI_Box *box;
 };
 
 struct UI_BoxList
 {
-  UI_BoxNode *first;
-  UI_BoxNode *last;
-  U64 count;
+    UI_BoxNode *first;
+    UI_BoxNode *last;
+    U64 count;
 };
 
 enum UI_SignalFlags : U32
 {
-  // rjf: mouse press -> box was pressed while hovering
-  UI_SignalFlag_LeftPressed         = (1<<0),
-  UI_SignalFlag_MiddlePressed       = (1<<1),
-  UI_SignalFlag_RightPressed        = (1<<2),
-  
-  // rjf: dragging -> box was previously pressed, user is still holding button
-  UI_SignalFlag_LeftDragging        = (1<<3),
-  UI_SignalFlag_MiddleDragging      = (1<<4),
-  UI_SignalFlag_RightDragging       = (1<<5),
-  
-  // rjf: double-dragging -> box was previously double-clicked, user is still holding button
-  UI_SignalFlag_LeftDoubleDragging  = (1<<6),
-  UI_SignalFlag_MiddleDoubleDragging= (1<<7),
-  UI_SignalFlag_RightDoubleDragging = (1<<8),
-  
-  // rjf: triple-dragging -> box was previously triple-clicked, user is still holding button
-  UI_SignalFlag_LeftTripleDragging  = (1<<9),
-  UI_SignalFlag_MiddleTripleDragging= (1<<10),
-  UI_SignalFlag_RightTripleDragging = (1<<11),
-  
-  // rjf: released -> box was previously pressed & user released, in or out of bounds
-  UI_SignalFlag_LeftReleased        = (1<<12),
-  UI_SignalFlag_MiddleReleased      = (1<<13),
-  UI_SignalFlag_RightReleased       = (1<<14),
-  
-  // rjf: clicked -> box was previously pressed & user released, in bounds
-  UI_SignalFlag_LeftClicked         = (1<<15),
-  UI_SignalFlag_MiddleClicked       = (1<<16),
-  UI_SignalFlag_RightClicked        = (1<<17),
-  
-  // rjf: double clicked -> box was previously clicked, pressed again
-  UI_SignalFlag_LeftDoubleClicked   = (1<<18),
-  UI_SignalFlag_MiddleDoubleClicked = (1<<19),
-  UI_SignalFlag_RightDoubleClicked  = (1<<20),
-  
-  // rjf: triple clicked -> box was previously clicked twice, pressed again
-  UI_SignalFlag_LeftTripleClicked   = (1<<21),
-  UI_SignalFlag_MiddleTripleClicked = (1<<22),
-  UI_SignalFlag_RightTripleClicked  = (1<<23),
-  
-  // rjf: keyboard pressed -> box had focus, user activated via their keyboard
-  UI_SignalFlag_KeyboardPressed     = (1<<24),
-  
-  // rjf: passive mouse info
-  UI_SignalFlag_Hovering            = (1<<25), // hovering specifically this box
-  UI_SignalFlag_MouseOver           = (1<<26), // mouse is over, but may be occluded
-  
-  // rjf: committing state changes via user interaction
-  UI_SignalFlag_Commit              = (1<<27),
-  
-  // rjf: high-level combos
-  UI_SignalFlag_Pressed = UI_SignalFlag_LeftPressed|UI_SignalFlag_KeyboardPressed,
-  UI_SignalFlag_Released = UI_SignalFlag_LeftReleased,
-  UI_SignalFlag_Clicked = UI_SignalFlag_LeftClicked|UI_SignalFlag_KeyboardPressed,
-  UI_SignalFlag_DoubleClicked = UI_SignalFlag_LeftDoubleClicked,
-  UI_SignalFlag_TripleClicked = UI_SignalFlag_LeftTripleClicked,
-  UI_SignalFlag_Dragging = UI_SignalFlag_LeftDragging,
+    // rjf: mouse press -> box was pressed while hovering
+    UI_SignalFlag_LeftPressed         = (1<<0),
+    UI_SignalFlag_MiddlePressed       = (1<<1),
+    UI_SignalFlag_RightPressed        = (1<<2),
+    
+    // rjf: dragging -> box was previously pressed, user is still holding button
+    UI_SignalFlag_LeftDragging        = (1<<3),
+    UI_SignalFlag_MiddleDragging      = (1<<4),
+    UI_SignalFlag_RightDragging       = (1<<5),
+    
+    // rjf: double-dragging -> box was previously double-clicked, user is still holding button
+    UI_SignalFlag_LeftDoubleDragging  = (1<<6),
+    UI_SignalFlag_MiddleDoubleDragging= (1<<7),
+    UI_SignalFlag_RightDoubleDragging = (1<<8),
+    
+    // rjf: triple-dragging -> box was previously triple-clicked, user is still holding button
+    UI_SignalFlag_LeftTripleDragging  = (1<<9),
+    UI_SignalFlag_MiddleTripleDragging= (1<<10),
+    UI_SignalFlag_RightTripleDragging = (1<<11),
+    
+    // rjf: released -> box was previously pressed & user released, in or out of bounds
+    UI_SignalFlag_LeftReleased        = (1<<12),
+    UI_SignalFlag_MiddleReleased      = (1<<13),
+    UI_SignalFlag_RightReleased       = (1<<14),
+    
+    // rjf: clicked -> box was previously pressed & user released, in bounds
+    UI_SignalFlag_LeftClicked         = (1<<15),
+    UI_SignalFlag_MiddleClicked       = (1<<16),
+    UI_SignalFlag_RightClicked        = (1<<17),
+    
+    // rjf: double clicked -> box was previously clicked, pressed again
+    UI_SignalFlag_LeftDoubleClicked   = (1<<18),
+    UI_SignalFlag_MiddleDoubleClicked = (1<<19),
+    UI_SignalFlag_RightDoubleClicked  = (1<<20),
+    
+    // rjf: triple clicked -> box was previously clicked twice, pressed again
+    UI_SignalFlag_LeftTripleClicked   = (1<<21),
+    UI_SignalFlag_MiddleTripleClicked = (1<<22),
+    UI_SignalFlag_RightTripleClicked  = (1<<23),
+    
+    // rjf: keyboard pressed -> box had focus, user activated via their keyboard
+    UI_SignalFlag_KeyboardPressed     = (1<<24),
+    
+    // rjf: passive mouse info
+    UI_SignalFlag_Hovering            = (1<<25), // hovering specifically this box
+    UI_SignalFlag_MouseOver           = (1<<26), // mouse is over, but may be occluded
+    
+    // rjf: committing state changes via user interaction
+    UI_SignalFlag_Commit              = (1<<27),
+    
+    // rjf: high-level combos
+    UI_SignalFlag_Pressed = UI_SignalFlag_LeftPressed|UI_SignalFlag_KeyboardPressed,
+    UI_SignalFlag_Released = UI_SignalFlag_LeftReleased,
+    UI_SignalFlag_Clicked = UI_SignalFlag_LeftClicked|UI_SignalFlag_KeyboardPressed,
+    UI_SignalFlag_DoubleClicked = UI_SignalFlag_LeftDoubleClicked,
+    UI_SignalFlag_TripleClicked = UI_SignalFlag_LeftTripleClicked,
+    UI_SignalFlag_Dragging = UI_SignalFlag_LeftDragging,
 };
 
 struct UI_Signal
 {
-  UI_Box *box;
-  OS_Modifiers event_flags;
-  Vec2S16 scroll;
-  UI_SignalFlags f;
+    UI_Box *box;
+    OS_Modifiers event_flags;
+    Vec2S16 scroll;
+    UI_SignalFlags f;
 };
 
 #define ui_pressed(s)        !!((s).f&UI_SignalFlag_Pressed)
@@ -520,8 +520,8 @@ struct UI_Signal
 
 struct UI_Nav
 {
-  B32 moved;
-  Vec2S64 new_p;
+    B32 moved;
+    Vec2S64 new_p;
 };
 
 ////////////////////////////////
@@ -529,30 +529,30 @@ struct UI_Nav
 
 struct UI_AnimParams
 {
-  F32 initial;
-  F32 target;
-  F32 rate;
-  F32 epsilon;
-  B32 reset;
+    F32 initial;
+    F32 target;
+    F32 rate;
+    F32 epsilon;
+    B32 reset;
 };
 
 struct UI_AnimNode
 {
-  UI_AnimNode *slot_next;
-  UI_AnimNode *slot_prev;
-  UI_AnimNode *lru_next;
-  UI_AnimNode *lru_prev;
-  U64 first_touched_build_index;
-  U64 last_touched_build_index;
-  UI_Key key;
-  UI_AnimParams params;
-  F32 current;
+    UI_AnimNode *slot_next;
+    UI_AnimNode *slot_prev;
+    UI_AnimNode *lru_next;
+    UI_AnimNode *lru_prev;
+    U64 first_touched_build_index;
+    U64 last_touched_build_index;
+    UI_Key key;
+    UI_AnimParams params;
+    F32 current;
 };
 
 struct UI_AnimSlot
 {
-  UI_AnimNode *first;
-  UI_AnimNode *last;
+    UI_AnimNode *first;
+    UI_AnimNode *last;
 };
 
 ////////////////////////////////
@@ -567,153 +567,153 @@ struct UI_AnimSlot
 
 struct UI_TagsCacheNode
 {
-  UI_TagsCacheNode *next;
-  UI_Key key;
-  String8Array tags;
+    UI_TagsCacheNode *next;
+    UI_Key key;
+    String8Array tags;
 };
 
 struct UI_TagsCacheSlot
 {
-  UI_TagsCacheNode *first;
-  UI_TagsCacheNode *last;
+    UI_TagsCacheNode *first;
+    UI_TagsCacheNode *last;
 };
 
 struct UI_TagsKeyStackNode
 {
-  UI_TagsKeyStackNode *next;
-  UI_Key key;
+    UI_TagsKeyStackNode *next;
+    UI_Key key;
 };
 
 //- rjf: cache for mapping 64-bit key -> theme pattern
 
 struct UI_ThemePatternCacheNode
 {
-  UI_ThemePatternCacheNode *slot_next;
-  UI_ThemePatternCacheNode *slot_prev;
-  UI_ThemePatternCacheNode *lru_next;
-  UI_ThemePatternCacheNode *lru_prev;
-  U64 last_build_index_accessed;
-  UI_Key key;
-  Vec4F32 target_rgba;
-  Vec4F32 current_rgba;
+    UI_ThemePatternCacheNode *slot_next;
+    UI_ThemePatternCacheNode *slot_prev;
+    UI_ThemePatternCacheNode *lru_next;
+    UI_ThemePatternCacheNode *lru_prev;
+    U64 last_build_index_accessed;
+    UI_Key key;
+    Vec4F32 target_rgba;
+    Vec4F32 current_rgba;
 };
 
 struct UI_ThemePatternCacheSlot
 {
-  UI_ThemePatternCacheNode *first;
-  UI_ThemePatternCacheNode *last;
+    UI_ThemePatternCacheNode *first;
+    UI_ThemePatternCacheNode *last;
 };
 
 //- rjf: cache for mapping 64-bit key -> box
 
 struct UI_BoxHashSlot
 {
-  UI_Box *hash_first;
-  UI_Box *hash_last;
+    UI_Box *hash_first;
+    UI_Box *hash_last;
 };
 
 //- rjf: main state bundle
 
 struct UI_State
 {
-  //- rjf: main arena
-  Arena *arena;
-  
-  //- rjf: fixed keys
-  UI_Key external_key;
-  
-  //- rjf: build arenas
-  Arena *build_arenas[2];
-  U64 build_index;
-  
-  //- rjf: box cache
-  UI_Box *first_free_box;
-  U64 box_table_size;
-  UI_BoxHashSlot *box_table;
-  
-  //- rjf: anim cache
-  UI_AnimNode *free_anim_node;
-  UI_AnimNode *lru_anim_node;
-  UI_AnimNode *mru_anim_node;
-  U64 anim_slots_count;
-  UI_AnimSlot *anim_slots;
-  
-  //- rjf: build state machine state
-  B32 is_in_open_ctx_menu;
-  String8 autocomplete_string;
-  B32 tooltip_can_overflow_window;
-  UI_Key tooltip_anchor_key;
-  String8Array current_gen_tags;
-  U64 current_gen_tags_gen;
-  UI_TagsKeyStackNode *tags_key_stack_top;
-  UI_TagsKeyStackNode *tags_key_stack_free;
-  U64 tags_cache_slots_count;
-  UI_TagsCacheSlot *tags_cache_slots;
-  
-  //- rjf: theme pattern cache
-  U64 theme_pattern_cache_slots_count;
-  UI_ThemePatternCacheSlot *theme_pattern_cache_slots;
-  UI_ThemePatternCacheNode *theme_pattern_cache_node_free;
-  UI_ThemePatternCacheNode *lru_theme_pattern_cache_node;
-  UI_ThemePatternCacheNode *mru_theme_pattern_cache_node;
-  
-  //- rjf: build phase output
-  UI_Box *root;
-  UI_Box *tooltip_root;
-  UI_Box *ctx_menu_root;
-  UI_Key default_nav_root_key;
-  U64 build_box_count;
-  U64 last_build_box_count;
-  B32 ctx_menu_touched_this_frame;
-  B32 is_animating;
-  
-  //- rjf: build parameters
-  UI_IconInfo icon_info;
-  UI_Theme *theme;
-  UI_AnimationInfo animation_info;
-  OS_Handle window;
-  UI_EventList *events;
-  Vec2F32 mouse;
-  F32 animation_dt;
-  F32 default_animation_rate;
-  
-  //- rjf: user interaction state
-  UI_Key hot_box_key;
-  UI_Key active_box_key[UI_MouseButtonKind_COUNT];
-  UI_Key drop_hot_box_key;
-  UI_Key clipboard_copy_key;
-  U64 press_timestamp_history_us[UI_MouseButtonKind_COUNT][3];
-  UI_Key press_key_history[UI_MouseButtonKind_COUNT][3];
-  Vec2F32 press_pos_history[UI_MouseButtonKind_COUNT][3];
-  Vec2F32 drag_start_mouse;
-  Arena *drag_state_arena;
-  String8 drag_state_data;
-  Arena *string_hover_arena;
-  String8 string_hover_string;
-  F32 string_hover_size;
-  DR_FStrList string_hover_fstrs;
-  U64 string_hover_begin_us;
-  U64 string_hover_build_index;
-  U64 last_time_mousemoved_us;
-  
-  //- rjf: tooltip state
-  F32 tooltip_open_t;
-  B32 tooltip_open;
-  
-  //- rjf: context menu state
-  UI_Key ctx_menu_anchor_key;
-  UI_Key next_ctx_menu_anchor_key;
-  Vec2F32 ctx_menu_anchor_box_last_pos;
-  Vec2F32 ctx_menu_anchor_off;
-  B32 ctx_menu_open;
-  B32 next_ctx_menu_open;
-  F32 ctx_menu_open_t;
-  UI_Key ctx_menu_key;
-  B32 ctx_menu_changed;
-  
-  //- rjf: build phase stacks
-  UI_DeclStackNils;
-  UI_DeclStacks;
+    //- rjf: main arena
+    Arena *arena;
+    
+    //- rjf: fixed keys
+    UI_Key external_key;
+    
+    //- rjf: build arenas
+    Arena *build_arenas[2];
+    U64 build_index;
+    
+    //- rjf: box cache
+    UI_Box *first_free_box;
+    U64 box_table_size;
+    UI_BoxHashSlot *box_table;
+    
+    //- rjf: anim cache
+    UI_AnimNode *free_anim_node;
+    UI_AnimNode *lru_anim_node;
+    UI_AnimNode *mru_anim_node;
+    U64 anim_slots_count;
+    UI_AnimSlot *anim_slots;
+    
+    //- rjf: build state machine state
+    B32 is_in_open_ctx_menu;
+    String8 autocomplete_string;
+    B32 tooltip_can_overflow_window;
+    UI_Key tooltip_anchor_key;
+    String8Array current_gen_tags;
+    U64 current_gen_tags_gen;
+    UI_TagsKeyStackNode *tags_key_stack_top;
+    UI_TagsKeyStackNode *tags_key_stack_free;
+    U64 tags_cache_slots_count;
+    UI_TagsCacheSlot *tags_cache_slots;
+    
+    //- rjf: theme pattern cache
+    U64 theme_pattern_cache_slots_count;
+    UI_ThemePatternCacheSlot *theme_pattern_cache_slots;
+    UI_ThemePatternCacheNode *theme_pattern_cache_node_free;
+    UI_ThemePatternCacheNode *lru_theme_pattern_cache_node;
+    UI_ThemePatternCacheNode *mru_theme_pattern_cache_node;
+    
+    //- rjf: build phase output
+    UI_Box *root;
+    UI_Box *tooltip_root;
+    UI_Box *ctx_menu_root;
+    UI_Key default_nav_root_key;
+    U64 build_box_count;
+    U64 last_build_box_count;
+    B32 ctx_menu_touched_this_frame;
+    B32 is_animating;
+    
+    //- rjf: build parameters
+    UI_IconInfo icon_info;
+    UI_Theme *theme;
+    UI_AnimationInfo animation_info;
+    OS_Handle window;
+    UI_EventList *events;
+    Vec2F32 mouse;
+    F32 animation_dt;
+    F32 default_animation_rate;
+    
+    //- rjf: user interaction state
+    UI_Key hot_box_key;
+    UI_Key active_box_key[UI_MouseButtonKind_COUNT];
+    UI_Key drop_hot_box_key;
+    UI_Key clipboard_copy_key;
+    U64 press_timestamp_history_us[UI_MouseButtonKind_COUNT][3];
+    UI_Key press_key_history[UI_MouseButtonKind_COUNT][3];
+    Vec2F32 press_pos_history[UI_MouseButtonKind_COUNT][3];
+    Vec2F32 drag_start_mouse;
+    Arena *drag_state_arena;
+    String8 drag_state_data;
+    Arena *string_hover_arena;
+    String8 string_hover_string;
+    F32 string_hover_size;
+    DR_FStrList string_hover_fstrs;
+    U64 string_hover_begin_us;
+    U64 string_hover_build_index;
+    U64 last_time_mousemoved_us;
+    
+    //- rjf: tooltip state
+    F32 tooltip_open_t;
+    B32 tooltip_open;
+    
+    //- rjf: context menu state
+    UI_Key ctx_menu_anchor_key;
+    UI_Key next_ctx_menu_anchor_key;
+    Vec2F32 ctx_menu_anchor_box_last_pos;
+    Vec2F32 ctx_menu_anchor_off;
+    B32 ctx_menu_open;
+    B32 next_ctx_menu_open;
+    F32 ctx_menu_open_t;
+    UI_Key ctx_menu_key;
+    B32 ctx_menu_changed;
+    
+    //- rjf: build phase stacks
+    UI_DeclStackNils;
+    UI_DeclStacks;
 };
 
 ////////////////////////////////
@@ -746,13 +746,13 @@ struct UI_State
 
 read_only global UI_Box ui_nil_box =
 {
-  &ui_nil_box,
-  &ui_nil_box,
-  &ui_nil_box,
-  &ui_nil_box,
-  &ui_nil_box,
-  &ui_nil_box,
-  &ui_nil_box,
+    &ui_nil_box,
+    &ui_nil_box,
+    &ui_nil_box,
+    &ui_nil_box,
+    &ui_nil_box,
+    &ui_nil_box,
+    &ui_nil_box,
 };
 #define ui_box_rec_df_pre(box, root) ui_box_rec_df(box, root, OffsetOf(UI_Box, next), OffsetOf(UI_Box, first))
 #define ui_box_rec_df_post(box, root) ui_box_rec_df(box, root, OffsetOf(UI_Box, prev), OffsetOf(UI_Box, last))
@@ -820,8 +820,8 @@ read_only global UI_Box ui_nil_box =
 
 read_only global UI_AnimNode ui_nil_anim_node =
 {
-  &ui_nil_anim_node,
-  &ui_nil_anim_node,
+    &ui_nil_anim_node,
+    &ui_nil_anim_node,
 };
 
 #define ui_anim(key, target_val, ...) ui_anim_((key), &(UI_AnimParams){.target = (target_val), .rate = (ui_state->default_animation_rate), __VA_ARGS__})

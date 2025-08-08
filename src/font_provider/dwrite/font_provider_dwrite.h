@@ -46,52 +46,52 @@
 //- rjf: enums
 
 enum DWRITE_FACTORY_TYPE {
-  DWRITE_FACTORY_TYPE_SHARED   = 0,
-  DWRITE_FACTORY_TYPE_ISOLATED = 1,
+    DWRITE_FACTORY_TYPE_SHARED   = 0,
+    DWRITE_FACTORY_TYPE_ISOLATED = 1,
 } DWRITE_FACTORY_TYPE;
 
 enum DWRITE_PIXEL_GEOMETRY {
-  DWRITE_PIXEL_GEOMETRY_FLAT = 0,
-  DWRITE_PIXEL_GEOMETRY_RGB  = 1,
-  DWRITE_PIXEL_GEOMETRY_BGR  = 2,
+    DWRITE_PIXEL_GEOMETRY_FLAT = 0,
+    DWRITE_PIXEL_GEOMETRY_RGB  = 1,
+    DWRITE_PIXEL_GEOMETRY_BGR  = 2,
 } DWRITE_PIXEL_GEOMETRY;
 
 enum DWRITE_RENDERING_MODE {
-  DWRITE_RENDERING_MODE_DEFAULT                     = 0,
-  DWRITE_RENDERING_MODE_ALIASED                     = 1,
-  DWRITE_RENDERING_MODE_GDI_CLASSIC                 = 2,
-  DWRITE_RENDERING_MODE_GDI_NATURAL                 = 3,
-  DWRITE_RENDERING_MODE_NATURAL                     = 4,
-  DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC           = 5,
-  DWRITE_RENDERING_MODE_OUTLINE                     = 6,
-  DWRITE_RENDERING_MODE_CLEARTYPE_GDI_CLASSIC       = 2,
-  DWRITE_RENDERING_MODE_CLEARTYPE_GDI_NATURAL       = 3,
-  DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL           = 4,
-  DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL_SYMMETRIC = 5,
+    DWRITE_RENDERING_MODE_DEFAULT                     = 0,
+    DWRITE_RENDERING_MODE_ALIASED                     = 1,
+    DWRITE_RENDERING_MODE_GDI_CLASSIC                 = 2,
+    DWRITE_RENDERING_MODE_GDI_NATURAL                 = 3,
+    DWRITE_RENDERING_MODE_NATURAL                     = 4,
+    DWRITE_RENDERING_MODE_NATURAL_SYMMETRIC           = 5,
+    DWRITE_RENDERING_MODE_OUTLINE                     = 6,
+    DWRITE_RENDERING_MODE_CLEARTYPE_GDI_CLASSIC       = 2,
+    DWRITE_RENDERING_MODE_CLEARTYPE_GDI_NATURAL       = 3,
+    DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL           = 4,
+    DWRITE_RENDERING_MODE_CLEARTYPE_NATURAL_SYMMETRIC = 5,
 } DWRITE_RENDERING_MODE;
 
 enum DWRITE_FONT_SIMULATIONS {
-  DWRITE_FONT_SIMULATIONS_NONE    = 0,
-  DWRITE_FONT_SIMULATIONS_BOLD    = 1,
-  DWRITE_FONT_SIMULATIONS_OBLIQUE = 2,
+    DWRITE_FONT_SIMULATIONS_NONE    = 0,
+    DWRITE_FONT_SIMULATIONS_BOLD    = 1,
+    DWRITE_FONT_SIMULATIONS_OBLIQUE = 2,
 } DWRITE_FONT_SIMULATIONS;
 
 enum DWRITE_FONT_FACE_TYPE {
-  DWRITE_FONT_FACE_TYPE_CFF                 = 0,
-  DWRITE_FONT_FACE_TYPE_TRUETYPE            = 1,
-  DWRITE_FONT_FACE_TYPE_OPENTYPE_COLLECTION = 2,
-  DWRITE_FONT_FACE_TYPE_TYPE1               = 3,
-  DWRITE_FONT_FACE_TYPE_VECTOR              = 4,
-  DWRITE_FONT_FACE_TYPE_BITMAP              = 5,
-  DWRITE_FONT_FACE_TYPE_UNKNOWN             = 6,
-  DWRITE_FONT_FACE_TYPE_RAW_CFF             = 7,
-  DWRITE_FONT_FACE_TYPE_TRUETYPE_COLLECTION = 2,
+    DWRITE_FONT_FACE_TYPE_CFF                 = 0,
+    DWRITE_FONT_FACE_TYPE_TRUETYPE            = 1,
+    DWRITE_FONT_FACE_TYPE_OPENTYPE_COLLECTION = 2,
+    DWRITE_FONT_FACE_TYPE_TYPE1               = 3,
+    DWRITE_FONT_FACE_TYPE_VECTOR              = 4,
+    DWRITE_FONT_FACE_TYPE_BITMAP              = 5,
+    DWRITE_FONT_FACE_TYPE_UNKNOWN             = 6,
+    DWRITE_FONT_FACE_TYPE_RAW_CFF             = 7,
+    DWRITE_FONT_FACE_TYPE_TRUETYPE_COLLECTION = 2,
 } DWRITE_FONT_FACE_TYPE;
 
 enum DWRITE_GRID_FIT_MODE {
-  DWRITE_GRID_FIT_MODE_DEFAULT  = 0,
-  DWRITE_GRID_FIT_MODE_DISABLED = 1,
-  DWRITE_GRID_FIT_MODE_ENABLED  = 2,
+    DWRITE_GRID_FIT_MODE_DEFAULT  = 0,
+    DWRITE_GRID_FIT_MODE_DISABLED = 1,
+    DWRITE_GRID_FIT_MODE_ENABLED  = 2,
 } DWRITE_GRID_FIT_MODE;
 
 //- rjf: interfaces
@@ -115,51 +115,51 @@ typedef struct IDWriteBitmapRenderTarget1      { struct { void* tbl[]; }* v; } I
 //- rjf: structs
 
 typedef struct DWRITE_GLYPH_METRICS {
-  INT32  leftSideBearing;
-  UINT32 advanceWidth;
-  INT32  rightSideBearing;
-  INT32  topSideBearing;
-  UINT32 advanceHeight;
-  INT32  bottomSideBearing;
-  INT32  verticalOriginY;
+    INT32  leftSideBearing;
+    UINT32 advanceWidth;
+    INT32  rightSideBearing;
+    INT32  topSideBearing;
+    UINT32 advanceHeight;
+    INT32  bottomSideBearing;
+    INT32  verticalOriginY;
 } DWRITE_GLYPH_METRICS;
 
 typedef struct DWRITE_GLYPH_OFFSET {
-  FLOAT advanceOffset;
-  FLOAT ascenderOffset;
+    FLOAT advanceOffset;
+    FLOAT ascenderOffset;
 } DWRITE_GLYPH_OFFSET;
 
 typedef struct DWRITE_GLYPH_RUN {
-  IDWriteFontFace*     fontFace;
-  FLOAT                fontEmSize;
-  UINT32               glyphCount;
-  UINT16*              glyphIndices;
-  FLOAT*               glyphAdvances;
-  DWRITE_GLYPH_OFFSET* glyphOffsets;
-  BOOL                 isSideways;
-  UINT32               bidiLevel;
+    IDWriteFontFace*     fontFace;
+    FLOAT                fontEmSize;
+    UINT32               glyphCount;
+    UINT16*              glyphIndices;
+    FLOAT*               glyphAdvances;
+    DWRITE_GLYPH_OFFSET* glyphOffsets;
+    BOOL                 isSideways;
+    UINT32               bidiLevel;
 } DWRITE_GLYPH_RUN;
 
 typedef struct DWRITE_FONT_METRICS {
-  UINT16 designUnitsPerEm;
-  UINT16 ascent;
-  UINT16 descent;
-  INT16  lineGap;
-  UINT16 capHeight;
-  UINT16 xHeight;
-  INT16  underlinePosition;
-  UINT16 underlineThickness;
-  INT16  strikethroughPosition;
-  UINT16 strikethroughThickness;
+    UINT16 designUnitsPerEm;
+    UINT16 ascent;
+    UINT16 descent;
+    INT16  lineGap;
+    UINT16 capHeight;
+    UINT16 xHeight;
+    INT16  underlinePosition;
+    UINT16 underlineThickness;
+    INT16  strikethroughPosition;
+    UINT16 strikethroughThickness;
 } DWRITE_FONT_METRICS;
 
 typedef struct DWRITE_MATRIX {
-  FLOAT m11;
-  FLOAT m12;
-  FLOAT m21;
-  FLOAT m22;
-  FLOAT dx;
-  FLOAT dy;
+    FLOAT m11;
+    FLOAT m12;
+    FLOAT m21;
+    FLOAT m22;
+    FLOAT dx;
+    FLOAT dy;
 } DWRITE_MATRIX;
 
 //- rjf: GUIDs
@@ -203,15 +203,15 @@ static inline UINT32                            IDWriteBitmapRenderTarget_Releas
 
 struct FP_DWrite_FontFileLoaderVTable
 {
-  HRESULT (*QueryInterface)(void *obj, REFIID riid, void *ptr_to_object);
-  ULONG (*AddRef)(void *obj);
-  ULONG (*Release)(void *obj);
-  HRESULT (*CreateStreamFromKey)(FP_DWrite_FontFileLoader *loader, void const *font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream **stream_out);
+    HRESULT (*QueryInterface)(void *obj, REFIID riid, void *ptr_to_object);
+    ULONG (*AddRef)(void *obj);
+    ULONG (*Release)(void *obj);
+    HRESULT (*CreateStreamFromKey)(FP_DWrite_FontFileLoader *loader, void const *font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream **stream_out);
 };
 
 struct FP_DWrite_FontFileLoader
 {
-  FP_DWrite_FontFileLoaderVTable *lpVtbl;
+    FP_DWrite_FontFileLoaderVTable *lpVtbl;
 };
 
 //- rjf: font file stream interface types
@@ -219,52 +219,52 @@ struct FP_DWrite_FontFileLoader
 
 struct FP_DWrite_FontFileStreamVTable
 {
-  HRESULT (*QueryInterface)(void *obj, REFIID riid, void *ptr_to_object);
-  ULONG (*AddRef)(void *obj);
-  ULONG (*Release)(void *obj);
-  HRESULT (*ReadFileFragment)(FP_DWrite_FontFileStream *obj, void const **fragment_start, UINT64 file_offset, UINT64 fragment_size, void **fragment_context);
-  HRESULT (*ReleaseFileFragment)(FP_DWrite_FontFileStream *obj, void *fragment_context);
-  HRESULT (*GetFileSize)(FP_DWrite_FontFileStream *obj, UINT64 *size_out);
-  HRESULT (*GetLastWriteTime)(FP_DWrite_FontFileStream *obj, UINT64 *time_out);
+    HRESULT (*QueryInterface)(void *obj, REFIID riid, void *ptr_to_object);
+    ULONG (*AddRef)(void *obj);
+    ULONG (*Release)(void *obj);
+    HRESULT (*ReadFileFragment)(FP_DWrite_FontFileStream *obj, void const **fragment_start, UINT64 file_offset, UINT64 fragment_size, void **fragment_context);
+    HRESULT (*ReleaseFileFragment)(FP_DWrite_FontFileStream *obj, void *fragment_context);
+    HRESULT (*GetFileSize)(FP_DWrite_FontFileStream *obj, UINT64 *size_out);
+    HRESULT (*GetLastWriteTime)(FP_DWrite_FontFileStream *obj, UINT64 *time_out);
 };
 
 struct FP_DWrite_FontFileStream
 {
-  FP_DWrite_FontFileStreamVTable *lpVtbl;
-  String8 *data;
+    FP_DWrite_FontFileStreamVTable *lpVtbl;
+    String8 *data;
 };
 
 struct FP_DWrite_FontFileStreamNode
 {
-  FP_DWrite_FontFileStreamNode *next;
-  FP_DWrite_FontFileStreamNode *prev;
-  FP_DWrite_FontFileStream stream;
+    FP_DWrite_FontFileStreamNode *next;
+    FP_DWrite_FontFileStreamNode *prev;
+    FP_DWrite_FontFileStream stream;
 };
 
 //- rjf: state & underlying handle types
 
 struct FP_DWrite_State
 {
-  Arena *arena;
-  B32 dwrite2_is_supported;
-  IDWriteFactory *factory;
-  IDWriteRenderingParams *base_rendering_params;
-  IDWriteRenderingParams *rendering_params_sharp_hinted;
-  IDWriteRenderingParams *rendering_params_sharp_unhinted;
-  IDWriteRenderingParams *rendering_params_smooth_hinted;
-  IDWriteRenderingParams *rendering_params_smooth_unhinted;
-  IDWriteGdiInterop *gdi_interop;
-  Vec2S32 bitmap_render_target_dim;
-  IDWriteBitmapRenderTarget *bitmap_render_target;
-  FP_DWrite_FontFileStreamNode *first_stream_node;
-  FP_DWrite_FontFileStreamNode *last_stream_node;
-  FP_DWrite_FontFileStreamNode *free_stream_node;
+    Arena *arena;
+    B32 dwrite2_is_supported;
+    IDWriteFactory *factory;
+    IDWriteRenderingParams *base_rendering_params;
+    IDWriteRenderingParams *rendering_params_sharp_hinted;
+    IDWriteRenderingParams *rendering_params_sharp_unhinted;
+    IDWriteRenderingParams *rendering_params_smooth_hinted;
+    IDWriteRenderingParams *rendering_params_smooth_unhinted;
+    IDWriteGdiInterop *gdi_interop;
+    Vec2S32 bitmap_render_target_dim;
+    IDWriteBitmapRenderTarget *bitmap_render_target;
+    FP_DWrite_FontFileStreamNode *first_stream_node;
+    FP_DWrite_FontFileStreamNode *last_stream_node;
+    FP_DWrite_FontFileStreamNode *free_stream_node;
 };
 
 struct FP_DWrite_Font
 {
-  IDWriteFontFile *file;
-  IDWriteFontFace *face;
+    IDWriteFontFile *file;
+    IDWriteFontFace *face;
 };
 
 ////////////////////////////////

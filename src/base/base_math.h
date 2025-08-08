@@ -11,142 +11,142 @@
 
 union Vec2F32
 {
-  struct
-  {
-    F32 x;
-    F32 y;
-  };
-  F32 v[2];
+    struct
+    {
+        F32 x;
+        F32 y;
+    };
+    F32 v[2];
 };
 
 union Vec2S64
 {
-  struct
-  {
-    S64 x;
-    S64 y;
-  };
-  S64 v[2];
+    struct
+    {
+        S64 x;
+        S64 y;
+    };
+    S64 v[2];
 };
 
 union Vec2S32
 {
-  struct
-  {
-    S32 x;
-    S32 y;
-  };
-  S32 v[2];
+    struct
+    {
+        S32 x;
+        S32 y;
+    };
+    S32 v[2];
 };
 
 union Vec2S16
 {
-  struct
-  {
-    S16 x;
-    S16 y;
-  };
-  S16 v[2];
+    struct
+    {
+        S16 x;
+        S16 y;
+    };
+    S16 v[2];
 };
 
 //- rjf: 3-vectors
 
 union Vec3F32
 {
-  struct
-  {
-    F32 x;
-    F32 y;
-    F32 z;
-  };
-  struct
-  {
-    Vec2F32 xy;
-    F32 _z0;
-  };
-  struct
-  {
-    F32 _x0;
-    Vec2F32 yz;
-  };
-  F32 v[3];
+    struct
+    {
+        F32 x;
+        F32 y;
+        F32 z;
+    };
+    struct
+    {
+        Vec2F32 xy;
+        F32 _z0;
+    };
+    struct
+    {
+        F32 _x0;
+        Vec2F32 yz;
+    };
+    F32 v[3];
 };
 
 union Vec3S32
 {
-  struct
-  {
-    S32 x;
-    S32 y;
-    S32 z;
-  };
-  struct
-  {
-    Vec2S32 xy;
-    S32 _z0;
-  };
-  struct
-  {
-    S32 _x0;
-    Vec2S32 yz;
-  };
-  S32 v[3];
+    struct
+    {
+        S32 x;
+        S32 y;
+        S32 z;
+    };
+    struct
+    {
+        Vec2S32 xy;
+        S32 _z0;
+    };
+    struct
+    {
+        S32 _x0;
+        Vec2S32 yz;
+    };
+    S32 v[3];
 };
 
 //- rjf: 4-vectors
 
 union Vec4F32
 {
-  struct
-  {
-    F32 x;
-    F32 y;
-    F32 z;
-    F32 w;
-  };
-  struct
-  {
-    Vec2F32 xy;
-    Vec2F32 zw;
-  };
-  struct
-  {
-    Vec3F32 xyz;
-    F32 _z0;
-  };
-  struct
-  {
-    F32 _x0;
-    Vec3F32 yzw;
-  };
-  F32 v[4];
+    struct
+    {
+        F32 x;
+        F32 y;
+        F32 z;
+        F32 w;
+    };
+    struct
+    {
+        Vec2F32 xy;
+        Vec2F32 zw;
+    };
+    struct
+    {
+        Vec3F32 xyz;
+        F32 _z0;
+    };
+    struct
+    {
+        F32 _x0;
+        Vec3F32 yzw;
+    };
+    F32 v[4];
 };
 
 union Vec4S32
 {
-  struct
-  {
-    S32 x;
-    S32 y;
-    S32 z;
-    S32 w;
-  };
-  struct
-  {
-    Vec2S32 xy;
-    Vec2S32 zw;
-  };
-  struct
-  {
-    Vec3S32 xyz;
-    S32 _z0;
-  };
-  struct
-  {
-    S32 _x0;
-    Vec3S32 yzw;
-  };
-  S32 v[4];
+    struct
+    {
+        S32 x;
+        S32 y;
+        S32 z;
+        S32 w;
+    };
+    struct
+    {
+        Vec2S32 xy;
+        Vec2S32 zw;
+    };
+    struct
+    {
+        Vec3S32 xyz;
+        S32 _z0;
+    };
+    struct
+    {
+        S32 _x0;
+        Vec3S32 yzw;
+    };
+    S32 v[4];
 };
 
 ////////////////////////////////
@@ -154,12 +154,12 @@ union Vec4S32
 
 struct Mat3x3F32
 {
-  F32 v[3][3];
+    F32 v[3][3];
 };
 
 struct Mat4x4F32
 {
-  F32 v[4][4];
+    F32 v[4][4];
 };
 
 ////////////////////////////////
@@ -169,142 +169,142 @@ struct Mat4x4F32
 
 union Rng1U32
 {
-  struct
-  {
-    U32 min;
-    U32 max;
-  };
-  U32 v[2];
+    struct
+    {
+        U32 min;
+        U32 max;
+    };
+    U32 v[2];
 };
 
 union Rng1S32
 {
-  struct
-  {
-    S32 min;
-    S32 max;
-  };
-  S32 v[2];
+    struct
+    {
+        S32 min;
+        S32 max;
+    };
+    S32 v[2];
 };
 
 union Rng1U64
 {
-  struct
-  {
-    U64 min;
-    U64 max;
-  };
-  U64 v[2];
+    struct
+    {
+        U64 min;
+        U64 max;
+    };
+    U64 v[2];
 };
 
 union Rng1S64
 {
-  struct
-  {
-    S64 min;
-    S64 max;
-  };
-  S64 v[2];
+    struct
+    {
+        S64 min;
+        S64 max;
+    };
+    S64 v[2];
 };
 
 union Rng1F32
 {
-  struct
-  {
-    F32 min;
-    F32 max;
-  };
-  F32 v[2];
+    struct
+    {
+        F32 min;
+        F32 max;
+    };
+    F32 v[2];
 };
 
 //- rjf: 2-range (rectangles)
 
 union Rng2S16
 {
-  struct
-  {
-    Vec2S16 min;
-    Vec2S16 max;
-  };
-  struct
-  {
-    Vec2S16 p0;
-    Vec2S16 p1;
-  };
-  struct
-  {
-    S16 x0;
-    S16 y0;
-    S16 x1;
-    S16 y1;
-  };
-  Vec2S16 v[2];
+    struct
+    {
+        Vec2S16 min;
+        Vec2S16 max;
+    };
+    struct
+    {
+        Vec2S16 p0;
+        Vec2S16 p1;
+    };
+    struct
+    {
+        S16 x0;
+        S16 y0;
+        S16 x1;
+        S16 y1;
+    };
+    Vec2S16 v[2];
 };
 
 union Rng2S32
 {
-  struct
-  {
-    Vec2S32 min;
-    Vec2S32 max;
-  };
-  struct
-  {
-    Vec2S32 p0;
-    Vec2S32 p1;
-  };
-  struct
-  {
-    S32 x0;
-    S32 y0;
-    S32 x1;
-    S32 y1;
-  };
-  Vec2S32 v[2];
+    struct
+    {
+        Vec2S32 min;
+        Vec2S32 max;
+    };
+    struct
+    {
+        Vec2S32 p0;
+        Vec2S32 p1;
+    };
+    struct
+    {
+        S32 x0;
+        S32 y0;
+        S32 x1;
+        S32 y1;
+    };
+    Vec2S32 v[2];
 };
 
 union Rng2F32
 {
-  struct
-  {
-    Vec2F32 min;
-    Vec2F32 max;
-  };
-  struct
-  {
-    Vec2F32 p0;
-    Vec2F32 p1;
-  };
-  struct
-  {
-    F32 x0;
-    F32 y0;
-    F32 x1;
-    F32 y1;
-  };
-  Vec2F32 v[2];
+    struct
+    {
+        Vec2F32 min;
+        Vec2F32 max;
+    };
+    struct
+    {
+        Vec2F32 p0;
+        Vec2F32 p1;
+    };
+    struct
+    {
+        F32 x0;
+        F32 y0;
+        F32 x1;
+        F32 y1;
+    };
+    Vec2F32 v[2];
 };
 
 union Rng2S64
 {
-  struct
-  {
-    Vec2S64 min;
-    Vec2S64 max;
-  };
-  struct
-  {
-    Vec2S64 p0;
-    Vec2S64 p1;
-  };
-  struct
-  {
-    S64 x0;
-    S64 y0;
-    S64 x1;
-    S64 y1;
-  };
-  Vec2S64 v[2];
+    struct
+    {
+        Vec2S64 min;
+        Vec2S64 max;
+    };
+    struct
+    {
+        Vec2S64 p0;
+        Vec2S64 p1;
+    };
+    struct
+    {
+        S64 x0;
+        S64 y0;
+        S64 x1;
+        S64 y1;
+    };
+    Vec2S64 v[2];
 };
 
 ////////////////////////////////
@@ -312,40 +312,40 @@ union Rng2S64
 
 struct Rng1U64Node
 {
-  Rng1U64Node *next;
-  Rng1U64 v;
+    Rng1U64Node *next;
+    Rng1U64 v;
 };
 
 struct Rng1U64List
 {
-  U64 count;
-  Rng1U64Node *first;
-  Rng1U64Node *last;
+    U64 count;
+    Rng1U64Node *first;
+    Rng1U64Node *last;
 };
 
 struct Rng1U64Array
 {
-  Rng1U64 *v;
-  U64 count;
+    Rng1U64 *v;
+    U64 count;
 };
 
 struct Rng1S64Node
 {
-  Rng1S64Node *next;
-  Rng1S64 v;
+    Rng1S64Node *next;
+    Rng1S64 v;
 };
 
 struct Rng1S64List
 {
-  Rng1S64Node *first;
-  Rng1S64Node *last;
-  U64 count;
+    Rng1S64Node *first;
+    Rng1S64Node *last;
+    U64 count;
 };
 
 struct Rng1S64Array
 {
-  Rng1S64 *v;
-  U64 count;
+    Rng1S64 *v;
+    U64 count;
 };
 
 ////////////////////////////////

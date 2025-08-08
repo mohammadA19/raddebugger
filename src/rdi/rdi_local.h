@@ -36,7 +36,7 @@ X(Strings,             strings,                     "STRINGS")\
 enum RDI_DumpSubset
 {
 #define X(name, name_lower, title) RDI_DumpSubset_##name,
-  RDI_DumpSubset_XList
+    RDI_DumpSubset_XList
 #undef X
 }
 RDI_DumpSubset;
@@ -44,22 +44,22 @@ RDI_DumpSubset;
 enum RDI_DumpSubsetFlags : U32
 {
 #define X(name, name_lower, title) RDI_DumpSubsetFlag_##name = (1<<RDI_DumpSubset_##name),
-  RDI_DumpSubset_XList
+    RDI_DumpSubset_XList
 #undef X
-  RDI_DumpSubsetFlag_All = 0xffffffffu,
+    RDI_DumpSubsetFlag_All = 0xffffffffu,
 };
 
 read_only global String8 rdi_name_lowercase_from_dump_subset_table[] =
 {
 #define X(name, name_lower, title) str8_lit_comp(#name_lower),
-  RDI_DumpSubset_XList
+    RDI_DumpSubset_XList
 #undef X
 };
 
 read_only global String8 rdi_name_title_from_dump_subset_table[] =
 {
 #define X(name, name_lower, title) str8_lit_comp(title),
-  RDI_DumpSubset_XList
+    RDI_DumpSubset_XList
 #undef X
 };
 

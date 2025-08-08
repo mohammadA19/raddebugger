@@ -89,16 +89,16 @@ typedef ptrdiff_t GLintptr;
 
 struct R_OGL_Attribute
 {
-  U64 index;
-  String8 name;
-  GLenum type;
-  U64 count;
+    U64 index;
+    String8 name;
+    GLenum type;
+    U64 count;
 };
 
 struct R_OGL_AttributeArray
 {
-  R_OGL_Attribute *v;
-  U64 count;
+    R_OGL_Attribute *v;
+    U64 count;
 };
 
 ////////////////////////////////
@@ -163,37 +163,37 @@ R_OGL_ProcedureXList
 
 struct R_OGL_FormatInfo
 {
-  GLint internal_format;
-  GLenum format;
-  GLenum base_type;
+    GLint internal_format;
+    GLenum format;
+    GLenum base_type;
 };
 
 struct R_OGL_Tex2D
 {
-  R_OGL_Tex2D *next;
-  GLuint id;
-  R_ResourceKind resource_kind;
-  R_Tex2DFormat fmt;
-  Vec2S32 size;
+    R_OGL_Tex2D *next;
+    GLuint id;
+    R_ResourceKind resource_kind;
+    R_Tex2DFormat fmt;
+    Vec2S32 size;
 };
 
 struct R_OGL_FlushBuffer
 {
-  R_OGL_FlushBuffer *next;
-  GLuint id;
+    R_OGL_FlushBuffer *next;
+    GLuint id;
 };
 
 struct R_OGL_State
 {
-  Arena *arena;
-  R_OGL_Tex2D *free_tex2d;
-  GLuint shaders[R_OGL_ShaderKind_COUNT];
-  GLuint all_purpose_vao;
-  GLuint scratch_buffer_64kb;
-  GLuint white_texture;
-  Arena *buffer_flush_arena;
-  R_OGL_FlushBuffer *first_buffer_to_flush;
-  R_OGL_FlushBuffer *last_buffer_to_flush;
+    Arena *arena;
+    R_OGL_Tex2D *free_tex2d;
+    GLuint shaders[R_OGL_ShaderKind_COUNT];
+    GLuint all_purpose_vao;
+    GLuint scratch_buffer_64kb;
+    GLuint white_texture;
+    Arena *buffer_flush_arena;
+    R_OGL_FlushBuffer *first_buffer_to_flush;
+    R_OGL_FlushBuffer *last_buffer_to_flush;
 };
 
 ////////////////////////////////

@@ -6,130 +6,130 @@ global U64 global_update_tick_idx = 0;
 internal void
 main_thread_base_entry_point(int arguments_count, char **arguments)
 {
-  Temp scratch = scratch_begin(0, 0);
-  ThreadNameF("[main thread]");
-  
-  //- rjf: set up telemetry
+    Temp scratch = scratch_begin(0, 0);
+    ThreadNameF("[main thread]");
+    
+    //- rjf: set up telemetry
 #if PROFILE_TELEMETRY
-  local_persist char tm_data[MB(64)];
-  tmLoadLibrary(TM_RELEASE);
-  tmSetMaxThreadCount(256);
-  tmInitialize(sizeof(tm_data), tm_data);
+    local_persist char tm_data[MB(64)];
+    tmLoadLibrary(TM_RELEASE);
+    tmSetMaxThreadCount(256);
+    tmInitialize(sizeof(tm_data), tm_data);
 #endif
-  
-  //- rjf: set up spall
+    
+    //- rjf: set up spall
 #if PROFILE_SPALL
-  spall_profile = spall_init_file_ex("spall_capture", 1, 0);
+    spall_profile = spall_init_file_ex("spall_capture", 1, 0);
 #endif
-  
-  //- rjf: parse command line
-  String8List command_line_argument_strings = os_string_list_from_argcv(scratch.arena, arguments_count, arguments);
-  CmdLine cmdline = cmd_line_from_string_list(scratch.arena, command_line_argument_strings);
-  
-  //- rjf: begin captures
-  B32 capture = cmd_line_has_flag(&cmdline, str8_lit("capture"));
-  if(capture)
-  {
-    ProfBeginCapture(arguments[0]);
-  }
-  
+    
+    //- rjf: parse command line
+    String8List command_line_argument_strings = os_string_list_from_argcv(scratch.arena, arguments_count, arguments);
+    CmdLine cmdline = cmd_line_from_string_list(scratch.arena, command_line_argument_strings);
+    
+    //- rjf: begin captures
+    B32 capture = cmd_line_has_flag(&cmdline, str8_lit("capture"));
+    if(capture)
+    {
+        ProfBeginCapture(arguments[0]);
+    }
+    
 #if PROFILE_TELEMETRY 
-  tmMessage(0, TMMF_ICON_NOTE, BUILD_TITLE);
+    tmMessage(0, TMMF_ICON_NOTE, BUILD_TITLE);
 #endif
-  
-  //- rjf: initialize all included layers
+    
+    //- rjf: initialize all included layers
 #if defined(ASYNC_H) && !defined(ASYNC_INIT_MANUAL)
-  async_init(&cmdline);
+    async_init(&cmdline);
 #endif
 #if defined(HASH_STORE_H) && !defined(HS_INIT_MANUAL)
-  hs_init();
+    hs_init();
 #endif
 #if defined(FILE_STREAM_H) && !defined(FS_INIT_MANUAL)
-  fs_init();
+    fs_init();
 #endif
 #if defined(TEXT_CACHE_H) && !defined(TXT_INIT_MANUAL)
-  txt_init();
+    txt_init();
 #endif
 #if defined(MUTABLE_TEXT_H) && !defined(MTX_INIT_MANUAL)
-  mtx_init();
+    mtx_init();
 #endif
 #if defined(DASM_CACHE_H) && !defined(DASM_INIT_MANUAL)
-  dasm_init();
+    dasm_init();
 #endif
 #if defined(DBGI_H) && !defined(DI_INIT_MANUAL)
-  di_init();
+    di_init();
 #endif
 #if defined(DEMON_CORE_H) && !defined(DMN_INIT_MANUAL)
-  dmn_init();
+    dmn_init();
 #endif
 #if defined(CTRL_CORE_H) && !defined(CTRL_INIT_MANUAL)
-  ctrl_init();
+    ctrl_init();
 #endif
 #if defined(OS_GFX_H) && !defined(OS_GFX_INIT_MANUAL)
-  os_gfx_init();
+    os_gfx_init();
 #endif
 #if defined(FONT_PROVIDER_H) && !defined(FP_INIT_MANUAL)
-  fp_init();
+    fp_init();
 #endif
 #if defined(RENDER_CORE_H) && !defined(R_INIT_MANUAL)
-  r_init(&cmdline);
+    r_init(&cmdline);
 #endif
 #if defined(TEXTURE_CACHE_H) && !defined(TEX_INIT_MANUAL)
-  tex_init();
+    tex_init();
 #endif
 #if defined(GEO_CACHE_H) && !defined(GEO_INIT_MANUAL)
-  geo_init();
+    geo_init();
 #endif
 #if defined(FONT_CACHE_H) && !defined(FNT_INIT_MANUAL)
-  fnt_init();
+    fnt_init();
 #endif
 #if defined(DBG_ENGINE_CORE_H) && !defined(D_INIT_MANUAL)
-  d_init();
+    d_init();
 #endif
 #if defined(RADDBG_CORE_H) && !defined(RD_INIT_MANUAL)
-  rd_init(&cmdline);
+    rd_init(&cmdline);
 #endif
-  
-  //- rjf: call into entry point
-  entry_point(&cmdline);
-  
-  //- rjf: end captures
-  if(capture)
-  {
-    ProfEndCapture();
-  }
-  
-  scratch_end(scratch);
+    
+    //- rjf: call into entry point
+    entry_point(&cmdline);
+    
+    //- rjf: end captures
+    if(capture)
+    {
+        ProfEndCapture();
+    }
+    
+    scratch_end(scratch);
 }
 
 internal void
 supplement_thread_base_entry_point(void (*entry_point)(void *params), void *params)
 {
-  TCTX tctx;
-  tctx_init_and_equip(&tctx);
-  entry_point(params);
-  tctx_release();
+    TCTX tctx;
+    tctx_init_and_equip(&tctx);
+    entry_point(params);
+    tctx_release();
 }
 
 internal U64
 update_tick_idx(void)
 {
-  U64 result = ins_atomic_u64_eval(&global_update_tick_idx);
-  return result;
+    U64 result = ins_atomic_u64_eval(&global_update_tick_idx);
+    return result;
 }
 
 internal B32
 update(void)
 {
-  ProfTick(0);
-  ins_atomic_u64_inc_eval(&global_update_tick_idx);
+    ProfTick(0);
+    ins_atomic_u64_inc_eval(&global_update_tick_idx);
 #if defined(FONT_CACHE_H)
-  fnt_frame();
+    fnt_frame();
 #endif
 #if OS_FEATURE_GRAPHICAL
-  B32 result = frame();
+    B32 result = frame();
 #else
-  B32 result = 0;
+    B32 result = 0;
 #endif
-  return result;
+    return result;
 }

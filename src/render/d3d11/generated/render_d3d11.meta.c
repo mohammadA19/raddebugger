@@ -34,10 +34,10 @@ r_d3d11_g_mesh_ilay_elements,
 U64 r_d3d11_g_vshad_kind_elements_count_table[5] =
 {
 ArrayCount(r_d3d11_g_rect_ilay_elements) ,
- 0,
+  0,
 ArrayCount(r_d3d11_g_mesh_ilay_elements) ,
- 0,
- 0,
+  0,
+  0,
 };
 
 String8* r_d3d11_g_pshad_kind_source_table[5] =

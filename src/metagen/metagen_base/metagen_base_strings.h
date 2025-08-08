@@ -15,20 +15,20 @@
 
 struct String8
 {
-  U8 *str;
-  U64 size;
+    U8 *str;
+    U64 size;
 };
 
 struct String16
 {
-  U16 *str;
-  U64 size;
+    U16 *str;
+    U64 size;
 };
 
 struct String32
 {
-  U32 *str;
-  U64 size;
+    U32 *str;
+    U64 size;
 };
 
 ////////////////////////////////
@@ -36,28 +36,28 @@ struct String32
 
 struct String8Node
 {
-  String8Node *next;
-  String8 string;
+    String8Node *next;
+    String8 string;
 };
 
 struct String8MetaNode
 {
-  String8MetaNode *next;
-  String8Node *node;
+    String8MetaNode *next;
+    String8Node *node;
 };
 
 struct String8List
 {
-  String8Node *first;
-  String8Node *last;
-  U64 node_count;
-  U64 total_size;
+    String8Node *first;
+    String8Node *last;
+    U64 node_count;
+    U64 total_size;
 };
 
 struct String8Array
 {
-  String8 *v;
-  U64 count;
+    String8 *v;
+    U64 count;
 };
 
 ////////////////////////////////
@@ -65,27 +65,27 @@ struct String8Array
 
 enum StringMatchFlags : U32
 {
-  StringMatchFlag_CaseInsensitive  = (1 << 0),
-  StringMatchFlag_RightSideSloppy  = (1 << 1),
-  StringMatchFlag_SlashInsensitive = (1 << 2),
+    StringMatchFlag_CaseInsensitive  = (1 << 0),
+    StringMatchFlag_RightSideSloppy  = (1 << 1),
+    StringMatchFlag_SlashInsensitive = (1 << 2),
 };
 
 enum StringSplitFlags : U32
 {
-  StringSplitFlag_KeepEmpties = (1 << 0),
+    StringSplitFlag_KeepEmpties = (1 << 0),
 };
 
 enum PathStyle
 {
-  PathStyle_Null,
-  PathStyle_Relative,
-  PathStyle_WindowsAbsolute,
-  PathStyle_UnixAbsolute,
-  
+    PathStyle_Null,
+    PathStyle_Relative,
+    PathStyle_WindowsAbsolute,
+    PathStyle_UnixAbsolute,
+    
 #if OS_WINDOWS
-  PathStyle_SystemAbsolute = PathStyle_WindowsAbsolute
+    PathStyle_SystemAbsolute = PathStyle_WindowsAbsolute
 #elif OS_LINUX
-  PathStyle_SystemAbsolute = PathStyle_UnixAbsolute
+    PathStyle_SystemAbsolute = PathStyle_UnixAbsolute
 #else
 # error "absolute path style is undefined for this OS"
 #endif
@@ -94,9 +94,9 @@ PathStyle;
 
 struct StringJoin
 {
-  String8 pre;
-  String8 sep;
-  String8 post;
+    String8 pre;
+    String8 sep;
+    String8 post;
 };
 
 ////////////////////////////////
@@ -104,8 +104,8 @@ struct StringJoin
 
 struct String8TxtPtPair
 {
-  String8 string;
-  TxtPt pt;
+    String8 string;
+    TxtPt pt;
 };
 
 ////////////////////////////////
@@ -113,8 +113,8 @@ struct String8TxtPtPair
 
 struct UnicodeDecode
 {
-  U32 inc;
-  U32 codepoint;
+    U32 inc;
+    U32 codepoint;
 };
 
 ////////////////////////////////
@@ -122,17 +122,17 @@ struct UnicodeDecode
 
 struct FuzzyMatchRangeNode
 {
-  FuzzyMatchRangeNode *next;
-  Rng1U64 range;
+    FuzzyMatchRangeNode *next;
+    Rng1U64 range;
 };
 
 struct FuzzyMatchRangeList
 {
-  FuzzyMatchRangeNode *first;
-  FuzzyMatchRangeNode *last;
-  U64 count;
-  U64 needle_part_count;
-  U64 total_dim;
+    FuzzyMatchRangeNode *first;
+    FuzzyMatchRangeNode *last;
+    U64 count;
+    U64 needle_part_count;
+    U64 total_dim;
 };
 
 ////////////////////////////////

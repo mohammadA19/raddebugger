@@ -26,26 +26,26 @@
 internal void
 entry_point(CmdLine *cmdline)
 {
-  Arena *arena = arena_alloc();
-  E_TypeCtx *type_ctx = push_array(arena, E_TypeCtx, 1);
-  e_select_type_ctx(type_ctx);
-  E_ParseCtx *parse_ctx = push_array(arena, E_ParseCtx, 1);
-  e_select_parse_ctx(parse_ctx);
-  E_IRCtx *ir_ctx = push_array(arena, E_IRCtx, 1);
-  e_select_ir_ctx(ir_ctx);
-  E_InterpretCtx *interpret_ctx = push_array(arena, E_InterpretCtx, 1);
-  e_select_interpret_ctx(interpret_ctx, 0, 0);
-  String8 exprs[] =
-  {
-    str8_lit("123"),
-    str8_lit("1 + 2"),
-    str8_lit("foo"),
-    str8_lit("foo(bar)"),
-    str8_lit("foo(bar(baz))"),
-  };
-  for EachElement(idx, exprs)
-  {
-    String8 debug_string = e_debug_log_from_expr_string(arena, exprs[idx]);
-    raddbg_log("%S", debug_string);
-  }
+    Arena *arena = arena_alloc();
+    E_TypeCtx *type_ctx = push_array(arena, E_TypeCtx, 1);
+    e_select_type_ctx(type_ctx);
+    E_ParseCtx *parse_ctx = push_array(arena, E_ParseCtx, 1);
+    e_select_parse_ctx(parse_ctx);
+    E_IRCtx *ir_ctx = push_array(arena, E_IRCtx, 1);
+    e_select_ir_ctx(ir_ctx);
+    E_InterpretCtx *interpret_ctx = push_array(arena, E_InterpretCtx, 1);
+    e_select_interpret_ctx(interpret_ctx, 0, 0);
+    String8 exprs[] =
+    {
+        str8_lit("123"),
+        str8_lit("1 + 2"),
+        str8_lit("foo"),
+        str8_lit("foo(bar)"),
+        str8_lit("foo(bar(baz))"),
+    };
+    for EachElement(idx, exprs)
+    {
+        String8 debug_string = e_debug_log_from_expr_string(arena, exprs[idx]);
+        raddbg_log("%S", debug_string);
+    }
 }

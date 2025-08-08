@@ -15,17 +15,17 @@
 
 struct R_OGL_LNX_Window
 {
-  R_OGL_LNX_Window *next;
-  EGLSurface *surface;
+    R_OGL_LNX_Window *next;
+    EGLSurface *surface;
 };
 
 struct R_OGL_LNX_State
 {
-  Arena *arena;
-  EGLDisplay *display;
-  EGLConfig config;
-  EGLContext *context;
-  R_OGL_LNX_Window *free_window;
+    Arena *arena;
+    EGLDisplay *display;
+    EGLConfig config;
+    EGLContext *context;
+    R_OGL_LNX_Window *free_window;
 };
 
 global R_OGL_LNX_State *r_ogl_lnx_state = 0;

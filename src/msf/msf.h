@@ -30,24 +30,24 @@ static char msf_msf70_magic[] = "Microsoft C/C++ MSF 7.00\r\n\032DS\0\0";
 
 struct MSF_Header20
 {
-  U8  magic[sizeof(msf_msf20_magic)];
-  U32 page_size;
-  U16 active_fpm;
-  U16 page_count;
-  U32 stream_table_size;
-  U32 unknown;
-  U16 root_pn;
+    U8  magic[sizeof(msf_msf20_magic)];
+    U32 page_size;
+    U16 active_fpm;
+    U16 page_count;
+    U32 stream_table_size;
+    U32 unknown;
+    U16 root_pn;
 };
 
 struct MSF_Header70
 {
-  U8             magic[sizeof(msf_msf70_magic)];
-  MSF_UInt       page_size;
-  MSF_PageNumber active_fpm;
-  MSF_PageNumber page_count;
-  MSF_UInt       stream_table_size;
-  MSF_UInt       unknown; // always set to zero (used to be stream table page number, see SI_PERSIST in msf.cpp)
-  MSF_PageNumber root_pn;
+    U8             magic[sizeof(msf_msf70_magic)];
+    MSF_UInt       page_size;
+    MSF_PageNumber active_fpm;
+    MSF_PageNumber page_count;
+    MSF_UInt       stream_table_size;
+    MSF_UInt       unknown; // always set to zero (used to be stream table page number, see SI_PERSIST in msf.cpp)
+    MSF_PageNumber root_pn;
 };
 
 ////////////////////////////////

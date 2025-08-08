@@ -9,9 +9,9 @@
 
 enum DASM_Syntax
 {
-  DASM_Syntax_Intel,
-  DASM_Syntax_ATT,
-  DASM_Syntax_COUNT
+    DASM_Syntax_Intel,
+    DASM_Syntax_ATT,
+    DASM_Syntax_COUNT
 }
 DASM_Syntax;
 
@@ -20,22 +20,22 @@ DASM_Syntax;
 
 enum DASM_InstFlags : U32
 {
-  DASM_InstFlag_Call                        = (1<<0),
-  DASM_InstFlag_Branch                      = (1<<1),
-  DASM_InstFlag_UnconditionalJump           = (1<<2),
-  DASM_InstFlag_Return                      = (1<<3),
-  DASM_InstFlag_NonFlow                     = (1<<4),
-  DASM_InstFlag_Repeats                     = (1<<5),
-  DASM_InstFlag_ChangesStackPointer         = (1<<6),
-  DASM_InstFlag_ChangesStackPointerVariably = (1<<7),
+    DASM_InstFlag_Call                        = (1<<0),
+    DASM_InstFlag_Branch                      = (1<<1),
+    DASM_InstFlag_UnconditionalJump           = (1<<2),
+    DASM_InstFlag_Return                      = (1<<3),
+    DASM_InstFlag_NonFlow                     = (1<<4),
+    DASM_InstFlag_Repeats                     = (1<<5),
+    DASM_InstFlag_ChangesStackPointer         = (1<<6),
+    DASM_InstFlag_ChangesStackPointerVariably = (1<<7),
 };
 
 struct DASM_Inst
 {
-  DASM_InstFlags flags;
-  U32 size;
-  String8 string;
-  U64 jump_dest_vaddr;
+    DASM_InstFlags flags;
+    U32 size;
+    String8 string;
+    U64 jump_dest_vaddr;
 };
 
 ////////////////////////////////
@@ -43,28 +43,28 @@ struct DASM_Inst
 
 struct DASM_CtrlFlowPoint
 {
-  U64 vaddr;
-  U64 jump_dest_vaddr;
-  DASM_InstFlags inst_flags;
+    U64 vaddr;
+    U64 jump_dest_vaddr;
+    DASM_InstFlags inst_flags;
 };
 
 struct DASM_CtrlFlowPointNode
 {
-  DASM_CtrlFlowPointNode *next;
-  DASM_CtrlFlowPoint v;
+    DASM_CtrlFlowPointNode *next;
+    DASM_CtrlFlowPoint v;
 };
 
 struct DASM_CtrlFlowPointList
 {
-  DASM_CtrlFlowPointNode *first;
-  DASM_CtrlFlowPointNode *last;
-  U64 count;
+    DASM_CtrlFlowPointNode *first;
+    DASM_CtrlFlowPointNode *last;
+    U64 count;
 };
 
 struct DASM_CtrlFlowInfo
 {
-  DASM_CtrlFlowPointList exit_points;
-  U64 total_size;
+    DASM_CtrlFlowPointList exit_points;
+    U64 total_size;
 };
 
 ////////////////////////////////
@@ -72,11 +72,11 @@ struct DASM_CtrlFlowInfo
 
 enum DASM_StyleFlags : U32
 {
-  DASM_StyleFlag_Addresses        = (1<<0),
-  DASM_StyleFlag_CodeBytes        = (1<<1),
-  DASM_StyleFlag_SourceFilesNames = (1<<2),
-  DASM_StyleFlag_SourceLines      = (1<<3),
-  DASM_StyleFlag_SymbolNames      = (1<<4),
+    DASM_StyleFlag_Addresses        = (1<<0),
+    DASM_StyleFlag_CodeBytes        = (1<<1),
+    DASM_StyleFlag_SourceFilesNames = (1<<2),
+    DASM_StyleFlag_SourceLines      = (1<<3),
+    DASM_StyleFlag_SymbolNames      = (1<<4),
 };
 
 ////////////////////////////////
@@ -84,12 +84,12 @@ enum DASM_StyleFlags : U32
 
 struct DASM_Params
 {
-  U64 vaddr;
-  Arch arch;
-  DASM_StyleFlags style_flags;
-  DASM_Syntax syntax;
-  U64 base_vaddr;
-  DI_Key dbgi_key;
+    U64 vaddr;
+    Arch arch;
+    DASM_StyleFlags style_flags;
+    DASM_Syntax syntax;
+    U64 base_vaddr;
+    DI_Key dbgi_key;
 };
 
 ////////////////////////////////
@@ -97,37 +97,37 @@ struct DASM_Params
 
 enum DASM_LineFlags : U32
 {
-  DASM_LineFlag_Decorative = (1<<0),
+    DASM_LineFlag_Decorative = (1<<0),
 };
 
 struct DASM_Line
 {
-  U32 code_off;
-  DASM_LineFlags flags;
-  U64 addr;
-  Rng1U64 text_range;
+    U32 code_off;
+    DASM_LineFlags flags;
+    U64 addr;
+    Rng1U64 text_range;
 };
 
 struct DASM_LineChunkNode
 {
-  DASM_LineChunkNode *next;
-  DASM_Line *v;
-  U64 cap;
-  U64 count;
+    DASM_LineChunkNode *next;
+    DASM_Line *v;
+    U64 cap;
+    U64 count;
 };
 
 struct DASM_LineChunkList
 {
-  DASM_LineChunkNode *first;
-  DASM_LineChunkNode *last;
-  U64 node_count;
-  U64 line_count;
+    DASM_LineChunkNode *first;
+    DASM_LineChunkNode *last;
+    U64 node_count;
+    U64 line_count;
 };
 
 struct DASM_LineArray
 {
-  DASM_Line *v;
-  U64 count;
+    DASM_Line *v;
+    U64 count;
 };
 
 ////////////////////////////////
@@ -135,8 +135,8 @@ struct DASM_LineArray
 
 struct DASM_Result
 {
-  String8 text;
-  DASM_LineArray lines;
+    String8 text;
+    DASM_LineArray lines;
 };
 
 ////////////////////////////////
@@ -144,8 +144,8 @@ struct DASM_Result
 
 struct DASM_Info
 {
-  HS_Key text_key;
-  DASM_LineArray lines;
+    HS_Key text_key;
+    DASM_LineArray lines;
 };
 
 ////////////////////////////////
@@ -153,45 +153,45 @@ struct DASM_Info
 
 struct DASM_Node
 {
-  // rjf: links
-  DASM_Node *next;
-  DASM_Node *prev;
-  
-  // rjf: key
-  U128 hash;
-  DASM_Params params;
-  
-  // rjf: root
-  HS_Root root;
-  
-  // rjf: generations
-  U64 change_gen;
-  
-  // rjf: value
-  Arena *info_arena;
-  DASM_Info info;
-  
-  // rjf: metadata
-  U64 working_count;
-  U64 scope_ref_count;
-  U64 last_time_touched_us;
-  U64 last_user_clock_idx_touched;
-  U64 last_time_requested_us;
-  U64 last_user_clock_idx_requested;
+    // rjf: links
+    DASM_Node *next;
+    DASM_Node *prev;
+    
+    // rjf: key
+    U128 hash;
+    DASM_Params params;
+    
+    // rjf: root
+    HS_Root root;
+    
+    // rjf: generations
+    U64 change_gen;
+    
+    // rjf: value
+    Arena *info_arena;
+    DASM_Info info;
+    
+    // rjf: metadata
+    U64 working_count;
+    U64 scope_ref_count;
+    U64 last_time_touched_us;
+    U64 last_user_clock_idx_touched;
+    U64 last_time_requested_us;
+    U64 last_user_clock_idx_requested;
 };
 
 struct DASM_Slot
 {
-  DASM_Node *first;
-  DASM_Node *last;
+    DASM_Node *first;
+    DASM_Node *last;
 };
 
 struct DASM_Stripe
 {
-  Arena *arena;
-  OS_Handle rw_mutex;
-  OS_Handle cv;
-  DASM_Node *free_node;
+    Arena *arena;
+    OS_Handle rw_mutex;
+    OS_Handle cv;
+    DASM_Node *free_node;
 };
 
 ////////////////////////////////
@@ -199,16 +199,16 @@ struct DASM_Stripe
 
 struct DASM_Touch
 {
-  DASM_Touch *next;
-  U128 hash;
-  DASM_Params params;
+    DASM_Touch *next;
+    U128 hash;
+    DASM_Params params;
 };
 
 struct DASM_Scope
 {
-  DASM_Scope *next;
-  DASM_Touch *top_touch;
-  U64 base_pos;
+    DASM_Scope *next;
+    DASM_Touch *top_touch;
+    U64 base_pos;
 };
 
 ////////////////////////////////
@@ -216,7 +216,7 @@ struct DASM_Scope
 
 struct DASM_TCTX
 {
-  Arena *arena;
+    Arena *arena;
 };
 
 ////////////////////////////////
@@ -224,24 +224,24 @@ struct DASM_TCTX
 
 struct DASM_Shared
 {
-  Arena *arena;
-  
-  // rjf: cache
-  U64 slots_count;
-  U64 stripes_count;
-  DASM_Slot *slots;
-  DASM_Stripe *stripes;
-  
-  // rjf: user -> parse thread
-  U64 u2p_ring_size;
-  U8 *u2p_ring_base;
-  U64 u2p_ring_write_pos;
-  U64 u2p_ring_read_pos;
-  OS_Handle u2p_ring_cv;
-  OS_Handle u2p_ring_mutex;
-  
-  // rjf: evictor/detector thread
-  OS_Handle evictor_detector_thread;
+    Arena *arena;
+    
+    // rjf: cache
+    U64 slots_count;
+    U64 stripes_count;
+    DASM_Slot *slots;
+    DASM_Stripe *stripes;
+    
+    // rjf: user -> parse thread
+    U64 u2p_ring_size;
+    U8 *u2p_ring_base;
+    U64 u2p_ring_write_pos;
+    U64 u2p_ring_read_pos;
+    OS_Handle u2p_ring_cv;
+    OS_Handle u2p_ring_mutex;
+    
+    // rjf: evictor/detector thread
+    OS_Handle evictor_detector_thread;
 };
 
 ////////////////////////////////

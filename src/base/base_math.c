@@ -7,15 +7,15 @@
 internal F32
 mix_1f32(F32 a, F32 b, F32 t)
 {
-  F32 c = (a + (b-a) * Clamp(0.f, t, 1.f));
-  return c;
+    F32 c = (a + (b-a) * Clamp(0.f, t, 1.f));
+    return c;
 }
 
 internal F64
 mix_1f64(F64 a, F64 b, F64 t)
 {
-  F64 c = (a + (b-a) * Clamp(0.0, t, 1.0));
-  return c;
+    F64 c = (a + (b-a) * Clamp(0.0, t, 1.0));
+    return c;
 }
 
 ////////////////////////////////
@@ -125,280 +125,280 @@ internal Vec4S32 mix_4s32(Vec4S32 a, Vec4S32 b, F32 t)          {Vec4S32 c = {(S
 internal Mat3x3F32
 mat_3x3f32(F32 diagonal)
 {
-  Mat3x3F32 result = {0};
-  result.v[0][0] = diagonal;
-  result.v[1][1] = diagonal;
-  result.v[2][2] = diagonal;
-  return result;
+    Mat3x3F32 result = {0};
+    result.v[0][0] = diagonal;
+    result.v[1][1] = diagonal;
+    result.v[2][2] = diagonal;
+    return result;
 }
 
 internal Mat3x3F32
 make_translate_3x3f32(Vec2F32 delta)
 {
-  Mat3x3F32 mat = mat_3x3f32(1.f);
-  mat.v[2][0] = delta.x;
-  mat.v[2][1] = delta.y;
-  return mat;
+    Mat3x3F32 mat = mat_3x3f32(1.f);
+    mat.v[2][0] = delta.x;
+    mat.v[2][1] = delta.y;
+    return mat;
 }
 
 internal Mat3x3F32
 make_scale_3x3f32(Vec2F32 scale)
 {
-  Mat3x3F32 mat = mat_3x3f32(1.f);
-  mat.v[0][0] = scale.x;
-  mat.v[1][1] = scale.y;
-  return mat;
+    Mat3x3F32 mat = mat_3x3f32(1.f);
+    mat.v[0][0] = scale.x;
+    mat.v[1][1] = scale.y;
+    return mat;
 }
 
 internal Mat3x3F32
 mul_3x3f32(Mat3x3F32 a, Mat3x3F32 b)
 {
-  Mat3x3F32 c = {0};
-  for(int j = 0; j < 3; j += 1)
-  {
-    for(int i = 0; i < 3; i += 1)
+    Mat3x3F32 c = {0};
+    for(int j = 0; j < 3; j += 1)
     {
-      c.v[i][j] = (a.v[0][j]*b.v[i][0] +
-                   a.v[1][j]*b.v[i][1] +
-                   a.v[2][j]*b.v[i][2]);
+        for(int i = 0; i < 3; i += 1)
+        {
+            c.v[i][j] = (a.v[0][j]*b.v[i][0] +
+                                      a.v[1][j]*b.v[i][1] +
+                                      a.v[2][j]*b.v[i][2]);
+        }
     }
-  }
-  return c;
+    return c;
 }
 
 internal Mat4x4F32
 mat_4x4f32(F32 diagonal)
 {
-  Mat4x4F32 result = {0};
-  result.v[0][0] = diagonal;
-  result.v[1][1] = diagonal;
-  result.v[2][2] = diagonal;
-  result.v[3][3] = diagonal;
-  return result;
+    Mat4x4F32 result = {0};
+    result.v[0][0] = diagonal;
+    result.v[1][1] = diagonal;
+    result.v[2][2] = diagonal;
+    result.v[3][3] = diagonal;
+    return result;
 }
 
 internal Mat4x4F32
 make_translate_4x4f32(Vec3F32 delta)
 {
-  Mat4x4F32 result = mat_4x4f32(1.f);
-  result.v[3][0] = delta.x;
-  result.v[3][1] = delta.y;
-  result.v[3][2] = delta.z;
-  return result;
+    Mat4x4F32 result = mat_4x4f32(1.f);
+    result.v[3][0] = delta.x;
+    result.v[3][1] = delta.y;
+    result.v[3][2] = delta.z;
+    return result;
 }
 
 internal Mat4x4F32
 make_scale_4x4f32(Vec3F32 scale)
 {
-  Mat4x4F32 result = mat_4x4f32(1.f);
-  result.v[0][0] = scale.x;
-  result.v[1][1] = scale.y;
-  result.v[2][2] = scale.z;
-  return result;
+    Mat4x4F32 result = mat_4x4f32(1.f);
+    result.v[0][0] = scale.x;
+    result.v[1][1] = scale.y;
+    result.v[2][2] = scale.z;
+    return result;
 }
 
 internal Mat4x4F32
 make_perspective_4x4f32(F32 fov, F32 aspect_ratio, F32 near_z, F32 far_z)
 {
-  Mat4x4F32 result = mat_4x4f32(1.f);
-  F32 tan_theta_over_2 = tan_f32(fov / 2);
-  result.v[0][0] = 1.f / tan_theta_over_2;
-  result.v[1][1] = aspect_ratio / tan_theta_over_2;
-  result.v[2][3] = 1.f;
-  result.v[2][2] = -(near_z + far_z) / (near_z - far_z);
-  result.v[3][2] = (2.f * near_z * far_z) / (near_z - far_z);
-  result.v[3][3] = 0.f;
-  return result;
+    Mat4x4F32 result = mat_4x4f32(1.f);
+    F32 tan_theta_over_2 = tan_f32(fov / 2);
+    result.v[0][0] = 1.f / tan_theta_over_2;
+    result.v[1][1] = aspect_ratio / tan_theta_over_2;
+    result.v[2][3] = 1.f;
+    result.v[2][2] = -(near_z + far_z) / (near_z - far_z);
+    result.v[3][2] = (2.f * near_z * far_z) / (near_z - far_z);
+    result.v[3][3] = 0.f;
+    return result;
 }
 
 internal Mat4x4F32
 make_orthographic_4x4f32(F32 left, F32 right, F32 bottom, F32 top, F32 near_z, F32 far_z)
 {
-  Mat4x4F32 result = mat_4x4f32(1.f);
-  
-  result.v[0][0] = 2.f / (right - left);
-  result.v[1][1] = 2.f / (top - bottom);
-  result.v[2][2] = 2.f / (far_z - near_z);
-  result.v[3][3] = 1.f;
-  
-  result.v[3][0] = (left + right) / (left - right);
-  result.v[3][1] = (bottom + top) / (bottom - top);
-  result.v[3][2] = (near_z + far_z) / (near_z - far_z);
-  
-  return result;
+    Mat4x4F32 result = mat_4x4f32(1.f);
+    
+    result.v[0][0] = 2.f / (right - left);
+    result.v[1][1] = 2.f / (top - bottom);
+    result.v[2][2] = 2.f / (far_z - near_z);
+    result.v[3][3] = 1.f;
+    
+    result.v[3][0] = (left + right) / (left - right);
+    result.v[3][1] = (bottom + top) / (bottom - top);
+    result.v[3][2] = (near_z + far_z) / (near_z - far_z);
+    
+    return result;
 }
 
 internal Mat4x4F32
 make_look_at_4x4f32(Vec3F32 eye, Vec3F32 center, Vec3F32 up)
 {
-  Mat4x4F32 result;
-  Vec3F32 f = normalize_3f32(sub_3f32(eye, center));
-  Vec3F32 s = normalize_3f32(cross_3f32(f, up));
-  Vec3F32 u = cross_3f32(s, f);
-  result.v[0][0] = s.x;
-  result.v[0][1] = u.x;
-  result.v[0][2] = -f.x;
-  result.v[0][3] = 0.0f;
-  result.v[1][0] = s.y;
-  result.v[1][1] = u.y;
-  result.v[1][2] = -f.y;
-  result.v[1][3] = 0.0f;
-  result.v[2][0] = s.z;
-  result.v[2][1] = u.z;
-  result.v[2][2] = -f.z;
-  result.v[2][3] = 0.0f;
-  result.v[3][0] = -dot_3f32(s, eye);
-  result.v[3][1] = -dot_3f32(u, eye);
-  result.v[3][2] = dot_3f32(f, eye);
-  result.v[3][3] = 1.0f;
-  return result;
+    Mat4x4F32 result;
+    Vec3F32 f = normalize_3f32(sub_3f32(eye, center));
+    Vec3F32 s = normalize_3f32(cross_3f32(f, up));
+    Vec3F32 u = cross_3f32(s, f);
+    result.v[0][0] = s.x;
+    result.v[0][1] = u.x;
+    result.v[0][2] = -f.x;
+    result.v[0][3] = 0.0f;
+    result.v[1][0] = s.y;
+    result.v[1][1] = u.y;
+    result.v[1][2] = -f.y;
+    result.v[1][3] = 0.0f;
+    result.v[2][0] = s.z;
+    result.v[2][1] = u.z;
+    result.v[2][2] = -f.z;
+    result.v[2][3] = 0.0f;
+    result.v[3][0] = -dot_3f32(s, eye);
+    result.v[3][1] = -dot_3f32(u, eye);
+    result.v[3][2] = dot_3f32(f, eye);
+    result.v[3][3] = 1.0f;
+    return result;
 }
 
 internal Mat4x4F32
 make_rotate_4x4f32(Vec3F32 axis, F32 turns)
 {
-  Mat4x4F32 result = mat_4x4f32(1.f);
-  axis = normalize_3f32(axis);
-  F32 sin_theta = sin_f32(turns);
-  F32 cos_theta = cos_f32(turns);
-  F32 cos_value = 1.f - cos_theta;
-  result.v[0][0] = (axis.x * axis.x * cos_value) + cos_theta;
-  result.v[0][1] = (axis.x * axis.y * cos_value) + (axis.z * sin_theta);
-  result.v[0][2] = (axis.x * axis.z * cos_value) - (axis.y * sin_theta);
-  result.v[1][0] = (axis.y * axis.x * cos_value) - (axis.z * sin_theta);
-  result.v[1][1] = (axis.y * axis.y * cos_value) + cos_theta;
-  result.v[1][2] = (axis.y * axis.z * cos_value) + (axis.x * sin_theta);
-  result.v[2][0] = (axis.z * axis.x * cos_value) + (axis.y * sin_theta);
-  result.v[2][1] = (axis.z * axis.y * cos_value) - (axis.x * sin_theta);
-  result.v[2][2] = (axis.z * axis.z * cos_value) + cos_theta;
-  return result;
+    Mat4x4F32 result = mat_4x4f32(1.f);
+    axis = normalize_3f32(axis);
+    F32 sin_theta = sin_f32(turns);
+    F32 cos_theta = cos_f32(turns);
+    F32 cos_value = 1.f - cos_theta;
+    result.v[0][0] = (axis.x * axis.x * cos_value) + cos_theta;
+    result.v[0][1] = (axis.x * axis.y * cos_value) + (axis.z * sin_theta);
+    result.v[0][2] = (axis.x * axis.z * cos_value) - (axis.y * sin_theta);
+    result.v[1][0] = (axis.y * axis.x * cos_value) - (axis.z * sin_theta);
+    result.v[1][1] = (axis.y * axis.y * cos_value) + cos_theta;
+    result.v[1][2] = (axis.y * axis.z * cos_value) + (axis.x * sin_theta);
+    result.v[2][0] = (axis.z * axis.x * cos_value) + (axis.y * sin_theta);
+    result.v[2][1] = (axis.z * axis.y * cos_value) - (axis.x * sin_theta);
+    result.v[2][2] = (axis.z * axis.z * cos_value) + cos_theta;
+    return result;
 }
 
 internal Mat4x4F32
 mul_4x4f32(Mat4x4F32 a, Mat4x4F32 b)
 {
-  Mat4x4F32 c = {0};
-  for(int j = 0; j < 4; j += 1)
-  {
-    for(int i = 0; i < 4; i += 1)
+    Mat4x4F32 c = {0};
+    for(int j = 0; j < 4; j += 1)
     {
-      c.v[i][j] = (a.v[0][j]*b.v[i][0] +
-                   a.v[1][j]*b.v[i][1] +
-                   a.v[2][j]*b.v[i][2] +
-                   a.v[3][j]*b.v[i][3]);
+        for(int i = 0; i < 4; i += 1)
+        {
+            c.v[i][j] = (a.v[0][j]*b.v[i][0] +
+                                      a.v[1][j]*b.v[i][1] +
+                                      a.v[2][j]*b.v[i][2] +
+                                      a.v[3][j]*b.v[i][3]);
+        }
     }
-  }
-  return c;
+    return c;
 }
 
 internal Mat4x4F32
 scale_4x4f32(Mat4x4F32 m, F32 scale)
 {
-  for(int j = 0; j < 4; j += 1)
-  {
-    for(int i = 0; i < 4; i += 1)
+    for(int j = 0; j < 4; j += 1)
     {
-      m.v[i][j] *= scale;
+        for(int i = 0; i < 4; i += 1)
+        {
+            m.v[i][j] *= scale;
+        }
     }
-  }
-  return m;
+    return m;
 }
 
 internal Mat4x4F32
 inverse_4x4f32(Mat4x4F32 m)
 {
-  F32 coef00 = m.v[2][2] * m.v[3][3] - m.v[3][2] * m.v[2][3];
-  F32 coef02 = m.v[1][2] * m.v[3][3] - m.v[3][2] * m.v[1][3];
-  F32 coef03 = m.v[1][2] * m.v[2][3] - m.v[2][2] * m.v[1][3];
-  F32 coef04 = m.v[2][1] * m.v[3][3] - m.v[3][1] * m.v[2][3];
-  F32 coef06 = m.v[1][1] * m.v[3][3] - m.v[3][1] * m.v[1][3];
-  F32 coef07 = m.v[1][1] * m.v[2][3] - m.v[2][1] * m.v[1][3];
-  F32 coef08 = m.v[2][1] * m.v[3][2] - m.v[3][1] * m.v[2][2];
-  F32 coef10 = m.v[1][1] * m.v[3][2] - m.v[3][1] * m.v[1][2];
-  F32 coef11 = m.v[1][1] * m.v[2][2] - m.v[2][1] * m.v[1][2];
-  F32 coef12 = m.v[2][0] * m.v[3][3] - m.v[3][0] * m.v[2][3];
-  F32 coef14 = m.v[1][0] * m.v[3][3] - m.v[3][0] * m.v[1][3];
-  F32 coef15 = m.v[1][0] * m.v[2][3] - m.v[2][0] * m.v[1][3];
-  F32 coef16 = m.v[2][0] * m.v[3][2] - m.v[3][0] * m.v[2][2];
-  F32 coef18 = m.v[1][0] * m.v[3][2] - m.v[3][0] * m.v[1][2];
-  F32 coef19 = m.v[1][0] * m.v[2][2] - m.v[2][0] * m.v[1][2];
-  F32 coef20 = m.v[2][0] * m.v[3][1] - m.v[3][0] * m.v[2][1];
-  F32 coef22 = m.v[1][0] * m.v[3][1] - m.v[3][0] * m.v[1][1];
-  F32 coef23 = m.v[1][0] * m.v[2][1] - m.v[2][0] * m.v[1][1];
-  
-  Vec4F32 fac0 = { coef00, coef00, coef02, coef03 };
-  Vec4F32 fac1 = { coef04, coef04, coef06, coef07 };
-  Vec4F32 fac2 = { coef08, coef08, coef10, coef11 };
-  Vec4F32 fac3 = { coef12, coef12, coef14, coef15 };
-  Vec4F32 fac4 = { coef16, coef16, coef18, coef19 };
-  Vec4F32 fac5 = { coef20, coef20, coef22, coef23 };
-  
-  Vec4F32 vec0 = { m.v[1][0], m.v[0][0], m.v[0][0], m.v[0][0] };
-  Vec4F32 vec1 = { m.v[1][1], m.v[0][1], m.v[0][1], m.v[0][1] };
-  Vec4F32 vec2 = { m.v[1][2], m.v[0][2], m.v[0][2], m.v[0][2] };
-  Vec4F32 vec3 = { m.v[1][3], m.v[0][3], m.v[0][3], m.v[0][3] };
-  
-  Vec4F32 inv0 = add_4f32(sub_4f32(mul_4f32(vec1, fac0), mul_4f32(vec2, fac1)), mul_4f32(vec3, fac2));
-  Vec4F32 inv1 = add_4f32(sub_4f32(mul_4f32(vec0, fac0), mul_4f32(vec2, fac3)), mul_4f32(vec3, fac4));
-  Vec4F32 inv2 = add_4f32(sub_4f32(mul_4f32(vec0, fac1), mul_4f32(vec1, fac3)), mul_4f32(vec3, fac5));
-  Vec4F32 inv3 = add_4f32(sub_4f32(mul_4f32(vec0, fac2), mul_4f32(vec1, fac4)), mul_4f32(vec2, fac5));
-  
-  Vec4F32 sign_a = { +1, -1, +1, -1 };
-  Vec4F32 sign_b = { -1, +1, -1, +1 };
-  
-  Mat4x4F32 inverse;
-  for(U32 i = 0; i < 4; i += 1)
-  {
-    inverse.v[0][i] = inv0.v[i] * sign_a.v[i];
-    inverse.v[1][i] = inv1.v[i] * sign_b.v[i];
-    inverse.v[2][i] = inv2.v[i] * sign_a.v[i];
-    inverse.v[3][i] = inv3.v[i] * sign_b.v[i];
-  }
-  
-  Vec4F32 row0 = { inverse.v[0][0], inverse.v[1][0], inverse.v[2][0], inverse.v[3][0] };
-  Vec4F32 m0 = { m.v[0][0], m.v[0][1], m.v[0][2], m.v[0][3] };
-  Vec4F32 dot0 = mul_4f32(m0, row0);
-  F32 dot1 = (dot0.x + dot0.y) + (dot0.z + dot0.w);
-  
-  F32 one_over_det = 1 / dot1;
-  
-  return scale_4x4f32(inverse, one_over_det);
+    F32 coef00 = m.v[2][2] * m.v[3][3] - m.v[3][2] * m.v[2][3];
+    F32 coef02 = m.v[1][2] * m.v[3][3] - m.v[3][2] * m.v[1][3];
+    F32 coef03 = m.v[1][2] * m.v[2][3] - m.v[2][2] * m.v[1][3];
+    F32 coef04 = m.v[2][1] * m.v[3][3] - m.v[3][1] * m.v[2][3];
+    F32 coef06 = m.v[1][1] * m.v[3][3] - m.v[3][1] * m.v[1][3];
+    F32 coef07 = m.v[1][1] * m.v[2][3] - m.v[2][1] * m.v[1][3];
+    F32 coef08 = m.v[2][1] * m.v[3][2] - m.v[3][1] * m.v[2][2];
+    F32 coef10 = m.v[1][1] * m.v[3][2] - m.v[3][1] * m.v[1][2];
+    F32 coef11 = m.v[1][1] * m.v[2][2] - m.v[2][1] * m.v[1][2];
+    F32 coef12 = m.v[2][0] * m.v[3][3] - m.v[3][0] * m.v[2][3];
+    F32 coef14 = m.v[1][0] * m.v[3][3] - m.v[3][0] * m.v[1][3];
+    F32 coef15 = m.v[1][0] * m.v[2][3] - m.v[2][0] * m.v[1][3];
+    F32 coef16 = m.v[2][0] * m.v[3][2] - m.v[3][0] * m.v[2][2];
+    F32 coef18 = m.v[1][0] * m.v[3][2] - m.v[3][0] * m.v[1][2];
+    F32 coef19 = m.v[1][0] * m.v[2][2] - m.v[2][0] * m.v[1][2];
+    F32 coef20 = m.v[2][0] * m.v[3][1] - m.v[3][0] * m.v[2][1];
+    F32 coef22 = m.v[1][0] * m.v[3][1] - m.v[3][0] * m.v[1][1];
+    F32 coef23 = m.v[1][0] * m.v[2][1] - m.v[2][0] * m.v[1][1];
+    
+    Vec4F32 fac0 = { coef00, coef00, coef02, coef03 };
+    Vec4F32 fac1 = { coef04, coef04, coef06, coef07 };
+    Vec4F32 fac2 = { coef08, coef08, coef10, coef11 };
+    Vec4F32 fac3 = { coef12, coef12, coef14, coef15 };
+    Vec4F32 fac4 = { coef16, coef16, coef18, coef19 };
+    Vec4F32 fac5 = { coef20, coef20, coef22, coef23 };
+    
+    Vec4F32 vec0 = { m.v[1][0], m.v[0][0], m.v[0][0], m.v[0][0] };
+    Vec4F32 vec1 = { m.v[1][1], m.v[0][1], m.v[0][1], m.v[0][1] };
+    Vec4F32 vec2 = { m.v[1][2], m.v[0][2], m.v[0][2], m.v[0][2] };
+    Vec4F32 vec3 = { m.v[1][3], m.v[0][3], m.v[0][3], m.v[0][3] };
+    
+    Vec4F32 inv0 = add_4f32(sub_4f32(mul_4f32(vec1, fac0), mul_4f32(vec2, fac1)), mul_4f32(vec3, fac2));
+    Vec4F32 inv1 = add_4f32(sub_4f32(mul_4f32(vec0, fac0), mul_4f32(vec2, fac3)), mul_4f32(vec3, fac4));
+    Vec4F32 inv2 = add_4f32(sub_4f32(mul_4f32(vec0, fac1), mul_4f32(vec1, fac3)), mul_4f32(vec3, fac5));
+    Vec4F32 inv3 = add_4f32(sub_4f32(mul_4f32(vec0, fac2), mul_4f32(vec1, fac4)), mul_4f32(vec2, fac5));
+    
+    Vec4F32 sign_a = { +1, -1, +1, -1 };
+    Vec4F32 sign_b = { -1, +1, -1, +1 };
+    
+    Mat4x4F32 inverse;
+    for(U32 i = 0; i < 4; i += 1)
+    {
+        inverse.v[0][i] = inv0.v[i] * sign_a.v[i];
+        inverse.v[1][i] = inv1.v[i] * sign_b.v[i];
+        inverse.v[2][i] = inv2.v[i] * sign_a.v[i];
+        inverse.v[3][i] = inv3.v[i] * sign_b.v[i];
+    }
+    
+    Vec4F32 row0 = { inverse.v[0][0], inverse.v[1][0], inverse.v[2][0], inverse.v[3][0] };
+    Vec4F32 m0 = { m.v[0][0], m.v[0][1], m.v[0][2], m.v[0][3] };
+    Vec4F32 dot0 = mul_4f32(m0, row0);
+    F32 dot1 = (dot0.x + dot0.y) + (dot0.z + dot0.w);
+    
+    F32 one_over_det = 1 / dot1;
+    
+    return scale_4x4f32(inverse, one_over_det);
 }
 
 internal Mat4x4F32
 derotate_4x4f32(Mat4x4F32 mat)
 {
-  Vec3F32 scale =
-  {
-    length_3f32(v3f32(mat.v[0][0], mat.v[0][1], mat.v[0][2])),
-    length_3f32(v3f32(mat.v[1][0], mat.v[1][1], mat.v[1][2])),
-    length_3f32(v3f32(mat.v[2][0], mat.v[2][1], mat.v[2][2])),
-  };
-  mat.v[0][0] = scale.x;
-  mat.v[1][0] = 0.f;
-  mat.v[2][0] = 0.f;
-  mat.v[0][1] = 0.f;
-  mat.v[1][1] = scale.y;
-  mat.v[2][1] = 0.f;
-  mat.v[0][2] = 0.f;
-  mat.v[1][2] = 0.f;
-  mat.v[2][2] = scale.z;
-  return mat;
+    Vec3F32 scale =
+    {
+        length_3f32(v3f32(mat.v[0][0], mat.v[0][1], mat.v[0][2])),
+        length_3f32(v3f32(mat.v[1][0], mat.v[1][1], mat.v[1][2])),
+        length_3f32(v3f32(mat.v[2][0], mat.v[2][1], mat.v[2][2])),
+    };
+    mat.v[0][0] = scale.x;
+    mat.v[1][0] = 0.f;
+    mat.v[2][0] = 0.f;
+    mat.v[0][1] = 0.f;
+    mat.v[1][1] = scale.y;
+    mat.v[2][1] = 0.f;
+    mat.v[0][2] = 0.f;
+    mat.v[1][2] = 0.f;
+    mat.v[2][2] = scale.z;
+    return mat;
 }
 
 internal Mat4x4F32
 transpose_4x4f32(Mat4x4F32 mat)
 {
-  Mat4x4F32 result =
-  {
+    Mat4x4F32 result =
     {
-      mat.v[0][0], mat.v[1][0], mat.v[2][0], mat.v[3][0],
-      mat.v[0][1], mat.v[1][1], mat.v[2][1], mat.v[3][1],
-      mat.v[0][2], mat.v[1][2], mat.v[2][2], mat.v[3][2],
-      mat.v[0][3], mat.v[1][3], mat.v[2][3], mat.v[3][3],
-    }
-  };
-  return result;
+        {
+            mat.v[0][0], mat.v[1][0], mat.v[2][0], mat.v[3][0],
+            mat.v[0][1], mat.v[1][1], mat.v[2][1], mat.v[3][1],
+            mat.v[0][2], mat.v[1][2], mat.v[2][2], mat.v[3][2],
+            mat.v[0][3], mat.v[1][3], mat.v[2][3], mat.v[3][3],
+        }
+    };
+    return result;
 }
 
 ////////////////////////////////
@@ -502,86 +502,86 @@ internal Vec2F32 clamp_2f32(Rng2F32 r, Vec2F32 v)               {v.x = Clamp(r.m
 internal Vec3F32
 hsv_from_rgb(Vec3F32 rgb)
 {
-  F32 c_max = Max(rgb.x, Max(rgb.y, rgb.z));
-  F32 c_min = Min(rgb.x, Min(rgb.y, rgb.z));
-  F32 delta = c_max - c_min;
-  F32 h = ((delta == 0.f) ? 0.f :
-           (c_max == rgb.x) ? mod_f32((rgb.y - rgb.z)/delta + 6.f, 6.f) :
-           (c_max == rgb.y) ? (rgb.z - rgb.x)/delta + 2.f :
-           (c_max == rgb.z) ? (rgb.x - rgb.y)/delta + 4.f :
-           0.f);
-  F32 s = (c_max == 0.f) ? 0.f : (delta/c_max);
-  F32 v = c_max;
-  Vec3F32 hsv = {h/6.f, s, v};
-  return hsv;
+    F32 c_max = Max(rgb.x, Max(rgb.y, rgb.z));
+    F32 c_min = Min(rgb.x, Min(rgb.y, rgb.z));
+    F32 delta = c_max - c_min;
+    F32 h = ((delta == 0.f) ? 0.f :
+                      (c_max == rgb.x) ? mod_f32((rgb.y - rgb.z)/delta + 6.f, 6.f) :
+                      (c_max == rgb.y) ? (rgb.z - rgb.x)/delta + 2.f :
+                      (c_max == rgb.z) ? (rgb.x - rgb.y)/delta + 4.f :
+                      0.f);
+    F32 s = (c_max == 0.f) ? 0.f : (delta/c_max);
+    F32 v = c_max;
+    Vec3F32 hsv = {h/6.f, s, v};
+    return hsv;
 }
 
 internal Vec3F32
 rgb_from_hsv(Vec3F32 hsv)
 {
-  F32 h = mod_f32(hsv.x * 360.f, 360.f);
-  F32 s = hsv.y;
-  F32 v = hsv.z;
-  
-  F32 c = v*s;
-  F32 x = c*(1.f - abs_f32(mod_f32(h/60.f, 2.f) - 1.f));
-  F32 m = v - c;
-  
-  F32 r = 0;
-  F32 g = 0;
-  F32 b = 0;
-  
-  if ((h >= 0.f && h < 60.f) || (h >= 360.f && h < 420.f)){
-    r = c;
-    g = x;
-    b = 0;
-  }
-  else if (h >= 60.f && h < 120.f){
-    r = x;
-    g = c;
-    b = 0;
-  }
-  else if (h >= 120.f && h < 180.f){
-    r = 0;
-    g = c;
-    b = x;
-  }
-  else if (h >= 180.f && h < 240.f){
-    r = 0;
-    g = x;
-    b = c;
-  }
-  else if (h >= 240.f && h < 300.f){
-    r = x;
-    g = 0;
-    b = c;
-  }
-  else if ((h >= 300.f && h <= 360.f) || (h >= -60.f && h <= 0.f)){
-    r = c;
-    g = 0;
-    b = x;
-  }
-  
-  Vec3F32 rgb = {r + m, g + m, b + m};
-  return(rgb);
+    F32 h = mod_f32(hsv.x * 360.f, 360.f);
+    F32 s = hsv.y;
+    F32 v = hsv.z;
+    
+    F32 c = v*s;
+    F32 x = c*(1.f - abs_f32(mod_f32(h/60.f, 2.f) - 1.f));
+    F32 m = v - c;
+    
+    F32 r = 0;
+    F32 g = 0;
+    F32 b = 0;
+    
+    if ((h >= 0.f && h < 60.f) || (h >= 360.f && h < 420.f)){
+        r = c;
+        g = x;
+        b = 0;
+    }
+    else if (h >= 60.f && h < 120.f){
+        r = x;
+        g = c;
+        b = 0;
+    }
+    else if (h >= 120.f && h < 180.f){
+        r = 0;
+        g = c;
+        b = x;
+    }
+    else if (h >= 180.f && h < 240.f){
+        r = 0;
+        g = x;
+        b = c;
+    }
+    else if (h >= 240.f && h < 300.f){
+        r = x;
+        g = 0;
+        b = c;
+    }
+    else if ((h >= 300.f && h <= 360.f) || (h >= -60.f && h <= 0.f)){
+        r = c;
+        g = 0;
+        b = x;
+    }
+    
+    Vec3F32 rgb = {r + m, g + m, b + m};
+    return(rgb);
 }
 
 internal Vec4F32
 hsva_from_rgba(Vec4F32 rgba)
 {
-  Vec3F32 rgb = v3f32(rgba.x, rgba.y, rgba.z);
-  Vec3F32 hsv = hsv_from_rgb(rgb);
-  Vec4F32 hsva = v4f32(hsv.x, hsv.y, hsv.z, rgba.w);
-  return hsva;
+    Vec3F32 rgb = v3f32(rgba.x, rgba.y, rgba.z);
+    Vec3F32 hsv = hsv_from_rgb(rgb);
+    Vec4F32 hsva = v4f32(hsv.x, hsv.y, hsv.z, rgba.w);
+    return hsva;
 }
 
 internal Vec4F32
 rgba_from_hsva(Vec4F32 hsva)
 {
-  Vec3F32 hsv = v3f32(hsva.x, hsva.y, hsva.z);
-  Vec3F32 rgb = rgb_from_hsv(hsv);
-  Vec4F32 rgba = v4f32(rgb.x, rgb.y, rgb.z, hsva.w);
-  return rgba;
+    Vec3F32 hsv = v3f32(hsva.x, hsva.y, hsva.z);
+    Vec3F32 rgb = rgb_from_hsv(hsv);
+    Vec4F32 rgba = v4f32(rgb.x, rgb.y, rgb.z, hsva.w);
+    return rgba;
 }
 
 //- rjf: srgb <-> linear
@@ -589,41 +589,41 @@ rgba_from_hsva(Vec4F32 hsva)
 internal Vec3F32
 linear_from_srgb(Vec3F32 srgb)
 {
-  Vec3F32 result;
-  for EachElement(idx, srgb.v)
-  {
-    result.v[idx] = (srgb.v[idx] < 0.0404482362771082f ? srgb.v[idx] / 12.92f : pow_f32((srgb.v[idx] + 0.055f) / 1.055f, 2.4f));
-  }
-  return result;
+    Vec3F32 result;
+    for EachElement(idx, srgb.v)
+    {
+        result.v[idx] = (srgb.v[idx] < 0.0404482362771082f ? srgb.v[idx] / 12.92f : pow_f32((srgb.v[idx] + 0.055f) / 1.055f, 2.4f));
+    }
+    return result;
 }
 
 internal Vec3F32
 srgb_from_linear(Vec3F32 linear)
 {
-  Vec3F32 result;
-  for EachElement(idx, linear.v)
-  {
-    result.v[idx] = (0 <= linear.v[idx] && linear.v[idx] < 0.00313066844250063) ? linear.v[idx]*12.92f : 1.05f * pow_f32(linear.v[idx], 1.f/2.4f) - 0.055f;
-  }
-  return result;
+    Vec3F32 result;
+    for EachElement(idx, linear.v)
+    {
+        result.v[idx] = (0 <= linear.v[idx] && linear.v[idx] < 0.00313066844250063) ? linear.v[idx]*12.92f : 1.05f * pow_f32(linear.v[idx], 1.f/2.4f) - 0.055f;
+    }
+    return result;
 }
 
 internal Vec4F32
 linear_from_srgba(Vec4F32 srgba)
 {
-  Vec4F32 result;
-  result.xyz = linear_from_srgb(srgba.xyz);
-  result.w = srgba.w;
-  return result;
+    Vec4F32 result;
+    result.xyz = linear_from_srgb(srgba.xyz);
+    result.w = srgba.w;
+    return result;
 }
 
 internal Vec4F32
 srgba_from_linear(Vec4F32 linear)
 {
-  Vec4F32 result;
-  result.xyz = srgb_from_linear(linear.xyz);
-  result.w = linear.w;
-  return result;
+    Vec4F32 result;
+    result.xyz = srgb_from_linear(linear.xyz);
+    result.w = linear.w;
+    return result;
 }
 
 //- rjf: oklab <-> linear
@@ -631,51 +631,51 @@ srgba_from_linear(Vec4F32 linear)
 internal Vec3F32
 oklab_from_linear(Vec3F32 linear)
 {
-  F32 l = (0.4122214708f * linear.x + 0.5363325363f * linear.y + 0.0514459929f * linear.z);
-	F32 m = (0.2119034982f * linear.x + 0.6806995451f * linear.y + 0.1073969566f * linear.z);
-	F32 s = (0.0883024619f * linear.x + 0.2817188376f * linear.y + 0.6299787005f * linear.z);
-  F32 l_ = cbrt_f32(l);
-  F32 m_ = cbrt_f32(m);
-  F32 s_ = cbrt_f32(s);
-  Vec3F32 result;
-  result.x = 0.2104542553f*l_ + 0.7936177850f*m_ - 0.0040720468f*s_;
-  result.y = 1.9779984951f*l_ - 2.4285922050f*m_ + 0.4505937099f*s_;
-  result.z = 0.0259040371f*l_ + 0.7827717662f*m_ - 0.8086757660f*s_;
-  return result;
+    F32 l = (0.4122214708f * linear.x + 0.5363325363f * linear.y + 0.0514459929f * linear.z);
+		F32 m = (0.2119034982f * linear.x + 0.6806995451f * linear.y + 0.1073969566f * linear.z);
+		F32 s = (0.0883024619f * linear.x + 0.2817188376f * linear.y + 0.6299787005f * linear.z);
+    F32 l_ = cbrt_f32(l);
+    F32 m_ = cbrt_f32(m);
+    F32 s_ = cbrt_f32(s);
+    Vec3F32 result;
+    result.x = 0.2104542553f*l_ + 0.7936177850f*m_ - 0.0040720468f*s_;
+    result.y = 1.9779984951f*l_ - 2.4285922050f*m_ + 0.4505937099f*s_;
+    result.z = 0.0259040371f*l_ + 0.7827717662f*m_ - 0.8086757660f*s_;
+    return result;
 }
 
 internal Vec3F32
 linear_from_oklab(Vec3F32 oklab)
 {
-  F32 l_ = oklab.x + 0.3963377774f * oklab.y + 0.2158037573f * oklab.z;
-  F32 m_ = oklab.x - 0.1055613458f * oklab.y - 0.0638541728f * oklab.z;
-  F32 s_ = oklab.x - 0.0894841775f * oklab.y - 1.2914855480f * oklab.z;
-  F32 l = l_*l_*l_;
-  F32 m = m_*m_*m_;
-  F32 s = s_*s_*s_;
-  Vec3F32 result;
-  result.x = +4.0767416621f * l - 3.3077115913f * m + 0.2309699292f * s;
-  result.y = -1.2684380046f * l + 2.6097574011f * m - 0.3413193965f * s;
-  result.z = -0.0041960863f * l - 0.7034186147f * m + 1.7076147010f * s;
-  return result;
+    F32 l_ = oklab.x + 0.3963377774f * oklab.y + 0.2158037573f * oklab.z;
+    F32 m_ = oklab.x - 0.1055613458f * oklab.y - 0.0638541728f * oklab.z;
+    F32 s_ = oklab.x - 0.0894841775f * oklab.y - 1.2914855480f * oklab.z;
+    F32 l = l_*l_*l_;
+    F32 m = m_*m_*m_;
+    F32 s = s_*s_*s_;
+    Vec3F32 result;
+    result.x = +4.0767416621f * l - 3.3077115913f * m + 0.2309699292f * s;
+    result.y = -1.2684380046f * l + 2.6097574011f * m - 0.3413193965f * s;
+    result.z = -0.0041960863f * l - 0.7034186147f * m + 1.7076147010f * s;
+    return result;
 }
 
 internal Vec4F32
 oklab_from_lineara(Vec4F32 lineara)
 {
-  Vec4F32 result;
-  result.xyz = oklab_from_linear(lineara.xyz);
-  result.w = lineara.w;
-  return result;
+    Vec4F32 result;
+    result.xyz = oklab_from_linear(lineara.xyz);
+    result.w = lineara.w;
+    return result;
 }
 
 internal Vec4F32
 lineara_from_oklab(Vec4F32 oklab)
 {
-  Vec4F32 result;
-  result.xyz = linear_from_oklab(oklab.xyz);
-  result.w = oklab.w;
-  return result;
+    Vec4F32 result;
+    result.xyz = linear_from_oklab(oklab.xyz);
+    result.w = oklab.w;
+    return result;
 }
 
 //- rjf: rgba <-> u32
@@ -683,22 +683,22 @@ lineara_from_oklab(Vec4F32 oklab)
 internal U32
 u32_from_rgba(Vec4F32 rgba)
 {
-  U32 result = 0;
-  result |= ((U32)((U8)(rgba.x*255.f))) << 24;
-  result |= ((U32)((U8)(rgba.y*255.f))) << 16;
-  result |= ((U32)((U8)(rgba.z*255.f))) <<  8;
-  result |= ((U32)((U8)(rgba.w*255.f))) <<  0;
-  return result;
+    U32 result = 0;
+    result |= ((U32)((U8)(rgba.x*255.f))) << 24;
+    result |= ((U32)((U8)(rgba.y*255.f))) << 16;
+    result |= ((U32)((U8)(rgba.z*255.f))) <<  8;
+    result |= ((U32)((U8)(rgba.w*255.f))) <<  0;
+    return result;
 }
 
 internal Vec4F32
 rgba_from_u32(U32 hex)
 {
-  Vec4F32 result = v4f32(((hex&0xff000000)>>24)/255.f,
-                         ((hex&0x00ff0000)>>16)/255.f,
-                         ((hex&0x0000ff00)>> 8)/255.f,
-                         ((hex&0x000000ff)>> 0)/255.f);
-  return result;
+    Vec4F32 result = v4f32(((hex&0xff000000)>>24)/255.f,
+                                                  ((hex&0x00ff0000)>>16)/255.f,
+                                                  ((hex&0x0000ff00)>> 8)/255.f,
+                                                  ((hex&0x000000ff)>> 0)/255.f);
+    return result;
 }
 
 ////////////////////////////////
@@ -707,98 +707,98 @@ rgba_from_u32(U32 hex)
 internal void
 rng1u64_list_push(Arena *arena, Rng1U64List *list, Rng1U64 rng)
 {
-  Rng1U64Node *n = push_array(arena, Rng1U64Node, 1);
-  MemoryCopyStruct(&n->v, &rng);
-  SLLQueuePush(list->first, list->last, n);
-  list->count += 1;
+    Rng1U64Node *n = push_array(arena, Rng1U64Node, 1);
+    MemoryCopyStruct(&n->v, &rng);
+    SLLQueuePush(list->first, list->last, n);
+    list->count += 1;
 }
 
 internal void
 rng1u64_list_concat(Rng1U64List *list, Rng1U64List *to_concat)
 {
-  if(to_concat->first)
-  {
-    if(list->first)
+    if(to_concat->first)
     {
-      list->last->next = to_concat->first;
-      list->last       = to_concat->last;
+        if(list->first)
+        {
+            list->last->next = to_concat->first;
+            list->last       = to_concat->last;
+        }
+        else
+        {
+            list->first = to_concat->first;
+            list->last  = to_concat->last;
+        }
+        MemoryZeroStruct(to_concat);
     }
-    else
-    {
-      list->first = to_concat->first;
-      list->last  = to_concat->last;
-    }
-    MemoryZeroStruct(to_concat);
-  }
 }
 
 internal Rng1U64Array
 rng1u64_array_from_list(Arena *arena, Rng1U64List *list)
 {
-  Rng1U64Array arr = {0};
-  arr.count        = list->count;
-  arr.v            = push_array_no_zero(arena, Rng1U64, arr.count);
-  U64 idx = 0;
-  for(Rng1U64Node *n = list->first; n != 0; n = n->next)
-  {
-    arr.v[idx] = n->v;
-    idx += 1;
-  }
-  return arr;
+    Rng1U64Array arr = {0};
+    arr.count        = list->count;
+    arr.v            = push_array_no_zero(arena, Rng1U64, arr.count);
+    U64 idx = 0;
+    for(Rng1U64Node *n = list->first; n != 0; n = n->next)
+    {
+        arr.v[idx] = n->v;
+        idx += 1;
+    }
+    return arr;
 }
 
 internal U64
 rng_1u64_array_bsearch(Rng1U64Array arr, U64 value)
 {
-  if(arr.count > 0 && arr.v[0].min < value && value < arr.v[arr.count-1].max)
-  {
-    U64 l = 0;
-    U64 r = arr.count - 1;
-    for(; l <= r; )
+    if(arr.count > 0 && arr.v[0].min < value && value < arr.v[arr.count-1].max)
     {
-      U64 m = l + (r - l) / 2;
-      if(contains_1u64(arr.v[m], value))
-      {
-        return m;
-      }
-      else if(arr.v[m].min < value)
-      {
-        l = m + 1;
-      }
-      else
-      {
-        r = m - 1;
-      }
+        U64 l = 0;
+        U64 r = arr.count - 1;
+        for(; l <= r; )
+        {
+            U64 m = l + (r - l) / 2;
+            if(contains_1u64(arr.v[m], value))
+            {
+                return m;
+            }
+            else if(arr.v[m].min < value)
+            {
+                l = m + 1;
+            }
+            else
+            {
+                r = m - 1;
+            }
+        }
     }
-  }
-  else if(arr.count == 1 && contains_1u64(arr.v[0], value))
-  {
-    return 0;
-  }
-  return max_U64;
+    else if(arr.count == 1 && contains_1u64(arr.v[0], value))
+    {
+        return 0;
+    }
+    return max_U64;
 }
 
 internal void
 rng1s64_list_push(Arena *arena, Rng1S64List *list, Rng1S64 rng)
 {
-  Rng1S64Node *n = push_array(arena, Rng1S64Node, 1);
-  MemoryCopyStruct(&n->v, &rng);
-  SLLQueuePush(list->first, list->last, n);
-  list->count += 1;
+    Rng1S64Node *n = push_array(arena, Rng1S64Node, 1);
+    MemoryCopyStruct(&n->v, &rng);
+    SLLQueuePush(list->first, list->last, n);
+    list->count += 1;
 }
 
 internal Rng1S64Array
 rng1s64_array_from_list(Arena *arena, Rng1S64List *list)
 {
-  Rng1S64Array arr = {0};
-  arr.count = list->count;
-  arr.v = push_array_no_zero(arena, Rng1S64, arr.count);
-  U64 idx = 0;
-  for(Rng1S64Node *n = list->first; n != 0; n = n->next)
-  {
-    arr.v[idx] = n->v;
-    idx += 1;
-  }
-  return arr;
+    Rng1S64Array arr = {0};
+    arr.count = list->count;
+    arr.v = push_array_no_zero(arena, Rng1S64, arr.count);
+    U64 idx = 0;
+    for(Rng1S64Node *n = list->first; n != 0; n = n->next)
+    {
+        arr.v[idx] = n->v;
+        idx += 1;
+    }
+    return arr;
 }
 

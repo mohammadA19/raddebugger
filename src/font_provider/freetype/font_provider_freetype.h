@@ -18,13 +18,13 @@
 
 struct FP_FT_Font
 {
-  FT_Face face;
+    FT_Face face;
 };
 
 struct FP_FT_State
 {
-  Arena *arena;
-  FT_Library library;
+    Arena *arena;
+    FT_Library library;
 };
 
 ////////////////////////////////

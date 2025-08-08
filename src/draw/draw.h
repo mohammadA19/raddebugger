@@ -9,55 +9,55 @@
 
 struct DR_FStrParams
 {
-  FNT_Tag font;
-  FNT_RasterFlags raster_flags;
-  Vec4F32 color;
-  F32 size;
-  F32 underline_thickness;
-  F32 strikethrough_thickness;
+    FNT_Tag font;
+    FNT_RasterFlags raster_flags;
+    Vec4F32 color;
+    F32 size;
+    F32 underline_thickness;
+    F32 strikethrough_thickness;
 };
 
 struct DR_FStr
 {
-  String8 string;
-  DR_FStrParams params;
+    String8 string;
+    DR_FStrParams params;
 };
 
 struct DR_FStrNode
 {
-  DR_FStrNode *next;
-  DR_FStr v;
+    DR_FStrNode *next;
+    DR_FStr v;
 };
 
 struct DR_FStrList
 {
-  DR_FStrNode *first;
-  DR_FStrNode *last;
-  U64 node_count;
-  U64 total_size;
+    DR_FStrNode *first;
+    DR_FStrNode *last;
+    U64 node_count;
+    U64 total_size;
 };
 
 struct DR_FRun
 {
-  FNT_Run run;
-  Vec4F32 color;
-  F32 underline_thickness;
-  F32 strikethrough_thickness;
-  B32 icon;
+    FNT_Run run;
+    Vec4F32 color;
+    F32 underline_thickness;
+    F32 strikethrough_thickness;
+    B32 icon;
 };
 
 struct DR_FRunNode
 {
-  DR_FRunNode *next;
-  DR_FRun v;
+    DR_FRunNode *next;
+    DR_FRun v;
 };
 
 struct DR_FRunList
 {
-  DR_FRunNode *first;
-  DR_FRunNode *last;
-  U64 node_count;
-  Vec2F32 dim;
+    DR_FRunNode *first;
+    DR_FRunNode *last;
+    U64 node_count;
+    Vec2F32 dim;
 };
 
 ////////////////////////////////
@@ -70,10 +70,10 @@ struct DR_FRunList
 
 struct DR_Bucket
 {
-  R_PassList passes;
-  U64 stack_gen;
-  U64 last_cmd_stack_gen;
-  DR_BucketStackDecls;
+    R_PassList passes;
+    U64 stack_gen;
+    U64 last_cmd_stack_gen;
+    DR_BucketStackDecls;
 };
 
 ////////////////////////////////
@@ -81,17 +81,17 @@ struct DR_Bucket
 
 struct DR_BucketSelectionNode
 {
-  DR_BucketSelectionNode *next;
-  DR_Bucket *bucket;
+    DR_BucketSelectionNode *next;
+    DR_Bucket *bucket;
 };
 
 struct DR_ThreadCtx
 {
-  Arena *arena;
-  U64 arena_frame_start_pos;
-  FNT_Tag icon_font;
-  DR_BucketSelectionNode *top_bucket;
-  DR_BucketSelectionNode *free_bucket_selection;
+    Arena *arena;
+    U64 arena_frame_start_pos;
+    FNT_Tag icon_font;
+    DR_BucketSelectionNode *top_bucket;
+    DR_BucketSelectionNode *free_bucket_selection;
 };
 
 ////////////////////////////////
