@@ -61,7 +61,7 @@ os_lnx_file_properties_from_stat(struct stat *s)
     props.size     = s->st_size;
     props.created  = os_lnx_dense_time_from_timespec(s->st_ctim);
     props.modified = os_lnx_dense_time_from_timespec(s->st_mtim);
-    if(s->st_mode & S_IFDIR)
+    if (s->st_mode & S_IFDIR)
     {
         props.flags |= FilePropertyFlag_IsFolder;
     }
@@ -72,7 +72,7 @@ internal void
 os_lnx_safe_call_sig_handler(int x)
 {
     OS_LNX_SafeCallChain *chain = os_lnx_safe_call_chain;
-    if(chain != 0 && chain->fail_handler != 0)
+    if (chain != 0 && chain->fail_handler != 0)
     {
         chain->fail_handler(chain->ptr);
     }
@@ -90,7 +90,7 @@ os_lnx_entity_alloc(OS_LNX_EntityKind kind)
                         pthread_mutex_unlock(&os_lnx_state.entity_mutex))
     {
         entity = os_lnx_state.entity_free;
-        if(entity)
+        if (entity)
         {
             SLLStackPop(os_lnx_state.entity_free);
         }
@@ -163,7 +163,7 @@ os_get_process_start_time_unix(void)
     String8 path = push_str8f(scratch.arena, "/proc/%u", pid);
     struct stat st;
     int err = stat((char*)path.str, &st);
-    if(err == 0)
+    if (err == 0)
     {
         start_time = st.st_mtime;
     }
@@ -180,7 +180,7 @@ internal void *
 os_reserve(U64 size)
 {
     void *result = mmap(0, size, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
-    if(result == MAP_FAILED)
+    if (result == MAP_FAILED)
     {
         result = 0;
     }
@@ -213,7 +213,7 @@ internal void *
 os_reserve_large(U64 size)
 {
     void *result = mmap(0, size, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS|MAP_HUGETLB, -1, 0);
-    if(result == MAP_FAILED)
+    if (result == MAP_FAILED)
     {
         result = 0;
     }
@@ -267,29 +267,29 @@ os_file_open(OS_AccessFlags flags, String8 path)
     Temp scratch = scratch_begin(0, 0);
     String8 path_copy = push_str8_copy(scratch.arena, path);
     int lnx_flags = 0;
-    if(flags & OS_AccessFlag_Read && flags & OS_AccessFlag_Write)
+    if (flags & OS_AccessFlag_Read && flags & OS_AccessFlag_Write)
     {
         lnx_flags = O_RDWR;
     }
-    else if(flags & OS_AccessFlag_Write)
+    else if (flags & OS_AccessFlag_Write)
     {
         lnx_flags = O_WRONLY;
     }
-    else if(flags & OS_AccessFlag_Read)
+    else if (flags & OS_AccessFlag_Read)
     {
         lnx_flags = O_RDONLY;
     }
-    if(flags & OS_AccessFlag_Append)
+    if (flags & OS_AccessFlag_Append)
     {
         lnx_flags |= O_APPEND;
     }
-    if(flags & (OS_AccessFlag_Write|OS_AccessFlag_Append))
+    if (flags & (OS_AccessFlag_Write|OS_AccessFlag_Append))
     {
         lnx_flags |= O_CREAT;
     }
     int fd = open((char *)path_copy.str, lnx_flags, 0755);
     OS_Handle handle = {0};
-    if(fd != -1)
+    if (fd != -1)
     {
         handle.u64[0] = fd;
     }
@@ -300,7 +300,7 @@ os_file_open(OS_AccessFlags flags, String8 path)
 internal void
 os_file_close(OS_Handle file)
 {
-    if(os_handle_match(file, os_handle_zero())) { return; }
+    if (os_handle_match(file, os_handle_zero())) { return; }
     int fd = (int)file.u64[0];
     close(fd);
 }
@@ -308,20 +308,20 @@ os_file_close(OS_Handle file)
 internal U64
 os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
 {
-    if(os_handle_match(file, os_handle_zero())) { return 0; }
+    if (os_handle_match(file, os_handle_zero())) { return 0; }
     int fd = (int)file.u64[0];
     U64 total_num_bytes_to_read = dim_1u64(rng);
     U64 total_num_bytes_read = 0;
     U64 total_num_bytes_left_to_read = total_num_bytes_to_read;
-    for(;total_num_bytes_left_to_read > 0;)
+    for (;total_num_bytes_left_to_read > 0;)
     {
         int read_result = pread(fd, (U8 *)out_data + total_num_bytes_read, total_num_bytes_left_to_read, rng.min + total_num_bytes_read);
-        if(read_result >= 0)
+        if (read_result >= 0)
         {
             total_num_bytes_read += read_result;
             total_num_bytes_left_to_read -= read_result;
         }
-        else if(errno != EINTR)
+        else if (errno != EINTR)
         {
             break;
         }
@@ -332,20 +332,20 @@ os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
 internal U64
 os_file_write(OS_Handle file, Rng1U64 rng, void *data)
 {
-    if(os_handle_match(file, os_handle_zero())) { return 0; }
+    if (os_handle_match(file, os_handle_zero())) { return 0; }
     int fd = (int)file.u64[0];
     U64 total_num_bytes_to_write = dim_1u64(rng);
     U64 total_num_bytes_written = 0;
     U64 total_num_bytes_left_to_write = total_num_bytes_to_write;
-    for(;total_num_bytes_left_to_write > 0;)
+    for (;total_num_bytes_left_to_write > 0;)
     {
         int write_result = pwrite(fd, (U8 *)data + total_num_bytes_written, total_num_bytes_left_to_write, rng.min + total_num_bytes_written);
-        if(write_result >= 0)
+        if (write_result >= 0)
         {
             total_num_bytes_written += write_result;
             total_num_bytes_left_to_write -= write_result;
         }
-        else if(errno != EINTR)
+        else if (errno != EINTR)
         {
             break;
         }
@@ -356,7 +356,7 @@ os_file_write(OS_Handle file, Rng1U64 rng, void *data)
 internal B32
 os_file_set_times(OS_Handle file, DateTime date_time)
 {
-    if(os_handle_match(file, os_handle_zero())) { return 0; }
+    if (os_handle_match(file, os_handle_zero())) { return 0; }
     int fd = (int)file.u64[0];
     timespec time = os_lnx_timespec_from_date_time(date_time);
     timespec times[2] = {time, time};
@@ -368,12 +368,12 @@ os_file_set_times(OS_Handle file, DateTime date_time)
 internal FileProperties
 os_properties_from_file(OS_Handle file)
 {
-    if(os_handle_match(file, os_handle_zero())) { return (FileProperties){0}; }
+    if (os_handle_match(file, os_handle_zero())) { return (FileProperties){0}; }
     int fd = (int)file.u64[0];
     struct stat fd_stat = {0};
     int fstat_result = fstat(fd, &fd_stat);
     FileProperties props = {0};
-    if(fstat_result != -1)
+    if (fstat_result != -1)
     {
         props = os_lnx_file_properties_from_stat(&fd_stat);
     }
@@ -383,12 +383,12 @@ os_properties_from_file(OS_Handle file)
 internal OS_FileID
 os_id_from_file(OS_Handle file)
 {
-    if(os_handle_match(file, os_handle_zero())) { return (OS_FileID){0}; }
+    if (os_handle_match(file, os_handle_zero())) { return (OS_FileID){0}; }
     int fd = (int)file.u64[0];
     struct stat fd_stat = {0};
     int fstat_result = fstat(fd, &fd_stat);
     OS_FileID id = {0};
-    if(fstat_result != -1)
+    if (fstat_result != -1)
     {
         id.v[0] = fd_stat.st_dev;
         id.v[1] = fd_stat.st_ino;
@@ -402,7 +402,7 @@ os_delete_file_at_path(String8 path)
     Temp scratch = scratch_begin(0, 0);
     B32 result = 0;
     String8 path_copy = push_str8_copy(scratch.arena, path);
-    if(remove((char*)path_copy.str) != -1)
+    if (remove((char*)path_copy.str) != -1)
     {
         result = 1;
     }
@@ -416,7 +416,7 @@ os_copy_file_path(String8 dst, String8 src)
     B32 result = 0;
     OS_Handle src_h = os_file_open(OS_AccessFlag_Read, src);
     OS_Handle dst_h = os_file_open(OS_AccessFlag_Write, dst);
-    if(!os_handle_match(src_h, os_handle_zero()) &&
+    if (!os_handle_match(src_h, os_handle_zero()) &&
           !os_handle_match(dst_h, os_handle_zero()))
     {
         int src_fd = (int)src_h.u64[0];
@@ -425,11 +425,11 @@ os_copy_file_path(String8 dst, String8 src)
         U64 size = src_props.size;
         U64 total_bytes_copied = 0;
         U64 bytes_left_to_copy = size;
-        for(;bytes_left_to_copy > 0;)
+        for (;bytes_left_to_copy > 0;)
         {
             off_t sendfile_off = total_bytes_copied;
             int send_result = sendfile(dst_fd, src_fd, &sendfile_off, bytes_left_to_copy);
-            if(send_result <= 0)
+            if (send_result <= 0)
             {
                 break;
             }
@@ -469,7 +469,7 @@ os_file_path_exists(String8 path)
     String8 path_copy = push_str8_copy(scratch.arena, path);
     int access_result = access((char *)path_copy.str, F_OK);
     B32 result = 0;
-    if(access_result == 0)
+    if (access_result == 0)
     {
         result = 1;
     }
@@ -484,7 +484,7 @@ os_folder_path_exists(String8 path)
     B32      exists    = 0;
     String8  path_copy = push_str8_copy(scratch.arena, path);
     DIR     *handle    = opendir((char*)path_copy.str);
-    if(handle)
+    if (handle)
     {
         closedir(handle);
         exists = 1;
@@ -501,7 +501,7 @@ os_properties_from_file_path(String8 path)
     struct stat f_stat = {0};
     int stat_result = stat((char *)path_copy.str, &f_stat);
     FileProperties props = {0};
-    if(stat_result != -1)
+    if (stat_result != -1)
     {
         props = os_lnx_file_properties_from_stat(&f_stat);
     }
@@ -528,14 +528,14 @@ os_file_map_close(OS_Handle map)
 internal void *
 os_file_map_view_open(OS_Handle map, OS_AccessFlags flags, Rng1U64 range)
 {
-    if(os_handle_match(map, os_handle_zero())) { return 0; }
+    if (os_handle_match(map, os_handle_zero())) { return 0; }
     int fd = (int)map.u64[0];
     int prot_flags = 0;
-    if(flags & OS_AccessFlag_Write) { prot_flags |= PROT_WRITE; }
-    if(flags & OS_AccessFlag_Read)  { prot_flags |= PROT_READ; }
+    if (flags & OS_AccessFlag_Write) { prot_flags |= PROT_WRITE; }
+    if (flags & OS_AccessFlag_Read)  { prot_flags |= PROT_READ; }
     int map_flags = MAP_PRIVATE;
     void *base = mmap(0, dim_1u64(range), prot_flags, map_flags, fd, range.min);
-    if(base == MAP_FAILED)
+    if (base == MAP_FAILED)
     {
         base = 0;
     }
@@ -569,7 +569,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
 {
     B32 good = 0;
     OS_LNX_FileIter *lnx_iter = (OS_LNX_FileIter *)iter->memory;
-    for(;;)
+    for (;;)
     {
         // rjf: get next entry
         lnx_iter->dp = readdir(lnx_iter->dir);
@@ -578,7 +578,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
         // rjf: unpack entry info
         struct stat st = {0};
         int stat_result = 0;
-        if(good)
+        if (good)
         {
             Temp scratch = scratch_begin(&arena, 1);
             String8 full_path = push_str8f(scratch.arena, "%S/%s", lnx_iter->path, lnx_iter->dp->d_name);
@@ -588,7 +588,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
         
         // rjf: determine if filtered
         B32 filtered = 0;
-        if(good)
+        if (good)
         {
             filtered = ((st.st_mode == S_IFDIR && iter->flags & OS_FileIterFlag_SkipFolders) ||
                                     (st.st_mode == S_IFREG && iter->flags & OS_FileIterFlag_SkipFiles) ||
@@ -597,10 +597,10 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
         }
         
         // rjf: output & exit, if good & unfiltered
-        if(good && !filtered)
+        if (good && !filtered)
         {
             info_out->name = push_str8_copy(arena, str8_cstring(lnx_iter->dp->d_name));
-            if(stat_result != -1)
+            if (stat_result != -1)
             {
                 info_out->props = os_lnx_file_properties_from_stat(&st);
             }
@@ -608,7 +608,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
         }
         
         // rjf: exit if not good
-        if(!good)
+        if (!good)
         {
             break;
         }
@@ -631,7 +631,7 @@ os_make_directory(String8 path)
     Temp scratch = scratch_begin(0, 0);
     B32 result = 0;
     String8 path_copy = push_str8_copy(scratch.arena, path);
-    if(mkdir((char*)path_copy.str, 0755) != -1)
+    if (mkdir((char*)path_copy.str, 0755) != -1)
     {
         result = 1;
     }
@@ -668,7 +668,7 @@ os_shared_memory_open(String8 name)
 internal void
 os_shared_memory_close(OS_Handle handle)
 {
-    if(os_handle_match(handle, os_handle_zero())){return;}
+    if (os_handle_match(handle, os_handle_zero())){return;}
     int id = (int)handle.u64[0];
     close(id);
 }
@@ -676,10 +676,10 @@ os_shared_memory_close(OS_Handle handle)
 internal void *
 os_shared_memory_view_open(OS_Handle handle, Rng1U64 range)
 {
-    if(os_handle_match(handle, os_handle_zero())){return 0;}
+    if (os_handle_match(handle, os_handle_zero())){return 0;}
     int id = (int)handle.u64[0];
     void *base = mmap(0, dim_1u64(range), PROT_READ|PROT_WRITE, MAP_SHARED, id, range.min);
-    if(base == MAP_FAILED)
+    if (base == MAP_FAILED)
     {
         base = 0;
     }
@@ -689,7 +689,7 @@ os_shared_memory_view_open(OS_Handle handle, Rng1U64 range)
 internal void
 os_shared_memory_view_close(OS_Handle handle, void *ptr, Rng1U64 range)
 {
-    if(os_handle_match(handle, os_handle_zero())){return;}
+    if (os_handle_match(handle, os_handle_zero())){return;}
     munmap(ptr, dim_1u64(range));
 }
 
@@ -791,7 +791,7 @@ os_thread_launch(OS_ThreadFunctionType *func, void *ptr, void *params)
     entity->thread.ptr = ptr;
     {
         int pthread_result = pthread_create(&entity->thread.handle, 0, os_lnx_thread_entry_point, entity);
-        if(pthread_result == -1)
+        if (pthread_result == -1)
         {
             os_lnx_entity_release(entity);
             entity = 0;
@@ -804,7 +804,7 @@ os_thread_launch(OS_ThreadFunctionType *func, void *ptr, void *params)
 internal B32
 os_thread_join(OS_Handle handle, U64 endt_us)
 {
-    if(os_handle_match(handle, os_handle_zero())) { return 0; }
+    if (os_handle_match(handle, os_handle_zero())) { return 0; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)handle.u64[0];
     int join_result = pthread_join(entity->thread.handle, 0);
     B32 result = (join_result == 0);
@@ -815,7 +815,7 @@ os_thread_join(OS_Handle handle, U64 endt_us)
 internal void
 os_thread_detach(OS_Handle handle)
 {
-    if(os_handle_match(handle, os_handle_zero())) { return; }
+    if (os_handle_match(handle, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)handle.u64[0];
     os_lnx_entity_release(entity);
 }
@@ -834,7 +834,7 @@ os_mutex_alloc(void)
     pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
     int init_result = pthread_mutex_init(&entity->mutex_handle, &attr);
     pthread_mutexattr_destroy(&attr);
-    if(init_result == -1)
+    if (init_result == -1)
     {
         os_lnx_entity_release(entity);
         entity = 0;
@@ -846,7 +846,7 @@ os_mutex_alloc(void)
 internal void
 os_mutex_release(OS_Handle mutex)
 {
-    if(os_handle_match(mutex, os_handle_zero())) { return; }
+    if (os_handle_match(mutex, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)mutex.u64[0];
     pthread_mutex_destroy(&entity->mutex_handle);
     os_lnx_entity_release(entity);
@@ -855,7 +855,7 @@ os_mutex_release(OS_Handle mutex)
 internal void
 os_mutex_take(OS_Handle mutex)
 {
-    if(os_handle_match(mutex, os_handle_zero())) { return; }
+    if (os_handle_match(mutex, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)mutex.u64[0];
     pthread_mutex_lock(&entity->mutex_handle);
 }
@@ -863,7 +863,7 @@ os_mutex_take(OS_Handle mutex)
 internal void
 os_mutex_drop(OS_Handle mutex)
 {
-    if(os_handle_match(mutex, os_handle_zero())) { return; }
+    if (os_handle_match(mutex, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)mutex.u64[0];
     pthread_mutex_unlock(&entity->mutex_handle);
 }
@@ -875,7 +875,7 @@ os_rw_mutex_alloc(void)
 {
     OS_LNX_Entity *entity = os_lnx_entity_alloc(OS_LNX_EntityKind_RWMutex);
     int init_result = pthread_rwlock_init(&entity->rwmutex_handle, 0);
-    if(init_result == -1)
+    if (init_result == -1)
     {
         os_lnx_entity_release(entity);
         entity = 0;
@@ -887,7 +887,7 @@ os_rw_mutex_alloc(void)
 internal void
 os_rw_mutex_release(OS_Handle rw_mutex)
 {
-    if(os_handle_match(rw_mutex, os_handle_zero())) { return; }
+    if (os_handle_match(rw_mutex, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)rw_mutex.u64[0];
     pthread_rwlock_destroy(&entity->rwmutex_handle);
     os_lnx_entity_release(entity);
@@ -896,7 +896,7 @@ os_rw_mutex_release(OS_Handle rw_mutex)
 internal void
 os_rw_mutex_take_r(OS_Handle rw_mutex)
 {
-    if(os_handle_match(rw_mutex, os_handle_zero())) { return; }
+    if (os_handle_match(rw_mutex, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)rw_mutex.u64[0];
     pthread_rwlock_rdlock(&entity->rwmutex_handle);
 }
@@ -904,7 +904,7 @@ os_rw_mutex_take_r(OS_Handle rw_mutex)
 internal void
 os_rw_mutex_drop_r(OS_Handle rw_mutex)
 {
-    if(os_handle_match(rw_mutex, os_handle_zero())) { return; }
+    if (os_handle_match(rw_mutex, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)rw_mutex.u64[0];
     pthread_rwlock_unlock(&entity->rwmutex_handle);
 }
@@ -912,7 +912,7 @@ os_rw_mutex_drop_r(OS_Handle rw_mutex)
 internal void
 os_rw_mutex_take_w(OS_Handle rw_mutex)
 {
-    if(os_handle_match(rw_mutex, os_handle_zero())) { return; }
+    if (os_handle_match(rw_mutex, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)rw_mutex.u64[0];
     pthread_rwlock_wrlock(&entity->rwmutex_handle);
 }
@@ -920,7 +920,7 @@ os_rw_mutex_take_w(OS_Handle rw_mutex)
 internal void
 os_rw_mutex_drop_w(OS_Handle rw_mutex)
 {
-    if(os_handle_match(rw_mutex, os_handle_zero())) { return; }
+    if (os_handle_match(rw_mutex, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)rw_mutex.u64[0];
     pthread_rwlock_unlock(&entity->rwmutex_handle);
 }
@@ -932,17 +932,17 @@ os_condition_variable_alloc(void)
 {
     OS_LNX_Entity *entity = os_lnx_entity_alloc(OS_LNX_EntityKind_ConditionVariable);
     int init_result = pthread_cond_init(&entity->cv.cond_handle, 0);
-    if(init_result == -1)
+    if (init_result == -1)
     {
         os_lnx_entity_release(entity);
         entity = 0;
     }
     int init2_result = 0;
-    if(entity)
+    if (entity)
     {
         init2_result = pthread_mutex_init(&entity->cv.rwlock_mutex_handle, 0);
     }
-    if(init2_result == -1)
+    if (init2_result == -1)
     {
         pthread_cond_destroy(&entity->cv.cond_handle);
         os_lnx_entity_release(entity);
@@ -955,7 +955,7 @@ os_condition_variable_alloc(void)
 internal void
 os_condition_variable_release(OS_Handle cv)
 {
-    if(os_handle_match(cv, os_handle_zero())) { return; }
+    if (os_handle_match(cv, os_handle_zero())) { return; }
     OS_LNX_Entity *entity = (OS_LNX_Entity *)cv.u64[0];
     pthread_cond_destroy(&entity->cv.cond_handle);
     pthread_mutex_destroy(&entity->cv.rwlock_mutex_handle);
@@ -965,8 +965,8 @@ os_condition_variable_release(OS_Handle cv)
 internal B32
 os_condition_variable_wait(OS_Handle cv, OS_Handle mutex, U64 endt_us)
 {
-    if(os_handle_match(cv, os_handle_zero())) { return 0; }
-    if(os_handle_match(mutex, os_handle_zero())) { return 0; }
+    if (os_handle_match(cv, os_handle_zero())) { return 0; }
+    if (os_handle_match(mutex, os_handle_zero())) { return 0; }
     OS_LNX_Entity *cv_entity = (OS_LNX_Entity *)cv.u64[0];
     OS_LNX_Entity *mutex_entity = (OS_LNX_Entity *)mutex.u64[0];
     struct timespec endt_timespec;
@@ -984,19 +984,19 @@ os_condition_variable_wait_rw_r(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
     // this together, but this would probably just be a lot better if we just
     // implemented the primitives ourselves with e.g. futexes
     //
-    if(os_handle_match(cv, os_handle_zero())) { return 0; }
-    if(os_handle_match(mutex_rw, os_handle_zero())) { return 0; }
+    if (os_handle_match(cv, os_handle_zero())) { return 0; }
+    if (os_handle_match(mutex_rw, os_handle_zero())) { return 0; }
     OS_LNX_Entity *cv_entity = (OS_LNX_Entity *)cv.u64[0];
     OS_LNX_Entity *rw_mutex_entity = (OS_LNX_Entity *)mutex_rw.u64[0];
     struct timespec endt_timespec;
     endt_timespec.tv_sec = endt_us/Million(1);
     endt_timespec.tv_nsec = Thousand(1) * (endt_us - (endt_us/Million(1))*Million(1));
     B32 result = 0;
-    for(;;)
+    for (;;)
     {
         pthread_mutex_lock(&cv_entity->cv.rwlock_mutex_handle);
         int wait_result = pthread_cond_timedwait(&cv_entity->cv.cond_handle, &cv_entity->cv.rwlock_mutex_handle, &endt_timespec);
-        if(wait_result != ETIMEDOUT)
+        if (wait_result != ETIMEDOUT)
         {
             pthread_rwlock_rdlock(&rw_mutex_entity->rwmutex_handle);
             pthread_mutex_unlock(&cv_entity->cv.rwlock_mutex_handle);
@@ -1004,7 +1004,7 @@ os_condition_variable_wait_rw_r(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
             break;
         }
         pthread_mutex_unlock(&cv_entity->cv.rwlock_mutex_handle);
-        if(wait_result == ETIMEDOUT)
+        if (wait_result == ETIMEDOUT)
         {
             break;
         }
@@ -1019,19 +1019,19 @@ os_condition_variable_wait_rw_w(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
     // this together, but this would probably just be a lot better if we just
     // implemented the primitives ourselves with e.g. futexes
     //
-    if(os_handle_match(cv, os_handle_zero())) { return 0; }
-    if(os_handle_match(mutex_rw, os_handle_zero())) { return 0; }
+    if (os_handle_match(cv, os_handle_zero())) { return 0; }
+    if (os_handle_match(mutex_rw, os_handle_zero())) { return 0; }
     OS_LNX_Entity *cv_entity = (OS_LNX_Entity *)cv.u64[0];
     OS_LNX_Entity *rw_mutex_entity = (OS_LNX_Entity *)mutex_rw.u64[0];
     struct timespec endt_timespec;
     endt_timespec.tv_sec = endt_us/Million(1);
     endt_timespec.tv_nsec = Thousand(1) * (endt_us - (endt_us/Million(1))*Million(1));
     B32 result = 0;
-    for(;;)
+    for (;;)
     {
         pthread_mutex_lock(&cv_entity->cv.rwlock_mutex_handle);
         int wait_result = pthread_cond_timedwait(&cv_entity->cv.cond_handle, &cv_entity->cv.rwlock_mutex_handle, &endt_timespec);
-        if(wait_result != ETIMEDOUT)
+        if (wait_result != ETIMEDOUT)
         {
             pthread_rwlock_wrlock(&rw_mutex_entity->rwmutex_handle);
             pthread_mutex_unlock(&cv_entity->cv.rwlock_mutex_handle);
@@ -1039,7 +1039,7 @@ os_condition_variable_wait_rw_w(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
             break;
         }
         pthread_mutex_unlock(&cv_entity->cv.rwlock_mutex_handle);
-        if(wait_result == ETIMEDOUT)
+        if (wait_result == ETIMEDOUT)
         {
             break;
         }
@@ -1050,7 +1050,7 @@ os_condition_variable_wait_rw_w(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
 internal void
 os_condition_variable_signal(OS_Handle cv)
 {
-    if(os_handle_match(cv, os_handle_zero())) { return; }
+    if (os_handle_match(cv, os_handle_zero())) { return; }
     OS_LNX_Entity *cv_entity = (OS_LNX_Entity *)cv.u64[0];
     pthread_cond_signal(&cv_entity->cv.cond_handle);
 }
@@ -1058,7 +1058,7 @@ os_condition_variable_signal(OS_Handle cv)
 internal void
 os_condition_variable_broadcast(OS_Handle cv)
 {
-    if(os_handle_match(cv, os_handle_zero())) { return; }
+    if (os_handle_match(cv, os_handle_zero())) { return; }
     OS_LNX_Entity *cv_entity = (OS_LNX_Entity *)cv.u64[0];
     pthread_cond_broadcast(&cv_entity->cv.cond_handle);
 }
@@ -1192,7 +1192,7 @@ os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, v
     struct sigaction og_act[ArrayCount(signals_to_handle)] = {0};
     
     // rjf: attach handler info for all signals
-    for(U32 i = 0; i < ArrayCount(signals_to_handle); i += 1)
+    for (U32 i = 0; i < ArrayCount(signals_to_handle); i += 1)
     {
         sigaction(signals_to_handle[i], &new_act, &og_act[i]);
     }
@@ -1201,7 +1201,7 @@ os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, v
     func(ptr);
     
     // rjf: reset handler info for all signals
-    for(U32 i = 0; i < ArrayCount(signals_to_handle); i += 1)
+    for (U32 i = 0; i < ArrayCount(signals_to_handle); i += 1)
     {
         sigaction(signals_to_handle[i], &og_act[i], 0);
     }
@@ -1261,12 +1261,12 @@ main(int argc, char **argv)
             B32 got_final_result = 0;
             U8 *buffer = 0;
             int size = 0;
-            for(S64 cap = 4096, r = 0; r < 4; cap *= 2, r += 1)
+            for (S64 cap = 4096, r = 0; r < 4; cap *= 2, r += 1)
             {
                 scratch_end(scratch);
                 buffer = push_array_no_zero(scratch.arena, U8, cap);
                 size = gethostname((char*)buffer, cap);
-                if(size < cap)
+                if (size < cap)
                 {
                     got_final_result = 1;
                     break;
@@ -1274,7 +1274,7 @@ main(int argc, char **argv)
             }
             
             // rjf: save name to info
-            if(got_final_result && size > 0)
+            if (got_final_result && size > 0)
             {
                 info->machine_name.size = size;
                 info->machine_name.str = push_array_no_zero(os_lnx_state.arena, U8, info->machine_name.size + 1);
@@ -1296,12 +1296,12 @@ main(int argc, char **argv)
                 B32 got_final_result = 0;
                 U8 *buffer = 0;
                 int size = 0;
-                for(S64 cap = PATH_MAX, r = 0; r < 4; cap *= 2, r += 1)
+                for (S64 cap = PATH_MAX, r = 0; r < 4; cap *= 2, r += 1)
                 {
                     scratch_end(scratch);
                     buffer = push_array_no_zero(scratch.arena, U8, cap);
                     size = readlink("/proc/self/exe", (char*)buffer, cap);
-                    if(size < cap)
+                    if (size < cap)
                     {
                         got_final_result = 1;
                         break;
@@ -1309,7 +1309,7 @@ main(int argc, char **argv)
                 }
                 
                 // rjf: save
-                if(got_final_result && size > 0)
+                if (got_final_result && size > 0)
                 {
                     String8 full_name = str8(buffer, size);
                     String8 name_chopped = str8_chop_last_slash(full_name);

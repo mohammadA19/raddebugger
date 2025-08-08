@@ -3782,7 +3782,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_file_path_nodes_task)
             dst->source_file_idx = 0;
         }
 
-        if(n->parent) {
+        if (n->parent) {
             dst->parent_path_node = n->parent->node_idx;
         }
         if (n->first_child) {

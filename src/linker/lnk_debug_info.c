@@ -3659,7 +3659,7 @@ THREAD_POOL_TASK_FUNC(lnk_convert_types_to_rdi_task)
     U64 leaf_count = dim_1u64(task->ranges[task_id]);
     rdib_type_chunk_list_reserve(arena, &task->rdib_types_lists[task_id], leaf_count);
 
-    for(U64 leaf_idx = task->ranges[task_id].min; leaf_idx < task->ranges[task_id].max; ++leaf_idx) {
+    for (U64 leaf_idx = task->ranges[task_id].min; leaf_idx < task->ranges[task_id].max; ++leaf_idx) {
         U64     itype = task->itype_ranges[CV_TypeIndexSource_TPI].min + leaf_idx;
         CV_Leaf src   = cv_debug_t_get_leaf(task->types[CV_TypeIndexSource_TPI], leaf_idx);
 
@@ -4275,7 +4275,7 @@ THREAD_POOL_TASK_FUNC(lnk_count_source_files_task)
     U64 count = 0;
 
     for (String8Node *raw_chksms_n = raw_chksms_list.first; raw_chksms_n != 0; raw_chksms_n = raw_chksms_n->next) {
-        for(U64 cursor = 0; cursor + sizeof(CV_C13Checksum) <= raw_chksms_n->string.size; ) {
+        for (U64 cursor = 0; cursor + sizeof(CV_C13Checksum) <= raw_chksms_n->string.size; ) {
             // parse header
             CV_C13Checksum *header = (CV_C13Checksum *) (raw_chksms_n->string.str + cursor);
 

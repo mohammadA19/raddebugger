@@ -8,9 +8,9 @@ internal OS_LNX_Window *
 os_lnx_window_from_x11window(Window window)
 {
     OS_LNX_Window *result = 0;
-    for(OS_LNX_Window *w = os_lnx_gfx_state->first_window; w != 0; w = w->next)
+    for (OS_LNX_Window *w = os_lnx_gfx_state->first_window; w != 0; w = w->next)
     {
-        if(w->window == window)
+        if (w->window == window)
         {
             result = w;
             break;
@@ -105,7 +105,7 @@ os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title)
     
     //- rjf: allocate window
     OS_LNX_Window *w = os_lnx_gfx_state->free_window;
-    if(w)
+    if (w)
     {
         SLLStackPop(os_lnx_gfx_state->free_window);
     }
@@ -168,7 +168,7 @@ os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title)
 internal void
 os_window_close(OS_Handle handle)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return;}
+    if (os_handle_match(handle, os_handle_zero())) {return;}
     OS_LNX_Window *w = (OS_LNX_Window *)handle.u64[0];
     XDestroyWindow(os_lnx_gfx_state->display, w->window);
 }
@@ -176,7 +176,7 @@ os_window_close(OS_Handle handle)
 internal void
 os_window_set_title(OS_Handle handle, String8 title)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return;}
+    if (os_handle_match(handle, os_handle_zero())) {return;}
     Temp scratch = scratch_begin(0, 0);
     OS_LNX_Window *w = (OS_LNX_Window *)handle.u64[0];
     String8 title_copy = push_str8_copy(scratch.arena, title);
@@ -187,7 +187,7 @@ os_window_set_title(OS_Handle handle, String8 title)
 internal void
 os_window_first_paint(OS_Handle handle)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return;}
+    if (os_handle_match(handle, os_handle_zero())) {return;}
     OS_LNX_Window *w = (OS_LNX_Window *)handle.u64[0];
     XMapWindow(os_lnx_gfx_state->display, w->window);
 }
@@ -195,7 +195,7 @@ os_window_first_paint(OS_Handle handle)
 internal void
 os_window_focus(OS_Handle handle)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return;}
+    if (os_handle_match(handle, os_handle_zero())) {return;}
     OS_LNX_Window *w = (OS_LNX_Window *)handle.u64[0];
     XSetInputFocus(os_lnx_gfx_state->display, w->window, RevertToNone, CurrentTime);
 }
@@ -203,7 +203,7 @@ os_window_focus(OS_Handle handle)
 internal B32
 os_window_is_focused(OS_Handle handle)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return 0;}
+    if (os_handle_match(handle, os_handle_zero())) {return 0;}
     OS_LNX_Window *w = (OS_LNX_Window *)handle.u64[0];
     Window focused_window = 0;
     int revert_to = 0;
@@ -215,7 +215,7 @@ os_window_is_focused(OS_Handle handle)
 internal B32
 os_window_is_fullscreen(OS_Handle handle)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return 0;}
+    if (os_handle_match(handle, os_handle_zero())) {return 0;}
     // TODO(rjf)
     return 0;
 }
@@ -223,14 +223,14 @@ os_window_is_fullscreen(OS_Handle handle)
 internal void
 os_window_set_fullscreen(OS_Handle handle, B32 fullscreen)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return;}
+    if (os_handle_match(handle, os_handle_zero())) {return;}
     // TODO(rjf)
 }
 
 internal B32
 os_window_is_maximized(OS_Handle handle)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return 0;}
+    if (os_handle_match(handle, os_handle_zero())) {return 0;}
     // TODO(rjf)
     return 0;
 }
@@ -238,14 +238,14 @@ os_window_is_maximized(OS_Handle handle)
 internal void
 os_window_set_maximized(OS_Handle handle, B32 maximized)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return;}
+    if (os_handle_match(handle, os_handle_zero())) {return;}
     // TODO(rjf)
 }
 
 internal B32
 os_window_is_minimized(OS_Handle handle)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return 0;}
+    if (os_handle_match(handle, os_handle_zero())) {return 0;}
     // TODO(rjf)
     return 0;
 }
@@ -253,56 +253,56 @@ os_window_is_minimized(OS_Handle handle)
 internal void
 os_window_set_minimized(OS_Handle handle, B32 minimized)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return;}
+    if (os_handle_match(handle, os_handle_zero())) {return;}
     // TODO(rjf)
 }
 
 internal void
 os_window_bring_to_front(OS_Handle handle)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return;}
+    if (os_handle_match(handle, os_handle_zero())) {return;}
     // TODO(rjf)
 }
 
 internal void
 os_window_set_monitor(OS_Handle handle, OS_Handle monitor)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return;}
+    if (os_handle_match(handle, os_handle_zero())) {return;}
     // TODO(rjf)
 }
 
 internal void
 os_window_clear_custom_border_data(OS_Handle handle)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return;}
+    if (os_handle_match(handle, os_handle_zero())) {return;}
     // TODO(rjf)
 }
 
 internal void
 os_window_push_custom_title_bar(OS_Handle handle, F32 thickness)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return;}
+    if (os_handle_match(handle, os_handle_zero())) {return;}
     // TODO(rjf)
 }
 
 internal void
 os_window_push_custom_edges(OS_Handle handle, F32 thickness)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return;}
+    if (os_handle_match(handle, os_handle_zero())) {return;}
     // TODO(rjf)
 }
 
 internal void
 os_window_push_custom_title_bar_client_area(OS_Handle handle, Rng2F32 rect)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return;}
+    if (os_handle_match(handle, os_handle_zero())) {return;}
     // TODO(rjf)
 }
 
 internal Rng2F32
 os_rect_from_window(OS_Handle handle)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return r2f32p(0, 0, 0, 0);}
+    if (os_handle_match(handle, os_handle_zero())) {return r2f32p(0, 0, 0, 0);}
     OS_LNX_Window *w = (OS_LNX_Window *)handle.u64[0];
     XWindowAttributes atts = {0};
     Status s = XGetWindowAttributes(os_lnx_gfx_state->display, w->window, &atts);
@@ -388,12 +388,12 @@ internal OS_EventList
 os_get_events(Arena *arena, B32 wait)
 {
     OS_EventList evts = {0};
-    for(;XPending(os_lnx_gfx_state->display) > 0 || (wait && evts.count == 0);)
+    for (;XPending(os_lnx_gfx_state->display) > 0 || (wait && evts.count == 0);)
     {
         XEvent evt = {0};
         XNextEvent(os_lnx_gfx_state->display, &evt);
         B32 set_mouse_cursor = 0;
-        switch(evt.type)
+        switch (evt.type)
         {
             default:{}break;
             
@@ -403,9 +403,9 @@ os_get_events(Arena *arena, B32 wait)
             {
                 // rjf: determine flags
                 OS_Modifiers modifiers = 0;
-                if(evt.xkey.state & ShiftMask)   { modifiers |= OS_Modifier_Shift; }
-                if(evt.xkey.state & ControlMask) { modifiers |= OS_Modifier_Ctrl; }
-                if(evt.xkey.state & Mod1Mask)    { modifiers |= OS_Modifier_Alt; }
+                if (evt.xkey.state & ShiftMask)   { modifiers |= OS_Modifier_Shift; }
+                if (evt.xkey.state & ControlMask) { modifiers |= OS_Modifier_Ctrl; }
+                if (evt.xkey.state & Mod1Mask)    { modifiers |= OS_Modifier_Alt; }
                 
                 // rjf: map keycode -> keysym & codepoint
                 OS_LNX_Window *window = os_lnx_window_from_x11window(evt.xkey.window);
@@ -416,13 +416,13 @@ os_get_events(Arena *arena, B32 wait)
                 // rjf: map keysym -> OS_Key
                 B32 is_right_sided = 0;
                 OS_Key key = OS_Key_Null;
-                switch(keysym)
+                switch (keysym)
                 {
                     default:
                     {
-                        if(0){}
-                        else if(XK_F1 <= keysym && keysym <= XK_F24) { key = (OS_Key)(OS_Key_F1 + (keysym - XK_F1)); }
-                        else if('0' <= keysym && keysym <= '9')      { key = OS_Key_0 + (keysym-'0'); }
+                        if (0){}
+                        else if (XK_F1 <= keysym && keysym <= XK_F24) { key = (OS_Key)(OS_Key_F1 + (keysym - XK_F1)); }
+                        else if ('0' <= keysym && keysym <= '9')      { key = OS_Key_0 + (keysym-'0'); }
                     }break;
                     case XK_Escape:{key = OS_Key_Esc;};break;
                     case XK_BackSpace:{key = OS_Key_Backspace;}break;
@@ -485,18 +485,18 @@ os_get_events(Arena *arena, B32 wait)
                 }
                 
                 // rjf: push text event
-                if(evt.type == KeyPress && text_size != 0)
+                if (evt.type == KeyPress && text_size != 0)
                 {
-                    for(U64 off = 0; off < text_size;)
+                    for (U64 off = 0; off < text_size;)
                     {
                         UnicodeDecode decode = utf8_decode(text+off, text_size-off);
-                        if(decode.codepoint != 0 && (decode.codepoint >= 32 || decode.codepoint == '\t'))
+                        if (decode.codepoint != 0 && (decode.codepoint >= 32 || decode.codepoint == '\t'))
                         {
                             OS_Event *e = os_event_list_push_new(arena, &evts, OS_EventKind_Text);
                             e->window.u64[0] = (U64)window;
                             e->character = decode.codepoint;
                         }
-                        if(decode.inc == 0)
+                        if (decode.inc == 0)
                         {
                             break;
                         }
@@ -520,13 +520,13 @@ os_get_events(Arena *arena, B32 wait)
             {
                 // rjf: determine flags
                 OS_Modifiers modifiers = 0;
-                if(evt.xbutton.state & ShiftMask)   { modifiers |= OS_Modifier_Shift; }
-                if(evt.xbutton.state & ControlMask) { modifiers |= OS_Modifier_Ctrl; }
-                if(evt.xbutton.state & Mod1Mask)    { modifiers |= OS_Modifier_Alt; }
+                if (evt.xbutton.state & ShiftMask)   { modifiers |= OS_Modifier_Shift; }
+                if (evt.xbutton.state & ControlMask) { modifiers |= OS_Modifier_Ctrl; }
+                if (evt.xbutton.state & Mod1Mask)    { modifiers |= OS_Modifier_Alt; }
                 
                 // rjf: map button -> OS_Key
                 OS_Key key = OS_Key_Null;
-                switch(evt.xbutton.button)
+                switch (evt.xbutton.button)
                 {
                     default:{}break;
                     case Button1:{key = OS_Key_LeftMouseButton;}break;
@@ -536,7 +536,7 @@ os_get_events(Arena *arena, B32 wait)
                 
                 // rjf: push event
                 OS_LNX_Window *window = os_lnx_window_from_x11window(evt.xbutton.window);
-                if(key != OS_Key_Null)
+                if (key != OS_Key_Null)
                 {
                     OS_Event *e = os_event_list_push_new(arena, &evts, evt.type == ButtonPress ? OS_EventKind_Press : OS_EventKind_Release);
                     e->window.u64[0] = (U64)window;
@@ -544,7 +544,7 @@ os_get_events(Arena *arena, B32 wait)
                     e->key = key;
                     e->pos = v2f32((F32)evt.xbutton.x, (F32)evt.xbutton.y);
                 }
-                else if(evt.xbutton.button == Button4 ||
+                else if (evt.xbutton.button == Button4 ||
                                 evt.xbutton.button == Button5)
                 {
                     OS_Event *e = os_event_list_push_new(arena, &evts, OS_EventKind_Scroll);
@@ -580,16 +580,16 @@ os_get_events(Arena *arena, B32 wait)
             //- rjf: client messages
             case ClientMessage:
             {
-                if((Atom)evt.xclient.data.l[0] == os_lnx_gfx_state->wm_delete_window_atom)
+                if ((Atom)evt.xclient.data.l[0] == os_lnx_gfx_state->wm_delete_window_atom)
                 {
                     OS_LNX_Window *window = os_lnx_window_from_x11window(evt.xclient.window);
                     OS_Event *e = os_event_list_push_new(arena, &evts, OS_EventKind_WindowClose);
                     e->window.u64[0] = (U64)window;
                 }
-                else if((Atom)evt.xclient.data.l[0] == os_lnx_gfx_state->wm_sync_request_atom)
+                else if ((Atom)evt.xclient.data.l[0] == os_lnx_gfx_state->wm_sync_request_atom)
                 {
                     OS_LNX_Window *window = os_lnx_window_from_x11window(evt.xclient.window);
-                    if(window != 0)
+                    if (window != 0)
                     {
                         window->counter_value = 0;
                         window->counter_value |= evt.xclient.data.l[2];
@@ -601,7 +601,7 @@ os_get_events(Arena *arena, B32 wait)
                 }
             }break;
         }
-        if(set_mouse_cursor)
+        if (set_mouse_cursor)
         {
             Window root_window = 0;
             Window child_window = 0;
@@ -610,7 +610,7 @@ os_get_events(Arena *arena, B32 wait)
             int child_rel_x = 0;
             int child_rel_y = 0;
             unsigned int mask = 0;
-            if(XQueryPointer(os_lnx_gfx_state->display, XDefaultRootWindow(os_lnx_gfx_state->display), &root_window, &child_window, &root_rel_x, &root_rel_y, &child_rel_x, &child_rel_y, &mask))
+            if (XQueryPointer(os_lnx_gfx_state->display, XDefaultRootWindow(os_lnx_gfx_state->display), &root_window, &child_window, &root_rel_x, &root_rel_y, &child_rel_x, &child_rel_y, &mask))
             {
                 XDefineCursor(os_lnx_gfx_state->display, root_window, os_lnx_gfx_state->cursors[os_lnx_gfx_state->last_set_cursor]);
                 XFlush(os_lnx_gfx_state->display);
@@ -637,7 +637,7 @@ os_key_is_down(OS_Key key)
 internal Vec2F32
 os_mouse_from_window(OS_Handle handle)
 {
-    if(os_handle_match(handle, os_handle_zero())) {return v2f32(0, 0);}
+    if (os_handle_match(handle, os_handle_zero())) {return v2f32(0, 0);}
     OS_LNX_Window *w = (OS_LNX_Window *)handle.u64[0];
     Vec2F32 result = {0};
     {
@@ -648,7 +648,7 @@ os_mouse_from_window(OS_Handle handle)
         int child_rel_x = 0;
         int child_rel_y = 0;
         unsigned int mask = 0;
-        if(XQueryPointer(os_lnx_gfx_state->display, w->window, &root_window, &child_window, &root_rel_x, &root_rel_y, &child_rel_x, &child_rel_y, &mask))
+        if (XQueryPointer(os_lnx_gfx_state->display, w->window, &root_window, &child_window, &root_rel_x, &root_rel_y, &child_rel_x, &child_rel_y, &mask))
         {
             result.x = child_rel_x;
             result.y = child_rel_y;
@@ -672,7 +672,7 @@ os_set_cursor(OS_Cursor cursor)
 internal void
 os_graphical_message(B32 error, String8 title, String8 message)
 {
-    if(error)
+    if (error)
     {
         fprintf(stderr, "[X] ");
     }

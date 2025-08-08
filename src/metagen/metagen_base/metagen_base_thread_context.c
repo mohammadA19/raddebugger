@@ -22,7 +22,7 @@ tctx_init_and_equip(TCTX *tctx){
 internal void
 tctx_release(void)
 {
-    for(U64 i = 0; i < ArrayCount(tctx_thread_local->arenas); i += 1)
+    for (U64 i = 0; i < ArrayCount(tctx_thread_local->arenas); i += 1)
     {
         arena_release(tctx_thread_local->arenas[i]);
     }
@@ -30,7 +30,7 @@ tctx_release(void)
 
 internal TCTX*
 tctx_get_equipped(void){
-    return(tctx_thread_local);
+    return (tctx_thread_local);
 }
 
 internal Arena*
@@ -54,7 +54,7 @@ tctx_get_scratch(Arena **conflicts, U64 count){
         }
     }
     
-    return(result);
+    return (result);
 }
 
 internal void
@@ -69,7 +69,7 @@ internal String8
 tctx_get_thread_name(void){
     TCTX *tctx = tctx_get_equipped();
     String8 result = str8(tctx->thread_name, tctx->thread_name_size);
-    return(result);
+    return (result);
 }
 
 internal void

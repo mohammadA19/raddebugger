@@ -32,7 +32,7 @@ global U32 demon_lnx_ptrace_options = (PTRACE_O_TRACEEXIT|
 internal DEMON_LNX_ThreadExt*
 demon_lnx_thread_ext(DEMON_Entity *entity){
     DEMON_LNX_ThreadExt *result = (DEMON_LNX_ThreadExt*)&entity->ext;
-    return(result);
+    return (result);
 }
 
 internal B32
@@ -67,7 +67,7 @@ demon_lnx_attach_pid(Arena *arena, pid_t pid, DEMON_LNX_AttachNode **new_node){
         }
     }
     
-    return(result);
+    return (result);
 }
 
 internal String8
@@ -103,7 +103,7 @@ demon_lnx_executable_path_from_pid(Arena *arena, pid_t pid){
     }
     
     scratch_end(scratch);
-    return(result);
+    return (result);
 }
 
 internal int
@@ -112,7 +112,7 @@ demon_lnx_open_memory_fd_for_pid(pid_t pid){
     String8 memory_path = push_str8f(scratch.arena, "/proc/%i/mem", pid);
     int result = open((char*)memory_path.str, O_RDWR);
     scratch_end(scratch);
-    return(result);
+    return (result);
 }
 
 internal Arch
@@ -188,7 +188,7 @@ demon_lnx_arch_from_pid(pid_t pid){
     }
     
     scratch_end(scratch);
-    return(result);
+    return (result);
 }
 
 internal DEMON_LNX_ProcessAux
@@ -242,7 +242,7 @@ demon_lnx_aux_from_pid(pid_t pid, Arch arch){
     }
     
     scratch_end(scratch);
-    return(result);
+    return (result);
 }
 
 internal DEMON_LNX_PhdrInfo
@@ -295,7 +295,7 @@ demon_lnx_phdr_info_from_memory(int memory_fd, B32 is_32bit, U64 phvaddr, U64 ph
         }
     }
     
-    return(result);
+    return (result);
 }
 
 internal DEMON_LNX_ModuleNode*
@@ -420,7 +420,7 @@ demon_lnx_module_list_from_process(Arena *arena, DEMON_Entity *process){
         }
     }
     
-    return(first);
+    return (first);
 }
 
 internal U64
@@ -439,7 +439,7 @@ demon_lnx_read_memory(int memory_fd, void *dst, U64 src, U64 size){
         cursor += actual_read;
         bytes_read += actual_read;
     }
-    return(bytes_read);
+    return (bytes_read);
 }
 
 internal B32
@@ -458,7 +458,7 @@ demon_lnx_write_memory(int memory_fd, U64 dst, void *src, U64 size){
         ptr += actual_write;
         cursor += actual_write;
     }
-    return(result);
+    return (result);
 }
 
 internal String8
@@ -502,7 +502,7 @@ demon_lnx_read_memory_str(Arena *arena, int memory_fd, U64 address){
     // assemble results
     String8 result = str8_list_join(arena, &list, 0);
     scratch_end(scratch);
-    return(result);
+    return (result);
 }
 
 internal void
@@ -592,7 +592,7 @@ demon_lnx_read_int_string(Arena *arena, int fd, int radix){
         integer = str8((U8*)buf, (U64)to_read);
     }
     
-    return(integer);
+    return (integer);
 }
 
 internal U64
@@ -601,7 +601,7 @@ demon_lnx_read_u64(int fd, int radix){
     String8 integer = demon_lnx_read_int_string(scratch.arena, fd, radix);
     U64 result = u64_from_str8(integer, radix);
     scratch_end(scratch);
-    return(result);
+    return (result);
 }
 
 internal S64
@@ -610,7 +610,7 @@ demon_lnx_read_s64(int fd, int radix){
     String8 integer = demon_lnx_read_int_string(scratch.arena, fd, radix);
     S64 result = s64_from_str8(integer, radix);
     scratch_end(scratch);
-    return(result);
+    return (result);
 }
 
 internal B32
@@ -621,7 +621,7 @@ demon_lnx_read_expect(int fd, char expect){
     if (!result){
         lseek(fd, -1, SEEK_CUR);
     }
-    return(result);
+    return (result);
 }
 
 internal int
@@ -663,7 +663,7 @@ demon_lnx_read_string(Arena *arena, int fd){
         result = str8((U8*)buf, to_read);
     }
     
-    return(result);
+    return (result);
 }
 
 internal int
@@ -672,7 +672,7 @@ demon_lnx_open_maps(pid_t pid){
     String8 path = push_str8f(scratch.arena, "/proc/%d/maps", pid);
     int maps = open((char*)path.str, O_RDONLY);
     scratch_end(scratch);
-    return(maps);
+    return (maps);
 }
 
 internal B32
@@ -786,8 +786,8 @@ demon_lnx_next_map(Arena *arena, int maps, DEMON_LNX_MapsEntry *entry_out){
         }
         
         is_parsed = true;
-    }while(0);
-    return(is_parsed);
+    }while (0);
+    return (is_parsed);
 }
 
 ////////////////////////////////
@@ -1378,7 +1378,7 @@ demon_os_run(Arena *arena, DEMON_OS_RunCtrls *controls){
         scratch_end(scratch);
     }
     
-    return(result);
+    return (result);
 }
 
 internal void
@@ -1619,7 +1619,7 @@ demon_os_launch_process(OS_LaunchOptions *options){
     }
     
     scratch_end(scratch);
-    return(result);
+    return (result);
 }
 
 internal B32
@@ -1733,7 +1733,7 @@ demon_os_attach_process(U32 pid){
     }
     
     scratch_end(scratch);
-    return(result);
+    return (result);
 }
 
 internal B32
@@ -1744,7 +1744,7 @@ demon_os_kill_process(DEMON_Entity *process, U32 exit_code){
             result = true;
         }
     }
-    return(result);
+    return (result);
 }
 
 internal B32
@@ -1754,7 +1754,7 @@ demon_os_detach_process(DEMON_Entity *process){
         int detach_result = ptrace(PTRACE_DETACH, process->id, 0, 0);
         result = (detach_result != -1);
     }
-    return(0);
+    return (0);
 }
 
 ////////////////////////////////
@@ -1776,7 +1776,7 @@ demon_os_full_path_from_module(Arena *arena, DEMON_Entity *module){
     int memory_fd = (int)process->ext_u64;
     U64 name_va = module->ext_u64;
     String8 result = demon_lnx_read_memory_str(arena, memory_fd, name_va);
-    return(result);
+    return (result);
 }
 
 internal U64
@@ -1809,7 +1809,7 @@ demon_os_stack_base_vaddr_from_thread(DEMON_Entity *thread){
     }
     
     scratch_end(scratch);
-    return(stack_base);
+    return (stack_base);
 }
 
 internal U64
@@ -1832,7 +1832,7 @@ demon_os_tls_root_vaddr_from_thread(DEMON_Entity *thread){
             }
         }break;
     }
-    return(result);
+    return (result);
 }
 
 //- rjf: target process memory allocation/protection
@@ -1841,7 +1841,7 @@ internal U64
 demon_os_reserve_memory(DEMON_Entity *process, U64 size){
     U64 result = 0;
     NotImplemented;
-    return(result);
+    return (result);
 }
 
 internal void
@@ -1860,14 +1860,14 @@ internal U64
 demon_os_read_memory(DEMON_Entity *process, void *dst, U64 src_address, U64 size){
     int memory_fd = (int)process->ext_u64;
     U64 result = demon_lnx_read_memory(memory_fd, dst, src_address, size);
-    return(result);
+    return (result);
 }
 
 internal B32
 demon_os_write_memory(DEMON_Entity *process, U64 dst_address, void *src, U64 size){
     int memory_fd = (int)process->ext_u64;
     B32 result = demon_lnx_write_memory(memory_fd, dst_address, src, size);
-    return(result);
+    return (result);
 }
 
 //- rjf: thread registers reading/writing
@@ -1876,14 +1876,14 @@ internal B32
 demon_os_read_regs_x86(DEMON_Entity *thread, SYMS_RegX86 *dst){
     B32 result = false;
     NotImplemented;
-    return(result);
+    return (result);
 }
 
 internal B32
 demon_os_write_regs_x86(DEMON_Entity *thread, SYMS_RegX86 *src){
     B32 result = false;
     NotImplemented;
-    return(result);
+    return (result);
 }
 
 internal B32
@@ -1964,7 +1964,7 @@ demon_os_read_regs_x64(DEMON_Entity *thread, SYMS_RegX64 *dst){
     
     // got everything
     B32 result = got_debug;
-    return(result);
+    return (result);
 }
 
 internal B32
@@ -2032,7 +2032,7 @@ demon_os_write_regs_x64(DEMON_Entity *thread, SYMS_RegX64 *src){
     // assemble result
     B32 result = (gpr_success && fpr_success && dr_success);
     
-    return(result);
+    return (result);
 }
 
 ////////////////////////////////
@@ -2093,7 +2093,7 @@ demon_os_proc_iter_next(Arena *arena, DEMON_ProcessIter *iter, DEMON_ProcessInfo
         result = true;
     }
     
-    return(result);
+    return (result);
 }
 
 internal void

@@ -42,7 +42,7 @@ entry_point(CmdLine *cmdline)
     String8Node *processes_first_path_n = 0;
     U64 limit = 64;
     U64 idx = 0;
-    for(String8Node *n = lines.first; n != 0; n = n->next)
+    for (String8Node *n = lines.first; n != 0; n = n->next)
     {
         String8 dll_path = n->string;
         ProfScope("kick off %.*s", str8_varg(dll_path))
@@ -53,16 +53,16 @@ entry_point(CmdLine *cmdline)
             String8 rdi_path = push_str8f(arena, "dump/%S.rdi", dll_name);
             OS_Handle handle = os_cmd_line_launchf("raddbg --bin %S --out:%S", pdb_path, rdi_path);
             os_handle_list_push(arena, &processes, handle);
-            if(processes_first_path_n == 0)
+            if (processes_first_path_n == 0)
             {
                 processes_first_path_n = n;
             }
             idx += 1;
         }
-        if(idx >= limit)
+        if (idx >= limit)
         {
             String8Node *line_n = processes_first_path_n;
-            for(OS_HandleNode *n = processes.first; n != 0; n = n->next, line_n = line_n->next)
+            for (OS_HandleNode *n = processes.first; n != 0; n = n->next, line_n = line_n->next)
             {
                 ProfScope("join %.*s", str8_varg(line_n->string))
                 {

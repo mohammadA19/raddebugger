@@ -12,7 +12,7 @@ arena_alloc_(ArenaParams *params)
     // rjf: round up reserve/commit sizes
     U64 reserve_size = params->reserve_size;
     U64 commit_size = params->commit_size;
-    if(params->flags & ArenaFlag_LargePages)
+    if (params->flags & ArenaFlag_LargePages)
     {
         reserve_size = AlignPow2(reserve_size, os_get_system_info()->large_page_size);
         commit_size  = AlignPow2(commit_size,  os_get_system_info()->large_page_size);
@@ -25,9 +25,9 @@ arena_alloc_(ArenaParams *params)
     
     // rjf: reserve/commit initial block
     void *base = params->optional_backing_buffer;
-    if(base == 0)
+    if (base == 0)
     {
-        if(params->flags & ArenaFlag_LargePages)
+        if (params->flags & ArenaFlag_LargePages)
         {
             base = os_reserve_large(reserve_size);
             os_commit_large(base, commit_size);
@@ -41,7 +41,7 @@ arena_alloc_(ArenaParams *params)
     
     // rjf: panic on arena creation failure
 #if OS_FEATURE_GRAPHICAL
-    if(Unlikely(base == 0))
+    if (Unlikely(base == 0))
     {
         os_graphical_message(1, str8_lit("Fatal Allocation Failure"), str8_lit("Unexpected memory allocation failure."));
         os_abort(1);
@@ -70,7 +70,7 @@ arena_alloc_(ArenaParams *params)
 internal void
 arena_release(Arena *arena)
 {
-    for(Arena *n = arena->current, *prev = 0; n != 0; n = prev)
+    for (Arena *n = arena->current, *prev = 0; n != 0; n = prev)
     {
         prev = n->prev;
         os_release(n, n->res);
@@ -87,17 +87,17 @@ arena_push(Arena *arena, U64 size, U64 align)
     U64 pos_pst = pos_pre + size;
     
     // rjf: chain, if needed
-    if(current->res < pos_pst && !(arena->flags & ArenaFlag_NoChain))
+    if (current->res < pos_pst && !(arena->flags & ArenaFlag_NoChain))
     {
         Arena *new_block = 0;
         
 #if ARENA_FREE_LIST
         Arena *prev_block;
-        for(new_block = arena->free_last, prev_block = 0; new_block != 0; prev_block = new_block, new_block = new_block->prev)
+        for (new_block = arena->free_last, prev_block = 0; new_block != 0; prev_block = new_block, new_block = new_block->prev)
         {
-            if(new_block->res >= AlignPow2(size, align))
+            if (new_block->res >= AlignPow2(size, align))
             {
-                if(prev_block)
+                if (prev_block)
                 {
                     prev_block->prev = new_block->prev;
                 }
@@ -112,11 +112,11 @@ arena_push(Arena *arena, U64 size, U64 align)
         }
 #endif
         
-        if(new_block == 0)
+        if (new_block == 0)
         {
             U64 res_size = current->res_size;
             U64 cmt_size = current->cmt_size;
-            if(size + ARENA_HEADER_SIZE > res_size)
+            if (size + ARENA_HEADER_SIZE > res_size)
             {
                 res_size = AlignPow2(size + ARENA_HEADER_SIZE, align);
                 cmt_size = AlignPow2(size + ARENA_HEADER_SIZE, align);
@@ -135,14 +135,14 @@ arena_push(Arena *arena, U64 size, U64 align)
     }
     
     // rjf: commit new pages, if needed
-    if(current->cmt < pos_pst)
+    if (current->cmt < pos_pst)
     {
         U64 cmt_pst_aligned = pos_pst + current->cmt_size-1;
         cmt_pst_aligned -= cmt_pst_aligned%current->cmt_size;
         U64 cmt_pst_clamped = ClampTop(cmt_pst_aligned, current->res);
         U64 cmt_size = cmt_pst_clamped - current->cmt;
         U8 *cmt_ptr = (U8 *)current + current->cmt;
-        if(current->flags & ArenaFlag_LargePages)
+        if (current->flags & ArenaFlag_LargePages)
         {
             os_commit_large(cmt_ptr, cmt_size);
         }
@@ -155,7 +155,7 @@ arena_push(Arena *arena, U64 size, U64 align)
     
     // rjf: push onto current block
     void *result = 0;
-    if(current->cmt >= pos_pst)
+    if (current->cmt >= pos_pst)
     {
         result = (U8 *)current+pos_pre;
         current->pos = pos_pst;
@@ -164,7 +164,7 @@ arena_push(Arena *arena, U64 size, U64 align)
     
     // rjf: panic on failure
 #if OS_FEATURE_GRAPHICAL
-    if(Unlikely(result == 0))
+    if (Unlikely(result == 0))
     {
         os_graphical_message(1, str8_lit("Fatal Allocation Failure"), str8_lit("Unexpected memory allocation failure."));
         os_abort(1);
@@ -189,7 +189,7 @@ arena_pop_to(Arena *arena, U64 pos)
     Arena *current = arena->current;
     
 #if ARENA_FREE_LIST
-    for(Arena *prev = 0; current->base_pos >= big_pos; current = prev)
+    for (Arena *prev = 0; current->base_pos >= big_pos; current = prev)
     {
         prev = current->prev;
         current->pos = ARENA_HEADER_SIZE;
@@ -198,7 +198,7 @@ arena_pop_to(Arena *arena, U64 pos)
         AsanPoisonMemoryRegion((U8*)current + ARENA_HEADER_SIZE, current->res_size - ARENA_HEADER_SIZE);
     }
 #else
-    for(Arena *prev = 0; current->base_pos >= big_pos; current = prev)
+    for (Arena *prev = 0; current->base_pos >= big_pos; current = prev)
     {
         prev = current->prev;
         os_release(current, current->res);
@@ -224,7 +224,7 @@ arena_pop(Arena *arena, U64 amt)
 {
     U64 pos_old = arena_pos(arena);
     U64 pos_new = pos_old;
-    if(amt < pos_old)
+    if (amt < pos_old)
     {
         pos_new = pos_old - amt;
     }

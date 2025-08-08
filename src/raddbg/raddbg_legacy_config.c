@@ -13,7 +13,7 @@ rd_cfg_tree_list_from_string__pre_0_9_16(Arena *arena, String8 file_path, String
             for MD_EachNode(tln, src_root->first)
             {
                 //- rjf: targets
-                if(str8_match(tln->string, str8_lit("target"), 0))
+                if (str8_match(tln->string, str8_lit("target"), 0))
                 {
                     String8 disabled_string   = md_child_from_string(tln, str8_lit("disabled"), 0)->first->string;
                     String8 executable        = md_child_from_string(tln, str8_lit("executable"), 0)->first->string;
@@ -27,15 +27,15 @@ rd_cfg_tree_list_from_string__pre_0_9_16(Arena *arena, String8 file_path, String
                     RD_Cfg *dst_root = rd_cfg_new(&rd_nil_cfg, str8_lit("target"));
                     rd_cfg_list_push(arena, &result, dst_root);
                     {
-                        if(executable.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, str8_lit("executable")), path_absolute_dst_from_relative_dst_src(scratch.arena, executable, folder_path)); }
-                        if(arguments.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, str8_lit("arguments")), raw_from_escaped_str8(scratch.arena, arguments)); }
-                        if(working_directory.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, str8_lit("working_directory")), path_absolute_dst_from_relative_dst_src(scratch.arena, working_directory, folder_path)); }
-                        if(entry_point.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, str8_lit("entry_point")), raw_from_escaped_str8(scratch.arena, entry_point)); }
-                        if(stdout_path.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, str8_lit("stdout_path")), path_absolute_dst_from_relative_dst_src(scratch.arena, stdout_path, folder_path)); }
-                        if(stderr_path.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, str8_lit("stderr_path")), path_absolute_dst_from_relative_dst_src(scratch.arena, stderr_path, folder_path)); }
-                        if(stdin_path.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, str8_lit("stdin_path")), path_absolute_dst_from_relative_dst_src(scratch.arena, stdin_path, folder_path)); }
-                        if(debug_subprocesses.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, str8_lit("debug_subprocesses")), raw_from_escaped_str8(scratch.arena, debug_subprocesses)); }
-                        if(!str8_match(disabled_string, str8_lit("1"), 0))
+                        if (executable.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, str8_lit("executable")), path_absolute_dst_from_relative_dst_src(scratch.arena, executable, folder_path)); }
+                        if (arguments.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, str8_lit("arguments")), raw_from_escaped_str8(scratch.arena, arguments)); }
+                        if (working_directory.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, str8_lit("working_directory")), path_absolute_dst_from_relative_dst_src(scratch.arena, working_directory, folder_path)); }
+                        if (entry_point.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, str8_lit("entry_point")), raw_from_escaped_str8(scratch.arena, entry_point)); }
+                        if (stdout_path.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, str8_lit("stdout_path")), path_absolute_dst_from_relative_dst_src(scratch.arena, stdout_path, folder_path)); }
+                        if (stderr_path.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, str8_lit("stderr_path")), path_absolute_dst_from_relative_dst_src(scratch.arena, stderr_path, folder_path)); }
+                        if (stdin_path.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, str8_lit("stdin_path")), path_absolute_dst_from_relative_dst_src(scratch.arena, stdin_path, folder_path)); }
+                        if (debug_subprocesses.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, str8_lit("debug_subprocesses")), raw_from_escaped_str8(scratch.arena, debug_subprocesses)); }
+                        if (!str8_match(disabled_string, str8_lit("1"), 0))
                         {
                             rd_cfg_new(rd_cfg_new(dst_root, str8_lit("enabled")), str8_lit("1"));
                         }
@@ -43,7 +43,7 @@ rd_cfg_tree_list_from_string__pre_0_9_16(Arena *arena, String8 file_path, String
                 }
                 
                 //- rjf: recent files / projects
-                if(str8_match(tln->string, str8_lit("recent_file"), 0) ||
+                if (str8_match(tln->string, str8_lit("recent_file"), 0) ||
                       str8_match(tln->string, str8_lit("recent_project"), 0))
                 {
                     RD_Cfg *dst_root = rd_cfg_new(&rd_nil_cfg, tln->string);
@@ -52,7 +52,7 @@ rd_cfg_tree_list_from_string__pre_0_9_16(Arena *arena, String8 file_path, String
                 }
                 
                 //- rjf: file path maps
-                if(str8_match(tln->string, str8_lit("file_path_map"), 0))
+                if (str8_match(tln->string, str8_lit("file_path_map"), 0))
                 {
                     String8 source = md_child_from_string(tln, str8_lit("source"), 0)->first->string;
                     String8 dest = md_child_from_string(tln, str8_lit("dest"), 0)->first->string;

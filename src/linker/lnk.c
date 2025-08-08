@@ -143,7 +143,7 @@ lnk_config_from_argcv(Arena *arena, int argc, char **argv)
     lnk_cmd_line_push_option_if_not_presentf(scratch.arena, &cmd_line, LNK_CmdSwitch_Align,     "%u", KB(4));
     lnk_cmd_line_push_option_if_not_presentf(scratch.arena, &cmd_line, LNK_CmdSwitch_Debug,     "none");
     lnk_cmd_line_push_option_if_not_presentf(scratch.arena, &cmd_line, LNK_CmdSwitch_FileAlign, "%u", 512);
-    if (lnk_cmd_line_has_switch(cmd_line, LNK_CmdSwitch_Dll)) {
+    if (lnk_cmd_line_has_switch (cmd_line, LNK_CmdSwitch_Dll)) {
         lnk_cmd_line_push_option_if_not_presentf(scratch.arena, &cmd_line, LNK_CmdSwitch_SubSystem, "%S", pe_string_from_subsystem(PE_WindowsSubsystem_WINDOWS_GUI));
     }
     lnk_cmd_line_push_option_if_not_presentf(scratch.arena, &cmd_line, LNK_CmdSwitch_FunctionPadMin,                "");
@@ -198,16 +198,16 @@ lnk_config_from_argcv(Arena *arena, int argc, char **argv)
     lnk_cmd_line_push_optionf(scratch.arena, &cmd_line, LNK_CmdSwitch_Rad_RemoveSection, ".gxfg");
 
     // set default max worker count 
-    if (lnk_cmd_line_has_switch(cmd_line, LNK_CmdSwitch_Rad_SharedThreadPool)) {
+    if (lnk_cmd_line_has_switch (cmd_line, LNK_CmdSwitch_Rad_SharedThreadPool)) {
         lnk_cmd_line_push_optionf(scratch.arena, &cmd_line, LNK_CmdSwitch_Rad_SharedThreadPoolMaxWorkers, "");
     }
 
-    if (!lnk_cmd_line_has_switch(cmd_line, LNK_CmdSwitch_Rad_MtPath)) {
+    if (!lnk_cmd_line_has_switch (cmd_line, LNK_CmdSwitch_Rad_MtPath)) {
         lnk_cmd_line_push_option_if_not_presentf(scratch.arena, &cmd_line, LNK_CmdSwitch_Rad_MtPath, "%s", LNK_MANIFEST_MERGE_TOOL_NAME);
     }
 
     // when /FORCE is specified on the command line, do not stop on these errors
-    if (lnk_cmd_line_has_switch(cmd_line, LNK_CmdSwitch_Force)) {
+    if (lnk_cmd_line_has_switch (cmd_line, LNK_CmdSwitch_Force)) {
         g_error_mode_arr[LNK_Error_UnresolvedSymbol] = LNK_ErrorMode_Continue;
     }
 

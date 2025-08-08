@@ -8,7 +8,7 @@ internal U32
 pe_slot_count_from_unwind_op_code(PE_UnwindOpCode opcode)
 {
     U32 result = 0;
-    switch(opcode)
+    switch (opcode)
     {
         case PE_UnwindOpCode_PUSH_NONVOL:     result = 1; break;
         case PE_UnwindOpCode_ALLOC_LARGE:     result = 2; break;
@@ -433,20 +433,20 @@ pe_bin_info_from_data(Arena *arena, String8 data)
     str8_deserial_read_struct(data, 0, &dos_header);
     
     // rjf: bad dos magic -> bad
-    if(dos_header.magic != PE_DOS_MAGIC)
+    if (dos_header.magic != PE_DOS_MAGIC)
     {
         valid = 0;
     }
     
     // rjf: read pe magic
     U32 pe_magic = 0;
-    if(valid)
+    if (valid)
     {
         str8_deserial_read_struct(data, dos_header.coff_file_offset, &pe_magic);
     }
     
     // rjf: bad pe magic -> abort
-    if(pe_magic != PE_MAGIC)
+    if (pe_magic != PE_MAGIC)
     {
         valid = 0;
     }
@@ -454,7 +454,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
     // rjf: read coff header
     U32             file_header_off = dos_header.coff_file_offset + sizeof(pe_magic);
     COFF_FileHeader file_header     = {0};
-    if(valid)
+    if (valid)
     {
         str8_deserial_read_struct(data, file_header_off, &file_header);
     }
@@ -464,7 +464,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
     U64     after_file_header_off     = file_header_off + sizeof(COFF_FileHeader);
     U64     after_optional_header_off = after_file_header_off + optional_size;
     Rng1U64 optional_range            = {0};
-    if(valid)
+    if (valid)
     {
         optional_range.min = ClampTop(after_file_header_off,     data.size);
         optional_range.max = ClampTop(after_optional_header_off, data.size);
@@ -496,7 +496,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
     Rng1U64              data_dir_range     = {0};
     Rng1U64             *data_dir_franges   = 0;
     Rng1U64             *data_dir_vranges   = 0;
-    if(valid && optional_size > 0)
+    if (valid && optional_size > 0)
     {
         // rjf: read magic number
         str8_deserial_read_struct(data, optional_range.min, &optional_magic);
@@ -504,12 +504,12 @@ pe_bin_info_from_data(Arena *arena, String8 data)
         // rjf: read info
         U32 reported_data_dir_offset = 0;
         U32 reported_data_dir_count = 0;
-        switch(optional_magic)
+        switch (optional_magic)
         {
             case PE_PE32_MAGIC:
             {
                 PE_OptionalHeader32 *pe_optional = str8_deserial_get_raw_ptr(data, optional_range.min, sizeof(*pe_optional));
-                if(pe_optional)
+                if (pe_optional)
                 {
                     image_base               = pe_optional->image_base;
                     entry_point              = pe_optional->entry_point_va;
@@ -528,7 +528,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
             case PE_PE32PLUS_MAGIC:
             {
                 PE_OptionalHeader32Plus *pe_optional = str8_deserial_get_raw_ptr(data, optional_range.min, sizeof(*pe_optional));
-                if(pe_optional)
+                if (pe_optional)
                 {
                     image_base               = pe_optional->image_base;
                     entry_point              = pe_optional->entry_point_va;
@@ -552,11 +552,11 @@ pe_bin_info_from_data(Arena *arena, String8 data)
         
         // rjf: convert PE directories to ranges
         data_dir_franges = push_array(arena, Rng1U64, Max(data_dir_count, PE_DataDirectoryIndex_COUNT));
-        for(U32 dir_idx = 0; dir_idx < data_dir_count; dir_idx += 1)
+        for (U32 dir_idx = 0; dir_idx < data_dir_count; dir_idx += 1)
         {
             U64              dir_offset = optional_range.min + reported_data_dir_offset + sizeof(PE_DataDirectory)*dir_idx;
             PE_DataDirectory dir        = {0};
-            if(str8_deserial_read_struct(data, dir_offset, &dir) == sizeof(dir))
+            if (str8_deserial_read_struct(data, dir_offset, &dir) == sizeof(dir))
             {
                 U64 file_off = coff_foff_from_voff(sections, clamped_sec_count, dir.virt_off);
                 data_dir_franges[dir_idx] = r1u64(file_off, file_off+dir.virt_size);
@@ -569,11 +569,11 @@ pe_bin_info_from_data(Arena *arena, String8 data)
 
         // export virtual directory ranges
         data_dir_vranges = push_array(arena, Rng1U64, data_dir_count);
-        for(U32 dir_idx = 0; dir_idx < data_dir_count; dir_idx += 1)
+        for (U32 dir_idx = 0; dir_idx < data_dir_count; dir_idx += 1)
         {
             U64              dir_offset = optional_range.min + reported_data_dir_offset + sizeof(PE_DataDirectory)*dir_idx;
             PE_DataDirectory dir        = {0};
-            if(str8_deserial_read_struct(data, dir_offset, &dir) == sizeof(dir))
+            if (str8_deserial_read_struct(data, dir_offset, &dir) == sizeof(dir))
             {
                 data_dir_vranges[dir_idx] = r1u64(dir.virt_off, dir.virt_off+dir.virt_size);
             }
@@ -589,17 +589,17 @@ pe_bin_info_from_data(Arena *arena, String8 data)
     
     // rjf: extract tls header
     PE_TLSHeader64 tls_header = {0};
-    if(valid && PE_DataDirectoryIndex_TLS < data_dir_count)
+    if (valid && PE_DataDirectoryIndex_TLS < data_dir_count)
     {
         Rng1U64 tls_header_frng = data_dir_franges[PE_DataDirectoryIndex_TLS];
-        switch(file_header.machine)
+        switch (file_header.machine)
         {
             default:{ NotImplemented; }break;
             case COFF_MachineType_Unknown: break;
             case COFF_MachineType_X86:
             {
                 PE_TLSHeader32 tls_header32 = {0};
-                if(str8_deserial_read_struct(data, tls_header_frng.min, &tls_header32) == sizeof(tls_header32))
+                if (str8_deserial_read_struct(data, tls_header_frng.min, &tls_header32) == sizeof(tls_header32))
                 {
                     tls_header.raw_data_start    = (U64)tls_header32.raw_data_start;
                     tls_header.raw_data_end      = (U64)tls_header32.raw_data_end;
@@ -615,7 +615,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
             }break;
             case COFF_MachineType_X64:
             {
-                if(str8_deserial_read_struct(data, tls_header_frng.min, &tls_header) != sizeof(tls_header))
+                if (str8_deserial_read_struct(data, tls_header_frng.min, &tls_header) != sizeof(tls_header))
                 {
                     MemoryZeroStruct(&tls_header);
                     Assert(!"unable to read TLS Header 64");
@@ -625,7 +625,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
     }
     
     // rjf: fill info
-    if(valid)
+    if (valid)
     {
         info.arch                = arch_from_coff_machine(file_header.machine);
         info.image_base          = image_base;
@@ -667,25 +667,25 @@ pe_debug_info_list_from_raw_debug_dir(Arena *arena, String8 raw_image, String8 r
     PE_DebugInfoList result = {0};
     PE_DebugDirectory *debug_entry     = str8_deserial_get_raw_ptr(raw_debug_dir, 0, sizeof(*debug_entry));
     PE_DebugDirectory *debug_entry_opl = debug_entry + raw_debug_dir.size/sizeof(*debug_entry_opl);
-    for(PE_DebugDirectory *entry = debug_entry; entry < debug_entry_opl; entry += 1)
+    for (PE_DebugDirectory *entry = debug_entry; entry < debug_entry_opl; entry += 1)
     {
         PE_DebugInfoNode *n = push_array(arena, PE_DebugInfoNode, 1);
         SLLQueuePush(result.first, result.last, n);
         result.count += 1;
         n->v.header = *entry;
-        switch(entry->type)
+        switch (entry->type)
         {
             default:{}break;
             case PE_DebugDirectoryType_CODEVIEW:
             {
                 str8_deserial_read_struct(raw_image, entry->foff, &n->v.cv_magic);
-                switch(n->v.cv_magic)
+                switch (n->v.cv_magic)
                 {
                     case PE_CODEVIEW_PDB20_MAGIC:
                     {
                         PE_CvHeaderPDB20 cv = {0};
                         U64 cv_read_size = str8_deserial_read_struct(raw_image, entry->foff, &cv);
-                        if(cv_read_size == sizeof(cv))
+                        if (cv_read_size == sizeof(cv))
                         {
                             String8 path = {0};
                             str8_deserial_read_cstr(raw_image, entry->foff+sizeof(cv), &path);
@@ -697,7 +697,7 @@ pe_debug_info_list_from_raw_debug_dir(Arena *arena, String8 raw_image, String8 r
                     {
                         PE_CvHeaderPDB70 cv = {0};
                         U64 cv_read_size = str8_deserial_read_struct(raw_image, entry->foff, &cv);
-                        if(cv_read_size == sizeof(cv))
+                        if (cv_read_size == sizeof(cv))
                         {
                             String8 path = {0};
                             str8_deserial_read_cstr(raw_image, entry->foff+sizeof(cv), &path);
@@ -709,7 +709,7 @@ pe_debug_info_list_from_raw_debug_dir(Arena *arena, String8 raw_image, String8 r
                     {
                         PE_CvHeaderRDI cv = {0};
                         U64 cv_read_size = str8_deserial_read_struct(raw_image, entry->foff, &cv);
-                        if(cv_read_size == sizeof(cv))
+                        if (cv_read_size == sizeof(cv))
                         {
                             String8 path = {0};
                             str8_deserial_read_cstr(raw_image, entry->foff+sizeof(cv), &path);
@@ -733,11 +733,11 @@ pe_pdata_off_from_voff__binary_search_x8664(String8 raw_pdata, U64 voff)
 {
     U64 result = 0;
     
-    if(raw_pdata.size >= sizeof(PE_IntelPdata))
+    if (raw_pdata.size >= sizeof(PE_IntelPdata))
     {
         U64            pdata_count = raw_pdata.size/sizeof(PE_IntelPdata);
         PE_IntelPdata *pdata_array = (PE_IntelPdata*)raw_pdata.str;
-        if(voff >= pdata_array[0].voff_first)
+        if (voff >= pdata_array[0].voff_first)
         {
             // binary search:
             //  find max index s.t. pdata_array[index].voff_first <= voff
@@ -745,15 +745,15 @@ pe_pdata_off_from_voff__binary_search_x8664(String8 raw_pdata, U64 voff)
             U64 index = pdata_count;
             U64 min   = 0;
             U64 opl   = pdata_count;
-            for(;;)
+            for (;;)
             {
                 U64            mid   = (min + opl)/2;
                 PE_IntelPdata *pdata = pdata_array + mid;
-                if(voff < pdata->voff_first)
+                if (voff < pdata->voff_first)
                 {
                     opl = mid;
                 }
-                else if(pdata->voff_first < voff)
+                else if (pdata->voff_first < voff)
                 {
                     min = mid;
                 }
@@ -762,7 +762,7 @@ pe_pdata_off_from_voff__binary_search_x8664(String8 raw_pdata, U64 voff)
                     index = mid;
                     break;
                 }
-                if(min + 1 >= opl)
+                if (min + 1 >= opl)
                 {
                     index = min;
                     break;
@@ -772,7 +772,7 @@ pe_pdata_off_from_voff__binary_search_x8664(String8 raw_pdata, U64 voff)
             // if we are in range fill result
             {
                 PE_IntelPdata *pdata = pdata_array + index;
-                if(pdata->voff_first <= voff && voff < pdata->voff_one_past_last)
+                if (pdata->voff_first <= voff && voff < pdata->voff_one_past_last)
                 {
                     result = index*sizeof(PE_IntelPdata);
                 }
@@ -789,12 +789,12 @@ pe_foff_from_voff(String8 data, PE_BinInfo *bin, U64 voff)
     U64                 foff              = 0;
     String8             raw_section_table = str8_substr(data, bin->section_table_range);
     COFF_SectionHeader *section_table     = (COFF_SectionHeader *)raw_section_table.str;
-    for(U64 sect_idx = 0; sect_idx < bin->section_count; sect_idx += 1)
+    for (U64 sect_idx = 0; sect_idx < bin->section_count; sect_idx += 1)
     {
         COFF_SectionHeader *sect = &section_table[sect_idx];
-        if(sect->voff <= voff && voff < sect->voff + sect->vsize)
+        if (sect->voff <= voff && voff < sect->voff + sect->vsize)
         {
-            if(!(sect->flags & COFF_SectionFlag_CntUninitializedData))
+            if (!(sect->flags & COFF_SectionFlag_CntUninitializedData))
             {
                 foff = sect->foff + (voff - sect->voff);
             }
@@ -808,7 +808,7 @@ internal PE_BaseRelocBlockList
 pe_base_reloc_block_list_from_data(Arena *arena, String8 raw_base_relocs)
 {
     PE_BaseRelocBlockList list = {0};
-    for(U64 off = 0; off < raw_base_relocs.size;)
+    for (U64 off = 0; off < raw_base_relocs.size;)
     {
         // rjf: read next entry
         U32 page_virt_off = 0;
@@ -817,7 +817,7 @@ pe_base_reloc_block_list_from_data(Arena *arena, String8 raw_base_relocs)
         off += str8_deserial_read_struct(raw_base_relocs, off, &block_size);
         
         // rjf: break on sentinel
-        if(block_size == 0)
+        if (block_size == 0)
         {
             break;
         }
@@ -847,16 +847,16 @@ pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo *bin, U64 base_vaddr)
 {
     U64 result_addr = (bin->tls_header.index_address - bin->image_base);
     U64 result_size = sizeof(U32);
-    if(bin->arch != Arch_Null)
+    if (bin->arch != Arch_Null)
     {
         U64 addr_size = bit_size_from_arch(bin->arch)/8;
         Temp scratch = scratch_begin(0, 0);
         String8 raw_relocs = str8_substr(data, bin->data_dir_franges[PE_DataDirectoryIndex_BASE_RELOC]);
         PE_BaseRelocBlockList relocs = pe_base_reloc_block_list_from_data(scratch.arena, raw_relocs);
-        for(PE_BaseRelocBlockNode *n = relocs.first; n != 0; n = n->next)
+        for (PE_BaseRelocBlockNode *n = relocs.first; n != 0; n = n->next)
         {
             PE_BaseRelocBlock *block = &n->v;
-            for(U64 ientry = 0; ientry < block->entry_count;)
+            for (U64 ientry = 0; ientry < block->entry_count;)
             {
                 U32 reloc = block->entries[ientry];
                 U16 kind = PE_BaseRelocKindFromEntry(reloc);
@@ -865,10 +865,10 @@ pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo *bin, U64 base_vaddr)
                 U64 apply_to_foff = pe_foff_from_voff(data, bin, apply_to_voff);
                 U64 apply_to      = 0;
                 str8_deserial_read(data, apply_to_foff, &apply_to, addr_size, 1);
-                if(apply_to == bin->tls_header.index_address)
+                if (apply_to == bin->tls_header.index_address)
                 {
                     U64 base_diff = base_vaddr-bin->image_base;
-                    switch(kind)
+                    switch (kind)
                     {
                         default:
                         {
@@ -894,7 +894,7 @@ pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo *bin, U64 base_vaddr)
                         }break;
                         case PE_BaseRelocKind_HIGHADJ:
                         {
-                            if(ientry + 1 >= block->entry_count)
+                            if (ientry + 1 >= block->entry_count)
                             {
                                 // NOTE(rjf): malformed relocation, expected two 16-bit entries
                                 break;

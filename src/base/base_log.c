@@ -39,7 +39,7 @@ log_select(Log *log)
 internal void
 log_msg(LogMsgKind kind, String8 string)
 {
-    if(log_active != 0 && log_active->top_scope != 0)
+    if (log_active != 0 && log_active->top_scope != 0)
     {
         String8 string_copy = push_str8_copy(log_active->arena, string);
         str8_list_push(log_active->arena, &log_active->top_scope->strings[kind], string_copy);
@@ -49,7 +49,7 @@ log_msg(LogMsgKind kind, String8 string)
 internal void
 log_msgf(LogMsgKind kind, char *fmt, ...)
 {
-    if(log_active != 0)
+    if (log_active != 0)
     {
         Temp scratch = scratch_begin(0, 0);
         va_list args;
@@ -67,7 +67,7 @@ log_msgf(LogMsgKind kind, char *fmt, ...)
 internal void
 log_scope_begin(void)
 {
-    if(log_active != 0)
+    if (log_active != 0)
     {
         U64 pos = arena_pos(log_active->arena);
         LogScope *scope = push_array(log_active->arena, LogScope, 1);
@@ -80,13 +80,13 @@ internal LogScopeResult
 log_scope_end(Arena *arena)
 {
     LogScopeResult result = {0};
-    if(log_active != 0)
+    if (log_active != 0)
     {
         LogScope *scope = log_active->top_scope;
-        if(scope != 0)
+        if (scope != 0)
         {
             SLLStackPop(log_active->top_scope);
-            if(arena != 0)
+            if (arena != 0)
             {
                 for EachEnumVal(LogMsgKind, kind)
                 {

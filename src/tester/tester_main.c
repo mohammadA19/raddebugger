@@ -51,7 +51,7 @@ entry_point(CmdLine *cmdline)
     //- rjf: unpack command line
     //
     String8 test_data_folder_path = cmd_line_string(cmdline, str8_lit("test_data"));
-    if(test_data_folder_path.size == 0)
+    if (test_data_folder_path.size == 0)
     {
         fprintf(stderr, "error(input): The test data folder path was not specified. Specify the path when running the program, like: %.*s --test_data:C:/foo/bar/baz\n", str8_varg(cmdline->exe_name));
         os_abort(1);
@@ -81,7 +81,7 @@ Test *test_##name_identifier = push_array(arena, Test, 1);\
 test_##name_identifier->name = str8_lit(#name_identifier);\
 test_##name_identifier->good = 1;\
 SLLQueuePush(first_test, last_test, test_##name_identifier);\
-for(Test *test = test_##name_identifier; test != 0; test = 0)
+for (Test *test = test_##name_identifier; test != 0; test = 0)
     
     //////////////////////////////
     //- rjf: PDB -> RDI determinism
@@ -112,7 +112,7 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
                     str8_list_push(arena, &rdi_paths, rdi_path);
                     os_handle_list_push(arena, &processes, os_cmd_line_launchf("rdi_from_pdb --deterministic --pdb:%S --out:%S", pdb_path, rdi_path));
                 }
-                for(OS_HandleNode *n = processes.first; n != 0; n = n->next)
+                for (OS_HandleNode *n = processes.first; n != 0; n = n->next)
                 {
                     os_process_join(n->v, max_U64);
                 }
@@ -121,14 +121,14 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
             // rjf: generate all dumps
             {
                 OS_HandleList processes = {0};
-                for(String8Node *n = rdi_paths.first; n != 0; n = n->next)
+                for (String8Node *n = rdi_paths.first; n != 0; n = n->next)
                 {
                     String8 rdi_path = n->string;
                     String8 dump_path = push_str8f(arena, "%S.dump", rdi_path);
                     str8_list_push(arena, &dump_paths, dump_path);
                     os_handle_list_push(arena, &processes, os_cmd_line_launchf("rdi_dump %S > %S", rdi_path, dump_path));
                 }
-                for(OS_HandleNode *n = processes.first; n != 0; n = n->next)
+                for (OS_HandleNode *n = processes.first; n != 0; n = n->next)
                 {
                     os_process_join(n->v, max_U64);
                 }
@@ -143,7 +143,7 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
             String8 *dump_paths_array = push_array(arena, String8, dump_hashes_count);
             {
                 U64 idx = 0;
-                for(String8Node *n = rdi_paths.first; n != 0; n = n->next, idx += 1)
+                for (String8Node *n = rdi_paths.first; n != 0; n = n->next, idx += 1)
                 {
                     Temp scratch = scratch_begin(0, 0);
                     String8 path = n->string;
@@ -155,7 +155,7 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
             }
             {
                 U64 idx = 0;
-                for(String8Node *n = dump_paths.first; n != 0; n = n->next, idx += 1)
+                for (String8Node *n = dump_paths.first; n != 0; n = n->next, idx += 1)
                 {
                     Temp scratch = scratch_begin(0, 0);
                     String8 path = n->string;
@@ -170,7 +170,7 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
             B32 matches = 1;
             for EachIndex(idx, rdi_hashes_count)
             {
-                if(!u128_match(rdi_hashes[idx], rdi_hashes[0]))
+                if (!u128_match(rdi_hashes[idx], rdi_hashes[0]))
                 {
                     matches = 0;
                     break;
@@ -178,7 +178,7 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
             }
             for EachIndex(idx, dump_hashes_count)
             {
-                if(!u128_match(dump_hashes[idx], dump_hashes[0]))
+                if (!u128_match(dump_hashes[idx], dump_hashes[0]))
                 {
                     matches = 0;
                     break;
@@ -186,7 +186,7 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
             }
             
             // rjf: output bad case info
-            if(!matches)
+            if (!matches)
             {
                 test->good = 0;
                 str8_list_pushf(arena, &test->out, "  pdb[%I64u] \"%S\"\n", pdb_idx, pdb_path);
@@ -236,21 +236,21 @@ for(Test *test = test_##name_identifier; test != 0; test = 0)
     //- rjf: dump results
     //
     B32 all_good = 1;
-    for(Test *t = first_test; t != 0; t = t->next)
+    for (Test *t = first_test; t != 0; t = t->next)
     {
-        if(!t->good)
+        if (!t->good)
         {
             all_good = 0;
             break;
         }
     }
     fprintf(stderr, "[%s]\n", all_good ? "." : "X");
-    for(Test *t = first_test; t != 0; t = t->next)
+    for (Test *t = first_test; t != 0; t = t->next)
     {
         fprintf(stderr, "    [%s] \"%.*s\"\n", t->good ? "." : "X", str8_varg(t->name));
-        if(!t->good)
+        if (!t->good)
         {
-            for(String8Node *n = t->out.first; n != 0; n = n->next)
+            for (String8Node *n = t->out.first; n != 0; n = n->next)
             {
                 fprintf(stderr, "        %.*s", str8_varg(n->string));
             }

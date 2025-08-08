@@ -407,7 +407,7 @@ dw_unwind_parse_pointer_x64(void *frame_base, Rng1U64 frame_range, DW_EhPtrCtx *
     // return
     *ptr_out = pointer;
     U64 result = after_pointer_off - off;
-    return(result);
+    return (result);
 }
 
 //- eh_frame parsing
@@ -675,7 +675,7 @@ dw_unwind_eh_frame_cfi_from_ip_slow_x64(String8 raw_eh_frame, DW_EhPtrCtx *ptr_c
     
     scratch_end(scratch);
     
-    return(result);
+    return (result);
 }
 
 internal U64

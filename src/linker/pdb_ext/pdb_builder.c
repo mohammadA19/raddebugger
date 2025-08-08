@@ -80,7 +80,7 @@ pdb_hash_table_from_data(PDB_HashTable *ht,
         cursor += pdb_read_bit_vector_string(data, cursor, &deleted_bits);
 
         error = PDB_HashTableParseError_OK;
-    } while(0);
+    } while (0);
 
     if (error == PDB_HashTableParseError_OK) {
         U64 load_factor = pdb_hash_table_compute_load_factor(max);

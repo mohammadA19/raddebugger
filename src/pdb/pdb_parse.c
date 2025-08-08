@@ -123,7 +123,7 @@ pdb_info_from_data(Arena *arena, String8 data){
     
     ProfEnd();
     
-    return(result);
+    return (result);
 }
 
 internal PDB_NamedStreamTable*
@@ -169,7 +169,7 @@ pdb_named_stream_table_from_info(Arena *arena, PDB_Info *info){
     
     ProfEnd();
     
-    return(result);
+    return (result);
 }
 
 internal PDB_Strtbl*
@@ -212,7 +212,7 @@ pdb_strtbl_from_data(Arena *arena, String8 data){
     
     ProfEnd();
     
-    return(result);
+    return (result);
 }
 
 internal PDB_DbiParsed*
@@ -272,7 +272,7 @@ pdb_dbi_from_data(Arena *arena, String8 data){
     
     ProfEnd();
     
-    return(result);
+    return (result);
 }
 
 internal PDB_TpiParsed*
@@ -314,7 +314,7 @@ pdb_tpi_from_data(Arena *arena, String8 data){
     
     ProfEnd();
     
-    return(result);
+    return (result);
 }
 
 internal PDB_TpiHashParsed*
@@ -350,7 +350,7 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
                     block = push_array(arena, PDB_TpiHashBlock, 1);
                     SLLStackPush(buckets[bucket_idx], block);
                 }
-                if(block->local_count != 0)
+                if (block->local_count != 0)
                 {
                     MemoryCopy(block->itypes+1, block->itypes, sizeof(CV_TypeId)*block->local_count);
                 }
@@ -365,14 +365,14 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
         
         //- rjf: compute bucket mask
         U32 bucket_mask = 0;
-        if(IsPow2OrZero(bucket_count))
+        if (IsPow2OrZero(bucket_count))
         {
             bucket_mask = bucket_count-1;
         }
         
         //- rjf: apply hash adjustments, to pull correct type IDs to the front of
         // the chains
-        if(tpi->hash_adj_size != 0)
+        if (tpi->hash_adj_size != 0)
         {
             // NOTE(rjf): this table is laid out in the following format:
             //
@@ -399,7 +399,7 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
             adjs_cursor += deleted_bit_array_count*sizeof(U32);
             U32 adjs_stride = sizeof(U32)*2;
             U32 pair_idx = 0;
-            for(;adjs_cursor < adjs_opl && pair_idx < pair_count;
+            for (;adjs_cursor < adjs_opl && pair_idx < pair_count;
                     adjs_cursor += adjs_stride, pair_idx += 1)
             {
                 U32 name_off = ((U32 *)adjs_cursor)[0];
@@ -408,23 +408,23 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
                 U32 hash = pdb_hash_v1(string);
                 U32 bucket_idx = ((bucket_mask != 0) ? hash&bucket_mask : hash%bucket_count);
                 PDB_TpiHashBlock *prev_block = 0;
-                for(PDB_TpiHashBlock *block = buckets[bucket_idx];
+                for (PDB_TpiHashBlock *block = buckets[bucket_idx];
                         block != 0;
                         prev_block = block, block = block->next)
                 {
-                    for(U32 local_idx = 0;
+                    for (U32 local_idx = 0;
                             local_idx < block->local_count && local_idx < ArrayCount(block->itypes);
                             local_idx += 1)
                     {
-                        if(block->itypes[local_idx] == type_id)
+                        if (block->itypes[local_idx] == type_id)
                         {
-                            if(prev_block != 0)
+                            if (prev_block != 0)
                             {
                                 prev_block->next = block->next;
                                 block->next = buckets[bucket_idx];
                                 buckets[bucket_idx] = block;
                             }
-                            if(local_idx != 0)
+                            if (local_idx != 0)
                             {
                                 Swap(CV_TypeId, block->itypes[0], block->itypes[local_idx]);
                             }
@@ -446,7 +446,7 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
     
     ProfEnd();
     
-    return(result);
+    return (result);
 }
 
 internal PDB_GsiParsed*
@@ -574,7 +574,7 @@ pdb_gsi_from_data(Arena *arena, String8 data){
     
     ProfEnd();
     
-    return(result);
+    return (result);
 }
 
 internal U64
@@ -586,18 +586,18 @@ pdb_gsi_symbol_from_string(PDB_GsiParsed *gsi, String8 symbol_data, String8 stri
     U32           bucket_idx = hash % ArrayCount(gsi->buckets);
     PDB_GsiBucket bucket     = gsi->buckets[bucket_idx];
     
-    for(U64 i = 0; i < bucket.count; ++i)
+    for (U64 i = 0; i < bucket.count; ++i)
     {
         U32 off = bucket.offs[i];
-        if(off + sizeof(CV_RecHeader) <= symbol_data.size)
+        if (off + sizeof(CV_RecHeader) <= symbol_data.size)
         {
             CV_RecHeader *sym_header = (CV_RecHeader *)(symbol_data.str + off);
             
-            if(sym_header->size >= sizeof(sym_header->kind))
+            if (sym_header->size >= sizeof(sym_header->kind))
             {
                 U64  opl_off = off + sizeof(sym_header->size) + sym_header->size;
                 U8  *sym_opl = (U8*)sym_header;
-                if(opl_off <= symbol_data.size)
+                if (opl_off <= symbol_data.size)
                 {
                     sym_opl = symbol_data.str + opl_off;
                 }
@@ -606,7 +606,7 @@ pdb_gsi_symbol_from_string(PDB_GsiParsed *gsi, String8 symbol_data, String8 stri
                 String8 raw_symbol       = str8_substr(symbol_data, raw_symbol_range);
                 String8 sym_name         = cv_name_from_symbol(sym_header->kind, raw_symbol);
                 
-                if(str8_match(sym_name, string, 0))
+                if (str8_match(sym_name, string, 0))
                 {
                     result = off;
                     goto exit;
@@ -624,7 +624,7 @@ pdb_coff_section_array_from_data(Arena *arena, String8 data){
     COFF_SectionHeaderArray result = {0};
     result.count = data.size/sizeof(COFF_SectionHeader);
     result.v = (COFF_SectionHeader*)data.str;
-    return(result);
+    return (result);
 }
 
 internal PDB_CompUnitArray*
@@ -700,7 +700,7 @@ pdb_comp_unit_array_from_data(Arena *arena, String8 data){
     result->units = units;
     result->count = count;
     
-    return(result);
+    return (result);
 }
 
 internal PDB_CompUnitContributionArray*
@@ -762,7 +762,7 @@ pdb_comp_unit_contribution_array_from_data(Arena *arena, String8 data, COFF_Sect
     result->contributions = contributions;
     result->count = count;
     
-    return(result);
+    return (result);
 }
 
 ////////////////////////////////
@@ -777,7 +777,7 @@ pdb_data_from_dbi_range(PDB_DbiParsed *dbi, PDB_DbiRange range){
         result.str = dbi->data.str + first;
         result.size = opl - first;
     }
-    return(result);
+    return (result);
 }
 
 internal String8
@@ -794,7 +794,7 @@ pdb_data_from_unit_range(MSF_Parsed *msf, PDB_CompUnit *unit, PDB_DbiCompUnitRan
         result.str = full_stream_data.str + first;
         result.size = opl - first;
     }
-    return(result);
+    return (result);
 }
 
 ////////////////////////////////
@@ -806,7 +806,7 @@ pdb_leaf_data_from_tpi(PDB_TpiParsed *tpi){
     U8 *first = data.str + tpi->leaf_first;
     U8 *opl   = data.str + tpi->leaf_opl;
     String8 result = str8_range(first, opl);
-    return(result);
+    return (result);
 }
 
 internal CV_TypeIdArray
@@ -997,7 +997,7 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
     
     scratch_end(scratch);
     
-    return(result);
+    return (result);
 }
 
 internal CV_TypeId
@@ -1012,7 +1012,7 @@ pdb_tpi_first_itype_from_name(PDB_TpiHashParsed *tpi_hash, CV_LeafParsed *tpi_le
     }
     
     scratch_end(scratch);
-    return(result);
+    return (result);
 }
 
 ////////////////////////////////
@@ -1025,7 +1025,7 @@ pdb_strtbl_string_from_off(PDB_Strtbl *strtbl, U32 off){
     U32 full_off = ClampTop(full_off_raw, strblock_max);
     String8 result = str8_cstring_capped((char*)(strtbl->data.str + full_off),
                                                                               (char*)(strtbl->data.str + strblock_max));
-    return(result);
+    return (result);
 }
 
 internal String8
@@ -1035,7 +1035,7 @@ pdb_strtbl_string_from_index(PDB_Strtbl *strtbl, PDB_StringIndex idx){
         U32 off = *(U32*)(strtbl->data.str + strtbl->buckets_min + idx*4);
         result = pdb_strtbl_string_from_off(strtbl, off);
     }
-    return(result);
+    return (result);
 }
 
 internal U32
@@ -1051,12 +1051,12 @@ pdb_strtbl_off_from_string(PDB_Strtbl *strtbl, String8 string)
     {
         String8 test_string = pdb_strtbl_string_from_index(strtbl, bucket_idx);
         
-        if(test_string.size == 0)
+        if (test_string.size == 0)
         {
             break;
         }
         
-        if(str8_match(test_string, string, 0))
+        if (str8_match(test_string, string, 0))
         {
             result = bucket_idx;
             break;
@@ -1080,18 +1080,18 @@ pdb_has_symbol_ref(String8 msf_data, String8List symbol_list, MSF_RawStreamTable
     
     String8        dbi_data = msf_data_from_stream_number(scratch.arena, msf_data, st, PDB_FixedStream_Dbi);
     PDB_DbiParsed *dbi      = pdb_dbi_from_data(scratch.arena, dbi_data);
-    if(dbi)
+    if (dbi)
     {
         String8        gsi_data   = msf_data_from_stream_number(scratch.arena, msf_data, st, dbi->gsi_sn);
         PDB_GsiParsed *gsi_parsed = pdb_gsi_from_data(scratch.arena, gsi_data);
-        if(gsi_parsed)
+        if (gsi_parsed)
         {
             String8 symbol_data = msf_data_from_stream_number(scratch.arena, msf_data, st, dbi->sym_sn);
             
-            for(String8Node *symbol_n = symbol_list.first; symbol_n != 0; symbol_n = symbol_n->next)
+            for (String8Node *symbol_n = symbol_list.first; symbol_n != 0; symbol_n = symbol_n->next)
             {
                 U64 symbol_off = pdb_gsi_symbol_from_string(gsi_parsed, symbol_data, symbol_n->string);
-                if(symbol_off < symbol_data.size)
+                if (symbol_off < symbol_data.size)
                 {
                     has_ref = 1;
                     break;
@@ -1113,24 +1113,24 @@ pdb_has_file_ref(String8 msf_data, String8List file_list, MSF_RawStreamTable *st
     
     String8   info_data = msf_data_from_stream_number(scratch.arena, msf_data, st, PDB_FixedStream_Info);
     PDB_Info *info      = pdb_info_from_data(scratch.arena, info_data);
-    if(info)
+    if (info)
     {
         PDB_NamedStreamTable *named_streams = pdb_named_stream_table_from_info(scratch.arena, info);
-        if(named_streams)
+        if (named_streams)
         {
             MSF_StreamNumber  strtbl_sn   = named_streams->sn[PDB_NamedStream_StringTable];
             String8           strtbl_data = msf_data_from_stream_number(scratch.arena, msf_data, st, strtbl_sn);
             PDB_Strtbl       *strtbl      = pdb_strtbl_from_data(scratch.arena, strtbl_data);
-            if(strtbl->bucket_count != 0)
+            if (strtbl->bucket_count != 0)
             {
-                for(String8Node *file_n = file_list.first; file_n != 0; file_n = file_n->next)
+                for (String8Node *file_n = file_list.first; file_n != 0; file_n = file_n->next)
                 {
                     Temp temp = temp_begin(scratch.arena);
                     String8 path = file_n->string;
                     String8 path_pdbstyle = path_convert_slashes(temp.arena, path, PathStyle_WindowsAbsolute);
                     U32 off = pdb_strtbl_off_from_string(strtbl, path_pdbstyle);
                     temp_end(temp);
-                    if(off != max_U32)
+                    if (off != max_U32)
                     {
                         has_ref = 1;
                         break;
@@ -1153,12 +1153,12 @@ pdb_has_symbol_or_file_ref(String8 msf_data, String8List symbol_list, String8Lis
     
     MSF_RawStreamTable *st = msf_raw_stream_table_from_data(scratch.arena, msf_data);
     
-    if(!has_ref && symbol_list.node_count)
+    if (!has_ref && symbol_list.node_count)
     {
         has_ref = pdb_has_symbol_ref(msf_data, symbol_list, st);
     }
     
-    if(!has_ref && file_list.node_count)
+    if (!has_ref && file_list.node_count)
     {
         has_ref = pdb_has_file_ref(msf_data, file_list, st);
     }

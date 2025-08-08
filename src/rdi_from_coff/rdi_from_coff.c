@@ -40,19 +40,19 @@ internal RDI_BinarySectionFlags
 c2r_rdi_binary_section_flags_from_coff_section_flags(COFF_SectionFlags flags)
 {
     RDI_BinarySectionFlags result = 0;
-    if(flags & COFF_SectionFlag_MemRead)
+    if (flags & COFF_SectionFlag_MemRead)
     {
         result |= RDI_BinarySectionFlag_Read;
     }
-    if(flags & COFF_SectionFlag_MemWrite)
+    if (flags & COFF_SectionFlag_MemWrite)
     {
         result |= RDI_BinarySectionFlag_Write;
     }
-    if(flags & COFF_SectionFlag_MemExecute)
+    if (flags & COFF_SectionFlag_MemExecute)
     {
         result |= RDI_BinarySectionFlag_Execute;
     }
-    return(result);
+    return (result);
 }
 
 internal RDIM_BinarySectionList

@@ -21,7 +21,7 @@ r_sample_channel_map_from_tex2dformat(R_Tex2DFormat fmt)
             {0, 0, 0, 1},
         }
     };
-    switch(fmt)
+    switch (fmt)
     {
         default:{}break;
         case R_Tex2DFormat_R8:
@@ -66,7 +66,7 @@ r_batch_list_push_inst(Arena *arena, R_BatchList *list, U64 batch_inst_cap)
     void *inst = 0;
     {
         R_BatchNode *n = list->last;
-        if(n == 0 || n->v.byte_count+list->bytes_per_inst > n->v.byte_cap)
+        if (n == 0 || n->v.byte_count+list->bytes_per_inst > n->v.byte_cap)
         {
             n = push_array(arena, R_BatchNode, 1);
             n->v.byte_cap = batch_inst_cap*list->bytes_per_inst;
@@ -88,11 +88,11 @@ internal R_Pass *
 r_pass_from_kind(Arena *arena, R_PassList *list, R_PassKind kind)
 {
     R_PassNode *n = list->last;
-    if(!r_pass_kind_batch_table[kind])
+    if (!r_pass_kind_batch_table[kind])
     {
         n = 0;
     }
-    if(n == 0 || n->v.kind != kind)
+    if (n == 0 || n->v.kind != kind)
     {
         n = push_array(arena, R_PassNode, 1);
         SLLQueuePush(list->first, list->last, n);

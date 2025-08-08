@@ -6,12 +6,12 @@
 internal RDI_RegCode regs_rdi_code_from_arch_reg_code(Arch arch, REGS_RegCode code)
 {
 RDI_RegCode result = 0;
-switch(arch)
+switch (arch)
 {
 default:{}break;
 case Arch_x64:
 {
-switch(code)
+switch (code)
 {
 default:{}break;
 case REGS_RegCodeX64_rax:{result = RDI_RegCodeX64_rax;}break;
@@ -118,7 +118,7 @@ case REGS_RegCodeX64_k7:{result = RDI_RegCodeX64_k7;}break;
 }break;
 case Arch_x86:
 {
-switch(code)
+switch (code)
 {
 default:{}break;
 case REGS_RegCodeX86_eax:{result = RDI_RegCodeX86_eax;}break;
@@ -189,12 +189,12 @@ return result;
 internal REGS_RegCode regs_reg_code_from_arch_rdi_code(Arch arch, RDI_RegCode code)
 {
 REGS_RegCode result = 0;
-switch(arch)
+switch (arch)
 {
 default:{}break;
 case Arch_x64:
 {
-switch(code)
+switch (code)
 {
 default:{}break;
 case RDI_RegCodeX64_rax:{result = REGS_RegCodeX64_rax;}break;
@@ -301,7 +301,7 @@ case RDI_RegCodeX64_k7:{result = REGS_RegCodeX64_k7;}break;
 }break;
 case Arch_x86:
 {
-switch(code)
+switch (code)
 {
 default:{}break;
 case RDI_RegCodeX86_eax:{result = REGS_RegCodeX86_eax;}break;

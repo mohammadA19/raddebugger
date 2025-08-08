@@ -55,7 +55,7 @@ fp_hook void
 fp_font_close(FP_Handle handle)
 {
     FP_FT_Font font = fp_ft_font_from_handle(handle);
-    if(font.face != 0)
+    if (font.face != 0)
     {
         FT_Done_Face(font.face);
     }
@@ -66,7 +66,7 @@ fp_metrics_from_font(FP_Handle handle)
 {
     FP_FT_Font font = fp_ft_font_from_handle(handle);
     FP_Metrics result = {0};
-    if(font.face != 0)
+    if (font.face != 0)
     {
         result.design_units_per_em = (F32)(font.face->units_per_EM);
         result.ascent              = (F32)font.face->ascender;
@@ -83,7 +83,7 @@ fp_raster(Arena *arena, FP_Handle handle, F32 size, FP_RasterFlags flags, String
     ProfBeginFunction();
     FP_FT_Font font = fp_ft_font_from_handle(handle);
     FP_RasterResult result = {0};
-    if(font.face != 0)
+    if (font.face != 0)
     {
         Temp scratch = scratch_begin(&arena, 1);
         
@@ -117,14 +117,14 @@ fp_raster(Arena *arena, FP_Handle handle, F32 size, FP_RasterFlags flags, String
             FT_Bitmap *bmp = &face->glyph->bitmap;
             S32 top = face->glyph->bitmap_top;
             S32 left = face->glyph->bitmap_left;
-            for(S32 row = 0; row < (S32)bmp->rows; row += 1)
+            for (S32 row = 0; row < (S32)bmp->rows; row += 1)
             {
                 S32 y = baseline - top + row;
-                for(S32 col = 0; col < (S32)bmp->width; col += 1)
+                for (S32 col = 0; col < (S32)bmp->width; col += 1)
                 {
                     S32 x = atlas_write_x + left + col;
                     U64 off = (y*dim.x + x)*4;
-                    if(off+4 <= atlas_size)
+                    if (off+4 <= atlas_size)
                     {
                         atlas[off+0] = 255;
                         atlas[off+1] = 255;

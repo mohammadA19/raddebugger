@@ -33,7 +33,7 @@ os_handle_array_from_list(Arena *arena, OS_HandleList *list)
     result.count = list->count;
     result.v = push_array_no_zero(arena, OS_Handle, result.count);
     U64 idx = 0;
-    for(OS_HandleNode *n = list->first; n != 0; n = n->next, idx += 1)
+    for (OS_HandleNode *n = list->first; n != 0; n = n->next, idx += 1)
     {
         result.v[idx] = n->v;
     }
@@ -47,7 +47,7 @@ internal String8List
 os_string_list_from_argcv(Arena *arena, int argc, char **argv)
 {
     String8List result = {0};
-    for(int i = 0; i < argc; i += 1)
+    for (int i = 0; i < argc; i += 1)
     {
         String8 str = str8_cstring(argv[i]);
         str8_list_push(arena, &result, str);
@@ -73,7 +73,7 @@ os_write_data_to_file_path(String8 path, String8 data)
 {
     B32 good = 0;
     OS_Handle file = os_file_open(OS_AccessFlag_Write, path);
-    if(!os_handle_match(file, os_handle_zero()))
+    if (!os_handle_match(file, os_handle_zero()))
     {
         good = 1;
         os_file_write(file, r1u64(0, data.size), data.str);
@@ -87,11 +87,11 @@ os_write_data_list_to_file_path(String8 path, String8List list)
 {
     B32 good = 0;
     OS_Handle file = os_file_open(OS_AccessFlag_Write, path);
-    if(!os_handle_match(file, os_handle_zero()))
+    if (!os_handle_match(file, os_handle_zero()))
     {
         good = 1;
         U64 off = 0;
-        for(String8Node *n = list.first; n != 0; n = n->next)
+        for (String8Node *n = list.first; n != 0; n = n->next)
         {
             os_file_write(file, r1u64(off, off+n->string.size), n->string.str);
             off += n->string.size;
@@ -105,10 +105,10 @@ internal B32
 os_append_data_to_file_path(String8 path, String8 data)
 {
     B32 good = 0;
-    if(data.size != 0)
+    if (data.size != 0)
     {
         OS_Handle file = os_file_open(OS_AccessFlag_Write|OS_AccessFlag_Append, path);
-        if(!os_handle_match(file, os_handle_zero()))
+        if (!os_handle_match(file, os_handle_zero()))
         {
             good = 1;
             U64 pos = os_properties_from_file(file).size;
@@ -143,7 +143,7 @@ os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
     result.size = dim_1u64(range);
     result.str = push_array_no_zero(arena, U8, result.size);
     U64 actual_read_size = os_file_read(file, range, result.str);
-    if(actual_read_size < result.size)
+    if (actual_read_size < result.size)
     {
         arena_pop_to(arena, pre_pos + actual_read_size);
         result.size = actual_read_size;
@@ -161,21 +161,21 @@ os_cmd_line_launch(String8 string)
     U8 split_chars[] = {' '};
     String8List parts = str8_split(scratch.arena, string, split_chars, ArrayCount(split_chars), 0);
     OS_Handle handle = {0};
-    if(parts.node_count != 0)
+    if (parts.node_count != 0)
     {
         // rjf: unpack exe part
         String8 exe = parts.first->string;
         String8 exe_folder = str8_chop_last_slash(exe);
-        if(exe_folder.size == 0)
+        if (exe_folder.size == 0)
         {
             exe_folder = os_get_current_path(scratch.arena);
         }
         
         // rjf: find stdout delimiter
         String8Node *stdout_delimiter_n = 0;
-        for(String8Node *n = parts.first; n != 0; n = n->next)
+        for (String8Node *n = parts.first; n != 0; n = n->next)
         {
-            if(str8_match(n->string, str8_lit(">"), 0))
+            if (str8_match(n->string, str8_lit(">"), 0))
             {
                 stdout_delimiter_n = n;
                 break;
@@ -184,14 +184,14 @@ os_cmd_line_launch(String8 string)
         
         // rjf: read stdout path
         String8 stdout_path = {0};
-        if(stdout_delimiter_n && stdout_delimiter_n->next)
+        if (stdout_delimiter_n && stdout_delimiter_n->next)
         {
             stdout_path = stdout_delimiter_n->next->string;
         }
         
         // rjf: open stdout handle
         OS_Handle stdout_handle = {0};
-        if(stdout_path.size != 0)
+        if (stdout_path.size != 0)
         {
             OS_Handle file = os_file_open(OS_AccessFlag_Write|OS_AccessFlag_Read, stdout_path);
             os_file_close(file);
@@ -200,7 +200,7 @@ os_cmd_line_launch(String8 string)
         
         // rjf: form command line
         String8List cmdline = {0};
-        for(String8Node *n = parts.first; n != stdout_delimiter_n && n != 0; n = n->next)
+        for (String8Node *n = parts.first; n != stdout_delimiter_n && n != 0; n = n->next)
         {
             str8_list_push(scratch.arena, &cmdline, n->string);
         }
@@ -215,7 +215,7 @@ os_cmd_line_launch(String8 string)
         
         // rjf: close stdout handle
         {
-            if(stdout_path.size != 0)
+            if (stdout_path.size != 0)
             {
                 os_file_close(stdout_handle);
             }

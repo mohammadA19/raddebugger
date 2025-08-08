@@ -30,7 +30,7 @@ internal void
 dmn_trap_chunk_list_push(Arena *arena, DMN_TrapChunkList *list, U64 cap, DMN_Trap *trap)
 {
     DMN_TrapChunkNode *node = list->last;
-    if(node == 0 || node->count >= node->cap)
+    if (node == 0 || node->count >= node->cap)
     {
         node = push_array(arena, DMN_TrapChunkNode, 1);
         node->cap = cap;
@@ -46,11 +46,11 @@ dmn_trap_chunk_list_push(Arena *arena, DMN_TrapChunkList *list, U64 cap, DMN_Tra
 internal void
 dmn_trap_chunk_list_concat_in_place(DMN_TrapChunkList *dst, DMN_TrapChunkList *to_push)
 {
-    if(dst->last == 0)
+    if (dst->last == 0)
     {
         MemoryCopyStruct(dst, to_push);
     }
-    else if(to_push->first != 0)
+    else if (to_push->first != 0)
     {
         dst->last->next = to_push->first;
         dst->last = to_push->last;
@@ -63,7 +63,7 @@ dmn_trap_chunk_list_concat_in_place(DMN_TrapChunkList *dst, DMN_TrapChunkList *t
 internal void
 dmn_trap_chunk_list_concat_shallow_copy(Arena *arena, DMN_TrapChunkList *dst, DMN_TrapChunkList *to_push)
 {
-    for(DMN_TrapChunkNode *src_n = to_push->first; src_n != 0; src_n = src_n->next)
+    for (DMN_TrapChunkNode *src_n = to_push->first; src_n != 0; src_n = src_n->next)
     {
         DMN_TrapChunkNode *dst_n = push_array(arena, DMN_TrapChunkNode, 1);
         dst_n->v     = src_n->v;
@@ -93,7 +93,7 @@ dmn_handle_array_from_list(Arena *arena, DMN_HandleList *list)
     array.count = list->count;
     array.handles = push_array_no_zero(arena, DMN_Handle, array.count);
     U64 idx = 0;
-    for(DMN_HandleNode *n = list->first; n != 0; n = n->next, idx += 1)
+    for (DMN_HandleNode *n = list->first; n != 0; n = n->next, idx += 1)
     {
         array.handles[idx] = n->v;
     }
@@ -165,13 +165,13 @@ dmn_process_read_cstring(Arena *arena, DMN_Handle process, U64 addr)
 {
     Temp scratch = scratch_begin(&arena, 1);
     String8List block_list = {0};
-    for(U64 cursor = addr, stride = 256; ; cursor += stride)
+    for (U64 cursor = addr, stride = 256; ; cursor += stride)
     {
         U8      *raw_block = push_array_no_zero(scratch.arena, U8, stride);
         U64      read_size = dmn_process_read(process, r1u64(cursor, cursor + stride), raw_block);
         String8  block     = str8_cstring_capped(raw_block, raw_block + read_size);
         str8_list_push(scratch.arena, &block_list, block);
-        if(read_size != stride || (block.size+1 <= read_size && block.str[block.size] == 0))
+        if (read_size != stride || (block.size+1 <= read_size && block.str[block.size] == 0))
         {
             break;
         }

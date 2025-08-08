@@ -231,7 +231,7 @@ internal String8
 msf_data_from_stream_number(Arena *arena, String8 msf_data, MSF_RawStreamTable *st, MSF_StreamNumber sn)
 {
     String8 result = {0};
-    if(sn < st->stream_count)
+    if (sn < st->stream_count)
     {
         MSF_RawStream stream = st->streams[sn];
         U8 *stream_buf     = push_array_no_zero(arena, U8, stream.size);
@@ -300,9 +300,9 @@ internal String8
 msf_data_from_stream(MSF_Parsed *msf, MSF_StreamNumber sn)
 {
     String8 result = {0};
-    if(sn < msf->stream_count)
+    if (sn < msf->stream_count)
     {
         result = msf->streams[sn];
     }
-    return(result);
+    return (result);
 }

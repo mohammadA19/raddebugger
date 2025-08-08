@@ -19,12 +19,12 @@ HideModuleFromWindowsReload(HMODULE ModuleToFlush)
     
     PEB *Peb = (PEB *)__readgsqword(offsetof(TEB, ProcessEnvironmentBlock));
     LIST_ENTRY *Head = &Peb->Ldr->InMemoryOrderModuleList;
-    for(LIST_ENTRY *Entry = Head->Flink;
+    for (LIST_ENTRY *Entry = Head->Flink;
             Entry != Head;
             Entry = Entry->Flink)
     {
         LDR_DATA_TABLE_ENTRY *Mod = CONTAINING_RECORD(Entry, LDR_DATA_TABLE_ENTRY, InMemoryOrderLinks);
-        if(Mod->DllBase == ModuleToFlush)
+        if (Mod->DllBase == ModuleToFlush)
         {
             ZeroMemory(Mod->FullDllName.Buffer, Mod->FullDllName.Length);
             Mod->DllBase = 0;
@@ -40,7 +40,7 @@ int main(int argument_count, char **arguments)
     int (*loop_iteration_function)(int it) = (int (*)(int))GetProcAddress(last_module, "loop_iteration");
     FILETIME last_filetime = {0};
     int should_exit = 0;
-    for(int it = 0; !should_exit; it += 1)
+    for (int it = 0; !should_exit; it += 1)
     {
         int result = loop_iteration_function(it);
         printf("%i\n", result);
@@ -49,7 +49,7 @@ int main(int argument_count, char **arguments)
         HANDLE current_exe_file = CreateFile(exe_name, 0, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
         GetFileTime(current_exe_file, 0, 0, &current_filetime);
         CloseHandle(current_exe_file);
-        if(it != 0 && CompareFileTime(&last_filetime, &current_filetime) < 0)
+        if (it != 0 && CompareFileTime(&last_filetime, &current_filetime) < 0)
         {
             HideModuleFromWindowsReload(last_module);
             last_module = LoadLibrary(arguments[0]);

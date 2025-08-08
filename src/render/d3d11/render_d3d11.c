@@ -36,7 +36,7 @@ internal R_D3D11_Window *
 r_d3d11_window_from_handle(R_Handle handle)
 {
     R_D3D11_Window *window = (R_D3D11_Window *)handle.u64[0];
-    if(window == 0)
+    if (window == 0)
     {
         window = &r_d3d11_window_nil;
     }
@@ -55,7 +55,7 @@ internal R_D3D11_Tex2D *
 r_d3d11_tex2d_from_handle(R_Handle handle)
 {
     R_D3D11_Tex2D *texture = (R_D3D11_Tex2D *)handle.u64[0];
-    if(texture == 0)
+    if (texture == 0)
     {
         texture = &r_d3d11_tex2d_nil;
     }
@@ -74,7 +74,7 @@ internal R_D3D11_Buffer *
 r_d3d11_buffer_from_handle(R_Handle handle)
 {
     R_D3D11_Buffer *buffer = (R_D3D11_Buffer *)handle.u64[0];
-    if(buffer == 0)
+    if (buffer == 0)
     {
         buffer = &r_d3d11_buffer_nil;
     }
@@ -93,7 +93,7 @@ internal ID3D11Buffer *
 r_d3d11_instance_buffer_from_size(U64 size)
 {
     ID3D11Buffer *buffer = r_d3d11_state->instance_scratch_buffer_64kb;
-    if(size > KB(64))
+    if (size > KB(64))
     {
         U64 flushed_buffer_size = size;
         flushed_buffer_size += MB(1)-1;
@@ -122,7 +122,7 @@ r_d3d11_instance_buffer_from_size(U64 size)
 internal void
 r_usage_access_flags_from_resource_kind(R_ResourceKind kind, D3D11_USAGE *out_d3d11_usage, UINT *out_cpu_access_flags)
 {
-    switch(kind)
+    switch (kind)
     {
         case R_ResourceKind_Static:
         {
@@ -165,14 +165,14 @@ r_init(CmdLine *cmdln)
     ProfBegin("create base device");
     UINT creation_flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #if BUILD_DEBUG
-    if(cmd_line_has_flag(cmdln, str8_lit("d3d11_debug")))
+    if (cmd_line_has_flag(cmdln, str8_lit("d3d11_debug")))
     {
         creation_flags |= D3D11_CREATE_DEVICE_DEBUG;
     }
 #endif
     D3D_FEATURE_LEVEL feature_levels[] = { D3D_FEATURE_LEVEL_11_0 };
     D3D_DRIVER_TYPE driver_type = D3D_DRIVER_TYPE_HARDWARE;
-    if(cmd_line_has_flag(cmdln, str8_lit("force_d3d11_software")))
+    if (cmd_line_has_flag(cmdln, str8_lit("force_d3d11_software")))
     {
         driver_type = D3D_DRIVER_TYPE_WARP;
     }
@@ -183,7 +183,7 @@ r_init(CmdLine *cmdln)
                                                         feature_levels, ArrayCount(feature_levels),
                                                         D3D11_SDK_VERSION,
                                                         &r_d3d11_state->base_device, 0, &r_d3d11_state->base_device_ctx);
-    if(FAILED(error) && driver_type == D3D_DRIVER_TYPE_HARDWARE)
+    if (FAILED(error) && driver_type == D3D_DRIVER_TYPE_HARDWARE)
     {
         // try with WARP driver as backup solution in case HW device is not available
         error = D3D11CreateDevice(0,
@@ -194,7 +194,7 @@ r_init(CmdLine *cmdln)
                                                             D3D11_SDK_VERSION,
                                                             &r_d3d11_state->base_device, 0, &r_d3d11_state->base_device_ctx);
     }
-    if(FAILED(error))
+    if (FAILED(error))
     {
         char buffer[256] = {0};
         raddbg_snprintf(buffer, sizeof(buffer), "D3D11 device creation failure (%lx). The process is terminating.", error);
@@ -205,11 +205,11 @@ r_init(CmdLine *cmdln)
     
     //- rjf: enable break-on-error
 #if BUILD_DEBUG
-    if(cmd_line_has_flag(cmdln, str8_lit("d3d11_debug"))) ProfScope("enable break-on-error")
+    if (cmd_line_has_flag(cmdln, str8_lit("d3d11_debug"))) ProfScope("enable break-on-error")
     {
         ID3D11InfoQueue *info = 0;
         error = r_d3d11_state->base_device->lpVtbl->QueryInterface(r_d3d11_state->base_device, &IID_ID3D11InfoQueue, (void **)(&info));
-        if(SUCCEEDED(error))
+        if (SUCCEEDED(error))
         {
             error = info->lpVtbl->SetBreakOnSeverity(info, D3D11_MESSAGE_SEVERITY_CORRUPTION, TRUE);
             error = info->lpVtbl->SetBreakOnSeverity(info, D3D11_MESSAGE_SEVERITY_ERROR, TRUE);
@@ -339,7 +339,7 @@ r_init(CmdLine *cmdln)
     
     //- rjf: build vertex shaders & input layouts
     ProfScope("build vertex shaders & input layouts")
-        for(R_D3D11_VShadKind kind = (R_D3D11_VShadKind)0;
+        for (R_D3D11_VShadKind kind = (R_D3D11_VShadKind)0;
                 kind < R_D3D11_VShadKind_COUNT;
                 kind = (R_D3D11_VShadKind)(kind+1))
     {
@@ -366,7 +366,7 @@ r_init(CmdLine *cmdln)
                                                   &vshad_source_blob,
                                                   &vshad_source_errors);
             String8 errors = {0};
-            if(FAILED(error))
+            if (FAILED(error))
             {
                 errors = str8((U8 *)vshad_source_errors->lpVtbl->GetBufferPointer(vshad_source_errors),
                                             (U64)vshad_source_errors->lpVtbl->GetBufferSize(vshad_source_errors));
@@ -380,7 +380,7 @@ r_init(CmdLine *cmdln)
         
         // rjf: make input layout
         ID3D11InputLayout *ilay = 0;
-        if(ilay_elements != 0)
+        if (ilay_elements != 0)
         {
             error = r_d3d11_state->device->lpVtbl->CreateInputLayout(r_d3d11_state->device, ilay_elements, ilay_elements_count,
                                                                                                                               vshad_source_blob->lpVtbl->GetBufferPointer(vshad_source_blob),
@@ -396,7 +396,7 @@ r_init(CmdLine *cmdln)
     }
     
     //- rjf: build pixel shaders
-    for(R_D3D11_PShadKind kind = (R_D3D11_PShadKind)0;
+    for (R_D3D11_PShadKind kind = (R_D3D11_PShadKind)0;
             kind < R_D3D11_PShadKind_COUNT;
             kind = (R_D3D11_PShadKind)(kind+1))
     {
@@ -421,7 +421,7 @@ r_init(CmdLine *cmdln)
                                                   &pshad_source_blob,
                                                   &pshad_source_errors);
             String8 errors = {0};
-            if(FAILED(error))
+            if (FAILED(error))
             {
                 errors = str8((U8 *)pshad_source_errors->lpVtbl->GetBufferPointer(pshad_source_errors),
                                             (U64)pshad_source_errors->lpVtbl->GetBufferSize(pshad_source_errors));
@@ -441,7 +441,7 @@ r_init(CmdLine *cmdln)
     
     //- rjf: build uniform type buffers
     ProfScope("build uniform type buffers")
-        for(R_D3D11_UniformTypeKind kind = (R_D3D11_UniformTypeKind)0;
+        for (R_D3D11_UniformTypeKind kind = (R_D3D11_UniformTypeKind)0;
                 kind < R_D3D11_UniformTypeKind_COUNT;
                 kind = (R_D3D11_UniformTypeKind)(kind+1))
     {
@@ -492,7 +492,7 @@ r_window_equip(OS_Handle handle)
         //- rjf: allocate per-window-state
         R_D3D11_Window *window = r_d3d11_state->first_free_window;
         {
-            if(window == 0)
+            if (window == 0)
             {
                 window = push_array(r_d3d11_state->arena, R_D3D11_Window, 1);
             }
@@ -530,7 +530,7 @@ r_window_equip(OS_Handle handle)
             swapchain_desc.Flags              = 0;
         }
         HRESULT error = r_d3d11_state->dxgi_factory->lpVtbl->CreateSwapChainForHwnd(r_d3d11_state->dxgi_factory, (IUnknown *)r_d3d11_state->device, hwnd, &swapchain_desc, 0, 0, &window->swapchain);
-        if(FAILED(error))
+        if (FAILED(error))
         {
             char buffer[256] = {0};
             raddbg_snprintf(buffer, sizeof(buffer), "DXGI swap chain creation failure (%lx). The process is terminating.", error);
@@ -591,7 +591,7 @@ r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void *dat
     OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
     {
         texture = r_d3d11_state->first_free_tex2d;
-        if(texture == 0)
+        if (texture == 0)
         {
             texture = push_array(r_d3d11_state->arena, R_D3D11_Tex2D, 1);
         }
@@ -616,7 +616,7 @@ r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void *dat
     //- rjf: format -> dxgi format
     DXGI_FORMAT dxgi_format = DXGI_FORMAT_R8G8B8A8_UNORM;
     {
-        switch(format)
+        switch (format)
         {
             default:{}break;
             case R_Tex2DFormat_R8:    {dxgi_format = DXGI_FORMAT_R8_UNORM;}break;
@@ -634,7 +634,7 @@ r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void *dat
     //- rjf: prep initial data, if passed
     D3D11_SUBRESOURCE_DATA initial_data_ = {0};
     D3D11_SUBRESOURCE_DATA *initial_data = 0;
-    if(data != 0)
+    if (data != 0)
     {
         initial_data = &initial_data_;
         initial_data->pSysMem = data;
@@ -678,7 +678,7 @@ r_tex2d_release(R_Handle handle)
     OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
     {
         R_D3D11_Tex2D *texture = r_d3d11_tex2d_from_handle(handle);
-        if(texture != &r_d3d11_tex2d_nil)
+        if (texture != &r_d3d11_tex2d_nil)
         {
             SLLStackPush(r_d3d11_state->first_to_free_tex2d, texture);
         }
@@ -714,7 +714,7 @@ r_fill_tex2d_region(R_Handle handle, Rng2S32 subrect, void *data)
     OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
     {
         R_D3D11_Tex2D *texture = r_d3d11_tex2d_from_handle(handle);
-        if(texture != &r_d3d11_tex2d_nil)
+        if (texture != &r_d3d11_tex2d_nil)
         {
             Assert(texture->kind == R_ResourceKind_Dynamic && "only dynamic texture can update region");
             U64 bytes_per_pixel = r_tex2d_format_bytes_per_pixel_table[texture->format];
@@ -742,7 +742,7 @@ r_buffer_alloc(R_ResourceKind kind, U64 size, void *data)
     OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
     {
         buffer = r_d3d11_state->first_free_buffer;
-        if(buffer == 0)
+        if (buffer == 0)
         {
             buffer = push_array(r_d3d11_state->arena, R_D3D11_Buffer, 1);
         }
@@ -767,7 +767,7 @@ r_buffer_alloc(R_ResourceKind kind, U64 size, void *data)
     //- rjf: prep initial data, if passed
     D3D11_SUBRESOURCE_DATA initial_data_ = {0};
     D3D11_SUBRESOURCE_DATA *initial_data = 0;
-    if(data != 0)
+    if (data != 0)
     {
         initial_data = &initial_data_;
         initial_data->pSysMem = data;
@@ -822,11 +822,11 @@ r_end_frame(void)
 {
     OS_MutexScopeW(r_d3d11_state->device_rw_mutex)
     {
-        for(R_D3D11_FlushBuffer *buffer = r_d3d11_state->first_buffer_to_flush; buffer != 0; buffer = buffer->next)
+        for (R_D3D11_FlushBuffer *buffer = r_d3d11_state->first_buffer_to_flush; buffer != 0; buffer = buffer->next)
         {
             buffer->buffer->lpVtbl->Release(buffer->buffer);
         }
-        for(R_D3D11_Tex2D *tex = r_d3d11_state->first_to_free_tex2d, *next = 0;
+        for (R_D3D11_Tex2D *tex = r_d3d11_state->first_to_free_tex2d, *next = 0;
                 tex != 0;
                 tex = next)
         {
@@ -838,7 +838,7 @@ r_end_frame(void)
             tex->generation += 1;
             SLLStackPush(r_d3d11_state->first_free_tex2d, tex);
         }
-        for(R_D3D11_Buffer *buf = r_d3d11_state->first_to_free_buffer, *next = 0;
+        for (R_D3D11_Buffer *buf = r_d3d11_state->first_to_free_buffer, *next = 0;
                 buf != 0;
                 buf = next)
         {
@@ -869,25 +869,25 @@ r_window_begin_frame(OS_Handle window, R_Handle window_equip)
         
         //- rjf: resolution change
         B32 resize_done = 0;
-        if(wnd->last_resolution.x != resolution.x ||
+        if (wnd->last_resolution.x != resolution.x ||
               wnd->last_resolution.y != resolution.y)
         {
             resize_done = 1;
             wnd->last_resolution = resolution;
             
             // rjf: release screen-sized render target resources, if there
-            if(wnd->stage_scratch_color_srv){wnd->stage_scratch_color_srv->lpVtbl->Release(wnd->stage_scratch_color_srv);}
-            if(wnd->stage_scratch_color_rtv){wnd->stage_scratch_color_rtv->lpVtbl->Release(wnd->stage_scratch_color_rtv);}
-            if(wnd->stage_scratch_color)    {wnd->stage_scratch_color->lpVtbl->Release(wnd->stage_scratch_color);}
-            if(wnd->stage_color_srv)        {wnd->stage_color_srv->lpVtbl->Release(wnd->stage_color_srv);}
-            if(wnd->stage_color_rtv)        {wnd->stage_color_rtv->lpVtbl->Release(wnd->stage_color_rtv);}
-            if(wnd->stage_color)            {wnd->stage_color->lpVtbl->Release(wnd->stage_color);}
-            if(wnd->geo3d_color_srv)        {wnd->geo3d_color_srv->lpVtbl->Release(wnd->geo3d_color_srv);}
-            if(wnd->geo3d_color_rtv)        {wnd->geo3d_color_rtv->lpVtbl->Release(wnd->geo3d_color_rtv);}
-            if(wnd->geo3d_color)            {wnd->geo3d_color->lpVtbl->Release(wnd->geo3d_color);}
-            if(wnd->geo3d_depth_srv)        {wnd->geo3d_depth_srv->lpVtbl->Release(wnd->geo3d_depth_srv);}
-            if(wnd->geo3d_depth_dsv)        {wnd->geo3d_depth_dsv->lpVtbl->Release(wnd->geo3d_depth_dsv);}
-            if(wnd->geo3d_depth)            {wnd->geo3d_depth->lpVtbl->Release(wnd->geo3d_depth);}
+            if (wnd->stage_scratch_color_srv){wnd->stage_scratch_color_srv->lpVtbl->Release(wnd->stage_scratch_color_srv);}
+            if (wnd->stage_scratch_color_rtv){wnd->stage_scratch_color_rtv->lpVtbl->Release(wnd->stage_scratch_color_rtv);}
+            if (wnd->stage_scratch_color)    {wnd->stage_scratch_color->lpVtbl->Release(wnd->stage_scratch_color);}
+            if (wnd->stage_color_srv)        {wnd->stage_color_srv->lpVtbl->Release(wnd->stage_color_srv);}
+            if (wnd->stage_color_rtv)        {wnd->stage_color_rtv->lpVtbl->Release(wnd->stage_color_rtv);}
+            if (wnd->stage_color)            {wnd->stage_color->lpVtbl->Release(wnd->stage_color);}
+            if (wnd->geo3d_color_srv)        {wnd->geo3d_color_srv->lpVtbl->Release(wnd->geo3d_color_srv);}
+            if (wnd->geo3d_color_rtv)        {wnd->geo3d_color_rtv->lpVtbl->Release(wnd->geo3d_color_rtv);}
+            if (wnd->geo3d_color)            {wnd->geo3d_color->lpVtbl->Release(wnd->geo3d_color);}
+            if (wnd->geo3d_depth_srv)        {wnd->geo3d_depth_srv->lpVtbl->Release(wnd->geo3d_depth_srv);}
+            if (wnd->geo3d_depth_dsv)        {wnd->geo3d_depth_dsv->lpVtbl->Release(wnd->geo3d_depth_dsv);}
+            if (wnd->geo3d_depth)            {wnd->geo3d_depth->lpVtbl->Release(wnd->geo3d_depth);}
             
             // rjf: resize swapchain & main framebuffer
             wnd->framebuffer_rtv->lpVtbl->Release(wnd->framebuffer_rtv);
@@ -978,7 +978,7 @@ r_window_begin_frame(OS_Handle window, R_Handle window_equip)
         Vec4F32 clear_color = {0, 0, 0, 0};
         d_ctx->lpVtbl->ClearRenderTargetView(d_ctx, wnd->framebuffer_rtv, clear_color.v);
         d_ctx->lpVtbl->ClearRenderTargetView(d_ctx, wnd->stage_color_rtv, clear_color.v);
-        if(resize_done)
+        if (resize_done)
         {
             d_ctx->lpVtbl->Flush(d_ctx);
         }
@@ -1042,7 +1042,7 @@ r_window_end_frame(OS_Handle window, R_Handle window_equip)
         //- rjf: present
         //
         HRESULT error = wnd->swapchain->lpVtbl->Present(wnd->swapchain, 1, 0);
-        if(FAILED(error))
+        if (FAILED(error))
         {
             char buffer[256] = {0};
             raddbg_snprintf(buffer, sizeof(buffer), "D3D11 present failure (%lx). The process is terminating.", error);
@@ -1071,10 +1071,10 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
         ////////////////////////////
         //- rjf: do passes
         //
-        for(R_PassNode *pass_n = passes->first; pass_n != 0; pass_n = pass_n->next)
+        for (R_PassNode *pass_n = passes->first; pass_n != 0; pass_n = pass_n->next)
         {
             R_Pass *pass = &pass_n->v;
-            switch(pass->kind)
+            switch (pass->kind)
             {
                 default:{}break;
                 
@@ -1094,7 +1094,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
                     d_ctx->lpVtbl->RSSetState(d_ctx, (ID3D11RasterizerState *)r_d3d11_state->main_rasterizer);
                     
                     //- rjf: draw each batch group
-                    for(R_BatchGroup2DNode *group_n = rect_batch_groups->first; group_n != 0; group_n = group_n->next)
+                    for (R_BatchGroup2DNode *group_n = rect_batch_groups->first; group_n != 0; group_n = group_n->next)
                     {
                         R_BatchList *batches = &group_n->batches;
                         R_BatchGroup2DParams *group_params = &group_n->params;
@@ -1113,7 +1113,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
                             d_ctx->lpVtbl->Map(d_ctx, (ID3D11Resource *)buffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &sub_rsrc);
                             U8 *dst_ptr = (U8 *)sub_rsrc.pData;
                             U64 off = 0;
-                            for(R_BatchNode *batch_n = batches->first; batch_n != 0; batch_n = batch_n->next)
+                            for (R_BatchNode *batch_n = batches->first; batch_n != 0; batch_n = batch_n->next)
                             {
                                 MemoryCopy(dst_ptr+off, batch_n->v.v, batch_n->v.byte_count);
                                 off += batch_n->v.byte_count;
@@ -1123,7 +1123,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
                         
                         // rjf: get texture
                         R_Handle texture_handle = group_params->tex;
-                        if(r_handle_match(texture_handle, r_handle_zero()))
+                        if (r_handle_match(texture_handle, r_handle_zero()))
                         {
                             texture_handle = r_d3d11_state->backup_texture;
                         }
@@ -1179,14 +1179,14 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
                             Rng2F32 clip = group_params->clip;
                             D3D11_RECT rect = {0};
                             {
-                                if(clip.x0 == 0 && clip.y0 == 0 && clip.x1 == 0 && clip.y1 == 0)
+                                if (clip.x0 == 0 && clip.y0 == 0 && clip.x1 == 0 && clip.y1 == 0)
                                 {
                                     rect.left = 0;
                                     rect.right = (LONG)wnd->last_resolution.x;
                                     rect.top = 0;
                                     rect.bottom = (LONG)wnd->last_resolution.y;
                                 }
-                                else if(clip.x0 > clip.x1 || clip.y0 > clip.y1)
+                                else if (clip.x0 > clip.x1 || clip.y0 > clip.y1)
                                 {
                                     rect.left = 0;
                                     rect.right = 0;
@@ -1263,15 +1263,15 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
                         F32 euler32 = 2.718281828459045f;
                         
                         weights[0] = 1.f;
-                        if(stdev > 0.f)
+                        if (stdev > 0.f)
                         {
-                            for(U64 idx = 0; idx < blur_count; idx += 1)
+                            for (U64 idx = 0; idx < blur_count; idx += 1)
                             {
                                 F32 kernel_x = (F32)idx;
                                 weights[idx] = one_over_root_2pi_stdev2*pow_f32(euler32, -kernel_x*kernel_x/(2.f*stdev*stdev)); 
                             }
                         }
-                        if(weights[0] > 1.f)
+                        if (weights[0] > 1.f)
                         {
                             MemoryZeroArray(weights);
                             weights[0] = 1.f;
@@ -1338,14 +1338,14 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
                         Rng2F32 clip = params->clip;
                         D3D11_RECT rect = {0};
                         {
-                            if(clip.x0 == 0 && clip.y0 == 0 && clip.x1 == 0 && clip.y1 == 0)
+                            if (clip.x0 == 0 && clip.y0 == 0 && clip.x1 == 0 && clip.y1 == 0)
                             {
                                 rect.left = 0;
                                 rect.right = (LONG)wnd->last_resolution.x;
                                 rect.top = 0;
                                 rect.bottom = (LONG)wnd->last_resolution.y;
                             }
-                            else if(clip.x0 > clip.x1 || clip.y0 > clip.y1)
+                            else if (clip.x0 > clip.x1 || clip.y0 > clip.y1)
                             {
                                 rect.left = 0;
                                 rect.right = 0;
@@ -1418,9 +1418,9 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
                         d_ctx->lpVtbl->OMSetBlendState(d_ctx, r_d3d11_state->main_blend_state, 0, 0xffffffff);
                         
                         // rjf: draw all batches
-                        for(U64 slot_idx = 0; slot_idx < mesh_group_map->slots_count; slot_idx += 1)
+                        for (U64 slot_idx = 0; slot_idx < mesh_group_map->slots_count; slot_idx += 1)
                         {
-                            for(R_BatchGroup3DMapNode *n = mesh_group_map->slots[slot_idx]; n != 0; n = n->next)
+                            for (R_BatchGroup3DMapNode *n = mesh_group_map->slots[slot_idx]; n != 0; n = n->next)
                             {
                                 // rjf: unpack group params
                                 R_BatchList *batches = &n->batches;
@@ -1504,14 +1504,14 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
                         {
                             D3D11_RECT rect = {0};
                             Rng2F32 clip = params->clip;
-                            if(clip.x0 == 0 && clip.y0 == 0 && clip.x1 == 0 && clip.y1 == 0)
+                            if (clip.x0 == 0 && clip.y0 == 0 && clip.x1 == 0 && clip.y1 == 0)
                             {
                                 rect.left = 0;
                                 rect.right = (LONG)wnd->last_resolution.x;
                                 rect.top = 0;
                                 rect.bottom = (LONG)wnd->last_resolution.y;
                             }
-                            else if(clip.x0 > clip.x1 || clip.y0 > clip.y1)
+                            else if (clip.x0 > clip.x1 || clip.y0 > clip.y1)
                             {
                                 rect.left = 0;
                                 rect.right = 0;

@@ -444,12 +444,12 @@ internal U64
 coff_foff_from_voff(COFF_SectionHeader *sections, U64 section_count, U64 voff)
 {
     U64 foff = 0;
-    for(U64 sect_idx = 0; sect_idx < section_count; sect_idx += 1)
+    for (U64 sect_idx = 0; sect_idx < section_count; sect_idx += 1)
     {
         COFF_SectionHeader *sect = &sections[sect_idx];
-        if(sect->voff <= voff && voff < sect->voff+sect->vsize)
+        if (sect->voff <= voff && voff < sect->voff+sect->vsize)
         {
-            if(!(sect->flags & COFF_SectionFlag_CntUninitializedData))
+            if (!(sect->flags & COFF_SectionFlag_CntUninitializedData))
             {
                 foff = sect->foff + (voff - sect->voff);
             }

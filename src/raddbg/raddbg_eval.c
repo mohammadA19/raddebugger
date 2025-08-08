@@ -7,7 +7,7 @@
 E_TYPE_ACCESS_FUNCTION_DEF(commands)
 {
     E_IRTreeAndType result = {&e_irnode_nil};
-    if(expr->kind == E_ExprKind_MemberAccess)
+    if (expr->kind == E_ExprKind_MemberAccess)
     {
         String8 cmd_name = expr->first->next->string;
         RD_CmdKindInfo *cmd_info = rd_cmd_kind_info_from_string(cmd_name);
@@ -30,7 +30,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(commands)
         for EachNonZeroEnumVal(RD_CmdKind, k)
         {
             RD_CmdKindInfo *info = &rd_cmd_kind_info_table[k];
-            if(info->flags & RD_CmdKindFlag_ListInUI &&
+            if (info->flags & RD_CmdKindFlag_ListInUI &&
                   (!str8_match(type->name, str8_lit("text_pt_commands"), 0) || info->flags & RD_CmdKindFlag_ListInTextPt) &&
                   (!str8_match(type->name, str8_lit("text_range_commands"), 0) || info->flags & RD_CmdKindFlag_ListInTextRng) &&
                   (!str8_match(type->name, str8_lit("tab_commands"), 0) || info->flags & RD_CmdKindFlag_ListInTab))
@@ -44,17 +44,17 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(commands)
                 FuzzyMatchRangeList tags_matches = fuzzy_match_find(scratch.arena, filter, search_tags);
                 B32 binding_matches_good = 0;
                 RD_KeyMapNodePtrList bindings = rd_key_map_node_ptr_list_from_name(scratch.arena, code_name);
-                for(RD_KeyMapNodePtr *n = bindings.first; n != 0; n = n->next)
+                for (RD_KeyMapNodePtr *n = bindings.first; n != 0; n = n->next)
                 {
                     String8 binding_text = os_string_from_modifiers_key(scratch.arena, n->v->binding.modifiers, n->v->binding.key);
                     FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, binding_text);
-                    if(matches.count == matches.needle_part_count)
+                    if (matches.count == matches.needle_part_count)
                     {
                         binding_matches_good = 1;
                         break;
                     }
                 }
-                if(name_matches.count == name_matches.needle_part_count ||
+                if (name_matches.count == name_matches.needle_part_count ||
                       desc_matches.count == desc_matches.needle_part_count ||
                       tags_matches.count == tags_matches.needle_part_count ||
                       binding_matches_good)
@@ -76,7 +76,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(commands)
 {
     U64 out_idx = 0;
     String8Array *accel = (String8Array *)user_data;
-    for(U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
+    for (U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
     {
         String8 cmd_name = accel->v[idx];
         E_Eval cmd_eval = e_eval_from_stringf("query:commands.%S", cmd_name);
@@ -90,7 +90,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(commands)
 E_TYPE_ACCESS_FUNCTION_DEF(themes)
 {
     E_IRTreeAndType result = {&e_irnode_nil};
-    if(expr->kind == E_ExprKind_ArrayIndex &&
+    if (expr->kind == E_ExprKind_ArrayIndex &&
           expr->first->next->kind == E_ExprKind_LeafStringLiteral)
     {
         String8 theme_name = expr->first->next->string;
@@ -114,7 +114,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(themes)
         {
             String8 name = rd_theme_preset_display_string_table[p];
             FuzzyMatchRangeList name_matches = fuzzy_match_find(scratch.arena, filter, name);
-            if(name_matches.count == name_matches.needle_part_count)
+            if (name_matches.count == name_matches.needle_part_count)
             {
                 str8_list_push(scratch.arena, &names, name);
             }
@@ -124,11 +124,11 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(themes)
         {
             String8 theme_folder = push_str8f(scratch.arena, "%S/raddbg/themes", os_get_process_info()->user_program_data_path);
             OS_FileIter *it = os_file_iter_begin(scratch.arena, theme_folder, OS_FileIterFlag_SkipFolders);
-            for(OS_FileInfo info = {0}; os_file_iter_next(scratch.arena, it, &info);)
+            for (OS_FileInfo info = {0}; os_file_iter_next(scratch.arena, it, &info);)
             {
                 String8 name = info.name;
                 FuzzyMatchRangeList name_matches = fuzzy_match_find(scratch.arena, filter, name);
-                if(name_matches.count == name_matches.needle_part_count)
+                if (name_matches.count == name_matches.needle_part_count)
                 {
                     str8_list_push(scratch.arena, &names, push_str8_copy(arena, name));
                 }
@@ -150,7 +150,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(themes)
 {
     U64 out_idx = 0;
     String8Array *accel = (String8Array *)user_data;
-    for(U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
+    for (U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
     {
         String8 name = accel->v[idx];
         evals_out[out_idx] = e_eval_wrapf(eval, "$[\"%S\"]", name);
@@ -172,7 +172,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(locals)
         {
             String8 local_expr_string = nodes.v[idx]->string;
             FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, local_expr_string);
-            if(matches.count == matches.needle_part_count)
+            if (matches.count == matches.needle_part_count)
             {
                 str8_list_push(scratch.arena, &exprs_filtered, local_expr_string);
             }
@@ -192,7 +192,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(locals)
     Rng1U64 legal_idx_range = r1u64(0, accel->count);
     Rng1U64 read_range = intersect_1u64(idx_range, legal_idx_range);
     U64 read_range_count = dim_1u64(read_range);
-    for(U64 idx = 0; idx < read_range_count; idx += 1)
+    for (U64 idx = 0; idx < read_range_count; idx += 1)
     {
         String8 expr_string = accel->v[read_range.min + idx];
         evals_out[idx] = e_eval_from_string(expr_string);
@@ -212,18 +212,18 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(registers)
     String8 *reg_strings   = regs_reg_code_string_table_from_arch(arch);
     String8 *alias_strings = regs_alias_code_string_table_from_arch(arch);
     String8List exprs_list = {0};
-    for(U64 idx = 1; idx < reg_count; idx += 1)
+    for (U64 idx = 1; idx < reg_count; idx += 1)
     {
         FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, reg_strings[idx]);
-        if(matches.count == matches.needle_part_count)
+        if (matches.count == matches.needle_part_count)
         {
             str8_list_push(scratch.arena, &exprs_list, reg_strings[idx]);
         }
     }
-    for(U64 idx = 1; idx < alias_count; idx += 1)
+    for (U64 idx = 1; idx < alias_count; idx += 1)
     {
         FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, alias_strings[idx]);
-        if(matches.count == matches.needle_part_count)
+        if (matches.count == matches.needle_part_count)
         {
             str8_list_push(scratch.arena, &exprs_list, alias_strings[idx]);
         }
@@ -241,7 +241,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(registers)
     Rng1U64 legal_idx_range = r1u64(0, accel->count);
     Rng1U64 read_range = intersect_1u64(legal_idx_range, idx_range);
     U64 read_range_count = dim_1u64(read_range);
-    for(U64 idx = 0; idx < read_range_count; idx += 1)
+    for (U64 idx = 0; idx < read_range_count; idx += 1)
     {
         String8 register_name = accel->v[read_range.min + idx];
         String8 register_expr = push_str8f(arena, "reg:%S", register_name);
@@ -283,83 +283,83 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
 {
     RD_SchemaIRExt *ext = (RD_SchemaIRExt *)lhs_irtree->user_data;
     E_IRTreeAndType irtree = {&e_irnode_nil};
-    if(expr->kind == E_ExprKind_MemberAccess)
+    if (expr->kind == E_ExprKind_MemberAccess)
     {
         MD_Node *child_schema = &md_nil_node;
-        for(MD_NodePtrNode *n = ext->schemas.first; n != 0; n = n->next)
+        for (MD_NodePtrNode *n = ext->schemas.first; n != 0; n = n->next)
         {
             for MD_EachNode(child, n->v->first)
             {
-                if(str8_match(child->string, expr->first->next->string, 0))
+                if (str8_match(child->string, expr->first->next->string, 0))
                 {
                     child_schema = child;
                     break;
                 }
             }
         }
-        if(child_schema != &md_nil_node)
+        if (child_schema != &md_nil_node)
         {
             RD_Cfg *cfg = ext->cfg;
             CTRL_Entity *entity = ext->entity;
             RD_Cfg *child = rd_cfg_child_from_string(cfg, child_schema->string);
             E_TypeKey child_type_key = zero_struct;
             B32 wrap_child_w_meta_expr = 0;
-            if(0){}
+            if (0){}
             
             //- rjf: ctrl entity members
-            else if(entity != &ctrl_entity_nil && str8_match(child_schema->string, str8_lit("label"), 0))
+            else if (entity != &ctrl_entity_nil && str8_match(child_schema->string, str8_lit("label"), 0))
             {
                 child_type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U8), entity->string.size, E_TypeFlag_IsCodeText);
             }
-            else if(entity != &ctrl_entity_nil && str8_match(child_schema->string, str8_lit("exe"), 0))
+            else if (entity != &ctrl_entity_nil && str8_match(child_schema->string, str8_lit("exe"), 0))
             {
                 child_type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U8), entity->string.size, E_TypeFlag_IsPathText);
             }
-            else if(entity != &ctrl_entity_nil && str8_match(child_schema->string, str8_lit("dbg"), 0))
+            else if (entity != &ctrl_entity_nil && str8_match(child_schema->string, str8_lit("dbg"), 0))
             {
                 CTRL_Entity *dbg = ctrl_entity_child_from_kind(entity, CTRL_EntityKind_DebugInfoPath);
                 child_type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U8), dbg->string.size, E_TypeFlag_IsPathText);
             }
             
             //- rjf: cfg members
-            else if(str8_match(child_schema->first->string, str8_lit("code_string"), 0) ||
+            else if (str8_match(child_schema->first->string, str8_lit("code_string"), 0) ||
                             str8_match(child_schema->first->string, str8_lit("expr_string"), 0))
             {
                 child_type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U8), child->first->string.size, E_TypeFlag_IsCodeText);
             }
-            else if(str8_match(child_schema->first->string, str8_lit("path"), 0) ||
+            else if (str8_match(child_schema->first->string, str8_lit("path"), 0) ||
                             str8_match(child_schema->first->string, str8_lit("path_pt"), 0))
             {
                 child_type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U8), child->first->string.size, E_TypeFlag_IsPathText);
             }
             
-            else if(str8_match(child_schema->first->string, str8_lit("string"), 0))
+            else if (str8_match(child_schema->first->string, str8_lit("string"), 0))
             {
                 child_type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U8), child->first->string.size, E_TypeFlag_IsPlainText);
             }
             
             //- rjf: catchall cases
-            else if(str8_match(child_schema->first->string, str8_lit("u64"), 0))
+            else if (str8_match(child_schema->first->string, str8_lit("u64"), 0))
             {
                 child_type_key = e_type_key_basic(E_TypeKind_U64);
                 wrap_child_w_meta_expr = 1;
             }
-            else if(str8_match(child_schema->first->string, str8_lit("u32"), 0))
+            else if (str8_match(child_schema->first->string, str8_lit("u32"), 0))
             {
                 child_type_key = e_type_key_basic(E_TypeKind_U32);
                 wrap_child_w_meta_expr = 1;
             }
-            else if(str8_match(child_schema->first->string, str8_lit("f32"), 0))
+            else if (str8_match(child_schema->first->string, str8_lit("f32"), 0))
             {
                 child_type_key = e_type_key_basic(E_TypeKind_F32);
                 wrap_child_w_meta_expr = 1;
             }
-            else if(str8_match(child_schema->first->string, str8_lit("bool"), 0))
+            else if (str8_match(child_schema->first->string, str8_lit("bool"), 0))
             {
                 child_type_key = e_type_key_basic(E_TypeKind_Bool);
                 wrap_child_w_meta_expr = 1;
             }
-            else if(str8_match(child_schema->first->string, str8_lit("vaddr_range"), 0))
+            else if (str8_match(child_schema->first->string, str8_lit("vaddr_range"), 0))
             {
                 Temp scratch = scratch_begin(&arena, 1);
                 E_MemberList vaddr_range_members_list = {0};
@@ -369,24 +369,24 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
                 child_type_key = e_type_key_cons(.kind = E_TypeKind_Struct, .name = str8_lit("vaddr_range"), .count = vaddr_range_members.count, .members = vaddr_range_members.v);
                 scratch_end(scratch);
             }
-            else if(str8_match(child_schema->first->string, str8_lit("query"), 0))
+            else if (str8_match(child_schema->first->string, str8_lit("query"), 0))
             {
                 child_type_key = e_string2typekey_map_lookup(rd_state->meta_name2type_map, child_schema->string);
             }
             
             //- rjf: extend child type with meta-expression information
-            if(wrap_child_w_meta_expr)
+            if (wrap_child_w_meta_expr)
             {
                 Temp scratch = scratch_begin(&arena, 1);
                 E_Expr *expr = e_parse_from_string(child->first->string).expr;
                 B32 expr_is_simple = 0;
-                if(expr->kind == E_ExprKind_LeafU64 ||
+                if (expr->kind == E_ExprKind_LeafU64 ||
                       expr->kind == E_ExprKind_LeafF64 ||
                       expr->kind == E_ExprKind_LeafF32)
                 {
                     expr_is_simple = 1;
                 }
-                if((expr->kind == E_ExprKind_Pos || expr->kind == E_ExprKind_Neg) &&
+                if ((expr->kind == E_ExprKind_Pos || expr->kind == E_ExprKind_Neg) &&
                       expr->first == expr->last &&
                       (expr->first->kind == E_ExprKind_LeafU64 ||
                         expr->first->kind == E_ExprKind_LeafF64 ||
@@ -394,13 +394,13 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
                 {
                     expr_is_simple = 1;
                 }
-                if(expr->kind == E_ExprKind_LeafIdentifier &&
+                if (expr->kind == E_ExprKind_LeafIdentifier &&
                       (str8_match(expr->string, str8_lit("true"), 0) ||
                         str8_match(expr->string, str8_lit("false"), 0)))
                 {
                     expr_is_simple = 1;
                 }
-                if(!expr_is_simple && expr != &e_expr_nil)
+                if (!expr_is_simple && expr != &e_expr_nil)
                 {
                     child_type_key = e_type_key_cons_meta_expr(child_type_key, child->first->string);
                 }
@@ -411,11 +411,11 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
             {
                 MD_Node *display_name = md_tag_from_string(child_schema, str8_lit("display_name"), 0);
                 MD_Node *description = md_tag_from_string(child_schema, str8_lit("description"), 0);
-                if(!md_node_is_nil(display_name))
+                if (!md_node_is_nil(display_name))
                 {
                     child_type_key = e_type_key_cons_meta_display_name(child_type_key, display_name->first->string);
                 }
-                if(!md_node_is_nil(description))
+                if (!md_node_is_nil(description))
                 {
                     child_type_key = e_type_key_cons_meta_description(child_type_key, description->first->string);
                 }
@@ -424,7 +424,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
             //- rjf: extend child type with hex lens
             {
                 MD_Node *hex = md_tag_from_string(child_schema->first, str8_lit("hex"), 0);
-                if(!md_node_is_nil(hex))
+                if (!md_node_is_nil(hex))
                 {
                     child_type_key = e_type_key_cons(.kind = E_TypeKind_Lens,
                                                                                       .name = str8_lit("hex"),
@@ -435,7 +435,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
             //- rjf: extend child type with color lens
             {
                 MD_Node *color = md_tag_from_string(child_schema->first, str8_lit("color"), 0);
-                if(!md_node_is_nil(color))
+                if (!md_node_is_nil(color))
                 {
                     child_type_key = e_type_key_cons(.kind = E_TypeKind_Lens,
                                                                                       .name = str8_lit("color"),
@@ -446,7 +446,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
             //- rjf: extend child type with ranges
             {
                 MD_Node *range = md_tag_from_string(child_schema->first, str8_lit("range"), 0);
-                if(!md_node_is_nil(range))
+                if (!md_node_is_nil(range))
                 {
                     E_Expr *min_bound = e_parse_from_string(range->first->string).expr;
                     E_Expr *max_bound = e_parse_from_string(range->first->next->string).expr;
@@ -465,7 +465,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
             
             //- rjf: evaluate
             E_Space child_eval_space = zero_struct;
-            if(cfg != &rd_nil_cfg)
+            if (cfg != &rd_nil_cfg)
             {
                 child_eval_space = e_space_make(RD_EvalSpaceKind_MetaCfg);
                 child_eval_space.u64s[0] = cfg->id;
@@ -505,25 +505,25 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(schema)
         String8Array commands = {0};
         {
             String8List commands_list = {0};
-            for(MD_NodePtrNode *n = ext->schemas.first; n != 0; n = n->next)
+            for (MD_NodePtrNode *n = ext->schemas.first; n != 0; n = n->next)
             {
                 MD_Node *schema = n->v;
                 MD_Node *tag = md_tag_from_string(schema, str8_lit("expand_commands"), 0);
                 for MD_EachNode(arg, tag->first)
                 {
                     B32 filtered = 0;
-                    if(md_node_has_tag(arg, str8_lit("output"), 0))
+                    if (md_node_has_tag(arg, str8_lit("output"), 0))
                     {
                         String8 expr = rd_expr_from_cfg(ext->cfg);
                         filtered = (!str8_match(expr, str8_lit("query:output"), 0));
                     }
-                    if(!filtered)
+                    if (!filtered)
                     {
                         RD_CmdKindInfo *cmd_kind_info = rd_cmd_kind_info_from_string(arg->string);
                         FuzzyMatchRangeList name_matches = fuzzy_match_find(scratch.arena, filter, rd_display_from_code_name(cmd_kind_info->string));
                         FuzzyMatchRangeList desc_matches = fuzzy_match_find(scratch.arena, filter, cmd_kind_info->description);
                         FuzzyMatchRangeList tags_matches = fuzzy_match_find(scratch.arena, filter, cmd_kind_info->search_tags);
-                        if(name_matches.count == name_matches.needle_part_count ||
+                        if (name_matches.count == name_matches.needle_part_count ||
                               desc_matches.count == desc_matches.needle_part_count ||
                               tags_matches.count == tags_matches.needle_part_count)
                         {
@@ -545,23 +545,23 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(schema)
         ExpandChildNode *first_child_node = 0;
         ExpandChildNode *last_child_node = 0;
         U64 child_count = 0;
-        for(MD_NodePtrNode *n = ext->schemas.first; n != 0; n = n->next)
+        for (MD_NodePtrNode *n = ext->schemas.first; n != 0; n = n->next)
         {
             MD_Node *schema = n->v;
             for MD_EachNode(child, schema->first)
             {
-                if(!md_node_has_tag(child, str8_lit("no_expand"), 0))
+                if (!md_node_has_tag(child, str8_lit("no_expand"), 0))
                 {
                     MD_Node *expand_check = md_tag_from_string(child, str8_lit("expand_if"), 0);
                     B32 expand_this_child = 1;
-                    if(!md_node_is_nil(expand_check)) E_ParentKey(eval.key)
+                    if (!md_node_is_nil(expand_check)) E_ParentKey(eval.key)
                     {
                         expand_this_child = !!e_value_from_string(expand_check->first->string).u64;
                     }
-                    if(expand_this_child)
+                    if (expand_this_child)
                     {
                         String8 display_name = md_tag_from_string(child, str8_lit("display_name"), 0)->first->string;
-                        if(display_name.size == 0)
+                        if (display_name.size == 0)
                         {
                             display_name = rd_display_from_code_name(child->string);
                         }
@@ -569,7 +569,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(schema)
                         FuzzyMatchRangeList name_matches         = fuzzy_match_find(scratch.arena, filter, child->string);
                         FuzzyMatchRangeList display_name_matches = fuzzy_match_find(scratch.arena, filter, display_name);
                         FuzzyMatchRangeList desc_matches         = fuzzy_match_find(scratch.arena, filter, desc);
-                        if(name_matches.count == name_matches.needle_part_count ||
+                        if (name_matches.count == name_matches.needle_part_count ||
                               display_name_matches.count == display_name_matches.needle_part_count ||
                               desc_matches.count == desc_matches.needle_part_count)
                         {
@@ -587,7 +587,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(schema)
         MD_Node **children = push_array(arena, MD_Node *, child_count);
         {
             U64 idx = 0;
-            for(ExpandChildNode *n = first_child_node; n != 0; n = n->next, idx += 1)
+            for (ExpandChildNode *n = first_child_node; n != 0; n = n->next, idx += 1)
             {
                 children[idx] = n->n;
             }
@@ -618,7 +618,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(schema)
     // rjf: read commands
     {
         Rng1U64 read_range = intersect_1u64(idx_range, cmds_idx_range);
-        for(U64 idx = read_range.min; idx < read_range.max; idx += 1, out_idx += 1)
+        for (U64 idx = read_range.min; idx < read_range.max; idx += 1, out_idx += 1)
         {
             evals_out[out_idx] = e_eval_from_stringf("query:commands.%S", accel->commands.v[idx - cmds_idx_range.min]);
         }
@@ -627,7 +627,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(schema)
     // rjf: read children
     {
         Rng1U64 read_range = intersect_1u64(idx_range, chld_idx_range);
-        for(U64 idx = read_range.min; idx < read_range.max; idx += 1, out_idx += 1)
+        for (U64 idx = read_range.min; idx < read_range.max; idx += 1, out_idx += 1)
         {
             MD_Node *child_schema = accel->children[idx - chld_idx_range.min];
             evals_out[out_idx] = e_eval_wrapf(eval, "$.%S", child_schema->string);
@@ -642,7 +642,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(cfgs)
 {
     E_IRTreeAndType result = {&e_irnode_nil};
     E_Expr *rhs = expr->first->next;
-    if(rhs->kind == E_ExprKind_LeafIdentifier &&
+    if (rhs->kind == E_ExprKind_LeafIdentifier &&
           str8_match(str8_prefix(rhs->string, 1), str8_lit("$"), 0))
     {
         String8 numeric_part = str8_skip(rhs->string, 1);
@@ -663,7 +663,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(control)
 {
     E_IRTreeAndType result = {&e_irnode_nil};
     E_Expr *rhs = expr->first->next;
-    if(rhs->kind == E_ExprKind_LeafIdentifier &&
+    if (rhs->kind == E_ExprKind_LeafIdentifier &&
           str8_match(str8_prefix(rhs->string, 1), str8_lit("$"), 0))
     {
         CTRL_Handle handle = ctrl_handle_from_string(rhs->string);
@@ -707,7 +707,7 @@ E_TYPE_IREXT_FUNCTION_DEF(cfgs_slice)
         String8List cmds_list = {0};
         {
             MD_NodePtrList schemas = rd_schemas_from_name(cfg_name);
-            for(MD_NodePtrNode *n = schemas.first; n != 0; n = n->next)
+            for (MD_NodePtrNode *n = schemas.first; n != 0; n = n->next)
             {
                 MD_Node *schema = n->v;
                 MD_Node *collection_cmds_root = md_tag_from_string(schema, str8_lit("collection_commands"), 0);
@@ -734,14 +734,14 @@ E_TYPE_ACCESS_FUNCTION_DEF(cfgs_slice)
     E_IRTreeAndType result = {&e_irnode_nil};
     RD_Cfg *cfg = &rd_nil_cfg;
     RD_CfgsIRExt *ext = (RD_CfgsIRExt *)lhs_irtree->user_data;
-    switch(expr->kind)
+    switch (expr->kind)
     {
         default:{}break;
         case E_ExprKind_ArrayIndex:
         {
             E_Value rhs_value = e_value_from_expr(expr->first->next);
             U64 rhs_idx = rhs_value.u64;
-            if(0 <= rhs_idx && rhs_idx < ext->cfgs.count)
+            if (0 <= rhs_idx && rhs_idx < ext->cfgs.count)
             {
                 cfg = ext->cfgs.v[rhs_idx];
             }
@@ -750,14 +750,14 @@ E_TYPE_ACCESS_FUNCTION_DEF(cfgs_slice)
         {
             String8 rhs_name = expr->first->next->string;
             RD_CfgID id = 0;
-            if(str8_match(str8_prefix(rhs_name, 1), str8_lit("$"), 0))
+            if (str8_match(str8_prefix(rhs_name, 1), str8_lit("$"), 0))
             {
                 id = u64_from_str8(str8_skip(rhs_name, 1), 16);
                 cfg = rd_cfg_from_id(id);
             }
         }break;
     }
-    if(cfg != &rd_nil_cfg)
+    if (cfg != &rd_nil_cfg)
     {
         result.root = e_irtree_set_space(arena, rd_eval_space_from_cfg(cfg), e_irtree_const_u(arena, 0));
         result.mode = E_Mode_Offset;
@@ -786,7 +786,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(cfgs_slice)
         
         //- rjf: filter cfgs
         RD_CfgArray cfgs__filtered = ext->cfgs;
-        if(filter.size != 0)
+        if (filter.size != 0)
         {
             RD_CfgList cfgs_list__filtered = {0};
             for EachIndex(idx, ext->cfgs.count)
@@ -795,7 +795,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(cfgs_slice)
                 DR_FStrList fstrs = rd_title_fstrs_from_cfg(scratch.arena, cfg, 1);
                 String8 string = dr_string_from_fstrs(scratch.arena, &fstrs);
                 FuzzyMatchRangeList fuzzy_matches = fuzzy_match_find(scratch.arena, filter, string);
-                if(fuzzy_matches.count == fuzzy_matches.needle_part_count)
+                if (fuzzy_matches.count == fuzzy_matches.needle_part_count)
                 {
                     rd_cfg_list_push(scratch.arena, &cfgs_list__filtered, cfg);
                 }
@@ -805,7 +805,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(cfgs_slice)
         
         //- rjf: fill
         // TODO(rjf): @cleanup don't smuggle this through like this...
-        if(rd_cfg_child_from_string(rd_cfg_from_id(rd_regs()->view), str8_lit("lister")) == &rd_nil_cfg)
+        if (rd_cfg_child_from_string(rd_cfg_from_id(rd_regs()->view), str8_lit("lister")) == &rd_nil_cfg)
         {
             accel->cmds = ext->cmds;
             accel->cmds_idx_range = r1u64(0, accel->cmds.count);
@@ -826,13 +826,13 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(cfgs_query)
         RD_Cfg *root_cfg = rd_cfg_from_eval_space(eval.space);
         String8 child_key = e_string_from_id(eval.space.u64s[1]);
         String8 child_key_singular = rd_singular_from_code_name_plural(child_key);
-        if(child_key_singular.size != 0)
+        if (child_key_singular.size != 0)
         {
             child_key = child_key_singular;
         }
         String8List cmds = {0};
         MD_NodePtrList schemas = rd_schemas_from_name(child_key);
-        for(MD_NodePtrNode *n = schemas.first; n != 0; n = n->next)
+        for (MD_NodePtrNode *n = schemas.first; n != 0; n = n->next)
         {
             MD_Node *schema = n->v;
             MD_Node *collection_cmds_root = md_tag_from_string(schema, str8_lit("collection_commands"), 0);
@@ -843,15 +843,15 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(cfgs_query)
         }
         RD_CfgList children = rd_cfg_child_list_from_string(scratch.arena, root_cfg, child_key);
         RD_CfgList children__filtered = children;
-        if(filter.size != 0)
+        if (filter.size != 0)
         {
             MemoryZeroStruct(&children__filtered);
-            for(RD_CfgNode *n = children.first; n != 0; n = n->next)
+            for (RD_CfgNode *n = children.first; n != 0; n = n->next)
             {
                 DR_FStrList cfg_fstrs = rd_title_fstrs_from_cfg(scratch.arena, n->v, 1);
                 String8 cfg_string = dr_string_from_fstrs(scratch.arena, &cfg_fstrs);
                 FuzzyMatchRangeList ranges = fuzzy_match_find(scratch.arena, filter, cfg_string);
-                if(ranges.count == ranges.needle_part_count)
+                if (ranges.count == ranges.needle_part_count)
                 {
                     rd_cfg_list_push(scratch.arena, &children__filtered, n->v);
                 }
@@ -879,7 +879,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(cfgs_slice)
         Rng1U64 read_range = intersect_1u64(cmds_idx_range, idx_range);
         U64 read_count = dim_1u64(read_range);
         E_Eval cmds_eval = e_eval_from_stringf("query:commands");
-        for(U64 idx = 0; idx < read_count; idx += 1, dst_idx += 1)
+        for (U64 idx = 0; idx < read_count; idx += 1, dst_idx += 1)
         {
             String8 cmd_name = accel->cmds.v[idx + read_range.min - cmds_idx_range.min];
             E_Eval cmd_eval = e_eval_wrapf(cmds_eval, "$.%S", cmd_name);
@@ -891,7 +891,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(cfgs_slice)
     {
         Rng1U64 read_range = intersect_1u64(cfgs_idx_range, idx_range);
         U64 read_count = dim_1u64(read_range);
-        for(U64 idx = 0; idx < read_count; idx += 1, dst_idx += 1)
+        for (U64 idx = 0; idx < read_count; idx += 1, dst_idx += 1)
         {
             RD_Cfg *cfg = accel->cfgs.v[idx + read_range.min - cfgs_idx_range.min];
             evals_out[dst_idx] = e_eval_from_stringf("query:config.$%I64x", cfg->id);
@@ -903,15 +903,15 @@ E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(cfgs_slice)
 {
     U64 id = 0;
     RD_CfgsExpandAccel *accel = (RD_CfgsExpandAccel *)user_data;
-    if(num != 0)
+    if (num != 0)
     {
         U64 idx = num-1;
-        if(contains_1u64(accel->cfgs_idx_range, idx))
+        if (contains_1u64(accel->cfgs_idx_range, idx))
         {
             RD_Cfg *cfg = accel->cfgs.v[idx - accel->cfgs_idx_range.min];
             id = cfg->id;
         }
-        else if(contains_1u64(accel->cmds_idx_range, idx))
+        else if (contains_1u64(accel->cmds_idx_range, idx))
         {
             id = num;
             id |= (1ull<<63);
@@ -924,16 +924,16 @@ E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(cfgs_slice)
 {
     U64 num = 0;
     RD_CfgsExpandAccel *accel = (RD_CfgsExpandAccel *)user_data;
-    if(id != 0)
+    if (id != 0)
     {
-        if(id & (1ull<<63))
+        if (id & (1ull<<63))
         {
             num = id;
             num &= ~(1ull<<63);
         }
         else for EachIndex(idx, accel->cfgs.count)
         {
-            if(accel->cfgs.v[idx]->id == id)
+            if (accel->cfgs.v[idx]->id == id)
             {
                 num = idx + accel->cfgs_idx_range.min + 1;
                 break;
@@ -963,7 +963,7 @@ E_TYPE_IREXT_FUNCTION_DEF(call_stack)
         String8 bytecode = e_bytecode_from_oplist(scratch.arena, &oplist);
         E_Interpretation interp = e_interpret(bytecode);
         CTRL_Entity *entity = rd_ctrl_entity_from_eval_space(interp.space);
-        if(entity->kind == CTRL_EntityKind_Thread)
+        if (entity->kind == CTRL_EntityKind_Thread)
         {
             B32 call_stack_high_priority = ctrl_handle_match(entity->handle, rd_base_regs()->thread);
             accel->arch = entity->arch;
@@ -979,12 +979,12 @@ E_TYPE_IREXT_FUNCTION_DEF(call_stack)
 E_TYPE_ACCESS_FUNCTION_DEF(call_stack)
 {
     E_IRTreeAndType result = {&e_irnode_nil};
-    if(expr->kind == E_ExprKind_ArrayIndex)
+    if (expr->kind == E_ExprKind_ArrayIndex)
     {
         RD_CallStackAccel *accel = (RD_CallStackAccel *)lhs_irtree->user_data;
         E_Value rhs_value = e_value_from_expr(expr->first->next);
         CTRL_CallStack *call_stack = &accel->call_stack;
-        if(0 <= rhs_value.u64 && rhs_value.u64 < call_stack->frames_count)
+        if (0 <= rhs_value.u64 && rhs_value.u64 < call_stack->frames_count)
         {
             CTRL_Entity *process = ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, accel->process);
             CTRL_CallStackFrame *f = &call_stack->frames[rhs_value.u64];
@@ -1025,9 +1025,9 @@ E_TYPE_IREXT_FUNCTION_DEF(environment)
         E_Space space = interpret.space;
         RD_Cfg *target = rd_cfg_from_eval_space(space);
         RD_CfgList env_strings = {0};
-        for(RD_Cfg *child = target->first; child != &rd_nil_cfg; child = child->next)
+        for (RD_Cfg *child = target->first; child != &rd_nil_cfg; child = child->next)
         {
-            if(str8_match(child->string, str8_lit("environment"), 0))
+            if (str8_match(child->string, str8_lit("environment"), 0))
             {
                 rd_cfg_list_push(scratch.arena, &env_strings, child);
             }
@@ -1042,12 +1042,12 @@ E_TYPE_IREXT_FUNCTION_DEF(environment)
 E_TYPE_ACCESS_FUNCTION_DEF(environment)
 {
     E_IRTreeAndType result = {&e_irnode_nil};
-    if(expr->kind == E_ExprKind_ArrayIndex)
+    if (expr->kind == E_ExprKind_ArrayIndex)
     {
         RD_EnvironmentAccel *accel = (RD_EnvironmentAccel *)lhs_irtree->user_data;
         RD_CfgArray *cfgs = &accel->cfgs;
         E_Value rhs_value = e_value_from_expr(expr->first->next);
-        if(0 <= rhs_value.u64 && rhs_value.u64 < cfgs->count)
+        if (0 <= rhs_value.u64 && rhs_value.u64 < cfgs->count)
         {
             RD_Cfg *cfg = cfgs->v[rhs_value.u64];
             result.root      = e_irtree_set_space(arena, rd_eval_space_from_cfg(cfg), e_irtree_const_u(arena, 0));
@@ -1071,10 +1071,10 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(environment)
     Rng1U64 legal_idx_range = r1u64(0, accel->cfgs.count);
     Rng1U64 read_range = intersect_1u64(idx_range, legal_idx_range);
     U64 read_range_count = dim_1u64(read_range);
-    for(U64 idx = 0; idx < read_range_count; idx += 1)
+    for (U64 idx = 0; idx < read_range_count; idx += 1)
     {
         U64 cfg_idx = read_range.min + idx;
-        if(cfg_idx < accel->cfgs.count)
+        if (cfg_idx < accel->cfgs.count)
         {
             evals_out[idx] = e_eval_wrapf(eval, "$[%I64u]", cfg_idx);
         }
@@ -1085,12 +1085,12 @@ E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(environment)
 {
     U64 id = 0;
     RD_EnvironmentAccel *accel = (RD_EnvironmentAccel *)user_data;
-    if(1 <= num && num <= accel->cfgs.count)
+    if (1 <= num && num <= accel->cfgs.count)
     {
         U64 idx = (num-1);
         id = accel->cfgs.v[idx]->id;
     }
-    else if(num == accel->cfgs.count+1)
+    else if (num == accel->cfgs.count+1)
     {
         id = max_U64;
     }
@@ -1101,18 +1101,18 @@ E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(environment)
 {
     U64 num = 0;
     RD_EnvironmentAccel *accel = (RD_EnvironmentAccel *)user_data;
-    if(id != 0 && id != max_U64)
+    if (id != 0 && id != max_U64)
     {
         for EachIndex(idx, accel->cfgs.count)
         {
-            if(accel->cfgs.v[idx]->id == id)
+            if (accel->cfgs.v[idx]->id == id)
             {
                 num = idx+1;
                 break;
             }
         }
     }
-    else if(id == max_U64)
+    else if (id == max_U64)
     {
         num = accel->cfgs.count + 1;
     }
@@ -1139,9 +1139,9 @@ E_TYPE_IREXT_FUNCTION_DEF(watches)
         E_Space space = interpret.space;
         RD_Cfg *target = rd_cfg_from_eval_space(space);
         RD_CfgList env_strings = {0};
-        for(RD_Cfg *child = target->first; child != &rd_nil_cfg; child = child->next)
+        for (RD_Cfg *child = target->first; child != &rd_nil_cfg; child = child->next)
         {
-            if(str8_match(child->string, str8_lit("watch"), 0))
+            if (str8_match(child->string, str8_lit("watch"), 0))
             {
                 rd_cfg_list_push(scratch.arena, &env_strings, child);
             }
@@ -1156,12 +1156,12 @@ E_TYPE_IREXT_FUNCTION_DEF(watches)
 E_TYPE_ACCESS_FUNCTION_DEF(watches)
 {
     E_IRTreeAndType result = {&e_irnode_nil};
-    if(expr->kind == E_ExprKind_ArrayIndex)
+    if (expr->kind == E_ExprKind_ArrayIndex)
     {
         RD_WatchesAccel *accel = (RD_WatchesAccel *)lhs_irtree->user_data;
         RD_CfgArray *cfgs = &accel->cfgs;
         E_Value rhs_value = e_value_from_expr(expr->first->next);
-        if(0 <= rhs_value.u64 && rhs_value.u64 < cfgs->count)
+        if (0 <= rhs_value.u64 && rhs_value.u64 < cfgs->count)
         {
             RD_Cfg *cfg = cfgs->v[rhs_value.u64];
             result.root      = e_irtree_set_space(arena, rd_eval_space_from_cfg(cfg), e_irtree_const_u(arena, 0));
@@ -1178,7 +1178,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(watches)
     RD_WatchesAccel *accel = push_array(arena, RD_WatchesAccel, 1);
     {
         RD_CfgArray cfgs__filtered = ext->cfgs;
-        if(filter.size != 0)
+        if (filter.size != 0)
         {
             Temp scratch = scratch_begin(&arena, 1);
             RD_CfgList cfgs_list__filtered = {0};
@@ -1187,7 +1187,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(watches)
                 RD_Cfg *watch = ext->cfgs.v[idx];
                 String8 string = watch->first->string;
                 FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, string);
-                if(matches.count == matches.needle_part_count)
+                if (matches.count == matches.needle_part_count)
                 {
                     rd_cfg_list_push(scratch.arena, &cfgs_list__filtered, watch);
                 }
@@ -1207,10 +1207,10 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(watches)
     Rng1U64 legal_idx_range = r1u64(0, accel->cfgs.count);
     Rng1U64 read_range = intersect_1u64(idx_range, legal_idx_range);
     U64 read_range_count = dim_1u64(read_range);
-    for(U64 idx = 0; idx < read_range_count; idx += 1)
+    for (U64 idx = 0; idx < read_range_count; idx += 1)
     {
         U64 cfg_idx = read_range.min + idx;
-        if(cfg_idx < accel->cfgs.count)
+        if (cfg_idx < accel->cfgs.count)
         {
             RD_Cfg *cfg = accel->cfgs.v[cfg_idx];
             evals_out[idx] = e_eval_from_string(cfg->first->string);
@@ -1222,12 +1222,12 @@ E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(watches)
 {
     U64 id = 0;
     RD_WatchesAccel *accel = (RD_WatchesAccel *)user_data;
-    if(1 <= num && num <= accel->cfgs.count)
+    if (1 <= num && num <= accel->cfgs.count)
     {
         U64 idx = (num-1);
         id = accel->cfgs.v[idx]->id;
     }
-    else if(num == accel->cfgs.count+1)
+    else if (num == accel->cfgs.count+1)
     {
         id = max_U64;
     }
@@ -1238,18 +1238,18 @@ E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(watches)
 {
     U64 num = 0;
     RD_WatchesAccel *accel = (RD_WatchesAccel *)user_data;
-    if(id != 0 && id != max_U64)
+    if (id != 0 && id != max_U64)
     {
         for EachIndex(idx, accel->cfgs.count)
         {
-            if(accel->cfgs.v[idx]->id == id)
+            if (accel->cfgs.v[idx]->id == id)
             {
                 num = idx+1;
                 break;
             }
         }
     }
-    else if(id == max_U64)
+    else if (id == max_U64)
     {
         num = accel->cfgs.count + 1;
     }
@@ -1270,7 +1270,7 @@ struct RD_UnattachedProcessesAccel
 E_TYPE_ACCESS_FUNCTION_DEF(unattached_processes)
 {
     E_IRTreeAndType result = {&e_irnode_nil};
-    if(expr->kind == E_ExprKind_MemberAccess)
+    if (expr->kind == E_ExprKind_MemberAccess)
     {
         Temp scratch = scratch_begin(&arena, 1);
         
@@ -1282,7 +1282,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(unattached_processes)
             String8 name_id_string = {0};
             U8 split_char = '$';
             String8List parts = str8_split(scratch.arena, expr->first->next->string, &split_char, 1, 0);
-            if(parts.first != 0 && parts.first->next != 0)
+            if (parts.first != 0 && parts.first->next != 0)
             {
                 pid_string = parts.first->string;
                 name_id_string = parts.first->next->string;
@@ -1298,7 +1298,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(unattached_processes)
         CTRL_Entity *machine = rd_ctrl_entity_from_eval_space(interpret.space);
         
         // rjf: build evaluation for this unattached process
-        if(machine != &ctrl_entity_nil)
+        if (machine != &ctrl_entity_nil)
         {
             E_IRNode *value_irnode = e_push_irnode(arena, RDI_EvalOp_ConstU128);
             value_irnode->value.u128.u64[0] = pid;
@@ -1325,7 +1325,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(unattached_processes)
         
         //- rjf: gather all machines we're searching through
         CTRL_EntityArray machines = {0};
-        if(lhs_entity->kind == CTRL_EntityKind_Machine)
+        if (lhs_entity->kind == CTRL_EntityKind_Machine)
         {
             machines.v = &lhs_entity;
             machines.count = 1;
@@ -1351,20 +1351,20 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(unattached_processes)
             CTRL_Entity *machine = machines.v[idx];
             DMN_ProcessIter iter = {0};
             dmn_process_iter_begin(&iter);
-            for(DMN_ProcessInfo info = {0}; dmn_process_iter_next(scratch.arena, &iter, &info);)
+            for (DMN_ProcessInfo info = {0}; dmn_process_iter_next(scratch.arena, &iter, &info);)
             {
                 B32 passes_filter = 1;
-                if(filter.size != 0)
+                if (filter.size != 0)
                 {
                     passes_filter = 0;
                     FuzzyMatchRangeList name_matches = fuzzy_match_find(scratch.arena, filter, info.name);
                     FuzzyMatchRangeList pid_matches = fuzzy_match_find(scratch.arena, filter, push_str8f(scratch.arena, "%I64u", info.pid));
-                    if(name_matches.count == name_matches.needle_part_count || pid_matches.count == pid_matches.needle_part_count)
+                    if (name_matches.count == name_matches.needle_part_count || pid_matches.count == pid_matches.needle_part_count)
                     {
                         passes_filter = 1;
                     }
                 }
-                if(passes_filter)
+                if (passes_filter)
                 {
                     Node *node = push_array(scratch.arena, Node, 1);
                     SLLQueuePush(first, last, node);
@@ -1382,7 +1382,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(unattached_processes)
         CTRL_Entity **infos_machines = push_array(arena, CTRL_Entity *, infos_count);
         {
             U64 idx = 0;
-            for(Node *n = first; n != 0; n = n->next, idx += 1)
+            for (Node *n = first; n != 0; n = n->next, idx += 1)
             {
                 infos[idx] = n->info;
                 infos[idx].name = push_str8_copy(arena, infos[idx].name);
@@ -1407,7 +1407,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(unattached_processes)
     RD_UnattachedProcessesAccel *accel = (RD_UnattachedProcessesAccel *)user_data;
     U64 out_idx = 0;
     E_TypeKey unattached_process_type = e_type_key_cons(.kind = E_TypeKind_U128, .name = str8_lit("unattached_process"));
-    for(U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
+    for (U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
     {
         CTRL_Entity *machine = accel->machines[idx];
         String8 string = ctrl_string_from_handle(arena, machine->handle);
@@ -1423,7 +1423,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(ctrl_entities)
     E_IRTreeAndType result = {&e_irnode_nil};
     {
         CTRL_Entity *entity = &ctrl_entity_nil;
-        switch(expr->kind)
+        switch (expr->kind)
         {
             case E_ExprKind_MemberAccess:
             {
@@ -1438,13 +1438,13 @@ E_TYPE_ACCESS_FUNCTION_DEF(ctrl_entities)
                 E_Value rhs_value = e_value_from_expr(expr->first->next);
                 U64 rhs_idx = rhs_value.u64;
                 CTRL_EntityArray entities = ctrl_entity_array_from_kind(&d_state->ctrl_entity_store->ctx, kind);
-                if(0 <= rhs_idx && rhs_idx < entities.count)
+                if (0 <= rhs_idx && rhs_idx < entities.count)
                 {
                     entity = entities.v[rhs_idx];
                 }
             }break;
         }
-        if(entity != &ctrl_entity_nil)
+        if (entity != &ctrl_entity_nil)
         {
             E_Space space = rd_eval_space_from_ctrl_entity(entity, RD_EvalSpaceKind_MetaCtrlEntity);
             String8 name = ctrl_entity_kind_code_name_table[entity->kind];
@@ -1464,7 +1464,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(ctrl_entities)
     {
         //- rjf: determine which entity we're looking under
         CTRL_Entity *scoping_entity = &ctrl_entity_nil;
-        if(eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity)
+        if (eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity)
         {
             scoping_entity = rd_ctrl_entity_from_eval_space(eval.space);
         }
@@ -1477,16 +1477,16 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(ctrl_entities)
         
         //- rjf: gather array of all entities which fit the bill
         CTRL_EntityArray array = {0};
-        if(scoping_entity == &ctrl_entity_nil)
+        if (scoping_entity == &ctrl_entity_nil)
         {
             array = ctrl_entity_array_from_kind(&d_state->ctrl_entity_store->ctx, entity_kind);
         }
         else
         {
             CTRL_EntityList list = {0};
-            for(CTRL_Entity *child = scoping_entity->first; child != &ctrl_entity_nil; child = child->next)
+            for (CTRL_Entity *child = scoping_entity->first; child != &ctrl_entity_nil; child = child->next)
             {
-                if(child->kind == entity_kind)
+                if (child->kind == entity_kind)
                 {
                     ctrl_entity_list_push(scratch.arena, &list, child);
                 }
@@ -1496,7 +1496,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(ctrl_entities)
         
         //- rjf: filter the array
         CTRL_EntityArray array__filtered = array;
-        if(filter.size != 0)
+        if (filter.size != 0)
         {
             CTRL_EntityList list__filtered = {0};
             for EachIndex(idx, array.count)
@@ -1505,7 +1505,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(ctrl_entities)
                 DR_FStrList fstrs = rd_title_fstrs_from_ctrl_entity(scratch.arena, entity, 1);
                 String8 title_string = dr_string_from_fstrs(scratch.arena, &fstrs);
                 FuzzyMatchRangeList matches = fuzzy_match_find(scratch.arena, filter, title_string);
-                if(matches.count == matches.needle_part_count)
+                if (matches.count == matches.needle_part_count)
                 {
                     ctrl_entity_list_push(scratch.arena, &list__filtered, entity);
                 }
@@ -1529,7 +1529,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(ctrl_entities)
     Rng1U64 legal_range = r1u64(0, entities->count);
     Rng1U64 read_range = intersect_1u64(legal_range, idx_range);
     U64 read_count = dim_1u64(read_range);
-    for(U64 out_idx = 0; out_idx < read_count; out_idx += 1)
+    for (U64 out_idx = 0; out_idx < read_count; out_idx += 1)
     {
         Temp scratch = scratch_begin(&arena, 1);
         CTRL_Entity *entity = entities->v[out_idx + read_range.min];
@@ -1559,18 +1559,18 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(debug_info_table)
     {
         E_TypeKey lhs_type_key = eval.irtree.type_key;
         E_Type *lhs_type = e_type_from_key(lhs_type_key);
-        if(0){}
-        else if(str8_match(lhs_type->name, str8_lit("procedures"), 0))       {section = RDI_SectionKind_Procedures;}
-        else if(str8_match(lhs_type->name, str8_lit("globals"), 0))          {section = RDI_SectionKind_GlobalVariables;}
-        else if(str8_match(lhs_type->name, str8_lit("thread_locals"), 0))    {section = RDI_SectionKind_ThreadVariables;}
-        else if(str8_match(lhs_type->name, str8_lit("constants"), 0))        {section = RDI_SectionKind_Constants;}
-        else if(str8_match(lhs_type->name, str8_lit("types"), 0))            {section = RDI_SectionKind_UDTs;}
-        else if(str8_match(lhs_type->name, str8_lit("source_files"), 0))     {section = RDI_SectionKind_SourceFiles;}
+        if (0){}
+        else if (str8_match(lhs_type->name, str8_lit("procedures"), 0))       {section = RDI_SectionKind_Procedures;}
+        else if (str8_match(lhs_type->name, str8_lit("globals"), 0))          {section = RDI_SectionKind_GlobalVariables;}
+        else if (str8_match(lhs_type->name, str8_lit("thread_locals"), 0))    {section = RDI_SectionKind_ThreadVariables;}
+        else if (str8_match(lhs_type->name, str8_lit("constants"), 0))        {section = RDI_SectionKind_Constants;}
+        else if (str8_match(lhs_type->name, str8_lit("types"), 0))            {section = RDI_SectionKind_UDTs;}
+        else if (str8_match(lhs_type->name, str8_lit("source_files"), 0))     {section = RDI_SectionKind_SourceFiles;}
     }
     
     // rjf: gather debug info table items
     RD_DebugInfoTableLookupAccel *accel = push_array(arena, RD_DebugInfoTableLookupAccel, 1);
-    if(section != RDI_SectionKind_NULL)
+    if (section != RDI_SectionKind_NULL)
     {
         U64 endt_us = rd_state->frame_eval_memread_endt_us;
         
@@ -1579,7 +1579,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(debug_info_table)
         DI_KeyArray dbgi_keys = di_key_array_from_list(scratch.arena, &dbgi_keys_list);
         U64 rdis_count = dbgi_keys.count;
         RDI_Parsed **rdis = push_array(arena, RDI_Parsed *, rdis_count);
-        for(U64 idx = 0; idx < rdis_count; idx += 1)
+        for (U64 idx = 0; idx < rdis_count; idx += 1)
         {
             rdis[idx] = di_rdi_from_key(rd_state->frame_di_scope, &dbgi_keys.v[idx], 1, endt_us);
         }
@@ -1592,7 +1592,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(debug_info_table)
         accel->rdis_count = rdis_count;
         accel->rdis = rdis;
         accel->items = di_search_items_from_key_params_query(rd_state->frame_di_scope, fuzzy_search_key, &params, filter, endt_us, &items_stale);
-        if(items_stale)
+        if (items_stale)
         {
             rd_request_frame();
         }
@@ -1613,7 +1613,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(debug_info_table)
         DI_SearchItem *item = &accel->items.v[idx_range.min + idx];
         
         // rjf: skip bad elements
-        if(item->dbgi_idx >= accel->rdis_count)
+        if (item->dbgi_idx >= accel->rdis_count)
         {
             continue;
         }
@@ -1627,7 +1627,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(debug_info_table)
         B32 item_is_path = 0;
         {
             U64 element_idx = item->idx;
-            switch(accel->section)
+            switch (accel->section)
             {
                 default:{}break;
                 case RDI_SectionKind_Procedures:
@@ -1678,7 +1678,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(debug_info_table)
                 {
                     RDI_SourceFile *sf = rdi_element_from_name_idx(module->rdi, SourceFiles, element_idx);
                     String8List path_parts = {0};
-                    for(RDI_FilePathNode *fpn = rdi_element_from_name_idx(rdi, FilePathNodes, sf->file_path_node_idx);
+                    for (RDI_FilePathNode *fpn = rdi_element_from_name_idx(rdi, FilePathNodes, sf->file_path_node_idx);
                             fpn != rdi_element_from_name_idx(rdi, FilePathNodes, 0);
                             fpn = rdi_element_from_name_idx(rdi, FilePathNodes, fpn->parent_path_node))
                     {
@@ -1696,7 +1696,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(debug_info_table)
         
         // rjf: build a valid expression string given item string
         String8 item_expr = item_string;
-        if(item_is_path)
+        if (item_is_path)
         {
             item_expr = push_str8f(scratch.arena, "file:\"%S\"", item_string);
         }
@@ -1707,14 +1707,14 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(debug_info_table)
             for EachIndex(idx, tokens.count)
             {
                 String8 token_string = str8_substr(item_string, tokens.v[idx].range);
-                if(tokens.v[idx].kind != E_TokenKind_Identifier &&
+                if (tokens.v[idx].kind != E_TokenKind_Identifier &&
                       !str8_match(token_string, str8_lit("."), 0))
                 {
                     string_can_be_evalled = 0;
                     break;
                 }
             }
-            if(!string_can_be_evalled)
+            if (!string_can_be_evalled)
             {
                 item_expr = push_str8f(scratch.arena, "`%S`", item_string);
             }
@@ -1734,7 +1734,7 @@ E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(debug_info_table)
 {
     RD_DebugInfoTableLookupAccel *accel = (RD_DebugInfoTableLookupAccel *)user_data;
     U64 id = 0;
-    if(0 < num && num <= accel->items.count)
+    if (0 < num && num <= accel->items.count)
     {
         id = accel->items.v[num-1].idx+1;
     }

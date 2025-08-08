@@ -8,7 +8,7 @@ internal U64
 dmn_w32_hash_from_string(String8 string)
 {
     U64 result = 5381;
-    for(U64 i = 0; i < string.size; i += 1)
+    for (U64 i = 0; i < string.size; i += 1)
     {
         result = ((result << 5) + result) + string.str[i];
     }
@@ -41,7 +41,7 @@ dmn_w32_entity_from_handle(DMN_Handle handle)
     U32 idx = handle.u32[0];
     U32 gen = handle.u32[1];
     DMN_W32_Entity *entity = dmn_w32_shared->entities_base + idx;
-    if(entity->gen != gen)
+    if (entity->gen != gen)
     {
         entity = &dmn_w32_entity_nil;
     }
@@ -57,7 +57,7 @@ dmn_w32_entity_alloc(DMN_W32_Entity *parent, DMN_W32_EntityKind kind, U64 id)
     DMN_W32_Entity *e = dmn_w32_shared->entities_first_free;
     {
         U32 gen = 0;
-        if(e != 0)
+        if (e != 0)
         {
             SLLStackPop(dmn_w32_shared->entities_first_free);
             gen = e->gen;
@@ -77,31 +77,31 @@ dmn_w32_entity_alloc(DMN_W32_Entity *parent, DMN_W32_EntityKind kind, U64 id)
         e->id = id;
         e->parent = parent;
         e->next = e->prev = e->first = e->last = &dmn_w32_entity_nil;
-        if(parent != &dmn_w32_entity_nil)
+        if (parent != &dmn_w32_entity_nil)
         {
             DLLPushBack_NPZ(&dmn_w32_entity_nil, parent->first, parent->last, e, next, prev);
         }
     }
     
     // rjf: insert into id -> entity map
-    if(id != 0)
+    if (id != 0)
     {
         U64 hash = dmn_w32_hash_from_id(id);
         U64 slot_idx = hash%dmn_w32_shared->entities_id_hash_slots_count;
         DMN_W32_EntityIDHashSlot *slot = &dmn_w32_shared->entities_id_hash_slots[slot_idx];
         DMN_W32_EntityIDHashNode *node = 0;
-        for(DMN_W32_EntityIDHashNode *n = slot->first; n != 0; n = n->next)
+        for (DMN_W32_EntityIDHashNode *n = slot->first; n != 0; n = n->next)
         {
-            if(n->id == id)
+            if (n->id == id)
             {
                 node = n;
                 break;
             }
         }
-        if(node == 0)
+        if (node == 0)
         {
             node = dmn_w32_shared->entities_id_hash_node_free;
-            if(node != 0)
+            if (node != 0)
             {
                 SLLStackPop(dmn_w32_shared->entities_id_hash_node_free);
             }
@@ -122,13 +122,13 @@ internal void
 dmn_w32_entity_release(DMN_W32_Entity *entity)
 {
     // rjf: unhook root
-    if(entity->parent != &dmn_w32_entity_nil)
+    if (entity->parent != &dmn_w32_entity_nil)
     {
         DLLRemove_NPZ(&dmn_w32_entity_nil, entity->parent->first, entity->parent->last, entity, next, prev);
     }
     
     // rjf: walk every entity in this tree, free each
-    if(entity != &dmn_w32_entity_nil)
+    if (entity != &dmn_w32_entity_nil)
     {
         Temp scratch = scratch_begin(0, 0);
         typedef struct Task Task;
@@ -140,9 +140,9 @@ dmn_w32_entity_release(DMN_W32_Entity *entity)
         Task start_task = {0, entity};
         Task *first_task = &start_task;
         Task *last_task = &start_task;
-        for(Task *t = first_task; t != 0; t = t->next)
+        for (Task *t = first_task; t != 0; t = t->next)
         {
-            for(DMN_W32_Entity *child = t->e->first; child != &dmn_w32_entity_nil; child = child->next)
+            for (DMN_W32_Entity *child = t->e->first; child != &dmn_w32_entity_nil; child = child->next)
             {
                 Task *t = push_array(scratch.arena, Task, 1);
                 t->e = child;
@@ -152,22 +152,22 @@ dmn_w32_entity_release(DMN_W32_Entity *entity)
             // rjf: free entity
             SLLStackPush(dmn_w32_shared->entities_first_free, t->e);
             t->e->gen += 1;
-            if(t->e->kind == DMN_W32_EntityKind_Module)
+            if (t->e->kind == DMN_W32_EntityKind_Module)
             {
                 CloseHandle(t->e->handle);
             }
             t->e->kind = DMN_W32_EntityKind_Null;
             
             // rjf: remove from id -> entity map
-            if(t->e->id != 0)
+            if (t->e->id != 0)
             {
                 U64 hash = dmn_w32_hash_from_id(t->e->id);
                 U64 slot_idx = hash%dmn_w32_shared->entities_id_hash_slots_count;
                 DMN_W32_EntityIDHashSlot *slot = &dmn_w32_shared->entities_id_hash_slots[slot_idx];
                 DMN_W32_EntityIDHashNode *node = 0;
-                for(DMN_W32_EntityIDHashNode *n = slot->first; n != 0; n = n->next)
+                for (DMN_W32_EntityIDHashNode *n = slot->first; n != 0; n = n->next)
                 {
-                    if(n->id == t->e->id && n->entity == t->e)
+                    if (n->id == t->e->id && n->entity == t->e)
                     {
                         DLLRemove(slot->first, slot->last, n);
                         SLLStackPush(dmn_w32_shared->entities_id_hash_node_free, n);
@@ -190,15 +190,15 @@ dmn_w32_entity_from_kind_id(DMN_W32_EntityKind kind, U64 id)
     U64 slot_idx = hash%dmn_w32_shared->entities_id_hash_slots_count;
     DMN_W32_EntityIDHashSlot *slot = &dmn_w32_shared->entities_id_hash_slots[slot_idx];
     DMN_W32_EntityIDHashNode *node = 0;
-    for(DMN_W32_EntityIDHashNode *n = slot->first; n != 0; n = n->next)
+    for (DMN_W32_EntityIDHashNode *n = slot->first; n != 0; n = n->next)
     {
-        if(n->entity->kind == kind && n->id == id)
+        if (n->entity->kind == kind && n->id == id)
         {
             node = n;
             break;
         }
     }
-    if(node != 0)
+    if (node != 0)
     {
         result = node->entity;
     }
@@ -218,7 +218,7 @@ dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module)
     String8 path8 = {0};
     {
         // rjf: handle -> full path
-        if(module->handle != 0)
+        if (module->handle != 0)
         {
             DWORD cap16 = GetFinalPathNameByHandleW(module->handle, 0, 0, VOLUME_NAME_DOS);
             U16 *buffer16 = push_array_no_zero(scratch.arena, U16, cap16);
@@ -227,28 +227,28 @@ dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module)
         }
         
         // rjf: fallback (main module only): process -> full path
-        if(path16.size == 0 && module->module.is_main)
+        if (path16.size == 0 && module->module.is_main)
         {
             DMN_W32_Entity *process = module->parent;
             DWORD size = KB(4);
             U16 *buf = push_array_no_zero(scratch.arena, U16, size);
-            if(QueryFullProcessImageNameW(process->handle, 0, (WCHAR*)buf, &size))
+            if (QueryFullProcessImageNameW(process->handle, 0, (WCHAR*)buf, &size))
             {
                 path16 = str16(buf, size);
             }
         }
         
         // rjf: fallback (any module - no guarantee): address_of_name -> full path
-        if(path16.size == 0 && module->module.address_of_name_pointer != 0)
+        if (path16.size == 0 && module->module.address_of_name_pointer != 0)
         {
             DMN_W32_Entity *process = module->parent;
             U64 ptr_size = bit_size_from_arch(process->arch)/8;
             U64 name_pointer = 0;
-            if(dmn_w32_process_read(process->handle, r1u64(module->module.address_of_name_pointer, module->module.address_of_name_pointer+ptr_size), &name_pointer))
+            if (dmn_w32_process_read(process->handle, r1u64(module->module.address_of_name_pointer, module->module.address_of_name_pointer+ptr_size), &name_pointer))
             {
-                if(name_pointer != 0)
+                if (name_pointer != 0)
                 {
-                    if(module->module.name_is_unicode)
+                    if (module->module.name_is_unicode)
                     {
                         path16 = dmn_w32_read_memory_str16(scratch.arena, process->handle, name_pointer);
                     }
@@ -264,10 +264,10 @@ dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module)
     // rjf: produce finalized result
     String8 result = {0};
     {
-        if(path16.size > 0)
+        if (path16.size > 0)
         {
             // rjf: skip the extended path thing if necessary
-            if(path16.size >= 4 &&
+            if (path16.size >= 4 &&
                   path16.str[0] == L'\\' &&
                   path16.str[1] == L'\\' &&
                   path16.str[2] == L'?' &&
@@ -314,11 +314,11 @@ dmn_w32_process_read(HANDLE process, Rng1U64 range, void *dst)
     U8 *ptr = (U8*)dst;
     U8 *opl = ptr + dim_1u64(range);
     U64 cursor = range.min;
-    for(;ptr < opl;)
+    for (;ptr < opl;)
     {
         SIZE_T to_read = (SIZE_T)(opl - ptr);
         SIZE_T actual_read = 0;
-        if(!ReadProcessMemory(process, (LPCVOID)cursor, ptr, to_read, &actual_read))
+        if (!ReadProcessMemory(process, (LPCVOID)cursor, ptr, to_read, &actual_read))
         {
             DWORD error = GetLastError();
             log_infof("'Win32 ReadProcessMemory failure': { [0x%I64x, 0x%I64x), code: %i }\n", range.min, range.max, error);
@@ -340,11 +340,11 @@ dmn_w32_process_write(HANDLE process, Rng1U64 range, void *src)
     U8 *ptr = (U8*)src;
     U8 *opl = ptr + dim_1u64(range);
     U64 cursor = range.min;
-    for(;ptr < opl;)
+    for (;ptr < opl;)
     {
         SIZE_T to_write = (SIZE_T)(opl - ptr);
         SIZE_T actual_write = 0;
-        if(!WriteProcessMemory(process, (LPVOID)cursor, ptr, to_write, &actual_write))
+        if (!WriteProcessMemory(process, (LPVOID)cursor, ptr, to_write, &actual_write))
         {
             result = 0;
             break;
@@ -401,7 +401,7 @@ dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, U64 address)
     // assemble results
     String8 result = str8_list_join(arena, &list, 0);
     scratch_end(scratch);
-    return(result);
+    return (result);
 }
 
 internal String16
@@ -453,7 +453,7 @@ dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, U64 address)
     String8 joined = str8_list_join(arena, &list, 0);
     String16 result = {(U16*)joined.str, joined.size/2};
     scratch_end(scratch);
-    return(result);
+    return (result);
 }
 
 internal DMN_W32_ImageInfo
@@ -465,7 +465,7 @@ dmn_w32_image_info_from_process_base_vaddr(HANDLE process, U64 base_vaddr)
         U64 dos_magic_off = base_vaddr;
         U16 dos_magic = 0;
         dmn_w32_process_read_struct(process, dos_magic_off, &dos_magic);
-        if(dos_magic == PE_DOS_MAGIC)
+        if (dos_magic == PE_DOS_MAGIC)
         {
             U64 pe_offset_off = base_vaddr + OffsetOf(PE_DosHeader, coff_file_offset);
             dmn_w32_process_read_struct(process, pe_offset_off, &pe_offset);
@@ -476,15 +476,15 @@ dmn_w32_image_info_from_process_base_vaddr(HANDLE process, U64 base_vaddr)
     B32 got_coff_header = 0;
     U64 coff_header_off = 0;
     COFF_FileHeader coff_header = {0};
-    if(pe_offset > 0)
+    if (pe_offset > 0)
     {
         U64 pe_magic_off = base_vaddr + pe_offset;
         U32 pe_magic = 0;
         dmn_w32_process_read_struct(process, pe_magic_off, &pe_magic);
-        if(pe_magic == PE_MAGIC)
+        if (pe_magic == PE_MAGIC)
         {
             coff_header_off = pe_magic_off + sizeof(pe_magic);
-            if(dmn_w32_process_read_struct(process, coff_header_off, &coff_header))
+            if (dmn_w32_process_read_struct(process, coff_header_off, &coff_header))
             {
                 got_coff_header = 1;
             }
@@ -493,11 +493,11 @@ dmn_w32_image_info_from_process_base_vaddr(HANDLE process, U64 base_vaddr)
     
     // rjf: get arch and size
     DMN_W32_ImageInfo result = zero_struct;
-    if(got_coff_header)
+    if (got_coff_header)
     {
         U64 optional_size_off = 0;
         Arch arch = Arch_Null;
-        switch(coff_header.machine)
+        switch (coff_header.machine)
         {
             case COFF_MachineType_X86:
             {
@@ -512,11 +512,11 @@ dmn_w32_image_info_from_process_base_vaddr(HANDLE process, U64 base_vaddr)
             default:
             {}break;
         }
-        if(arch != Arch_Null)
+        if (arch != Arch_Null)
         {
             U64 optional_off = coff_header_off + sizeof(coff_header);
             U32 size = 0;
-            if(dmn_w32_process_read_struct(process, optional_off+optional_size_off, &size) >= sizeof(size))
+            if (dmn_w32_process_read_struct(process, optional_off+optional_size_off, &size) >= sizeof(size))
             {
                 result.arch = arch;
                 result.size = size;
@@ -534,10 +534,10 @@ dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT *fxsave)
 {
     U16 result = 0;
     U32 top = (fxsave->StatusWord >> 11) & 7;
-    for(U32 fpr = 0; fpr < 8; fpr += 1)
+    for (U32 fpr = 0; fpr < 8; fpr += 1)
     {
         U32 tag = 3;
-        if(fxsave->TagWord & (1 << fpr))
+        if (fxsave->TagWord & (1 << fpr))
         {
             U32 st = (fpr - top)&7;
             
@@ -548,14 +548,14 @@ dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT *fxsave)
             
             // tag: 0 - normal; 1 - zero; 2 - special
             tag = 2;
-            if(exponent == 0)
+            if (exponent == 0)
             {
-                if(integer_part == 0 && fraction_part == 0)
+                if (integer_part == 0 && fraction_part == 0)
                 {
                     tag = 1;
                 }
             }
-            else if(exponent != bitmask15 && integer_part != 0)
+            else if (exponent != bitmask15 && integer_part != 0)
             {
                 tag = 0;
             }
@@ -569,10 +569,10 @@ internal U16
 dmn_w32_xsave_tag_word_from_real_tag_word(U16 ftw)
 {
     U16 compact = 0;
-    for(U32 fpr = 0; fpr < 8; fpr++)
+    for (U32 fpr = 0; fpr < 8; fpr++)
     {
         U32 tag = (ftw >> (fpr * 2)) & 3;
-        if(tag != 3)
+        if (tag != 3)
         {
             compact |= (1 << fpr);
         }
@@ -585,7 +585,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
 {
     B32 result = 0;
     ProfBeginFunction();
-    switch(arch)
+    switch (arch)
     {
         ////////////////////////////
         //- rjf: unimplemented win32/arch combos
@@ -607,7 +607,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
             //- rjf: get thread context
             WOW64_CONTEXT ctx = {0};
             ctx.ContextFlags = DMN_W32_CTX_X86_ALL;
-            if(!Wow64GetThreadContext(thread, (WOW64_CONTEXT *)&ctx))
+            if (!Wow64GetThreadContext(thread, (WOW64_CONTEXT *)&ctx))
             {
                 break;
             }
@@ -652,7 +652,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
             {
                 M128A *float_s = fxsave->FloatRegisters;
                 REGS_Reg80 *float_d = &dst->fpr0;
-                for(U32 n = 0; n < 8; n += 1, float_s += 1, float_d += 1)
+                for (U32 n = 0; n < 8; n += 1, float_s += 1, float_d += 1)
                 {
                     MemoryCopy(float_d, float_s, sizeof(*float_d));
                 }
@@ -660,7 +660,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
             {
                 M128A *xmm_s = fxsave->XmmRegisters;
                 REGS_Reg256 *xmm_d = &dst->ymm0;
-                for(U32 n = 0; n < 8; n += 1, xmm_s += 1, xmm_d += 1)
+                for (U32 n = 0; n < 8; n += 1, xmm_s += 1, xmm_d += 1)
                 {
                     MemoryCopy(xmm_d, xmm_s, sizeof(*xmm_s));
                 }
@@ -668,12 +668,12 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
             
             //- rjf: read FS/GS base
             WOW64_LDT_ENTRY ldt = {0};
-            if(Wow64GetThreadSelectorEntry(thread, ctx.SegFs, &ldt))
+            if (Wow64GetThreadSelectorEntry(thread, ctx.SegFs, &ldt))
             {
                 U32 base = (ldt.BaseLow) | (ldt.HighWord.Bytes.BaseMid << 16) | (ldt.HighWord.Bytes.BaseHi << 24);
                 dst->fsbase.u32 = base;
             }
-            if(Wow64GetThreadSelectorEntry(thread, ctx.SegGs, &ldt))
+            if (Wow64GetThreadSelectorEntry(thread, ctx.SegGs, &ldt))
             {
                 U32 base = (ldt.BaseLow) | (ldt.HighWord.Bytes.BaseMid << 16) | (ldt.HighWord.Bytes.BaseHi << 24);
                 dst->gsbase.u32 = base;
@@ -697,10 +697,10 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
             U32 ctx_flags = DMN_W32_CTX_X64_ALL | (xstate_enabled ? DMN_W32_CTX_INTEL_XSTATE : 0);
             DWORD size = 0;
             InitializeContext(0, ctx_flags, 0, &size);
-            if(GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+            if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
             {
                 void *ctx_memory = push_array(scratch.arena, U8, size);
-                if(!InitializeContext(ctx_memory, ctx_flags, &ctx, &size))
+                if (!InitializeContext(ctx_memory, ctx_flags, &ctx, &size))
                 {
                     ctx = 0;
                 }
@@ -713,13 +713,13 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
             }
             
             //- rjf: get thread context
-            if(!GetThreadContext(thread, ctx))
+            if (!GetThreadContext(thread, ctx))
             {
                 ctx = 0;
             }
             
             //- rjf: bad context -> abort
-            if(ctx == 0)
+            if (ctx == 0)
             {
                 break;
             }
@@ -775,7 +775,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
             {
                 M128A *float_s = xsave->FloatRegisters;
                 REGS_Reg80 *float_d = &dst->fpr0;
-                for(U32 n = 0; n < 8; n += 1, float_s += 1, float_d += 1)
+                for (U32 n = 0; n < 8; n += 1, float_s += 1, float_d += 1)
                 {
                     MemoryCopy(float_d, float_s, sizeof(*float_d));
                 }
@@ -785,21 +785,21 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
             {
                 M128A *xmm_s = xsave->XmmRegisters;
                 REGS_Reg512 *zmm_d = &dst->zmm0;
-                for(U32 n = 0; n < 16; n += 1, xmm_s += 1, zmm_d += 1)
+                for (U32 n = 0; n < 16; n += 1, xmm_s += 1, zmm_d += 1)
                 {
                     MemoryCopy(zmm_d, xmm_s, sizeof(*xmm_s));
                 }
             }
             
             // AVX
-            if(xstate_mask & XSTATE_MASK_AVX)
+            if (xstate_mask & XSTATE_MASK_AVX)
             {
                 DWORD avx_length = 0;
                 U8* avx_s = (U8*)LocateXStateFeature(ctx, XSTATE_AVX, &avx_length);
                 Assert(avx_length == 16 * sizeof(REGS_Reg128));
                 
                 REGS_Reg512 *zmm_d = &dst->zmm0;
-                for(U32 n = 0; n < 16; n += 1, avx_s += sizeof(REGS_Reg128), zmm_d += 1)
+                for (U32 n = 0; n < 16; n += 1, avx_s += sizeof(REGS_Reg128), zmm_d += 1)
                 {
                     MemoryCopy(&zmm_d->v[16], avx_s, sizeof(REGS_Reg128));
                 }
@@ -807,21 +807,21 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
             else
             {
                 REGS_Reg512 *zmm_d = &dst->zmm0;
-                for(U32 n = 0; n < 16; n += 1, zmm_d += 1)
+                for (U32 n = 0; n < 16; n += 1, zmm_d += 1)
                 {
                     MemoryZero(&zmm_d->v[16], sizeof(REGS_Reg128));
                 }
             }
             
             // AVX-512
-            if(xstate_mask & XSTATE_MASK_AVX512)
+            if (xstate_mask & XSTATE_MASK_AVX512)
             {
                 DWORD kmask_length = 0;
                 U64* kmask_s = (U64*)LocateXStateFeature(ctx, XSTATE_AVX512_KMASK, &kmask_length);
                 Assert(kmask_length == 8 * sizeof(U64));
                 
                 REGS_Reg64 *kmask_d = &dst->k0;
-                for(U32 n = 0; n < 8; n += 1, kmask_s += 1, kmask_d += 1)
+                for (U32 n = 0; n < 8; n += 1, kmask_s += 1, kmask_d += 1)
                 {
                     MemoryCopy(kmask_d, kmask_s, sizeof(*kmask_s));
                 }
@@ -831,7 +831,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
                 Assert(avx512h_length == 16 * sizeof(REGS_Reg256));
                 
                 REGS_Reg512 *zmmh_d = &dst->zmm0;
-                for(U32 n = 0; n < 16; n += 1, avx512h_s += sizeof(REGS_Reg256), zmmh_d += 1)
+                for (U32 n = 0; n < 16; n += 1, avx512h_s += sizeof(REGS_Reg256), zmmh_d += 1)
                 {
                     MemoryCopy(&zmmh_d->v[32], avx512h_s, sizeof(REGS_Reg256));
                 }
@@ -841,7 +841,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
                 Assert(avx512_length == 16 * sizeof(REGS_Reg512));
                 
                 REGS_Reg512 *zmm_d = &dst->zmm16;
-                for(U32 n = 0; n < 16; n += 1, avx512_s += sizeof(REGS_Reg512), zmm_d += 1)
+                for (U32 n = 0; n < 16; n += 1, avx512_s += sizeof(REGS_Reg512), zmm_d += 1)
                 {
                     MemoryCopy(zmm_d, avx512_s, sizeof(REGS_Reg512));
                 }
@@ -849,19 +849,19 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
             else
             {
                 REGS_Reg64 *kmask_d = &dst->k0;
-                for(U32 n = 0; n < 8; n += 1, kmask_d += 1)
+                for (U32 n = 0; n < 8; n += 1, kmask_d += 1)
                 {
                     MemoryZero(kmask_d, sizeof(*kmask_d));
                 }
                 
                 REGS_Reg512 *zmmh_d = &dst->zmm0;
-                for(U32 n = 0; n < 16; n += 1, zmmh_d += 1)
+                for (U32 n = 0; n < 16; n += 1, zmmh_d += 1)
                 {
                     MemoryZero(&zmmh_d->v[32], sizeof(REGS_Reg256));
                 }
                 
                 REGS_Reg512 *zmm_d = &dst->zmm16;
-                for(U32 n = 0; n < 16; n += 1, zmm_d += 1)
+                for (U32 n = 0; n < 16; n += 1, zmm_d += 1)
                 {
                     MemoryZero(zmm_d, sizeof(*zmm_d));
                 }
@@ -879,7 +879,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
 {
     B32 result = 0;
     ProfBeginFunction();
-    switch(arch)
+    switch (arch)
     {
         ////////////////////////////
         //- rjf: unimplemented win32/arch combos
@@ -937,7 +937,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
             {
                 M128A *float_d = fxsave->FloatRegisters;
                 REGS_Reg80 *float_s = &src->fpr0;
-                for(U32 n = 0; n < 8; n += 1, float_s += 1, float_d += 1)
+                for (U32 n = 0; n < 8; n += 1, float_s += 1, float_d += 1)
                 {
                     MemoryCopy(float_d, float_s, 10);
                 }
@@ -945,7 +945,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
             {
                 M128A *xmm_d = fxsave->XmmRegisters;
                 REGS_Reg256 *xmm_s = &src->ymm0;
-                for(U32 n = 0; n < 8; n += 1, xmm_d += 1, xmm_s += 1)
+                for (U32 n = 0; n < 8; n += 1, xmm_d += 1, xmm_s += 1)
                 {
                     MemoryCopy(xmm_d, xmm_s, sizeof(*xmm_d));
                 }
@@ -953,7 +953,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
             
             //- rjf: set thread context
             B32 result = 0;
-            if(Wow64SetThreadContext(thread, &ctx))
+            if (Wow64SetThreadContext(thread, &ctx))
             {
                 result = 1;
             }
@@ -976,10 +976,10 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
             U32 ctx_flags = DMN_W32_CTX_X64_ALL | (xstate_enabled ? DMN_W32_CTX_INTEL_XSTATE : 0);
             DWORD size = 0;
             InitializeContext(0, ctx_flags, 0, &size);
-            if(GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+            if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
             {
                 void *ctx_memory = push_array(scratch.arena, U8, size);
-                if(!InitializeContext(ctx_memory, ctx_flags, &ctx, &size))
+                if (!InitializeContext(ctx_memory, ctx_flags, &ctx, &size))
                 {
                     ctx = 0;
                 }
@@ -992,7 +992,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
             }
             
             //- rjf: bad context -> abort
-            if(ctx == 0)
+            if (ctx == 0)
             {
                 break;
             }
@@ -1042,7 +1042,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
             {
                 M128A *float_d = fxsave->FloatRegisters;
                 REGS_Reg80 *float_s = &src->fpr0;
-                for(U32 n = 0; n < 8; n += 1, float_s += 1, float_d += 1)
+                for (U32 n = 0; n < 8; n += 1, float_s += 1, float_d += 1)
                 {
                     MemoryCopy(float_d, float_s, 10);
                 }
@@ -1052,35 +1052,35 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
             {
                 M128A *xmm_d = fxsave->XmmRegisters;
                 REGS_Reg512 *zmm_s = &src->zmm0;
-                for(U32 n = 0; n < 16; n += 1, xmm_d += 1, zmm_s += 1)
+                for (U32 n = 0; n < 16; n += 1, xmm_d += 1, zmm_s += 1)
                 {
                     MemoryCopy(xmm_d, zmm_s, sizeof(*xmm_d));
                 }
             }
             
             // AVX
-            if(feature_mask & XSTATE_MASK_AVX)
+            if (feature_mask & XSTATE_MASK_AVX)
             {
                 DWORD avx_length = 0;
                 U8* avx_d = (U8*)LocateXStateFeature(ctx, XSTATE_AVX, &avx_length);
                 Assert(avx_length == 16 * sizeof(REGS_Reg128));
                 
                 REGS_Reg512 *zmm_s = &src->zmm0;
-                for(U32 n = 0; n < 16; n += 1, avx_d += sizeof(REGS_Reg128), zmm_s += 1)
+                for (U32 n = 0; n < 16; n += 1, avx_d += sizeof(REGS_Reg128), zmm_s += 1)
                 {
                     MemoryCopy(avx_d, &zmm_s->v[16], sizeof(REGS_Reg128));
                 }
             }
             
             // AVX-512
-            if(feature_mask & XSTATE_MASK_AVX512)
+            if (feature_mask & XSTATE_MASK_AVX512)
             {
                 DWORD kmask_length = 0;
                 U64* kmask_d = (U64*)LocateXStateFeature(ctx, XSTATE_AVX512_KMASK, &kmask_length);
                 Assert(kmask_length == 8 * sizeof(*kmask_d));
                 
                 REGS_Reg64 *kmask_s = &src->k0;
-                for(U32 n = 0; n < 8; n += 1, kmask_s += 1, kmask_d += 1)
+                for (U32 n = 0; n < 8; n += 1, kmask_s += 1, kmask_d += 1)
                 {
                     MemoryCopy(kmask_d, kmask_s, sizeof(*kmask_d));
                 }
@@ -1090,7 +1090,7 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
                 Assert(avx512h_length == 16 * sizeof(REGS_Reg256));
                 
                 REGS_Reg512 *zmmh_s = &src->zmm0;
-                for(U32 n = 0; n < 16; n += 1, avx512h_d += sizeof(REGS_Reg256), zmmh_s += 1)
+                for (U32 n = 0; n < 16; n += 1, avx512h_d += sizeof(REGS_Reg256), zmmh_s += 1)
                 {
                     MemoryCopy(avx512h_d, &zmmh_s->v[32], sizeof(REGS_Reg256));
                 }
@@ -1100,14 +1100,14 @@ dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
                 Assert(avx512_length == 16 * sizeof(REGS_Reg512));
                 
                 REGS_Reg512 *zmm_s = &src->zmm16;
-                for(U32 n = 0; n < 16; n += 1, avx512_d += sizeof(REGS_Reg512), zmm_s += 1)
+                for (U32 n = 0; n < 16; n += 1, avx512_d += sizeof(REGS_Reg512), zmm_s += 1)
                 {
                     MemoryCopy(avx512_d, zmm_s, sizeof(REGS_Reg512));
                 }
             }
             
             //- rjf: set thread context
-            if(SetThreadContext(thread, ctx))
+            if (SetThreadContext(thread, ctx))
             {
                 result = 1;
             }
@@ -1126,7 +1126,7 @@ dmn_w32_inject_thread(HANDLE process, U64 start_address)
     LPTHREAD_START_ROUTINE start = (LPTHREAD_START_ROUTINE)start_address;
     DWORD thread_id = 0;
     HANDLE thread = CreateRemoteThread(process, 0, 0, start, 0, 0, &thread_id);
-    if(thread != 0)
+    if (thread != 0)
     {
         CloseHandle(thread);
     }
@@ -1158,11 +1158,11 @@ dmn_init(void)
     {
         WCHAR *this_proc_env = GetEnvironmentStringsW();
         U64 start_idx = 0;
-        for(U64 idx = 0;; idx += 1)
+        for (U64 idx = 0;; idx += 1)
         {
-            if(this_proc_env[idx] == 0)
+            if (this_proc_env[idx] == 0)
             {
-                if(start_idx == idx)
+                if (start_idx == idx)
                 {
                     break;
                 }
@@ -1216,14 +1216,14 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
     {
         //- rjf: produce exe / arguments string
         String8 cmd = {0};
-        if(params->cmd_line.first != 0)
+        if (params->cmd_line.first != 0)
         {
             String8List args = {0};
             String8 exe_path = params->cmd_line.first->string;
             String8List exe_path_parts = str8_split_path(scratch.arena, exe_path);
             exe_path = str8_list_join(scratch.arena, &exe_path_parts, &(StringJoin){.sep = str8_lit("\\")});
             str8_list_pushf(scratch.arena, &args, "\"%S\"", exe_path);
-            for(String8Node *n = params->cmd_line.first->next; n != 0; n = n->next)
+            for (String8Node *n = params->cmd_line.first->next; n != 0; n = n->next)
             {
                 str8_list_push(scratch.arena, &args, n->string);
             }
@@ -1236,15 +1236,15 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
         String8 env = {0};
         {
             String8List all_opts = params->env;
-            if(params->inherit_env != 0)
+            if (params->inherit_env != 0)
             {
                 MemoryZeroStruct(&all_opts);
                 str8_list_push(scratch.arena, &all_opts, str8_lit("_NO_DEBUG_HEAP=1"));
-                for(String8Node *n = params->env.first; n != 0; n = n->next)
+                for (String8Node *n = params->env.first; n != 0; n = n->next)
                 {
                     str8_list_push(scratch.arena, &all_opts, n->string);
                 }
-                for(String8Node *n = dmn_w32_shared->env_strings.first; n != 0; n = n->next)
+                for (String8Node *n = dmn_w32_shared->env_strings.first; n != 0; n = n->next)
                 {
                     str8_list_push(scratch.arena, &all_opts, n->string);
                 }
@@ -1262,7 +1262,7 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
         
         //- rjf: launch
         DWORD creation_flags = CREATE_UNICODE_ENVIRONMENT;
-        if(params->debug_subprocesses)
+        if (params->debug_subprocesses)
         {
             creation_flags |= DEBUG_PROCESS;
         }
@@ -1272,21 +1272,21 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
         }
         BOOL inherit_handles = 0;
         STARTUPINFOW startup_info = {sizeof(startup_info)};
-        if(!os_handle_match(params->stdout_file, os_handle_zero()))
+        if (!os_handle_match(params->stdout_file, os_handle_zero()))
         {
             HANDLE stdout_handle = (HANDLE)params->stdout_file.u64[0];
             startup_info.hStdOutput = stdout_handle;
             startup_info.dwFlags |= STARTF_USESTDHANDLES;
             inherit_handles = 1;
         }
-        if(!os_handle_match(params->stderr_file, os_handle_zero()))
+        if (!os_handle_match(params->stderr_file, os_handle_zero()))
         {
             HANDLE stderr_handle = (HANDLE)params->stderr_file.u64[0];
             startup_info.hStdError = stderr_handle;
             startup_info.dwFlags |= STARTF_USESTDHANDLES;
             inherit_handles = 1;
         }
-        if(!os_handle_match(params->stdin_file, os_handle_zero()))
+        if (!os_handle_match(params->stdin_file, os_handle_zero()))
         {
             HANDLE stdin_handle = (HANDLE)params->stdin_file.u64[0];
             startup_info.hStdInput = stdin_handle;
@@ -1294,12 +1294,12 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
             inherit_handles = 1;
         }
         PROCESS_INFORMATION process_info = {0};
-        if(CreateProcessW(0, (WCHAR*)cmd16.str, 0, 0, 1, creation_flags, (WCHAR*)env16.str, (WCHAR*)dir16.str, &startup_info, &process_info))
+        if (CreateProcessW(0, (WCHAR*)cmd16.str, 0, 0, 1, creation_flags, (WCHAR*)env16.str, (WCHAR*)dir16.str, &startup_info, &process_info))
         {
             // check if we are 32-bit app, and just close it immediately
             BOOL is_wow = 0;
             IsWow64Process(process_info.hProcess, &is_wow);
-            if(is_wow)
+            if (is_wow)
             {
                 log_user_errorf("Only 64-bit applications can be debugged currently.");
                 DebugActiveProcessStop(process_info.dwProcessId);
@@ -1332,7 +1332,7 @@ internal B32
 dmn_ctrl_attach(DMN_CtrlCtx *ctx, U32 pid)
 {
     B32 result = 0;
-    DMN_AccessScope if(DebugActiveProcess((DWORD)pid))
+    DMN_AccessScope if (DebugActiveProcess((DWORD)pid))
     {
         result = 1;
         dmn_w32_shared->new_process_pending = 1;
@@ -1364,7 +1364,7 @@ dmn_ctrl_kill(DMN_CtrlCtx *ctx, DMN_Handle process, U32 exit_code)
     DMN_AccessScope
     {
         DMN_W32_Entity *process_entity = dmn_w32_entity_from_handle(process);
-        if(TerminateProcess(process_entity->handle, exit_code))
+        if (TerminateProcess(process_entity->handle, exit_code))
         {
             result = 1;
         }
@@ -1381,11 +1381,11 @@ dmn_ctrl_detach(DMN_CtrlCtx *ctx, DMN_Handle process)
         DMN_W32_Entity *process_entity = dmn_w32_entity_from_handle(process);
         
         // rjf: resume threads
-        for(DMN_W32_Entity *child = process_entity->first;
+        for (DMN_W32_Entity *child = process_entity->first;
                 child != &dmn_w32_entity_nil;
                 child = child->next)
         {
-            if(child->kind == DMN_W32_EntityKind_Thread)
+            if (child->kind == DMN_W32_EntityKind_Thread)
             {
                 DWORD resume_result = ResumeThread(child->handle);
                 (void)resume_result;
@@ -1395,14 +1395,14 @@ dmn_ctrl_detach(DMN_CtrlCtx *ctx, DMN_Handle process)
         // rjf: detach
         {
             DWORD pid = (DWORD)process_entity->id;
-            if(DebugActiveProcessStop(pid))
+            if (DebugActiveProcessStop(pid))
             {
                 result = 1;
             }
         }
         
         // rjf: push into list of processes to generate events for later
-        if(result != 0)
+        if (result != 0)
         {
             dmn_handle_list_push(dmn_w32_shared->detach_arena, &dmn_w32_shared->detach_processes, process);
         }
@@ -1427,27 +1427,27 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
     }
     DMN_W32_EventGenPath;
     DMN_W32_EventGenPath event_gen_path = DMN_W32_EventGenPath_Run;
-    if(dmn_w32_shared->detach_processes.first != 0)
+    if (dmn_w32_shared->detach_processes.first != 0)
     {
         event_gen_path = DMN_W32_EventGenPath_DetachProcesses;
     }
     else
     {
         B32 any_processes_live = dmn_w32_shared->new_process_pending;
-        if(!any_processes_live)
+        if (!any_processes_live)
         {
-            for(DMN_W32_Entity *process = dmn_w32_shared->entities_base->first;
+            for (DMN_W32_Entity *process = dmn_w32_shared->entities_base->first;
                     process != &dmn_w32_entity_nil;
                     process = process->next)
             {
-                if(process->kind == DMN_W32_EntityKind_Process)
+                if (process->kind == DMN_W32_EntityKind_Process)
                 {
                     any_processes_live = 1;
                     break;
                 }
             }
         }
-        if(!any_processes_live)
+        if (!any_processes_live)
         {
             event_gen_path = DMN_W32_EventGenPath_NotAttached;
         }
@@ -1456,7 +1456,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
     //////////////////////////////
     //- rjf: produce debug events
     //
-    switch(event_gen_path)
+    switch (event_gen_path)
     {
         ////////////////////////////
         //- rjf: produce not-attached error events
@@ -1479,11 +1479,11 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             //- rjf: get single step thread's context (x64 single-step-set fast path)
             //
             CONTEXT *single_step_thread_ctx = 0;
-            if(!dmn_handle_match(ctrls->single_step_thread, dmn_handle_zero()))
+            if (!dmn_handle_match(ctrls->single_step_thread, dmn_handle_zero()))
             {
                 DMN_W32_Entity *thread = dmn_w32_entity_from_handle(ctrls->single_step_thread);
                 Arch arch = thread->arch;
-                switch(arch)
+                switch (arch)
                 {
                     default:{}break;
                     case Arch_x64:
@@ -1491,10 +1491,10 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                         U32 ctx_flags = DMN_W32_CTX_X64|DMN_W32_CTX_INTEL_CONTROL;
                         DWORD size = 0;
                         InitializeContext(0, ctx_flags, 0, &size);
-                        if(GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+                        if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
                         {
                             void *ctx_memory = push_array(scratch.arena, U8, size);
-                            if(!InitializeContext(ctx_memory, ctx_flags, &single_step_thread_ctx, &size))
+                            if (!InitializeContext(ctx_memory, ctx_flags, &single_step_thread_ctx, &size))
                             {
                                 single_step_thread_ctx = 0;
                             }
@@ -1506,11 +1506,11 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             //////////////////////////
             //- rjf: set single step bit
             //
-            if(!dmn_handle_match(ctrls->single_step_thread, dmn_handle_zero())) ProfScope("set single step bit")
+            if (!dmn_handle_match(ctrls->single_step_thread, dmn_handle_zero())) ProfScope("set single step bit")
             {
                 DMN_W32_Entity *thread = dmn_w32_entity_from_handle(ctrls->single_step_thread);
                 Arch arch = thread->arch;
-                switch(arch)
+                switch (arch)
                 {
                     //- rjf: unimplemented win32/arch combos
                     case Arch_Null:
@@ -1532,11 +1532,11 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                     //- rjf: x64
                     case Arch_x64:
                     {
-                        if(!GetThreadContext(thread->handle, single_step_thread_ctx))
+                        if (!GetThreadContext(thread->handle, single_step_thread_ctx))
                         {
                             single_step_thread_ctx = 0;
                         }
-                        if(single_step_thread_ctx != 0)
+                        if (single_step_thread_ctx != 0)
                         {
                             U64 rflags = single_step_thread_ctx->EFlags|0x2;
                             U64 new_rflags = rflags | 0x100;
@@ -1554,12 +1554,12 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             ProfScope("write all traps into memory")
             {
                 U64 trap_idx = 0;
-                for(DMN_TrapChunkNode *n = ctrls->traps.first; n != 0; n = n->next)
+                for (DMN_TrapChunkNode *n = ctrls->traps.first; n != 0; n = n->next)
                 {
-                    for(U64 n_idx = 0; n_idx < n->count; n_idx += 1, trap_idx += 1)
+                    for (U64 n_idx = 0; n_idx < n->count; n_idx += 1, trap_idx += 1)
                     {
                         DMN_Trap *trap = n->v+n_idx;
-                        if(trap->flags == 0)
+                        if (trap->flags == 0)
                         {
                             trap_swap_bytes[trap_idx] = 0xCC;
                             dmn_process_read(trap->process, r1u64(trap->vaddr, trap->vaddr+1), trap_swap_bytes+trap_idx);
@@ -1582,34 +1582,34 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             };
             DMN_FlaggedTrapTask *first_flagged_trap_task = 0;
             DMN_FlaggedTrapTask *last_flagged_trap_task= 0;
-            for(DMN_TrapChunkNode *n = ctrls->traps.first; n != 0; n = n->next)
+            for (DMN_TrapChunkNode *n = ctrls->traps.first; n != 0; n = n->next)
             {
-                for(U64 n_idx = 0; n_idx < n->count; n_idx += 1)
+                for (U64 n_idx = 0; n_idx < n->count; n_idx += 1)
                 {
                     DMN_Trap *trap = n->v+n_idx;
-                    if(trap->flags != 0)
+                    if (trap->flags != 0)
                     {
                         DMN_FlaggedTrapTask *task = 0;
-                        for(DMN_FlaggedTrapTask *t = first_flagged_trap_task; t != 0; t = t->next)
+                        for (DMN_FlaggedTrapTask *t = first_flagged_trap_task; t != 0; t = t->next)
                         {
-                            if(dmn_handle_match(t->process, trap->process))
+                            if (dmn_handle_match(t->process, trap->process))
                             {
                                 task = t;
                                 break;
                             }
                         }
-                        if(task == 0)
+                        if (task == 0)
                         {
                             task = push_array(scratch.arena, DMN_FlaggedTrapTask, 1);
                             SLLQueuePush(first_flagged_trap_task, last_flagged_trap_task, task);
                             task->process = trap->process;
                         }
                         B32 already_in_task = 0;
-                        for(DMN_TrapChunkNode *n = task->traps.first; n != 0; n = n->next)
+                        for (DMN_TrapChunkNode *n = task->traps.first; n != 0; n = n->next)
                         {
-                            for(U64 n_idx = 0; n_idx < n->count; n_idx += 1)
+                            for (U64 n_idx = 0; n_idx < n->count; n_idx += 1)
                             {
-                                if(n->v[n_idx].id == trap->id)
+                                if (n->v[n_idx].id == trap->id)
                                 {
                                     already_in_task = 1;
                                     goto end_look_for_existing_trap_in_task;
@@ -1617,7 +1617,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             }
                         }
                         end_look_for_existing_trap_in_task:;
-                        if(!already_in_task)
+                        if (!already_in_task)
                         {
                             dmn_trap_chunk_list_push(scratch.arena, &task->traps, 8, trap);
                         }
@@ -1632,17 +1632,17 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             {
                 //- rjf: for each flagged trap task, iterate all threads in the
                 // associated process, and prepare debug registers accordingly
-                for(DMN_FlaggedTrapTask *t = first_flagged_trap_task; t != 0; t = t->next)
+                for (DMN_FlaggedTrapTask *t = first_flagged_trap_task; t != 0; t = t->next)
                 {
                     DMN_Handle process = t->process;
                     DMN_W32_Entity *process_entity = dmn_w32_entity_from_handle(process);
-                    for(DMN_W32_Entity *child = process_entity->first;
+                    for (DMN_W32_Entity *child = process_entity->first;
                             child != &dmn_w32_entity_nil;
                             child = child->next)
                     {
-                        if(child->kind == DMN_W32_EntityKind_Thread)
+                        if (child->kind == DMN_W32_EntityKind_Thread)
                         {
-                            switch(child->arch)
+                            switch (child->arch)
                             {
                                 default:{}break;
                                 
@@ -1653,13 +1653,13 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                     dmn_w32_thread_read_reg_block(child->arch, child->handle, &regs);
                                     {
                                         U64 trap_idx = 0;
-                                        for(DMN_TrapChunkNode *n = t->traps.first; n != 0; n = n->next)
+                                        for (DMN_TrapChunkNode *n = t->traps.first; n != 0; n = n->next)
                                         {
-                                            for(U64 n_idx = 0; n_idx < n->count && trap_idx < 4; n_idx += 1, trap_idx += 1)
+                                            for (U64 n_idx = 0; n_idx < n->count && trap_idx < 4; n_idx += 1, trap_idx += 1)
                                             {
                                                 DMN_Trap *trap = &n->v[n_idx];
                                                 REGS_Reg64 *addr_reg = &regs.dr0;
-                                                switch(trap_idx)
+                                                switch (trap_idx)
                                                 {
                                                     default:{}break;
                                                     case 0:{addr_reg = &regs.dr0;}break;
@@ -1673,7 +1673,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                                 // NOTE(rjf): global-enable regs.dr7.u64 |= (1ull << (trap_idx*2+1));
                                                 regs.dr7.u64 &= ~((U64)(bit17|bit18|bit19|bit20) << (trap_idx*4));
                                                 regs.dr7.u64 &= ~((U64)(bit15|bit16));
-                                                switch(trap->flags)
+                                                switch (trap->flags)
                                                 {
                                                     case DMN_TrapFlag_BreakOnExecute:
                                                     default:{}break;
@@ -1689,7 +1689,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                                         regs.dr7.u64 |= (((U64)bit18) << (trap_idx*4));
                                                     }break;
                                                 }
-                                                switch(trap->size)
+                                                switch (trap->size)
                                                 {
                                                     case 1:
                                                     default:{}break;
@@ -1726,19 +1726,19 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             ProfScope("produce list of threads which will run")
             {
                 //- rjf: scan all processes
-                for(DMN_W32_Entity *process = dmn_w32_shared->entities_base->first;
+                for (DMN_W32_Entity *process = dmn_w32_shared->entities_base->first;
                         process != &dmn_w32_entity_nil;
                         process = process->next)
                 {
-                    if(process->kind != DMN_W32_EntityKind_Process) {continue;}
+                    if (process->kind != DMN_W32_EntityKind_Process) {continue;}
                     
                     //- rjf: determine if this process is frozen
                     B32 process_is_frozen = 0;
-                    if(ctrls->run_entities_are_processes)
+                    if (ctrls->run_entities_are_processes)
                     {
-                        for(U64 idx = 0; idx < ctrls->run_entity_count; idx += 1)
+                        for (U64 idx = 0; idx < ctrls->run_entity_count; idx += 1)
                         {
-                            if(dmn_handle_match(ctrls->run_entities[idx], dmn_w32_handle_from_entity(process)))
+                            if (dmn_handle_match(ctrls->run_entities[idx], dmn_w32_handle_from_entity(process)))
                             {
                                 process_is_frozen = 1;
                                 break;
@@ -1747,17 +1747,17 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                     }
                     
                     //- rjf: scan all threads in this process
-                    for(DMN_W32_Entity *thread = process->first;
+                    for (DMN_W32_Entity *thread = process->first;
                             thread != &dmn_w32_entity_nil;
                             thread = thread->next)
                     {
-                        if(thread->kind != DMN_W32_EntityKind_Thread) {continue;}
+                        if (thread->kind != DMN_W32_EntityKind_Thread) {continue;}
                         
                         //- rjf: determine if this thread is frozen
                         B32 is_frozen = 0;
                         {
                             // rjf: single-step? freeze if not the single-step thread.
-                            if(!dmn_handle_match(dmn_handle_zero(), ctrls->single_step_thread))
+                            if (!dmn_handle_match(dmn_handle_zero(), ctrls->single_step_thread))
                             {
                                 is_frozen = !dmn_handle_match(dmn_w32_handle_from_entity(thread), ctrls->single_step_thread);
                             }
@@ -1765,19 +1765,19 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             // rjf: not single-stepping? determine based on run controls freezing info
                             else
                             {
-                                if(ctrls->run_entities_are_processes)
+                                if (ctrls->run_entities_are_processes)
                                 {
                                     is_frozen = process_is_frozen;
                                 }
-                                else for(U64 idx = 0; idx < ctrls->run_entity_count; idx += 1)
+                                else for (U64 idx = 0; idx < ctrls->run_entity_count; idx += 1)
                                 {
-                                    if(dmn_handle_match(ctrls->run_entities[idx], dmn_w32_handle_from_entity(thread)))
+                                    if (dmn_handle_match(ctrls->run_entities[idx], dmn_w32_handle_from_entity(thread)))
                                     {
                                         is_frozen = 1;
                                         break;
                                     }
                                 }
-                                if(ctrls->run_entities_are_unfrozen)
+                                if (ctrls->run_entities_are_unfrozen)
                                 {
                                     is_frozen ^= 1;
                                 }
@@ -1785,13 +1785,13 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                         }
                         
                         //- rjf: disregard all other rules if this is the halter thread
-                        if(dmn_w32_shared->halter_tid == thread->id)
+                        if (dmn_w32_shared->halter_tid == thread->id)
                         {
                             is_frozen = 0;
                         }
                         
                         //- rjf: add to list
-                        if(!is_frozen)
+                        if (!is_frozen)
                         {
                             DMN_W32_EntityNode *n = push_array(scratch.arena, DMN_W32_EntityNode, 1);
                             n->v = thread;
@@ -1812,7 +1812,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             U64 begin_time = os_now_microseconds();
             String8List debug_strings = {0};
             DMN_Event *debug_strings_event = 0;
-            for(B32 keep_going = 1; keep_going;)
+            for (B32 keep_going = 1; keep_going;)
             {
                 keep_going = 0;
                 
@@ -1822,14 +1822,14 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                 // if priority mode? => first, just resume priority thread
                 // if not? => resume all non-priority threads
                 //
-                if(do_threads_resume) ProfScope("resume threads that we want to run")
+                if (do_threads_resume) ProfScope("resume threads that we want to run")
                 {
                     do_threads_resume = 0;
-                    for(DMN_W32_EntityNode *n = first_run_thread; n != 0; n = n->next)
+                    for (DMN_W32_EntityNode *n = first_run_thread; n != 0; n = n->next)
                     {
                         DMN_W32_Entity *thread = n->v;
                         B32 thread_is_priority = dmn_handle_match(dmn_w32_handle_from_entity(thread), ctrls->priority_thread);
-                        if((priority_mode && !thread_is_priority) ||
+                        if ((priority_mode && !thread_is_priority) ||
                               (!priority_mode && did_priority_mode && thread_is_priority))
                         {
                             continue;
@@ -1838,7 +1838,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                         DMN_W32_EntityNode *n = push_array(scratch.arena, DMN_W32_EntityNode, 1);
                         SLLQueuePush(first_ran_thread, last_ran_thread, n);
                         n->v = thread;
-                        switch(resume_result)
+                        switch (resume_result)
                         {
                             case 0xffffffffu:
                             {
@@ -1848,7 +1848,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             {
                                 DWORD desired_counter = 0;
                                 DWORD current_counter = resume_result - 1;
-                                if(current_counter != desired_counter)
+                                if (current_counter != desired_counter)
                                 {
                                     // NOTE(rjf): Warning. The user has manually suspended this thread,
                                     // so even though from Demon's perspective it thinks this thread
@@ -1857,7 +1857,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                 }
                             }break;
                         }
-                        if(priority_mode && thread_is_priority)
+                        if (priority_mode && thread_is_priority)
                         {
                             break;
                         }
@@ -1869,7 +1869,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                 //
                 DWORD resume_code = DBG_CONTINUE;
                 {
-                    if(dmn_w32_shared->exception_not_handled && !ctrls->ignore_previous_exception)
+                    if (dmn_w32_shared->exception_not_handled && !ctrls->ignore_previous_exception)
                     {
                         log_infof("using DBG_EXCEPTION_NOT_HANDLED\n");
                         resume_code = DBG_EXCEPTION_NOT_HANDLED;
@@ -1889,7 +1889,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                 ProfScope("inform windows that we're resuming, run, & obtain next debug event")
                 {
                     B32 resume_good = 1;
-                    if(dmn_w32_shared->resume_needed)
+                    if (dmn_w32_shared->resume_needed)
                     {
                         dmn_w32_shared->resume_needed = 0;
                         resume_good = !!ContinueDebugEvent(dmn_w32_shared->resume_pid, dmn_w32_shared->resume_tid, resume_code);
@@ -1898,15 +1898,15 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                         dmn_w32_shared->resume_tid = 0;
                         dmn_w32_shared->resume_pid = 0;
                     }
-                    if(resume_good)
+                    if (resume_good)
                     {
                         DWORD wait_ms = 100;
-                        if(priority_mode)
+                        if (priority_mode)
                         {
                             wait_ms = 30;
                         }
                         evt_good = !!WaitForDebugEvent(&evt, wait_ms);
-                        if(evt_good)
+                        if (evt_good)
                         {
                             dmn_w32_shared->resume_needed = 1;
                             dmn_w32_shared->resume_pid = evt.dwProcessId;
@@ -1918,7 +1918,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             (void)err;
                             keep_going = 1;
                         }
-                        if(priority_mode)
+                        if (priority_mode)
                         {
                             priority_mode = 0;
                             do_threads_resume = 1;
@@ -1929,9 +1929,9 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                 ////////////////////////
                 //- rjf: process the new event
                 //
-                if(evt_good) ProfScope("process the new event")
+                if (evt_good) ProfScope("process the new event")
                 {
-                    switch(evt.dwDebugEventCode)
+                    switch (evt.dwDebugEventCode)
                     {
                         //////////////////////
                         //- rjf: process was created
@@ -2027,7 +2027,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             
                             // rjf: if this was the process we were going to resume, then we will
                             // just not resume, and wait for another debug event
-                            if(evt.dwProcessId == dmn_w32_shared->resume_pid)
+                            if (evt.dwProcessId == dmn_w32_shared->resume_pid)
                             {
                                 dmn_w32_shared->resume_needed = 0;
                                 dmn_w32_shared->resume_tid = 0;
@@ -2035,9 +2035,9 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             }
                             
                             // rjf: generate events for children
-                            for(DMN_W32_Entity *child = process->first; child != &dmn_w32_entity_nil; child = child->next)
+                            for (DMN_W32_Entity *child = process->first; child != &dmn_w32_entity_nil; child = child->next)
                             {
-                                switch(child->kind)
+                                switch (child->kind)
                                 {
                                     default:{}break;
                                     case DMN_W32_EntityKind_Thread:
@@ -2094,11 +2094,11 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             
                             // rjf: unpack thread name
                             String8 thread_name = {0};
-                            if(dmn_w32_GetThreadDescription != 0)
+                            if (dmn_w32_GetThreadDescription != 0)
                             {
                                 WCHAR *thread_name_w = 0;
                                 HRESULT hr = dmn_w32_GetThreadDescription(thread->handle, &thread_name_w);
-                                if(SUCCEEDED(hr))
+                                if (SUCCEEDED(hr))
                                 {
                                     thread_name = str8_from_16(arena, str16_cstring((U16 *)thread_name_w));
                                     LocalFree(thread_name_w);
@@ -2109,7 +2109,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             B32 is_halter = (evt.dwThreadId == dmn_w32_shared->halter_tid);
                             
                             // rjf: generate events for non-halter threads
-                            if(!is_halter)
+                            if (!is_halter)
                             {
                                 DMN_Event *e = dmn_event_list_push(arena, &events);
                                 e->kind = DMN_EventKind_CreateThread;
@@ -2133,7 +2133,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             B32 is_halter = (evt.dwThreadId == dmn_w32_shared->halter_tid);
                             
                             // rjf: generate a halt event if this thread is the halter
-                            if(is_halter)
+                            if (is_halter)
                             {
                                 DMN_Event *e = dmn_event_list_push(arena, &events);
                                 e->kind = DMN_EventKind_Halt;
@@ -2143,7 +2143,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             }
                             
                             // rjf: if this thread is *not* the halter, then generate a regular exit-thread event
-                            if(!is_halter)
+                            if (!is_halter)
                             {
                                 DMN_Event *e = dmn_event_list_push(arena, &events);
                                 e->kind    = DMN_EventKind_ExitThread;
@@ -2268,7 +2268,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             //- rjf: determine if this is the first breakpoint in a process
                             // (breakpoint notifying us that the debugger is attached)
                             B32 first_bp = 0;
-                            if(!process->proc.did_first_bp && exception->ExceptionCode == DMN_W32_EXCEPTION_BREAKPOINT)
+                            if (!process->proc.did_first_bp && exception->ExceptionCode == DMN_W32_EXCEPTION_BREAKPOINT)
                             {
                                 process->proc.did_first_bp = 1;
                                 first_bp = 1;
@@ -2282,13 +2282,13 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             //- rjf: check if this trap is a usage-code-specified trap or something else
                             B32 hit_user_trap = 0;
                             U64 user_trap_id = 0;
-                            if(is_trap)
+                            if (is_trap)
                             {
-                                for(DMN_TrapChunkNode *n = ctrls->traps.first; n != 0; n = n->next)
+                                for (DMN_TrapChunkNode *n = ctrls->traps.first; n != 0; n = n->next)
                                 {
-                                    for(U64 idx = 0; idx < n->count; idx += 1)
+                                    for (U64 idx = 0; idx < n->count; idx += 1)
                                     {
-                                        if(dmn_handle_match(n->v[idx].process, dmn_w32_handle_from_entity(process)) && n->v[idx].vaddr == instruction_pointer)
+                                        if (dmn_handle_match(n->v[idx].process, dmn_w32_handle_from_entity(process)) && n->v[idx].vaddr == instruction_pointer)
                                         {
                                             hit_user_trap = 1;
                                             user_trap_id = n->v[idx].id;
@@ -2300,10 +2300,10 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             
                             //- rjf: check if trap is explicit in the actual code memory
                             B32 hit_explicit_trap = 0;
-                            if(is_trap && !hit_user_trap)
+                            if (is_trap && !hit_user_trap)
                             {
                                 U8 instruction_byte = 0;
-                                if(dmn_w32_process_read_struct(process->handle, instruction_pointer, &instruction_byte))
+                                if (dmn_w32_process_read_struct(process->handle, instruction_pointer, &instruction_byte))
                                 {
                                     hit_explicit_trap = (instruction_byte == 0xCC || instruction_byte == 0xCD);
                                 }
@@ -2313,9 +2313,9 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             B32 should_do_rollback = (hit_user_trap || (is_trap && !hit_explicit_trap));
                             
                             //- rjf: roll back thread's instruction pointer
-                            if(should_do_rollback) ProfScope("roll back thread's instruction pointer")
+                            if (should_do_rollback) ProfScope("roll back thread's instruction pointer")
                             {
-                                switch(thread->arch)
+                                switch (thread->arch)
                                 {
                                     //- rjf: default, general path
                                     default:
@@ -2323,7 +2323,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                         Temp temp = temp_begin(scratch.arena);
                                         U64 regs_block_size = regs_block_size_from_arch(thread->arch);
                                         void *regs_block = push_array(scratch.arena, U8, regs_block_size);
-                                        if(dmn_w32_thread_read_reg_block(thread->arch, thread->handle, regs_block))
+                                        if (dmn_w32_thread_read_reg_block(thread->arch, thread->handle, regs_block))
                                         {
                                             regs_arch_block_write_rip(thread->arch, regs_block, instruction_pointer);
                                             dmn_w32_thread_write_reg_block(thread->arch, thread->handle, regs_block);
@@ -2338,19 +2338,19 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                         U32 ctx_flags = DMN_W32_CTX_X64|DMN_W32_CTX_INTEL_CONTROL;
                                         DWORD size = 0;
                                         InitializeContext(0, ctx_flags, 0, &size);
-                                        if(GetLastError() == ERROR_INSUFFICIENT_BUFFER)
+                                        if (GetLastError() == ERROR_INSUFFICIENT_BUFFER)
                                         {
                                             void *ctx_memory = push_array(scratch.arena, U8, size);
-                                            if(!InitializeContext(ctx_memory, ctx_flags, &ctx, &size))
+                                            if (!InitializeContext(ctx_memory, ctx_flags, &ctx, &size))
                                             {
                                                 ctx = 0;
                                             }
                                         }
-                                        if(!GetThreadContext(thread->handle, ctx))
+                                        if (!GetThreadContext(thread->handle, ctx))
                                         {
                                             ctx = 0;
                                         }
-                                        if(ctx != 0)
+                                        if (ctx != 0)
                                         {
                                             U64 rip = ctx->Rip;
                                             U64 new_rip = instruction_pointer;
@@ -2369,7 +2369,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             B32 skip_event = (hit_previous_trap);
                             
                             //- rjf: generate event
-                            if(!skip_event)
+                            if (!skip_event)
                             {
                                 // rjf: fill top-level info
                                 DMN_Event *e = dmn_event_list_push(arena, &events);
@@ -2382,17 +2382,17 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                 e->user_data = user_trap_id;
                                 
                                 //- rjf: fill according to exception code
-                                switch(exception->ExceptionCode)
+                                switch (exception->ExceptionCode)
                                 {
                                     //- rjf: fill breakpoint event info
                                     case DMN_W32_EXCEPTION_BREAKPOINT:
                                     {
                                         DMN_EventKind report_event_kind = DMN_EventKind_Trap;
-                                        if(first_bp)
+                                        if (first_bp)
                                         {
                                             report_event_kind = DMN_EventKind_HandshakeComplete;
                                         }
-                                        else if(hit_user_trap)
+                                        else if (hit_user_trap)
                                         {
                                             report_event_kind = DMN_EventKind_Breakpoint;
                                         }
@@ -2418,21 +2418,21 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                         {
                                             // rjf: first determine the flagged trap index
                                             U64 flagged_trap_idx = 0;
-                                            switch(thread->arch)
+                                            switch (thread->arch)
                                             {
                                                 default:{NotImplemented;}break;
                                                 case Arch_x64:
                                                 {
                                                     REGS_RegBlockX64 regs = {0};
                                                     dmn_w32_thread_read_reg_block(thread->arch, thread->handle, &regs);
-                                                    if(regs.dr6.u64 & 0xF)
+                                                    if (regs.dr6.u64 & 0xF)
                                                     {
                                                         e->kind = DMN_EventKind_Breakpoint;
-                                                        if(0){}
-                                                        else if(regs.dr7.u64 & (1ull<<0) && regs.dr6.u64 & (1ull<<0)) { flagged_trap_idx = 0; e->address = regs.dr0.u64; }
-                                                        else if(regs.dr7.u64 & (1ull<<2) && regs.dr6.u64 & (1ull<<1)) { flagged_trap_idx = 1; e->address = regs.dr1.u64; }
-                                                        else if(regs.dr7.u64 & (1ull<<4) && regs.dr6.u64 & (1ull<<2)) { flagged_trap_idx = 2; e->address = regs.dr2.u64; }
-                                                        else if(regs.dr7.u64 & (1ull<<8) && regs.dr6.u64 & (1ull<<3)) { flagged_trap_idx = 3; e->address = regs.dr3.u64; }
+                                                        if (0){}
+                                                        else if (regs.dr7.u64 & (1ull<<0) && regs.dr6.u64 & (1ull<<0)) { flagged_trap_idx = 0; e->address = regs.dr0.u64; }
+                                                        else if (regs.dr7.u64 & (1ull<<2) && regs.dr6.u64 & (1ull<<1)) { flagged_trap_idx = 1; e->address = regs.dr1.u64; }
+                                                        else if (regs.dr7.u64 & (1ull<<4) && regs.dr6.u64 & (1ull<<2)) { flagged_trap_idx = 2; e->address = regs.dr2.u64; }
+                                                        else if (regs.dr7.u64 & (1ull<<8) && regs.dr6.u64 & (1ull<<3)) { flagged_trap_idx = 3; e->address = regs.dr3.u64; }
                                                     }
                                                 }break;
                                             }
@@ -2440,9 +2440,9 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                             // rjf: find the flagged trap task for this thread's process
                                             DMN_W32_Entity *process = thread->parent;
                                             DMN_FlaggedTrapTask *task = 0;
-                                            for(DMN_FlaggedTrapTask *t = first_flagged_trap_task; t != 0; t = t->next)
+                                            for (DMN_FlaggedTrapTask *t = first_flagged_trap_task; t != 0; t = t->next)
                                             {
-                                                if(dmn_handle_match(t->process, dmn_w32_handle_from_entity(process)))
+                                                if (dmn_handle_match(t->process, dmn_w32_handle_from_entity(process)))
                                                 {
                                                     task = t;
                                                     break;
@@ -2451,14 +2451,14 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                             
                                             // rjf: find the trap
                                             DMN_Trap *trap = 0;
-                                            if(task != 0)
+                                            if (task != 0)
                                             {
                                                 U64 trap_idx = 0;
-                                                for(DMN_TrapChunkNode *n = task->traps.first; n != 0; n = n->next)
+                                                for (DMN_TrapChunkNode *n = task->traps.first; n != 0; n = n->next)
                                                 {
-                                                    for(U64 n_idx = 0; n_idx < n->count; n_idx += 1, trap_idx += 1)
+                                                    for (U64 n_idx = 0; n_idx < n->count; n_idx += 1, trap_idx += 1)
                                                     {
-                                                        if(trap_idx == flagged_trap_idx)
+                                                        if (trap_idx == flagged_trap_idx)
                                                         {
                                                             trap = &n->v[n_idx];
                                                             goto break_search_for_flagged_trap;
@@ -2469,7 +2469,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                             }
                                             
                                             // rjf: fill event based on trap
-                                            if(trap != 0)
+                                            if (trap != 0)
                                             {
                                                 e->user_data = trap->id;
                                             }
@@ -2481,7 +2481,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                     {
                                         U64 exception_sp = 0;
                                         U64 exception_ip = 0;
-                                        if(exception->NumberParameters >= 3)
+                                        if (exception->NumberParameters >= 3)
                                         {
                                             exception_sp = (U64)exception->ExceptionInformation[1];
                                             exception_ip = (U64)exception->ExceptionInformation[2];
@@ -2498,9 +2498,9 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                     {
                                         U64 exception_address = 0;
                                         DMN_ExceptionKind exception_kind = DMN_ExceptionKind_Null;
-                                        if(exception->NumberParameters >= 2)
+                                        if (exception->NumberParameters >= 2)
                                         {
-                                            switch(exception->ExceptionInformation[0])
+                                            switch (exception->ExceptionInformation[0])
                                             {
                                                 case 0: exception_kind = DMN_ExceptionKind_MemoryRead;    break;
                                                 case 1: exception_kind = DMN_ExceptionKind_MemoryWrite;   break;
@@ -2516,7 +2516,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                     
                                     //- rjf: fill set-thread-name info
                                     case DMN_W32_EXCEPTION_SET_THREAD_NAME:
-                                    if(exception->NumberParameters >= 2)
+                                    if (exception->NumberParameters >= 2)
                                     {
                                         U64 thread_name_address = exception->ExceptionInformation[1];
                                         DMN_W32_Entity *process = dmn_w32_entity_from_kind_id(DMN_W32_EntityKind_Process, evt.dwProcessId);
@@ -2524,16 +2524,16 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                         {
                                             U64 read_addr = thread_name_address;
                                             U64 total_string_size = 0;
-                                            for(;total_string_size < KB(4);)
+                                            for (;total_string_size < KB(4);)
                                             {
                                                 U8 *buffer = push_array(scratch.arena, U8, 256);
                                                 B32 good_read = dmn_w32_process_read(process->handle, r1u64(read_addr, read_addr+256), buffer);
-                                                if(good_read)
+                                                if (good_read)
                                                 {
                                                     U64 size = 256;
-                                                    for(U64 idx = 0; idx < 256; idx += 1)
+                                                    for (U64 idx = 0; idx < 256; idx += 1)
                                                     {
-                                                        if(buffer[idx] == 0)
+                                                        if (buffer[idx] == 0)
                                                         {
                                                             size = idx;
                                                             break;
@@ -2543,7 +2543,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                                     str8_list_push(scratch.arena, &thread_name_strings, string_part);
                                                     total_string_size += size;
                                                     read_addr += size;
-                                                    if(size < 256)
+                                                    if (size < 256)
                                                     {
                                                         break;
                                                     }
@@ -2556,7 +2556,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                         }
                                         e->kind = DMN_EventKind_SetThreadName;
                                         e->string = str8_list_join(arena, &thread_name_strings, 0);
-                                        if(exception->NumberParameters > 2)
+                                        if (exception->NumberParameters > 2)
                                         {
                                             e->code = exception->ExceptionInformation[2];
                                         }
@@ -2582,9 +2582,9 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                                         e->kind = set ? DMN_EventKind_SetBreakpoint : DMN_EventKind_UnsetBreakpoint;
                                         e->address = vaddr;
                                         e->size    = size;
-                                        if(read)  { e->flags |= DMN_TrapFlag_BreakOnRead; }
-                                        if(write) { e->flags |= DMN_TrapFlag_BreakOnWrite; }
-                                        if(exec)  { e->flags |= DMN_TrapFlag_BreakOnExecute; }
+                                        if (read)  { e->flags |= DMN_TrapFlag_BreakOnRead; }
+                                        if (write) { e->flags |= DMN_TrapFlag_BreakOnWrite; }
+                                        if (exec)  { e->flags |= DMN_TrapFlag_BreakOnExecute; }
                                     }break;
                                     
                                     //- rjf: fill set-vaddr-range-note info
@@ -2630,7 +2630,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             
                             // rjf: extract into string
                             String8 debug_string = str8(buffer, string_size);
-                            if(debug_string.size != 0 && buffer[string_size-1] == 0)
+                            if (debug_string.size != 0 && buffer[string_size-1] == 0)
                             {
                                 debug_string.size -= 1;
                             }
@@ -2644,7 +2644,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                             keep_going = 1;
                             
                             // rjf: exit loop, given sufficient amount of text
-                            if(debug_strings.total_size >= KB(4))
+                            if (debug_strings.total_size >= KB(4))
                             {
                                 keep_going = 0;
                             }
@@ -2676,7 +2676,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                 ////////////////////////
                 //- rjf: exit loop after a little while, so we keep pumping e.g. debug strings
                 //
-                if(os_now_microseconds() >= begin_time+100000 && debug_strings.total_size != 0)
+                if (os_now_microseconds() >= begin_time+100000 && debug_strings.total_size != 0)
                 {
                     keep_going = 0;
                 }
@@ -2685,7 +2685,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             ////////////////////////
             //- rjf: send out event for any remaining debug strings
             //
-            if(debug_strings.total_size != 0 && debug_strings_event != 0)
+            if (debug_strings.total_size != 0 && debug_strings_event != 0)
             {
                 String8 debug_strings_joined = str8_list_join(arena, &debug_strings, 0);
                 debug_strings_event->string = debug_strings_joined;
@@ -2696,15 +2696,15 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             //
             ProfScope("suspend threads which ran")
             {
-                for(DMN_W32_EntityNode *n = first_ran_thread; n != 0; n = n->next)
+                for (DMN_W32_EntityNode *n = first_ran_thread; n != 0; n = n->next)
                 {
                     DMN_W32_Entity *thread = n->v;
-                    if(thread->kind != DMN_W32_EntityKind_Thread)
+                    if (thread->kind != DMN_W32_EntityKind_Thread)
                     {
                         continue;
                     }
                     DWORD suspend_result = SuspendThread(thread->handle);
-                    switch(suspend_result)
+                    switch (suspend_result)
                     {
                         case 0xffffffffu:
                         {
@@ -2720,7 +2720,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                         {
                             DWORD desired_counter = 1;
                             DWORD current_counter = suspend_result + 1;
-                            if(current_counter != desired_counter)
+                            if (current_counter != desired_counter)
                             {
                                 // NOTE(rjf): Warning. We've suspended to something higher than 1.
                                 // In this case, it means the user probably created the thread in
@@ -2734,33 +2734,33 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             ////////////////////////
             //- rjf: gather new thread-names
             //
-            ProfScope("gather new thread names") if(dmn_w32_GetThreadDescription != 0)
+            ProfScope("gather new thread names") if (dmn_w32_GetThreadDescription != 0)
             {
-                for(DMN_W32_Entity *process = dmn_w32_shared->entities_base->first;
+                for (DMN_W32_Entity *process = dmn_w32_shared->entities_base->first;
                         process != &dmn_w32_entity_nil;
                         process = process->next)
                 {
-                    if(process->kind != DMN_W32_EntityKind_Process) { continue; }
-                    for(DMN_W32_Entity *thread = process->first;
+                    if (process->kind != DMN_W32_EntityKind_Process) { continue; }
+                    for (DMN_W32_Entity *thread = process->first;
                             thread != &dmn_w32_entity_nil;
                             thread = thread->next)
                     {
-                        if(thread->kind != DMN_W32_EntityKind_Thread) { continue; }
-                        if(thread->thread.last_name_hash == 0 ||
+                        if (thread->kind != DMN_W32_EntityKind_Thread) { continue; }
+                        if (thread->thread.last_name_hash == 0 ||
                               thread->thread.name_gather_time_us+1000000 <= os_now_microseconds())
                         {
                             String8 name = {0};
                             {
                                 WCHAR *thread_name_w = 0;
                                 HRESULT hr = dmn_w32_GetThreadDescription(thread->handle, &thread_name_w);
-                                if(SUCCEEDED(hr))
+                                if (SUCCEEDED(hr))
                                 {
                                     name = str8_from_16(scratch.arena, str16_cstring((U16 *)thread_name_w));
                                     LocalFree(thread_name_w);
                                 }
                             }
                             U64 name_hash = dmn_w32_hash_from_string(name);
-                            if(name.size != 0 && name_hash != thread->thread.last_name_hash)
+                            if (name.size != 0 && name_hash != thread->thread.last_name_hash)
                             {
                                 DMN_Event *e = dmn_event_list_push(arena, &events);
                                 e->kind    = DMN_EventKind_SetThreadName;
@@ -2781,15 +2781,15 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             ProfScope("restore original memory at trap locations")
             {
                 U64 trap_idx = 0;
-                for(DMN_TrapChunkNode *n = ctrls->traps.first; n != 0; n = n->next)
+                for (DMN_TrapChunkNode *n = ctrls->traps.first; n != 0; n = n->next)
                 {
-                    for(U64 n_idx = 0; n_idx < n->count; n_idx += 1, trap_idx += 1)
+                    for (U64 n_idx = 0; n_idx < n->count; n_idx += 1, trap_idx += 1)
                     {
                         DMN_Trap *trap = n->v+n_idx;
-                        if(trap->flags == 0)
+                        if (trap->flags == 0)
                         {
                             U8 og_byte = trap_swap_bytes[trap_idx];
-                            if(og_byte != 0xCC)
+                            if (og_byte != 0xCC)
                             {
                                 dmn_process_write(trap->process, r1u64(trap->vaddr, trap->vaddr+1), &og_byte);
                             }
@@ -2803,17 +2803,17 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             //
             ProfScope("clear all debug register states, for flagged-traps")
             {
-                for(DMN_FlaggedTrapTask *t = first_flagged_trap_task; t != 0; t = t->next)
+                for (DMN_FlaggedTrapTask *t = first_flagged_trap_task; t != 0; t = t->next)
                 {
                     DMN_Handle process = t->process;
                     DMN_W32_Entity *process_entity = dmn_w32_entity_from_handle(process);
-                    for(DMN_W32_Entity *child = process_entity->first;
+                    for (DMN_W32_Entity *child = process_entity->first;
                             child != &dmn_w32_entity_nil;
                             child = child->next)
                     {
-                        if(child->kind == DMN_W32_EntityKind_Thread)
+                        if (child->kind == DMN_W32_EntityKind_Thread)
                         {
-                            switch(child->arch)
+                            switch (child->arch)
                             {
                                 default:{}break;
                                 
@@ -2834,11 +2834,11 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             //////////////////////////
             //- rjf: unset single step bit
             //
-            if(!dmn_handle_match(ctrls->single_step_thread, dmn_handle_zero())) ProfScope("unset single step bit")
+            if (!dmn_handle_match(ctrls->single_step_thread, dmn_handle_zero())) ProfScope("unset single step bit")
             {
                 DMN_W32_Entity *thread = dmn_w32_entity_from_handle(ctrls->single_step_thread);
                 Arch arch = thread->arch;
-                switch(arch)
+                switch (arch)
                 {
                     //- rjf: unimplemented win32/arch combos
                     case Arch_Null:
@@ -2858,11 +2858,11 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                     }break;
                     case Arch_x64:
                     {
-                        if(!GetThreadContext(thread->handle, single_step_thread_ctx))
+                        if (!GetThreadContext(thread->handle, single_step_thread_ctx))
                         {
                             single_step_thread_ctx = 0;
                         }
-                        if(ctx != 0)
+                        if (ctx != 0)
                         {
                             U64 rflags = single_step_thread_ctx->EFlags|0x2;
                             U64 new_rflags = rflags & ~0x100;
@@ -2881,14 +2881,14 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
         //
         case DMN_W32_EventGenPath_DetachProcesses:
         {
-            for(DMN_HandleNode *n = dmn_w32_shared->detach_processes.first; n != 0; n = n->next)
+            for (DMN_HandleNode *n = dmn_w32_shared->detach_processes.first; n != 0; n = n->next)
             {
                 DMN_W32_Entity *process = dmn_w32_entity_from_handle(n->v);
                 
                 // rjf: push exit thread events
-                for(DMN_W32_Entity *child = process->first; child != &dmn_w32_entity_nil; child = child->next)
+                for (DMN_W32_Entity *child = process->first; child != &dmn_w32_entity_nil; child = child->next)
                 {
-                    if(child->kind == DMN_W32_EntityKind_Thread)
+                    if (child->kind == DMN_W32_EntityKind_Thread)
                     {
                         DMN_Event *e = dmn_event_list_push(arena, &events);
                         e->kind    = DMN_EventKind_ExitThread;
@@ -2898,9 +2898,9 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                 }
                 
                 // rjf: push unload module events
-                for(DMN_W32_Entity *child = process->first; child != &dmn_w32_entity_nil; child = child->next)
+                for (DMN_W32_Entity *child = process->first; child != &dmn_w32_entity_nil; child = child->next)
                 {
-                    if(child->kind == DMN_W32_EntityKind_Module)
+                    if (child->kind == DMN_W32_EntityKind_Module)
                     {
                         DMN_Event *e = dmn_event_list_push(arena, &events);
                         e->kind    = DMN_EventKind_UnloadModule;
@@ -2937,20 +2937,20 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
 internal void
 dmn_halt(U64 code, U64 user_data)
 {
-    if(dmn_handle_match(dmn_handle_zero(), dmn_w32_shared->halter_process))
+    if (dmn_handle_match(dmn_handle_zero(), dmn_w32_shared->halter_process))
     {
         DMN_W32_Entity *process = &dmn_w32_entity_nil;
-        for(DMN_W32_Entity *entity = dmn_w32_shared->entities_base->first;
+        for (DMN_W32_Entity *entity = dmn_w32_shared->entities_base->first;
                 entity != &dmn_w32_entity_nil;
                 entity = entity->next)
         {
-            if(entity->kind == DMN_W32_EntityKind_Process)
+            if (entity->kind == DMN_W32_EntityKind_Process)
             {
                 process = entity;
                 break;
             }
         }
-        if(process != &dmn_w32_entity_nil)
+        if (process != &dmn_w32_entity_nil)
         {
             dmn_w32_shared->halter_process = dmn_w32_handle_from_entity(process);
             DMN_W32_InjectedBreak injection = {code, user_data};
@@ -2970,7 +2970,7 @@ internal B32
 dmn_access_open(void)
 {
     B32 result = 0;
-    if(dmn_w32_ctrl_thread)
+    if (dmn_w32_ctrl_thread)
     {
         result = 1;
     }
@@ -2985,7 +2985,7 @@ dmn_access_open(void)
 internal void
 dmn_access_close(void)
 {
-    if(!dmn_w32_ctrl_thread)
+    if (!dmn_w32_ctrl_thread)
     {
         os_mutex_drop(dmn_w32_shared->access_mutex);
     }
@@ -3001,7 +3001,7 @@ dmn_process_memory_reserve(DMN_Handle process, U64 vaddr, U64 size)
     {
         DMN_W32_Entity *process_entity = dmn_w32_entity_from_handle(process);
         result = (U64)VirtualAllocEx(process_entity->handle, (void *)vaddr, size, MEM_RESERVE, PAGE_READWRITE);
-        if(result == 0)
+        if (result == 0)
         {
             result = (U64)VirtualAllocEx(process_entity->handle, 0, size, MEM_RESERVE, PAGE_READWRITE);
         }
@@ -3047,7 +3047,7 @@ dmn_process_memory_protect(DMN_Handle process, U64 vaddr, U64 size, OS_AccessFla
         DMN_W32_Entity *process_entity = dmn_w32_entity_from_handle(process);
         DWORD old_flags = 0;
         DWORD new_flags = PAGE_NOACCESS;
-        switch(flags)
+        switch (flags)
         {
             default:{}break;
             case OS_AccessFlag_Execute:{new_flags = PAGE_EXECUTE;}break;
@@ -3105,11 +3105,11 @@ dmn_stack_base_vaddr_from_thread(DMN_Handle handle)
     DMN_AccessScope
     {
         DMN_W32_Entity *thread = dmn_w32_entity_from_handle(handle);
-        if(thread->kind == DMN_W32_EntityKind_Thread)
+        if (thread->kind == DMN_W32_EntityKind_Thread)
         {
             DMN_W32_Entity *process = thread->parent;
             U64 tlb = thread->thread.thread_local_base;
-            switch(thread->arch)
+            switch (thread->arch)
             {
                 case Arch_Null:
                 case Arch_COUNT:
@@ -3140,10 +3140,10 @@ dmn_tls_root_vaddr_from_thread(DMN_Handle handle)
     DMN_AccessScope
     {
         DMN_W32_Entity *entity = dmn_w32_entity_from_handle(handle);
-        if(entity->kind == DMN_W32_EntityKind_Thread)
+        if (entity->kind == DMN_W32_EntityKind_Thread)
         {
             result = entity->thread.thread_local_base;
-            switch(entity->arch)
+            switch (entity->arch)
             {
                 case Arch_Null:
                 case Arch_COUNT:
@@ -3206,16 +3206,16 @@ dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info
     //- rjf: get the next process entry
     PROCESSENTRY32W process_entry = {sizeof(process_entry)};
     HANDLE snapshot = (HANDLE)iter->v[0];
-    if(iter->v[1] == 0)
+    if (iter->v[1] == 0)
     {
-        if(Process32FirstW(snapshot, &process_entry))
+        if (Process32FirstW(snapshot, &process_entry))
         {
             result = 1;
         }
     }
     else
     {
-        if(Process32NextW(snapshot, &process_entry))
+        if (Process32NextW(snapshot, &process_entry))
         {
             result = 1;
         }
@@ -3225,7 +3225,7 @@ dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info
     iter->v[1] += 1;
     
     //- rjf: convert to process info
-    if(result)
+    if (result)
     {
         info_out->name = str8_from_16(arena, str16_cstring((U16*)process_entry.szExeFile));
         info_out->pid = (U32)process_entry.th32ProcessID;

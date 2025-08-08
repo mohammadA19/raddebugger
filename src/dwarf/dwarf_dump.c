@@ -1555,7 +1555,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
     String8 indent = str8_lit("                                                                                                                                ");
 #define dump(str)  str8_list_push(arena, &strings, (str))
 #define dumpf(...) str8_list_pushf(arena, &strings, __VA_ARGS__)
-#define DumpSubset(name) if(subset_flags & DW_DumpSubsetFlag_##name) DeferLoop(dumpf("// %S\n\n", dw_name_title_from_dump_subset_table[DW_DumpSubset_##name]), dump(str8_lit("\n")))
+#define DumpSubset(name) if (subset_flags & DW_DumpSubsetFlag_##name) DeferLoop(dumpf("// %S\n\n", dw_name_title_from_dump_subset_table[DW_DumpSubset_##name]), dump(str8_lit("\n")))
     Temp scratch = scratch_begin(&arena, 1);
     Rng1U64Array segment_vranges = {0};
     DW_ListUnitInput lu_input = dw_list_unit_input_from_input(scratch.arena, input);
@@ -1591,7 +1591,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
             //- rjf: log tags
             S64 tag_depth = 0;
             U64 tag_idx = 0;
-            for(U64 info_off = unit.first_tag_info_off; info_off < unit.info_range.max; tag_idx += 1)
+            for (U64 info_off = unit.first_tag_info_off; info_off < unit.info_range.max; tag_idx += 1)
             {
                 Temp tag_temp = temp_begin(scratch.arena);
                 
@@ -1608,7 +1608,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                 dumpf("%S  abbrev_id: %I64u\n", tag_indent, tag.abbrev_id);
                 
                 // rjf: log attribs
-                for(DW_AttribNode *attrib_n = tag.attribs.first;
+                for (DW_AttribNode *attrib_n = tag.attribs.first;
                         attrib_n != 0;
                         attrib_n = attrib_n->next)
                 {
@@ -1626,7 +1626,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                     // rjf: log attrib's value based on vlass
                     dumpf(", ");
                     DW_AttribClass value_class = dw_value_class_from_attrib(&unit, attrib);
-                    switch(value_class)
+                    switch (value_class)
                     {
                         default:                       {dumpf("`unknown value class`");}break;
                         case DW_AttribClass_Undefined: {dumpf("`undefined value class`");}break;
@@ -1658,7 +1658,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                         case DW_AttribClass_StrOffsetsPtr:
                         case DW_AttribClass_AddrPtr:
                         {
-                            if(attrib->form_kind == DW_Form_SecOffset)
+                            if (attrib->form_kind == DW_Form_SecOffset)
                             {
                                 dumpf("0x%I64x", attrib->form.sec_offset);
                             }
@@ -1669,7 +1669,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                         }break;
                         case DW_AttribClass_Reference:
                         {
-                            if(attrib->form_kind == DW_Form_Ref1 ||
+                            if (attrib->form_kind == DW_Form_Ref1 ||
                                   attrib->form_kind == DW_Form_Ref2 ||
                                   attrib->form_kind == DW_Form_Ref4 ||
                                   attrib->form_kind == DW_Form_Ref8 ||
@@ -1677,7 +1677,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                             {
                                 U64 info_off = unit.info_range.min + attrib->form.ref;
                                 dumpf("0x%I64x", info_off);
-                                if(!contains_1u64(unit.info_range, attrib->form.ref))
+                                if (!contains_1u64(unit.info_range, attrib->form.ref))
                                 {
                                     dumpf(": `(out of this unit's bounds)`");
                                 }
@@ -1689,7 +1689,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                         }break;
                         case DW_AttribClass_String:
                         {
-                            if(attrib->form_kind == DW_Form_Strp)
+                            if (attrib->form_kind == DW_Form_Strp)
                             {
                                 dumpf("0x%I64x", attrib->form.sec_offset);
                             }
@@ -1699,7 +1699,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                     }
                     
                     // rjf: extend attrib's value with enum info
-                    switch(attrib->attrib_kind)
+                    switch (attrib->attrib_kind)
                     {
                         case DW_AttribKind_Language:
                         {
@@ -1710,7 +1710,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                         {
                             U64          file_idx = dw_const_u64_from_attrib(input, &unit, attrib);
                             DW_LineFile *file     = dw_file_from_attrib(&unit, &line_vm, attrib);
-                            if(file != 0)
+                            if (file != 0)
                             {
                                 dumpf(": %S", dw_path_from_file(attrib_temp.arena, &line_vm, file));
                             }
@@ -1748,17 +1748,17 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                 }
                 
                 // rjf: log tag closes
-                if(!tag.has_children || tag.abbrev_id == 0)
+                if (!tag.has_children || tag.abbrev_id == 0)
                 {
                     dumpf("%S}\n", tag_indent);
                 }
                 
                 // rjf: indent/unindent
-                if(tag.has_children)
+                if (tag.has_children)
                 {
                     tag_depth += 1;
                 }
-                if(tag.abbrev_id)
+                if (tag.abbrev_id)
                 {
                     tag_depth -= 1;
                 }
@@ -1779,13 +1779,13 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
         DW_Section abbrev = input->sec[DW_Section_Abbrev];
         S64 depth = 0;
         U64 idx = 0;
-        for(U64 cursor = 0; cursor < abbrev.data.size; idx += 1)
+        for (U64 cursor = 0; cursor < abbrev.data.size; idx += 1)
         {
             // rjf: read id & advance
             U64 id_off = cursor;
             U64 id = 0;
             cursor += str8_deserial_read_uleb128(abbrev.data, cursor, &id);
-            if(id == 0) { continue; }
+            if (id == 0) { continue; }
             
             // rjf: unpack abbrev
             U64 tag = 0;
@@ -1800,13 +1800,13 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
             dumpf("  id:           %I64u\n", id);
             dumpf("  tag_kind:     %S\n", dw_string_from_tag_kind(temp.arena, tag));
             dumpf("  has_children: %s\n", has_children ? "true" : "false");
-            for(;;)
+            for (;;)
             {
                 U64 attrib_off = cursor;
                 U64 attrib_id = 0, form_id = 0;
                 cursor += str8_deserial_read_uleb128(abbrev.data, cursor, &attrib_id);
                 cursor += str8_deserial_read_uleb128(abbrev.data, cursor, &form_id);
-                if(attrib_id == 0) { break; }
+                if (attrib_id == 0) { break; }
                 String8 attrib_str = dw_string_from_attrib_kind(temp.arena, DW_Version_Last, DW_Ext_All, attrib_id);
                 String8 form_str   = dw_string_from_form_kind(temp.arena, DW_Version_Last, form_id);
                 dumpf("  attrib: { offset: 0x%I64x, kind: %S, form_kind: %S }\n", attrib_off, attrib_str, form_str);
@@ -1833,7 +1833,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
             DW_ListUnit     cu_str_offsets = {0};
             DW_LineVMHeader line_vm        = {0};
             U64             line_vm_size   = dw_read_line_vm_header(unit_temp.arena, unit_data, 0, input, cu_dir, cu_name, line_vm.address_size, &cu_str_offsets, &line_vm);
-            if(line_vm_size == 0)
+            if (line_vm_size == 0)
             {
                 continue;
             }
@@ -1896,7 +1896,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                 B32            end_of_seq = 0;
                 DW_LineVMState vm_state   = {0};
                 dw_line_vm_reset(&vm_state, line_vm.default_is_stmt);
-                for(U64 cursor = 0; cursor < opcodes.size;)
+                for (U64 cursor = 0; cursor < opcodes.size;)
                 {
                     Temp opcode_temp = temp_begin(unit_temp.arena);
                     String8List opcode_fmt = {0};
@@ -1913,17 +1913,17 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                     str8_list_push(arena, &opcode_fmt, opcode_str);
                     
                     // format operands
-                    switch(opcode)
+                    switch (opcode)
                     {
                         default:
                         {
-                            if(opcode >= line_vm.opcode_base)
+                            if (opcode >= line_vm.opcode_base)
                             {
                                 U32 adjusted_opcode = 0;
                                 U32 op_advance      = 0;
                                 S32 line_advance    = 0;
                                 U64 addr_advance    = 0;
-                                if(line_vm.line_range > 0 && line_vm.max_ops_for_inst > 0)
+                                if (line_vm.line_range > 0 && line_vm.max_ops_for_inst > 0)
                                 {
                                     adjusted_opcode = (U32)(opcode - line_vm.opcode_base);
                                     op_advance      = adjusted_opcode / line_vm.line_range;
@@ -1942,11 +1942,11 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                             }
                             else
                             {
-                                if(opcode > 0 && opcode <= line_vm.num_opcode_lens)
+                                if (opcode > 0 && opcode <= line_vm.num_opcode_lens)
                                 {
                                     str8_list_pushf(opcode_temp.arena, &opcode_fmt, "skip operands:");
                                     U64 num_operands = line_vm.opcode_lens[opcode - 1];
-                                    for(U8 i = 0; i < num_operands; i += 1)
+                                    for (U8 i = 0; i < num_operands; i += 1)
                                     {
                                         U64 operand = 0;
                                         cursor += str8_deserial_read_uleb128(opcodes, cursor, &operand);
@@ -2041,7 +2041,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                             String8 ext_opcode_str = dw_string_from_ext_opcode(opcode_temp.arena, ext_opcode);
                             //str8_list_pushf(opcode_temp.arena, &opcode_fmt, "length: %u", length);
                             str8_list_push(opcode_temp.arena, &opcode_fmt, ext_opcode_str);
-                            switch(ext_opcode)
+                            switch (ext_opcode)
                             {
                                 case DW_ExtOpcode_EndSequence:
                                 {
@@ -2093,7 +2093,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
     DumpSubset(DebugStr) DeferLoop(dumpf("strings:\n{\n"), dumpf("}\n\n"))
     {
         String8 data = input->sec[DW_Section_Str].data;
-        for(U64 cursor = 0, read_size = 0; cursor < data.size; cursor += read_size)
+        for (U64 cursor = 0, read_size = 0; cursor < data.size; cursor += read_size)
         {
             String8 string = {0};
             read_size = str8_deserial_read_cstr(data, cursor, &string);
