@@ -41,14 +41,14 @@ enum DW_DumpSubsetFlags : U32
 
 read_only global String8 dw_name_lowercase_from_dump_subset_table[] =
 {
-#define X(name, name_lower, title) str8_lit_comp(#name_lower),
+#define X(name, name_lower, title) (#name_lower),
     DW_DumpSubset_XList
 #undef X
 };
 
 read_only global String8 dw_name_title_from_dump_subset_table[] =
 {
-#define X(name, name_lower, title) str8_lit_comp(title),
+#define X(name, name_lower, title) (title),
     DW_DumpSubset_XList
 #undef X
 };

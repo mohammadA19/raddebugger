@@ -99,7 +99,7 @@ state->focus_active_nil_stack_top.v = UI_FocusKind_Null;\
 state->fastpath_codepoint_nil_stack_top.v = 0;\
 state->group_key_nil_stack_top.v = ui_key_zero();\
 state->transparency_nil_stack_top.v = 0;\
-state->tag_nil_stack_top.v = str8_lit("");\
+state->tag_nil_stack_top.v = ("");\
 state->background_color_nil_stack_top.v = v4f32(0, 0, 0, 0);\
 state->text_color_nil_stack_top.v = v4f32(0, 0, 0, 0);\
 state->border_color_nil_stack_top.v = v4f32(0, 0, 0, 0);\
@@ -175,7 +175,7 @@ state->focus_active_stack.top = &state->focus_active_nil_stack_top; state->focus
 state->fastpath_codepoint_stack.top = &state->fastpath_codepoint_nil_stack_top; state->fastpath_codepoint_stack.bottom_val = 0; state->fastpath_codepoint_stack.free = 0; state->fastpath_codepoint_stack.auto_pop = 0;\
 state->group_key_stack.top = &state->group_key_nil_stack_top; state->group_key_stack.bottom_val = ui_key_zero(); state->group_key_stack.free = 0; state->group_key_stack.auto_pop = 0;\
 state->transparency_stack.top = &state->transparency_nil_stack_top; state->transparency_stack.bottom_val = 0; state->transparency_stack.free = 0; state->transparency_stack.auto_pop = 0;\
-state->tag_stack.top = &state->tag_nil_stack_top; state->tag_stack.bottom_val = str8_lit(""); state->tag_stack.free = 0; state->tag_stack.auto_pop = 0;\
+state->tag_stack.top = &state->tag_nil_stack_top; state->tag_stack.bottom_val = (""); state->tag_stack.free = 0; state->tag_stack.auto_pop = 0;\
 state->background_color_stack.top = &state->background_color_nil_stack_top; state->background_color_stack.bottom_val = v4f32(0, 0, 0, 0); state->background_color_stack.free = 0; state->background_color_stack.auto_pop = 0;\
 state->text_color_stack.top = &state->text_color_nil_stack_top; state->text_color_stack.bottom_val = v4f32(0, 0, 0, 0); state->text_color_stack.free = 0; state->text_color_stack.auto_pop = 0;\
 state->border_color_stack.top = &state->border_color_nil_stack_top; state->border_color_stack.bottom_val = v4f32(0, 0, 0, 0); state->border_color_stack.free = 0; state->border_color_stack.auto_pop = 0;\

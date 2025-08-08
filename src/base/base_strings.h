@@ -160,9 +160,9 @@ struct FuzzyMatchRangeList
 ////////////////////////////////
 //~ rjf: String Matching
 
-#define str8_match_lit(a_lit, b, flags)   str8_match(str8_lit(a_lit), (b), (flags))
+#define str8_match_lit(a_lit, b, flags)   str8_match((a_lit), (b), (flags))
 #define str8_match_cstr(a_cstr, b, flags) str8_match(str8_cstring(a_cstr), (b), (flags))
-#define str8_ends_with_lit(string, end_lit, flags) str8_ends_with((string), str8_lit(end_lit), (flags))
+#define str8_ends_with_lit(string, end_lit, flags) str8_ends_with((string), (end_lit), (flags))
 
 ////////////////////////////////
 //~ rjf: String Slicing
@@ -221,11 +221,11 @@ global read_only struct
 }
 g_path_style_map[] =
 {
-    { str8_lit_comp(""),         PathStyle_Null            },
-    { str8_lit_comp("relative"), PathStyle_Relative        },
-    { str8_lit_comp("windows"),  PathStyle_WindowsAbsolute },
-    { str8_lit_comp("unix"),     PathStyle_UnixAbsolute    },
-    { str8_lit_comp("system"),   PathStyle_SystemAbsolute  },
+    { (""),         PathStyle_Null            },
+    { ("relative"), PathStyle_Relative        },
+    { ("windows"),  PathStyle_WindowsAbsolute },
+    { ("unix"),     PathStyle_UnixAbsolute    },
+    { ("system"),   PathStyle_SystemAbsolute  },
 };
 
 

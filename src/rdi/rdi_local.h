@@ -51,14 +51,14 @@ enum RDI_DumpSubsetFlags : U32
 
 read_only global String8 rdi_name_lowercase_from_dump_subset_table[] =
 {
-#define X(name, name_lower, title) str8_lit_comp(#name_lower),
+#define X(name, name_lower, title) (#name_lower),
     RDI_DumpSubset_XList
 #undef X
 };
 
 read_only global String8 rdi_name_title_from_dump_subset_table[] =
 {
-#define X(name, name_lower, title) str8_lit_comp(title),
+#define X(name, name_lower, title) (title),
     RDI_DumpSubset_XList
 #undef X
 };

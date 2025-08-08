@@ -707,7 +707,7 @@ typedef struct
 
 ////////////////////////////////
 
-#define RDIB_PATH_TREE_NIL_STRING str8_lit("<nil>")
+#define RDIB_PATH_TREE_NIL_STRING ("<nil>")
 
 typedef struct RDIB_PathTreeNode
 {
