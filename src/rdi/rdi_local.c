@@ -25,7 +25,7 @@ rdi_string_from_data_section_kind(Arena *arena, RDI_SectionKind v)
     switch (v)
     {
         default:{result = push_str8f(arena, "<invalid RDI_SectionKind %u>", v);}break;
-#define X(name, lower, type) case RDI_SectionKind_##name:{result = str8_lit(#name);}break;
+#define X(name, lower, type) case RDI_SectionKind_##name:{result = (#name);}break;
         RDI_SectionKind_XList
 #undef X
     }
@@ -39,7 +39,7 @@ rdi_string_from_arch(Arena *arena, RDI_Arch v)
     switch (v)
     {
         default:{result = push_str8f(arena, "<invalid RDI_Arch %u>", v);} break;
-#define X(name) case RDI_Arch_##name:{result = str8_lit(#name);} break;
+#define X(name) case RDI_Arch_##name:{result = (#name);} break;
         RDI_Arch_XList
 #undef X
     }
@@ -53,7 +53,7 @@ rdi_string_from_language(Arena *arena, RDI_Language v)
     switch (v)
     {
         default:{result = push_str8f(arena, "<invalid RDI_Language %u>", v);}break;
-#define X(name) case RDI_Language_##name:{result = str8_lit(#name);}break;
+#define X(name) case RDI_Language_##name:{result = (#name);}break;
         RDI_Language_XList
 #undef X
     }
@@ -67,7 +67,7 @@ rdi_string_from_local_kind(Arena *arena, RDI_LocalKind v)
     switch (v)
     {
         default:{result = push_str8f(arena, "<invalid RDI_LocalKind %u>", v);}break;
-#define X(name) case RDI_LocalKind_##name:{result = str8_lit(#name);}break;
+#define X(name) case RDI_LocalKind_##name:{result = (#name);}break;
         RDI_LocalKind_XList
 #undef X
     }
@@ -82,7 +82,7 @@ rdi_string_from_type_kind(Arena *arena, RDI_TypeKind v)
     switch (v)
     {
         default:{result = push_str8f(arena, "<invalid RDI_TypeKind %u>", v);}break;
-#define X(name) case RDI_TypeKind_##name:{result = str8_lit(#name);}break;
+#define X(name) case RDI_TypeKind_##name:{result = (#name);}break;
         RDI_TypeKind_XList
 #undef X
     }
@@ -97,7 +97,7 @@ rdi_string_from_member_kind(Arena *arena, RDI_MemberKind v)
     switch (v)
     {
         default:{result = push_str8f(arena, "<invalid RDI_MemberKind %u>", v);}break;
-#define X(name) case RDI_MemberKind_##name:{result = str8_lit(#name);}break;
+#define X(name) case RDI_MemberKind_##name:{result = (#name);}break;
         RDI_MemberKind_XList
 #undef X
     }
@@ -111,7 +111,7 @@ rdi_string_from_name_map_kind(RDI_NameMapKind kind)
     switch (kind)
     {
         default:{}break;
-#define X(name) case RDI_NameMapKind_##name:{result = str8_lit(#name);}break;
+#define X(name) case RDI_NameMapKind_##name:{result = (#name);}break;
         RDI_NameMapKind_XList
 #undef X
     }
@@ -125,7 +125,7 @@ rdi_string_from_reg_code_x86(U64 reg_code)
     switch (reg_code)
     {
         default:{}break;
-#define X(name, value) case RDI_RegCodeX86_##name:{result = str8_lit(#name);}break;
+#define X(name, value) case RDI_RegCodeX86_##name:{result = (#name);}break;
         RDI_RegCodeX86_XList
 #undef X
     }
@@ -139,7 +139,7 @@ rdi_string_from_reg_code_x64(U64 reg_code)
     switch (reg_code)
     {
         default:{}break;
-#define X(name, value) case RDI_RegCodeX64_##name:{result = str8_lit(#name);}break;
+#define X(name, value) case RDI_RegCodeX64_##name:{result = (#name);}break;
         RDI_RegCodeX64_XList
 #undef X
     }
@@ -167,7 +167,7 @@ rdi_string_from_eval_op(Arena *arena, RDI_EvalOp op)
     switch (op)
     {
         default:{result = push_str8f(arena, "%#x", op);}break;
-#define X(name) case RDI_EvalOp_##name:{result = str8_lit("#name");}break;
+#define X(name) case RDI_EvalOp_##name:{result = ("#name");}break;
         RDI_EvalOp_XList
 #undef X
     }
@@ -181,7 +181,7 @@ rdi_string_from_eval_type_group(Arena *arena, RDI_EvalTypeGroup eval_type_group)
     switch (eval_type_group)
     {
         default:{result = push_str8f(arena, "%#x", eval_type_group);}break;
-#define X(name) case RDI_EvalTypeGroup_##name:{result = str8_lit("#name");}break;
+#define X(name) case RDI_EvalTypeGroup_##name:{result = ("#name");}break;
         RDI_EvalTypeGroup_XList
 #undef X
     }
@@ -193,12 +193,12 @@ rdi_string_from_binary_section_flags(Arena *arena, RDI_BinarySectionFlags flags)
 {
     Temp scratch = scratch_begin(&arena, 1);
     String8List list = {0};
-#define X(name) if (flags & RDI_BinarySectionFlag_##name) { flags &= ~RDI_BinarySectionFlag_##name; str8_list_push(scratch.arena, &list, str8_lit(#name)); }
+#define X(name) if (flags & RDI_BinarySectionFlag_##name) { flags &= ~RDI_BinarySectionFlag_##name; str8_list_push(scratch.arena, &list, (#name)); }
     RDI_BinarySectionFlags_XList;
 #undef X
-    StringJoin join = {.sep = str8_lit("|")};
+    StringJoin join = {.sep = ("|")};
     String8 result = str8_list_join(arena, &list, &join);
-    if (result.size == 0) { result = str8_lit("None"); }
+    if (result.size == 0) { result = ("None"); }
     scratch_end(scratch);
     return result;
 }
@@ -208,12 +208,12 @@ rdi_string_from_type_modifier_flags(Arena *arena, RDI_TypeModifierFlags flags)
 {
     Temp scratch = scratch_begin(&arena, 1);
     String8List list = {0};
-#define X(name) if (flags & RDI_TypeModifierFlag_##name) { flags &= ~RDI_TypeModifierFlag_##name; str8_list_push(scratch.arena, &list, str8_lit(#name)); }
+#define X(name) if (flags & RDI_TypeModifierFlag_##name) { flags &= ~RDI_TypeModifierFlag_##name; str8_list_push(scratch.arena, &list, (#name)); }
     RDI_TypeModifierFlags_XList;
 #undef X
-    StringJoin join = {.sep = str8_lit("|")};
+    StringJoin join = {.sep = ("|")};
     String8 result = str8_list_join(arena, &list, &join);
-    if (result.size == 0) { result = str8_lit("None"); }
+    if (result.size == 0) { result = ("None"); }
     scratch_end(scratch);
     return result;
 }
@@ -223,12 +223,12 @@ rdi_string_from_udt_flags(Arena *arena, RDI_UDTFlags flags)
 {
     Temp scratch = scratch_begin(&arena, 1);
     String8List list = {0};
-#define X(name) if (flags & RDI_UDTFlag_##name) { flags &= ~RDI_UDTFlag_##name; str8_list_push(scratch.arena, &list, str8_lit(#name)); }
+#define X(name) if (flags & RDI_UDTFlag_##name) { flags &= ~RDI_UDTFlag_##name; str8_list_push(scratch.arena, &list, (#name)); }
     RDI_UDTFlags_XList;
 #undef X
-    StringJoin join = {.sep = str8_lit("|")};
+    StringJoin join = {.sep = ("|")};
     String8 result = str8_list_join(arena, &list, &join);
-    if (result.size == 0) { result = str8_lit("None"); }
+    if (result.size == 0) { result = ("None"); }
     scratch_end(scratch);
     return result;
 }
@@ -238,12 +238,12 @@ rdi_string_from_link_flags(Arena *arena, RDI_LinkFlags flags)
 {
     Temp scratch = scratch_begin(&arena, 1);
     String8List list = {0};
-#define X(name) if (flags & RDI_LinkFlag_##name) { flags &= ~RDI_LinkFlag_##name; str8_list_push(scratch.arena, &list, str8_lit(#name)); }
+#define X(name) if (flags & RDI_LinkFlag_##name) { flags &= ~RDI_LinkFlag_##name; str8_list_push(scratch.arena, &list, (#name)); }
     RDI_LinkFlags_XList;
 #undef X
-    StringJoin join = {.sep = str8_lit("|")};
+    StringJoin join = {.sep = ("|")};
     String8 result = str8_list_join(arena, &list, &join);
-    if (result.size == 0) { result = str8_lit("None"); }
+    if (result.size == 0) { result = ("None"); }
     scratch_end(scratch);
     return result;
 }
@@ -403,7 +403,7 @@ rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, String8 bc)
     }
     exit:;
     
-    String8 result = str8_list_join(arena, &fmt, &(StringJoin){.sep = str8_lit(", ")});
+    String8 result = str8_list_join(arena, &fmt, &(StringJoin){.sep = (", ")});
     
     scratch_end(scratch);
     return result;
@@ -429,7 +429,7 @@ rdi_strings_from_locations(Arena *arena, RDI_Parsed *rdi, RDI_Arch arch, Rng1U64
         RDI_LocationBlock *block_ptr = &location_block_array[block_idx];
         if (block_ptr.scope_off_first == 0 && block_ptr.scope_off_opl == max_U32)
         {
-            qualifier = str8_lit("*always*");
+            qualifier = ("*always*");
         }
         else
         {
@@ -513,10 +513,10 @@ internal String8List
 rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags flags)
 {
     String8List strings = {0};
-    String8 indent = str8_lit("                                                                                                                                ");
+    String8 indent = ("                                                                                                                                ");
 #define dump(str)  str8_list_push(arena, &strings, (str))
 #define dumpf(...) str8_list_pushf(arena, &strings, __VA_ARGS__)
-#define DumpSubset(name) if (flags & RDI_DumpSubsetFlag_##name) DeferLoop(dumpf("////////////////////////////////\n//~ %S\n\n%S:\n{", rdi_name_title_from_dump_subset_table[RDI_DumpSubset_##name], rdi_name_lowercase_from_dump_subset_table[RDI_DumpSubset_##name]), dump(str8_lit("}\n\n")))
+#define DumpSubset(name) if (flags & RDI_DumpSubsetFlag_##name) DeferLoop(dumpf("////////////////////////////////\n//~ %S\n\n%S:\n{", rdi_name_title_from_dump_subset_table[RDI_DumpSubset_##name], rdi_name_lowercase_from_dump_subset_table[RDI_DumpSubset_##name]), dump(("}\n\n")))
     
     //////////////////////////////
     //- rjf: dump data sections
@@ -746,7 +746,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
                 {
                     str8_list_pushf(temp.arena, &list, "%#llx", line_map.voffs[voff_idx]);
                 }
-                String8 voffs_string = str8_list_join(temp.arena, &list, &(StringJoin){.sep = str8_lit(", ")});
+                String8 voffs_string = str8_list_join(temp.arena, &list, &(StringJoin){.sep = (", ")});
                 dumpf("    %u: (%S)\n", line_map.nums[line_num_idx], voffs_string);
                 temp_end(temp);
             }
@@ -797,7 +797,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
                 {
                     str8_list_pushf(scratch.arena, &param_idx_strings, "%u", param_idx_array[param_idx]);
                 }
-                String8 param_idx_str = str8_list_join(scratch.arena, &param_idx_strings, &(StringJoin){.pre = str8_lit("["), .sep = str8_lit(", "), .post = str8_lit("]")});
+                String8 param_idx_str = str8_list_join(scratch.arena, &param_idx_strings, &(StringJoin){.pre = ("["), .sep = (", "), .post = ("]")});
                 dumpf("    constructed__params: %S\n", param_idx_str);
                 dumpf("    return_type: %u\n", type.constructed.direct_type_idx);
             }
@@ -805,7 +805,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
             {
                 U32  param_idx_count = 0;
                 U32 *param_idx_array = rdi_idx_run_from_first_count(rdi, type.constructed.param_idx_run_first, type.constructed.count, &param_idx_count);
-                String8 this_type_str = str8_lit("\?\?\?");
+                String8 this_type_str = ("\?\?\?");
                 if (param_idx_count > 0)
                 {
                     this_type_str = push_str8f(scratch.arena, "%u", param_idx_array[0]);
@@ -817,7 +817,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
                 {
                     str8_list_pushf(scratch.arena, &param_idx_strings, "%u", param_idx_array[param_idx]);
                 }
-                String8 param_idx_str = str8_list_join(scratch.arena, &param_idx_strings, &(StringJoin){.pre = str8_lit("["), .sep = str8_lit(", "), .post = str8_lit("]")});
+                String8 param_idx_str = str8_list_join(scratch.arena, &param_idx_strings, &(StringJoin){.pre = ("["), .sep = (", "), .post = ("]")});
                 dumpf("    constructed__this_type: %S\n", this_type_str);
                 dumpf("    constructed__params: %S\n", param_idx_str);
                 dumpf("    return_type: %u\n", type.constructed.direct_type_idx);
@@ -1040,7 +1040,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
                     {
                         str8_list_pushf(scratch.arena, &list, "[%#llx, %#llx)", voff_ptr[i+0], voff_ptr[i+1]);
                     }
-                    voff_range_list_string = str8_list_join(arena, &list, &(StringJoin){.sep = str8_lit(", ")});
+                    voff_range_list_string = str8_list_join(arena, &list, &(StringJoin){.sep = (", ")});
                     scratch_end(scratch);
                 }
                 
@@ -1048,14 +1048,14 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
                 String8 procedure_name = str8_from_rdi_string_idx(rdi, rdi_element_from_name_idx(rdi, Procedures, scope.proc_idx)->name_string_idx);
                 if (procedure_name.size == 0)
                 {
-                    procedure_name = str8_lit("???");
+                    procedure_name = ("???");
                 }
                 
                 // rjf: scope inline site -> name
                 String8 inline_site_name = str8_from_rdi_string_idx(rdi, rdi_element_from_name_idx(rdi, InlineSites, scope.inline_site_idx)->name_string_idx);
                 if (inline_site_name.size == 0)
                 {
-                    inline_site_name = str8_lit("???");
+                    inline_site_name = ("???");
                 }
                 
                 // rjf: dump
@@ -1203,7 +1203,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
                             U32 idx = idx_array[idx_i];
                             str8_list_pushf(temp.arena, &idx_strings, "%u");
                         }
-                        indices = str8_list_join(scratch.arena, &idx_strings, &(StringJoin){.sep = str8_lit(", ")});
+                        indices = str8_list_join(scratch.arena, &idx_strings, &(StringJoin){.sep = (", ")});
                     }
                     dumpf("      \"%S\": %S\n", str, indices);
                     temp_end(temp);

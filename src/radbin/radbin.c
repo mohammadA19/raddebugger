@@ -355,13 +355,13 @@ rb_entry_point(CmdLine *cmdline)
   }
   output_kind_info[] =
   {
-    {str8_lit_comp(""),         str8_lit_comp("")},
-    {str8_lit_comp("rdi"),      str8_lit_comp("RAD Debug Info (.rdi) Conversion")},
-    {str8_lit_comp("dump"),     str8_lit_comp("Textual Dumping")},
-    {str8_lit_comp("breakpad"), str8_lit_comp("Breakpad Debug Info Conversion")},
+    {(""),         ("")},
+    {("rdi"),      ("RAD Debug Info (.rdi) Conversion")},
+    {("dump"),     ("Textual Dumping")},
+    {("breakpad"), ("Breakpad Debug Info Conversion")},
   };
   OutputKind output_kind = OutputKind_Null;
-  String8 output_path = cmd_line_string(cmdline, str8_lit("out"));
+  String8 output_path = cmd_line_string(cmdline, ("out"));
   {
     //- rjf: user manually specified output kind
     if (output_kind == OutputKind_Null)
@@ -378,19 +378,19 @@ rb_entry_point(CmdLine *cmdline)
     }
     
     //- rjf: we can infer from the user-specified output path
-    if (str8_match(str8_skip_last_dot(output_path), str8_lit("rdi"), StringMatchFlag_CaseInsensitive))
+    if (str8_match(str8_skip_last_dot(output_path), ("rdi"), StringMatchFlag_CaseInsensitive))
     {
       output_kind = OutputKind_RDI;
       log_infof("Output path has .rdi extension; performing `%S`\n", output_kind_info[output_kind].title);
     }
-    else if (str8_match(str8_skip_last_dot(output_path), str8_lit("dump"), StringMatchFlag_CaseInsensitive) ||
-            str8_match(str8_skip_last_dot(output_path), str8_lit("txt"), StringMatchFlag_CaseInsensitive))
+    else if (str8_match(str8_skip_last_dot(output_path), ("dump"), StringMatchFlag_CaseInsensitive) ||
+            str8_match(str8_skip_last_dot(output_path), ("txt"), StringMatchFlag_CaseInsensitive))
     {
       output_kind = OutputKind_Dump;
       log_infof("Output path has .dump or .txt extension; performing `%S`\n", output_kind_info[output_kind].title);
     }
-    else if (str8_match(str8_skip_last_dot(output_path), str8_lit("psym"), StringMatchFlag_CaseInsensitive) ||
-            str8_match(str8_skip_last_dot(output_path), str8_lit("psyms"), StringMatchFlag_CaseInsensitive))
+    else if (str8_match(str8_skip_last_dot(output_path), ("psym"), StringMatchFlag_CaseInsensitive) ||
+            str8_match(str8_skip_last_dot(output_path), ("psyms"), StringMatchFlag_CaseInsensitive))
     {
       output_kind = OutputKind_Breakpad;
       log_infof("Output path has .psym or .psyms extension; performing `%S`\n", output_kind_info[output_kind].title);
@@ -518,7 +518,7 @@ rb_entry_point(CmdLine *cmdline)
         default:{}break;
         case OutputKind_RDI:
         {
-          String8List only_names = cmd_line_strings(cmdline, str8_lit("only"));
+          String8List only_names = cmd_line_strings(cmdline, ("only"));
           if (only_names.node_count != 0)
           {
             subset_flags = 0;
@@ -526,15 +526,15 @@ rb_entry_point(CmdLine *cmdline)
           for (String8Node *n = only_names.first; n != 0; n = n.next)
           {
             if (0){}
-#define X(name, name_lower) else if (str8_match(n.string, str8_lit(#name_lower), 0)) { subset_flags |= RDIM_SubsetFlag_##name; }
+#define X(name, name_lower) else if (str8_match(n.string, (#name_lower), 0)) { subset_flags |= RDIM_SubsetFlag_##name; }
             RDIM_Subset_XList
 #undef X
           }
-          String8List omit_names = cmd_line_strings(cmdline, str8_lit("omit"));
+          String8List omit_names = cmd_line_strings(cmdline, ("omit"));
           for (String8Node *n = omit_names.first; n != 0; n = n.next)
           {
             if (0){}
-#define X(name, name_lower) else if (str8_match(n.string, str8_lit(#name_lower), 0)) { subset_flags &= ~RDIM_SubsetFlag_##name; }
+#define X(name, name_lower) else if (str8_match(n.string, (#name_lower), 0)) { subset_flags &= ~RDIM_SubsetFlag_##name; }
             RDIM_Subset_XList
 #undef X
           }
@@ -636,7 +636,7 @@ rb_entry_point(CmdLine *cmdline)
               }
             }
             convert_params.subset_flags   = subset_flags;
-            convert_params.deterministic  = cmd_line_has_flag(cmdline, str8_lit("deterministic"));
+            convert_params.deterministic  = cmd_line_has_flag(cmdline, ("deterministic"));
           }
           ProfScope("convert") bake_params = d2r_convert(arena, async_root, &convert_params);
           
@@ -670,7 +670,7 @@ rb_entry_point(CmdLine *cmdline)
             convert_params.input_pdb_data = pdb_data;
             convert_params.input_exe_data = exe_data;
             convert_params.subset_flags   = subset_flags;
-            convert_params.deterministic  = cmd_line_has_flag(cmdline, str8_lit("deterministic"));
+            convert_params.deterministic  = cmd_line_has_flag(cmdline, ("deterministic"));
           }
           ProfScope("convert") bake_params = p2r_convert(arena, async_root, &convert_params);
           
@@ -714,7 +714,7 @@ rb_entry_point(CmdLine *cmdline)
           
           // rjf: compress
           RDIM_SerializedSectionBundle serialized_section_bundle__compressed = serialized_section_bundle;
-          if (cmd_line_has_flag(cmdline, str8_lit("compress"))) ProfScope("compress")
+          if (cmd_line_has_flag(cmdline, ("compress"))) ProfScope("compress")
           {
             serialized_section_bundle__compressed = rdim_compress(arena, &serialized_section_bundle);
           }
@@ -819,7 +819,7 @@ rb_entry_point(CmdLine *cmdline)
     //
     case OutputKind_Dump:
     {
-      B32 deterministic = cmd_line_has_flag(cmdline, str8_lit("deterministic"));
+      B32 deterministic = cmd_line_has_flag(cmdline, ("deterministic"));
       
       //- rjf: no inputs => help
       if (cmdline.inputs.node_count == 0)
@@ -861,7 +861,7 @@ rb_entry_point(CmdLine *cmdline)
       RDI_DumpSubsetFlags rdi_dump_subset_flags = RDI_DumpSubsetFlag_All;
       DW_DumpSubsetFlags dw_dump_subset_flags = DW_DumpSubsetFlag_All;
       {
-        String8List only_names = cmd_line_strings(cmdline, str8_lit("only"));
+        String8List only_names = cmd_line_strings(cmdline, ("only"));
         if (only_names.node_count != 0)
         {
           rdi_dump_subset_flags = 0;
@@ -870,21 +870,21 @@ rb_entry_point(CmdLine *cmdline)
         for (String8Node *n = only_names.first; n != 0; n = n.next)
         {
           if (0){}
-#define X(name, name_lower, title) else if (str8_match(n.string, str8_lit(#name_lower), 0)) { rdi_dump_subset_flags |= RDI_DumpSubsetFlag_##name; }
+#define X(name, name_lower, title) else if (str8_match(n.string, (#name_lower), 0)) { rdi_dump_subset_flags |= RDI_DumpSubsetFlag_##name; }
           RDI_DumpSubset_XList
 #undef X
-#define X(name, name_lower, title) else if (str8_match(n.string, str8_lit(#name_lower), 0)) { dw_dump_subset_flags |= DW_DumpSubsetFlag_##name; }
+#define X(name, name_lower, title) else if (str8_match(n.string, (#name_lower), 0)) { dw_dump_subset_flags |= DW_DumpSubsetFlag_##name; }
           DW_DumpSubset_XList
 #undef X
         }
-        String8List omit_names = cmd_line_strings(cmdline, str8_lit("omit"));
+        String8List omit_names = cmd_line_strings(cmdline, ("omit"));
         for (String8Node *n = omit_names.first; n != 0; n = n.next)
         {
           if (0){}
-#define X(name, name_lower, title) else if (str8_match(n.string, str8_lit(#name_lower), 0)) { rdi_dump_subset_flags &= ~RDI_DumpSubsetFlag_##name; }
+#define X(name, name_lower, title) else if (str8_match(n.string, (#name_lower), 0)) { rdi_dump_subset_flags &= ~RDI_DumpSubsetFlag_##name; }
           RDI_DumpSubset_XList
 #undef X
-#define X(name, name_lower, title) else if (str8_match(n.string, str8_lit(#name_lower), 0)) { dw_dump_subset_flags &= ~DW_DumpSubsetFlag_##name; }
+#define X(name, name_lower, title) else if (str8_match(n.string, (#name_lower), 0)) { dw_dump_subset_flags &= ~DW_DumpSubsetFlag_##name; }
           DW_DumpSubset_XList
 #undef X
         }
@@ -894,7 +894,7 @@ rb_entry_point(CmdLine *cmdline)
       for (RB_FileNode *n = input_files.first; n != 0; n = n.next)
       {
         RB_File *f = n.v;
-        str8_list_pushf(arena, &output_blobs, "// %S (%S)\n\n", deterministic ? str8_skip_last_slash(f.path) : f.path, f.format ? rb_file_format_display_name_table[f.format] : str8_lit("Unsupported format"));
+        str8_list_pushf(arena, &output_blobs, "// %S (%S)\n\n", deterministic ? str8_skip_last_slash(f.path) : f.path, f.format ? rb_file_format_display_name_table[f.format] : ("Unsupported format"));
         
         //- rjf: unpack file parses
         Arch arch = Arch_Null;
@@ -999,7 +999,7 @@ rb_entry_point(CmdLine *cmdline)
         //- rjf: dump file extension info
         if (f.format_flags & RB_FileFormatFlag_HasDWARF)
         {
-          str8_list_pushf(arena, &output_blobs, "// %S (%S) (DWARF)\n\n", deterministic ? str8_skip_last_slash(f.path) : f.path, f.format ? rb_file_format_display_name_table[f.format] : str8_lit("Unsupported format"));
+          str8_list_pushf(arena, &output_blobs, "// %S (%S) (DWARF)\n\n", deterministic ? str8_skip_last_slash(f.path) : f.path, f.format ? rb_file_format_display_name_table[f.format] : ("Unsupported format"));
           {
             String8List dump = dw_dump_list_from_sections(arena, &dw, arch, dw_dump_subset_flags);
             str8_list_concat_in_place(&output_blobs, &dump);
@@ -1028,14 +1028,14 @@ rb_entry_point(CmdLine *cmdline)
         off += size_to_write;
       }
     }
-    log_info(str8_lit("Results written to stdout"));
+    log_info(("Results written to stdout"));
   }
   
   //////////////////////////////
   //- rjf: write info & errors
   //
   LogScopeResult log_scope = log_scope_end(arena);
-  if (cmd_line_has_flag(cmdline, str8_lit("verbose")) && log_scope.strings[LogMsgKind_Info].size != 0)
+  if (cmd_line_has_flag(cmdline, ("verbose")) && log_scope.strings[LogMsgKind_Info].size != 0)
   {
     String8List lines = wrapped_lines_from_string(arena, log_scope.strings[LogMsgKind_Info], 80, 80, 0);
     for (String8Node *n = lines.first; n != 0; n = n.next)

@@ -50,7 +50,7 @@ entry_point(CmdLine *cmdline)
     //////////////////////////////
     //- rjf: unpack command line
     //
-    String8 test_data_folder_path = cmd_line_string(cmdline, str8_lit("test_data"));
+    String8 test_data_folder_path = cmd_line_string(cmdline, ("test_data"));
     if (test_data_folder_path.size == 0)
     {
         fprintf(stderr, "error(input): The test data folder path was not specified. Specify the path when running the program, like: %.*s --test_data:C:/foo/bar/baz\n", str8_varg(cmdline.exe_name));
@@ -60,7 +60,7 @@ entry_point(CmdLine *cmdline)
     //////////////////////////////
     //- rjf: make artifacts directory
     //
-    String8 artifacts_path = path_normalized_from_string(arena, str8_lit("./tester_artifacts"));
+    String8 artifacts_path = path_normalized_from_string(arena, ("./tester_artifacts"));
     os_make_directory(artifacts_path);
     
     //////////////////////////////
@@ -78,7 +78,7 @@ entry_point(CmdLine *cmdline)
     Test *last_test = 0;
 #define Test(name_identifier) \
 Test *test_##name_identifier = push_array(arena, Test, 1);\
-test_##name_identifier.name = str8_lit(#name_identifier);\
+test_##name_identifier.name = (#name_identifier);\
 test_##name_identifier.good = 1;\
 SLLQueuePush(first_test, last_test, test_##name_identifier);\
 for (Test *test = test_##name_identifier; test != 0; test = 0)
@@ -209,11 +209,11 @@ for (Test *test = test_##name_identifier; test != 0; test = 0)
     {
         String8 exprs[] =
         {
-            str8_lit("123"),
-            str8_lit("1 + 2"),
-            str8_lit("foo"),
-            str8_lit("foo(bar)"),
-            str8_lit("foo(bar(baz))"),
+            ("123"),
+            ("1 + 2"),
+            ("foo"),
+            ("foo(bar)"),
+            ("foo(bar(baz))"),
         };
         String8List logs = {0};
         for EachElement(idx, exprs)

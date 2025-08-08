@@ -159,10 +159,10 @@ coff_print_section_table(Arena               *arena,
                 str8_list_push(scratch.arena, &f, lnk);
                 str8_list_push(scratch.arena, &f, oth);
                 
-                flags = str8_list_join(scratch.arena, &f, &(StringJoin){ .sep = str8_lit("-") });
+                flags = str8_list_join(scratch.arena, &f, &(StringJoin){ .sep = ("-") });
                 
                 if (!flags.size) {
-                    flags = str8_lit("none");
+                    flags = ("none");
                 }
             }
             
@@ -185,7 +185,7 @@ coff_print_section_table(Arena               *arena,
                 str8_list_pushf(scratch.arena, &l, "[no symlink]");
             }
             
-            String8 line = str8_list_join(scratch.arena, &l, &(StringJoin){ .sep = str8_lit(" "), });
+            String8 line = str8_list_join(scratch.arena, &l, &(StringJoin){ .sep = (" "), });
             rd_printf("%S", line);
             
             if (full_name.size != name.size) {
@@ -333,7 +333,7 @@ coff_print_relocs(Arena              *arena,
                 str8_list_pushf(scratch.arena, &line, "%016x", apply           );
                 str8_list_pushf(scratch.arena, &line, "%S",    symbol_name     );
                 
-                String8 l = str8_list_join(scratch.arena, &line, &(StringJoin){.sep=str8_lit(" ")});
+                String8 l = str8_list_join(scratch.arena, &line, &(StringJoin){.sep=(" ")});
                 rd_printf("%S", l);
             }
             
@@ -375,9 +375,9 @@ coff_print_symbol_table(Arena              *arena,
             String8        storage_class = coff_string_from_sym_storage_class(symbol.storage_class);
             String8        section_number;
             switch (symbol.section_number) {
-                case COFF_Symbol_UndefinedSection: section_number = str8_lit("Undef"); break;
-                case COFF_Symbol_AbsSection32:     section_number = str8_lit("Abs");   break;
-                case COFF_Symbol_DebugSection32:   section_number = str8_lit("Debug"); break;
+                case COFF_Symbol_UndefinedSection: section_number = ("Undef"); break;
+                case COFF_Symbol_AbsSection32:     section_number = ("Abs");   break;
+                case COFF_Symbol_DebugSection32:   section_number = ("Debug"); break;
                 default:                           section_number = push_str8f(scratch.arena, "%010x", symbol.section_number); break;
             }
             
@@ -391,7 +391,7 @@ coff_print_symbol_table(Arena              *arena,
             str8_list_pushf(scratch.arena, &line, "%-16S", storage_class           );
             str8_list_pushf(scratch.arena, &line, "%S",    name                    );
             
-            String8 l = str8_list_join(scratch.arena, &line, &(StringJoin){.sep = str8_lit(" ")});
+            String8 l = str8_list_join(scratch.arena, &line, &(StringJoin){.sep = (" ")});
             rd_printf("%S", l);
             
             rd_indent();
@@ -679,7 +679,7 @@ coff_print_archive(Arena *arena, String8List *out, String8 indent, String8 raw_a
         rd_printf("Members:");
         rd_indent();
         
-        String8List string_table = str8_split_by_string_chars(scratch.arena, first_member.string_table, str8_lit("\0"), 0);
+        String8List string_table = str8_split_by_string_chars(scratch.arena, first_member.string_table, ("\0"), 0);
         
         if (string_table.node_count == first_member.member_offset_count) {
             String8Node *string_n = string_table.first;
@@ -707,7 +707,7 @@ coff_print_archive(Arena *arena, String8List *out, String8 indent, String8 raw_a
         rd_printf("Symbol Count     : %u",         second_member.symbol_count);
         rd_printf("String Table Size: %#llx (%M)", second_member.string_table.size, second_member.string_table.size);
         
-        String8List string_table = str8_split_by_string_chars(scratch.arena, second_member.string_table, str8_lit("\0"), 0);
+        String8List string_table = str8_split_by_string_chars(scratch.arena, second_member.string_table, ("\0"), 0);
         
         rd_printf("Members:");
         rd_indent();
@@ -738,7 +738,7 @@ coff_print_archive(Arena *arena, String8List *out, String8 indent, String8 raw_a
         rd_printf("# Long Names");
         rd_indent();
         
-        String8List long_names = str8_split_by_string_chars(scratch.arena, archive_parse.long_names, str8_lit("\0"), 0);
+        String8List long_names = str8_split_by_string_chars(scratch.arena, archive_parse.long_names, ("\0"), 0);
         U64 name_idx = 0;
         for (String8Node *name_n = long_names.first; name_n != 0; name_n = name_n.next, ++name_idx) {
             U64 offset = (U64)(name_n.string.str - archive_parse.long_names.str);

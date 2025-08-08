@@ -205,11 +205,11 @@ pe_make_edata_obj(Arena               *arena,
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(time_stamp, machine);
 
     // push sections
-    COFF_ObjSection *voff_table_sect      = coff_obj_writer_push_section(obj_writer, str8_lit(".edata$2"), PE_EDATA_SECTION_FLAGS|COFF_SectionFlag_Align4Bytes, str8_zero());
-    COFF_ObjSection *name_voff_table_sect = coff_obj_writer_push_section(obj_writer, str8_lit(".edata$3"), PE_EDATA_SECTION_FLAGS|COFF_SectionFlag_Align4Bytes, str8_zero());
-    COFF_ObjSection *ordinal_table_sect   = coff_obj_writer_push_section(obj_writer, str8_lit(".edata$4"), PE_EDATA_SECTION_FLAGS|COFF_SectionFlag_Align2Bytes, str8_zero());
-    COFF_ObjSection *string_table_sect    = coff_obj_writer_push_section(obj_writer, str8_lit(".edata$5"), PE_EDATA_SECTION_FLAGS|COFF_SectionFlag_Align1Bytes, str8_zero());
-    COFF_ObjSection *image_name_sect      = coff_obj_writer_push_section(obj_writer, str8_lit(".edata$6"), PE_EDATA_SECTION_FLAGS|COFF_SectionFlag_Align1Bytes, push_cstr(obj_writer.arena, image_name));
+    COFF_ObjSection *voff_table_sect      = coff_obj_writer_push_section(obj_writer, (".edata$2"), PE_EDATA_SECTION_FLAGS|COFF_SectionFlag_Align4Bytes, str8_zero());
+    COFF_ObjSection *name_voff_table_sect = coff_obj_writer_push_section(obj_writer, (".edata$3"), PE_EDATA_SECTION_FLAGS|COFF_SectionFlag_Align4Bytes, str8_zero());
+    COFF_ObjSection *ordinal_table_sect   = coff_obj_writer_push_section(obj_writer, (".edata$4"), PE_EDATA_SECTION_FLAGS|COFF_SectionFlag_Align2Bytes, str8_zero());
+    COFF_ObjSection *string_table_sect    = coff_obj_writer_push_section(obj_writer, (".edata$5"), PE_EDATA_SECTION_FLAGS|COFF_SectionFlag_Align1Bytes, str8_zero());
+    COFF_ObjSection *image_name_sect      = coff_obj_writer_push_section(obj_writer, (".edata$6"), PE_EDATA_SECTION_FLAGS|COFF_SectionFlag_Align1Bytes, push_cstr(obj_writer.arena, image_name));
 
     ProfBegin("Virtual Offset Table");
     {
@@ -302,14 +302,14 @@ pe_make_edata_obj(Arena               *arena,
     header.name_pointer_table_count   = safe_cast_u32(name_voff_table_sect.data.node_count);
 
     // push header field's symbols
-    COFF_ObjSymbol *image_name_symbol    = coff_obj_writer_push_symbol_static(obj_writer, str8_lit("EXPORT_HEADER_NAME_VOFF"),          0, image_name_sect);
-    COFF_ObjSymbol *address_table_symbol = coff_obj_writer_push_symbol_static(obj_writer, str8_lit("EXPORT_HEADER_ADDRESS_TABLE_VOFF"), 0, voff_table_sect);
-    COFF_ObjSymbol *name_table_symbol    = coff_obj_writer_push_symbol_static(obj_writer, str8_lit("EXPORT_HEADER_NAME_POINTER_VOFF"),  0, name_voff_table_sect);
-    COFF_ObjSymbol *ordinal_table_symbol = coff_obj_writer_push_symbol_static(obj_writer, str8_lit("EXPORT_HEADER_ORDINAL_TABLE_VOFF"), 0, ordinal_table_sect);
+    COFF_ObjSymbol *image_name_symbol    = coff_obj_writer_push_symbol_static(obj_writer, ("EXPORT_HEADER_NAME_VOFF"),          0, image_name_sect);
+    COFF_ObjSymbol *address_table_symbol = coff_obj_writer_push_symbol_static(obj_writer, ("EXPORT_HEADER_ADDRESS_TABLE_VOFF"), 0, voff_table_sect);
+    COFF_ObjSymbol *name_table_symbol    = coff_obj_writer_push_symbol_static(obj_writer, ("EXPORT_HEADER_NAME_POINTER_VOFF"),  0, name_voff_table_sect);
+    COFF_ObjSymbol *ordinal_table_symbol = coff_obj_writer_push_symbol_static(obj_writer, ("EXPORT_HEADER_ORDINAL_TABLE_VOFF"), 0, ordinal_table_sect);
 
     // push export table header section
-    COFF_ObjSection *header_sect = coff_obj_writer_push_section(obj_writer, str8_lit(".edata$1"), PE_EDATA_SECTION_FLAGS|COFF_SectionFlag_Align1Bytes, str8_struct(header));
-    coff_obj_writer_push_symbol_static(obj_writer, str8_lit("EXPORT_TABLE_HEADER"), 0, header_sect);
+    COFF_ObjSection *header_sect = coff_obj_writer_push_section(obj_writer, (".edata$1"), PE_EDATA_SECTION_FLAGS|COFF_SectionFlag_Align1Bytes, str8_struct(header));
+    coff_obj_writer_push_symbol_static(obj_writer, ("EXPORT_TABLE_HEADER"), 0, header_sect);
 
     // patch export table header
     coff_obj_writer_section_push_reloc_voff(obj_writer, header_sect, OffsetOf(PE_ExportTableHeader, name_voff),                 image_name_symbol);

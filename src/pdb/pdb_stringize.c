@@ -20,7 +20,7 @@ pdb_stringize_tpi_hash(Arena *arena, String8List *out, PDB_TpiHashParsed *hash){
                     str8_list_pushf(arena, out, " %u\n", *itype_ptr);
                 }
             }
-            str8_list_push(arena, out, str8_lit("\n"));
+            str8_list_push(arena, out, ("\n"));
         }
     }
 }

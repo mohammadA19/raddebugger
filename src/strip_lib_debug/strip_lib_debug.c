@@ -23,9 +23,9 @@
 internal void
 sld_main(CmdLine *cmdl)
 {
-    B32 do_help = cmd_line_has_flag(cmdl, str8_lit("help")) ||
-                                cmd_line_has_flag(cmdl, str8_lit("h"))    ||
-                                cmd_line_has_flag(cmdl, str8_lit("?"))    ||
+    B32 do_help = cmd_line_has_flag(cmdl, ("help")) ||
+                                cmd_line_has_flag(cmdl, ("h"))    ||
+                                cmd_line_has_flag(cmdl, ("?"))    ||
                                 cmdl.argc == 1;
     if (do_help) {    fprintf(stderr, "--- Help ---------------------------------------------------------------------\n");
         fprintf(stderr, " %s\n\n", BUILD_TITLE_STRING_LITERAL);
@@ -38,8 +38,8 @@ sld_main(CmdLine *cmdl)
 
     Temp scratch = scratch_begin(0,0);
 
-    String8 in_lib_path  = cmd_line_string(cmdl, str8_lit("in"));
-    String8 out_lib_path = cmd_line_string(cmdl, str8_lit("out"));
+    String8 in_lib_path  = cmd_line_string(cmdl, ("in"));
+    String8 out_lib_path = cmd_line_string(cmdl, ("out"));
 
     if (in_lib_path.size == 0) {
         fprintf(stderr, "ERROR: please provide an input path via -in:<path>\n");
@@ -91,7 +91,7 @@ sld_main(CmdLine *cmdl)
             for (U64 sect_idx = 0; sect_idx < file_header_info.section_count_no_null; sect_idx += 1) {
                 COFF_SectionHeader *sect_header = &section_table[sect_idx];
                 String8             name        = coff_name_from_section_header(string_table, sect_header);
-                if (str8_match(str8_lit(".debug$S"), name, 0) || str8_match(str8_lit(".debug$T"), name, 0)) {
+                if (str8_match((".debug$S"), name, 0) || str8_match((".debug$T"), name, 0)) {
                     sect_header.flags = COFF_SectionFlag_LnkRemove;
                     MemorySet(sect_header.name, 'x', sizeof(sect_header.name));
                 }

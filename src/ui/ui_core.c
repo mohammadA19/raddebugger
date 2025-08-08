@@ -22,7 +22,7 @@ ui_hash_part_from_key_string(String8 string)
   
   // rjf: look for ### patterns, which can replace the entirety of the part of
   // the string that is hashed.
-  U64 hash_replace_signifier_pos = str8_find_needle(string, 0, str8_lit("###"), 0);
+  U64 hash_replace_signifier_pos = str8_find_needle(string, 0, ("###"), 0);
   if (hash_replace_signifier_pos < string.size)
   {
     result = str8_skip(string, hash_replace_signifier_pos);
@@ -34,7 +34,7 @@ ui_hash_part_from_key_string(String8 string)
 internal String8
 ui_display_part_from_key_string(String8 string)
 {
-  U64 hash_pos = str8_find_needle(string, 0, str8_lit("##"), 0);
+  U64 hash_pos = str8_find_needle(string, 0, ("##"), 0);
   string.size = hash_pos;
   return string;
 }
@@ -250,7 +250,7 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   {
     TxtPt new_pos = txt_pt_min(next_cursor, next_mark);
     range = txt_rng(next_cursor, next_mark);
-    replace = str8_lit("");
+    replace = ("");
     next_cursor = next_mark = new_pos;
   }
   
@@ -416,7 +416,7 @@ ui_state_alloc(void)
   Arena *arena = arena_alloc();
   UI_State *ui = push_array(arena, UI_State, 1);
   ui.arena = arena;
-  ui.external_key = ui_key_from_string(ui_key_zero(), str8_lit("###external_interaction_key###"));
+  ui.external_key = ui_key_from_string(ui_key_zero(), ("###external_interaction_key###"));
   ui.build_arenas[0] = arena_alloc();
   ui.build_arenas[1] = arena_alloc();
   ui.drag_state_arena = arena_alloc();
@@ -1589,7 +1589,7 @@ ui_end_build(void)
       if (strs.node_count != 0)
       {
         StringJoin join = {0};
-        join.sep = str8_lit(" ");
+        join.sep = (" ");
         String8 string = str8_list_join(scratch.arena, &strs, &join);
         os_set_clipboard_text(string);
       }
@@ -1992,8 +1992,8 @@ ui_tooltip_begin_base(void)
   ui_push_flags(0);
   ui_push_text_raster_flags(ui_bottom_text_raster_flags());
   ui_push_font_size(ui_bottom_font_size());
-  ui_push_tag(str8_lit("."));
-  ui_push_tag(str8_lit("floating"));
+  ui_push_tag(("."));
+  ui_push_tag(("floating"));
 }
 
 internal void
@@ -2080,7 +2080,7 @@ ui_begin_ctx_menu(UI_Key key)
   ui_push_pref_height(ui_bottom_pref_height());
   ui_push_focus_hot(UI_FocusKind_Root);
   ui_push_focus_active(UI_FocusKind_Root);
-  ui_push_tag(str8_lit("."));
+  ui_push_tag(("."));
   B32 is_open = ui_key_match(key, ui_state.ctx_menu_key) && ui_state.ctx_menu_open;
   if (is_open != 0) UI_TagF("floating")
   {
@@ -2095,8 +2095,8 @@ ui_begin_ctx_menu(UI_Key key)
     ui_state.ctx_menu_root.corner_radii[Corner_00] = ui_state.ctx_menu_root.corner_radii[Corner_01] = ui_state.ctx_menu_root.corner_radii[Corner_10] = ui_state.ctx_menu_root.corner_radii[Corner_11] = ui_top_font_size()*0.25f;
     ui_state.ctx_menu_root.tags_key = ui_top_tags_key();
     ui_state.ctx_menu_root.blur_size = ui_top_blur_size();
-    ui_state.ctx_menu_root.text_color = ui_color_from_name(str8_lit("text"));
-    ui_state.ctx_menu_root.background_color = ui_color_from_name(str8_lit("background"));
+    ui_state.ctx_menu_root.text_color = ui_color_from_name(("text"));
+    ui_state.ctx_menu_root.background_color = ui_color_from_name(("background"));
     ui_spacer(ui_em(1.f, 1.f));
   }
   ui_state.is_in_open_ctx_menu = is_open;
@@ -2585,7 +2585,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
       }
       else
       {
-        box.background_color = ui_color_from_name(str8_lit("background"));
+        box.background_color = ui_color_from_name(("background"));
       }
     }
     if (box.flags & UI_BoxFlag_DrawText)
@@ -2596,7 +2596,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
       }
       else
       {
-        box.text_color = ui_color_from_name(str8_lit("text"));
+        box.text_color = ui_color_from_name(("text"));
       }
     }
     if (box.flags & (UI_BoxFlag_DrawBorder|
@@ -2611,7 +2611,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
       }
       else
       {
-        box.border_color = ui_color_from_name(str8_lit("border"));
+        box.border_color = ui_color_from_name(("border"));
       }
     }
   }
@@ -3348,7 +3348,7 @@ return old_value;
 internal void
 ui__push_tags_key_from_appended_string(String8 string)
 {
-  B32 is_new_root = str8_match(str8_lit("."), string, 0);
+  B32 is_new_root = str8_match(("."), string, 0);
   
   // rjf: generate new key, by combining hash of this new string with the top
   // of the tags key stack

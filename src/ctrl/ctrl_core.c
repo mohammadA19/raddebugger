@@ -67,23 +67,23 @@ ctrl_string_from_event_kind(CTRL_EventKind kind)
     switch (kind)
     {
         default:{}break;
-        case CTRL_EventKind_Null:                              { result = str8_lit("Null");}break;
-        case CTRL_EventKind_Error:                             { result = str8_lit("Error");}break;
-        case CTRL_EventKind_Started:                           { result = str8_lit("Started");}break;
-        case CTRL_EventKind_Stopped:                           { result = str8_lit("Stopped");}break;
-        case CTRL_EventKind_NewProc:                           { result = str8_lit("NewProc");}break;
-        case CTRL_EventKind_NewThread:                         { result = str8_lit("NewThread");}break;
-        case CTRL_EventKind_NewModule:                         { result = str8_lit("NewModule");}break;
-        case CTRL_EventKind_EndProc:                           { result = str8_lit("EndProc");}break;
-        case CTRL_EventKind_EndThread:                         { result = str8_lit("EndThread");}break;
-        case CTRL_EventKind_EndModule:                         { result = str8_lit("EndModule");}break;
-        case CTRL_EventKind_ModuleDebugInfoPathChange:         { result = str8_lit("ModuleDebugInfoPathChange");}break;
-        case CTRL_EventKind_DebugString:                       { result = str8_lit("DebugString");}break;
-        case CTRL_EventKind_ThreadName:                        { result = str8_lit("ThreadName");}break;
-        case CTRL_EventKind_MemReserve:                        { result = str8_lit("MemReserve");}break;
-        case CTRL_EventKind_MemCommit:                         { result = str8_lit("MemCommit");}break;
-        case CTRL_EventKind_MemDecommit:                       { result = str8_lit("MemDecommit");}break;
-        case CTRL_EventKind_MemRelease:                        { result = str8_lit("MemRelease");}break;
+        case CTRL_EventKind_Null:                              { result = ("Null");}break;
+        case CTRL_EventKind_Error:                             { result = ("Error");}break;
+        case CTRL_EventKind_Started:                           { result = ("Started");}break;
+        case CTRL_EventKind_Stopped:                           { result = ("Stopped");}break;
+        case CTRL_EventKind_NewProc:                           { result = ("NewProc");}break;
+        case CTRL_EventKind_NewThread:                         { result = ("NewThread");}break;
+        case CTRL_EventKind_NewModule:                         { result = ("NewModule");}break;
+        case CTRL_EventKind_EndProc:                           { result = ("EndProc");}break;
+        case CTRL_EventKind_EndThread:                         { result = ("EndThread");}break;
+        case CTRL_EventKind_EndModule:                         { result = ("EndModule");}break;
+        case CTRL_EventKind_ModuleDebugInfoPathChange:         { result = ("ModuleDebugInfoPathChange");}break;
+        case CTRL_EventKind_DebugString:                       { result = ("DebugString");}break;
+        case CTRL_EventKind_ThreadName:                        { result = ("ThreadName");}break;
+        case CTRL_EventKind_MemReserve:                        { result = ("MemReserve");}break;
+        case CTRL_EventKind_MemCommit:                         { result = ("MemCommit");}break;
+        case CTRL_EventKind_MemDecommit:                       { result = ("MemDecommit");}break;
+        case CTRL_EventKind_MemRelease:                        { result = ("MemRelease");}break;
     }
     return result;
 }
@@ -95,15 +95,15 @@ ctrl_string_from_msg_kind(CTRL_MsgKind kind)
     switch (kind)
     {
         default:{}break;
-        case CTRL_MsgKind_Launch:                    {result = str8_lit("Launch");}break;
-        case CTRL_MsgKind_Attach:                    {result = str8_lit("Attach");}break;
-        case CTRL_MsgKind_Kill:                      {result = str8_lit("Kill");}break;
-        case CTRL_MsgKind_KillAll:                   {result = str8_lit("KillAll");}break;
-        case CTRL_MsgKind_Detach:                    {result = str8_lit("Detach");}break;
-        case CTRL_MsgKind_Run:                       {result = str8_lit("Run");}break;
-        case CTRL_MsgKind_SingleStep:                {result = str8_lit("SingleStep");}break;
-        case CTRL_MsgKind_SetUserEntryPoints:        {result = str8_lit("SetUserEntryPoints");}break;
-        case CTRL_MsgKind_SetModuleDebugInfoPath:    {result = str8_lit("SetModuleDebugInfoPath");}break;
+        case CTRL_MsgKind_Launch:                    {result = ("Launch");}break;
+        case CTRL_MsgKind_Attach:                    {result = ("Attach");}break;
+        case CTRL_MsgKind_Kill:                      {result = ("Kill");}break;
+        case CTRL_MsgKind_KillAll:                   {result = ("KillAll");}break;
+        case CTRL_MsgKind_Detach:                    {result = ("Detach");}break;
+        case CTRL_MsgKind_Run:                       {result = ("Run");}break;
+        case CTRL_MsgKind_SingleStep:                {result = ("SingleStep");}break;
+        case CTRL_MsgKind_SetUserEntryPoints:        {result = ("SetUserEntryPoints");}break;
+        case CTRL_MsgKind_SetModuleDebugInfoPath:    {result = ("SetModuleDebugInfoPath");}break;
     }
     return result;
 }
@@ -1258,7 +1258,7 @@ ctrl_entity_store_apply_events(CTRL_EntityCtxRWStore *store, CTRL_EventList *lis
                 CTRL_Entity *first_thread = ctrl_entity_child_from_kind(process, CTRL_EntityKind_Thread);
                 if (first_thread == thread)
                 {
-                    ctrl_entity_equip_string(store, thread, str8_lit("main_thread"));
+                    ctrl_entity_equip_string(store, thread, ("main_thread"));
                 }
                 CTRL_EntityArray pending_thread_names = ctrl_entity_array_from_kind(&store.ctx, CTRL_EntityKind_PendingThreadName);
                 for EachIndex(idx, pending_thread_names.count)
@@ -4238,12 +4238,12 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
                 for EachIndex(idx, sec_count)
                 {
                     String8 section_name = str8_cstring((char *)sec[idx].name);
-                    if (str8_match(section_name, str8_lit(".raddbg"), 0))
+                    if (str8_match(section_name, (".raddbg"), 0))
                     {
                         raddbg_section_voff_range.min = sec[idx].voff;
                         raddbg_section_voff_range.max = sec[idx].voff + sec[idx].vsize;
                     }
-                    else if (str8_match(section_name, str8_lit(".rdbgia"), 0))
+                    else if (str8_match(section_name, (".rdbgia"), 0))
                     {
                         raddbg_is_attached_section_voff_range.min = sec[idx].voff;
                         raddbg_is_attached_section_voff_range.max = sec[idx].voff + sec[idx].vsize;
@@ -4493,7 +4493,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
                                 {
                                     RDI_ParsedNameMap map = {0};
                                     rdi_parsed_from_name_map(rdi, unparsed_map, &map);
-                                    String8 name = str8_lit("__asan_shadow_memory_dynamic_address");
+                                    String8 name = ("__asan_shadow_memory_dynamic_address");
                                     RDI_NameMapNode *node = rdi_name_map_lookup(rdi, &map, name.str, name.size);
                                     if (node != 0)
                                     {
@@ -4905,7 +4905,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
                             str8_list_push_front(scratch.arena, &dir_node_path_parts, n.name);
                         }
                     }
-                    String8 dir_node_path = str8_list_join(scratch.arena, &dir_node_path_parts, &(StringJoin){.sep = str8_lit("/")});
+                    String8 dir_node_path = str8_list_join(scratch.arena, &dir_node_path_parts, &(StringJoin){.sep = ("/")});
                     
                     //- rjf: iterate downwards from this directory recursively, locate
                     // debug infos, and pre-emptively convert
@@ -4936,7 +4936,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
                         for (OS_FileInfo info = {0}; idx < 16384 && os_file_iter_next(scratch.arena, it, &info); idx += 1)
                         {
                             // rjf: folder -> do sub-search if not duplicative
-                            if (info.props.flags & FilePropertyFlag_IsFolder && task_count < 16384 && !str8_match(str8_prefix(info.name, 1), str8_lit("."), 0))
+                            if (info.props.flags & FilePropertyFlag_IsFolder && task_count < 16384 && !str8_match(str8_prefix(info.name, 1), ("."), 0))
                             {
                                 CTRL_DbgDirNode *existing_dir_child = 0;
                                 for (CTRL_DbgDirNode *child = t.node->first; child != 0; child = child.next)
@@ -6062,7 +6062,7 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
                     {
                         String8 text = text_n.string;
                         MD_Node *root = md_tree_from_string(scratch.arena, text);
-                        if (str8_match(root.first->string, str8_lit("entry_point"), 0))
+                        if (str8_match(root.first->string, ("entry_point"), 0))
                         {
                             String8 name = root.first->first.string;
                             U32 procedure_id = 0;
@@ -6149,10 +6149,10 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
                 {
                     String8 hi_entry_points[] =
                     {
-                        str8_lit("WinMain"),
-                        str8_lit("wWinMain"),
-                        str8_lit("main"),
-                        str8_lit("wmain"),
+                        ("WinMain"),
+                        ("wWinMain"),
+                        ("main"),
+                        ("wmain"),
                     };
                     for (U64 idx = 0; idx < ArrayCount(hi_entry_points); idx += 1)
                     {
@@ -6194,10 +6194,10 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
                 {
                     String8 lo_entry_points[] =
                     {
-                        str8_lit("WinMainCRTStartup"),
-                        str8_lit("wWinMainCRTStartup"),
-                        str8_lit("mainCRTStartup"),
-                        str8_lit("wmainCRTStartup"),
+                        ("WinMainCRTStartup"),
+                        ("wWinMainCRTStartup"),
+                        ("mainCRTStartup"),
+                        ("wmainCRTStartup"),
                     };
                     for (U64 idx = 0; idx < ArrayCount(lo_entry_points); idx += 1)
                     {
@@ -6950,12 +6950,12 @@ ASYNC_WORK_DEF(ctrl_mem_stream_work)
 #if CTRL_MEM_STREAM_WORK_DEBUG
     {
         Temp scratch = scratch_begin(0, 0);
-        String8 sample_data_str = str8_lit("no data");
+        String8 sample_data_str = ("no data");
         if (range_base != 0)
         {
             String8 sample_data = str8((U8*)range_base + 0x100, 16);
             String8List sample_data_strs = numeric_str8_list_from_data(scratch.arena, 16, sample_data, 1);
-            sample_data_str = str8_list_join(scratch.arena, &sample_data_strs, &(StringJoin){.sep = str8_lit(", ")});
+            sample_data_str = str8_list_join(scratch.arena, &sample_data_strs, &(StringJoin){.sep = (", ")});
         }
         LogScopeResult log = log_scope_end(scratch.arena);
         raddbg_log("[0x%I64x, 0x%I64x) { pre_gen: %I64u, post_gen: %I64u, pre_run: %i, post_run: %i, bytes: [%S], info:```%S``` }\n", vaddr_range.min, vaddr_range.max, pre_read_mem_gen, post_read_mem_gen, pre_run_state, post_run_state, sample_data_str, log.strings[LogMsgKind_Info]);

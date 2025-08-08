@@ -20,7 +20,7 @@ r_ogl_os_init(CmdLine *cmdln)
     {
         Temp scratch = scratch_begin(0, 0);
         String8 message = push_str8f(scratch.arena, "Unsupported GLX version (%i.%i, need at least 1.3)", glx_version_major, glx_version_minor);
-        os_graphical_message(1, str8_lit("Fatal Error"), message);
+        os_graphical_message(1, ("Fatal Error"), message);
         os_abort(1);
         scratch_end(scratch);
     }
@@ -45,7 +45,7 @@ r_ogl_os_init(CmdLine *cmdln)
     GLXFBConfig *framebuffer_configs = glXChooseFBConfig(os_lnx_gfx_state.display, DefaultScreen(os_lnx_gfx_state.display), framebuffer_config_options, &framebuffer_configs_count);
     if (framebuffer_configs == 0)
     {
-        os_graphical_message(1, str8_lit("Fatal Error"), str8_lit("Could not find a suitable framebuffer configuration."));
+        os_graphical_message(1, ("Fatal Error"), ("Could not find a suitable framebuffer configuration."));
         os_abort(1);
     }
     GLXFBConfig framebuffer_config = framebuffer_configs[0];
@@ -59,7 +59,7 @@ r_ogl_os_init(CmdLine *cmdln)
     
     //- rjf: construct context
     {
-        B32 debug_mode = cmd_line_has_flag(cmdln, str8_lit("opengl_debug"));
+        B32 debug_mode = cmd_line_has_flag(cmdln, ("opengl_debug"));
 #if BUILD_DEBUG
         debug_mode = 1;
 #endif

@@ -506,8 +506,8 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
         
         //- rjf: produce obj name/path
         String8 obj_name = pdb_unit.obj_name;
-        if (str8_match(obj_name, str8_lit("* Linker *"), 0) ||
-              str8_match(obj_name, str8_lit("Import:"), StringMatchFlag_RightSideSloppy))
+        if (str8_match(obj_name, ("* Linker *"), 0) ||
+              str8_match(obj_name, ("Import:"), StringMatchFlag_RightSideSloppy))
         {
             MemoryZeroStruct(&obj_name);
         }
@@ -767,8 +767,8 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
         
         //- rjf: produce obj name/path
         String8 obj_name = pdb_unit.obj_name;
-        if (str8_match(obj_name, str8_lit("* Linker *"), 0) ||
-              str8_match(obj_name, str8_lit("Import:"), StringMatchFlag_RightSideSloppy))
+        if (str8_match(obj_name, ("* Linker *"), 0) ||
+              str8_match(obj_name, ("Import:"), StringMatchFlag_RightSideSloppy))
         {
             MemoryZeroStruct(&obj_name);
         }
@@ -859,8 +859,8 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
         
         //- rjf: produce obj name/path
         String8 obj_name = pdb_unit.obj_name;
-        if (str8_match(obj_name, str8_lit("* Linker *"), 0) ||
-              str8_match(obj_name, str8_lit("Import:"), StringMatchFlag_RightSideSloppy))
+        if (str8_match(obj_name, ("* Linker *"), 0) ||
+              str8_match(obj_name, ("Import:"), StringMatchFlag_RightSideSloppy))
         {
             MemoryZeroStruct(&obj_name);
         }
@@ -3460,7 +3460,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
         top_level_info.voff_max      = exe_voff_max;
         if (in.deterministic)
         {
-            top_level_info.producer_name = str8_lit(BUILD_TITLE_STRING_LITERAL);
+            top_level_info.producer_name = (BUILD_TITLE_STRING_LITERAL);
         }
     }
     

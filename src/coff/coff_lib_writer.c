@@ -229,7 +229,7 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
     
     // long names member
     if (long_names_list.total_size) {
-        String8 header        = coff_make_lib_member_header(arena, str8_lit("//"), time_stamp, 0, 0, mode, long_names_list.total_size);
+        String8 header        = coff_make_lib_member_header(arena, ("//"), time_stamp, 0, 0, mode, long_names_list.total_size);
         String8 data          = str8_list_join(arena, &long_names_list, 0);
         U64     member_offset = member_data_list.total_size + data.size + header.size;
         {
@@ -311,7 +311,7 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
         str8_list_push(scratch.arena, &second_member_data_list, str8(name_buffer, name_buffer_size));
 
         String8 member_data   = str8_list_join(arena, &second_member_data_list, 0);
-        String8 member_header = coff_make_lib_member_header(arena, str8_lit("/"), time_stamp, 0, 0, mode, member_data.size);
+        String8 member_header = coff_make_lib_member_header(arena, ("/"), time_stamp, 0, 0, mode, member_data.size);
         
         U64 member_offset = member_data_list.total_size + member_data.size + member_header.size;
         {
@@ -344,7 +344,7 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
         str8_list_push(scratch.arena, &first_member_data_list, str8(name_buffer, name_buffer_size));
 
         String8 member_data   = str8_list_join(arena, &first_member_data_list, 0);
-        String8 member_header = coff_make_lib_member_header(arena, str8_lit("/"), time_stamp, 0, 0, mode, member_data.size);
+        String8 member_header = coff_make_lib_member_header(arena, ("/"), time_stamp, 0, 0, mode, member_data.size);
         
         U64 member_offset = sizeof(g_coff_archive_sig) + member_header.size + member_data.size;
         {

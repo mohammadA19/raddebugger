@@ -27,7 +27,7 @@ main_thread_base_entry_point(int arguments_count, char **arguments)
     CmdLine cmdline = cmd_line_from_string_list(scratch.arena, command_line_argument_strings);
     
     //- rjf: begin captures
-    B32 capture = cmd_line_has_flag(&cmdline, str8_lit("capture"));
+    B32 capture = cmd_line_has_flag(&cmdline, ("capture"));
     if (capture)
     {
         ProfBeginCapture(arguments[0]);

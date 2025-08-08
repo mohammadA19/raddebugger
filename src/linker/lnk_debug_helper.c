@@ -16,7 +16,7 @@ lnk_make_linker_compile3(Arena *arena, COFF_MachineType machine)
                                                                           /* ver_minor    */ 36,
                                                                           /* ver_build    */ 32537,
                                                                           /* ver_qfe      */ 0,
-                                                                          str8_lit(BUILD_TITLE));
+                                                                          (BUILD_TITLE));
     return comp3_data;
 }
 

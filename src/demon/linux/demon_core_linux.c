@@ -1805,7 +1805,7 @@ dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info
         String8 name = dmn_lnx_exe_path_from_pid(arena, pid);
         if (name.size == 0)
         {
-            name = str8_lit("(unknown process)");
+            name = ("(unknown process)");
         }
         info_out.name = name;
         info_out.pid = pid;

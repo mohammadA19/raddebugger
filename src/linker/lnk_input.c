@@ -14,9 +14,9 @@ lnk_string_from_input_source(LNK_InputSourceType input_source)
 {
     String8 result = str8_zero();
     switch (input_source) {
-    case LNK_InputSource_CmdLine: result = str8_lit("CmdLine"); break;
-    case LNK_InputSource_Default: result = str8_lit("Default"); break;
-    case LNK_InputSource_Obj:     result = str8_lit("Obj");     break;
+    case LNK_InputSource_CmdLine: result = ("CmdLine"); break;
+    case LNK_InputSource_Default: result = ("Default"); break;
+    case LNK_InputSource_Obj:     result = ("Obj");     break;
     default:                      InvalidPath;
     }
     return result;

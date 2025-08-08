@@ -110,7 +110,7 @@ dw_string_list_from_expression(Arena *arena, String8 raw_data, U64 cu_base, U64 
                 String8 value_data  = str8_substr(raw_data, value_range);
                 cursor += value_size;
                 String8List value_strings = numeric_str8_list_from_data(scratch.arena, 16, value_data, 1);
-                op_value = str8_list_join(scratch.arena, &value_strings, &(StringJoin){.pre = str8_lit("{ "), .sep = str8_lit(", "), .post = str8_lit(" }")});
+                op_value = str8_list_join(scratch.arena, &value_strings, &(StringJoin){.pre = ("{ "), .sep = (", "), .post = (" }")});
             } break;
             
             case DW_ExprOp_Piece: {
@@ -241,7 +241,7 @@ dw_string_list_from_expression(Arena *arena, String8 raw_data, U64 cu_base, U64 
                 Rng1U64 const_value_range = rng_1u64(cursor, cursor + const_value_size);
                 String8 const_value_data  = str8_substr(raw_data, const_value_range);
                 String8List const_value_strings = numeric_str8_list_from_data(scratch.arena, 16, const_value_data, 1);
-                String8 const_value_str = str8_list_join(scratch.arena, &const_value_strings, &(StringJoin){.sep = str8_lit(", ")});
+                String8 const_value_str = str8_list_join(scratch.arena, &const_value_strings, &(StringJoin){.sep = (", ")});
                 op_value = push_str8f(scratch.arena, "TypeCuOff %#llx, Const Value { %S }", cu_base + type_cu_off, const_value_str);
                 cursor += const_value_size;
             } break;
@@ -259,7 +259,7 @@ dw_string_list_from_expression(Arena *arena, String8 raw_data, U64 cu_base, U64 
                 Rng1U64     block_range = rng_1u64(cursor, cursor + block_size);
                 String8     block_data  = str8_substr(raw_data, block_range);
                 String8List block_expr  = dw_string_list_from_expression(scratch.arena, block_data, cu_base, address_size, arch, ver, ext, format);
-                op_value = str8_list_join(scratch.arena, &block_expr, &(StringJoin){.pre = str8_lit("{ "), .sep = str8_lit(","), .post = str8_lit(" }")});
+                op_value = str8_list_join(scratch.arena, &block_expr, &(StringJoin){.pre = ("{ "), .sep = (","), .post = (" }")});
                 cursor += block_size;
             } break;
             case DW_ExprOp_Addrx: {
@@ -320,7 +320,7 @@ dw_single_line_string_from_expression(Arena *arena, String8 raw_data, U64 cu_bas
 {
     Temp        scratch    = scratch_begin(&arena, 1);
     String8List list       = dw_string_list_from_expression(scratch.arena, raw_data, cu_base, address_size, arch, ver, ext, format);
-    String8     expression = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+    String8     expression = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return expression;
 }
@@ -522,30 +522,30 @@ internal String8
 dw_string_from_eh_ptr_enc(Arena *arena, DW_EhPtrEnc enc)
 {
     U8 type = enc & DW_EhPtrEnc_TypeMask;
-    String8 type_str = str8_lit("NULL");
+    String8 type_str = ("NULL");
     switch (type) {
-        case DW_EhPtrEnc_Ptr:     type_str = str8_lit("PTR");      break;
-        case DW_EhPtrEnc_ULEB128: type_str = str8_lit("ULEB128");  break;
-        case DW_EhPtrEnc_UData2:  type_str = str8_lit("UDATA2");   break;
-        case DW_EhPtrEnc_UData4:  type_str = str8_lit("UDATA4");   break;
-        case DW_EhPtrEnc_UData8:  type_str = str8_lit("UDATA8");   break;
-        case DW_EhPtrEnc_Signed:  type_str = str8_lit("SIGNED");   break;
-        case DW_EhPtrEnc_SLEB128: type_str = str8_lit("SLEB128");  break;
-        case DW_EhPtrEnc_SData2:  type_str = str8_lit("SDATA2");   break;
-        case DW_EhPtrEnc_SData4:  type_str = str8_lit("SDATA4");   break;
-        case DW_EhPtrEnc_SData8:  type_str = str8_lit("SDATA8");   break;
+        case DW_EhPtrEnc_Ptr:     type_str = ("PTR");      break;
+        case DW_EhPtrEnc_ULEB128: type_str = ("ULEB128");  break;
+        case DW_EhPtrEnc_UData2:  type_str = ("UDATA2");   break;
+        case DW_EhPtrEnc_UData4:  type_str = ("UDATA4");   break;
+        case DW_EhPtrEnc_UData8:  type_str = ("UDATA8");   break;
+        case DW_EhPtrEnc_Signed:  type_str = ("SIGNED");   break;
+        case DW_EhPtrEnc_SLEB128: type_str = ("SLEB128");  break;
+        case DW_EhPtrEnc_SData2:  type_str = ("SDATA2");   break;
+        case DW_EhPtrEnc_SData4:  type_str = ("SDATA4");   break;
+        case DW_EhPtrEnc_SData8:  type_str = ("SDATA8");   break;
     }
     U8 modifier = enc & DW_EhPtrEnc_ModifyMask;
-    String8 modifier_str = str8_lit("NULL");
+    String8 modifier_str = ("NULL");
     switch (modifier) {
-        case DW_EhPtrEnc_PcRel:   modifier_str = str8_lit("PCREL");   break;
-        case DW_EhPtrEnc_TextRel: modifier_str = str8_lit("TEXTREL"); break;
-        case DW_EhPtrEnc_DataRel: modifier_str = str8_lit("DATAREL"); break;
-        case DW_EhPtrEnc_FuncRel: modifier_str = str8_lit("FUNCREL"); break;
+        case DW_EhPtrEnc_PcRel:   modifier_str = ("PCREL");   break;
+        case DW_EhPtrEnc_TextRel: modifier_str = ("TEXTREL"); break;
+        case DW_EhPtrEnc_DataRel: modifier_str = ("DATAREL"); break;
+        case DW_EhPtrEnc_FuncRel: modifier_str = ("FUNCREL"); break;
     }
-    String8 indir_str = str8_lit("");
+    String8 indir_str = ("");
     if (enc & DW_EhPtrEnc_Indirect) {
-        indir_str = str8_lit("(INDIRECT)");
+        indir_str = ("(INDIRECT)");
     }
     return push_str8f(arena, "Type: %S, Modifier: %S %S", type_str, modifier_str, indir_str);
 }
@@ -755,7 +755,7 @@ dw_print_debug_loc(Arena *arena, String8List *out, String8 indent, DW_Input *inp
                 }
                 
                 // print entry
-                String8 print = str8_list_join(range_temp.arena, &list, &(StringJoin){.sep=str8_lit(" ")});
+                String8 print = str8_list_join(range_temp.arena, &list, &(StringJoin){.sep=(" ")});
                 rd_printf("%S", print);
                 
                 // cleanup temp
@@ -868,7 +868,7 @@ dw_print_debug_ranges(Arena *arena, String8List *out, String8 indent, DW_Input *
                 }
                 
                 // print entry
-                String8 print = str8_list_join(range_temp.arena, &list, &(StringJoin){.sep=str8_lit(" ")});
+                String8 print = str8_list_join(range_temp.arena, &list, &(StringJoin){.sep=(" ")});
                 rd_printf("%S", print);
                 
                 temp_end(range_temp);
@@ -958,7 +958,7 @@ dw_print_debug_aranges(Arena *arena, String8List *out, String8 indent, DW_Input 
                 str8_list_pushf(temp.arena, &list, "%llx-%llx", address, address+length);
             }
             
-            String8 print = str8_list_join(temp.arena, &list, &(StringJoin){.sep=str8_lit(" ") });
+            String8 print = str8_list_join(temp.arena, &list, &(StringJoin){.sep=(" ") });
             rd_printf("%S", print);
             
             temp_end(temp);
@@ -1040,7 +1040,7 @@ dw_print_debug_addr(Arena *arena, String8List *out, String8 indent, DW_Input *in
                 str8_list_pushf(temp.arena, &list, "%llx", address);
             }
             
-            String8 print = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(" ")});
+            String8 print = str8_list_join(arena, &list, &(StringJoin){.sep=(" ")});
             rd_printf("%S", print);
             
             temp_end(temp);
@@ -1220,7 +1220,7 @@ dw_print_debug_loclists(Arena *arena, String8List *out, String8 indent, DW_Input
                 } break;
             }
             
-            String8 print = str8_list_join(temp.arena, &list, &(StringJoin){.sep=str8_lit(" ")});
+            String8 print = str8_list_join(temp.arena, &list, &(StringJoin){.sep=(" ")});
             rd_printf("%S", print);
             
             temp_end(temp);
@@ -1359,7 +1359,7 @@ dw_print_debug_rnglists(Arena *arena, String8List *out, String8 indent, DW_Input
             }
             
             // output row
-            String8 print = str8_list_join(temp.arena, &list, &(StringJoin){.sep=str8_lit(" ")});
+            String8 print = str8_list_join(temp.arena, &list, &(StringJoin){.sep=(" ")});
             rd_printf("%S", print);
             
             temp_end(temp);
@@ -1552,10 +1552,10 @@ internal String8List
 dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubsetFlags subset_flags)
 {
     String8List strings = {0};
-    String8 indent = str8_lit("                                                                                                                                ");
+    String8 indent = ("                                                                                                                                ");
 #define dump(str)  str8_list_push(arena, &strings, (str))
 #define dumpf(...) str8_list_pushf(arena, &strings, __VA_ARGS__)
-#define DumpSubset(name) if (subset_flags & DW_DumpSubsetFlag_##name) DeferLoop(dumpf("// %S\n\n", dw_name_title_from_dump_subset_table[DW_DumpSubset_##name]), dump(str8_lit("\n")))
+#define DumpSubset(name) if (subset_flags & DW_DumpSubsetFlag_##name) DeferLoop(dumpf("// %S\n\n", dw_name_title_from_dump_subset_table[DW_DumpSubset_##name]), dump(("\n")))
     Temp scratch = scratch_begin(&arena, 1);
     Rng1U64Array segment_vranges = {0};
     DW_ListUnitInput lu_input = dw_list_unit_input_from_input(scratch.arena, input);
@@ -1636,7 +1636,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                         {
                             String8 block = dw_block_from_attrib(input, &unit, attrib);
                             String8List block_strs = numeric_str8_list_from_data(attrib_temp.arena, 16, block, 1);
-                            String8 block_str = str8_list_join(attrib_temp.arena, &block_strs, &(StringJoin){.sep = str8_lit(", ")});
+                            String8 block_str = str8_list_join(attrib_temp.arena, &block_strs, &(StringJoin){.sep = (", ")});
                             dump(block_str);
                         }break;
                         case DW_AttribClass_ExprLoc:
@@ -1845,7 +1845,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
             DeferLoop(dumpf("  header:\n  {\n"), dumpf("  }\n\n"))
             {
                 String8List opcode_length_strings = numeric_str8_list_from_data(unit_temp.arena, 16, str8(line_vm.opcode_lens, line_vm.num_opcode_lens), 1);
-                String8 opcode_lengths_string = str8_list_join(arena, &opcode_length_strings, &(StringJoin){.sep = str8_lit(", ")});
+                String8 opcode_lengths_string = str8_list_join(arena, &opcode_length_strings, &(StringJoin){.sep = (", ")});
                 dumpf("    version:                 %u\n",        line_vm.version              );
                 dumpf("    line_table_off:          0x%I64x\n",   line_vm.unit_range.min       );
                 dumpf("    line_table_size:         %I64u\n",     dim_1u64(line_vm.unit_range) );
@@ -2078,7 +2078,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                             cursor = opcode_end;
                         }break;
                     }
-                    String8 string = str8_list_join(opcode_temp.arena, &opcode_fmt, &(StringJoin){.sep=str8_lit(" ")});
+                    String8 string = str8_list_join(opcode_temp.arena, &opcode_fmt, &(StringJoin){.sep=(" ")});
                     dumpf("%S\n", string);
                     temp_end(opcode_temp);
                 }

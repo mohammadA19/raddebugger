@@ -75,7 +75,7 @@ coff_parse_section_name(String8 full_name, String8 *name_out, String8 *postfix_o
     //    F: FPO data
     //    H: Clang extension produced with /debug:ghash, array of type hashes
     *name_out    = full_name;
-    *postfix_out = str8_lit("");
+    *postfix_out = ("");
     for (U64 i = 0; i < full_name.size; ++i) {
         if (full_name.str[i] == '$') {
             *name_out    = str8(full_name.str, i);
@@ -88,7 +88,7 @@ coff_parse_section_name(String8 full_name, String8 *name_out, String8 *postfix_o
 internal String8
 coff_read_symbol_name(String8 string_table, COFF_SymbolName *name)
 {
-    String8 name_str = str8_lit("");
+    String8 name_str = ("");
     if (name.long_name.zeroes == 0) {
         str8_deserial_read_cstr(string_table, name.long_name.string_table_offset, &name_str);
     } else {
@@ -467,9 +467,9 @@ coff_string_from_time_stamp(Arena *arena, COFF_TimeStamp time_stamp)
 {
     String8 result;
     if (time_stamp == 0) {
-        result = str8_lit("0");
+        result = ("0");
     } else if (time_stamp >= max_U32) {
-        result = str8_lit("-1");
+        result = ("-1");
     } else {
         DateTime dt = date_time_from_unix_time(time_stamp);
         result = push_date_time_string(arena, &dt);
@@ -482,31 +482,31 @@ read_only struct
     String8          string;
     COFF_MachineType machine;
 } g_coff_machine_map[] = {
-    { str8_lit_comp(""),          COFF_MachineType_Unknown   },
-    { str8_lit_comp("X86"),       COFF_MachineType_X86       },
-    { str8_lit_comp("Amd64"),     COFF_MachineType_X64       },
-    { str8_lit_comp("X64"),       COFF_MachineType_X64       },
-    { str8_lit_comp("Am33"),      COFF_MachineType_Am33      },
-    { str8_lit_comp("Arm"),       COFF_MachineType_Arm       },
-    { str8_lit_comp("Arm64"),     COFF_MachineType_Arm64     },
-    { str8_lit_comp("ArmNt"),     COFF_MachineType_ArmNt     },
-    { str8_lit_comp("Ebc"),       COFF_MachineType_Ebc       },
-    { str8_lit_comp("Ia64"),      COFF_MachineType_Ia64      },
-    { str8_lit_comp("M32r"),      COFF_MachineType_M32R      },
-    { str8_lit_comp("Mips16"),    COFF_MachineType_Mips16    },
-    { str8_lit_comp("MipsFpu"),   COFF_MachineType_MipsFpu   },
-    { str8_lit_comp("MipsFpu16"), COFF_MachineType_MipsFpu16 },
-    { str8_lit_comp("PowerPc"),   COFF_MachineType_PowerPc   },
-    { str8_lit_comp("PowerPcFp"), COFF_MachineType_PowerPcFp },
-    { str8_lit_comp("R4000"),     COFF_MachineType_R4000     },
-    { str8_lit_comp("RiscV32"),   COFF_MachineType_RiscV32   },
-    { str8_lit_comp("RiscV64"),   COFF_MachineType_RiscV64   },
-    { str8_lit_comp("Sh3"),       COFF_MachineType_Sh3       },
-    { str8_lit_comp("Sh3Dsp"),    COFF_MachineType_Sh3Dsp    },
-    { str8_lit_comp("Sh4"),       COFF_MachineType_Sh4       },
-    { str8_lit_comp("Sh5"),       COFF_MachineType_Sh5       },
-    { str8_lit_comp("Thumb"),     COFF_MachineType_Thumb     },
-    { str8_lit_comp("WceMipsV2"), COFF_MachineType_WceMipsV2 },
+    { (""),          COFF_MachineType_Unknown   },
+    { ("X86"),       COFF_MachineType_X86       },
+    { ("Amd64"),     COFF_MachineType_X64       },
+    { ("X64"),       COFF_MachineType_X64       },
+    { ("Am33"),      COFF_MachineType_Am33      },
+    { ("Arm"),       COFF_MachineType_Arm       },
+    { ("Arm64"),     COFF_MachineType_Arm64     },
+    { ("ArmNt"),     COFF_MachineType_ArmNt     },
+    { ("Ebc"),       COFF_MachineType_Ebc       },
+    { ("Ia64"),      COFF_MachineType_Ia64      },
+    { ("M32r"),      COFF_MachineType_M32R      },
+    { ("Mips16"),    COFF_MachineType_Mips16    },
+    { ("MipsFpu"),   COFF_MachineType_MipsFpu   },
+    { ("MipsFpu16"), COFF_MachineType_MipsFpu16 },
+    { ("PowerPc"),   COFF_MachineType_PowerPc   },
+    { ("PowerPcFp"), COFF_MachineType_PowerPcFp },
+    { ("R4000"),     COFF_MachineType_R4000     },
+    { ("RiscV32"),   COFF_MachineType_RiscV32   },
+    { ("RiscV64"),   COFF_MachineType_RiscV64   },
+    { ("Sh3"),       COFF_MachineType_Sh3       },
+    { ("Sh3Dsp"),    COFF_MachineType_Sh3Dsp    },
+    { ("Sh4"),       COFF_MachineType_Sh4       },
+    { ("Sh5"),       COFF_MachineType_Sh5       },
+    { ("Thumb"),     COFF_MachineType_Thumb     },
+    { ("WceMipsV2"), COFF_MachineType_WceMipsV2 },
 };
 
 read_only static struct {
@@ -523,13 +523,13 @@ coff_string_from_comdat_select_type(COFF_ComdatSelectType type)
 {
     String8 result = str8_zero();
     switch (type) {
-        case COFF_ComdatSelect_Null:         result = str8_lit("Null");         break;
-        case COFF_ComdatSelect_NoDuplicates: result = str8_lit("NoDuplicates"); break;
-        case COFF_ComdatSelect_Any:          result = str8_lit("Any");          break;
-        case COFF_ComdatSelect_SameSize:     result = str8_lit("SameSize");     break;
-        case COFF_ComdatSelect_ExactMatch:   result = str8_lit("ExactMatch");   break;
-        case COFF_ComdatSelect_Associative:  result = str8_lit("Associative");  break;
-        case COFF_ComdatSelect_Largest:      result = str8_lit("Largest");      break;
+        case COFF_ComdatSelect_Null:         result = ("Null");         break;
+        case COFF_ComdatSelect_NoDuplicates: result = ("NoDuplicates"); break;
+        case COFF_ComdatSelect_Any:          result = ("Any");          break;
+        case COFF_ComdatSelect_SameSize:     result = ("SameSize");     break;
+        case COFF_ComdatSelect_ExactMatch:   result = ("ExactMatch");   break;
+        case COFF_ComdatSelect_Associative:  result = ("Associative");  break;
+        case COFF_ComdatSelect_Largest:      result = ("Largest");      break;
     }
     return result;
 }
@@ -588,7 +588,7 @@ coff_string_from_flags(Arena *arena, COFF_FileHeaderFlags flags)
         str8_list_pushf(scratch.arena, &list, "Up System Only");
     }
     
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     
     scratch_end(scratch);
     return result;
@@ -668,7 +668,7 @@ coff_string_from_section_flags(Arena *arena, COFF_SectionFlags flags)
     }
     
     StringJoin join = {0};
-    join.sep = str8_lit(", ");
+    join.sep = (", ");
     String8 result = str8_list_join(arena, &list, &join);
     
     scratch_end(scratch);
@@ -698,7 +698,7 @@ coff_string_from_resource_memory_flags(Arena *arena, COFF_ResourceMemoryFlags fl
         str8_list_pushf(scratch.arena, &list, "%#x", flags);
     }
     
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     
     scratch_end(scratch);
     return result;
@@ -719,10 +719,10 @@ internal String8
 coff_string_from_sym_dtype(COFF_SymDType x)
 {
     switch (x) {
-        case COFF_SymDType_Null:  return str8_lit("Null");
-        case COFF_SymDType_Ptr :  return str8_lit("Ptr");
-        case COFF_SymDType_Func:  return str8_lit("Func");
-        case COFF_SymDType_Array: return str8_lit("Array");
+        case COFF_SymDType_Null:  return ("Null");
+        case COFF_SymDType_Ptr :  return ("Ptr");
+        case COFF_SymDType_Func:  return ("Func");
+        case COFF_SymDType_Array: return ("Array");
     }
     return str8_zero();
 }
@@ -731,22 +731,22 @@ internal String8
 coff_string_from_sym_type(COFF_SymType x)
 {
     switch (x) {
-        case COFF_SymType_Null:   return str8_lit("Null");
-        case COFF_SymType_Void:   return str8_lit("Void");
-        case COFF_SymType_Char:   return str8_lit("Char");
-        case COFF_SymType_Short:  return str8_lit("Short");
-        case COFF_SymType_Int:    return str8_lit("Int");
-        case COFF_SymType_Long:   return str8_lit("Long");
-        case COFF_SymType_Float:  return str8_lit("Float");
-        case COFF_SymType_Double: return str8_lit("Double");
-        case COFF_SymType_Struct: return str8_lit("Struct");
-        case COFF_SymType_Union:  return str8_lit("Union");
-        case COFF_SymType_Enum:   return str8_lit("Enum");
-        case COFF_SymType_MemberOfEnumeration: return str8_lit("MOE");
-        case COFF_SymType_Byte:   return str8_lit("Byte");
-        case COFF_SymType_Word:   return str8_lit("Word");
-        case COFF_SymType_UInt:   return str8_lit("UInt");
-        case COFF_SymType_DWord:  return str8_lit("DWord");
+        case COFF_SymType_Null:   return ("Null");
+        case COFF_SymType_Void:   return ("Void");
+        case COFF_SymType_Char:   return ("Char");
+        case COFF_SymType_Short:  return ("Short");
+        case COFF_SymType_Int:    return ("Int");
+        case COFF_SymType_Long:   return ("Long");
+        case COFF_SymType_Float:  return ("Float");
+        case COFF_SymType_Double: return ("Double");
+        case COFF_SymType_Struct: return ("Struct");
+        case COFF_SymType_Union:  return ("Union");
+        case COFF_SymType_Enum:   return ("Enum");
+        case COFF_SymType_MemberOfEnumeration: return ("MOE");
+        case COFF_SymType_Byte:   return ("Byte");
+        case COFF_SymType_Word:   return ("Word");
+        case COFF_SymType_UInt:   return ("UInt");
+        case COFF_SymType_DWord:  return ("DWord");
     }
     return str8_zero();
 }
@@ -756,32 +756,32 @@ coff_string_from_sym_storage_class(COFF_SymStorageClass x)
 {
     switch (x) {
         case COFF_SymStorageClass_Null:            break;
-        case COFF_SymStorageClass_EndOfFunction:   return str8_lit("EndOfFunction");
-        case COFF_SymStorageClass_Automatic:       return str8_lit("Automatic");
-        case COFF_SymStorageClass_External:        return str8_lit("External");
-        case COFF_SymStorageClass_Static:          return str8_lit("Static");
-        case COFF_SymStorageClass_Register:        return str8_lit("Register");
-        case COFF_SymStorageClass_ExternalDef:     return str8_lit("Def");
-        case COFF_SymStorageClass_Label:           return str8_lit("Label");
-        case COFF_SymStorageClass_UndefinedLabel:  return str8_lit("UndefinedLabel");
-        case COFF_SymStorageClass_MemberOfStruct:  return str8_lit("Struct");
-        case COFF_SymStorageClass_Argument:        return str8_lit("Argument");
-        case COFF_SymStorageClass_StructTag:       return str8_lit("Tag");
-        case COFF_SymStorageClass_MemberOfUnion:   return str8_lit("Union");
-        case COFF_SymStorageClass_UnionTag:        return str8_lit("Tag");
-        case COFF_SymStorageClass_TypeDefinition:  return str8_lit("Definition");
-        case COFF_SymStorageClass_UndefinedStatic: return str8_lit("Static");
-        case COFF_SymStorageClass_EnumTag:         return str8_lit("Tag");
-        case COFF_SymStorageClass_MemberOfEnum:    return str8_lit("Enum");
-        case COFF_SymStorageClass_RegisterParam:   return str8_lit("Param");
-        case COFF_SymStorageClass_BitField:        return str8_lit("Field");
-        case COFF_SymStorageClass_Block:           return str8_lit("Block");
-        case COFF_SymStorageClass_Function:        return str8_lit("Function");
-        case COFF_SymStorageClass_EndOfStruct:     return str8_lit("Struct");
-        case COFF_SymStorageClass_File:            return str8_lit("File");
-        case COFF_SymStorageClass_Section:         return str8_lit("Section");
-        case COFF_SymStorageClass_WeakExternal:    return str8_lit("External");
-        case COFF_SymStorageClass_CLRToken:        return str8_lit("Token");
+        case COFF_SymStorageClass_EndOfFunction:   return ("EndOfFunction");
+        case COFF_SymStorageClass_Automatic:       return ("Automatic");
+        case COFF_SymStorageClass_External:        return ("External");
+        case COFF_SymStorageClass_Static:          return ("Static");
+        case COFF_SymStorageClass_Register:        return ("Register");
+        case COFF_SymStorageClass_ExternalDef:     return ("Def");
+        case COFF_SymStorageClass_Label:           return ("Label");
+        case COFF_SymStorageClass_UndefinedLabel:  return ("UndefinedLabel");
+        case COFF_SymStorageClass_MemberOfStruct:  return ("Struct");
+        case COFF_SymStorageClass_Argument:        return ("Argument");
+        case COFF_SymStorageClass_StructTag:       return ("Tag");
+        case COFF_SymStorageClass_MemberOfUnion:   return ("Union");
+        case COFF_SymStorageClass_UnionTag:        return ("Tag");
+        case COFF_SymStorageClass_TypeDefinition:  return ("Definition");
+        case COFF_SymStorageClass_UndefinedStatic: return ("Static");
+        case COFF_SymStorageClass_EnumTag:         return ("Tag");
+        case COFF_SymStorageClass_MemberOfEnum:    return ("Enum");
+        case COFF_SymStorageClass_RegisterParam:   return ("Param");
+        case COFF_SymStorageClass_BitField:        return ("Field");
+        case COFF_SymStorageClass_Block:           return ("Block");
+        case COFF_SymStorageClass_Function:        return ("Function");
+        case COFF_SymStorageClass_EndOfStruct:     return ("Struct");
+        case COFF_SymStorageClass_File:            return ("File");
+        case COFF_SymStorageClass_Section:         return ("Section");
+        case COFF_SymStorageClass_WeakExternal:    return ("External");
+        case COFF_SymStorageClass_CLRToken:        return ("Token");
     }
     return str8_zero();
 }
@@ -790,9 +790,9 @@ internal String8
 coff_string_from_weak_ext_type(COFF_WeakExtType x)
 {
     switch (x) {
-        case COFF_WeakExt_NoLibrary:     return str8_lit("NoLibrary");
-        case COFF_WeakExt_SearchLibrary: return str8_lit("SearchLibrary");
-        case COFF_WeakExt_SearchAlias:   return str8_lit("SearchAlias");
+        case COFF_WeakExt_NoLibrary:     return ("NoLibrary");
+        case COFF_WeakExt_SearchLibrary: return ("SearchLibrary");
+        case COFF_WeakExt_SearchAlias:   return ("SearchAlias");
     }
     return str8_zero();
 }
@@ -801,26 +801,26 @@ internal String8
 coff_string_from_reloc_x86(COFF_Reloc_X86 x)
 {
     switch (x) {
-        case COFF_Reloc_X86_Abs:      return str8_lit("Abs");
-        case COFF_Reloc_X86_Dir16:    return str8_lit("Dir16");
-        case COFF_Reloc_X86_Rel16:    return str8_lit("Rel16");
-        case COFF_Reloc_X86_Unknown0: return str8_lit("Unknown0");
-        case COFF_Reloc_X86_Unknown2: return str8_lit("Unknown2");
-        case COFF_Reloc_X86_Unknown3: return str8_lit("Unknown3");
-        case COFF_Reloc_X86_Dir32:    return str8_lit("Dir32");
-        case COFF_Reloc_X86_Dir32Nb:  return str8_lit("Dir32Nb");
-        case COFF_Reloc_X86_Seg12:    return str8_lit("Seg12");
-        case COFF_Reloc_X86_Section:  return str8_lit("Section");
-        case COFF_Reloc_X86_SecRel:   return str8_lit("SecRel");
-        case COFF_Reloc_X86_Token:    return str8_lit("Token");
-        case COFF_Reloc_X86_SecRel7:  return str8_lit("SecRel7");
-        case COFF_Reloc_X86_Unknown4: return str8_lit("Unknown4");
-        case COFF_Reloc_X86_Unknown5: return str8_lit("Unknown5");
-        case COFF_Reloc_X86_Unknown6: return str8_lit("Unknown6");
-        case COFF_Reloc_X86_Unknown7: return str8_lit("Unknown7");
-        case COFF_Reloc_X86_Unknown8: return str8_lit("Unknown8");
-        case COFF_Reloc_X86_Unknown9: return str8_lit("Unknown9");
-        case COFF_Reloc_X86_Rel32:    return str8_lit("Rel32");
+        case COFF_Reloc_X86_Abs:      return ("Abs");
+        case COFF_Reloc_X86_Dir16:    return ("Dir16");
+        case COFF_Reloc_X86_Rel16:    return ("Rel16");
+        case COFF_Reloc_X86_Unknown0: return ("Unknown0");
+        case COFF_Reloc_X86_Unknown2: return ("Unknown2");
+        case COFF_Reloc_X86_Unknown3: return ("Unknown3");
+        case COFF_Reloc_X86_Dir32:    return ("Dir32");
+        case COFF_Reloc_X86_Dir32Nb:  return ("Dir32Nb");
+        case COFF_Reloc_X86_Seg12:    return ("Seg12");
+        case COFF_Reloc_X86_Section:  return ("Section");
+        case COFF_Reloc_X86_SecRel:   return ("SecRel");
+        case COFF_Reloc_X86_Token:    return ("Token");
+        case COFF_Reloc_X86_SecRel7:  return ("SecRel7");
+        case COFF_Reloc_X86_Unknown4: return ("Unknown4");
+        case COFF_Reloc_X86_Unknown5: return ("Unknown5");
+        case COFF_Reloc_X86_Unknown6: return ("Unknown6");
+        case COFF_Reloc_X86_Unknown7: return ("Unknown7");
+        case COFF_Reloc_X86_Unknown8: return ("Unknown8");
+        case COFF_Reloc_X86_Unknown9: return ("Unknown9");
+        case COFF_Reloc_X86_Rel32:    return ("Rel32");
     }
     return str8_zero();
 }
@@ -829,23 +829,23 @@ internal String8
 coff_string_from_reloc_x64(COFF_Reloc_X64 x)
 {
     switch (x) {
-        case COFF_Reloc_X64_Abs:      return str8_lit("Abs");
-        case COFF_Reloc_X64_Addr64:   return str8_lit("Addr64");
-        case COFF_Reloc_X64_Addr32:   return str8_lit("Addr32");
-        case COFF_Reloc_X64_Addr32Nb: return str8_lit("Addr32Nb");
-        case COFF_Reloc_X64_Rel32:    return str8_lit("Rel32");
-        case COFF_Reloc_X64_Rel32_1:  return str8_lit("Rel32_1");
-        case COFF_Reloc_X64_Rel32_2:  return str8_lit("Rel32_2");
-        case COFF_Reloc_X64_Rel32_3:  return str8_lit("Rel32_3");
-        case COFF_Reloc_X64_Rel32_4:  return str8_lit("Rel32_4");
-        case COFF_Reloc_X64_Rel32_5:  return str8_lit("Rel32_5");
-        case COFF_Reloc_X64_Section:  return str8_lit("Section");
-        case COFF_Reloc_X64_SecRel:   return str8_lit("SecRel");
-        case COFF_Reloc_X64_SecRel7:  return str8_lit("SecRel7");
-        case COFF_Reloc_X64_Token:    return str8_lit("Token");
-        case COFF_Reloc_X64_SRel32:   return str8_lit("SRel32");
-        case COFF_Reloc_X64_Pair:     return str8_lit("Pair");
-        case COFF_Reloc_X64_SSpan32:  return str8_lit("SSpan32");
+        case COFF_Reloc_X64_Abs:      return ("Abs");
+        case COFF_Reloc_X64_Addr64:   return ("Addr64");
+        case COFF_Reloc_X64_Addr32:   return ("Addr32");
+        case COFF_Reloc_X64_Addr32Nb: return ("Addr32Nb");
+        case COFF_Reloc_X64_Rel32:    return ("Rel32");
+        case COFF_Reloc_X64_Rel32_1:  return ("Rel32_1");
+        case COFF_Reloc_X64_Rel32_2:  return ("Rel32_2");
+        case COFF_Reloc_X64_Rel32_3:  return ("Rel32_3");
+        case COFF_Reloc_X64_Rel32_4:  return ("Rel32_4");
+        case COFF_Reloc_X64_Rel32_5:  return ("Rel32_5");
+        case COFF_Reloc_X64_Section:  return ("Section");
+        case COFF_Reloc_X64_SecRel:   return ("SecRel");
+        case COFF_Reloc_X64_SecRel7:  return ("SecRel7");
+        case COFF_Reloc_X64_Token:    return ("Token");
+        case COFF_Reloc_X64_SRel32:   return ("SRel32");
+        case COFF_Reloc_X64_Pair:     return ("Pair");
+        case COFF_Reloc_X64_SSpan32:  return ("SSpan32");
     }
     return str8_zero();
 }
@@ -854,26 +854,26 @@ internal String8
 coff_string_from_reloc_arm(COFF_Reloc_Arm x)
 {
     switch (x) {
-        case COFF_Reloc_Arm_Abs:           return str8_lit("Abs");
-        case COFF_Reloc_Arm_Addr32:        return str8_lit("Addr32");
-        case COFF_Reloc_Arm_Addr32Nb:      return str8_lit("Addr32Nb");
-        case COFF_Reloc_Arm_Branch24:      return str8_lit("Branch24");
-        case COFF_Reloc_Arm_Branch11:      return str8_lit("Branch11");
-        case COFF_Reloc_Arm_Unknown1:      return str8_lit("Unknown1");
-        case COFF_Reloc_Arm_Unknown2:      return str8_lit("Unknown2");
-        case COFF_Reloc_Arm_Unknown3:      return str8_lit("Unknown3");
-        case COFF_Reloc_Arm_Unknown4:      return str8_lit("Unknown4");
-        case COFF_Reloc_Arm_Unknown5:      return str8_lit("Unknown5");
-        case COFF_Reloc_Arm_Rel32:         return str8_lit("Rel32");
-        case COFF_Reloc_Arm_Section:       return str8_lit("Section");
-        case COFF_Reloc_Arm_SecRel:        return str8_lit("SecRel");
-        case COFF_Reloc_Arm_Mov32:         return str8_lit("Mov32");
-        case COFF_Reloc_Arm_ThumbMov32:    return str8_lit("ThumbMov32");
-        case COFF_Reloc_Arm_ThumbBranch20: return str8_lit("ThumbBranch20");
-        case COFF_Reloc_Arm_Unused:        return str8_lit("Unused");
-        case COFF_Reloc_Arm_ThumbBranch24: return str8_lit("ThumbBranch24");
-        case COFF_Reloc_Arm_ThumbBlx23:    return str8_lit("ThumbBlx23");
-        case COFF_Reloc_Arm_Pair:          return str8_lit("Pair");
+        case COFF_Reloc_Arm_Abs:           return ("Abs");
+        case COFF_Reloc_Arm_Addr32:        return ("Addr32");
+        case COFF_Reloc_Arm_Addr32Nb:      return ("Addr32Nb");
+        case COFF_Reloc_Arm_Branch24:      return ("Branch24");
+        case COFF_Reloc_Arm_Branch11:      return ("Branch11");
+        case COFF_Reloc_Arm_Unknown1:      return ("Unknown1");
+        case COFF_Reloc_Arm_Unknown2:      return ("Unknown2");
+        case COFF_Reloc_Arm_Unknown3:      return ("Unknown3");
+        case COFF_Reloc_Arm_Unknown4:      return ("Unknown4");
+        case COFF_Reloc_Arm_Unknown5:      return ("Unknown5");
+        case COFF_Reloc_Arm_Rel32:         return ("Rel32");
+        case COFF_Reloc_Arm_Section:       return ("Section");
+        case COFF_Reloc_Arm_SecRel:        return ("SecRel");
+        case COFF_Reloc_Arm_Mov32:         return ("Mov32");
+        case COFF_Reloc_Arm_ThumbMov32:    return ("ThumbMov32");
+        case COFF_Reloc_Arm_ThumbBranch20: return ("ThumbBranch20");
+        case COFF_Reloc_Arm_Unused:        return ("Unused");
+        case COFF_Reloc_Arm_ThumbBranch24: return ("ThumbBranch24");
+        case COFF_Reloc_Arm_ThumbBlx23:    return ("ThumbBlx23");
+        case COFF_Reloc_Arm_Pair:          return ("Pair");
     }
     return str8_zero();
 }
@@ -882,23 +882,23 @@ internal String8
 coff_string_from_reloc_arm64(COFF_Reloc_Arm64 x)
 {
     switch (x) {
-        case COFF_Reloc_Arm64_Abs:           return str8_lit("Abs");
-        case COFF_Reloc_Arm64_Addr32:        return str8_lit("Addr32");
-        case COFF_Reloc_Arm64_Addr32Nb:      return str8_lit("Addr32Nb");
-        case COFF_Reloc_Arm64_Branch26:      return str8_lit("Branch26");
-        case COFF_Reloc_Arm64_PageBaseRel21: return str8_lit("PageBaseRel21");
-        case COFF_Reloc_Arm64_Rel21:         return str8_lit("Rel21");
-        case COFF_Reloc_Arm64_PageOffset12a: return str8_lit("PageOffset12a");
-        case COFF_Reloc_Arm64_SecRel:        return str8_lit("SecRel");
-        case COFF_Reloc_Arm64_SecRelLow12a:  return str8_lit("SecRelLow12a");
-        case COFF_Reloc_Arm64_SecRelHigh12a: return str8_lit("SecRelHigh12a");
-        case COFF_Reloc_Arm64_SecRelLow12l:  return str8_lit("SecRelLow12l");
-        case COFF_Reloc_Arm64_Token:         return str8_lit("Token");
-        case COFF_Reloc_Arm64_Section:       return str8_lit("Section");
-        case COFF_Reloc_Arm64_Addr64:        return str8_lit("Addr64");
-        case COFF_Reloc_Arm64_Branch19:      return str8_lit("Branch19");
-        case COFF_Reloc_Arm64_Branch14:      return str8_lit("Branch14");
-        case COFF_Reloc_Arm64_Rel32:         return str8_lit("Rel32");
+        case COFF_Reloc_Arm64_Abs:           return ("Abs");
+        case COFF_Reloc_Arm64_Addr32:        return ("Addr32");
+        case COFF_Reloc_Arm64_Addr32Nb:      return ("Addr32Nb");
+        case COFF_Reloc_Arm64_Branch26:      return ("Branch26");
+        case COFF_Reloc_Arm64_PageBaseRel21: return ("PageBaseRel21");
+        case COFF_Reloc_Arm64_Rel21:         return ("Rel21");
+        case COFF_Reloc_Arm64_PageOffset12a: return ("PageOffset12a");
+        case COFF_Reloc_Arm64_SecRel:        return ("SecRel");
+        case COFF_Reloc_Arm64_SecRelLow12a:  return ("SecRelLow12a");
+        case COFF_Reloc_Arm64_SecRelHigh12a: return ("SecRelHigh12a");
+        case COFF_Reloc_Arm64_SecRelLow12l:  return ("SecRelLow12l");
+        case COFF_Reloc_Arm64_Token:         return ("Token");
+        case COFF_Reloc_Arm64_Section:       return ("Section");
+        case COFF_Reloc_Arm64_Addr64:        return ("Addr64");
+        case COFF_Reloc_Arm64_Branch19:      return ("Branch19");
+        case COFF_Reloc_Arm64_Branch14:      return ("Branch14");
+        case COFF_Reloc_Arm64_Rel32:         return ("Rel32");
     }
     return str8_zero();
 }

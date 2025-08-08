@@ -37,11 +37,11 @@ entry_point(CmdLine *cmdline)
     e_select_interpret_ctx(interpret_ctx, 0, 0);
     String8 exprs[] =
     {
-        str8_lit("123"),
-        str8_lit("1 + 2"),
-        str8_lit("foo"),
-        str8_lit("foo(bar)"),
-        str8_lit("foo(bar(baz))"),
+        ("123"),
+        ("1 + 2"),
+        ("foo"),
+        ("foo(bar)"),
+        ("foo(bar(baz))"),
     };
     for EachElement(idx, exprs)
     {

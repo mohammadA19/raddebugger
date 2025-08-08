@@ -1109,7 +1109,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                             members.count += 1;
                             E_Member *mem = &n.v;
                             mem.kind = E_MemberKind_DataField;
-                            mem.name = str8_lit("u128");
+                            mem.name = ("u128");
                             mem.type_key = e_type_key_basic(E_TypeKind_U128);
                         }
                         if (type.byte_size == 8)
@@ -1119,7 +1119,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                             members.count += 1;
                             E_Member *mem = &n.v;
                             mem.kind = E_MemberKind_DataField;
-                            mem.name = str8_lit("u64");
+                            mem.name = ("u64");
                             mem.type_key = e_type_key_basic(E_TypeKind_U64);
                         }
                         if (type.byte_size == 4)
@@ -1129,7 +1129,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                             members.count += 1;
                             E_Member *mem = &n.v;
                             mem.kind = E_MemberKind_DataField;
-                            mem.name = str8_lit("u32");
+                            mem.name = ("u32");
                             mem.type_key = e_type_key_basic(E_TypeKind_U32);
                         }
                         if (type.byte_size == 2)
@@ -1139,7 +1139,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                             members.count += 1;
                             E_Member *mem = &n.v;
                             mem.kind = E_MemberKind_DataField;
-                            mem.name = str8_lit("u16");
+                            mem.name = ("u16");
                             mem.type_key = e_type_key_basic(E_TypeKind_U16);
                         }
                         if (type.byte_size == 1)
@@ -1149,7 +1149,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                             members.count += 1;
                             E_Member *mem = &n.v;
                             mem.kind = E_MemberKind_DataField;
-                            mem.name = str8_lit("u8");
+                            mem.name = ("u8");
                             mem.type_key = e_type_key_basic(E_TypeKind_U8);
                         }
                     }
@@ -1163,7 +1163,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                             members.count += 1;
                             E_Member *mem = &n.v;
                             mem.kind = E_MemberKind_DataField;
-                            mem.name = str8_lit("u128s");
+                            mem.name = ("u128s");
                             mem.type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U128), reg_byte_count/16, 0);
                         }
                         if (type.byte_size > 8 && type.byte_size%8 == 0)
@@ -1173,7 +1173,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                             members.count += 1;
                             E_Member *mem = &n.v;
                             mem.kind = E_MemberKind_DataField;
-                            mem.name = str8_lit("u64s");
+                            mem.name = ("u64s");
                             mem.type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U64), reg_byte_count/8, 0);
                         }
                         if (type.byte_size > 4 && type.byte_size%4 == 0)
@@ -1183,7 +1183,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                             members.count += 1;
                             E_Member *mem = &n.v;
                             mem.kind = E_MemberKind_DataField;
-                            mem.name = str8_lit("u32s");
+                            mem.name = ("u32s");
                             mem.type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U32), reg_byte_count/4, 0);
                         }
                         if (type.byte_size > 2 && type.byte_size%2 == 0)
@@ -1193,7 +1193,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                             members.count += 1;
                             E_Member *mem = &n.v;
                             mem.kind = E_MemberKind_DataField;
-                            mem.name = str8_lit("u16s");
+                            mem.name = ("u16s");
                             mem.type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U16), reg_byte_count/2, 0);
                         }
                         if (type.byte_size > 1)
@@ -1203,7 +1203,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                             members.count += 1;
                             E_Member *mem = &n.v;
                             mem.kind = E_MemberKind_DataField;
-                            mem.name = str8_lit("u8s");
+                            mem.name = ("u8s");
                             mem.type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U8), reg_byte_count, E_TypeFlag_IsNotText);
                         }
                         if (type.byte_size > 4 && type.byte_size%4 == 0)
@@ -1213,7 +1213,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                             members.count += 1;
                             E_Member *mem = &n.v;
                             mem.kind = E_MemberKind_DataField;
-                            mem.name = str8_lit("f32s");
+                            mem.name = ("f32s");
                             mem.type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_F32), reg_byte_count/4, 0);
                         }
                         if (type.byte_size > 8 && type.byte_size%8 == 0)
@@ -1223,7 +1223,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                             members.count += 1;
                             E_Member *mem = &n.v;
                             mem.kind = E_MemberKind_DataField;
-                            mem.name = str8_lit("f64s");
+                            mem.name = ("f64s");
                             mem.type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_F64), reg_byte_count/8, 0);
                         }
                     }
@@ -1673,17 +1673,17 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
             e_type_lhs_string_from_key(arena, direct, out, 1, skip_return);
             if (type.flags & E_TypeFlag_Const)
             {
-                str8_list_push(arena, out, str8_lit("const "));
+                str8_list_push(arena, out, ("const "));
             }
             if (type.flags & E_TypeFlag_Volatile)
             {
-                str8_list_push(arena, out, str8_lit("volatile "));
+                str8_list_push(arena, out, ("volatile "));
             }
         }break;
         
         case E_TypeKind_Variadic:
         {
-            str8_list_push(arena, out, str8_lit("..."));
+            str8_list_push(arena, out, ("..."));
         }break;
         
         case E_TypeKind_Struct:
@@ -1696,15 +1696,15 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
             str8_list_pushf(arena, out, "%S ", type.name);
         }break;
         
-        case E_TypeKind_IncompleteStruct: keyword = str8_lit("struct"); goto fwd_udt;
-        case E_TypeKind_IncompleteUnion:  keyword = str8_lit("union"); goto fwd_udt;
-        case E_TypeKind_IncompleteEnum:   keyword = str8_lit("enum"); goto fwd_udt;
-        case E_TypeKind_IncompleteClass:  keyword = str8_lit("class"); goto fwd_udt;
+        case E_TypeKind_IncompleteStruct: keyword = ("struct"); goto fwd_udt;
+        case E_TypeKind_IncompleteUnion:  keyword = ("union"); goto fwd_udt;
+        case E_TypeKind_IncompleteEnum:   keyword = ("enum"); goto fwd_udt;
+        case E_TypeKind_IncompleteClass:  keyword = ("class"); goto fwd_udt;
         fwd_udt:;
         {
             E_Type *type = e_type_from_key(key);
             str8_list_push(arena, out, keyword);
-            str8_list_push(arena, out, str8_lit(" "));
+            str8_list_push(arena, out, (" "));
             str8_list_pushf(arena, out, "%S ", type.name);
         }break;
         
@@ -1714,7 +1714,7 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
             e_type_lhs_string_from_key(arena, direct, out, 2, skip_return);
             if (prec == 1)
             {
-                str8_list_push(arena, out, str8_lit("("));
+                str8_list_push(arena, out, ("("));
             }
         }break;
         
@@ -1727,7 +1727,7 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
             }
             if (prec == 1)
             {
-                str8_list_push(arena, out, str8_lit("("));
+                str8_list_push(arena, out, ("("));
             }
         }break;
         
@@ -1751,7 +1751,7 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
         {
             E_TypeKey direct = e_type_key_direct(key);
             e_type_lhs_string_from_key(arena, direct, out, 1, skip_return);
-            str8_list_push(arena, out, str8_lit("*"));
+            str8_list_push(arena, out, ("*"));
             E_Type *type = e_type_from_key(key);
             if (type.count != 1)
             {
@@ -1763,14 +1763,14 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
         {
             E_TypeKey direct = e_type_key_direct(key);
             e_type_lhs_string_from_key(arena, direct, out, 1, skip_return);
-            str8_list_push(arena, out, str8_lit("&"));
+            str8_list_push(arena, out, ("&"));
         }break;
         
         case E_TypeKind_RRef:
         {
             E_TypeKey direct = e_type_key_direct(key);
             e_type_lhs_string_from_key(arena, direct, out, 1, skip_return);
-            str8_list_push(arena, out, str8_lit("&&"));
+            str8_list_push(arena, out, ("&&"));
         }break;
         
         case E_TypeKind_MemberPtr:
@@ -1785,9 +1785,9 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
             }
             else
             {
-                str8_list_push(arena, out, str8_lit("<unknown-class>"));
+                str8_list_push(arena, out, ("<unknown-class>"));
             }
-            str8_list_push(arena, out, str8_lit("::*"));
+            str8_list_push(arena, out, ("::*"));
         }break;
         
         case E_TypeKind_MetaExpr:
@@ -1829,12 +1829,12 @@ e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
             E_Type *type = e_type_from_key(key);
             if (prec == 1)
             {
-                str8_list_push(arena, out, str8_lit(")"));
+                str8_list_push(arena, out, (")"));
             }
             String8 count_str = str8_from_u64(arena, type.count, 10, 0, 0);
-            str8_list_push(arena, out, str8_lit("["));
+            str8_list_push(arena, out, ("["));
             str8_list_push(arena, out, count_str);
-            str8_list_push(arena, out, str8_lit("]"));
+            str8_list_push(arena, out, ("]"));
             E_TypeKey direct = e_type_key_direct(key);
             e_type_rhs_string_from_key(arena, direct, out, 2);
         }break;
@@ -1844,15 +1844,15 @@ e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
             E_Type *type = e_type_from_key(key);
             if (prec == 1)
             {
-                str8_list_push(arena, out, str8_lit(")"));
+                str8_list_push(arena, out, (")"));
             }
             if (type.count == 0)
             {
-                str8_list_push(arena, out, str8_lit("(void)"));
+                str8_list_push(arena, out, ("(void)"));
             }
             else
             {
-                str8_list_push(arena, out, str8_lit("("));
+                str8_list_push(arena, out, ("("));
                 U64 param_count = type.count;
                 E_TypeKey *param_type_keys = type.param_type_keys;
                 for (U64 param_idx = 0; param_idx < param_count; param_idx += 1)
@@ -1863,10 +1863,10 @@ e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
                     str8_list_push(arena, out, param_str_trimmed);
                     if (param_idx+1 < param_count)
                     {
-                        str8_list_push(arena, out, str8_lit(", "));
+                        str8_list_push(arena, out, (", "));
                     }
                 }
-                str8_list_push(arena, out, str8_lit(")"));
+                str8_list_push(arena, out, (")"));
             }
             E_TypeKey direct = e_type_key_direct(key);
             e_type_rhs_string_from_key(arena, direct, out, 2);
@@ -2376,7 +2376,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(default)
                 if (str8_match(sufficient_suffix, type.name, StringMatchFlag_RightSideSloppy))
                 {
                     sufficient_suffix = str8_skip(sufficient_suffix, type.name.size);
-                    if (str8_match(sufficient_suffix, str8_lit("_"), StringMatchFlag_RightSideSloppy))
+                    if (str8_match(sufficient_suffix, ("_"), StringMatchFlag_RightSideSloppy))
                     {
                         sufficient_suffix = str8_skip(sufficient_suffix, 1);
                     }
@@ -2917,7 +2917,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(file)
     {
         E_Expr *rhs = expr.first->next;
         String8 member_name = rhs.string;
-        if (str8_match(member_name, str8_lit("size"), 0))
+        if (str8_match(member_name, ("size"), 0))
         {
             E_Space space = e_space_make(E_SpaceKind_FileSystem);
             space.u64_0 = e_id_from_string(accel.file_path);
@@ -2925,7 +2925,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(file)
             result.type_key = e_type_key_basic(E_TypeKind_U64);
             result.mode = E_Mode_Value;
         }
-        else if (str8_match(member_name, str8_lit("last_modified_time"), 0))
+        else if (str8_match(member_name, ("last_modified_time"), 0))
         {
             E_Space space = e_space_make(E_SpaceKind_FileSystem);
             space.u64_0 = e_id_from_string(accel.file_path);
@@ -2933,7 +2933,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(file)
             result.type_key = e_type_key_basic(E_TypeKind_U64);
             result.mode = E_Mode_Value;
         }
-        else if (str8_match(member_name, str8_lit("creation_time"), 0))
+        else if (str8_match(member_name, ("creation_time"), 0))
         {
             E_Space space = e_space_make(E_SpaceKind_FileSystem);
             space.u64_0 = e_id_from_string(accel.file_path);
@@ -2941,7 +2941,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(file)
             result.type_key = e_type_key_basic(E_TypeKind_U64);
             result.mode = E_Mode_Value;
         }
-        else if (str8_match(member_name, str8_lit("data"), 0))
+        else if (str8_match(member_name, ("data"), 0))
         {
             E_Space space = e_space_make(E_SpaceKind_File);
             space.u64_0 = e_id_from_string(accel.file_path);

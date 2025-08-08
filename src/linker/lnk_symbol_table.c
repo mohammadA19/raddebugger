@@ -574,7 +574,7 @@ THREAD_POOL_TASK_FUNC(lnk_finalize_weak_symbols_task)
                     str8_list_pushf(temp.arena, &ref_list, "\t%S Symbol %S (No. %#x)", lookup_first.symbol.obj.path, loc_symbol.name, lookup_first.symbol.symbol_idx);
 
                     COFF_ParsedSymbol parsed_symbol = lnk_parsed_symbol_from_coff_symbol_idx(symbol.u.defined.obj, symbol.u.defined.symbol_idx);
-                    String8           loc_string    = str8_list_join(temp.arena, &ref_list, &(StringJoin){ .sep = str8_lit("\n") });
+                    String8           loc_string    = str8_list_join(temp.arena, &ref_list, &(StringJoin){ .sep = ("\n") });
                     lnk_error_obj(LNK_Error_WeakCycle, symbol.u.defined.obj, "unable to resolve cyclic symbol %S; ref chain:\n%S", parsed_symbol.name, loc_string);
 
                     MemoryZeroStruct(&current_symbol);

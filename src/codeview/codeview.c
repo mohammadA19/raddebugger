@@ -173,8 +173,8 @@ internal String8
 cv_string_from_inline_range_kind(CV_InlineRangeKind kind)
 {
     switch (kind) {
-        case CV_InlineRangeKind_Expr: return str8_lit("Expr");
-        case CV_InlineRangeKind_Stmt: return str8_lit("Stmt");
+        case CV_InlineRangeKind_Expr: return ("Expr");
+        case CV_InlineRangeKind_Stmt: return ("Stmt");
     }
     return str8_zero();
 }
@@ -183,9 +183,9 @@ internal String8
 cv_string_from_type_index_source(CV_TypeIndexSource ti_source)
 {
     switch (ti_source) {
-        case CV_TypeIndexSource_NULL:  return str8_lit("");    break;
-        case CV_TypeIndexSource_TPI:   return str8_lit("TPI"); break;
-        case CV_TypeIndexSource_IPI:   return str8_lit("IPI"); break;
+        case CV_TypeIndexSource_NULL:  return ("");    break;
+        case CV_TypeIndexSource_TPI:   return ("TPI"); break;
+        case CV_TypeIndexSource_IPI:   return ("IPI"); break;
         case CV_TypeIndexSource_COUNT: break;
     }
     return str8_zero();
@@ -195,7 +195,7 @@ internal String8
 cv_string_from_language(CV_Language x)
 {
     switch (x) {
-#define X(_n,_i) case _i: return str8_lit(Stringify(_n));
+#define X(_n,_i) case _i: return (Stringify(_n));
         CV_LanguageXList(X)
 #undef X
     }
@@ -209,14 +209,14 @@ cv_string_from_reg_id(Arena *arena, CV_Arch arch, U32 id)
     switch (arch) {
         case CV_Arch_8086: {
             switch (id) {
-#define X(_N, _ID, ...) case _ID: result = str8_lit(Stringify(_N)); break;
+#define X(_N, _ID, ...) case _ID: result = (Stringify(_N)); break;
                 CV_Reg_X86_XList(X)
 #undef X
             }
         } break;
         case CV_Arch_X64: {
             switch (id) {
-#define X(_N, _ID, ...) case _ID: result = str8_lit(Stringify(_N)); break;
+#define X(_N, _ID, ...) case _ID: result = (Stringify(_N)); break;
                 CV_Reg_X64_XList(X)
 #undef X
             }
@@ -234,9 +234,9 @@ cv_string_from_member_access(CV_MemberAccess x)
 {
     switch (x) {
         case CV_MemberAccess_Null:      break;
-        case CV_MemberAccess_Private:   return str8_lit("Private");
-        case CV_MemberAccess_Protected: return str8_lit("Protected");
-        case CV_MemberAccess_Public:    return str8_lit("Public");
+        case CV_MemberAccess_Private:   return ("Private");
+        case CV_MemberAccess_Protected: return ("Protected");
+        case CV_MemberAccess_Public:    return ("Public");
     }
     return str8_zero();
 }
@@ -245,13 +245,13 @@ internal String8
 cv_string_from_method_prop(CV_MethodProp x)
 {
     switch (x) {
-        case CV_MethodProp_Vanilla:     return str8_lit("Vanilla");
-        case CV_MethodProp_Virtual:     return str8_lit("Virtual");
-        case CV_MethodProp_Static:      return str8_lit("Static");
-        case CV_MethodProp_Friend:      return str8_lit("Friend");
-        case CV_MethodProp_Intro:       return str8_lit("Intro");
-        case CV_MethodProp_PureVirtual: return str8_lit("PureVirtual");
-        case CV_MethodProp_PureIntro:   return str8_lit("PureIntro");
+        case CV_MethodProp_Vanilla:     return ("Vanilla");
+        case CV_MethodProp_Virtual:     return ("Virtual");
+        case CV_MethodProp_Static:      return ("Static");
+        case CV_MethodProp_Friend:      return ("Friend");
+        case CV_MethodProp_Intro:       return ("Intro");
+        case CV_MethodProp_PureVirtual: return ("PureVirtual");
+        case CV_MethodProp_PureIntro:   return ("PureIntro");
     }
     return str8_zero();
 }
@@ -260,10 +260,10 @@ internal String8
 cv_string_from_hfa(CV_HFAKind x)
 {
     switch (x) {
-        case CV_HFAKind_None:   return str8_lit("None");
-        case CV_HFAKind_Float:  return str8_lit("Float");
-        case CV_HFAKind_Double: return str8_lit("Double");
-        case CV_HFAKind_Other:  return str8_lit("Other");
+        case CV_HFAKind_None:   return ("None");
+        case CV_HFAKind_Float:  return ("Float");
+        case CV_HFAKind_Double: return ("Double");
+        case CV_HFAKind_Other:  return ("Other");
     }
     return str8_zero();
 }
@@ -272,10 +272,10 @@ internal String8
 cv_string_from_mcom(CV_MoComUDTKind x)
 {
     switch (x) {
-        case CV_MoComUDTKind_None:      return str8_lit("None");
-        case CV_MoComUDTKind_Ref:       return str8_lit("Ref");
-        case CV_MoComUDTKind_Value:     return str8_lit("Value");
-        case CV_MoComUDTKind_Interface: return str8_lit("Interface");
+        case CV_MoComUDTKind_None:      return ("None");
+        case CV_MoComUDTKind_Ref:       return ("Ref");
+        case CV_MoComUDTKind_Value:     return ("Value");
+        case CV_MoComUDTKind_Interface: return ("Interface");
     }
     return str8_zero();
 }
@@ -285,19 +285,19 @@ cv_string_from_binary_opcode(CV_InlineBinaryAnnotation x)
 {
     switch (x) {
         case CV_InlineBinaryAnnotation_Null:                          break;
-        case CV_InlineBinaryAnnotation_CodeOffset:                    return str8_lit("CodeOffset");
-        case CV_InlineBinaryAnnotation_ChangeCodeOffsetBase:          return str8_lit("ChangeCodeOffsetBase");
-        case CV_InlineBinaryAnnotation_ChangeCodeOffset:              return str8_lit("ChangeCodeOffset");
-        case CV_InlineBinaryAnnotation_ChangeCodeLength:              return str8_lit("ChangeCodeLength");
-        case CV_InlineBinaryAnnotation_ChangeFile:                    return str8_lit("ChangeFile");
-        case CV_InlineBinaryAnnotation_ChangeLineOffset:              return str8_lit("ChangeLineOffset");
-        case CV_InlineBinaryAnnotation_ChangeLineEndDelta:            return str8_lit("ChangeLineEndDelta");
-        case CV_InlineBinaryAnnotation_ChangeRangeKind:               return str8_lit("ChangeRangeKind");
-        case CV_InlineBinaryAnnotation_ChangeColumnStart:             return str8_lit("ChangeColumnStart");
-        case CV_InlineBinaryAnnotation_ChangeColumnEndDelta:          return str8_lit("ChangeColumnEndDelta");
-        case CV_InlineBinaryAnnotation_ChangeCodeOffsetAndLineOffset: return str8_lit("ChangeCodeOffsetAndLineOffset");
-        case CV_InlineBinaryAnnotation_ChangeCodeLengthAndCodeOffset: return str8_lit("ChangeCodeLengthAndCodeOffset");
-        case CV_InlineBinaryAnnotation_ChangeColumnEnd:               return str8_lit("ChangeColumnEnd");
+        case CV_InlineBinaryAnnotation_CodeOffset:                    return ("CodeOffset");
+        case CV_InlineBinaryAnnotation_ChangeCodeOffsetBase:          return ("ChangeCodeOffsetBase");
+        case CV_InlineBinaryAnnotation_ChangeCodeOffset:              return ("ChangeCodeOffset");
+        case CV_InlineBinaryAnnotation_ChangeCodeLength:              return ("ChangeCodeLength");
+        case CV_InlineBinaryAnnotation_ChangeFile:                    return ("ChangeFile");
+        case CV_InlineBinaryAnnotation_ChangeLineOffset:              return ("ChangeLineOffset");
+        case CV_InlineBinaryAnnotation_ChangeLineEndDelta:            return ("ChangeLineEndDelta");
+        case CV_InlineBinaryAnnotation_ChangeRangeKind:               return ("ChangeRangeKind");
+        case CV_InlineBinaryAnnotation_ChangeColumnStart:             return ("ChangeColumnStart");
+        case CV_InlineBinaryAnnotation_ChangeColumnEndDelta:          return ("ChangeColumnEndDelta");
+        case CV_InlineBinaryAnnotation_ChangeCodeOffsetAndLineOffset: return ("ChangeCodeOffsetAndLineOffset");
+        case CV_InlineBinaryAnnotation_ChangeCodeLengthAndCodeOffset: return ("ChangeCodeLengthAndCodeOffset");
+        case CV_InlineBinaryAnnotation_ChangeColumnEnd:               return ("ChangeColumnEnd");
     }
     return str8_zero();
 }
@@ -306,13 +306,13 @@ internal String8
 cv_string_from_thunk_ordinal(CV_ThunkOrdinal x)
 {
     switch (x) {
-        case CV_ThunkOrdinal_NoType:            return str8_lit("NoType");
-        case CV_ThunkOrdinal_Adjustor:          return str8_lit("Adjustor");
-        case CV_ThunkOrdinal_VCall:             return str8_lit("VCall");
-        case CV_ThunkOrdinal_PCode:             return str8_lit("PCode");
-        case CV_ThunkOrdinal_Load:              return str8_lit("Load");
-        case CV_ThunkOrdinal_TrampIncremental:  return str8_lit("TrampIncremental");
-        case CV_ThunkOrdinal_TrampBranchIsland: return str8_lit("TrampBranchIsland");
+        case CV_ThunkOrdinal_NoType:            return ("NoType");
+        case CV_ThunkOrdinal_Adjustor:          return ("Adjustor");
+        case CV_ThunkOrdinal_VCall:             return ("VCall");
+        case CV_ThunkOrdinal_PCode:             return ("PCode");
+        case CV_ThunkOrdinal_Load:              return ("Load");
+        case CV_ThunkOrdinal_TrampIncremental:  return ("TrampIncremental");
+        case CV_ThunkOrdinal_TrampBranchIsland: return ("TrampBranchIsland");
     }
     return str8_zero();
 }
@@ -321,9 +321,9 @@ internal String8
 cv_string_from_frame_cookie_kind(CV_FrameCookieKind x)
 {
     switch (x) {
-        case CV_FrameCookieKind_Copy:  return str8_lit("Copy");
-        case CV_FrameCookieKind_XorSP: return str8_lit("XorSP");
-        case CV_FrameCookieKind_XorBP: return str8_lit("XorR13");
+        case CV_FrameCookieKind_Copy:  return ("Copy");
+        case CV_FrameCookieKind_XorSP: return ("XorSP");
+        case CV_FrameCookieKind_XorBP: return ("XorR13");
     }
     return str8_zero();
 }
@@ -332,13 +332,13 @@ internal String8
 cv_string_from_generic_style(CV_GenericStyle x)
 {
     switch (x) {
-        case CV_GenericStyle_VOID:   return str8_lit("VOID");
-        case CV_GenericStyle_REG:    return str8_lit("REG");
-        case CV_GenericStyle_ICAN:   return str8_lit("ICAN");
-        case CV_GenericStyle_ICAF:   return str8_lit("ICAF");
-        case CV_GenericStyle_IRAN:   return str8_lit("IRAN");
-        case CV_GenericStyle_IRAF:   return str8_lit("IRAF");
-        case CV_GenericStyle_UNUSED: return str8_lit("UNUSED");
+        case CV_GenericStyle_VOID:   return ("VOID");
+        case CV_GenericStyle_REG:    return ("REG");
+        case CV_GenericStyle_ICAN:   return ("ICAN");
+        case CV_GenericStyle_ICAF:   return ("ICAF");
+        case CV_GenericStyle_IRAN:   return ("IRAN");
+        case CV_GenericStyle_IRAF:   return ("IRAF");
+        case CV_GenericStyle_UNUSED: return ("UNUSED");
     }
     return str8_zero();
 }
@@ -347,8 +347,8 @@ internal String8
 cv_string_from_trampoline_kind(CV_TrampolineKind x)
 {
     switch (x) {
-        case CV_TrampolineKind_Incremental:  return str8_lit("Incremental");
-        case CV_TrampolineKind_BranchIsland: return str8_lit("BranchIsland");
+        case CV_TrampolineKind_Incremental:  return ("Incremental");
+        case CV_TrampolineKind_BranchIsland: return ("BranchIsland");
     }
     return str8_zero();
 }
@@ -357,13 +357,13 @@ internal String8
 cv_string_from_virtual_table_shape_kind(CV_VirtualTableShape x)
 {
     switch (x) {
-        case CV_VirtualTableShape_Near:   return str8_lit("Near");
-        case CV_VirtualTableShape_Far:    return str8_lit("Far");
-        case CV_VirtualTableShape_Thin:   return str8_lit("Thin");
-        case CV_VirtualTableShape_Outer:  return str8_lit("Outer");
-        case CV_VirtualTableShape_Meta:   return str8_lit("Meta");
-        case CV_VirtualTableShape_Near32: return str8_lit("Near32");
-        case CV_VirtualTableShape_Far32:  return str8_lit("Far32");
+        case CV_VirtualTableShape_Near:   return ("Near");
+        case CV_VirtualTableShape_Far:    return ("Far");
+        case CV_VirtualTableShape_Thin:   return ("Thin");
+        case CV_VirtualTableShape_Outer:  return ("Outer");
+        case CV_VirtualTableShape_Meta:   return ("Meta");
+        case CV_VirtualTableShape_Near32: return ("Near32");
+        case CV_VirtualTableShape_Far32:  return ("Far32");
     }
     return str8_zero();
 }
@@ -372,31 +372,31 @@ internal String8
 cv_string_from_call_kind(CV_CallKind x)
 {
     switch (x) {
-        case CV_CallKind_NearC:          return str8_lit("NearC");
-        case CV_CallKind_FarC:           return str8_lit("FarC");
-        case CV_CallKind_NearPascal:     return str8_lit("NearPascal");
-        case CV_CallKind_FarPascal:      return str8_lit("FarPascal");
-        case CV_CallKind_NearFast:       return str8_lit("NearFast");
-        case CV_CallKind_FarFast:        return str8_lit("FarFast");
-        case CV_CallKind_UNUSED:         return str8_lit("UNUSED");
-        case CV_CallKind_NearStd:        return str8_lit("NearStd");
-        case CV_CallKind_FarStd:         return str8_lit("FarStd");
-        case CV_CallKind_NearSys:        return str8_lit("NearSys");
-        case CV_CallKind_FarSys:         return str8_lit("FarSys");
-        case CV_CallKind_This:           return str8_lit("This");
-        case CV_CallKind_Mips:           return str8_lit("Mips");
-        case CV_CallKind_Generic:        return str8_lit("Generic");
-        case CV_CallKind_Alpha:          return str8_lit("Alpha");
-        case CV_CallKind_PPC:            return str8_lit("PPC");
-        case CV_CallKind_HitachiSuperH:  return str8_lit("HitachiSuperH");
-        case CV_CallKind_Arm:            return str8_lit("Arm");
-        case CV_CallKind_AM33:           return str8_lit("AM33");
-        case CV_CallKind_TriCore:        return str8_lit("TriCore");
-        case CV_CallKind_HitachiSuperH5: return str8_lit("HitachiSuperH5");
-        case CV_CallKind_M32R:           return str8_lit("M32R");
-        case CV_CallKind_Clr:            return str8_lit("Clr");
-        case CV_CallKind_Inline:         return str8_lit("Inline");
-        case CV_CallKind_NearVector:     return str8_lit("NearVector");
+        case CV_CallKind_NearC:          return ("NearC");
+        case CV_CallKind_FarC:           return ("FarC");
+        case CV_CallKind_NearPascal:     return ("NearPascal");
+        case CV_CallKind_FarPascal:      return ("FarPascal");
+        case CV_CallKind_NearFast:       return ("NearFast");
+        case CV_CallKind_FarFast:        return ("FarFast");
+        case CV_CallKind_UNUSED:         return ("UNUSED");
+        case CV_CallKind_NearStd:        return ("NearStd");
+        case CV_CallKind_FarStd:         return ("FarStd");
+        case CV_CallKind_NearSys:        return ("NearSys");
+        case CV_CallKind_FarSys:         return ("FarSys");
+        case CV_CallKind_This:           return ("This");
+        case CV_CallKind_Mips:           return ("Mips");
+        case CV_CallKind_Generic:        return ("Generic");
+        case CV_CallKind_Alpha:          return ("Alpha");
+        case CV_CallKind_PPC:            return ("PPC");
+        case CV_CallKind_HitachiSuperH:  return ("HitachiSuperH");
+        case CV_CallKind_Arm:            return ("Arm");
+        case CV_CallKind_AM33:           return ("AM33");
+        case CV_CallKind_TriCore:        return ("TriCore");
+        case CV_CallKind_HitachiSuperH5: return ("HitachiSuperH5");
+        case CV_CallKind_M32R:           return ("M32R");
+        case CV_CallKind_Clr:            return ("Clr");
+        case CV_CallKind_Inline:         return ("Inline");
+        case CV_CallKind_NearVector:     return ("NearVector");
     }
     return str8_zero();
 }
@@ -405,14 +405,14 @@ internal String8
 cv_string_from_member_pointer_kind(CV_MemberPointerKind x)
 {
     switch (x) {
-        case CV_MemberPointerKind_Undef:        return str8_lit("Undef");
-        case CV_MemberPointerKind_DataSingle:   return str8_lit("DataSingle");
-        case CV_MemberPointerKind_DataMultiple: return str8_lit("DataMultiple");
-        case CV_MemberPointerKind_DataVirtual:  return str8_lit("DataVirtual");
-        case CV_MemberPointerKind_DataGeneral:  return str8_lit("DataGeneral");
-        case CV_MemberPointerKind_FuncSingle:   return str8_lit("FuncSingle");
-        case CV_MemberPointerKind_FuncMultiple: return str8_lit("FuncMultiple");
-        case CV_MemberPointerKind_FuncGeneral:  return str8_lit("FuncGeneral");
+        case CV_MemberPointerKind_Undef:        return ("Undef");
+        case CV_MemberPointerKind_DataSingle:   return ("DataSingle");
+        case CV_MemberPointerKind_DataMultiple: return ("DataMultiple");
+        case CV_MemberPointerKind_DataVirtual:  return ("DataVirtual");
+        case CV_MemberPointerKind_DataGeneral:  return ("DataGeneral");
+        case CV_MemberPointerKind_FuncSingle:   return ("FuncSingle");
+        case CV_MemberPointerKind_FuncMultiple: return ("FuncMultiple");
+        case CV_MemberPointerKind_FuncGeneral:  return ("FuncGeneral");
     }
     return str8_zero();
 }
@@ -421,19 +421,19 @@ internal String8
 cv_string_from_pointer_kind(CV_PointerKind x)
 {
     switch (x) {
-        case CV_PointerKind_Near:        return str8_lit("Near");
-        case CV_PointerKind_Far:         return str8_lit("Far");
-        case CV_PointerKind_Huge:        return str8_lit("Huge");
-        case CV_PointerKind_BaseSeg:     return str8_lit("BaseSeg");
-        case CV_PointerKind_BaseVal:     return str8_lit("BaseVal");
-        case CV_PointerKind_BaseSegVal:  return str8_lit("BaseSegVal");
-        case CV_PointerKind_BaseAddr:    return str8_lit("BaseAddr");
-        case CV_PointerKind_BaseSegAddr: return str8_lit("BaseSegAddr");
-        case CV_PointerKind_BaseType:    return str8_lit("BaseType");
-        case CV_PointerKind_BaseSelf:    return str8_lit("BaseSelf");
-        case CV_PointerKind_Near32:      return str8_lit("Near32");
-        case CV_PointerKind_Far32:       return str8_lit("Far32");
-        case CV_PointerKind_64:          return str8_lit("64Bit");
+        case CV_PointerKind_Near:        return ("Near");
+        case CV_PointerKind_Far:         return ("Far");
+        case CV_PointerKind_Huge:        return ("Huge");
+        case CV_PointerKind_BaseSeg:     return ("BaseSeg");
+        case CV_PointerKind_BaseVal:     return ("BaseVal");
+        case CV_PointerKind_BaseSegVal:  return ("BaseSegVal");
+        case CV_PointerKind_BaseAddr:    return ("BaseAddr");
+        case CV_PointerKind_BaseSegAddr: return ("BaseSegAddr");
+        case CV_PointerKind_BaseType:    return ("BaseType");
+        case CV_PointerKind_BaseSelf:    return ("BaseSelf");
+        case CV_PointerKind_Near32:      return ("Near32");
+        case CV_PointerKind_Far32:       return ("Far32");
+        case CV_PointerKind_64:          return ("64Bit");
     }
     return str8_zero();
 }
@@ -442,11 +442,11 @@ internal String8
 cv_string_from_pointer_mode(CV_PointerMode x)
 {
     switch (x) {
-        case CV_PointerMode_Ptr:       return str8_lit("Ptr");
-        case CV_PointerMode_LRef:      return str8_lit("LRef");
-        case CV_PointerMode_PtrMem:    return str8_lit("PtrMem");
-        case CV_PointerMode_PtrMethod: return str8_lit("PtrMethod");
-        case CV_PointerMode_RRef:      return str8_lit("RRef");
+        case CV_PointerMode_Ptr:       return ("Ptr");
+        case CV_PointerMode_LRef:      return ("LRef");
+        case CV_PointerMode_PtrMem:    return ("PtrMem");
+        case CV_PointerMode_PtrMethod: return ("PtrMethod");
+        case CV_PointerMode_RRef:      return ("RRef");
     }
     return str8_zero();
 }
@@ -456,9 +456,9 @@ cv_string_from_c13_checksum_kind(CV_C13ChecksumKind x)
 {
     switch (x) {
         case CV_C13ChecksumKind_Null:   break;
-        case CV_C13ChecksumKind_MD5:    return str8_lit("MD5");
-        case CV_C13ChecksumKind_SHA1:   return str8_lit("SHA1");
-        case CV_C13ChecksumKind_SHA256: return str8_lit("SHA256");
+        case CV_C13ChecksumKind_MD5:    return ("MD5");
+        case CV_C13ChecksumKind_SHA1:   return ("SHA1");
+        case CV_C13ChecksumKind_SHA256: return ("SHA256");
     }
     return str8_zero();
 }
@@ -467,8 +467,8 @@ internal String8
 cv_string_from_label_kind(Arena *arena, CV_LabelKind x)
 {
     switch (x) {
-        case CV_LabelKind_Near: return str8_lit("Near");
-        case CV_LabelKind_Far:  return str8_lit("Far");
+        case CV_LabelKind_Near: return ("Near");
+        case CV_LabelKind_Far:  return ("Far");
     }
     return push_str8f(arena, "%#x", x);
 }
@@ -477,7 +477,7 @@ internal String8
 cv_string_from_c13_subsection_kind(CV_C13SubSectionKind x)
 {
     switch (x) {
-#define X(_N, _ID) case CV_C13SubSectionKind_##_N: return str8_lit(Stringify(_N));
+#define X(_N, _ID) case CV_C13SubSectionKind_##_N: return (Stringify(_N));
         CV_C13SubSectionKindXList(X)
 #undef X
     }
@@ -498,7 +498,7 @@ cv_string_from_modifier_flags(Arena *arena, CV_ModifierFlags x)
     if (x & CV_ModifierFlag_Unaligned) {
         str8_list_pushf(scratch.arena, &list, "Unaligned");
     }
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
@@ -564,7 +564,7 @@ cv_string_from_pointer_attribs(Arena *arena, CV_PointerAttribs x)
         str8_list_pushf(scratch.arena, &list, "Unknown=%x", x);
     }
     
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
@@ -583,7 +583,7 @@ cv_string_from_function_attribs(Arena *arena, CV_FunctionAttribs x)
     if (x & CV_FunctionAttrib_ConstructorVBase) {
         str8_list_pushf(scratch.arena, &list, "ConstructorVBase");
     }
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
@@ -611,7 +611,7 @@ cv_string_from_export_flags(Arena *arena, CV_ExportFlags x)
     if (x & CV_ExportFlag_Forwarder) {
         str8_list_pushf(scratch.arena, &list, "Forwarder");
     }
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
@@ -627,7 +627,7 @@ cv_string_from_sepcode(Arena *arena, CV_SepcodeFlags x)
     if (x & CV_SepcodeFlag_ReturnsToParent) {
         str8_list_pushf(scratch.arena, &list, "ReturnsToParent");
     }
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
@@ -649,7 +649,7 @@ cv_string_from_pub32_flags(Arena *arena, CV_Pub32Flags x)
     if (x & CV_Pub32Flag_MSIL) {
         str8_list_pushf(scratch.arena, &list, "MSIL");
     }
-    String8 result = str8_list_join(scratch.arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+    String8 result = str8_list_join(scratch.arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
@@ -665,7 +665,7 @@ cv_string_from_generic_flags(Arena *arena, CV_GenericFlags x)
     if (x & CV_GenericFlags_RSCLEAN) {
         str8_list_pushf(scratch.arena, &list, "RSCLEAN");
     }
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
@@ -732,7 +732,7 @@ cv_string_from_frame_proc_flags(Arena *arena, CV_FrameprocFlags x)
     if (x & CV_FrameprocFlag_HasCFW) {
         str8_list_pushf(scratch.arena, &list, "HasCFW");
     }
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
@@ -802,7 +802,7 @@ cv_string_from_type_props(Arena *arena, CV_TypeProps32 x)
         if (x != 0) {
             str8_list_pushf(scratch.arena, &list, "%x", x);
         }
-        flags_str = str8_list_join(scratch.arena, &list, &(StringJoin){.sep=str8_lit(", ") });
+        flags_str = str8_list_join(scratch.arena, &list, &(StringJoin){.sep=(", ") });
         
         if (hfa) {
             str8_list_pushf(scratch.arena, &list, "HFA = %S", hfa_str);
@@ -856,7 +856,7 @@ cv_string_from_local_flags(Arena *arena, CV_LocalFlags x)
     if (x & CV_LocalFlag_Static) {
         str8_list_pushf(scratch.arena, &list, "Static");
     }
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
@@ -903,9 +903,9 @@ cv_string_from_proc_flags(Arena *arena, CV_ProcFlags x)
     }
     String8 result;
     if (list.node_count == 0) {
-        result = str8_lit("None");
+        result = ("None");
     } else {
-        result = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+        result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     }
     temp_end(scratch);
     return result;
@@ -914,9 +914,9 @@ cv_string_from_proc_flags(Arena *arena, CV_ProcFlags x)
 internal String8
 cv_string_from_range_attribs(Arena *arena, CV_RangeAttribs x)
 { (void)arena;
-    String8 result = str8_lit("None");
+    String8 result = ("None");
     if (x == CV_RangeAttrib_Maybe) {
-        result = str8_lit("Maybe");
+        result = ("Maybe");
     }
     return result;
 }
@@ -924,9 +924,9 @@ cv_string_from_range_attribs(Arena *arena, CV_RangeAttribs x)
 internal String8
 cv_string_from_defrange_register_rel_flags(Arena *arena, CV_DefrangeRegisterRelFlags x)
 { (void)arena;
-    String8 result = str8_lit("None");
+    String8 result = ("None");
     if (x == CV_DefrangeRegisterRelFlag_SpilledOutUDTMember) {
-        result = str8_lit("SpilledOutUDTMember");
+        result = ("SpilledOutUDTMember");
     }
     return result;
 }
@@ -977,7 +977,7 @@ cv_string_from_field_attribs(Arena *arena, CV_FieldAttribs attribs)
         str8_list_pushf(scratch.arena, &list, "%S", mprop_str);
     }
     
-    String8 result = str8_list_join(scratch.arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+    String8 result = str8_list_join(scratch.arena, &list, &(StringJoin){.sep=(", ")});
     
     scratch_end(scratch);
     return result;

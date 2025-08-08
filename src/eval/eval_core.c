@@ -480,7 +480,7 @@ e_auto_hook_map_insert_new_(Arena *arena, E_AutoHookMap *map, E_AutoHookParams *
                 {
                     off += 2;
                     String8 wildcard_inst_names_string = str8_skip(params.type_pattern, off);
-                    wildcard_inst_names_string = str8_prefix(wildcard_inst_names_string, str8_find_needle(wildcard_inst_names_string, 0, str8_lit("}"), 0));
+                    wildcard_inst_names_string = str8_prefix(wildcard_inst_names_string, str8_find_needle(wildcard_inst_names_string, 0, ("}"), 0));
                     if (wildcard_inst_names_string.size != 0)
                     {
                         Temp scratch = scratch_begin(&arena, 1);
@@ -701,7 +701,7 @@ e_select_base_ctx(E_BaseCtx *ctx)
     e_cache.type_cache_slots_count = 1024;
     e_cache.type_cache_slots = push_array(e_cache.arena, E_TypeCacheSlot, e_cache.type_cache_slots_count);
     e_cache.file_type_key = e_type_key_cons(.kind = E_TypeKind_Set,
-                                                                                      .name = str8_lit("file"),
+                                                                                      .name = ("file"),
                                                                                       .irext  = E_TYPE_IREXT_FUNCTION_NAME(file),
                                                                                       .access = E_TYPE_ACCESS_FUNCTION_NAME(file),
                                                                                       .expand =
@@ -710,7 +710,7 @@ e_select_base_ctx(E_BaseCtx *ctx)
                                                                                           .range= E_TYPE_EXPAND_RANGE_FUNCTION_NAME(file),
                                                                                       });
     e_cache.folder_type_key = e_type_key_cons(.kind = E_TypeKind_Set,
-                                                                                          .name = str8_lit("folder"),
+                                                                                          .name = ("folder"),
                                                                                           .expand =
                                                                                           {
                                                                                               .info        = E_TYPE_EXPAND_INFO_FUNCTION_NAME(folder),

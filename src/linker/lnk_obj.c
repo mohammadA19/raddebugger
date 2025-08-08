@@ -5,7 +5,7 @@ internal void
 lnk_error_obj(LNK_ErrorCode code, LNK_Obj *obj, char *fmt, ...)
 {
     va_list args; va_start(args, fmt);
-    String8 obj_path = obj ? obj.path : str8_lit("RADLINK");
+    String8 obj_path = obj ? obj.path : ("RADLINK");
     String8 lib_path = lnk_obj_get_lib_path(obj);
     lnk_error_with_loc_fv(code, obj_path, lib_path, fmt, args);
     va_end(args);
@@ -263,7 +263,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
         for (U64 sect_idx = 0; sect_idx < obj.header.section_count_no_null; sect_idx += 1) {
             COFF_SectionHeader *sect_header = &coff_section_table[sect_idx];
             String8 name = str8_cstring_capped_reverse(sect_header.name, sect_header.name+sizeof(sect_header.name));
-            if (str8_match(name, str8_lit(".debug$S"), 0)) {
+            if (str8_match(name, (".debug$S"), 0)) {
                 Temp temp = temp_begin(scratch.arena);
                 String8 debug_s_data = str8_substr(input.data, rng_1u64(sect_header.foff, sect_header.foff+sect_header.fsize));
                 CV_DebugS debug_s = cv_parse_debug_s(temp.arena, debug_s_data);
@@ -484,19 +484,19 @@ lnk_obj_match_symbol(LNK_Obj *obj, String8 match_name)
 internal MSCRT_FeatFlags
 lnk_obj_get_features(LNK_Obj *obj)
 {
-    return lnk_obj_match_symbol(obj, str8_lit("@feat.00")).value;
+    return lnk_obj_match_symbol(obj, ("@feat.00")).value;
 }
 
 internal U32
 lnk_obj_get_comp_id(LNK_Obj *obj)
 {
-    return lnk_obj_match_symbol(obj, str8_lit("@comp.id")).value;
+    return lnk_obj_match_symbol(obj, ("@comp.id")).value;
 }
 
 internal U32
 lnk_obj_get_vol_md(LNK_Obj *obj)
 {
-    return lnk_obj_match_symbol(obj, str8_lit("@vol.md")).value;
+    return lnk_obj_match_symbol(obj, ("@vol.md")).value;
 }
 
 internal String8
@@ -569,7 +569,7 @@ lnk_is_coff_section_debug(LNK_Obj *obj, U64 sect_idx)
     String8 name, postfix;
     coff_parse_section_name(full_name, &name, &postfix);
 
-    B32 is_debug = str8_match(name, str8_lit(".debug"), 0);
+    B32 is_debug = str8_match(name, (".debug"), 0);
     return is_debug;
 }
 
@@ -689,7 +689,7 @@ lnk_raw_directives_from_obj(Arena *arena, LNK_Obj *obj)
         COFF_SectionHeader *sect_header = &section_table[sect_idx];
         if (sect_header.flags & COFF_SectionFlag_LnkInfo) {
             String8 sect_name = str8_cstring_capped(sect_header.name, sect_header.name + sizeof(sect_header.name));
-            if (str8_match(sect_name, str8_lit(".drectve"), 0)) {
+            if (str8_match(sect_name, (".drectve"), 0)) {
                 if (sect_header.flags & COFF_SectionFlag_CntUninitializedData) {
                     lnk_error_obj(LNK_Error_IllData, obj, ".drectve section header has flag COFF_SectionFlag_CntUninitializedData");
                     break;

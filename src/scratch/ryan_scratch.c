@@ -98,7 +98,7 @@ frame(void)
 internal void
 entry_point(CmdLine *cmdline)
 {
-    window_os = os_window_open(r2f32p(0, 0, 1280, 720), OS_WindowFlag_UseDefaultPosition, str8_lit("Window"));
+    window_os = os_window_open(r2f32p(0, 0, 1280, 720), OS_WindowFlag_UseDefaultPosition, ("Window"));
     os_window_first_paint(window_os);
     window_r = r_window_equip(window_os);
     for (;!update(););

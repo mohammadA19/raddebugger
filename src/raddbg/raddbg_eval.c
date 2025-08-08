@@ -11,7 +11,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(commands)
     {
         String8 cmd_name = expr.first.next.string;
         RD_CmdKindInfo *cmd_info = rd_cmd_kind_info_from_string(cmd_name);
-        E_TypeKey cmd_type = e_type_key_cons(.kind = E_TypeKind_U64, .name = str8_lit("command"));
+        E_TypeKey cmd_type = e_type_key_cons(.kind = E_TypeKind_U64, .name = ("command"));
         cmd_type = e_type_key_cons_meta_description(cmd_type, cmd_info.description);
         result.type_key = cmd_type;
         result.mode = E_Mode_Value;
@@ -31,9 +31,9 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(commands)
         {
             RD_CmdKindInfo *info = &rd_cmd_kind_info_table[k];
             if (info.flags & RD_CmdKindFlag_ListInUI &&
-                  (!str8_match(type.name, str8_lit("text_pt_commands"), 0) || info.flags & RD_CmdKindFlag_ListInTextPt) &&
-                  (!str8_match(type.name, str8_lit("text_range_commands"), 0) || info.flags & RD_CmdKindFlag_ListInTextRng) &&
-                  (!str8_match(type.name, str8_lit("tab_commands"), 0) || info.flags & RD_CmdKindFlag_ListInTab))
+                  (!str8_match(type.name, ("text_pt_commands"), 0) || info.flags & RD_CmdKindFlag_ListInTextPt) &&
+                  (!str8_match(type.name, ("text_range_commands"), 0) || info.flags & RD_CmdKindFlag_ListInTextRng) &&
+                  (!str8_match(type.name, ("tab_commands"), 0) || info.flags & RD_CmdKindFlag_ListInTab))
             {
                 String8 code_name = info.string;
                 String8 description = info.description;
@@ -94,7 +94,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(themes)
           expr.first.next.kind == E_ExprKind_LeafStringLiteral)
     {
         String8 theme_name = expr.first.next.string;
-        E_TypeKey theme_type = e_type_key_cons(.kind = E_TypeKind_U64, .name = str8_lit("theme"));
+        E_TypeKey theme_type = e_type_key_cons(.kind = E_TypeKind_U64, .name = ("theme"));
         result.type_key = theme_type;
         result.mode = E_Mode_Value;
         result.root = e_irtree_set_space(arena, e_space_make(RD_EvalSpaceKind_MetaTheme), e_irtree_const_u(arena, e_id_from_string(theme_name)));
@@ -307,69 +307,69 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
             if (0){}
             
             //- rjf: ctrl entity members
-            else if (entity != &ctrl_entity_nil && str8_match(child_schema.string, str8_lit("label"), 0))
+            else if (entity != &ctrl_entity_nil && str8_match(child_schema.string, ("label"), 0))
             {
                 child_type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U8), entity.string.size, E_TypeFlag_IsCodeText);
             }
-            else if (entity != &ctrl_entity_nil && str8_match(child_schema.string, str8_lit("exe"), 0))
+            else if (entity != &ctrl_entity_nil && str8_match(child_schema.string, ("exe"), 0))
             {
                 child_type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U8), entity.string.size, E_TypeFlag_IsPathText);
             }
-            else if (entity != &ctrl_entity_nil && str8_match(child_schema.string, str8_lit("dbg"), 0))
+            else if (entity != &ctrl_entity_nil && str8_match(child_schema.string, ("dbg"), 0))
             {
                 CTRL_Entity *dbg = ctrl_entity_child_from_kind(entity, CTRL_EntityKind_DebugInfoPath);
                 child_type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U8), dbg.string.size, E_TypeFlag_IsPathText);
             }
             
             //- rjf: cfg members
-            else if (str8_match(child_schema.first.string, str8_lit("code_string"), 0) ||
-                            str8_match(child_schema.first.string, str8_lit("expr_string"), 0))
+            else if (str8_match(child_schema.first.string, ("code_string"), 0) ||
+                            str8_match(child_schema.first.string, ("expr_string"), 0))
             {
                 child_type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U8), child.first.string.size, E_TypeFlag_IsCodeText);
             }
-            else if (str8_match(child_schema.first.string, str8_lit("path"), 0) ||
-                            str8_match(child_schema.first.string, str8_lit("path_pt"), 0))
+            else if (str8_match(child_schema.first.string, ("path"), 0) ||
+                            str8_match(child_schema.first.string, ("path_pt"), 0))
             {
                 child_type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U8), child.first.string.size, E_TypeFlag_IsPathText);
             }
             
-            else if (str8_match(child_schema.first.string, str8_lit("string"), 0))
+            else if (str8_match(child_schema.first.string, ("string"), 0))
             {
                 child_type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_U8), child.first.string.size, E_TypeFlag_IsPlainText);
             }
             
             //- rjf: catchall cases
-            else if (str8_match(child_schema.first.string, str8_lit("u64"), 0))
+            else if (str8_match(child_schema.first.string, ("u64"), 0))
             {
                 child_type_key = e_type_key_basic(E_TypeKind_U64);
                 wrap_child_w_meta_expr = 1;
             }
-            else if (str8_match(child_schema.first.string, str8_lit("u32"), 0))
+            else if (str8_match(child_schema.first.string, ("u32"), 0))
             {
                 child_type_key = e_type_key_basic(E_TypeKind_U32);
                 wrap_child_w_meta_expr = 1;
             }
-            else if (str8_match(child_schema.first.string, str8_lit("f32"), 0))
+            else if (str8_match(child_schema.first.string, ("f32"), 0))
             {
                 child_type_key = e_type_key_basic(E_TypeKind_F32);
                 wrap_child_w_meta_expr = 1;
             }
-            else if (str8_match(child_schema.first.string, str8_lit("bool"), 0))
+            else if (str8_match(child_schema.first.string, ("bool"), 0))
             {
                 child_type_key = e_type_key_basic(E_TypeKind_Bool);
                 wrap_child_w_meta_expr = 1;
             }
-            else if (str8_match(child_schema.first.string, str8_lit("vaddr_range"), 0))
+            else if (str8_match(child_schema.first.string, ("vaddr_range"), 0))
             {
                 Temp scratch = scratch_begin(&arena, 1);
                 E_MemberList vaddr_range_members_list = {0};
-                e_member_list_push_new(scratch.arena, &vaddr_range_members_list, .type_key = e_type_key_basic(E_TypeKind_U64), .name = str8_lit("min"), .off = 0);
-                e_member_list_push_new(scratch.arena, &vaddr_range_members_list, .type_key = e_type_key_basic(E_TypeKind_U64), .name = str8_lit("max"), .off = 8);
+                e_member_list_push_new(scratch.arena, &vaddr_range_members_list, .type_key = e_type_key_basic(E_TypeKind_U64), .name = ("min"), .off = 0);
+                e_member_list_push_new(scratch.arena, &vaddr_range_members_list, .type_key = e_type_key_basic(E_TypeKind_U64), .name = ("max"), .off = 8);
                 E_MemberArray vaddr_range_members = e_member_array_from_list(scratch.arena, &vaddr_range_members_list);
-                child_type_key = e_type_key_cons(.kind = E_TypeKind_Struct, .name = str8_lit("vaddr_range"), .count = vaddr_range_members.count, .members = vaddr_range_members.v);
+                child_type_key = e_type_key_cons(.kind = E_TypeKind_Struct, .name = ("vaddr_range"), .count = vaddr_range_members.count, .members = vaddr_range_members.v);
                 scratch_end(scratch);
             }
-            else if (str8_match(child_schema.first.string, str8_lit("query"), 0))
+            else if (str8_match(child_schema.first.string, ("query"), 0))
             {
                 child_type_key = e_string2typekey_map_lookup(rd_state.meta_name2type_map, child_schema.string);
             }
@@ -395,8 +395,8 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
                     expr_is_simple = 1;
                 }
                 if (expr.kind == E_ExprKind_LeafIdentifier &&
-                      (str8_match(expr.string, str8_lit("true"), 0) ||
-                        str8_match(expr.string, str8_lit("false"), 0)))
+                      (str8_match(expr.string, ("true"), 0) ||
+                        str8_match(expr.string, ("false"), 0)))
                 {
                     expr_is_simple = 1;
                 }
@@ -409,8 +409,8 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
             
             //- rjf: extend child type with decorative meta info
             {
-                MD_Node *display_name = md_tag_from_string(child_schema, str8_lit("display_name"), 0);
-                MD_Node *description = md_tag_from_string(child_schema, str8_lit("description"), 0);
+                MD_Node *display_name = md_tag_from_string(child_schema, ("display_name"), 0);
+                MD_Node *description = md_tag_from_string(child_schema, ("description"), 0);
                 if (!md_node_is_nil(display_name))
                 {
                     child_type_key = e_type_key_cons_meta_display_name(child_type_key, display_name.first.string);
@@ -423,29 +423,29 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
             
             //- rjf: extend child type with hex lens
             {
-                MD_Node *hex = md_tag_from_string(child_schema.first, str8_lit("hex"), 0);
+                MD_Node *hex = md_tag_from_string(child_schema.first, ("hex"), 0);
                 if (!md_node_is_nil(hex))
                 {
                     child_type_key = e_type_key_cons(.kind = E_TypeKind_Lens,
-                                                                                      .name = str8_lit("hex"),
+                                                                                      .name = ("hex"),
                                                                                       .direct_key = child_type_key);
                 }
             }
             
             //- rjf: extend child type with color lens
             {
-                MD_Node *color = md_tag_from_string(child_schema.first, str8_lit("color"), 0);
+                MD_Node *color = md_tag_from_string(child_schema.first, ("color"), 0);
                 if (!md_node_is_nil(color))
                 {
                     child_type_key = e_type_key_cons(.kind = E_TypeKind_Lens,
-                                                                                      .name = str8_lit("color"),
+                                                                                      .name = ("color"),
                                                                                       .direct_key = child_type_key);
                 }
             }
             
             //- rjf: extend child type with ranges
             {
-                MD_Node *range = md_tag_from_string(child_schema.first, str8_lit("range"), 0);
+                MD_Node *range = md_tag_from_string(child_schema.first, ("range"), 0);
                 if (!md_node_is_nil(range))
                 {
                     E_Expr *min_bound = e_parse_from_string(range.first.string).expr;
@@ -456,7 +456,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(schema)
                         max_bound,
                     };
                     child_type_key = e_type_key_cons(.kind = E_TypeKind_Lens,
-                                                                                      .name = str8_lit("range1"),
+                                                                                      .name = ("range1"),
                                                                                       .direct_key = child_type_key,
                                                                                       .count = 2,
                                                                                       .args = args);
@@ -508,14 +508,14 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(schema)
             for (MD_NodePtrNode *n = ext.schemas.first; n != 0; n = n.next)
             {
                 MD_Node *schema = n.v;
-                MD_Node *tag = md_tag_from_string(schema, str8_lit("expand_commands"), 0);
+                MD_Node *tag = md_tag_from_string(schema, ("expand_commands"), 0);
                 for MD_EachNode(arg, tag.first)
                 {
                     B32 filtered = 0;
-                    if (md_node_has_tag(arg, str8_lit("output"), 0))
+                    if (md_node_has_tag(arg, ("output"), 0))
                     {
                         String8 expr = rd_expr_from_cfg(ext.cfg);
-                        filtered = (!str8_match(expr, str8_lit("query:output"), 0));
+                        filtered = (!str8_match(expr, ("query:output"), 0));
                     }
                     if (!filtered)
                     {
@@ -550,9 +550,9 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(schema)
             MD_Node *schema = n.v;
             for MD_EachNode(child, schema.first)
             {
-                if (!md_node_has_tag(child, str8_lit("no_expand"), 0))
+                if (!md_node_has_tag(child, ("no_expand"), 0))
                 {
-                    MD_Node *expand_check = md_tag_from_string(child, str8_lit("expand_if"), 0);
+                    MD_Node *expand_check = md_tag_from_string(child, ("expand_if"), 0);
                     B32 expand_this_child = 1;
                     if (!md_node_is_nil(expand_check)) E_ParentKey(eval.key)
                     {
@@ -560,12 +560,12 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(schema)
                     }
                     if (expand_this_child)
                     {
-                        String8 display_name = md_tag_from_string(child, str8_lit("display_name"), 0)->first.string;
+                        String8 display_name = md_tag_from_string(child, ("display_name"), 0)->first.string;
                         if (display_name.size == 0)
                         {
                             display_name = rd_display_from_code_name(child.string);
                         }
-                        String8 desc = md_tag_from_string(child, str8_lit("description"), 0)->first.string;
+                        String8 desc = md_tag_from_string(child, ("description"), 0)->first.string;
                         FuzzyMatchRangeList name_matches         = fuzzy_match_find(scratch.arena, filter, child.string);
                         FuzzyMatchRangeList display_name_matches = fuzzy_match_find(scratch.arena, filter, display_name);
                         FuzzyMatchRangeList desc_matches         = fuzzy_match_find(scratch.arena, filter, desc);
@@ -643,7 +643,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(cfgs)
     E_IRTreeAndType result = {&e_irnode_nil};
     E_Expr *rhs = expr.first.next;
     if (rhs.kind == E_ExprKind_LeafIdentifier &&
-          str8_match(str8_prefix(rhs.string, 1), str8_lit("$"), 0))
+          str8_match(str8_prefix(rhs.string, 1), ("$"), 0))
     {
         String8 numeric_part = str8_skip(rhs.string, 1);
         RD_CfgID id = u64_from_str8(numeric_part, 16);
@@ -664,7 +664,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(control)
     E_IRTreeAndType result = {&e_irnode_nil};
     E_Expr *rhs = expr.first.next;
     if (rhs.kind == E_ExprKind_LeafIdentifier &&
-          str8_match(str8_prefix(rhs.string, 1), str8_lit("$"), 0))
+          str8_match(str8_prefix(rhs.string, 1), ("$"), 0))
     {
         CTRL_Handle handle = ctrl_handle_from_string(rhs.string);
         CTRL_Entity *entity = ctrl_entity_from_handle(&d_state.ctrl_entity_store.ctx, handle);
@@ -710,7 +710,7 @@ E_TYPE_IREXT_FUNCTION_DEF(cfgs_slice)
             for (MD_NodePtrNode *n = schemas.first; n != 0; n = n.next)
             {
                 MD_Node *schema = n.v;
-                MD_Node *collection_cmds_root = md_tag_from_string(schema, str8_lit("collection_commands"), 0);
+                MD_Node *collection_cmds_root = md_tag_from_string(schema, ("collection_commands"), 0);
                 for MD_EachNode(cmd, collection_cmds_root.first)
                 {
                     str8_list_push(arena, &cmds_list, cmd.string);
@@ -750,7 +750,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(cfgs_slice)
         {
             String8 rhs_name = expr.first.next.string;
             RD_CfgID id = 0;
-            if (str8_match(str8_prefix(rhs_name, 1), str8_lit("$"), 0))
+            if (str8_match(str8_prefix(rhs_name, 1), ("$"), 0))
             {
                 id = u64_from_str8(str8_skip(rhs_name, 1), 16);
                 cfg = rd_cfg_from_id(id);
@@ -805,7 +805,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(cfgs_slice)
         
         //- rjf: fill
         // TODO(rjf): @cleanup don't smuggle this through like this...
-        if (rd_cfg_child_from_string(rd_cfg_from_id(rd_regs()->view), str8_lit("lister")) == &rd_nil_cfg)
+        if (rd_cfg_child_from_string(rd_cfg_from_id(rd_regs()->view), ("lister")) == &rd_nil_cfg)
         {
             accel.cmds = ext.cmds;
             accel.cmds_idx_range = r1u64(0, accel.cmds.count);
@@ -835,7 +835,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(cfgs_query)
         for (MD_NodePtrNode *n = schemas.first; n != 0; n = n.next)
         {
             MD_Node *schema = n.v;
-            MD_Node *collection_cmds_root = md_tag_from_string(schema, str8_lit("collection_commands"), 0);
+            MD_Node *collection_cmds_root = md_tag_from_string(schema, ("collection_commands"), 0);
             for MD_EachNode(cmd, collection_cmds_root.first)
             {
                 str8_list_push(scratch.arena, &cmds, cmd.string);
@@ -1027,7 +1027,7 @@ E_TYPE_IREXT_FUNCTION_DEF(environment)
         RD_CfgList env_strings = {0};
         for (RD_Cfg *child = target.first; child != &rd_nil_cfg; child = child.next)
         {
-            if (str8_match(child.string, str8_lit("environment"), 0))
+            if (str8_match(child.string, ("environment"), 0))
             {
                 rd_cfg_list_push(scratch.arena, &env_strings, child);
             }
@@ -1141,7 +1141,7 @@ E_TYPE_IREXT_FUNCTION_DEF(watches)
         RD_CfgList env_strings = {0};
         for (RD_Cfg *child = target.first; child != &rd_nil_cfg; child = child.next)
         {
-            if (str8_match(child.string, str8_lit("watch"), 0))
+            if (str8_match(child.string, ("watch"), 0))
             {
                 rd_cfg_list_push(scratch.arena, &env_strings, child);
             }
@@ -1406,7 +1406,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(unattached_processes)
 {
     RD_UnattachedProcessesAccel *accel = (RD_UnattachedProcessesAccel *)user_data;
     U64 out_idx = 0;
-    E_TypeKey unattached_process_type = e_type_key_cons(.kind = E_TypeKind_U128, .name = str8_lit("unattached_process"));
+    E_TypeKey unattached_process_type = e_type_key_cons(.kind = E_TypeKind_U128, .name = ("unattached_process"));
     for (U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
     {
         CTRL_Entity *machine = accel.machines[idx];
@@ -1560,12 +1560,12 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(debug_info_table)
         E_TypeKey lhs_type_key = eval.irtree.type_key;
         E_Type *lhs_type = e_type_from_key(lhs_type_key);
         if (0){}
-        else if (str8_match(lhs_type.name, str8_lit("procedures"), 0))       {section = RDI_SectionKind_Procedures;}
-        else if (str8_match(lhs_type.name, str8_lit("globals"), 0))          {section = RDI_SectionKind_GlobalVariables;}
-        else if (str8_match(lhs_type.name, str8_lit("thread_locals"), 0))    {section = RDI_SectionKind_ThreadVariables;}
-        else if (str8_match(lhs_type.name, str8_lit("constants"), 0))        {section = RDI_SectionKind_Constants;}
-        else if (str8_match(lhs_type.name, str8_lit("types"), 0))            {section = RDI_SectionKind_UDTs;}
-        else if (str8_match(lhs_type.name, str8_lit("source_files"), 0))     {section = RDI_SectionKind_SourceFiles;}
+        else if (str8_match(lhs_type.name, ("procedures"), 0))       {section = RDI_SectionKind_Procedures;}
+        else if (str8_match(lhs_type.name, ("globals"), 0))          {section = RDI_SectionKind_GlobalVariables;}
+        else if (str8_match(lhs_type.name, ("thread_locals"), 0))    {section = RDI_SectionKind_ThreadVariables;}
+        else if (str8_match(lhs_type.name, ("constants"), 0))        {section = RDI_SectionKind_Constants;}
+        else if (str8_match(lhs_type.name, ("types"), 0))            {section = RDI_SectionKind_UDTs;}
+        else if (str8_match(lhs_type.name, ("source_files"), 0))     {section = RDI_SectionKind_SourceFiles;}
     }
     
     // rjf: gather debug info table items
@@ -1687,7 +1687,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(debug_info_table)
                         str8_list_push_front(scratch.arena, &path_parts, path_part);
                     }
                     StringJoin join = {0};
-                    join.sep = str8_lit("/");
+                    join.sep = ("/");
                     item_string = str8_list_join(scratch.arena, &path_parts, &join);
                     item_is_path = 1;
                 }break;
@@ -1708,7 +1708,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(debug_info_table)
             {
                 String8 token_string = str8_substr(item_string, tokens.v[idx].range);
                 if (tokens.v[idx].kind != E_TokenKind_Identifier &&
-                      !str8_match(token_string, str8_lit("."), 0))
+                      !str8_match(token_string, ("."), 0))
                 {
                     string_can_be_evalled = 0;
                     break;

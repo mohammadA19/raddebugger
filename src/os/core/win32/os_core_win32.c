@@ -577,7 +577,7 @@ os_properties_from_file_path(String8 path)
         WCHAR buffer[512] = {0};
         DWORD length = GetLogicalDriveStringsW(sizeof(buffer), buffer);
         U64 last_slash_pos = 0;
-        for (;last_slash_pos < path.size; last_slash_pos = str8_find_needle(path, last_slash_pos+1, str8_lit("/"), StringMatchFlag_SlashInsensitive));
+        for (;last_slash_pos < path.size; last_slash_pos = str8_find_needle(path, last_slash_pos+1, ("/"), StringMatchFlag_SlashInsensitive));
         String8 path_trimmed = str8_prefix(path, last_slash_pos);
         for (U64 off = 0; off < (U64)length;)
         {
@@ -688,7 +688,7 @@ internal OS_FileIter *
 os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags)
 {
     Temp scratch = scratch_begin(&arena, 1);
-    String8 path_with_wildcard = push_str8_cat(scratch.arena, path, str8_lit("\\*"));
+    String8 path_with_wildcard = push_str8_cat(scratch.arena, path, ("\\*"));
     String16 path16 = str16_from_8(scratch.arena, path_with_wildcard);
     OS_FileIter *iter = push_array(arena, OS_FileIter, 1);
     iter.flags = flags;
@@ -971,9 +971,9 @@ os_process_launch(OS_ProcessLaunchParams *params)
     String8 cmd = {0};
     {
         StringJoin join_params = {0};
-        join_params.pre = str8_lit("\"");
-        join_params.sep = str8_lit("\" \"");
-        join_params.post = str8_lit("\"");
+        join_params.pre = ("\"");
+        join_params.sep = ("\" \"");
+        join_params.post = ("\"");
         cmd = str8_list_join(scratch.arena, &params.cmd_line, &join_params);
     }
     
@@ -982,8 +982,8 @@ os_process_launch(OS_ProcessLaunchParams *params)
     String8 env = {0};
     {
         StringJoin join_params2 = {0};
-        join_params2.sep = str8_lit("\0");
-        join_params2.post = str8_lit("\0");
+        join_params2.sep = ("\0");
+        join_params2.post = ("\0");
         String8List all_opts = params.env;
         if (params.inherit_env != 0)
         {
@@ -1729,20 +1729,20 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
     {
         String16 arg16 = str16_cstring((U16 *)wargv[i]);
         String8 arg8 = str8_from_16(args_arena, arg16);
-        if (str8_match(arg8, str8_lit("--quiet"), StringMatchFlag_CaseInsensitive) ||
-              str8_match(arg8, str8_lit("-quiet"), StringMatchFlag_CaseInsensitive))
+        if (str8_match(arg8, ("--quiet"), StringMatchFlag_CaseInsensitive) ||
+              str8_match(arg8, ("-quiet"), StringMatchFlag_CaseInsensitive))
         {
             win32_g_is_quiet = 1;
         }
-        if (str8_match(arg8, str8_lit("--large_pages"), StringMatchFlag_CaseInsensitive) ||
-              str8_match(arg8, str8_lit("-large_pages"), StringMatchFlag_CaseInsensitive))
+        if (str8_match(arg8, ("--large_pages"), StringMatchFlag_CaseInsensitive) ||
+              str8_match(arg8, ("-large_pages"), StringMatchFlag_CaseInsensitive))
         {
             arena_default_flags        = ArenaFlag_LargePages;
             arena_default_reserve_size = Max(MB(64), os_w32_state.system_info.large_page_size);
             arena_default_commit_size  = arena_default_reserve_size;
         }
-        if (str8_match(arg8, str8_lit("--gen_crash_dump"), StringMatchFlag_CaseInsensitive) ||
-              str8_match(arg8, str8_lit("-gen_crash_dump"), StringMatchFlag_CaseInsensitive))
+        if (str8_match(arg8, ("--gen_crash_dump"), StringMatchFlag_CaseInsensitive) ||
+              str8_match(arg8, ("-gen_crash_dump"), StringMatchFlag_CaseInsensitive))
         {
             win32_g_gen_dump = 1;
         }

@@ -35,8 +35,8 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
   //
   // Set typed inputs
   //
-  if (cmd_line_has_flag(cmdl, str8_lit("pe"))) {
-    pe_name       = cmd_line_string(cmdl, str8_lit("pe"));
+  if (cmd_line_has_flag(cmdl, ("pe"))) {
+    pe_name       = cmd_line_string(cmdl, ("pe"));
     pe_data       = rc_data_from_file_path(arena, pe_name);
     if (!pe_check_magic(pe_data)) {
       fprintf(stderr, "error: -pe:%.*s is not of PE format\n", str8_varg(pe_name));
@@ -44,8 +44,8 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
     }
     is_pe_present = 1;
   }
-  if (cmd_line_has_flag(cmdl, str8_lit("pdb"))) {
-    pdb_name       = cmd_line_string(cmdl, str8_lit("pdb"));
+  if (cmd_line_has_flag(cmdl, ("pdb"))) {
+    pdb_name       = cmd_line_string(cmdl, ("pdb"));
     pdb_data       = rc_data_from_file_path(arena, pdb_name);
     if (!msf_check_magic_20(pdb_data) && !msf_check_magic_70(pdb_data)) {
       fprintf(stderr, "error: -pdb:%.*s is not of PDB format\n", str8_varg(pdb_name));
@@ -53,8 +53,8 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
     }
     is_pdb_present = 1;
   }
-  if (cmd_line_has_flag(cmdl, str8_lit("elf"))) {
-    elf_name       = cmd_line_string(cmdl, str8_lit("elf"));
+  if (cmd_line_has_flag(cmdl, ("elf"))) {
+    elf_name       = cmd_line_string(cmdl, ("elf"));
     elf_data       = rc_data_from_file_path(arena, elf_name);
     if (!elf_check_magic(elf_data)) {
       fprintf(stderr, "error: -elf:%.*s is not of ELF format\n", str8_varg(elf_name));
@@ -62,8 +62,8 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
     }
     is_elf_present = 1;
   }
-  if (cmd_line_has_flag(cmdl, str8_lit("elf_debug"))) {
-    elf_debug_name       = cmd_line_string(cmdl, str8_lit("elf_debug"));
+  if (cmd_line_has_flag(cmdl, ("elf_debug"))) {
+    elf_debug_name       = cmd_line_string(cmdl, ("elf_debug"));
     elf_debug_data       = rc_data_from_file_path(arena, elf_debug_name);
     if (!elf_check_magic(elf_debug_data)) {
       fprintf(stderr, "error: -elf_debug:%.*s is not of ELF format\n", str8_varg(elf_debug_name));
@@ -76,11 +76,11 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
   // Pick conversion driver
   //
   RC_Driver driver = RC_Driver_Null;
-  if (cmd_line_has_flag(cmdl, str8_lit("driver"))) {
-    String8 driver_name = cmd_line_string(cmdl, str8_lit("driver"));
-    if (str8_match(driver_name, str8_lit("dwarf"), StringMatchFlag_CaseInsensitive)) {
+  if (cmd_line_has_flag(cmdl, ("driver"))) {
+    String8 driver_name = cmd_line_string(cmdl, ("driver"));
+    if (str8_match(driver_name, ("dwarf"), StringMatchFlag_CaseInsensitive)) {
       driver = RC_Driver_Dwarf;
-    } else if (str8_match(driver_name, str8_lit("pdb"), StringMatchFlag_CaseInsensitive)) {
+    } else if (str8_match(driver_name, ("pdb"), StringMatchFlag_CaseInsensitive)) {
       driver = RC_Driver_Pdb;
     } else {
       fprintf(stderr, "error: unknown driver \"%.*s\"\n", str8_varg(driver_name));
@@ -319,17 +319,17 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
   // Handle -out param
   //
   String8 out_name = {0};
-  if (cmd_line_has_flag(cmdl, str8_lit("out"))) {
-    out_name = cmd_line_string(cmdl, str8_lit("out"));
+  if (cmd_line_has_flag(cmdl, ("out"))) {
+    out_name = cmd_line_string(cmdl, ("out"));
     if (out_name.size == 0) {
       fprintf(stderr, "error: -out parameter doesn't have a value\n");
       os_abort(1);
     }
   } else {
     if (image_name.size) {
-      out_name = path_replace_file_extension(arena, image_name, str8_lit("rdi"));
+      out_name = path_replace_file_extension(arena, image_name, ("rdi"));
     } else {
-      out_name = path_replace_file_extension(arena, debug_name, str8_lit("rdi"));
+      out_name = path_replace_file_extension(arena, debug_name, ("rdi"));
     }
   }
   
@@ -439,9 +439,9 @@ rc_rdi_from_cmd_line(Arena *arena, CmdLine *cmdl)
 internal void
 rc_main(CmdLine *cmdl)
 {
-  B32 do_help = (cmd_line_has_flag(cmdl, str8_lit("help")) ||
-                 cmd_line_has_flag(cmdl, str8_lit("h")) ||
-                 cmd_line_has_flag(cmdl, str8_lit("?")) ||
+  B32 do_help = (cmd_line_has_flag(cmdl, ("help")) ||
+                 cmd_line_has_flag(cmdl, ("h")) ||
+                 cmd_line_has_flag(cmdl, ("?")) ||
                  cmdl.argc == 1);
   if (do_help) {
     fprintf(stderr, "--- Help ---------------------------------------------------------------------\n");

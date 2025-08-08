@@ -884,11 +884,11 @@ coff_archive_parse_from_member_list(COFF_ArchiveMemberList member_list)
                 first_header = ptr.data;
                 ptr = ptr.next;
             } else {
-                error = str8_lit("first header doesn't have correct end");
+                error = ("first header doesn't have correct end");
             }
         }
     } else {
-        error = str8_lit("missing first header");
+        error = ("missing first header");
     }
     
     if (!error.size && ptr) {
@@ -898,7 +898,7 @@ coff_archive_parse_from_member_list(COFF_ArchiveMemberList member_list)
                 ptr = ptr.next;
                 has_second_header = 1;
             } else {
-                error = str8_lit("second header doesn't have correct end");
+                error = ("second header doesn't have correct end");
             }
         }
     }
@@ -910,7 +910,7 @@ coff_archive_parse_from_member_list(COFF_ArchiveMemberList member_list)
                 ptr = ptr.next;
                 has_long_names;
             } else {
-                error = str8_lit("long names header doesn't have correct end");
+                error = ("long names header doesn't have correct end");
             }
         }
     }

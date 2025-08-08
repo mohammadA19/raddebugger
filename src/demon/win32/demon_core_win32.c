@@ -1221,14 +1221,14 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
             String8List args = {0};
             String8 exe_path = params.cmd_line.first.string;
             String8List exe_path_parts = str8_split_path(scratch.arena, exe_path);
-            exe_path = str8_list_join(scratch.arena, &exe_path_parts, &(StringJoin){.sep = str8_lit("\\")});
+            exe_path = str8_list_join(scratch.arena, &exe_path_parts, &(StringJoin){.sep = ("\\")});
             str8_list_pushf(scratch.arena, &args, "\"%S\"", exe_path);
             for (String8Node *n = params.cmd_line.first.next; n != 0; n = n.next)
             {
                 str8_list_push(scratch.arena, &args, n.string);
             }
             StringJoin join_params = {0};
-            join_params.sep = str8_lit(" ");
+            join_params.sep = (" ");
             cmd = str8_list_join(scratch.arena, &args, &join_params);
         }
         
@@ -1239,7 +1239,7 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
             if (params.inherit_env != 0)
             {
                 MemoryZeroStruct(&all_opts);
-                str8_list_push(scratch.arena, &all_opts, str8_lit("_NO_DEBUG_HEAP=1"));
+                str8_list_push(scratch.arena, &all_opts, ("_NO_DEBUG_HEAP=1"));
                 for (String8Node *n = params.env.first; n != 0; n = n.next)
                 {
                     str8_list_push(scratch.arena, &all_opts, n.string);
@@ -1250,8 +1250,8 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
                 }
             }
             StringJoin join_params2 = {0};
-            join_params2.sep = str8_lit("\0");
-            join_params2.post = str8_lit("\0");
+            join_params2.sep = ("\0");
+            join_params2.post = ("\0");
             env = str8_list_join(scratch.arena, &all_opts, &join_params2);
         }
         
@@ -1318,7 +1318,7 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
             DWORD error = GetLastError();
             LPWSTR message = 0;
             FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, 0, error, MAKELANGID(LANG_NEUTRAL,SUBLANG_NEUTRAL), (LPWSTR)&message, 0, 0);
-            String8 message8 = message ? str8_from_16(scratch.arena, str16_cstring(message)) : str8_lit("unknown error");
+            String8 message8 = message ? str8_from_16(scratch.arena, str16_cstring(message)) : ("unknown error");
             LocalFree(message);
             
             log_user_errorf("There was an error starting %S: %S", params.cmd_line.first.string, message8);

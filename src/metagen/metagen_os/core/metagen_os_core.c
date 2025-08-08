@@ -175,7 +175,7 @@ os_cmd_line_launch(String8 string)
         String8Node *stdout_delimiter_n = 0;
         for (String8Node *n = parts.first; n != 0; n = n.next)
         {
-            if (str8_match(n.string, str8_lit(">"), 0))
+            if (str8_match(n.string, (">"), 0))
             {
                 stdout_delimiter_n = n;
                 break;

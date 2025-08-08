@@ -367,9 +367,9 @@ lnk_make_code_view_input(TP_Context *tp, TP_Arena *tp_arena, LNK_IO_Flags io_fla
     ProfBegin("Collect CodeView");
     // TODO: fix memory leak, we need a Temp wrapper for pool arena
     B32 collect_discarded_flag = 0;
-    String8List *debug_s_list_arr = lnk_collect_obj_sections(tp, tp_arena, obj_count, obj_arr, str8_lit(".debug$S"), collect_discarded_flag);
-    String8List *debug_p_list_arr = lnk_collect_obj_sections(tp, tp_arena, obj_count, obj_arr, str8_lit(".debug$P"), collect_discarded_flag);
-    String8List *debug_t_list_arr = lnk_collect_obj_sections(tp, tp_arena, obj_count, obj_arr, str8_lit(".debug$T"), collect_discarded_flag);
+    String8List *debug_s_list_arr = lnk_collect_obj_sections(tp, tp_arena, obj_count, obj_arr, (".debug$S"), collect_discarded_flag);
+    String8List *debug_p_list_arr = lnk_collect_obj_sections(tp, tp_arena, obj_count, obj_arr, (".debug$P"), collect_discarded_flag);
+    String8List *debug_t_list_arr = lnk_collect_obj_sections(tp, tp_arena, obj_count, obj_arr, (".debug$T"), collect_discarded_flag);
     ProfEnd();
 
     if (lnk_get_log_status(LNK_Log_Debug) || PROFILE_TELEMETRY) {
@@ -2501,7 +2501,7 @@ THREAD_POOL_TASK_FUNC(lnk_replace_type_names_with_hashes_lenient_task)
                 CV_NumericParsed dummy;
                 U64 numeric_size = cv_read_numeric(leaf.data, sizeof(CV_LeafStruct), &dummy);
 
-                String8 lambda_prefix = str8_lit("<lambda_");
+                String8 lambda_prefix = ("<lambda_");
                 U64     colon_pos     = str8_find_needle_reverse(udt_info.name, 0, lambda_prefix, 0);
                 B32     is_lambda     = colon_pos != 0;
 
@@ -3298,7 +3298,7 @@ lnk_build_pdb(TP_Context               *tp,
 
             // sanity check file extension or VS wont load NatVis
             String8 ext = str8_skip_last_dot(natvis_file_path);
-            if (!str8_match(ext, str8_lit("natvis"), StringMatchFlag_CaseInsensitive)) {
+            if (!str8_match(ext, ("natvis"), StringMatchFlag_CaseInsensitive)) {
                 lnk_error(LNK_Warning_Natvis, "Visual Studio expects .natvis extension: \"%S\"", natvis_file_path);
             }
 
@@ -4375,7 +4375,7 @@ lnk_find_container_type(String8 name, Rng1U64 tpi_itype_range, LNK_UDTNameBucket
 {
     CV_TypeIndex container_itype = 0;
 
-    String8 delim     = str8_lit("::");
+    String8 delim     = ("::");
     U64     delim_pos = str8_find_needle_reverse(name, 0, delim, 0);
     if (delim_pos > 0) {
         U64     container_name_size = delim_pos - delim.size;

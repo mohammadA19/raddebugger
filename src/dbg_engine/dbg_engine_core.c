@@ -130,7 +130,7 @@ d_possible_path_overrides_from_maps_path(Arena *arena, D_PathMapArray *path_maps
                     str8_list_push(scratch.arena, &candidate_parts, p.string);
                 }
                 StringJoin join = {0};
-                join.sep = str8_lit("/");
+                join.sep = ("/");
                 String8 candidate_path = str8_list_join(arena, &candidate_parts, &join);
                 str8_list_push(arena, &result, candidate_path);
             }
@@ -788,7 +788,7 @@ d_lines_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff)
                     str8_list_push_front(scratch.arena, &path_parts, path_part);
                 }
                 StringJoin join = {0};
-                join.sep = str8_lit("/");
+                join.sep = ("/");
                 String8 file_normalized_full_path = str8_list_join(arena, &path_parts, &join);
                 D_LineNode *n = push_array(arena, D_LineNode, 1);
                 SLLQueuePush(result.first, result.last, n);
@@ -1554,7 +1554,7 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
                     CTRL_EntityArray existing_processes = ctrl_entity_array_from_kind(&d_state.ctrl_entity_store->ctx, CTRL_EntityKind_Process);
                     if (existing_processes.count == 1)
                     {
-                        MTX_Op op = {r1u64(0, 0xffffffffffffffffull), str8_lit("[new session]\n")};
+                        MTX_Op op = {r1u64(0, 0xffffffffffffffffull), ("[new session]\n")};
                         mtx_push_op(d_state.output_log_key, op);
                     }
                 }break;
@@ -1783,7 +1783,7 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
                     // rjf: no targets -> error
                     if (targets_to_launch.count == 0)
                     {
-                        log_user_error(str8_lit("No active targets exist; cannot launch. You must select a target first."));
+                        log_user_error(("No active targets exist; cannot launch. You must select a target first."));
                     }
                 }break;
                 case D_CmdKind_Kill:
@@ -1791,7 +1791,7 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
                     CTRL_Entity *process = ctrl_entity_from_handle(&d_state.ctrl_entity_store->ctx, params.process);
                     if (process == &ctrl_entity_nil)
                     {
-                        log_user_error(str8_lit("Cannot kill; no process was specified."));
+                        log_user_error(("Cannot kill; no process was specified."));
                     }
                     else
                     {
@@ -1814,7 +1814,7 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
                     CTRL_Entity *process = ctrl_entity_from_handle(&d_state.ctrl_entity_store->ctx, params.process);
                     if (process == &ctrl_entity_nil)
                     {
-                        log_user_error(str8_lit("Cannot detach; no process specified."));
+                        log_user_error(("Cannot detach; no process specified."));
                     }
                     else
                     {
@@ -1847,7 +1847,7 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
                         }
                         else
                         {
-                            log_user_error(str8_lit("Cannot run with all threads frozen."));
+                            log_user_error(("Cannot run with all threads frozen."));
                         }
                     }
                 }break;
@@ -1860,18 +1860,18 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
                     CTRL_Entity *thread = ctrl_entity_from_handle(&d_state.ctrl_entity_store->ctx, params.thread);
                     if (thread == &ctrl_entity_nil)
                     {
-                        log_user_error(str8_lit("Must have a selected thread to step."));
+                        log_user_error(("Must have a selected thread to step."));
                     }
                     else if (d_ctrl_targets_running())
                     {
                         if (d_ctrl_last_run_kind() == D_RunKind_Run)
                         {
-                            log_user_error(str8_lit("Must halt before stepping."));
+                            log_user_error(("Must halt before stepping."));
                         }
                     }
                     else if (thread.is_frozen)
                     {
-                        log_user_error(str8_lit("Must thaw selected thread before stepping."));
+                        log_user_error(("Must thaw selected thread before stepping."));
                     }
                     else
                     {
@@ -1900,7 +1900,7 @@ d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_P
                                 }
                                 else
                                 {
-                                    log_user_error(str8_lit("Could not find the return address of the current callstack frame successfully."));
+                                    log_user_error(("Could not find the return address of the current callstack frame successfully."));
                                     good = 0;
                                 }
                                 

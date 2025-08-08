@@ -528,7 +528,7 @@ mscrt_string_from_eh_adjectives(Arena *arena, MSCRT_EhHandlerTypeFlags adjective
     if (adjectives & MSCRT_EhHandlerTypeFlag_IsComplusEH) {
         str8_list_pushf(scratch.arena, &adj_list, "ComplusEH");
     }
-    String8 result = str8_list_join(arena, &adj_list, &(StringJoin){.sep=str8_lit(", ")});
+    String8 result = str8_list_join(arena, &adj_list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }

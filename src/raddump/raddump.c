@@ -66,13 +66,13 @@ rd_rdi_from_pe(Arena *arena, String8 pe_path)
     String8 parse_status_string = str8_zero();
     if (parse_status == RDI_ParseStatus_Good) {
     } else if (parse_status == RDI_ParseStatus_HeaderDoesNotMatch) {
-      parse_status_string = str8_lit("Header does not match");
+      parse_status_string = ("Header does not match");
     } else if (parse_status == RDI_ParseStatus_UnsupportedVersionNumber) {
-      parse_status_string = str8_lit("Unsupported version number");
+      parse_status_string = ("Unsupported version number");
     } else if (parse_status == RDI_ParseStatus_InvalidDataSecionLayout) {
-      parse_status_string = str8_lit("Invalid data section layout");
+      parse_status_string = ("Invalid data section layout");
     } else if (parse_status == RDI_ParseStatus_MissingRequiredSection) {
-      parse_status_string = str8_lit("Missing required section");
+      parse_status_string = ("Missing required section");
     } else {
       parse_status_string = push_str8f(scratch.arena, "unknown parse status code: %u", parse_status);
     }
@@ -185,13 +185,13 @@ rd_string_from_flags(Arena *arena, String8List list, U64 remaining_flags)
 {
   String8 result;
   if (list.node_count == 0 && remaining_flags == 0) {
-    result = str8_lit("0");
+    result = ("0");
   } else {
     Temp scratch = scratch_begin(&arena, 1);
     if (remaining_flags != 0) {
       str8_list_pushf(scratch.arena, &list, "Unknown flags: %#llx", remaining_flags);
     }
-    result = str8_list_join(arena, &list, &(StringJoin){.sep = str8_lit(", ") });
+    result = str8_list_join(arena, &list, &(StringJoin){.sep = (", ") });
     scratch_end(scratch);
   }
   return result;
@@ -205,7 +205,7 @@ rd_string_from_array_u32(Arena *arena, U32 *v, U64 count)
   for (U64 i = 0; i < count; ++i) {
     str8_list_pushf(scratch.arena, &list, "%u", v[i]);
   }
-  String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+  String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
   scratch_end(scratch);
   return result;
 }
@@ -218,7 +218,7 @@ rd_string_from_hex_u8(Arena *arena, U8 *v, U64 count)
   for (U64 i = 0; i < count; ++i) {
     str8_list_pushf(scratch.arena, &list, "%#x", v[i]);
   }
-  String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+  String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
   scratch_end(scratch);
   return result;
 }
@@ -231,7 +231,7 @@ rd_string_from_array_hex_u32(Arena *arena, U32 *v, U64 count)
   for (U64 i = 0; i < count; ++i) {
     str8_list_pushf(scratch.arena, &list, "%#x", v[i]);
   }
-  String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+  String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
   scratch_end(scratch);
   return result;
 }
@@ -244,7 +244,7 @@ rd_string_from_array_hex_u64(Arena *arena, U64 *v, U64 count)
   for (U64 i = 0; i < count; ++i) {
     str8_list_pushf(scratch.arena, &list, "%#llx", v[i]);
   }
-  String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=str8_lit(", ")});
+  String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
   scratch_end(scratch);
   return result;
 }
@@ -254,19 +254,19 @@ rd_format_preamble(Arena *arena, String8List *out, String8 indent, String8 input
 {
   Temp scratch = scratch_begin(&arena, 1);
   
-  String8 input_type_string = str8_lit("???");
+  String8 input_type_string = ("???");
   if (coff_is_regular_archive(raw_data)) {
-    input_type_string = str8_lit("Archive");
+    input_type_string = ("Archive");
   } else if (coff_is_thin_archive(raw_data)) {
-    input_type_string = str8_lit("Thin Archive");
+    input_type_string = ("Thin Archive");
   } else if (coff_is_big_obj(raw_data)) {
-    input_type_string = str8_lit("Big Obj");
+    input_type_string = ("Big Obj");
   } else if (coff_is_obj(raw_data)) {
-    input_type_string = str8_lit("Obj");
+    input_type_string = ("Obj");
   } else if (pe_check_magic(raw_data)) {
-    input_type_string = str8_lit("COFF/PE");
+    input_type_string = ("COFF/PE");
   } else if (rd_is_rdi(raw_data)) {
-    input_type_string = str8_lit("RDI");
+    input_type_string = ("RDI");
   } else if (elf_check_magic(raw_data)) {
     U8 sig[ELF_Identifier_Max] = {0};
     str8_deserial_read(raw_data, 0, &sig[0], sizeof(sig), 1);
@@ -632,7 +632,7 @@ cv_print_binary_annots(Arena *arena, String8List *out, String8 indent, CV_Arch a
         str8_list_pushf(scratch.arena, &op_list, " %x", params[i]);
       }
       
-      String8 op_str = str8_list_join(scratch.arena, &op_list, &(StringJoin){.sep=str8_lit(" ")});
+      String8 op_str = str8_list_join(scratch.arena, &op_list, &(StringJoin){.sep=(" ")});
       rd_printf("%S", op_str);
     }
     rd_unindent();
@@ -1452,7 +1452,7 @@ cv_print_symbol(Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV
           str8_list_pushf(scratch.arena, &flags_list, "shared with Module %04X", sym.word0+1);
         }
       }
-      String8 flags_str = str8_list_join(scratch.arena, &flags_list, &(StringJoin){.sep=str8_lit(", ")});
+      String8 flags_str = str8_list_join(scratch.arena, &flags_list, &(StringJoin){.sep=(", ")});
       
       rd_printf("%S", flags_str);
     } break;
@@ -2264,7 +2264,7 @@ cv_print_lines_c13(Arena *arena, String8List *out, String8 indent, String8 raw_l
       }
       
       if ((line_idx+1) % 4 == 0 || (line_idx+1) == file.num_lines) {
-        String8 line_str = str8_list_join(scratch.arena, &columns, &(StringJoin){.sep=str8_lit("\t")});
+        String8 line_str = str8_list_join(scratch.arena, &columns, &(StringJoin){.sep=("\t")});
         rd_printf("%S", line_str);
         
         temp_end(temp);
@@ -2293,7 +2293,7 @@ cv_print_file_checksums(Arena *arena, String8List *out, String8 indent, String8 
     cursor += str8_deserial_read_struct(raw_chksums, cursor, &chksum);
     
     Temp     temp       = temp_begin(scratch.arena);
-    String8  chksum_str = str8_lit("???");
+    String8  chksum_str = ("???");
     U8      *chksum_ptr = str8_deserial_get_raw_ptr(raw_chksums, cursor, chksum.len);
     if (chksum_ptr) {
       chksum_str = rd_format_hex_array(temp.arena, chksum_ptr, chksum.len);
@@ -2360,7 +2360,7 @@ cv_print_inlinee_lines(Arena *arena, String8List *out, String8 indent, String8 r
           cursor += str8_deserial_read_struct(raw_data, cursor, &file_id);
           str8_list_pushf(temp.arena, &extra_files_list, "%08x", file_id);
         }
-        String8 extra_files = str8_list_join(temp.arena, &extra_files_list, &(StringJoin){.sep=str8_lit(" ,")});
+        String8 extra_files = str8_list_join(temp.arena, &extra_files_list, &(StringJoin){.sep=(" ,")});
         
         rd_printf("%08x %08x %u %S", line.inlinee, line.file_off, line.first_source_ln, extra_files);
         
@@ -3126,20 +3126,20 @@ pe_print_delay_import_table(Arena *arena, String8List *out, String8 indent, U64 
       for (U64 imp_idx = 0; imp_idx < dll.import_count; ++imp_idx) {
         PE_ParsedImport *imp = dll.imports+imp_idx;
         
-        String8 bound = str8_lit("NULL");
+        String8 bound = ("NULL");
         if (imp_idx < dll.bound_table_count) {
           U64 bound_addr = dll.bound_table[imp_idx];
           bound = push_str8f(scratch.arena, "%#llx", bound_addr);
         }
         
-        String8 unload = str8_lit("NULL");
+        String8 unload = ("NULL");
         if (imp_idx < dll.unload_table_count) {
           U64 unload_addr = dll.unload_table[imp_idx];
           unload = push_str8f(scratch.arena, "%#llx", unload_addr);
         }
         
         if (imp.type == PE_ParsedImport_Ordinal) {
-          rd_printf("%-16S %-16S 0x%-6x %S", bound, unload, imp.u.ordinal, str8_lit("[NONAME]"));
+          rd_printf("%-16S %-16S 0x%-6x %S", bound, unload, imp.u.ordinal, ("[NONAME]"));
         } else if (imp.type == PE_ParsedImport_Name) {
           rd_printf("%-16S %-16S 0x%-6x %S", bound, unload, imp.u.name.hint, imp.u.name.string);
         }
@@ -3176,7 +3176,7 @@ pe_print_resources(Arena *arena, String8List *out, String8 indent, PE_ResourceDi
   stack.table          = root;
   stack.print_table    = 1;
   stack.is_named       = 1;
-  stack.dir_name       = str8_lit("ROOT");
+  stack.dir_name       = ("ROOT");
   stack.curr_name_node = root.named_list.first;
   stack.curr_id_node   = root.id_list.first;
   
@@ -3342,7 +3342,7 @@ pe_print_exceptions_x8664(Arena              *arena,
       if (flags_list.node_count == 0) {
         str8_list_pushf(scratch.arena, &flags_list, "%#llx", f);
       }
-      flags_str = str8_list_join(scratch.arena, &flags_list, &(StringJoin){.sep=str8_lit(", ")});
+      flags_str = str8_list_join(scratch.arena, &flags_list, &(StringJoin){.sep=(", ")});
     }
     
     U64            codes_offset = unwind_info_offset + sizeof(PE_UnwindInfo);
@@ -3446,7 +3446,7 @@ pe_print_exceptions_x8664(Arena              *arena,
         } break;
       }
       
-      String8 code_line = str8_list_join(code_temp.arena, &code_list, &(StringJoin){.sep=str8_lit(" ")});
+      String8 code_line = str8_list_join(code_temp.arena, &code_list, &(StringJoin){.sep=(" ")});
       rd_printf("%S", code_line);
       
       temp_end(code_temp);
@@ -3594,7 +3594,7 @@ pe_print_exceptions_x8664(Arena              *arena,
           if (func_info.header & MSCRT_FuncInfoV4Flag_NoExcept) {
             str8_list_pushf(scratch.arena, &header_list, "NoExcept");
           }
-          header_str = str8_list_join(scratch.arena, &header_list, &(StringJoin){.sep=str8_lit(", ")});
+          header_str = str8_list_join(scratch.arena, &header_list, &(StringJoin){.sep=(", ")});
         }
         
         rd_printf("Function Info V4:");
@@ -3620,10 +3620,10 @@ pe_print_exceptions_x8664(Arena              *arena,
             MSCRT_UnwindEntryV4 *ue       = &unwind_map.v[i];
             String8                 type_str = str8_zero();
             switch (ue.type) {
-              case MSCRT_UnwindMapV4Type_NoUW:             type_str = str8_lit("NoUW");             break;
-              case MSCRT_UnwindMapV4Type_DtorWithObj:      type_str = str8_lit("DtorWithObj");      break;
-              case MSCRT_UnwindMapV4Type_DtorWithPtrToObj: type_str = str8_lit("DtorWithPtrToObj"); break;
-              case MSCRT_UnwindMapV4Type_VOFF:             type_str = str8_lit("VOFF");             break;
+              case MSCRT_UnwindMapV4Type_NoUW:             type_str = ("NoUW");             break;
+              case MSCRT_UnwindMapV4Type_DtorWithObj:      type_str = ("DtorWithObj");      break;
+              case MSCRT_UnwindMapV4Type_DtorWithPtrToObj: type_str = ("DtorWithPtrToObj"); break;
+              case MSCRT_UnwindMapV4Type_VOFF:             type_str = ("VOFF");             break;
             }
             if (ue.type == MSCRT_UnwindMapV4Type_DtorWithObj || ue.type == MSCRT_UnwindMapV4Type_DtorWithPtrToObj) {
               rd_printf("[%2u] NextOff=%u Type=%-16S Action=%#08x Object=%#x", i, ue.next_off, type_str, ue.action, ue.object);
@@ -3667,7 +3667,7 @@ pe_print_exceptions_x8664(Arena              *arena,
                   str8_list_pushf(arena, &line_list, "ContAddr[%u]=%#llx", icont, handler.catch_funclet_cont_addr[icont]);
                 }
                 
-                String8 handler_str = str8_list_join(arena, &line_list, &(StringJoin){.sep=str8_lit(" ")});
+                String8 handler_str = str8_list_join(arena, &line_list, &(StringJoin){.sep=(" ")});
                 rd_printf("%S", handler_str);
               }
             }
@@ -3719,7 +3719,7 @@ pe_print_exceptions_x8664(Arena              *arena,
           if (flags == 0) {
             str8_list_pushf(arena, &flags_list, "None");
           }
-          flags_str = str8_list_join(arena, &flags_list, &(StringJoin){.sep=str8_lit(", ")});
+          flags_str = str8_list_join(arena, &flags_list, &(StringJoin){.sep=(", ")});
         }
         rd_printf("GS unwind flags:     %S", flags_str);
         rd_printf("Cookie offset:       %x", cookie_offset);

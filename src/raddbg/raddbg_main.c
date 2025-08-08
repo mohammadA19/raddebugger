@@ -414,24 +414,24 @@ entry_point(CmdLine *cmd_line)
     U64 jit_code = 0;
     U64 jit_addr = 0;
     {
-        if (cmd_line_has_flag(cmd_line, str8_lit("ipc")))
+        if (cmd_line_has_flag(cmd_line, ("ipc")))
         {
             exec_mode = ExecMode_IPCSender;
         }
-        else if (cmd_line_has_flag(cmd_line, str8_lit("bin")))
+        else if (cmd_line_has_flag(cmd_line, ("bin")))
         {
             exec_mode = ExecMode_BinaryUtility;
         }
-        else if (cmd_line_has_flag(cmd_line, str8_lit("?")) ||
-                        cmd_line_has_flag(cmd_line, str8_lit("help")))
+        else if (cmd_line_has_flag(cmd_line, ("?")) ||
+                        cmd_line_has_flag(cmd_line, ("help")))
         {
             exec_mode = ExecMode_Help;
         }
-        auto_run = cmd_line_has_flag(cmd_line, str8_lit("auto_run"));
-        auto_step = cmd_line_has_flag(cmd_line, str8_lit("auto_step"));
-        String8 jit_pid_string = cmd_line_string(cmd_line, str8_lit("jit_pid"));
-        String8 jit_code_string = cmd_line_string(cmd_line, str8_lit("jit_code"));
-        String8 jit_addr_string = cmd_line_string(cmd_line, str8_lit("jit_addr"));
+        auto_run = cmd_line_has_flag(cmd_line, ("auto_run"));
+        auto_step = cmd_line_has_flag(cmd_line, ("auto_step"));
+        String8 jit_pid_string = cmd_line_string(cmd_line, ("jit_pid"));
+        String8 jit_code_string = cmd_line_string(cmd_line, ("jit_code"));
+        String8 jit_addr_string = cmd_line_string(cmd_line, ("jit_addr"));
         try_u64_from_str8_c_rules(jit_pid_string, &jit_pid);
         try_u64_from_str8_c_rules(jit_code_string, &jit_code);
         try_u64_from_str8_c_rules(jit_addr_string, &jit_addr);
@@ -625,7 +625,7 @@ entry_point(CmdLine *cmd_line)
                             IPCInfo *ipc_info = (IPCInfo *)ipc_main2sender_shared_memory_base;
                             U8 *buffer = (U8 *)(ipc_info+1);
                             U64 buffer_max = IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo);
-                            StringJoin join = {str8_lit(""), str8_lit("\0"), str8_lit("")};
+                            StringJoin join = {(""), ("\0"), ("")};
                             String8 msg = str8_list_join(scratch.arena, &rd_state.cmd_outputs, &join);
                             ipc_info.msg_size = Min(buffer_max, msg.size);
                             MemoryCopy(buffer, msg.str, ipc_info.msg_size);
@@ -645,9 +645,9 @@ entry_point(CmdLine *cmd_line)
             
             //- rjf: grab explicit PID argument
             U32 dst_pid = 0;
-            if (cmd_line_has_argument(cmd_line, str8_lit("pid")))
+            if (cmd_line_has_argument(cmd_line, ("pid")))
             {
-                String8 dst_pid_string = cmd_line_string(cmd_line, str8_lit("pid"));
+                String8 dst_pid_string = cmd_line_string(cmd_line, ("pid"));
                 U64 dst_pid_u64 = 0;
                 if (dst_pid_string.size != 0 &&
                       try_u64_from_str8_c_rules(dst_pid_string, &dst_pid_u64))
@@ -701,7 +701,7 @@ entry_point(CmdLine *cmd_line)
                 U8 *buffer = (U8 *)(ipc_info+1);
                 U64 buffer_max = IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo);
                 String8List parts = os_string_list_from_argcv(scratch.arena, cmd_line.argc - 1, cmd_line.argv + 1);
-                StringJoin join = {str8_lit(""), str8_lit(" "), str8_lit("")};
+                StringJoin join = {(""), (" "), ("")};
                 String8 msg = str8_list_join(scratch.arena, &parts, &join);
                 ipc_info.msg_size = Min(buffer_max, msg.size);
                 MemoryCopy(buffer, msg.str, ipc_info.msg_size);
@@ -746,8 +746,8 @@ entry_point(CmdLine *cmd_line)
         case ExecMode_Help:
         {
             os_graphical_message(0,
-                                                      str8_lit("The RAD Debugger - Help"),
-                                                      str8_lit("The following options may be used when starting the RAD Debugger from the command line:\n\n"
+                                                      ("The RAD Debugger - Help"),
+                                                      ("The following options may be used when starting the RAD Debugger from the command line:\n\n"
                                                                         "--user:<path>\n"
                                                                         "Use to specify the location of a user file which should be used. User files are used to store settings for users, including window and panel setups, path mapping, and visual settings. If this file does not exist, it will be created as necessary. This file will be autosaved as user-related changes are made.\n\n"
                                                                         "--project:<path>\n"

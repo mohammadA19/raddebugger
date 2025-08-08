@@ -145,7 +145,7 @@ elf_gnu_debug_link_from_bin(String8 raw_data, ELF_Bin *bin)
     {
         ELF_Shdr64 *shdr = &bin.shdrs.v[idx];
         String8 name = elf_name_from_shdr64(raw_data, bin, shdr);
-        if (str8_match(name, str8_lit(".gnu_debuglink"), 0))
+        if (str8_match(name, (".gnu_debuglink"), 0))
         {
             Rng1U64 raw_data_range = rng_1u64(shdr.sh_offset, shdr.sh_offset + shdr.sh_size);
             String8 data = str8_substr(raw_data, raw_data_range);

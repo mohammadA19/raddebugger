@@ -23,7 +23,7 @@ async_init(CmdLine *cmdline)
     }
     async_shared.ring_mutex = os_mutex_alloc();
     async_shared.ring_cv = os_condition_variable_alloc();
-    String8 work_thread_count_string = cmd_line_string(cmdline, str8_lit("work_threads_count"));
+    String8 work_thread_count_string = cmd_line_string(cmdline, ("work_threads_count"));
     if (work_thread_count_string.size == 0 || !try_u64_from_str8_c_rules(work_thread_count_string, &async_shared.work_threads_count))
     {
         async_shared.work_threads_count = Max(4, os_get_system_info()->logical_processor_count-1);

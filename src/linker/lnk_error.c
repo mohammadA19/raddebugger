@@ -29,10 +29,10 @@ internal String8
 lnk_string_from_error_mode(LNK_ErrorMode mode)
 {
     switch (mode) {
-    case LNK_ErrorMode_Ignore:   return str8_lit("Ignore");
-    case LNK_ErrorMode_Continue: return str8_lit("Error");
-    case LNK_ErrorMode_Stop:     return str8_lit("Error");
-    case LNK_ErrorMode_Warn:     return str8_lit("Warning");
+    case LNK_ErrorMode_Ignore:   return ("Ignore");
+    case LNK_ErrorMode_Continue: return ("Error");
+    case LNK_ErrorMode_Stop:     return ("Error");
+    case LNK_ErrorMode_Warn:     return ("Warning");
     }
     return str8_zero();
 }
