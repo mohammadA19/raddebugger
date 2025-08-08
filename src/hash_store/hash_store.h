@@ -43,19 +43,16 @@
 ////////////////////////////////
 //~ rjf: Key Types
 
-typedef struct HS_Root HS_Root;
 struct HS_Root
 {
   U64 u64[1];
 };
 
-typedef struct HS_ID HS_ID;
 struct HS_ID
 {
   U128 u128[1];
 };
 
-typedef struct HS_Key HS_Key;
 struct HS_Key
 {
   HS_Root root;
@@ -66,7 +63,6 @@ struct HS_Key
 ////////////////////////////////
 //~ rjf: Cache Types
 
-typedef struct HS_RootIDChunkNode HS_RootIDChunkNode;
 struct HS_RootIDChunkNode
 {
   HS_RootIDChunkNode *next;
@@ -75,7 +71,6 @@ struct HS_RootIDChunkNode
   U64 cap;
 };
 
-typedef struct HS_RootIDChunkList HS_RootIDChunkList;
 struct HS_RootIDChunkList
 {
   HS_RootIDChunkNode *first;
@@ -84,7 +79,6 @@ struct HS_RootIDChunkList
   U64 total_count;
 };
 
-typedef struct HS_RootNode HS_RootNode;
 struct HS_RootNode
 {
   HS_RootNode *next;
@@ -94,7 +88,6 @@ struct HS_RootNode
   HS_RootIDChunkList ids;
 };
 
-typedef struct HS_RootSlot HS_RootSlot;
 struct HS_RootSlot
 {
   HS_RootNode *first;
@@ -104,7 +97,6 @@ struct HS_RootSlot
 #define HS_KEY_HASH_HISTORY_COUNT 64
 #define HS_KEY_HASH_HISTORY_STRONG_REF_COUNT 2
 
-typedef struct HS_KeyNode HS_KeyNode;
 struct HS_KeyNode
 {
   HS_KeyNode *next;
@@ -114,14 +106,12 @@ struct HS_KeyNode
   U64 hash_history_gen;
 };
 
-typedef struct HS_KeySlot HS_KeySlot;
 struct HS_KeySlot
 {
   HS_KeyNode *first;
   HS_KeyNode *last;
 };
 
-typedef struct HS_Node HS_Node;
 struct HS_Node
 {
   HS_Node *next;
@@ -134,14 +124,12 @@ struct HS_Node
   U64 downstream_ref_count;
 };
 
-typedef struct HS_Slot HS_Slot;
 struct HS_Slot
 {
   HS_Node *first;
   HS_Node *last;
 };
 
-typedef struct HS_Stripe HS_Stripe;
 struct HS_Stripe
 {
   Arena *arena;
@@ -152,14 +140,12 @@ struct HS_Stripe
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-typedef struct HS_Touch HS_Touch;
 struct HS_Touch
 {
   HS_Touch *next;
   U128 hash;
 };
 
-typedef struct HS_Scope HS_Scope;
 struct HS_Scope
 {
   HS_Scope *next;
@@ -169,7 +155,6 @@ struct HS_Scope
 ////////////////////////////////
 //~ rjf: Thread Context
 
-typedef struct HS_TCTX HS_TCTX;
 struct HS_TCTX
 {
   Arena *arena;
@@ -180,7 +165,6 @@ struct HS_TCTX
 ////////////////////////////////
 //~ rjf: Shared State
 
-typedef struct HS_Shared HS_Shared;
 struct HS_Shared
 {
   Arena *arena;
@@ -220,51 +204,33 @@ global HS_Shared *hs_shared = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 hs_little_hash_from_data(String8 data);
-internal U128 hs_hash_from_data(String8 data);
-internal HS_ID hs_id_make(U64 u64_0, U64 u64_1);
-internal B32 hs_id_match(HS_ID a, HS_ID b);
-internal HS_Key hs_key_make(HS_Root root, HS_ID id);
-internal B32 hs_key_match(HS_Key a, HS_Key b);
 
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
 
-internal void hs_init(void);
 
 ////////////////////////////////
 //~ rjf: Root Allocation/Deallocation
 
-internal HS_Root hs_root_alloc(void);
-internal void hs_root_release(HS_Root root);
 
 ////////////////////////////////
 //~ rjf: Cache Submission
 
-internal U128 hs_submit_data(HS_Key key, Arena **data_arena, String8 data);
 
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-internal HS_Scope *hs_scope_open(void);
-internal void hs_scope_close(HS_Scope *scope);
-internal void hs_scope_touch_node__stripe_r_guarded(HS_Scope *scope, HS_Node *node);
 
 ////////////////////////////////
 //~ rjf: Downstream Accesses
 
-internal void hs_hash_downstream_inc(U128 hash);
-internal void hs_hash_downstream_dec(U128 hash);
 
 ////////////////////////////////
 //~ rjf: Cache Lookups
 
-internal U128 hs_hash_from_key(HS_Key key, U64 rewind_count);
-internal String8 hs_data_from_hash(HS_Scope *scope, U128 hash);
 
 ////////////////////////////////
 //~ rjf: Evictor Thread
 
-internal void hs_evictor_thread__entry_point(void *p);
 
 #endif // HASH_STORE_H

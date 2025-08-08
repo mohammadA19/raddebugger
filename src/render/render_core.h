@@ -26,7 +26,6 @@ enum
 ////////////////////////////////
 //~ rjf: Handle Type
 
-typedef union R_Handle R_Handle;
 union R_Handle
 {
   U64 u64[1];
@@ -37,7 +36,6 @@ union R_Handle
 ////////////////////////////////
 //~ rjf: Instance Types
 
-typedef struct R_Rect2DInst R_Rect2DInst;
 struct R_Rect2DInst
 {
   Rng2F32 dst;
@@ -50,7 +48,6 @@ struct R_Rect2DInst
   F32 _unused_[1];
 };
 
-typedef struct R_Mesh3DInst R_Mesh3DInst;
 struct R_Mesh3DInst
 {
   Mat4x4F32 xform;
@@ -59,7 +56,6 @@ struct R_Mesh3DInst
 ////////////////////////////////
 //~ rjf: Batch Types
 
-typedef struct R_Batch R_Batch;
 struct R_Batch
 {
   U8 *v;
@@ -67,14 +63,12 @@ struct R_Batch
   U64 byte_cap;
 };
 
-typedef struct R_BatchNode R_BatchNode;
 struct R_BatchNode
 {
   R_BatchNode *next;
   R_Batch v;
 };
 
-typedef struct R_BatchList R_BatchList;
 struct R_BatchList
 {
   R_BatchNode *first;
@@ -84,7 +78,6 @@ struct R_BatchList
   U64 bytes_per_inst;
 };
 
-typedef struct R_BatchGroup2DParams R_BatchGroup2DParams;
 struct R_BatchGroup2DParams
 {
   R_Handle tex;
@@ -94,7 +87,6 @@ struct R_BatchGroup2DParams
   F32 transparency;
 };
 
-typedef struct R_BatchGroup2DNode R_BatchGroup2DNode;
 struct R_BatchGroup2DNode
 {
   R_BatchGroup2DNode *next;
@@ -102,7 +94,6 @@ struct R_BatchGroup2DNode
   R_BatchGroup2DParams params;
 };
 
-typedef struct R_BatchGroup2DList R_BatchGroup2DList;
 struct R_BatchGroup2DList
 {
   R_BatchGroup2DNode *first;
@@ -110,7 +101,6 @@ struct R_BatchGroup2DList
   U64 count;
 };
 
-typedef struct R_BatchGroup3DParams R_BatchGroup3DParams;
 struct R_BatchGroup3DParams
 {
   R_Handle mesh_vertices;
@@ -122,7 +112,6 @@ struct R_BatchGroup3DParams
   Mat4x4F32 xform;
 };
 
-typedef struct R_BatchGroup3DMapNode R_BatchGroup3DMapNode;
 struct R_BatchGroup3DMapNode
 {
   R_BatchGroup3DMapNode *next;
@@ -131,7 +120,6 @@ struct R_BatchGroup3DMapNode
   R_BatchGroup3DParams params;
 };
 
-typedef struct R_BatchGroup3DMap R_BatchGroup3DMap;
 struct R_BatchGroup3DMap
 {
   R_BatchGroup3DMapNode **slots;
@@ -141,13 +129,11 @@ struct R_BatchGroup3DMap
 ////////////////////////////////
 //~ rjf: Pass Types
 
-typedef struct R_PassParams_UI R_PassParams_UI;
 struct R_PassParams_UI
 {
   R_BatchGroup2DList rects;
 };
 
-typedef struct R_PassParams_Blur R_PassParams_Blur;
 struct R_PassParams_Blur
 {
   Rng2F32 rect;
@@ -156,7 +142,6 @@ struct R_PassParams_Blur
   F32 corner_radii[Corner_COUNT];
 };
 
-typedef struct R_PassParams_Geo3D R_PassParams_Geo3D;
 struct R_PassParams_Geo3D
 {
   Rng2F32 viewport;
@@ -166,7 +151,6 @@ struct R_PassParams_Geo3D
   R_BatchGroup3DMap mesh_batches;
 };
 
-typedef struct R_Pass R_Pass;
 struct R_Pass
 {
   R_PassKind kind;
@@ -179,14 +163,12 @@ struct R_Pass
   };
 };
 
-typedef struct R_PassNode R_PassNode;
 struct R_PassNode
 {
   R_PassNode *next;
   R_Pass v;
 };
 
-typedef struct R_PassList R_PassList;
 struct R_PassList
 {
   R_PassNode *first;
@@ -197,54 +179,32 @@ struct R_PassList
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal Mat4x4F32 r_sample_channel_map_from_tex2dformat(R_Tex2DFormat fmt);
 
 ////////////////////////////////
 //~ rjf: Handle Type Functions
 
-internal R_Handle r_handle_zero(void);
-internal B32 r_handle_match(R_Handle a, R_Handle b);
 
 ////////////////////////////////
 //~ rjf: Batch Type Functions
 
-internal R_BatchList r_batch_list_make(U64 instance_size);
-internal void *r_batch_list_push_inst(Arena *arena, R_BatchList *list, U64 batch_inst_cap);
 
 ////////////////////////////////
 //~ rjf: Pass Type Functions
 
-internal R_Pass *r_pass_from_kind(Arena *arena, R_PassList *list, R_PassKind kind);
 
 ////////////////////////////////
 //~ rjf: Backend Hooks
 
 //- rjf: top-level layer initialization
-r_hook void              r_init(CmdLine *cmdln);
 
 //- rjf: window setup/teardown
-r_hook R_Handle          r_window_equip(OS_Handle window);
-r_hook void              r_window_unequip(OS_Handle window, R_Handle window_equip);
 
 //- rjf: textures
-r_hook R_Handle          r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void *data);
-r_hook void              r_tex2d_release(R_Handle texture);
-r_hook R_ResourceKind    r_kind_from_tex2d(R_Handle texture);
-r_hook Vec2S32           r_size_from_tex2d(R_Handle texture);
-r_hook R_Tex2DFormat     r_format_from_tex2d(R_Handle texture);
-r_hook void              r_fill_tex2d_region(R_Handle texture, Rng2S32 subrect, void *data);
 
 //- rjf: buffers
-r_hook R_Handle          r_buffer_alloc(R_ResourceKind kind, U64 size, void *data);
-r_hook void              r_buffer_release(R_Handle buffer);
 
 //- rjf: frame markers
-r_hook void              r_begin_frame(void);
-r_hook void              r_end_frame(void);
-r_hook void              r_window_begin_frame(OS_Handle window, R_Handle window_equip);
-r_hook void              r_window_end_frame(OS_Handle window, R_Handle window_equip);
 
 //- rjf: render pass submission
-r_hook void              r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes);
 
 #endif // RENDER_CORE_H

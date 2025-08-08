@@ -7,7 +7,6 @@
 ////////////////////////////////
 //~ rjf: Conversion Stage Inputs/Outputs
 
-typedef struct P2R_ConvertParams P2R_ConvertParams;
 struct P2R_ConvertParams
 {
   String8 input_pdb_name;
@@ -23,7 +22,6 @@ struct P2R_ConvertParams
 
 //- rjf: tpi hash parsing
 
-typedef struct P2R_TPIHashParseIn P2R_TPIHashParseIn;
 struct P2R_TPIHashParseIn
 {
   PDB_Strtbl *strtbl;
@@ -34,7 +32,6 @@ struct P2R_TPIHashParseIn
 
 //- rjf: tpi leaves parsing
 
-typedef struct P2R_TPILeafParseIn P2R_TPILeafParseIn;
 struct P2R_TPILeafParseIn
 {
   String8 leaf_data;
@@ -43,7 +40,6 @@ struct P2R_TPILeafParseIn
 
 //- rjf: exe hashing
 
-typedef struct P2R_EXEHashIn P2R_EXEHashIn;
 struct P2R_EXEHashIn
 {
   String8 exe_data;
@@ -51,7 +47,6 @@ struct P2R_EXEHashIn
 
 //- rjf: symbol stream parsing
 
-typedef struct P2R_SymbolStreamParseIn P2R_SymbolStreamParseIn;
 struct P2R_SymbolStreamParseIn
 {
   String8 data;
@@ -59,7 +54,6 @@ struct P2R_SymbolStreamParseIn
 
 //- rjf: c13 line info stream parsing
 
-typedef struct P2R_C13StreamParseIn P2R_C13StreamParseIn;
 struct P2R_C13StreamParseIn
 {
   String8 data;
@@ -69,7 +63,6 @@ struct P2R_C13StreamParseIn
 
 //- rjf: comp unit parsing
 
-typedef struct P2R_CompUnitParseIn P2R_CompUnitParseIn;
 struct P2R_CompUnitParseIn
 {
   String8 data;
@@ -77,7 +70,6 @@ struct P2R_CompUnitParseIn
 
 //- rjf: comp unit contribution table parsing
 
-typedef struct P2R_CompUnitContributionsParseIn P2R_CompUnitContributionsParseIn;
 struct P2R_CompUnitContributionsParseIn
 {
   String8 data;
@@ -86,14 +78,12 @@ struct P2R_CompUnitContributionsParseIn
 
 //- rjf: comp unit contribution table bucketing by unit
 
-typedef struct P2R_CompUnitContributionsBucketIn P2R_CompUnitContributionsBucketIn;
 struct P2R_CompUnitContributionsBucketIn
 {
   U64 comp_unit_count;
   PDB_CompUnitContributionArray contributions;
 };
 
-typedef struct P2R_CompUnitContributionsBucketOut P2R_CompUnitContributionsBucketOut;
 struct P2R_CompUnitContributionsBucketOut
 {
   RDIM_Rng1U64ChunkList *unit_ranges;
@@ -104,7 +94,6 @@ struct P2R_CompUnitContributionsBucketOut
 
 //- rjf: link name map (voff -> string)
 
-typedef struct P2R_LinkNameNode P2R_LinkNameNode;
 struct P2R_LinkNameNode
 {
   P2R_LinkNameNode *next;
@@ -112,7 +101,6 @@ struct P2R_LinkNameNode
   String8 name;
 };
 
-typedef struct P2R_LinkNameMap P2R_LinkNameMap;
 struct P2R_LinkNameMap
 {
   P2R_LinkNameNode **buckets;
@@ -123,14 +111,12 @@ struct P2R_LinkNameMap
 
 //- rjf: normalized file path -> source file map
 
-typedef struct P2R_SrcFileNode P2R_SrcFileNode;
 struct P2R_SrcFileNode
 {
   P2R_SrcFileNode *next;
   RDIM_SrcFile *src_file;
 };
 
-typedef struct P2R_SrcFileMap P2R_SrcFileMap;
 struct P2R_SrcFileMap
 {
   P2R_SrcFileNode **slots;
@@ -139,7 +125,6 @@ struct P2R_SrcFileMap
 
 //- rjf: per-unit source files conversion tasks
 
-typedef struct P2R_GatherUnitSrcFilesIn P2R_GatherUnitSrcFilesIn;
 struct P2R_GatherUnitSrcFilesIn
 {
   PDB_Strtbl *pdb_strtbl;
@@ -149,7 +134,6 @@ struct P2R_GatherUnitSrcFilesIn
   CV_C13Parsed *comp_unit_c13s;
 };
 
-typedef struct P2R_GatherUnitSrcFilesOut P2R_GatherUnitSrcFilesOut;
 struct P2R_GatherUnitSrcFilesOut
 {
   String8Array src_file_paths;
@@ -157,7 +141,6 @@ struct P2R_GatherUnitSrcFilesOut
 
 //- rjf: unit conversion tasks
 
-typedef struct P2R_UnitConvertIn P2R_UnitConvertIn;
 struct P2R_UnitConvertIn
 {
   U64 comp_unit_idx;
@@ -170,7 +153,6 @@ struct P2R_UnitConvertIn
   P2R_SrcFileMap *src_file_map;
 };
 
-typedef struct P2R_UnitConvertOut P2R_UnitConvertOut;
 struct P2R_UnitConvertOut
 {
   RDIM_UnitChunkList units;
@@ -180,7 +162,6 @@ struct P2R_UnitConvertOut
 
 //- rjf: src file sequence equipping task
 
-typedef struct P2R_SrcFileSeqEquipIn P2R_SrcFileSeqEquipIn;
 struct P2R_SrcFileSeqEquipIn
 {
   RDIM_SrcFileChunkList src_files;
@@ -189,7 +170,6 @@ struct P2R_SrcFileSeqEquipIn
 
 //- rjf: link name map building tasks
 
-typedef struct P2R_LinkNameMapBuildIn P2R_LinkNameMapBuildIn;
 struct P2R_LinkNameMapBuildIn
 {
   CV_SymParsed *sym;
@@ -199,7 +179,6 @@ struct P2R_LinkNameMapBuildIn
 
 //- rjf: type forward resolution map build
 
-typedef struct P2R_ITypeFwdMapFillIn P2R_ITypeFwdMapFillIn;
 struct P2R_ITypeFwdMapFillIn
 {
   PDB_TpiHashParsed *tpi_hash;
@@ -211,14 +190,12 @@ struct P2R_ITypeFwdMapFillIn
 
 //- rjf: itype chain build
 
-typedef struct P2R_TypeIdChain P2R_TypeIdChain;
 struct P2R_TypeIdChain
 {
   P2R_TypeIdChain *next;
   CV_TypeId itype;
 };
 
-typedef struct P2R_ITypeChainBuildIn P2R_ITypeChainBuildIn;
 struct P2R_ITypeChainBuildIn
 {
   CV_LeafParsed *tpi_leaf;
@@ -230,7 +207,6 @@ struct P2R_ITypeChainBuildIn
 
 //- rjf: udt conversion
 
-typedef struct P2R_UDTConvertIn P2R_UDTConvertIn;
 struct P2R_UDTConvertIn
 {
   CV_LeafParsed *tpi_leaf;
@@ -242,7 +218,6 @@ struct P2R_UDTConvertIn
 
 //- rjf: symbol stream conversion
 
-typedef struct P2R_SymbolStreamConvertIn P2R_SymbolStreamConvertIn;
 struct P2R_SymbolStreamConvertIn
 {
   B32 parsing_global_stream;
@@ -260,7 +235,6 @@ struct P2R_SymbolStreamConvertIn
   RDIM_LineTable *first_inline_site_line_table;
 };
 
-typedef struct P2R_SymbolStreamConvertOut P2R_SymbolStreamConvertOut;
 struct P2R_SymbolStreamConvertOut
 {
   RDIM_SymbolChunkList procedures;
@@ -280,28 +254,18 @@ global ASYNC_Root *p2r_async_root = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 p2r_end_of_cplusplus_container_name(String8 str);
-internal U64 p2r_hash_from_voff(U64 voff);
 
 ////////////////////////////////
 //~ rjf: COFF => RDI Canonical Conversions
 
-internal RDI_BinarySectionFlags p2r_rdi_binary_section_flags_from_coff_section_flags(COFF_SectionFlags flags);
 
 ////////////////////////////////
 //~ rjf: CodeView => RDI Canonical Conversions
 
-internal RDI_Arch     p2r_rdi_arch_from_cv_arch(CV_Arch arch);
-internal RDI_RegCode  p2r_rdi_reg_code_from_cv_reg_code(RDI_Arch arch, CV_Reg reg_code);
-internal RDI_Language p2r_rdi_language_from_cv_language(CV_Language language);
-internal RDI_TypeKind p2r_rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type);
 
 ////////////////////////////////
 //~ rjf: Location Info Building Helpers
 
-internal RDIM_Location *p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 extra_indirection);
-internal RDI_RegCode p2r_reg_code_from_arch_encoded_fp_reg(RDI_Arch arch, CV_EncodedFramePtrReg encoded_reg);
-internal void p2r_location_over_lvar_addr_range(Arena *arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Location *location, CV_LvarAddrRange *range, COFF_SectionHeader *section, CV_LvarAddrGap *gaps, U64 gap_count);
 
 ////////////////////////////////
 //~ rjf: Initial Parsing & Preparation Pass Tasks
@@ -354,6 +318,5 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work);
 ////////////////////////////////
 //~ rjf: Top-Level Conversion Entry Point
 
-internal RDIM_BakeParams p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in);
 
 #endif // RDI_FROM_PDB_H

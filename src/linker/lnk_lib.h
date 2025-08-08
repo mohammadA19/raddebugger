@@ -42,12 +42,5 @@ typedef struct
   LNK_LibList  invalid_libs;
 } LNK_LibIniter;
 
-internal LNK_LibNode *    lnk_lib_list_pop_node_atomic(LNK_LibList *list);
-internal void             lnk_lib_list_push_node_atomic(LNK_LibList *list, LNK_LibNode *node);
-internal void             lnk_lib_list_push_node(LNK_LibList *list, LNK_LibNode *node);
-internal LNK_LibList      lnk_lib_list_reserve(Arena *arena, U64 count);
-internal LNK_LibNodeArray lnk_array_from_lib_list(Arena *arena, LNK_LibList list);
 
-internal B32              lnk_lib_from_data(Arena *arena, String8 data, String8 path, LNK_Lib *lib_out);
-internal LNK_LibNodeArray lnk_lib_list_push_parallel(TP_Context *tp, TP_Arena *arena, LNK_LibList *list, String8Array data_arr, String8Array path_arr);
 

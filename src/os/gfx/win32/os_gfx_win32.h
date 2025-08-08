@@ -26,14 +26,12 @@
 ////////////////////////////////
 //~ rjf: Windows
 
-typedef struct OS_W32_TitleBarClientArea OS_W32_TitleBarClientArea;
 struct OS_W32_TitleBarClientArea
 {
   OS_W32_TitleBarClientArea *next;
   Rng2F32 rect;
 };
 
-typedef struct OS_W32_Window OS_W32_Window;
 struct OS_W32_Window
 {
   OS_W32_Window *next;
@@ -56,7 +54,6 @@ struct OS_W32_Window
 ////////////////////////////////
 //~ rjf: Monitor Gathering Bundle
 
-typedef struct OS_W32_MonitorGatherBundle OS_W32_MonitorGatherBundle;
 struct OS_W32_MonitorGatherBundle
 {
   Arena *arena;
@@ -66,7 +63,6 @@ struct OS_W32_MonitorGatherBundle
 ////////////////////////////////
 //~ rjf: Global State
 
-typedef struct OS_W32_GfxState OS_W32_GfxState;
 struct OS_W32_GfxState
 {
   Arena *arena;
@@ -92,25 +88,13 @@ global B32 os_w32_new_window_custom_border = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal Rng2F32 os_w32_rng2f32_from_rect(RECT rect);
 
 ////////////////////////////////
 //~ rjf: Windows
 
-internal OS_Handle       os_w32_handle_from_window(OS_W32_Window *window);
-internal OS_W32_Window * os_w32_window_from_handle(OS_Handle window);
-internal OS_W32_Window * os_w32_window_from_hwnd(HWND hwnd);
-internal HWND            os_w32_hwnd_from_window(OS_W32_Window *window);
-internal OS_W32_Window * os_w32_window_alloc(void);
-internal void            os_w32_window_release(OS_W32_Window *window);
-internal OS_Event *      os_w32_push_event(OS_EventKind kind, OS_W32_Window *window);
-internal OS_Key          os_w32_os_key_from_vkey(WPARAM vkey);
-internal WPARAM          os_w32_vkey_from_os_key(OS_Key key);
-internal LRESULT         os_w32_wnd_proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 ////////////////////////////////
 //~ rjf: Monitors
 
-internal BOOL os_w32_monitor_gather_enum_proc(HMONITOR monitor, HDC hdc, LPRECT rect, LPARAM bundle_ptr);
 
 #endif // OS_GFX_WIN32_H

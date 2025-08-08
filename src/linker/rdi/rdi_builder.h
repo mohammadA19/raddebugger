@@ -1024,196 +1024,71 @@ typedef struct
 ////////////////////////////////
 // Data Model Helpers
 
-internal RDIB_DataModel rdib_infer_data_model(OperatingSystem os, RDI_Arch arch);
 
-internal RDI_TypeKind rdib_short_type_from_data_model             (RDIB_DataModel data_model);
-internal RDI_TypeKind rdib_unsigned_short_type_from_data_model    (RDIB_DataModel data_model);
-internal RDI_TypeKind rdib_int_type_from_data_model               (RDIB_DataModel data_model);
-internal RDI_TypeKind rdib_unsigned_int_type_from_data_model      (RDIB_DataModel data_model);
-internal RDI_TypeKind rdib_long_type_from_data_model              (RDIB_DataModel data_model);
-internal RDI_TypeKind rdib_unsigned_long_type_from_data_model     (RDIB_DataModel data_model);
-internal RDI_TypeKind rdib_long_long_type_from_data_model         (RDIB_DataModel data_model);
-internal RDI_TypeKind rdib_unsigned_long_long_type_from_data_model(RDIB_DataModel data_model);
-internal RDI_TypeKind rdib_pointer_size_t_type_from_data_model    (RDIB_DataModel data_model);
 
 ////////////////////////////////
 
-internal void rdib_udt_member_list_push_node      (RDIB_UDTMemberList *list, RDIB_UDTMember *node);
-internal void rdib_udt_member_list_concat_in_place(RDIB_UDTMemberList *list, RDIB_UDTMemberList *to_concat);
 
-internal RDIB_LineTableFragment * rdib_line_table_push(Arena *arena, RDIB_LineTable *list);
 
 ////////////////////////////////
 // Chunk Lists
 
 // push
-internal RDIB_Unit          * rdib_unit_chunk_list_push       (Arena *arena, RDIB_UnitChunkList       *list, U64 cap);
-internal RDIB_Scope         * rdib_scope_chunk_list_push      (Arena *arena, RDIB_ScopeChunkList      *list, U64 cap);
-internal RDIB_Procedure     * rdib_procedure_chunk_list_push  (Arena *arena, RDIB_ProcedureChunkList  *list, U64 cap);
-internal RDIB_Variable      * rdib_variable_chunk_list_push   (Arena *arena, RDIB_VariableChunkList   *list, U64 cap);
-internal RDIB_LineTable     * rdib_line_table_chunk_list_push (Arena *arena, RDIB_LineTableChunkList  *list, U64 cap);
-internal RDIB_Type          * rdib_type_chunk_list_push       (Arena *arena, RDIB_TypeChunkList       *list, U64 cap);
-internal RDIB_UDTMember     * rdib_udt_member_chunk_list_push (Arena *arena, RDIB_UDTMemberChunkList  *list, U64 cap);
-internal RDIB_SourceFile    * rdib_source_file_chunk_list_push(Arena *arena, RDIB_SourceFileChunkList *list, U64 cap);
-internal RDIB_InlineSite    * rdib_inline_site_chunk_list_push(Arena *arena, RDIB_InlineSiteChunkList *list, U64 cap);
 
-internal RDIB_Scope      * rdib_scope_chunk_list_push_zero      (Arena *arena, RDIB_ScopeChunkList *list,      U64 cap);
-internal RDIB_Procedure  * rdib_procedure_chunk_list_push_zero  (Arena *arena, RDIB_ProcedureChunkList *list,  U64 cap);
-internal RDIB_Variable   * rdib_variable_chunk_list_push_zero   (Arena *arena, RDIB_VariableChunkList *list,   U64 cap);
-internal RDIB_LineTable  * rdib_line_table_chunk_list_push_zero (Arena *arena, RDIB_LineTableChunkList *list,  U64 cap);
-internal RDIB_Type       * rdib_type_chunk_list_push_zero       (Arena *arena, RDIB_TypeChunkList *list,       U64 cap);
-internal RDIB_UDTMember  * rdib_udt_member_chunk_list_push_zero (Arena *arena, RDIB_UDTMemberChunkList *list,  U64 cap);
-internal RDIB_SourceFile * rdib_source_file_chunk_list_push_zero(Arena *arena, RDIB_SourceFileChunkList *list, U64 cap);
-internal RDIB_InlineSite * rdib_inline_site_chunk_list_push_zero(Arena *arena, RDIB_InlineSiteChunkList *list, U64 cap);
 
 // push many
-internal RDIB_UnitChunk * rdib_unit_chunk_list_reserve_ex(Arena *arena, RDIB_UnitChunkList *list, U64 chunk_count, U64 item_count);
 
-internal void rdib_unit_chunk_list_reserve       (Arena *arena, RDIB_UnitChunkList       *list, U64 cap);
-internal void rdib_type_chunk_list_reserve       (Arena *arena, RDIB_TypeChunkList       *list, U64 cap);
-internal void rdib_source_file_chunk_list_reserve(Arena *arena, RDIB_SourceFileChunkList *list, U64 cap);
 
 // concat in place
-internal void rdib_scope_chunk_list_concat_in_place      (RDIB_ScopeChunkList      *list, RDIB_ScopeChunkList      *to_concat);
-internal void rdib_udt_member_chunk_list_concat_in_place (RDIB_UDTMemberChunkList  *list, RDIB_UDTMemberChunkList  *to_concat);
-internal void rdib_procedure_chunk_list_concat_in_place  (RDIB_ProcedureChunkList  *list, RDIB_ProcedureChunkList  *to_concat);
-internal void rdib_variable_chunk_list_concat_in_place   (RDIB_VariableChunkList   *list, RDIB_VariableChunkList   *to_concat);
-internal void rdib_inline_site_chunk_list_concat_in_place(RDIB_InlineSiteChunkList *list, RDIB_InlineSiteChunkList *to_concat);
-internal void rdib_inline_site_chunk_list_concat_in_place(RDIB_InlineSiteChunkList *list, RDIB_InlineSiteChunkList *to_concat);
-internal void rdib_type_chunk_list_concat_in_place       (RDIB_TypeChunkList       *list, RDIB_TypeChunkList       *to_concat);
-internal void rdib_source_file_chunk_list_concat_in_place(RDIB_SourceFileChunkList *list, RDIB_SourceFileChunkList *to_concat);
 
 // concat in place many
-internal void rdib_type_chunk_list_concat_in_place_many      (RDIB_TypeChunkList      *list, RDIB_TypeChunkList      *to_concat, U64 count);
-internal void rdib_udt_member_chunk_list_concat_in_place_many(RDIB_UDTMemberChunkList *list, RDIB_UDTMemberChunkList *to_concat, U64 count);
 
 // array from chunk list
-internal RDIB_UnitChunk       ** rdib_array_from_unit_chunk_list       (Arena *arena, RDIB_UnitChunkList list);
-internal RDIB_ScopeChunk      ** rdib_array_from_scope_chunk_list      (Arena *arena, RDIB_ScopeChunkList      list);
-internal RDIB_ProcedureChunk  ** rdib_array_from_procedure_chunk_list  (Arena *arena, RDIB_ProcedureChunkList  list);
-internal RDIB_VariableChunk   ** rdib_array_from_variable_chunk_list   (Arena *arena, RDIB_VariableChunkList   list);
-internal RDIB_LineTableChunk  ** rdib_array_from_line_table_chunk_list (Arena *arena, RDIB_LineTableChunkList  list);
-internal RDIB_InlineSiteChunk ** rdib_array_from_inline_site_chunk_list(Arena *arena, RDIB_InlineSiteChunkList list);
-internal RDIB_UDTMemberChunk  ** rdib_array_from_udt_member_chunk_list (Arena *arena, RDIB_UDTMemberChunkList  list);
-internal RDIB_TypeChunk       ** rdib_array_from_type_chunk_list       (Arena *arena, RDIB_TypeChunkList       list);
-internal RDIB_SourceFileChunk ** rdib_array_from_source_file_chunk_list(Arena *arena, RDIB_SourceFileChunkList list);
 
 // total count from chunk list
-internal U64 rdib_unit_chunk_list_total_count       (RDIB_UnitChunkList list);
-internal U64 rdib_scope_chunk_list_total_count      (RDIB_ScopeChunkList      list);
-internal U64 rdib_variable_chunk_list_total_count   (RDIB_VariableChunkList   list);
-internal U64 rdib_line_table_chunk_list_total_count (RDIB_LineTableChunkList  list);
-internal U64 rdib_procedure_chunk_list_total_count  (RDIB_ProcedureChunkList  list);
-internal U64 rdib_inline_site_chunk_list_total_count(RDIB_InlineSiteChunkList list);
-internal U64 rdib_udt_member_chunk_list_total_count (RDIB_UDTMemberChunkList  list);
-internal U64 rdib_type_chunk_list_total_count       (RDIB_TypeChunkList       list);
-internal U64 rdib_source_file_chunk_list_total_count(RDIB_SourceFileChunkList list);
 
 // pointer -> array index
-internal U32 rdib_idx_from_unit       (RDIB_Unit *n);
-internal U32 rdib_idx_from_scope      (RDIB_Scope      *n);
-internal U32 rdib_idx_from_variable   (RDIB_Variable   *n);
-internal U32 rdib_idx_from_procedure  (RDIB_Procedure  *n);
-internal U32 rdib_idx_from_source_file(RDIB_SourceFile *n);
-internal U32 rdib_idx_from_line_table (RDIB_LineTable *n);
-internal U32 rdib_idx_from_type       (RDIB_Type       *n);
-internal U32 rdib_idx_from_udt_type   (RDIB_Type       *n);
-internal U32 rdib_idx_from_inline_site(RDIB_InlineSite *n);
 
 ////////////////////////////////
 
 //- Source File
 
-internal B32 rdib_source_file_match(RDIB_SourceFile *a, RDIB_SourceFile *b, OperatingSystem os);
 
 //- Eval Ops
 
-internal RDIB_EvalBytecodeOp * rdib_bytecode_push_op    (Arena *arena, RDIB_EvalBytecode *bytecode, RDI_EvalOp op, RDI_U64 p);
-internal void                  rdib_bytecode_push_ucsont(Arena *arena, RDIB_EvalBytecode *bytecode, RDI_U64 uconst);
-internal void                  rdib_bytecode_push_sconst(Arena *arena, RDIB_EvalBytecode *bytecode, RDI_S64 sconst);
 
 //- Location
 
-internal RDIB_Location rdib_make_location_addr_byte_stream      (Rng1U64List ranges, RDIB_EvalBytecode bytecode);
-internal RDIB_Location rdib_make_location_addr_bytecode_stream  (Rng1U64List ranges, RDIB_EvalBytecode bytecode);
-internal RDIB_Location rdib_make_location_val_bytecode_stream   (Rng1U64List ranges, RDIB_EvalBytecode bytecode);
-internal RDIB_Location rdib_make_location_addr_reg_plus_u16     (Rng1U64List ranges, RDI_RegCode reg_code, RDI_U16 offset);
 
-internal RDIB_Location rdib_make_location_addr_addr_reg_plus_u16(Rng1U64List ranges, RDI_RegCode reg_code, RDI_U16 offset);
-internal RDIB_Location rdib_make_location_addr_reg_plus_u16     (Rng1U64List ranges, RDI_RegCode reg_code, RDI_U16 offset);
-internal RDIB_Location rdib_make_location_val_reg               (Rng1U64List ranges, RDI_RegCode reg_code);
 
-internal RDIB_LocationNode * rdib_push_location_addr_reg_off(Arena *arena, RDIB_LocationList *list, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 is_reference, Rng1U64List ranges);
 
 //- UDT Fwdrefs
 
-internal U64                    rdib_udt_fwdref_map_hash(String8 string);
-internal RDIB_UDTFwdrefBucket * rdib_udt_fwdref_map_insert_or_update(RDIB_UDTFwdrefBucket **buckets, U64 cap, U64 hash, RDIB_UDTFwdrefBucket *new_bucket);
-internal RDIB_UDTFwdrefBucket * rdib_udt_fwdrefmap_map_lookup(RDIB_UDTFwdrefBucket **buckets, U64 cap, U64 hash, String8 name);
 
 //- Types
 
-internal RDIB_TypeRef rdib_make_type_ref(Arena *arena, RDIB_Type *type);
-internal void         rdib_deref_type_refs(TP_Context *tp, RDIB_TypeChunkList *list);
 
-internal RDIB_TypeStats rdib_sum_type_stats                 (RDIB_TypeStats *stats, U64 count);
-internal U64            rdib_udt_count_from_type_stats      (RDIB_TypeStats *stats);
-internal U64            rdib_type_node_count_from_type_stats(RDIB_TypeStats *stats);
 
-internal U64 rdib_size_from_type    (RDIB_Type *type);
-internal U64 rdib_count_members_deep(RDIB_Type *type);
 
 //- Path Tree
 
-internal RDIB_PathTree * rdib_path_tree_init    (Arena *arena, U64 list_count);
-internal void            rdib_path_tree_insert  (Arena *arena, RDIB_PathTree *tree, String8 path, RDIB_SourceFile *src_file);
-internal U32             rdib_idx_from_path_tree(RDIB_PathTree *tree, String8 path);
 
 
 //- String Map
 
-internal U64                     rdib_string_map_hash               (String8 string);
-internal RDIB_StringMap *        rdib_init_string_map               (Arena *arena, U64 cap);
-internal U32                     rdib_idx_from_string_map           (RDIB_StringMap *string_map, String8 string);
-internal RDIB_StringMapBucket *  rdib_string_map_insert_or_update   (RDIB_StringMapBucket **buckets, U64 cap, U64 hash, RDIB_StringMapBucket *new_bucket, RDIB_StringMapUpdateFunc *update_func);
-internal void                    rdib_string_map_assign_indices     (RDIB_StringMapBucket **buckets, U64 bucket_count);
-internal RDIB_StringMapBucket ** rdib_extant_buckets_from_string_map(TP_Context *tp, Arena *arena, RDIB_StringMap *string_map, U64 *bucket_count_out);
-internal void                    rdib_string_map_sort_buckets       (TP_Context *tp, RDIB_StringMapBucket **buckets, U64 bucket_count, U64 max_sorter);
 
 //- String Map Specialized Inserters
 
-internal void rdib_string_map_insert_item             (Arena *arena, RDIB_CollectStringsTask *task, U64 task_id, String8 string, void *value);
-internal void rdib_string_map_insert_string_table_item(Arena *arena, RDIB_CollectStringsTask *task, U64 task_id, String8 string);
-internal void rdib_string_map_insert_name_map_item    (Arena *arena, RDIB_CollectStringsTask *task, U64 task_id, String8 string, VoidNode *node);
 
 //- Index Run Map
 
-internal U64                    rdib_index_run_hash                   (U32 count, U32 *idxs);
-internal RDIB_IndexRunMap *     rdib_init_index_run_map               (Arena *arena, U64 cap);
-internal RDIB_IndexRunBucket *  rdib_index_run_map_insert_or_update   (Arena *arena, RDIB_IndexRunBucket **buckets, U64 cap, U64 hash, RDIB_IndexRunBucket *new_bucket, U64 *bucket_idx_out);
-internal U32                    rdib_idx_run_from_bucket_idx          (RDIB_IndexRunMap *map, U64 bucket_idx);
-internal void                   rdib_index_run_map_assign_indices     (RDIB_IndexRunBucket **buckets, U64 bucket_count);
-internal RDIB_IndexRunBucket ** rdib_extant_buckets_from_index_run_map(TP_Context *tp, Arena *arena, RDIB_IndexRunMap *idx_run_map, U64 *bucket_count_out);
-internal void                   rdib_index_run_map_sort_buckets       (TP_Context *tp, RDIB_IndexRunBucket **buckets, U64 bucket_count, U64 chunk_idx_opl);
 
 //- Index Map Spesialized Query
 
-internal U32 rdib_idx_from_params(RDIB_IndexRunMap *map, RDIB_Type *params);
 
 //- Data Sections
 
-internal void                   rdib_data_section_list_push_node      (RDIB_DataSectionList *list, RDIB_DataSectionNode *node);
-internal RDIB_DataSectionNode * rdib_data_section_list_push           (Arena *arena, RDIB_DataSectionList *list, RDIB_DataSection v);
-internal void                   rdib_data_section_list_concat_in_place(RDIB_DataSectionList *list, RDIB_DataSectionList *to_concat);
 
-internal void rdib_data_sections_from_top_level_info       (Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMap *string_map, RDIB_TopLevelInfo *src);
-internal void rdib_data_sections_from_binary_sections      (Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMap *string_map, RDIB_BinarySection *binary_sects, U64 binary_sects_count);
-internal void rdib_data_sections_from_string_map           (TP_Context *tp, Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMapBucket **buckets, U64 bucket_count);
-internal void rdib_data_sections_from_index_runs           (TP_Context *tp, Arena *arena, RDIB_DataSectionList *sect_list, RDIB_IndexRunBucket **buckets, U64 bucket_count);
-internal void rdib_data_sections_from_file_path_nodes      (TP_Context *tp, Arena *arena, RDIB_DataSectionList *sect_list,  RDIB_PathTree *tree);
-internal void rdib_data_sections_from_source_files         (TP_Context *tp, TP_Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMap *string_map, RDIB_PathTree *path_tree, U64 total_src_file_count, U64 src_file_chunk_count, RDIB_SourceFileChunk **src_file_chunks);
-internal void rdib_data_sections_from_units                (Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMap *string_map, RDIB_PathTree *path_tree, U64 total_unit_count, U64 unit_chunk_count, RDIB_UnitChunk **unit_chunks);
-internal void rdib_data_sections_from_string_map           (TP_Context *tp, Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMapBucket **buckets, U64 bucket_count);
 internal void rdib_data_sections_from_types(TP_Context            *tp,
                                             Arena                 *arena,
                                             RDIB_DataSectionList  *sect_list,
@@ -1228,16 +1103,5 @@ internal void rdib_data_sections_from_types(TP_Context            *tp,
                                             U64                    type_chunk_count,
                                             RDIB_TypeChunk       **type_chunks,
                                             RDIB_TypeStats         type_stats);
-internal void rdib_data_sections_from_global_variables     (TP_Context *tp, TP_Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMap *string_map, U64 total_count, U64 chunk_count, RDIB_VariableChunk **chunks);
-internal void rdib_data_sections_from_thread_variables     (TP_Context *tp, TP_Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMap *string_map, U64 total_count, U64 chunk_count, RDIB_VariableChunk **chunks);
-internal void rdib_data_sections_from_procedures           (TP_Context *tp, TP_Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMap *string_map, U64 total_count, U64 chunk_count, RDIB_ProcedureChunk **chunks);
-internal void rdib_data_sections_from_scopes               (TP_Context *tp, TP_Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMap *string_map, U64 total_count, U64 chunk_count, RDIB_ScopeChunk **chunks);
-internal void rdib_data_sections_from_name_maps            (TP_Context *tp, TP_Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMap *string_map, RDIB_IndexRunMap *idx_run_map, RDIB_StringMapBucket **src_name_maps[RDI_NameMapKind_COUNT], U64 src_name_map_counts[RDI_NameMapKind_COUNT]);
-internal void rdib_data_sections_from_source_line_maps 	   (TP_Context *tp, TP_Arena *arena, RDIB_DataSectionList *sect_list, U64 total_src_file_count, U64 src_file_chunk_count, RDIB_SourceFileChunk **src_fille_chunks);
-internal void rdib_data_sections_from_unit_gvar_scope_vmaps(TP_Context *tp, TP_Arena *arena, RDIB_DataSectionList *sect_list, U64 unit_chunk_count, RDIB_UnitChunk **unit_chunks, U64 gvar_chunk_count, RDIB_VariableChunk **gvar_chunks, U64 scope_chunk_count, RDIB_ScopeChunk **scope_chunks);
-internal void rdib_data_sections_from_inline_sites         (TP_Context *tp, Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMap *string_map, U64 total_inline_site_count, U64 inline_site_chunk_count, RDIB_InlineSiteChunk **inline_site_chunks);
-internal void rdib_data_sections_from_checksums            (TP_Context *tp, Arena *arena, RDIB_DataSectionList *sect_list);
 
-internal RDIB_Input  rdib_init_input(Arena *arena);
-internal String8List rdib_finish(TP_Context *tp, TP_Arena *arena, RDIB_Input *input);
 

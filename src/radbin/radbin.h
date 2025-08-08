@@ -18,7 +18,6 @@ enum
   RB_FileFormatFlag_HasDWARF = (1<<0),
 };
 
-typedef struct RB_File RB_File;
 struct RB_File
 {
   RB_FileFormat format;
@@ -27,14 +26,12 @@ struct RB_File
   String8 data;
 };
 
-typedef struct RB_FileNode RB_FileNode;
 struct RB_FileNode
 {
   RB_FileNode *next;
   RB_File *v;
 };
 
-typedef struct RB_FileList RB_FileList;
 struct RB_FileList
 {
   RB_FileNode *first;
@@ -48,6 +45,5 @@ read_only global RB_File rb_file_nil = {0};
 ////////////////////////////////
 //~ rjf: Top-Level Entry Point
 
-internal void rb_entry_point(CmdLine *cmdline);
 
 #endif //RADBIN_H

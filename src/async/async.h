@@ -22,7 +22,6 @@ typedef enum ASYNC_Priority
 }
 ASYNC_Priority;
 
-typedef struct ASYNC_WorkParams ASYNC_WorkParams;
 struct ASYNC_WorkParams
 {
   void *input;
@@ -34,7 +33,6 @@ struct ASYNC_WorkParams
   ASYNC_Priority priority;
 };
 
-typedef struct ASYNC_Work ASYNC_Work;
 struct ASYNC_Work
 {
   ASYNC_WorkFunctionType *work_function;
@@ -48,21 +46,18 @@ struct ASYNC_Work
 ////////////////////////////////
 //~ rjf: Task-Based Work Types
 
-typedef struct ASYNC_Task ASYNC_Task;
 struct ASYNC_Task
 {
   OS_Handle semaphore;
   void *output;
 };
 
-typedef struct ASYNC_TaskNode ASYNC_TaskNode;
 struct ASYNC_TaskNode
 {
   ASYNC_TaskNode *next;
   ASYNC_Task *v;
 };
 
-typedef struct ASYNC_TaskList ASYNC_TaskList;
 struct ASYNC_TaskList
 {
   ASYNC_TaskNode *first;
@@ -73,7 +68,6 @@ struct ASYNC_TaskList
 ////////////////////////////////
 //~ rjf: Root (Per-Worker-Thread Arena Bundle)
 
-typedef struct ASYNC_Root ASYNC_Root;
 struct ASYNC_Root
 {
   Arena **arenas;
@@ -82,7 +76,6 @@ struct ASYNC_Root
 ////////////////////////////////
 //~ rjf: Shared State Bundle
 
-typedef struct ASYNC_Ring ASYNC_Ring;
 struct ASYNC_Ring
 {
   U64 ring_size;
@@ -93,7 +86,6 @@ struct ASYNC_Ring
   OS_Handle ring_cv;
 };
 
-typedef struct ASYNC_Shared ASYNC_Shared;
 struct ASYNC_Shared
 {
   Arena *arena;
@@ -119,44 +111,32 @@ global ASYNC_Shared *async_shared = 0;
 ////////////////////////////////
 //~ rjf: Top-Level Layer Initialization
 
-internal void async_init(CmdLine *cmdline);
 
 ////////////////////////////////
 //~ rjf: Top-Level Accessors
 
-internal U64 async_thread_count(void);
 
 ////////////////////////////////
 //~ rjf: Work Kickoffs
 
-internal B32 async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params);
 #define async_push_work(function, ...) async_push_work_((function), &(ASYNC_WorkParams){.endt_us = max_U64, .priority = ASYNC_Priority_High, __VA_ARGS__})
 
 ////////////////////////////////
 //~ rjf: Task-Based Work Helper
 
-internal void async_task_list_push(Arena *arena, ASYNC_TaskList *list, ASYNC_Task *t);
-internal ASYNC_Task *async_task_launch_(Arena *arena, ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params);
 #define async_task_launch(arena, work_function, ...) async_task_launch_((arena), (work_function), &(ASYNC_WorkParams){.endt_us = max_U64, __VA_ARGS__})
-internal void *async_task_join(ASYNC_Task *task);
 #define async_task_join_struct(task, T) (T *)async_task_join(task)
 
 ////////////////////////////////
 //~ rjf: Work Execution
 
-internal ASYNC_Work async_pop_work(void);
-internal void async_execute_work(ASYNC_Work work);
 
 ////////////////////////////////
 //~ rjf: Root Allocation/Deallocation
 
-internal ASYNC_Root *async_root_alloc(void);
-internal void async_root_release(ASYNC_Root *root);
-internal Arena *async_root_thread_arena(ASYNC_Root *root);
 
 ////////////////////////////////
 //~ rjf: Work Thread Entry Point
 
-internal void async_work_thread__entry_point(void *p);
 
 #endif // ASYNC_H

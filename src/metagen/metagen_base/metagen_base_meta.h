@@ -14,7 +14,6 @@
 ////////////////////////////////
 //~ rjf: Tweak Info Tables
 
-typedef struct TweakB32Info TweakB32Info;
 struct TweakB32Info
 {
   String8 name;
@@ -22,7 +21,6 @@ struct TweakB32Info
   B32 *value_ptr;
 };
 
-typedef struct TweakF32Info TweakF32Info;
 struct TweakF32Info
 {
   String8 name;
@@ -31,21 +29,18 @@ struct TweakF32Info
   F32 *value_ptr;
 };
 
-typedef struct TweakB32InfoTable TweakB32InfoTable;
 struct TweakB32InfoTable
 {
   TweakB32Info *v;
   U64 count;
 };
 
-typedef struct TweakF32InfoTable TweakF32InfoTable;
 struct TweakF32InfoTable
 {
   TweakF32Info *v;
   U64 count;
 };
 
-typedef struct EmbedInfo EmbedInfo;
 struct EmbedInfo
 {
   String8 name;
@@ -53,7 +48,6 @@ struct EmbedInfo
   U128 *hash;
 };
 
-typedef struct EmbedInfoTable EmbedInfoTable;
 struct EmbedInfoTable
 {
   EmbedInfo *v;
@@ -112,8 +106,6 @@ enum
   MemberFlag_DoNotSerialize  = (1<<0),
 };
 
-typedef struct Type Type;
-typedef struct Member Member;
 struct Member
 {
   String8 name;
@@ -123,7 +115,6 @@ struct Member
   MemberFlags flags;
 };
 
-typedef struct Type Type;
 struct Type
 {
   TypeKind kind;
@@ -139,7 +130,6 @@ struct Type
 ////////////////////////////////
 //~ rjf: Type Serialization Parameters
 
-typedef struct TypeSerializePtrRefInfo TypeSerializePtrRefInfo;
 struct TypeSerializePtrRefInfo
 {
   Type *type;           // pointers to this
@@ -148,7 +138,6 @@ struct TypeSerializePtrRefInfo
   void *nil_ptr;        // is terminal if matching 0 or this
 };
 
-typedef struct TypeSerializeParams TypeSerializeParams;
 struct TypeSerializeParams
 {
   U64 *advance_out;
@@ -280,16 +269,11 @@ Type String8List__type =
 ////////////////////////////////
 //~ rjf: Type Info Lookups
 
-internal Member *member_from_name(Type *type, String8 name);
 #define EachMember(T, it) (Member *it = (type(T))->members; it != 0 && it < (type(T))->members + (type(T))->count; it += 1)
 
 ////////////////////////////////
 //~ rjf: Type Info * Instance Operations
 
-internal void typed_data_rebase_ptrs(Type *type, String8 data, void *base_ptr);
-internal String8 serialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerializeParams *params);
-internal String8 deserialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerializeParams *params);
-internal String8 deep_copy_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerializeParams *params);
 #define struct_rebase_ptrs(T, ptr, base)                   typed_data_rebase_ptrs(type(T), str8_struct(ptr), (base))
 #define serialized_from_struct(arena, T, ptr, ...)         serialized_from_typed_data((arena), type(T), str8_struct(ptr), &(TypeSerializeParams){.ptr_ref_infos = 0, __VA_ARGS__})
 #define struct_from_serialized(arena, T, string, ...) (T *)deserialized_from_typed_data((arena), type(T), (string), &(TypeSerializeParams){.ptr_ref_infos = 0, __VA_ARGS__}).str

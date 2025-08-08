@@ -7,7 +7,6 @@
 ////////////////////////////////
 //~ rjf: MSF Parser Helper Types
 
-typedef struct MSF_RawStream MSF_RawStream;
 struct MSF_RawStream
 {
   U64 size;
@@ -18,7 +17,6 @@ struct MSF_RawStream
   } u;
 };
 
-typedef struct MSF_RawStreamTable MSF_RawStreamTable;
 struct MSF_RawStreamTable
 {
   U64            total_page_count;
@@ -28,7 +26,6 @@ struct MSF_RawStreamTable
   MSF_RawStream *streams;
 };
 
-typedef struct MSF_Parsed MSF_Parsed;
 struct MSF_Parsed
 {
   String8 *streams;
@@ -40,9 +37,5 @@ struct MSF_Parsed
 ////////////////////////////////
 //~ rjf: MSF Parser Functions
 
-internal MSF_RawStreamTable* msf_raw_stream_table_from_data(Arena *arena, String8 msf_data);
-internal String8             msf_data_from_stream_number(Arena *arena, String8 msf_data, MSF_RawStreamTable *st, MSF_StreamNumber sn);
-internal MSF_Parsed*         msf_parsed_from_data(Arena *arena, String8 msf_data);
-internal String8             msf_data_from_stream(MSF_Parsed *msf, MSF_StreamNumber sn);
 
 #endif // MSF_PARSE_H

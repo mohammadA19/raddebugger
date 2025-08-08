@@ -87,7 +87,6 @@ typedef ptrdiff_t GLintptr;
 ////////////////////////////////
 //~ rjf: Shader Metadata Types
 
-typedef struct R_OGL_Attribute R_OGL_Attribute;
 struct R_OGL_Attribute
 {
   U64 index;
@@ -96,7 +95,6 @@ struct R_OGL_Attribute
   U64 count;
 };
 
-typedef struct R_OGL_AttributeArray R_OGL_AttributeArray;
 struct R_OGL_AttributeArray
 {
   R_OGL_Attribute *v;
@@ -163,7 +161,6 @@ R_OGL_ProcedureXList
 ////////////////////////////////
 //~ rjf: State Types
 
-typedef struct R_OGL_FormatInfo R_OGL_FormatInfo;
 struct R_OGL_FormatInfo
 {
   GLint internal_format;
@@ -171,7 +168,6 @@ struct R_OGL_FormatInfo
   GLenum base_type;
 };
 
-typedef struct R_OGL_Tex2D R_OGL_Tex2D;
 struct R_OGL_Tex2D
 {
   R_OGL_Tex2D *next;
@@ -181,14 +177,12 @@ struct R_OGL_Tex2D
   Vec2S32 size;
 };
 
-typedef struct R_OGL_FlushBuffer R_OGL_FlushBuffer;
 struct R_OGL_FlushBuffer
 {
   R_OGL_FlushBuffer *next;
   GLuint id;
 };
 
-typedef struct R_OGL_State R_OGL_State;
 struct R_OGL_State
 {
   Arena *arena;
@@ -210,11 +204,6 @@ global R_OGL_State *r_ogl_state = 0;
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal R_Handle r_ogl_handle_from_tex2d(R_OGL_Tex2D *t);
-internal R_OGL_Tex2D *r_ogl_tex2d_from_handle(R_Handle h);
-internal R_OGL_FormatInfo r_ogl_format_info_from_tex2dformat(R_Tex2DFormat fmt);
-internal GLuint r_ogl_instance_buffer_from_size(U64 size);
-internal void r_ogl_debug_message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam);
 
 #define glUseProgramScope(...) DeferLoop(glUseProgram(__VA_ARGS__), glUseProgram(0))
 #define glBindVertexArrayScope(...) DeferLoop(glBindVertexArray(__VA_ARGS__), glBindVertexArray(0))
@@ -222,11 +211,5 @@ internal void r_ogl_debug_message_callback(GLenum source, GLenum type, GLuint id
 ////////////////////////////////
 //~ rjf: OS-Specific Hooks
 
-internal VoidProc *r_ogl_os_load_procedure(char *name);
-internal void r_ogl_os_init(CmdLine *cmdln);
-internal R_Handle r_ogl_os_window_equip(OS_Handle window);
-internal void r_ogl_os_window_unequip(OS_Handle os, R_Handle r);
-internal void r_ogl_os_select_window(OS_Handle os, R_Handle r);
-internal void r_ogl_os_window_swap(OS_Handle os, R_Handle r);
 
 #endif // RENDER_OPENGL_H

@@ -16,13 +16,11 @@ enum
   FP_RasterFlag_Hinted = (1<<1),
 };
 
-typedef struct FP_Handle FP_Handle;
 struct FP_Handle
 {
   U64 u64[2];
 };
 
-typedef struct FP_Metrics FP_Metrics;
 struct FP_Metrics
 {
   F32 design_units_per_em;
@@ -32,7 +30,6 @@ struct FP_Metrics
   F32 capital_height;
 };
 
-typedef struct FP_RasterResult FP_RasterResult;
 struct FP_RasterResult
 {
   Vec2S16 atlas_dim;
@@ -43,8 +40,6 @@ struct FP_RasterResult
 ////////////////////////////////
 //~ rjf: Basic Type Functions
 
-internal FP_Handle fp_handle_zero(void);
-internal B32 fp_handle_match(FP_Handle a, FP_Handle b);
 
 ////////////////////////////////
 //~ rjf: Backend Hooks
