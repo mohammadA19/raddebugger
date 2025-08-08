@@ -12,8 +12,7 @@
 ////////////////////////////////
 //~ rjf: File Types
 
-typedef U32 RB_FileFormatFlags;
-enum
+enum RB_FileFormatFlags : U32
 {
   RB_FileFormatFlag_HasDWARF = (1<<0),
 };

@@ -6,7 +6,7 @@
 #ifndef RENDER_OPENGL_META_H
 #define RENDER_OPENGL_META_H
 
-typedef enum R_OGL_ShaderKind
+enum R_OGL_ShaderKind
 {
 R_OGL_ShaderKind_Rect,
 R_OGL_ShaderKind_Blur,

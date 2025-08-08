@@ -6,7 +6,7 @@
 #ifndef DEMON_META_H
 #define DEMON_META_H
 
-typedef enum DMN_EventKind
+enum DMN_EventKind
 {
 DMN_EventKind_Null,
 DMN_EventKind_Error,
@@ -32,7 +32,7 @@ DMN_EventKind_SetVAddrRangeNote,
 DMN_EventKind_COUNT,
 } DMN_EventKind;
 
-typedef enum DMN_ErrorKind
+enum DMN_ErrorKind
 {
 DMN_ErrorKind_Null,
 DMN_ErrorKind_NotAttached,
@@ -41,7 +41,7 @@ DMN_ErrorKind_InvalidHandle,
 DMN_ErrorKind_COUNT,
 } DMN_ErrorKind;
 
-typedef enum DMN_MemoryEventKind
+enum DMN_MemoryEventKind
 {
 DMN_MemoryEventKind_Null,
 DMN_MemoryEventKind_Commit,
@@ -51,7 +51,7 @@ DMN_MemoryEventKind_Release,
 DMN_MemoryEventKind_COUNT,
 } DMN_MemoryEventKind;
 
-typedef enum DMN_ExceptionKind
+enum DMN_ExceptionKind
 {
 DMN_ExceptionKind_Null,
 DMN_ExceptionKind_MemoryRead,

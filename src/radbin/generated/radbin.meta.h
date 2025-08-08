@@ -6,7 +6,7 @@
 #ifndef RADBIN_META_H
 #define RADBIN_META_H
 
-typedef enum RB_FileFormat
+enum RB_FileFormat
 {
 RB_FileFormat_Null,
 RB_FileFormat_PDB,

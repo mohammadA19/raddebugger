@@ -5,7 +5,7 @@
 
 // --- Symbol ------------------------------------------------------------------
 
-typedef enum
+enum
 {
   LNK_SymbolScope_Defined,
   LNK_SymbolScope_Lib,

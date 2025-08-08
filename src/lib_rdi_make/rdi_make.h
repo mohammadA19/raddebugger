@@ -108,8 +108,7 @@ struct RDIM_String8List
 };
 #endif
 
-typedef RDI_U32 RDIM_StringMatchFlags;
-enum
+enum RDIM_StringMatchFlags : RDI_U32
 {
   RDIM_StringMatchFlag_CaseInsensitive = (1<<0),
 };
@@ -327,7 +326,7 @@ X(TypeNameMap,                 type_name_map)\
 X(LinkNameProcedureNameMap,    link_name_procedure_name_map)\
 X(NormalSourcePathNameMap,     normal_source_path_name_map)\
 
-typedef enum RDIM_Subset
+enum RDIM_Subset
 {
 #define X(name, name_lower) RDIM_Subset_##name,
   RDIM_Subset_XList
@@ -335,8 +334,7 @@ typedef enum RDIM_Subset
 }
 RDIM_Subset;
 
-typedef U32 RDIM_SubsetFlags;
-enum
+enum RDIM_SubsetFlags : U32
 {
 #define X(name, name_lower) RDIM_SubsetFlag_##name = (1<<RDIM_Subset_##name),
   RDIM_Subset_XList
@@ -620,8 +618,7 @@ struct RDIM_UnitChunkList
 ////////////////////////////////
 //~ rjf: Type System Node Types
 
-typedef RDI_U32 RDIM_DataModel;
-enum RDIM_DataModelEnum
+enum RDIM_DataModel : RDI_U32 RDIM_DataModelEnum
 {
   RDIM_DataModel_Null,
   RDIM_DataModel_ILP32,

@@ -497,7 +497,7 @@ XXH_PUBLIC_API XXH_CONSTF unsigned XXH_versionNumber (void);
 /*!
  * @brief Exit code for the streaming API.
  */
-typedef enum {
+enum {
     XXH_OK = 0, /*!< OK */
     XXH_ERROR   /*!< Error */
 } XXH_errorcode;
@@ -2483,7 +2483,7 @@ static xxh_u32 XXH_swap32 (xxh_u32 x)
  * @internal
  * @brief Enum to indicate whether a pointer is aligned.
  */
-typedef enum {
+enum {
     XXH_aligned,  /*!< Aligned */
     XXH_unaligned /*!< Possibly unaligned */
 } XXH_alignment;

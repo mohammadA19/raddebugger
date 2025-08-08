@@ -6,7 +6,7 @@
 #ifndef DBG_ENGINE_META_H
 #define DBG_ENGINE_META_H
 
-typedef enum D_CmdKind
+enum D_CmdKind
 {
 D_CmdKind_Null,
 D_CmdKind_LaunchAndRun,

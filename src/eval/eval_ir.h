@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Identifier Resolution Rule Types
 
-typedef enum E_IdentifierResolutionPath
+enum E_IdentifierResolutionPath
 {
   E_IdentifierResolutionPath_WildcardInst,
   E_IdentifierResolutionPath_ParentExpr,

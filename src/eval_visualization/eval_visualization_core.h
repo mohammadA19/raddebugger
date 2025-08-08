@@ -204,8 +204,7 @@ struct EV_WindowedRowList
 ////////////////////////////////
 //~ rjf: String Generation Types
 
-typedef U32 EV_StringFlags;
-enum
+enum EV_StringFlags : U32
 {
   EV_StringFlag_ReadOnlyDisplayRules = (1<<0),
   EV_StringFlag_PrettyNames          = (1<<1),

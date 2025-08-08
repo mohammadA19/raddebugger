@@ -7,7 +7,7 @@
 ////////////////////////////////
 //~ rjf: Log Types
 
-typedef enum LogMsgKind
+enum LogMsgKind
 {
   LogMsgKind_Info,
   LogMsgKind_UserError,

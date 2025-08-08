@@ -92,8 +92,7 @@ struct DMN_EventList
 ////////////////////////////////
 //~ rjf: Run Control Types
 
-typedef U32 DMN_TrapFlags;
-enum
+enum DMN_TrapFlags : U32
 {
   DMN_TrapFlag_BreakOnWrite   = (1<<0),
   DMN_TrapFlag_BreakOnRead    = (1<<1),

@@ -1,7 +1,7 @@
 #ifndef COFF_OBJ_WRITER_H
 #define COFF_OBJ_WRITER_H
 
-typedef enum
+enum
 {
   COFF_SymbolLocation_Null,
   COFF_SymbolLocation_Section,

@@ -15,15 +15,14 @@ typedef U64 CTRL_MachineID;
 ////////////////////////////////
 //~ rjf: User Breakpoint Types
 
-typedef U32 CTRL_UserBreakpointFlags;
-enum
+enum CTRL_UserBreakpointFlags : U32
 {
   CTRL_UserBreakpointFlag_BreakOnWrite   = (1<<0),
   CTRL_UserBreakpointFlag_BreakOnRead    = (1<<1),
   CTRL_UserBreakpointFlag_BreakOnExecute = (1<<2),
 };
 
-typedef enum CTRL_UserBreakpointKind
+enum CTRL_UserBreakpointKind
 {
   CTRL_UserBreakpointKind_Null,
   CTRL_UserBreakpointKind_FileNameAndLineColNumber,
@@ -193,8 +192,7 @@ struct CTRL_EntityCtxLookupAccel
 ////////////////////////////////
 //~ rjf: Unwind Types
 
-typedef U32 CTRL_UnwindFlags;
-enum
+enum CTRL_UnwindFlags : U32
 {
   CTRL_UnwindFlag_Error = (1<<0),
   CTRL_UnwindFlag_Stale = (1<<1),
@@ -250,8 +248,7 @@ struct CTRL_CallStack
 ////////////////////////////////
 //~ rjf: Trap Types
 
-typedef U32 CTRL_TrapFlags;
-enum
+enum CTRL_TrapFlags : U32
 {
   CTRL_TrapFlag_IgnoreStackPointerCheck = (1<<0),
   CTRL_TrapFlag_SingleStepAfterHit      = (1<<1),
@@ -290,8 +287,7 @@ struct CTRL_Spoof
 ////////////////////////////////
 //~ rjf: Evaluation Spaces
 
-typedef U64 CTRL_EvalSpaceKind;
-enum
+enum CTRL_EvalSpaceKind : U64
 {
   CTRL_EvalSpaceKind_Entity = E_SpaceKind_FirstUserDefined,
   CTRL_EvalSpaceKind_Meta,
@@ -300,7 +296,7 @@ enum
 ////////////////////////////////
 //~ rjf: Message Types
 
-typedef enum CTRL_MsgKind
+enum CTRL_MsgKind
 {
   CTRL_MsgKind_Null,
   CTRL_MsgKind_Launch,
@@ -318,8 +314,7 @@ typedef enum CTRL_MsgKind
 }
 CTRL_MsgKind;
 
-typedef U32 CTRL_RunFlags;
-enum
+enum CTRL_RunFlags : U32
 {
   CTRL_RunFlag_StopOnEntryPoint = (1<<0),
 };
@@ -363,7 +358,7 @@ struct CTRL_MsgList
 ////////////////////////////////
 //~ rjf: Event Types
 
-typedef enum CTRL_EventKind
+enum CTRL_EventKind
 {
   CTRL_EventKind_Null,
   CTRL_EventKind_Error,
@@ -405,7 +400,7 @@ typedef enum CTRL_EventKind
 }
 CTRL_EventKind;
 
-typedef enum CTRL_EventCause
+enum CTRL_EventCause
 {
   CTRL_EventCause_Null,
   CTRL_EventCause_Error,
@@ -419,7 +414,7 @@ typedef enum CTRL_EventCause
 }
 CTRL_EventCause;
 
-typedef enum CTRL_ExceptionKind
+enum CTRL_ExceptionKind
 {
   CTRL_ExceptionKind_Null,
   CTRL_ExceptionKind_MemoryRead,

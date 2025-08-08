@@ -7,8 +7,7 @@
 ////////////////////////////////
 //~ rjf: Type Unwrapping
 
-typedef U32 E_TypeUnwrapFlags;
-enum
+enum E_TypeUnwrapFlags : U32
 {
   E_TypeUnwrapFlag_Modifiers     = (1<<0),
   E_TypeUnwrapFlag_Pointers      = (1<<1),

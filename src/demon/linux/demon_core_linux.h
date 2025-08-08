@@ -223,7 +223,7 @@ struct DMN_LNX_ModuleInfoList
 ////////////////////////////////
 //~ rjf: Entity Types
 
-typedef enum DMN_LNX_EntityKind
+enum DMN_LNX_EntityKind
 {
   DMN_LNX_EntityKind_Null,
   DMN_LNX_EntityKind_Root,

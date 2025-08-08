@@ -3,7 +3,7 @@
 
 #pragma once
 
-typedef enum LNK_TimerType
+enum LNK_TimerType
 {
   LNK_Timer_Image,
   LNK_Timer_Pdb,
