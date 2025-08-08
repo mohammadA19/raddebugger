@@ -14,14 +14,14 @@
 #endif
 
 internal U64
-hs_little_hash_from_data(String8 data)
+hs_little_hash_from_data(StringView data)
 {
     U64 result = XXH3_64bits(data.str, data.size);
     return result;
 }
 
 internal U128
-hs_hash_from_data(String8 data)
+hs_hash_from_data(StringView data)
 {
     U128 u128 = {0};
     XXH128_hash_t hash = XXH3_128bits(data.str, data.size);
@@ -217,7 +217,7 @@ hs_root_release(HS_Root root)
 //~ rjf: Cache Submission
 
 internal U128
-hs_submit_data(HS_Key key, Arena **data_arena, String8 data)
+hs_submit_data(HS_Key key, Arena **data_arena, StringView data)
 {
     U64 key_hash = hs_little_hash_from_data(str8_struct(&key));
     U64 key_slot_idx = key_hash%hs_shared.key_slots_count;
@@ -517,11 +517,11 @@ hs_hash_from_key(HS_Key key, U64 rewind_count)
     return result;
 }
 
-internal String8
+internal StringView
 hs_data_from_hash(HS_Scope *scope, U128 hash)
 {
     ProfBeginFunction();
-    String8 result = {0};
+    StringView result = {0};
     U64 slot_idx = hash.u64[1]%hs_shared.slots_count;
     U64 stripe_idx = slot_idx%hs_shared.stripes_count;
     HS_Slot *slot = &hs_shared.slots[slot_idx];

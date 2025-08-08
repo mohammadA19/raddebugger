@@ -24,7 +24,7 @@ typedef struct UI_FocusActiveNode UI_FocusActiveNode; struct UI_FocusActiveNode{
 typedef struct UI_FastpathCodepointNode UI_FastpathCodepointNode; struct UI_FastpathCodepointNode{UI_FastpathCodepointNode *next; U32 v;};
 typedef struct UI_GroupKeyNode UI_GroupKeyNode; struct UI_GroupKeyNode{UI_GroupKeyNode *next; UI_Key v;};
 typedef struct UI_TransparencyNode UI_TransparencyNode; struct UI_TransparencyNode{UI_TransparencyNode *next; F32 v;};
-typedef struct UI_TagNode UI_TagNode; struct UI_TagNode{UI_TagNode *next; String8 v;};
+typedef struct UI_TagNode UI_TagNode; struct UI_TagNode{UI_TagNode *next; StringView v;};
 typedef struct UI_BackgroundColorNode UI_BackgroundColorNode; struct UI_BackgroundColorNode{UI_BackgroundColorNode *next; Vec4F32 v;};
 typedef struct UI_TextColorNode UI_TextColorNode; struct UI_TextColorNode{UI_TextColorNode *next; Vec4F32 v;};
 typedef struct UI_BorderColorNode UI_BorderColorNode; struct UI_BorderColorNode{UI_BorderColorNode *next; Vec4F32 v;};
@@ -138,7 +138,7 @@ struct { UI_FocusActiveNode *top; UI_FocusKind bottom_val; UI_FocusActiveNode *f
 struct { UI_FastpathCodepointNode *top; U32 bottom_val; UI_FastpathCodepointNode *free; U64 gen; B32 auto_pop; } fastpath_codepoint_stack;\
 struct { UI_GroupKeyNode *top; UI_Key bottom_val; UI_GroupKeyNode *free; U64 gen; B32 auto_pop; } group_key_stack;\
 struct { UI_TransparencyNode *top; F32 bottom_val; UI_TransparencyNode *free; U64 gen; B32 auto_pop; } transparency_stack;\
-struct { UI_TagNode *top; String8 bottom_val; UI_TagNode *free; U64 gen; B32 auto_pop; } tag_stack;\
+struct { UI_TagNode *top; StringView bottom_val; UI_TagNode *free; U64 gen; B32 auto_pop; } tag_stack;\
 struct { UI_BackgroundColorNode *top; Vec4F32 bottom_val; UI_BackgroundColorNode *free; U64 gen; B32 auto_pop; } background_color_stack;\
 struct { UI_TextColorNode *top; Vec4F32 bottom_val; UI_TextColorNode *free; U64 gen; B32 auto_pop; } text_color_stack;\
 struct { UI_BorderColorNode *top; Vec4F32 bottom_val; UI_BorderColorNode *free; U64 gen; B32 auto_pop; } border_color_stack;\

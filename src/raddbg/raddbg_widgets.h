@@ -46,11 +46,11 @@ struct RD_CellParams
     //- rjf: catchall parameters
     RD_CellFlags flags;
     S32 depth;
-    String8 pre_edit_value;
+    StringView pre_edit_value;
     DR_FStrList meta_fstrs;
     DR_FStrList value_fstrs;
-    String8 search_needle;
-    String8 description;
+    StringView search_needle;
+    StringView description;
     
     //- rjf: expander r/w info
     B32 *expanded_out;
@@ -62,7 +62,7 @@ struct RD_CellParams
     F32 *slider_value_out;
     
     //- rjf: bindings name w info
-    String8 bindings_name;
+    StringView bindings_name;
     
     //- rjf: revert out
     B32 *revert_out;
@@ -92,7 +92,7 @@ struct RD_CodeSliceParams
     // rjf: content
     RD_CodeSliceFlags flags;
     Rng1S64 line_num_range;
-    String8 *line_text;
+    StringView *line_text;
     Rng1U64 *line_ranges;
     TXT_TokenArray *line_tokens;
     RD_CfgList *line_bps;
@@ -107,7 +107,7 @@ struct RD_CodeSliceParams
     FNT_Tag font;
     F32 font_size;
     F32 tab_size;
-    String8 search_query;
+    StringView search_query;
     F32 line_height_px;
     F32 priority_margin_width_px;
     F32 catchall_margin_width_px;

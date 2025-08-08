@@ -169,7 +169,7 @@ cv_map_encoded_base_pointer(CV_Arch arch, U32 encoded_frame_reg)
 ////////////////////////////////
 //~ rjf: Enum -> String
 
-internal String8
+internal StringView
 cv_string_from_inline_range_kind(CV_InlineRangeKind kind)
 {
     switch (kind) {
@@ -179,7 +179,7 @@ cv_string_from_inline_range_kind(CV_InlineRangeKind kind)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_type_index_source(CV_TypeIndexSource ti_source)
 {
     switch (ti_source) {
@@ -191,7 +191,7 @@ cv_string_from_type_index_source(CV_TypeIndexSource ti_source)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_language(CV_Language x)
 {
     switch (x) {
@@ -202,10 +202,10 @@ cv_string_from_language(CV_Language x)
     return str8_zero();
 }
 
-internal String8 
+internal StringView 
 cv_string_from_reg_id(Arena *arena, CV_Arch arch, U32 id)
 {
-    String8 result = str8_zero();
+    StringView result = str8_zero();
     switch (arch) {
         case CV_Arch_8086: {
             switch (id) {
@@ -229,7 +229,7 @@ cv_string_from_reg_id(Arena *arena, CV_Arch arch, U32 id)
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_member_access(CV_MemberAccess x)
 {
     switch (x) {
@@ -241,7 +241,7 @@ cv_string_from_member_access(CV_MemberAccess x)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_method_prop(CV_MethodProp x)
 {
     switch (x) {
@@ -256,7 +256,7 @@ cv_string_from_method_prop(CV_MethodProp x)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_hfa(CV_HFAKind x)
 {
     switch (x) {
@@ -268,7 +268,7 @@ cv_string_from_hfa(CV_HFAKind x)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_mcom(CV_MoComUDTKind x)
 {
     switch (x) {
@@ -280,7 +280,7 @@ cv_string_from_mcom(CV_MoComUDTKind x)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_binary_opcode(CV_InlineBinaryAnnotation x)
 {
     switch (x) {
@@ -302,7 +302,7 @@ cv_string_from_binary_opcode(CV_InlineBinaryAnnotation x)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_thunk_ordinal(CV_ThunkOrdinal x)
 {
     switch (x) {
@@ -317,7 +317,7 @@ cv_string_from_thunk_ordinal(CV_ThunkOrdinal x)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_frame_cookie_kind(CV_FrameCookieKind x)
 {
     switch (x) {
@@ -328,7 +328,7 @@ cv_string_from_frame_cookie_kind(CV_FrameCookieKind x)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_generic_style(CV_GenericStyle x)
 {
     switch (x) {
@@ -343,7 +343,7 @@ cv_string_from_generic_style(CV_GenericStyle x)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_trampoline_kind(CV_TrampolineKind x)
 {
     switch (x) {
@@ -353,7 +353,7 @@ cv_string_from_trampoline_kind(CV_TrampolineKind x)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_virtual_table_shape_kind(CV_VirtualTableShape x)
 {
     switch (x) {
@@ -368,7 +368,7 @@ cv_string_from_virtual_table_shape_kind(CV_VirtualTableShape x)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_call_kind(CV_CallKind x)
 {
     switch (x) {
@@ -401,7 +401,7 @@ cv_string_from_call_kind(CV_CallKind x)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_member_pointer_kind(CV_MemberPointerKind x)
 {
     switch (x) {
@@ -417,7 +417,7 @@ cv_string_from_member_pointer_kind(CV_MemberPointerKind x)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_pointer_kind(CV_PointerKind x)
 {
     switch (x) {
@@ -438,7 +438,7 @@ cv_string_from_pointer_kind(CV_PointerKind x)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_pointer_mode(CV_PointerMode x)
 {
     switch (x) {
@@ -451,7 +451,7 @@ cv_string_from_pointer_mode(CV_PointerMode x)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_c13_checksum_kind(CV_C13ChecksumKind x)
 {
     switch (x) {
@@ -463,7 +463,7 @@ cv_string_from_c13_checksum_kind(CV_C13ChecksumKind x)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_label_kind(Arena *arena, CV_LabelKind x)
 {
     switch (x) {
@@ -473,7 +473,7 @@ cv_string_from_label_kind(Arena *arena, CV_LabelKind x)
     return push_str8f(arena, "%#x", x);
 }
 
-internal String8
+internal StringView
 cv_string_from_c13_subsection_kind(CV_C13SubSectionKind x)
 {
     switch (x) {
@@ -484,7 +484,7 @@ cv_string_from_c13_subsection_kind(CV_C13SubSectionKind x)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 cv_string_from_modifier_flags(Arena *arena, CV_ModifierFlags x)
 {
     Temp scratch = scratch_begin(&arena, 1);
@@ -498,12 +498,12 @@ cv_string_from_modifier_flags(Arena *arena, CV_ModifierFlags x)
     if (x & CV_ModifierFlag_Unaligned) {
         str8_list_pushf(scratch.arena, &list, "Unaligned");
     }
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
+    StringView result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_pointer_attribs(Arena *arena, CV_PointerAttribs x)
 {
     Temp scratch = scratch_begin(&arena, 1);
@@ -549,11 +549,11 @@ cv_string_from_pointer_attribs(Arena *arena, CV_PointerAttribs x)
     x &= ~(0x1f|(0x7<<5)|(0x3f<<13));
     
     if (kind) {
-        String8 kind_str = cv_string_from_pointer_kind(kind);
+        StringView kind_str = cv_string_from_pointer_kind(kind);
         str8_list_pushf(scratch.arena, &list, "Kind=%S", kind_str);
     }
     if (mode) {
-        String8 mode_str = cv_string_from_pointer_mode(mode);
+        StringView mode_str = cv_string_from_pointer_mode(mode);
         str8_list_pushf(scratch.arena, &list, "Mode=%S", mode_str);
     }
     if (size) {
@@ -564,12 +564,12 @@ cv_string_from_pointer_attribs(Arena *arena, CV_PointerAttribs x)
         str8_list_pushf(scratch.arena, &list, "Unknown=%x", x);
     }
     
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
+    StringView result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_function_attribs(Arena *arena, CV_FunctionAttribs x)
 {
     Temp scratch = scratch_begin(&arena, 1);
@@ -583,12 +583,12 @@ cv_string_from_function_attribs(Arena *arena, CV_FunctionAttribs x)
     if (x & CV_FunctionAttrib_ConstructorVBase) {
         str8_list_pushf(scratch.arena, &list, "ConstructorVBase");
     }
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
+    StringView result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_export_flags(Arena *arena, CV_ExportFlags x)
 {
     Temp scratch = scratch_begin(&arena, 1);
@@ -611,12 +611,12 @@ cv_string_from_export_flags(Arena *arena, CV_ExportFlags x)
     if (x & CV_ExportFlag_Forwarder) {
         str8_list_pushf(scratch.arena, &list, "Forwarder");
     }
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
+    StringView result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_sepcode(Arena *arena, CV_SepcodeFlags x)
 {
     Temp scratch = scratch_begin(&arena,1);
@@ -627,12 +627,12 @@ cv_string_from_sepcode(Arena *arena, CV_SepcodeFlags x)
     if (x & CV_SepcodeFlag_ReturnsToParent) {
         str8_list_pushf(scratch.arena, &list, "ReturnsToParent");
     }
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
+    StringView result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_pub32_flags(Arena *arena, CV_Pub32Flags x)
 {
     Temp scratch = scratch_begin(&arena, 1);
@@ -649,12 +649,12 @@ cv_string_from_pub32_flags(Arena *arena, CV_Pub32Flags x)
     if (x & CV_Pub32Flag_MSIL) {
         str8_list_pushf(scratch.arena, &list, "MSIL");
     }
-    String8 result = str8_list_join(scratch.arena, &list, &(StringJoin){.sep=(", ")});
+    StringView result = str8_list_join(scratch.arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_generic_flags(Arena *arena, CV_GenericFlags x)
 {
     Temp scratch = scratch_begin(&arena, 1);
@@ -665,12 +665,12 @@ cv_string_from_generic_flags(Arena *arena, CV_GenericFlags x)
     if (x & CV_GenericFlags_RSCLEAN) {
         str8_list_pushf(scratch.arena, &list, "RSCLEAN");
     }
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
+    StringView result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_frame_proc_flags(Arena *arena, CV_FrameprocFlags x)
 {
     Temp scratch = scratch_begin(&arena, 1);
@@ -732,12 +732,12 @@ cv_string_from_frame_proc_flags(Arena *arena, CV_FrameprocFlags x)
     if (x & CV_FrameprocFlag_HasCFW) {
         str8_list_pushf(scratch.arena, &list, "HasCFW");
     }
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
+    StringView result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_type_props(Arena *arena, CV_TypeProps32 x)
 {
     Temp scratch = scratch_begin(&arena, 1);
@@ -745,10 +745,10 @@ cv_string_from_type_props(Arena *arena, CV_TypeProps32 x)
     U32 hfa  = CV_TypeProps_Extract_HFA(x);
     U32 mcom = CV_TypeProps_Extract_MOCOM(x);
     
-    String8 hfa_str  = cv_string_from_hfa(hfa);
-    String8 mcom_str = cv_string_from_mcom(mcom);
+    StringView hfa_str  = cv_string_from_hfa(hfa);
+    StringView mcom_str = cv_string_from_mcom(mcom);
     
-    String8 flags_str;
+    StringView flags_str;
     {
         String8List list = {0};
         if (x & CV_TypeProp_Packed) {
@@ -812,13 +812,13 @@ cv_string_from_type_props(Arena *arena, CV_TypeProps32 x)
         }
     }
     
-    String8 result = push_str8f(arena, "%S", flags_str);
+    StringView result = push_str8f(arena, "%S", flags_str);
     
     scratch_end(scratch);
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_local_flags(Arena *arena, CV_LocalFlags x)
 {
     Temp scratch = scratch_begin(&arena, 1);
@@ -856,12 +856,12 @@ cv_string_from_local_flags(Arena *arena, CV_LocalFlags x)
     if (x & CV_LocalFlag_Static) {
         str8_list_pushf(scratch.arena, &list, "Static");
     }
-    String8 result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
+    StringView result = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_proc_flags(Arena *arena, CV_ProcFlags x)
 {
     Temp scratch = scratch_begin(&arena, 1);
@@ -901,7 +901,7 @@ cv_string_from_proc_flags(Arena *arena, CV_ProcFlags x)
     if (x != 0) {
         str8_list_pushf(scratch.arena, &list, "%#x", x);
     }
-    String8 result;
+    StringView result;
     if (list.node_count == 0) {
         result = ("None");
     } else {
@@ -911,27 +911,27 @@ cv_string_from_proc_flags(Arena *arena, CV_ProcFlags x)
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_range_attribs(Arena *arena, CV_RangeAttribs x)
 { (void)arena;
-    String8 result = ("None");
+    StringView result = ("None");
     if (x == CV_RangeAttrib_Maybe) {
         result = ("Maybe");
     }
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_defrange_register_rel_flags(Arena *arena, CV_DefrangeRegisterRelFlags x)
 { (void)arena;
-    String8 result = ("None");
+    StringView result = ("None");
     if (x == CV_DefrangeRegisterRelFlag_SpilledOutUDTMember) {
         result = ("SpilledOutUDTMember");
     }
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_field_attribs(Arena *arena, CV_FieldAttribs attribs)
 {
     Temp scratch = scratch_begin(&arena, 1);
@@ -940,8 +940,8 @@ cv_string_from_field_attribs(Arena *arena, CV_FieldAttribs attribs)
     U32 mprop  = CV_FieldAttribs_Extract_MethodProp(attribs);
     attribs &= ~(0x3 | 0x7);
     
-    String8 access_str = cv_string_from_member_access(access);
-    String8 mprop_str  = cv_string_from_method_prop(mprop);
+    StringView access_str = cv_string_from_member_access(access);
+    StringView mprop_str  = cv_string_from_method_prop(mprop);
     
     String8List list = {0};
     {
@@ -977,18 +977,18 @@ cv_string_from_field_attribs(Arena *arena, CV_FieldAttribs attribs)
         str8_list_pushf(scratch.arena, &list, "%S", mprop_str);
     }
     
-    String8 result = str8_list_join(scratch.arena, &list, &(StringJoin){.sep=(", ")});
+    StringView result = str8_list_join(scratch.arena, &list, &(StringJoin){.sep=(", ")});
     
     scratch_end(scratch);
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_itype(Arena *arena, CV_TypeIndex min_itype, CV_TypeIndex itype)
 {
-    String8 result = str8_zero();
+    StringView result = str8_zero();
     if (itype < min_itype) {
-        String8 n = cv_type_name_from_basic_type((CV_BasicType)itype);
+        StringView n = cv_type_name_from_basic_type((CV_BasicType)itype);
         if (n.size) {
             Temp scratch = scratch_begin(&arena, 1);
             
@@ -1073,38 +1073,38 @@ cv_string_from_itype(Arena *arena, CV_TypeIndex min_itype, CV_TypeIndex itype)
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_itemid(Arena *arena, CV_ItemId itemid)
 {
-    String8 result = push_str8f(arena, "%x", itemid);
+    StringView result = push_str8f(arena, "%x", itemid);
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_symbol_type(Arena *arena, CV_SymKind symbol_type)
 {
-    String8 str    = cv_string_from_sym_kind(symbol_type);
-    String8 result = push_str8f(arena, "S_%S", str);
+    StringView str    = cv_string_from_sym_kind(symbol_type);
+    StringView result = push_str8f(arena, "S_%S", str);
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_symbol_kind(Arena *arena, CV_SymKind kind)
 {
-    String8 str    = cv_string_from_sym_kind(kind);
-    String8 result = push_str8f(arena, "S_%S", str);
+    StringView str    = cv_string_from_sym_kind(kind);
+    StringView result = push_str8f(arena, "S_%S", str);
     return result;
 }
 
-internal String8
+internal StringView
 cv_string_from_leaf_name(Arena *arena, U32 leaf_type)
 {
-    String8 str    = cv_string_from_leaf_kind(leaf_type);
-    String8 result = push_str8f(arena, "LF_%S", str);
+    StringView str    = cv_string_from_leaf_kind(leaf_type);
+    StringView result = push_str8f(arena, "LF_%S", str);
     return result;
 }
 
-internal String8 
+internal StringView 
 cv_string_sec_off(Arena *arena, U32 sec, U32 off)
 {
     return push_str8f(arena, "%04x:%08x", sec, off);

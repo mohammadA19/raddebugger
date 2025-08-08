@@ -180,7 +180,7 @@ entry_point(CmdLine *cmdline)
   
   // make indent
   String8List *out = push_array(arena, String8List, 1);
-  String8      indent;
+  StringView      indent;
   {
     U64 indent_buffer_size = RD_INDENT_WIDTH * RD_INDENT_MAX;
     U8 *indent_buffer      = push_array(arena, U8, indent_buffer_size);
@@ -194,7 +194,7 @@ entry_point(CmdLine *cmdline)
     for (CmdLineOpt *cmd = cmdline.options.first; cmd != 0; cmd = cmd.next) {
       RD_Option opt = 0;
       for (U64 opt_idx = 0; opt_idx < ArrayCount(g_rd_dump_option_map); ++opt_idx) {
-        String8 opt_name = str8_cstring(g_rd_dump_option_map[opt_idx].name);
+        StringView opt_name = str8_cstring(g_rd_dump_option_map[opt_idx].name);
         if (str8_match(cmd.string, opt_name, StringMatchFlag_CaseInsensitive)) {
           opt = g_rd_dump_option_map[opt_idx].opt;
           break;
@@ -250,8 +250,8 @@ entry_point(CmdLine *cmdline)
   }
   
   // read input
-  String8 file_path = str8_list_first(&cmdline.inputs);
-  String8 raw_data  = os_data_from_file_path(arena, file_path);
+  StringView file_path = str8_list_first(&cmdline.inputs);
+  StringView raw_data  = os_data_from_file_path(arena, file_path);
   
   // is read ok?
   if (raw_data.size == 0) {
@@ -298,7 +298,7 @@ entry_point(CmdLine *cmdline)
   
   exit:;
   // print formatted string
-  String8 out_string = str8_list_join(arena, out, &(StringJoin){ .sep = ("\n"),});
+  StringView out_string = str8_list_join(arena, out, &(StringJoin){ .sep = ("\n"),});
   fprintf(stdout, "%.*s", str8_varg(out_string));
   
   arena_release(arena);

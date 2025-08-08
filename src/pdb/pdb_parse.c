@@ -5,7 +5,7 @@
 //~ PDB Parser Functions
 
 internal PDB_Info*
-pdb_info_from_data(Arena *arena, String8 data){
+pdb_info_from_data(Arena *arena, StringView data){
     ProfBegin("pdb_info_from_data");
     
     // get header
@@ -88,7 +88,7 @@ pdb_info_from_data(Arena *arena, String8 data){
                         MSF_StreamNumber sn = (MSF_StreamNumber)record[1];
                         
                         U32 name_off = names_base_off + relative_name_off;
-                        String8 name = str8_cstring_capped((char*)(data.str + name_off),
+                        StringView name = str8_cstring_capped((char*)(data.str + name_off),
                                                                                               (char*)(data.str + names_base_opl));
                         
                         // push info node
@@ -133,7 +133,7 @@ pdb_named_stream_table_from_info(Arena *arena, PDB_Info *info){
     // mapping "NamedStream" indexes to strings
     struct StreamNameIndexPair{
         PDB_NamedStream index;
-        String8 name;
+        StringView name;
     };
     struct StreamNameIndexPair pairs[] = {
         {PDB_NamedStream_HeaderBlock, ("/src/headerblock")},
@@ -145,7 +145,7 @@ pdb_named_stream_table_from_info(Arena *arena, PDB_Info *info){
     PDB_NamedStreamTable *result = push_array(arena, PDB_NamedStreamTable, 1);
     struct StreamNameIndexPair *p = pairs;
     for (U64 i = 0; i < ArrayCount(pairs); i += 1, p += 1){
-        String8 name = p.name;
+        StringView name = p.name;
         
         // get info node with this name
         PDB_InfoNode *match = 0;
@@ -173,7 +173,7 @@ pdb_named_stream_table_from_info(Arena *arena, PDB_Info *info){
 }
 
 internal PDB_Strtbl*
-pdb_strtbl_from_data(Arena *arena, String8 data){
+pdb_strtbl_from_data(Arena *arena, StringView data){
     ProfBegin("pdb_strtbl_from_data");
     
     // get header
@@ -216,7 +216,7 @@ pdb_strtbl_from_data(Arena *arena, String8 data){
 }
 
 internal PDB_DbiParsed*
-pdb_dbi_from_data(Arena *arena, String8 data){
+pdb_dbi_from_data(Arena *arena, StringView data){
     ProfBegin("pdb_dbi_from_data");
     
     // get header
@@ -276,7 +276,7 @@ pdb_dbi_from_data(Arena *arena, String8 data){
 }
 
 internal PDB_TpiParsed*
-pdb_tpi_from_data(Arena *arena, String8 data){
+pdb_tpi_from_data(Arena *arena, StringView data){
     ProfBegin("pdb_tpi_from_data");
     
     // get header
@@ -318,7 +318,7 @@ pdb_tpi_from_data(Arena *arena, String8 data){
 }
 
 internal PDB_TpiHashParsed*
-pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, String8 data, String8 aux_data){
+pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, StringView data, StringView aux_data){
     ProfBegin("pdb_tpi_hash_from_data");
     
     PDB_TpiHashParsed *result = 0;
@@ -404,7 +404,7 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
             {
                 U32 name_off = ((U32 *)adjs_cursor)[0];
                 CV_TypeId type_id = ((CV_TypeId *)adjs_cursor)[1];
-                String8 string = pdb_strtbl_string_from_off(strtbl, name_off);
+                StringView string = pdb_strtbl_string_from_off(strtbl, name_off);
                 U32 hash = pdb_hash_v1(string);
                 U32 bucket_idx = ((bucket_mask != 0) ? hash&bucket_mask : hash%bucket_count);
                 PDB_TpiHashBlock *prev_block = 0;
@@ -450,7 +450,7 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, Str
 }
 
 internal PDB_GsiParsed*
-pdb_gsi_from_data(Arena *arena, String8 data){
+pdb_gsi_from_data(Arena *arena, StringView data){
     ProfBegin("pdb_gsi_from_data");
     
     // get header
@@ -578,7 +578,7 @@ pdb_gsi_from_data(Arena *arena, String8 data){
 }
 
 internal U64
-pdb_gsi_symbol_from_string(PDB_GsiParsed *gsi, String8 symbol_data, String8 string)
+pdb_gsi_symbol_from_string(PDB_GsiParsed *gsi, StringView symbol_data, StringView string)
 {
     U64 result = max_U64;
     
@@ -603,8 +603,8 @@ pdb_gsi_symbol_from_string(PDB_GsiParsed *gsi, String8 symbol_data, String8 stri
                 }
                 
                 Rng1U64 raw_symbol_range = rng_1u64(off + sizeof(*sym_header), off + (sym_header.size - sizeof(sym_header.kind)));
-                String8 raw_symbol       = str8_substr(symbol_data, raw_symbol_range);
-                String8 sym_name         = cv_name_from_symbol(sym_header.kind, raw_symbol);
+                StringView raw_symbol       = str8_substr(symbol_data, raw_symbol_range);
+                StringView sym_name         = cv_name_from_symbol(sym_header.kind, raw_symbol);
                 
                 if (str8_match(sym_name, string, 0))
                 {
@@ -620,7 +620,7 @@ pdb_gsi_symbol_from_string(PDB_GsiParsed *gsi, String8 symbol_data, String8 stri
 }
 
 internal COFF_SectionHeaderArray
-pdb_coff_section_array_from_data(Arena *arena, String8 data){
+pdb_coff_section_array_from_data(Arena *arena, StringView data){
     COFF_SectionHeaderArray result = {0};
     result.count = data.size/sizeof(COFF_SectionHeader);
     result.v = (COFF_SectionHeader*)data.str;
@@ -628,7 +628,7 @@ pdb_coff_section_array_from_data(Arena *arena, String8 data){
 }
 
 internal PDB_CompUnitArray*
-pdb_comp_unit_array_from_data(Arena *arena, String8 data){
+pdb_comp_unit_array_from_data(Arena *arena, StringView data){
     PDB_CompUnitNode *first = 0;
     PDB_CompUnitNode *last = 0;
     U64 count = 0;
@@ -640,10 +640,10 @@ pdb_comp_unit_array_from_data(Arena *arena, String8 data){
         
         // get names
         U64 name_off = cursor + sizeof(*header);
-        String8 name = str8_cstring_capped((char *)(data.str + name_off), (char *)(data.str + data.size));
+        StringView name = str8_cstring_capped((char *)(data.str + name_off), (char *)(data.str + data.size));
         
         U64 name2_off = name_off + name.size + 1;
-        String8 name2 = str8_cstring_capped((char *)(data.str + name2_off), (char *)(data.str + data.size));
+        StringView name2 = str8_cstring_capped((char *)(data.str + name2_off), (char *)(data.str + data.size));
         
         U64 after_name2_off = name2_off + name2.size + 1;
         
@@ -704,7 +704,7 @@ pdb_comp_unit_array_from_data(Arena *arena, String8 data){
 }
 
 internal PDB_CompUnitContributionArray*
-pdb_comp_unit_contribution_array_from_data(Arena *arena, String8 data, COFF_SectionHeaderArray sections)
+pdb_comp_unit_contribution_array_from_data(Arena *arena, StringView data, COFF_SectionHeaderArray sections)
 {
     PDB_CompUnitContribution *contributions = 0;
     U64 count = 0;
@@ -768,9 +768,9 @@ pdb_comp_unit_contribution_array_from_data(Arena *arena, String8 data, COFF_Sect
 ////////////////////////////////
 //~ PDB Dbi Functions
 
-internal String8
+internal StringView
 pdb_data_from_dbi_range(PDB_DbiParsed *dbi, PDB_DbiRange range){
-    String8 result = {0};
+    StringView result = {0};
     if (range < PDB_DbiRange_COUNT){
         U64 first = dbi.range_off[range];
         U64 opl   = dbi.range_off[range + 1];
@@ -780,11 +780,11 @@ pdb_data_from_dbi_range(PDB_DbiParsed *dbi, PDB_DbiRange range){
     return (result);
 }
 
-internal String8
+internal StringView
 pdb_data_from_unit_range(MSF_Parsed *msf, PDB_CompUnit *unit, PDB_DbiCompUnitRange range){
-    String8 result = {0};
+    StringView result = {0};
     if (range < PDB_DbiCompUnitRange_COUNT){
-        String8 full_stream_data = msf_data_from_stream(msf, unit.sn);
+        StringView full_stream_data = msf_data_from_stream(msf, unit.sn);
         
         U64 first_raw = unit.range_off[range];
         U64 opl_raw = unit.range_off[range + 1];
@@ -800,18 +800,18 @@ pdb_data_from_unit_range(MSF_Parsed *msf, PDB_CompUnit *unit, PDB_DbiCompUnitRan
 ////////////////////////////////
 //~ PDB Tpi Functions
 
-internal String8
+internal StringView
 pdb_leaf_data_from_tpi(PDB_TpiParsed *tpi){
-    String8 data = tpi.data;
+    StringView data = tpi.data;
     U8 *first = data.str + tpi.leaf_first;
     U8 *opl   = data.str + tpi.leaf_opl;
-    String8 result = str8_range(first, opl);
+    StringView result = str8_range(first, opl);
     return (result);
 }
 
 internal CV_TypeIdArray
 pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParsed *leaf,
-                                                  String8 name, B32 compare_unique_name, U32 output_cap){
+                                                  StringView name, B32 compare_unique_name, U32 output_cap){
     U32 hash = pdb_hash_v1(name);
     U32 bucket_idx = ((tpi_hash.bucket_mask != 0) ?
                                         hash&tpi_hash.bucket_mask :
@@ -819,7 +819,7 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
     
     CV_TypeId itype_first = leaf.itype_first;
     CV_TypeId itype_opl = leaf.itype_opl;
-    String8 data = leaf.data;
+    StringView data = leaf.data;
     
     Temp scratch = scratch_begin(&arena, 1);
     struct Chain{
@@ -837,7 +837,7 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
         CV_TypeId *itype_ptr = block.itypes;
         for (U32 i = 0; i < local_count; i += 1, itype_ptr += 1){
             
-            String8 extracted_name = {0};
+            StringView extracted_name = {0};
             
             CV_TypeId itype = *itype_ptr;
             if (itype_first <= itype && itype < itype_opl){
@@ -862,13 +862,13 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
                                     
                                     // name
                                     U8 *name_ptr = numeric_ptr + size.encoded_size;
-                                    String8 name = str8_cstring_capped((char*)name_ptr, (char *)(first + cap));
+                                    StringView name = str8_cstring_capped((char*)name_ptr, (char *)(first + cap));
                                     
                                     // unique name
                                     if (compare_unique_name){
                                         if (lf_struct.props & CV_TypeProp_HasUniqueName) {
                                             U8 *unique_name_ptr = name_ptr + name.size + 1;
-                                            String8 unique_name = str8_cstring_capped((char*)unique_name_ptr, (char *)(first + cap));
+                                            StringView unique_name = str8_cstring_capped((char*)unique_name_ptr, (char *)(first + cap));
                                             extracted_name = unique_name;
                                         }
                                     }
@@ -892,13 +892,13 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
                                     
                                     // name
                                     U8 *name_ptr = numeric_ptr + size.encoded_size;
-                                    String8 name = str8_cstring_capped((char*)name_ptr, (char *)(first + cap));
+                                    StringView name = str8_cstring_capped((char*)name_ptr, (char *)(first + cap));
                                     
                                     // unique name
                                     if (compare_unique_name){
                                         if (lf_struct.props & CV_TypeProp_HasUniqueName) {
                                             U8 *unique_name_ptr = name_ptr + name.size + 1;
-                                            String8 unique_name = str8_cstring_capped((char*)unique_name_ptr, (char *)(first + cap));
+                                            StringView unique_name = str8_cstring_capped((char*)unique_name_ptr, (char *)(first + cap));
                                             extracted_name = unique_name;
                                         }
                                     }
@@ -921,13 +921,13 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
                                     
                                     // name
                                     U8 *name_ptr = numeric_ptr + size.encoded_size;
-                                    String8 name = str8_cstring_capped((char*)name_ptr, (char *)(first + cap));
+                                    StringView name = str8_cstring_capped((char*)name_ptr, (char *)(first + cap));
                                     
                                     // unique name
                                     if (compare_unique_name){
                                         if (lf_union.props & CV_TypeProp_HasUniqueName) {
                                             U8 *unique_name_ptr = name_ptr + name.size + 1;
-                                            String8 unique_name = str8_cstring_capped((char*)unique_name_ptr, (char *)(first + cap));
+                                            StringView unique_name = str8_cstring_capped((char*)unique_name_ptr, (char *)(first + cap));
                                             extracted_name = unique_name;
                                         }
                                     }
@@ -946,13 +946,13 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
                                 if (!(lf_enum.props & CV_TypeProp_FwdRef)){
                                     // name
                                     U8 *name_ptr = (U8*)(lf_enum + 1);
-                                    String8 name = str8_cstring_capped((char*)name_ptr, (char *)(first + cap));
+                                    StringView name = str8_cstring_capped((char*)name_ptr, (char *)(first + cap));
                                     
                                     // unique name
                                     if (compare_unique_name){
                                         if (lf_enum.props & CV_TypeProp_HasUniqueName) {
                                             U8 *unique_name_ptr = name_ptr + name.size + 1;
-                                            String8 unique_name = str8_cstring_capped((char*)unique_name_ptr, (char *)(first + cap));
+                                            StringView unique_name = str8_cstring_capped((char*)unique_name_ptr, (char *)(first + cap));
                                             extracted_name = unique_name;
                                         }
                                     }
@@ -1002,7 +1002,7 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
 
 internal CV_TypeId
 pdb_tpi_first_itype_from_name(PDB_TpiHashParsed *tpi_hash, CV_LeafParsed *tpi_leaf,
-                                                            String8 name, B32 compare_unique_name){
+                                                            StringView name, B32 compare_unique_name){
     Temp scratch = scratch_begin(0, 0);
     CV_TypeIdArray array = pdb_tpi_itypes_from_name(scratch.arena, tpi_hash, tpi_leaf,
                                                                                                     name, compare_unique_name, 1);
@@ -1018,19 +1018,19 @@ pdb_tpi_first_itype_from_name(PDB_TpiHashParsed *tpi_hash, CV_LeafParsed *tpi_le
 ////////////////////////////////
 //~ PDB Strtbl Functions
 
-internal String8
+internal StringView
 pdb_strtbl_string_from_off(PDB_Strtbl *strtbl, U32 off){
     U32 strblock_max = strtbl.strblock_max;
     U32 full_off_raw = strtbl.strblock_min + off;
     U32 full_off = ClampTop(full_off_raw, strblock_max);
-    String8 result = str8_cstring_capped((char*)(strtbl.data.str + full_off),
+    StringView result = str8_cstring_capped((char*)(strtbl.data.str + full_off),
                                                                               (char*)(strtbl.data.str + strblock_max));
     return (result);
 }
 
-internal String8
+internal StringView
 pdb_strtbl_string_from_index(PDB_Strtbl *strtbl, PDB_StringIndex idx){
-    String8 result = {0};
+    StringView result = {0};
     if (idx < strtbl.bucket_count){
         U32 off = *(U32*)(strtbl.data.str + strtbl.buckets_min + idx*4);
         result = pdb_strtbl_string_from_off(strtbl, off);
@@ -1039,7 +1039,7 @@ pdb_strtbl_string_from_index(PDB_Strtbl *strtbl, PDB_StringIndex idx){
 }
 
 internal U32
-pdb_strtbl_off_from_string(PDB_Strtbl *strtbl, String8 string)
+pdb_strtbl_off_from_string(PDB_Strtbl *strtbl, StringView string)
 {
     U32 result = max_U32;
     
@@ -1049,7 +1049,7 @@ pdb_strtbl_off_from_string(PDB_Strtbl *strtbl, String8 string)
     
     do
     {
-        String8 test_string = pdb_strtbl_string_from_index(strtbl, bucket_idx);
+        StringView test_string = pdb_strtbl_string_from_index(strtbl, bucket_idx);
         
         if (test_string.size == 0)
         {
@@ -1072,21 +1072,21 @@ pdb_strtbl_off_from_string(PDB_Strtbl *strtbl, String8 string)
 //~ rjf: Thin Lookup Fast Paths
 
 internal B32
-pdb_has_symbol_ref(String8 msf_data, String8List symbol_list, MSF_RawStreamTable *st)
+pdb_has_symbol_ref(StringView msf_data, String8List symbol_list, MSF_RawStreamTable *st)
 {
     Temp scratch = scratch_begin(0,0);
     
     B32 has_ref = 0;
     
-    String8        dbi_data = msf_data_from_stream_number(scratch.arena, msf_data, st, PDB_FixedStream_Dbi);
+    StringView        dbi_data = msf_data_from_stream_number(scratch.arena, msf_data, st, PDB_FixedStream_Dbi);
     PDB_DbiParsed *dbi      = pdb_dbi_from_data(scratch.arena, dbi_data);
     if (dbi)
     {
-        String8        gsi_data   = msf_data_from_stream_number(scratch.arena, msf_data, st, dbi.gsi_sn);
+        StringView        gsi_data   = msf_data_from_stream_number(scratch.arena, msf_data, st, dbi.gsi_sn);
         PDB_GsiParsed *gsi_parsed = pdb_gsi_from_data(scratch.arena, gsi_data);
         if (gsi_parsed)
         {
-            String8 symbol_data = msf_data_from_stream_number(scratch.arena, msf_data, st, dbi.sym_sn);
+            StringView symbol_data = msf_data_from_stream_number(scratch.arena, msf_data, st, dbi.sym_sn);
             
             for (String8Node *symbol_n = symbol_list.first; symbol_n != 0; symbol_n = symbol_n.next)
             {
@@ -1105,13 +1105,13 @@ pdb_has_symbol_ref(String8 msf_data, String8List symbol_list, MSF_RawStreamTable
 }
 
 internal B32
-pdb_has_file_ref(String8 msf_data, String8List file_list, MSF_RawStreamTable *st)
+pdb_has_file_ref(StringView msf_data, String8List file_list, MSF_RawStreamTable *st)
 {
     Temp scratch = scratch_begin(0,0);
     
     B32 has_ref = 0;
     
-    String8   info_data = msf_data_from_stream_number(scratch.arena, msf_data, st, PDB_FixedStream_Info);
+    StringView   info_data = msf_data_from_stream_number(scratch.arena, msf_data, st, PDB_FixedStream_Info);
     PDB_Info *info      = pdb_info_from_data(scratch.arena, info_data);
     if (info)
     {
@@ -1119,15 +1119,15 @@ pdb_has_file_ref(String8 msf_data, String8List file_list, MSF_RawStreamTable *st
         if (named_streams)
         {
             MSF_StreamNumber  strtbl_sn   = named_streams.sn[PDB_NamedStream_StringTable];
-            String8           strtbl_data = msf_data_from_stream_number(scratch.arena, msf_data, st, strtbl_sn);
+            StringView           strtbl_data = msf_data_from_stream_number(scratch.arena, msf_data, st, strtbl_sn);
             PDB_Strtbl       *strtbl      = pdb_strtbl_from_data(scratch.arena, strtbl_data);
             if (strtbl.bucket_count != 0)
             {
                 for (String8Node *file_n = file_list.first; file_n != 0; file_n = file_n.next)
                 {
                     Temp temp = temp_begin(scratch.arena);
-                    String8 path = file_n.string;
-                    String8 path_pdbstyle = path_convert_slashes(temp.arena, path, PathStyle_WindowsAbsolute);
+                    StringView path = file_n.string;
+                    StringView path_pdbstyle = path_convert_slashes(temp.arena, path, PathStyle_WindowsAbsolute);
                     U32 off = pdb_strtbl_off_from_string(strtbl, path_pdbstyle);
                     temp_end(temp);
                     if (off != max_U32)
@@ -1145,7 +1145,7 @@ pdb_has_file_ref(String8 msf_data, String8List file_list, MSF_RawStreamTable *st
 }
 
 internal B32
-pdb_has_symbol_or_file_ref(String8 msf_data, String8List symbol_list, String8List file_list)
+pdb_has_symbol_or_file_ref(StringView msf_data, String8List symbol_list, String8List file_list)
 {
     Temp scratch = scratch_begin(0,0);
     

@@ -120,7 +120,7 @@ r_init(CmdLine *cmdln)
     for EachEnumVal(R_OGL_ShaderKind, k)
     {
         // rjf: compile
-        struct {GLenum type; String8 *src; GLuint out; String8 errors;} stages[] =
+        struct {GLenum type; StringView *src; GLuint out; StringView errors;} stages[] =
         {
             {GL_VERTEX_SHADER,   r_ogl_shader_kind_vshad_src_table[k]},
             {GL_FRAGMENT_SHADER, r_ogl_shader_kind_pshad_src_table[k]},

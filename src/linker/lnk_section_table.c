@@ -20,7 +20,7 @@ lnk_section_contrib_chunk_push_atomic(LNK_SectionContribChunk *chunk, U64 count)
 }
 
 internal LNK_SectionContribChunk *
-lnk_section_contrib_chunk_list_push_chunk(Arena *arena, LNK_SectionContribChunkList *list, U64 cap, String8 sort_idx)
+lnk_section_contrib_chunk_list_push_chunk(Arena *arena, LNK_SectionContribChunkList *list, U64 cap, StringView sort_idx)
 {
     LNK_SectionContribChunk *chunk = push_array(arena, LNK_SectionContribChunk, 1);
     chunk.count    = 0;
@@ -70,14 +70,14 @@ lnk_section_array_from_list(Arena *arena, LNK_SectionList list)
     return result;
 }
 
-internal String8
-lnk_make_name_with_flags(Arena *arena, String8 name, COFF_SectionFlags flags)
+internal StringView
+lnk_make_name_with_flags(Arena *arena, StringView name, COFF_SectionFlags flags)
 {
     Temp scratch = scratch_begin(&arena, 1);
     String8List l = {0};
     str8_list_push(scratch.arena, &l, name);
     str8_list_push(scratch.arena, &l, str8_struct(&flags));
-    String8 name_with_flags = str8_list_join(arena, &l, 0);
+    StringView name_with_flags = str8_list_join(arena, &l, 0);
     scratch_end(scratch);
     return name_with_flags;
 }
@@ -105,7 +105,7 @@ lnk_section_table_release(LNK_SectionTable **sectab_ptr)
 }
 
 internal LNK_Section *
-lnk_section_table_push(LNK_SectionTable *sectab, String8 name, COFF_SectionFlags flags)
+lnk_section_table_push(LNK_SectionTable *sectab, StringView name, COFF_SectionFlags flags)
 {
     ProfBeginFunction();
 
@@ -118,7 +118,7 @@ lnk_section_table_push(LNK_SectionTable *sectab, String8 name, COFF_SectionFlags
     SLLQueuePush(sect_list.first, sect_list.last, sect_node);
     sect_list.count += 1;
 
-    String8 name_with_flags = lnk_make_name_with_flags(sectab.arena, name, flags);
+    StringView name_with_flags = lnk_make_name_with_flags(sectab.arena, name, flags);
     hash_table_push_string_raw(sectab.arena, sectab.sect_ht, name_with_flags, sect);
 
     ProfEnd();
@@ -126,7 +126,7 @@ lnk_section_table_push(LNK_SectionTable *sectab, String8 name, COFF_SectionFlags
 }
 
 internal LNK_SectionNode *
-lnk_section_table_remove(LNK_SectionTable *sectab, String8 name)
+lnk_section_table_remove(LNK_SectionTable *sectab, StringView name)
 {
     ProfBeginFunction();
     
@@ -171,15 +171,15 @@ lnk_section_table_remove(LNK_SectionTable *sectab, String8 name)
 }
 
 internal LNK_Section *
-lnk_section_table_search(LNK_SectionTable *sectab, String8 full_or_partial_name, COFF_SectionFlags flags)
+lnk_section_table_search(LNK_SectionTable *sectab, StringView full_or_partial_name, COFF_SectionFlags flags)
 {
     Temp scratch = scratch_begin(0,0);
 
-    String8 name    = {0};
-    String8 postfix = {0};
+    StringView name    = {0};
+    StringView postfix = {0};
     coff_parse_section_name(full_or_partial_name, &name, &postfix);
 
-    String8      name_with_flags = lnk_make_name_with_flags(scratch.arena, name, flags);
+    StringView      name_with_flags = lnk_make_name_with_flags(scratch.arena, name, flags);
     LNK_Section *section         = 0;
     hash_table_search_string_raw(sectab.sect_ht, name_with_flags, &section);
 
@@ -188,10 +188,10 @@ lnk_section_table_search(LNK_SectionTable *sectab, String8 full_or_partial_name,
 }
 
 internal LNK_SectionArray
-lnk_section_table_search_many(Arena *arena, LNK_SectionTable *sectab, String8 full_or_partial_name)
+lnk_section_table_search_many(Arena *arena, LNK_SectionTable *sectab, StringView full_or_partial_name)
 {
-    String8 name    = {0};
-    String8 postfix = {0};
+    StringView name    = {0};
+    StringView postfix = {0};
     coff_parse_section_name(full_or_partial_name, &name, &postfix);
 
     U64 match_count = 0;
@@ -228,7 +228,7 @@ lnk_section_table_merge(LNK_SectionTable *sectab, LNK_MergeDirectiveList merge_l
 
         // guard against illegal merges
         {
-            local_persist String8 illegal_merge_sections[] = {
+            local_persist StringView illegal_merge_sections[] = {
                 (".rsrc"),
                 (".reloc"),
             };

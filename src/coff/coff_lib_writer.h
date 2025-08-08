@@ -6,8 +6,8 @@
 
 typedef struct COFF_LibWriterMember
 {
-    String8 name;
-    String8 data;
+    StringView name;
+    StringView data;
 } COFF_LibWriterMember;
 
 typedef struct COFF_LibWriterMemberNode
@@ -25,7 +25,7 @@ typedef struct COFF_LibWriterMemberList
 
 typedef struct COFF_LibWriterSymbol
 {
-    String8 name;
+    StringView name;
     U64     member_idx;
 } COFF_LibWriterSymbol;
 

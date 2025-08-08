@@ -25,7 +25,7 @@ struct FS_Node
     FS_Node *next;
     
     // rjf: file metadata
-    String8 path;
+    StringView path;
     FileProperties props;
     
     // rjf: hash store root

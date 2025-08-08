@@ -65,7 +65,7 @@ struct DMN_Event
     Arch arch;
     U64 address;
     U64 size;
-    String8 string;
+    StringView string;
     U32 code; // code gives pid & tid on CreateProcess and CreateThread (respectfully)
     U32 flags; // DMN_TrapFlags, if `DMN_EventKind_SetBreakpoint`
     S32 signo;
@@ -146,7 +146,7 @@ struct DMN_ProcessIter
 
 struct DMN_ProcessInfo
 {
-    String8 name;
+    StringView name;
     U32 pid;
 };
 

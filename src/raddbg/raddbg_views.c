@@ -20,7 +20,7 @@ rd_code_view_init(RD_CodeViewState *cv)
 }
 
 internal RD_CodeViewBuildResult
-rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, String8 text_data, TXT_TextInfo *text_info, DASM_LineArray *dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key)
+rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, StringView text_data, TXT_TextInfo *text_info, DASM_LineArray *dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key)
 {
     ProfBeginFunction();
     Temp scratch = scratch_begin(&arena, 1);
@@ -51,7 +51,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     //////////////////////////////
     //- rjf: unpack information about the viewed source file, if any
     //
-    String8 file_path = rd_regs()->file_path;
+    StringView file_path = rd_regs()->file_path;
     String8List file_path_possible_overrides = rd_possible_overrides_from_file_path(scratch.arena, file_path);
     
     //////////////////////////////
@@ -87,13 +87,13 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
             }break;
             case RD_CmdKind_FindNext:
             {
-                String8 string = rd_view_query_input();
+                StringView string = rd_view_query_input();
                 arena_clear(cv.find_text_arena);
                 cv.find_text_fwd = push_str8_copy(cv.find_text_arena, string);
             }break;
             case RD_CmdKind_FindPrev:
             {
-                String8 string = rd_view_query_input();
+                StringView string = rd_view_query_input();
                 arena_clear(cv.find_text_arena);
                 cv.find_text_bwd = push_str8_copy(cv.find_text_arena, string);
             }break;
@@ -165,7 +165,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         {
             RD_Cfg *query = rd_cfg_child_from_string_or_alloc(view, ("query"));
             RD_Cfg *input = rd_cfg_child_from_string_or_alloc(query, ("input"));
-            String8 text = txt_string_from_info_data_txt_rng(text_info, text_data, txt_rng(rd_regs()->cursor, rd_regs()->mark));
+            StringView text = txt_string_from_info_data_txt_rng(text_info, text_data, txt_rng(rd_regs()->cursor, rd_regs()->mark));
             if (text.size < 256)
             {
                 rd_cfg_new_replace(input, text);
@@ -180,7 +180,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     //////////////////////////////
     //- rjf: get active search query
     //
-    String8 search_query = rd_view_query_input();
+    StringView search_query = rd_view_query_input();
     B32 search_query_is_active = 0;
     
     //////////////////////////////
@@ -199,7 +199,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
             code_slice_params.flags |= RD_CodeSliceFlag_PriorityMargin|RD_CodeSliceFlag_CatchallMargin;
         }
         code_slice_params.line_num_range            = visible_line_num_range;
-        code_slice_params.line_text                 = push_array(scratch.arena, String8, visible_line_count);
+        code_slice_params.line_text                 = push_array(scratch.arena, StringView, visible_line_count);
         code_slice_params.line_ranges               = push_array(scratch.arena, Rng1U64, visible_line_count);
         code_slice_params.line_tokens               = push_array(scratch.arena, TXT_TokenArray, visible_line_count);
         code_slice_params.line_bps                  = push_array(scratch.arena, RD_CfgList, visible_line_count);
@@ -323,7 +323,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         // rjf: find all src -> dasm info
         if (!dasm_lines) ProfScope("find all src -> dasm info for source code")
         {
-            String8 file_path = rd_regs()->file_path;
+            StringView file_path = rd_regs()->file_path;
             CTRL_Entity *module = ctrl_entity_from_handle(&d_state.ctrl_entity_store.ctx, rd_regs()->module);
             DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
             D_LineListArray lines_array = d_lines_array_from_dbgi_key_file_path_line_range(scratch.arena, dbgi_key, file_path, visible_line_num_range);
@@ -463,7 +463,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
             for (S64 line_num = line_num_start; 1 <= line_num && line_num <= line_num_last; first = 0)
             {
                 // rjf: gather line info
-                String8 line_string = str8_substr(text_data, text_info.lines_ranges[line_num-1]);
+                StringView line_string = str8_substr(text_data, text_info.lines_ranges[line_num-1]);
                 U64 search_start = 0;
                 if (rd_regs()->cursor.line == line_num && first)
                 {
@@ -513,7 +513,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
             for (S64 line_num = line_num_start; 1 <= line_num && line_num <= line_num_last; first = 0)
             {
                 // rjf: gather line info
-                String8 line_string = str8_substr(text_data, text_info.lines_ranges[line_num-1]);
+                StringView line_string = str8_substr(text_data, text_info.lines_ranges[line_num-1]);
                 if (rng.min.line == line_num && first)
                 {
                     line_string = str8_prefix(line_string, rng.min.column-1);
@@ -661,7 +661,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
             cv.center_cursor = 0;
             if (cursor_in_range)
             {
-                String8 cursor_line = str8_substr(text_data, text_info.lines_ranges[cursor.line-1]);
+                StringView cursor_line = str8_substr(text_data, text_info.lines_ranges[cursor.line-1]);
                 F32 cursor_advance = fnt_dim_from_tag_size_string(code_font, code_font_size, 0, code_tab_size, str8_prefix(cursor_line, cursor.column-1)).x;
                 
                 // rjf: scroll x
@@ -685,7 +685,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         // rjf: snap in X
         if (snap[Axis2_X] && cursor_in_range)
         {
-            String8 cursor_line = str8_substr(text_data, text_info.lines_ranges[cursor.line-1]);
+            StringView cursor_line = str8_substr(text_data, text_info.lines_ranges[cursor.line-1]);
             S64 cursor_off = (S64)(fnt_dim_from_tag_size_string(code_font, code_font_size, 0, code_tab_size, str8_prefix(cursor_line, cursor.column-1)).x + priority_margin_width_px + catchall_margin_width_px + line_num_width_px);
             Rng1S64 visible_pixel_range =
             {
@@ -966,7 +966,7 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
         }
         if (evalled_entity != &ctrl_entity_nil)
         {
-            String8 top_level_name = ctrl_entity_kind_code_name_table[evalled_entity.kind];
+            StringView top_level_name = ctrl_entity_kind_code_name_table[evalled_entity.kind];
             E_TypeKey top_level_type_key = e_string2typekey_map_lookup(rd_state.meta_name2type_map, top_level_name);
             is_top_level = (row.eval.value.u64 == 0 && e_type_key_match(top_level_type_key, row.eval.irtree.type_key));
         }
@@ -1057,7 +1057,7 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
         {
             if (block_type_kind == E_TypeKind_Set)
             {
-                String8 singular_name = rd_singular_from_code_name_plural(block_type.name);
+                StringView singular_name = rd_singular_from_code_name_plural(block_type.name);
                 if (singular_name.size != 0)
                 {
                     info.group_cfg_name = singular_name;
@@ -1143,7 +1143,7 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
             E_Type *type = e_type_from_key(row.eval.irtree.type_key);
             if (type.kind == E_TypeKind_Set)
             {
-                String8 file_path = e_string_from_id(row.eval.value.u64);
+                StringView file_path = e_string_from_id(row.eval.value.u64);
                 rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval, .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented|RD_WatchCellFlag_Button|RD_WatchCellFlag_IsNonCode, .pct = 1.f);
                 if (str8_match(type.name, ("file"), 0))
                 {
@@ -1239,7 +1239,7 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
                             continue;
                         }
                     }
-                    String8 cmd_name = cmd.string;
+                    StringView cmd_name = cmd.string;
                     RD_CmdKind cmd_kind = rd_cmd_kind_from_string(cmd_name);
                     switch (cmd_kind)
                     {
@@ -1285,7 +1285,7 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
                     }
                     else if (cmd_kind != RD_CmdKind_Null)
                     {
-                        String8 cmd_name = rd_cmd_kind_info_table[cmd_kind].string;
+                        StringView cmd_name = rd_cmd_kind_info_table[cmd_kind].string;
                         rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval,
                                                                                 e_eval_from_stringf("query:commands.%S", cmd_name),
                                                                                 .flags = RD_WatchCellFlag_ActivateWithSingleClick|RD_WatchCellFlag_Button,
@@ -1318,7 +1318,7 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
                 {
                     cmd_kind = RD_CmdKind_DeselectEntity;
                 }
-                String8 cmd_name = rd_cmd_kind_info_table[cmd_kind].string;
+                StringView cmd_name = rd_cmd_kind_info_table[cmd_kind].string;
                 rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_from_stringf("query:commands.%S", cmd_name),
                                                                         .flags = RD_WatchCellFlag_ActivateWithSingleClick|RD_WatchCellFlag_Button,
                                                                         .px = floor_f32(ui_top_font_size()*3.f));
@@ -1706,7 +1706,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
                 if (cell.flags & RD_WatchCellFlag_Expr)
                 {
                     B32 is_non_code = 0;
-                    String8 expr_string = {0};
+                    StringView expr_string = {0};
                     
                     // rjf: if this cell has a meta-display-name, then use that
                     if (expr_string.size == 0)
@@ -1782,7 +1782,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
                                         String8List strings = {0};
                                         for (E_TypeKeyNode *n = member.inheritance_key_chain.first; n != 0; n = n.next)
                                         {
-                                            String8 base_class_name = e_type_string_from_key(scratch.arena, n.v);
+                                            StringView base_class_name = e_type_string_from_key(scratch.arena, n.v);
                                             str8_list_push(scratch.arena, &strings, base_class_name);
                                         }
                                         result.inheritance_tooltip = str8_list_join(arena, &strings, &(StringJoin){.sep = ("::")});
@@ -1792,8 +1792,8 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
                                     // rjf: in meta-evaluation spaces, we will try to look up into our vocabulary map
                                     // to see if we have a fancy display string for this member. otherwise, we will just
                                     // do a code-string of ".member_name"
-                                    String8 member_name = notable_expr.first.next.string;
-                                    String8 fancy_name = {0};
+                                    StringView member_name = notable_expr.first.next.string;
+                                    StringView fancy_name = {0};
                                     if (cell.eval.space.kind == RD_EvalSpaceKind_MetaCfg ||
                                           cell.eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity ||
                                           cell.eval.space.kind == E_SpaceKind_File ||
@@ -1863,7 +1863,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
                     }
                     
                     // rjf: generate string based on that expression & fill
-                    String8 string = rd_value_string_from_eval(arena, rd_view_query_input(), &string_params, font, font_size, max_size_px, cell.eval);
+                    StringView string = rd_value_string_from_eval(arena, rd_view_query_input(), &string_params, font, font_size, max_size_px, cell.eval);
                     if (is_code)
                     {
                         eval_fstrs = rd_fstrs_from_code_string(arena, 1, 0, ui_color_from_name(("text")), string);
@@ -1893,7 +1893,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
         case RD_EvalSpaceKind_MetaUnattachedProcess:
         {
             U64 pid = cell.eval.value.u128.u64[0];
-            String8 name = e_string_from_id(cell.eval.value.u128.u64[1]);
+            StringView name = e_string_from_id(cell.eval.value.u128.u64[1]);
             DR_FStrParams params = {rd_font_from_slot(RD_FontSlot_Main), rd_raster_flags_from_slot(RD_FontSlot_Main), ui_color_from_name(("text")), ui_top_font_size()};
             DR_FStrList fstrs = {0};
             UI_TagF("weak")
@@ -1914,7 +1914,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
         //- rjf: unattached processes
         case RD_EvalSpaceKind_MetaTheme:
         {
-            String8 name = e_string_from_id(cell.eval.value.u64);
+            StringView name = e_string_from_id(cell.eval.value.u64);
             DR_FStrParams params = {rd_font_from_slot(RD_FontSlot_Main), rd_raster_flags_from_slot(RD_FontSlot_Main), ui_color_from_name(("text")), ui_top_font_size()};
             DR_FStrList fstrs = {0};
             UI_TagF("weak")
@@ -1935,7 +1935,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
                 {
                     if (str8_match(n.string, ("theme_color"), 0))
                     {
-                        String8 tags = md_child_from_string(n, ("tags"), 0)->first.string;
+                        StringView tags = md_child_from_string(n, ("tags"), 0)->first.string;
                         if (str8_match(tags, ("background"), 0) ||
                               str8_match(tags, ("text"), 0) ||
                               str8_match(tags, ("focus border"), 0) ||
@@ -2033,8 +2033,8 @@ RD_VIEW_UI_FUNCTION_DEF(text)
             // rjf: override file picking
             case RD_CmdKind_PickFile:
             {
-                String8 src = rd_regs()->file_path;
-                String8 dst = cmd.regs.file_path;
+                StringView src = rd_regs()->file_path;
+                StringView dst = cmd.regs.file_path;
                 if (src.size != 0 && dst.size != 0)
                 {
                     // rjf: record src -> dst mapping
@@ -2064,7 +2064,7 @@ RD_VIEW_UI_FUNCTION_DEF(text)
     if (rd_regs()->mark.column == 0)   { rd_regs()->mark.column = 1; }
     Rng1U64 range = rd_space_range_from_eval(eval);
     rd_regs()->text_key = rd_key_from_eval_space_range(eval.space, range, 1);
-    String8 lang = rd_view_setting_from_name(("lang"));
+    StringView lang = rd_view_setting_from_name(("lang"));
     if (lang.size == 0)
     {
         rd_regs()->lang_kind = rd_lang_kind_from_eval(eval);
@@ -2075,7 +2075,7 @@ RD_VIEW_UI_FUNCTION_DEF(text)
     }
     U128 hash = {0};
     TXT_TextInfo info = txt_text_info_from_key_lang(txt_scope, rd_regs()->text_key, rd_regs()->lang_kind, &hash);
-    String8 data = hs_data_from_hash(hs_scope, hash);
+    StringView data = hs_data_from_hash(hs_scope, hash);
     B32 file_is_missing = (rd_regs()->file_path.size != 0 && os_properties_from_file_path(rd_regs()->file_path).modified == 0);
     B32 key_has_data = !u128_match(hash, u128_zero()) && info.lines_count;
     ProfEnd();
@@ -2160,7 +2160,7 @@ RD_VIEW_UI_FUNCTION_DEF(text)
     //- rjf: determine if file is out-of-date
     //
     B32 file_is_out_of_date = 0;
-    String8 out_of_date_dbgi_name = {0};
+    StringView out_of_date_dbgi_name = {0};
     {
         U64 file_timestamp = fs_properties_from_path(rd_regs()->file_path).modified;
         if (file_timestamp != 0)
@@ -2399,7 +2399,7 @@ RD_VIEW_UI_FUNCTION_DEF(disasm)
     rd_regs()->lang_kind = txt_lang_kind_from_arch(arch);
     U128 dasm_text_hash = {0};
     TXT_TextInfo dasm_text_info = txt_text_info_from_key_lang(txt_scope, rd_regs()->text_key, rd_regs()->lang_kind, &dasm_text_hash);
-    String8 dasm_text_data = hs_data_from_hash(hs_scope, dasm_text_hash);
+    StringView dasm_text_data = hs_data_from_hash(hs_scope, dasm_text_hash);
     B32 has_disasm = (dasm_info.lines.count != 0 && dasm_text_info.lines_count != 0);
     B32 is_loading = (!has_disasm && dim_1u64(range) != 0 && eval.msgs.max_kind == E_MsgKind_Null && (space.kind != RD_EvalSpaceKind_CtrlEntity || space_entity != &ctrl_entity_nil));
     
@@ -2900,9 +2900,9 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
     typedef struct Annotation Annotation;
     struct Annotation
     {
-        String8 name_string;
-        String8 kind_string;
-        String8 type_string;
+        StringView name_string;
+        StringView kind_string;
+        StringView type_string;
         Vec4F32 color;
         Rng1U64 vaddr_range;
     };
@@ -2950,7 +2950,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
                     DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
                     RDI_Parsed *rdi = di_rdi_from_key(scope, &dbgi_key, 1, 0);
                     RDI_Procedure *procedure = rdi_procedure_from_voff(rdi, f_rip_voff);
-                    String8 procedure_name = {0};
+                    StringView procedure_name = {0};
                     procedure_name.str = rdi_string_from_idx(rdi, procedure.name_string_idx, &procedure_name.size);
                     di_scope_close(scope);
                     if (procedure_name.size != 0)
@@ -3011,7 +3011,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
             U64 thread_rip_vaddr = d_query_cached_rip_from_thread_unwind(selected_thread, rd_regs()->unwind_count);
             for (E_String2NumMapNode *n = e_ir_ctx.locals_map.first; n != 0; n = n.order_next)
             {
-                String8 local_name = n.string;
+                StringView local_name = n.string;
                 E_Eval local_eval = e_eval_from_string(local_name);
                 if (local_eval.irtree.mode == E_Mode_Offset)
                 {
@@ -3076,7 +3076,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
                         Rng1U64 vaddr_range_in_visible = intersect_1u64(vaddr_range, viz_range_bytes);
                         if (vaddr_range_in_visible.min < vaddr_range_in_visible.max)
                         {
-                            String8 procedure_name = {0};
+                            StringView procedure_name = {0};
                             procedure_name.str = rdi_string_from_idx(rdi, procedure.name_string_idx, &procedure_name.size);
                             Annotation *annotation = push_array(scratch.arena, Annotation, 1);
                             {
@@ -3132,7 +3132,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
                         Rng1U64 vaddr_range_in_visible = intersect_1u64(vaddr_range, viz_range_bytes);
                         if (vaddr_range_in_visible.min < vaddr_range_in_visible.max)
                         {
-                            String8 gvar_name = {0};
+                            StringView gvar_name = {0};
                             gvar_name.str = rdi_string_from_idx(rdi, gvar.name_string_idx, &gvar_name.size);
                             Annotation *annotation = push_array(scratch.arena, Annotation, 1);
                             {
@@ -3171,7 +3171,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
                 {
                     continue;
                 }
-                String8 name = child.string;
+                StringView name = child.string;
                 Rng1U64 vaddr_range = child.vaddr_range;
                 Rng1U64 vaddr_range_in_visible = intersect_1u64(vaddr_range, viz_range_bytes);
                 if (vaddr_range_in_visible.max > vaddr_range_in_visible.min)
@@ -3616,7 +3616,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
                             num_bytes_this_row += 1;
                         }
                     }
-                    String8 ascii_text = str8(row_ascii_buffer, num_bytes_this_row);
+                    StringView ascii_text = str8(row_ascii_buffer, num_bytes_this_row);
                     UI_Box *ascii_box = ui_build_box_from_stringf(UI_BoxFlag_DrawText, "%S###ascii_row_%I64x", ascii_text, row_range_bytes.min);
                     if (selection.max >= row_range_bytes.min && selection.min < row_range_bytes.max)
                     {
@@ -3817,7 +3817,7 @@ RD_VIEW_UI_FUNCTION_DEF(bitmap)
     //- rjf: evaluate expression
     //
     Vec2S32 dim = v2s32((S32)rd_view_setting_u64_from_name(("w")), (S32)rd_view_setting_u64_from_name(("h")));
-    String8 fmt_string = rd_view_setting_from_name(("fmt"));
+    StringView fmt_string = rd_view_setting_from_name(("fmt"));
     R_Tex2DFormat fmt = R_Tex2DFormat_RGBA8;
     for EachEnumVal(R_Tex2DFormat, f)
     {
@@ -3862,7 +3862,7 @@ RD_VIEW_UI_FUNCTION_DEF(bitmap)
     TEX_Topology topology = tex_topology_make(dim, fmt);
     U128 data_hash = {0};
     R_Handle texture = tex_texture_from_key_topology(tex_scope, texture_key, topology, &data_hash);
-    String8 data = hs_data_from_hash(hs_scope, data_hash);
+    StringView data = hs_data_from_hash(hs_scope, data_hash);
     
     //////////////////////////////
     //- rjf: equip loading info
@@ -4094,7 +4094,7 @@ rd_eval_color_from_eval(E_Eval eval)
                 break;
             }
         }
-        String8 format_string = ("rgba");
+        StringView format_string = ("rgba");
         if (lens_type.kind == E_TypeKind_Lens && lens_type.count > 0)
         {
             format_string = lens_type.args[0]->string;
@@ -4231,7 +4231,7 @@ RD_VIEW_UI_FUNCTION_DEF(color)
                     }
                     UI_PrefWidth(ui_children_sum(1)) UI_Column UI_PrefWidth(ui_text_dim(10, 1)) UI_PrefHeight(ui_em(2.f, 0.f)) RD_Font(RD_FontSlot_Code)
                     {
-                        String8 hex_string = hex_string_from_rgba_4f32(scratch.arena, rgba);
+                        StringView hex_string = hex_string_from_rgba_4f32(scratch.arena, rgba);
                         ui_label(hex_string);
                         ui_labelf("%.2f", rgba.x);
                         ui_labelf("%.2f", rgba.y);
@@ -4254,7 +4254,7 @@ RD_VIEW_UI_FUNCTION_DEF(color)
                 {
                     Vec4F32 new_rgba = rgba_from_hsva(hsva);
                     U32 u32 = u32_from_rgba(new_rgba);
-                    String8 string = push_str8f(scratch.arena, "0x%x", u32);
+                    StringView string = push_str8f(scratch.arena, "0x%x", u32);
                     if (rd_commit_eval_value_string(eval, string))
                     {
                         state.start_rgba_u32 = u32;

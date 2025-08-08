@@ -118,7 +118,7 @@ struct HS_Node
     HS_Node *prev;
     U128 hash;
     Arena *arena;
-    String8 data;
+    StringView data;
     U64 scope_ref_count;
     U64 key_ref_count;
     U64 downstream_ref_count;

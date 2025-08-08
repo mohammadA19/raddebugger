@@ -40,7 +40,7 @@ typedef struct DW_RegsX64
 typedef DW_READ_MEMORY_SIG(DW_ReadMemorySig);
 
 //- machine configuration types
-typedef String8 DW_ExprResolveCallFunc(void *call_user_ptr, U64 p);
+typedef StringView DW_ExprResolveCallFunc(void *call_user_ptr, U64 p);
 
 typedef struct DW_ExprMachineCallConfig
 {
@@ -90,7 +90,7 @@ typedef struct DW_ExprAnalysisTask
 {
     struct DW_ExprAnalysisTask *next;
     U64                         p;
-    String8                     data;
+    StringView                     data;
 } DW_ExprAnalysisTask;
 
 
@@ -137,7 +137,7 @@ typedef struct DW_SimpleLoc
         U64     addr;
         U64     reg_idx;
         U64     val;
-        String8 val_long;
+        StringView val_long;
         struct {
             DW_LocFailKind fail_kind;
             U64 fail_data;

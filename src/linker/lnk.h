@@ -21,13 +21,13 @@ typedef struct LNK_LinkContext
 
 typedef struct LNK_ImageContext
 {
-    String8           image_data;
+    StringView           image_data;
     LNK_SectionTable *sectab;
 } LNK_ImageContext;
 
 typedef struct LNK_SectionDefinition
 {
-    String8           name;
+    StringView           name;
     COFF_SectionFlags flags;
     U64               contribs_count;
     struct LNK_Obj   *obj;
@@ -146,7 +146,7 @@ typedef struct
 
 typedef struct
 {
-    String8              image_data;
+    StringView              image_data;
     LNK_Obj            **objs;
     U64                  image_base;
     COFF_SectionHeader **image_section_table;
@@ -154,14 +154,14 @@ typedef struct
 
 typedef struct
 {
-    String8 path;
-    String8 temp_path;
-    String8 data;
+    StringView path;
+    StringView temp_path;
+    StringView data;
 } LNK_WriteThreadContext;
 
 typedef struct
 {
-    String8  data;
+    StringView  data;
     Rng1U64 *ranges;
     U128    *hashes;
 } LNK_Blake3Hasher;

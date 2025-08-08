@@ -88,8 +88,8 @@ typedef struct RDIB_LocationList
 typedef struct RDIB_Variable
 {
     RDI_LinkFlags              link_flags;
-    String8                    name;
-    String8                    link_name;
+    StringView                    name;
+    StringView                    link_name;
     RDI_LocalKind              kind;
     struct RDIB_Type          *type;
     struct RDIB_Type          *container_type;
@@ -119,13 +119,13 @@ typedef struct
     RDI_Arch arch;
     U64      exe_hash;
     U64      voff_max;
-    String8  exe_name;
-    String8  producer_string;
+    StringView  exe_name;
+    StringView  producer_string;
 } RDIB_TopLevelInfo;
 
 typedef struct
 {
-    String8                name;
+    StringView                name;
     RDI_BinarySectionFlags flags;
     U64                    voff_first;
     U64                    voff_opl;
@@ -190,10 +190,10 @@ typedef struct RDIB_LineTableChunkList
 
 typedef struct RDIB_SourceFile
 {
-    String8                      file_path;
-    String8                      normal_full_path;
+    StringView                      file_path;
+    StringView                      normal_full_path;
     RDI_ChecksumKind             checksum_kind;
-    String8                      checksum;
+    StringView                      checksum;
     RDIB_LineTableFragment      *line_table_frags;
 
     U64 src_line_map_idx;
@@ -221,8 +221,8 @@ typedef struct RDIB_SourceFileChunkList
 typedef struct RDIB_Procedure
 {
     RDI_LinkFlags          link_flags;
-    String8                name;
-    String8                link_name;
+    StringView                name;
+    StringView                link_name;
     struct RDIB_Type      *type;
     struct RDIB_Type      *container_type;
     struct RDIB_Procedure *container_proc;
@@ -256,7 +256,7 @@ typedef struct RDIB_Scope
 
 typedef struct RDIB_InlineSite
 {
-    String8                      name;
+    StringView                      name;
     struct RDIB_Type            *type;
     struct RDIB_Type            *owner;
     struct RDIB_InlineSiteChunk *chunk;
@@ -281,23 +281,23 @@ typedef struct RDIB_UDTMember
     RDI_MemberKindExt kind;
     union {
         struct {
-            String8      name;
+            StringView      name;
             U64          offset;
             RDIB_TypeRef type_ref;
         } data_field;
         struct {
-            String8      name;
+            StringView      name;
             RDIB_TypeRef type_ref;
         } static_data;
         RDIB_TypeRef member_list_pointer;
         struct {
             RDI_MemberKind kind;
-            String8         name;
+            StringView         name;
             RDIB_TypeRef    type_ref;
             U64             vftable_offset;
         } method;
         struct {
-            String8      name;
+            StringView      name;
             RDIB_TypeRef type_ref;
         } nested_type;
         struct {
@@ -310,7 +310,7 @@ typedef struct RDIB_UDTMember
             U64          vtable_off;
         } virtual_base_class;
         struct {
-            String8 name;
+            StringView name;
             U64     value;
         } enumerate;
     };
@@ -352,7 +352,7 @@ typedef struct RDIB_Type
     U64 itype;
     union {
         struct {
-            String8 name;
+            StringView name;
             U64     size;
         } builtin;
         struct {
@@ -394,8 +394,8 @@ typedef struct RDIB_Type
             U64          size;
         } array;
         struct {
-            String8      name;
-            String8      link_name;
+            StringView      name;
+            StringView      link_name;
             RDIB_TypeRef members;
             // assigned in UDT build step
             U64 udt_idx;
@@ -409,7 +409,7 @@ typedef struct RDIB_Type
                     U64          size;
                 } union_type;
                 struct {
-                    String8      name;
+                    StringView      name;
                     RDIB_TypeRef base_type;
                 } enum_type;
             };
@@ -432,12 +432,12 @@ typedef struct RDIB_Type
 typedef struct RDIB_Unit
 {
     RDI_Arch        arch;
-    String8         unit_name;
-    String8         compiler_name;
-    String8         source_file;
-    String8         object_file;
-    String8         archive_file;
-    String8         build_path;
+    StringView         unit_name;
+    StringView         compiler_name;
+    StringView         source_file;
+    StringView         object_file;
+    StringView         archive_file;
+    StringView         build_path;
     RDI_Language    language;
     RDIB_LineTable *line_table;
     U64             virt_range_count;
@@ -605,7 +605,7 @@ typedef struct
 
 typedef struct RDIB_StringMapBucket
 {
-    String8 string;
+    StringView string;
 
     union {
         // to get deterministic output we assign each bucket a unique index
@@ -717,7 +717,7 @@ typedef struct RDIB_PathTreeNode
     struct RDIB_PathTreeNode *first_child;
     struct RDIB_PathTreeNode *last_child;
     U64                       node_idx;
-    String8                   sub_path;
+    StringView                   sub_path;
     RDIB_SourceFile          *src_file;
 } RDIB_PathTreeNode;
 

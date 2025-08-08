@@ -2,8 +2,8 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal B32
-dw_is_dwarf_present_coff_section_table(String8             raw_image,
-                                                                              String8             string_table,
+dw_is_dwarf_present_coff_section_table(StringView             raw_image,
+                                                                              StringView             string_table,
                                                                               U64                 section_count,
                                                                               COFF_SectionHeader *section_table)
 {
@@ -11,7 +11,7 @@ dw_is_dwarf_present_coff_section_table(String8             raw_image,
     
     for (U64 i = 0; i < section_count; ++i) {
         COFF_SectionHeader *header = &section_table[i];
-        String8             name   = coff_name_from_section_header(string_table, header);
+        StringView             name   = coff_name_from_section_header(string_table, header);
         
         DW_SectionKind s = dw_section_kind_from_string(name);
         if (s == DW_Section_Null) {
@@ -29,8 +29,8 @@ dw_is_dwarf_present_coff_section_table(String8             raw_image,
 
 internal DW_Input
 dw_input_from_coff_section_table(Arena              *arena,
-                                                                  String8             raw_image,
-                                                                  String8             string_table,
+                                                                  StringView             raw_image,
+                                                                  StringView             string_table,
                                                                   U64                 section_count,
                                                                   COFF_SectionHeader *section_table)
 {
@@ -40,7 +40,7 @@ dw_input_from_coff_section_table(Arena              *arena,
     for (U64 i = 0; i < section_count; ++i) {
         COFF_SectionHeader *header         = &section_table[i];
         Rng1U64             raw_data_range = rng_1u64(header.foff, header.foff + header.fsize);
-        String8             name           = coff_name_from_section_header(string_table, header);
+        StringView             name           = coff_name_from_section_header(string_table, header);
         
         DW_SectionKind s      = dw_section_kind_from_string(name);
         B32            is_dwo = 0;

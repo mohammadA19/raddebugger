@@ -183,7 +183,7 @@ struct DEMON_LNX_MapsEntry
     U32 dev_major;
     U32 dev_minor;
     U64 inode;
-    String8 pathname;
+    StringView pathname;
     DEMON_LNX_MapsEntryType type;
     pid_t stack_tid;
 };

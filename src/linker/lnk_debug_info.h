@@ -16,7 +16,7 @@ typedef struct LNK_CodeViewSymbolsInput
 {
     U64            obj_idx;
     CV_SymbolList *symbol_list;
-    String8        raw_symbols;
+    StringView        raw_symbols;
 } LNK_CodeViewSymbolsInput;
 
 typedef struct LNK_CodeViewInput
@@ -25,8 +25,8 @@ typedef struct LNK_CodeViewInput
     U64             internal_count;
     U64             external_count;
     U64             type_server_count;
-    String8        *type_server_path_arr; // [type_server_count]
-    String8        *type_server_data_arr; // [type_server_count]
+    StringView        *type_server_path_arr; // [type_server_count]
+    StringView        *type_server_data_arr; // [type_server_count]
     U64List        *ts_to_obj_arr;        // [type_server_count]
     LNK_Obj        *obj_arr;              // [count]
     LNK_PchInfo    *pch_arr;              // [count]
@@ -315,7 +315,7 @@ typedef struct
     LNK_Obj                    *obj_arr;
     PDB_DbiModule             **mod_arr;
     PDB_DbiSectionContribList  *sc_list;
-    String8                     image_data;
+    StringView                     image_data;
     Rng1U64Array                image_section_file_ranges;
     Rng1U64Array                image_section_virt_ranges;
 } LNK_PushDbiSecContribTaskData;
@@ -382,7 +382,7 @@ typedef struct
 
 typedef struct
 {
-    String8 name;
+    StringView name;
     U64     leaf_idx;
 } LNK_UDTNameBucket;
 
@@ -447,7 +447,7 @@ typedef struct
 {
     CV_Arch     arch;
     CV_Language language;
-    String8     compiler_name;
+    StringView     compiler_name;
 } LNK_CodeViewCompilerInfo;
 
 typedef struct
@@ -506,8 +506,8 @@ internal String8List lnk_build_rad_debug_info(TP_Context               *tp,
                                                                                             TP_Arena                 *tp_arena,
                                                                                             OperatingSystem           os,
                                                                                             RDI_Arch                  arch,
-                                                                                            String8                   image_name,
-                                                                                            String8                   image_data,
+                                                                                            StringView                   image_name,
+                                                                                            StringView                   image_data,
                                                                                             U64                       obj_count,
                                                                                             LNK_Obj                  *obj_arr,
                                                                                             CV_DebugS                *debug_s_arr,
@@ -522,7 +522,7 @@ internal String8List lnk_build_rad_debug_info(TP_Context               *tp,
 
 internal String8List lnk_build_pdb(TP_Context               *tp,
                                                                       TP_Arena                 *tp_arena,
-                                                                      String8                   image_data,
+                                                                      StringView                   image_data,
                                                                       LNK_Config               *config,
                                                                       LNK_SymbolTable          *symtab,
                                                                       U64                       obj_count,

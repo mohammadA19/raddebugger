@@ -36,7 +36,7 @@ struct RD_KeyMapNode
     RD_KeyMapNode *name_hash_next;
     RD_KeyMapNode *binding_hash_next;
     RD_CfgID cfg_id;
-    String8 name;
+    StringView name;
     RD_Binding binding;
 };
 
@@ -91,7 +91,7 @@ typedef RD_VIEW_UI_FUNCTION_SIG(RD_ViewUIFunctionType);
 
 struct RD_ViewUIRule
 {
-    String8 name;
+    StringView name;
     RD_ViewUIFunctionType *ui;
 };
 
@@ -153,10 +153,10 @@ enum RD_CmdKindFlags : U32
 
 struct RD_AutocompCursorInfo
 {
-    String8 list_expr;
-    String8 filter;
+    StringView list_expr;
+    StringView filter;
     Rng1U64 replaced_range;
-    String8 callee_expr;
+    StringView callee_expr;
     MD_Node *arg_schema;
 };
 
@@ -256,7 +256,7 @@ struct RD_Cfg
     RD_Cfg *prev;
     RD_Cfg *parent;
     RD_CfgID id;
-    String8 string;
+    StringView string;
 };
 
 struct RD_CfgNode
@@ -297,9 +297,9 @@ struct RD_CfgRec
 
 struct RD_Location
 {
-    String8 file_path;
+    StringView file_path;
     TxtPt pt;
-    String8 expr;
+    StringView expr;
 };
 
 ////////////////////////////////
@@ -346,7 +346,7 @@ struct RD_PanelNodeRec
 
 struct RD_Cmd
 {
-    String8 name;
+    StringView name;
     RD_Regs *regs;
 };
 
@@ -440,7 +440,7 @@ struct RD_WindowState
     B32 hover_eval_focused;
     Arena *hover_eval_arena;
     Vec2F32 hover_eval_spawn_pos;
-    String8 hover_eval_string;
+    StringView hover_eval_string;
     U64 hover_eval_firstt_us;
     U64 hover_eval_lastt_us;
     
@@ -492,7 +492,7 @@ struct RD_NameChunkNode
 struct RD_AmbiguousPathNode
 {
     RD_AmbiguousPathNode *next;
-    String8 name;
+    StringView name;
     String8List paths;
 };
 
@@ -507,11 +507,11 @@ struct RD_State
     
     // rjf: config bucket paths
     Arena *user_path_arena;
-    String8 user_path;
+    StringView user_path;
     Arena *project_path_arena;
-    String8 project_path;
+    StringView project_path;
     Arena *theme_path_arena;
-    String8 theme_path;
+    StringView theme_path;
     
     // rjf: unpacked settings (cached, because they need to be used
     // earlier than setting evaluation is legal in a frame)
@@ -545,7 +545,7 @@ struct RD_State
     
     // rjf: log
     Log *log;
-    String8 log_path;
+    StringView log_path;
     
     // rjf: frame history info
     U64 frame_index;
@@ -602,8 +602,8 @@ struct RD_State
     F32 popup_t;
     Arena *popup_arena;
     RD_CmdList popup_cmds;
-    String8 popup_title;
-    String8 popup_desc;
+    StringView popup_title;
+    StringView popup_desc;
     
     // rjf: text editing mode state
     B32 text_edit_mode;
@@ -660,7 +660,7 @@ struct RD_State
     Arena *bind_change_arena;
     B32 bind_change_active;
     RD_CfgID bind_change_binding_id;
-    String8 bind_change_cmd_name;
+    StringView bind_change_cmd_name;
 };
 
 ////////////////////////////////

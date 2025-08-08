@@ -38,8 +38,8 @@ sld_main(CmdLine *cmdl)
 
     Temp scratch = scratch_begin(0,0);
 
-    String8 in_lib_path  = cmd_line_string(cmdl, ("in"));
-    String8 out_lib_path = cmd_line_string(cmdl, ("out"));
+    StringView in_lib_path  = cmd_line_string(cmdl, ("in"));
+    StringView out_lib_path = cmd_line_string(cmdl, ("out"));
 
     if (in_lib_path.size == 0) {
         fprintf(stderr, "ERROR: please provide an input path via -in:<path>\n");
@@ -50,7 +50,7 @@ sld_main(CmdLine *cmdl)
         os_abort(1);
     }
 
-    String8 in_lib = os_data_from_file_path(scratch.arena, in_lib_path);
+    StringView in_lib = os_data_from_file_path(scratch.arena, in_lib_path);
     if (in_lib.size == 0) {
         fprintf(stderr, "ERROR: unable to read file %.*s\n", str8_varg(in_lib_path));
         os_abort(1);
@@ -62,7 +62,7 @@ sld_main(CmdLine *cmdl)
     }
 
     // read & parse lib
-    String8           out_lib = push_str8_copy(scratch.arena, in_lib);
+    StringView           out_lib = push_str8_copy(scratch.arena, in_lib);
     COFF_ArchiveParse parse   = coff_archive_parse_from_data(out_lib);
 
     // was parse successful?
@@ -82,15 +82,15 @@ sld_main(CmdLine *cmdl)
     for (U64 member_idx = 0; member_idx < member_offsets_count; member_idx += 1) {
         COFF_ParsedArchiveMemberHeader member_header = {0};
         coff_parse_archive_member_header(out_lib, member_offsets[member_idx], &member_header);
-        String8       member_data = str8_substr(out_lib, member_header.data_range);
+        StringView       member_data = str8_substr(out_lib, member_header.data_range);
         COFF_DataType member_type = coff_data_type_from_data(member_data);
         if (member_type == COFF_DataType_BigObj || member_type == COFF_DataType_Obj) {
             COFF_FileHeaderInfo  file_header_info = coff_file_header_info_from_data(member_data);
             COFF_SectionHeader  *section_table    = (COFF_SectionHeader *)str8_substr(member_data, file_header_info.section_table_range).str;
-            String8              string_table     = str8_substr(member_data, file_header_info.string_table_range);
+            StringView              string_table     = str8_substr(member_data, file_header_info.string_table_range);
             for (U64 sect_idx = 0; sect_idx < file_header_info.section_count_no_null; sect_idx += 1) {
                 COFF_SectionHeader *sect_header = &section_table[sect_idx];
-                String8             name        = coff_name_from_section_header(string_table, sect_header);
+                StringView             name        = coff_name_from_section_header(string_table, sect_header);
                 if (str8_match((".debug$S"), name, 0) || str8_match((".debug$T"), name, 0)) {
                     sect_header.flags = COFF_SectionFlag_LnkRemove;
                     MemorySet(sect_header.name, 'x', sizeof(sect_header.name));

@@ -13,12 +13,6 @@
 ////////////////////////////////
 //~ rjf: String Types
 
-struct String8
-{
-    U8 *str;
-    U64 size;
-};
-
 struct String16
 {
     U16 *str;
@@ -37,7 +31,7 @@ struct String32
 struct String8Node
 {
     String8Node *next;
-    String8 string;
+    StringView string;
 };
 
 struct String8MetaNode
@@ -56,7 +50,7 @@ struct String8List
 
 struct String8Array
 {
-    String8 *v;
+    StringView *v;
     U64 count;
 };
 
@@ -94,9 +88,9 @@ PathStyle;
 
 struct StringJoin
 {
-    String8 pre;
-    String8 sep;
-    String8 post;
+    StringView pre;
+    StringView sep;
+    StringView post;
 };
 
 ////////////////////////////////
@@ -104,7 +98,7 @@ struct StringJoin
 
 struct String8TxtPtPair
 {
-    String8 string;
+    StringView string;
     TxtPt pt;
 };
 
@@ -176,7 +170,7 @@ struct FuzzyMatchRangeList
 #define push_str8_copy(arena, s) str8_copy((arena), (s))
 #define push_str8fv(arena, fmt, args) str8fv((arena), (fmt), (args))
 #define push_str8f(arena, ...) str8f((arena), __VA_ARGS__)
-internal String8 push_cstr(Arena *arena, String8 str); // TODO(rjf): this is unnecessary - this is implied by `push_str8_copy`. need to remove.
+internal StringView push_cstr(Arena *arena, StringView str); // TODO(rjf): this is unnecessary - this is implied by `push_str8_copy`. need to remove.
 
 ////////////////////////////////
 //~ rjf: String <=> Integer Conversions
@@ -216,7 +210,7 @@ internal String8 push_cstr(Arena *arena, String8 str); // TODO(rjf): this is unn
 
 global read_only struct
 {
-    String8   string;
+    StringView   string;
     PathStyle path_style;
 }
 g_path_style_map[] =

@@ -4,7 +4,7 @@
 //- GENERATED CODE
 
 C_LINKAGE_BEGIN
-String8 ctrl_entity_kind_code_name_table[12] =
+StringView ctrl_entity_kind_code_name_table[12] =
 {
 {0},
 ("root"),
@@ -20,7 +20,7 @@ String8 ctrl_entity_kind_code_name_table[12] =
 ("address_range_annotation"),
 };
 
-String8 ctrl_entity_kind_display_string_table[12] =
+StringView ctrl_entity_kind_display_string_table[12] =
 {
 {0},
 ("Root"),
@@ -78,7 +78,7 @@ U32 ctrl_exception_code_kind_code_table[38] =
 0x0000087a,
 };
 
-String8 ctrl_exception_code_kind_display_string_table[38] =
+StringView ctrl_exception_code_kind_display_string_table[38] =
 {
 {0},
 ("(Win32) Control-C"),
@@ -120,7 +120,7 @@ String8 ctrl_exception_code_kind_display_string_table[38] =
 ("(Win32) DirectX Debug Layer"),
 };
 
-String8 ctrl_exception_code_kind_lowercase_code_string_table[38] =
+StringView ctrl_exception_code_kind_lowercase_code_string_table[38] =
 {
 {0},
 ("win32_ctrl_c"),

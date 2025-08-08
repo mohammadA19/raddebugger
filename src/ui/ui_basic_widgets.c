@@ -19,7 +19,7 @@ ui_divider(UI_Size size)
 }
 
 internal UI_Signal
-ui_label(String8 string)
+ui_label(StringView string)
 {
   UI_Box *box = ui_build_box_from_string(UI_BoxFlag_DrawText, str8_zero());
   ui_box_equip_display_string(box, string);
@@ -33,7 +33,7 @@ ui_labelf(char *fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Signal result = ui_label(string);
   scratch_end(scratch);
@@ -41,7 +41,7 @@ ui_labelf(char *fmt, ...)
 }
 
 internal void
-ui_label_multiline(F32 max, String8 string)
+ui_label_multiline(F32 max, StringView string)
 {
   Temp scratch = scratch_begin(0, 0);
   ui_set_next_child_layout_axis(Axis2_Y);
@@ -61,14 +61,14 @@ ui_label_multilinef(F32 max, char *fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   ui_label_multiline(max, string);
   scratch_end(scratch);
 }
 
 internal UI_Signal
-ui_button(String8 string)
+ui_button(StringView string)
 {
   UI_Box *box = ui_build_box_from_string(UI_BoxFlag_Clickable|
                                          UI_BoxFlag_DrawBackground|
@@ -87,7 +87,7 @@ ui_buttonf(char *fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Signal result = ui_button(string);
   scratch_end(scratch);
@@ -95,7 +95,7 @@ ui_buttonf(char *fmt, ...)
 }
 
 internal UI_Signal
-ui_hover_label(String8 string)
+ui_hover_label(StringView string)
 {
   UI_Box *box = ui_build_box_from_string(UI_BoxFlag_Clickable|UI_BoxFlag_DrawText, string);
   UI_Signal interact = ui_signal_from_box(box);
@@ -112,7 +112,7 @@ ui_hover_labelf(char *fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Signal sig = ui_hover_label(string);
   scratch_end(scratch);
@@ -122,7 +122,7 @@ ui_hover_labelf(char *fmt, ...)
 typedef struct UI_LineEditDrawData UI_LineEditDrawData;
 struct UI_LineEditDrawData
 {
-  String8 edited_string;
+  StringView edited_string;
   TxtPt cursor;
   TxtPt mark;
 };
@@ -138,7 +138,7 @@ internal UI_BOX_CUSTOM_DRAW(ui_line_edit_draw)
   Vec4F32 select_color = ui_color_from_tags_key_name(box.tags_key, ("selection"));
   select_color.w *= (box.parent.parent.focus_active_t*0.2f + 0.8f);
   Vec2F32 text_position = ui_box_text_position(box);
-  String8 edited_string = draw_data.edited_string;
+  StringView edited_string = draw_data.edited_string;
   TxtPt cursor = draw_data.cursor;
   TxtPt mark = draw_data.mark;
   F32 cursor_pixel_off = fnt_dim_from_tag_size_string(font, font_size, 0, tab_size, str8_prefix(edited_string, cursor.column-1)).x;
@@ -164,7 +164,7 @@ internal UI_BOX_CUSTOM_DRAW(ui_line_edit_draw)
 }
 
 internal UI_Signal
-ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, String8 pre_edit_value, String8 string)
+ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, StringView pre_edit_value, StringView string)
 {
   //- rjf: make key
   UI_Key key = ui_key_from_string(ui_active_seed_key(), string);
@@ -197,7 +197,7 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
     Temp scratch = scratch_begin(0, 0);
     for (UI_Event *evt = 0; ui_next_event(&evt);)
     {
-      String8 edit_string = str8(edit_buffer, edit_string_size_out[0]);
+      StringView edit_string = str8(edit_buffer, edit_string_size_out[0]);
       
       // rjf: do not consume anything that doesn't fit a single-line's operations
       if ((evt.kind != UI_EventKind_Edit && evt.kind != UI_EventKind_Navigate && evt.kind != UI_EventKind_Text) || evt.delta_2s32.y != 0)
@@ -211,7 +211,7 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
       // rjf: perform replace range
       if (!txt_pt_match(op.range.min, op.range.max) || op.replace.size != 0)
       {
-        String8 new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(op.range.min.column, op.range.max.column), op.replace);
+        StringView new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(op.range.min.column, op.range.max.column), op.replace);
         new_string.size = Min(edit_buffer_size, new_string.size);
         MemoryCopy(edit_buffer, new_string.str, new_string.size);
         edit_string_size_out[0] = new_string.size;
@@ -241,10 +241,10 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
   F32 cursor_off = 0;
   UI_Parent(box)
   {
-    String8 edit_string = str8(edit_buffer, edit_string_size_out[0]);
+    StringView edit_string = str8(edit_buffer, edit_string_size_out[0]);
     if (!is_focus_active && !is_focus_active_disabled)
     {
-      String8 display_string = ui_display_part_from_key_string(string);
+      StringView display_string = ui_display_part_from_key_string(string);
       if (pre_edit_value.size != 0)
       {
         display_string = pre_edit_value;
@@ -271,7 +271,7 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
   UI_Signal sig = ui_signal_from_box(box);
   if (!is_focus_active && sig.f&(UI_SignalFlag_DoubleClicked|UI_SignalFlag_KeyboardPressed))
   {
-    String8 edit_string = pre_edit_value;
+    StringView edit_string = pre_edit_value;
     edit_string.size = Min(edit_buffer_size, pre_edit_value.size);
     MemoryCopy(edit_buffer, edit_string.str, edit_string.size);
     edit_string_size_out[0] = edit_string.size;
@@ -316,12 +316,12 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
 }
 
 internal UI_Signal
-ui_line_editf(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, String8 pre_edit_value, char *fmt, ...)
+ui_line_editf(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, StringView pre_edit_value, char *fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Signal result = ui_line_edit(cursor, mark, edit_buffer, edit_buffer_size, edit_string_size_out, pre_edit_value, string);
   scratch_end(scratch);
@@ -370,7 +370,7 @@ internal UI_BOX_CUSTOM_DRAW(ui_image_draw)
 }
 
 internal UI_Signal
-ui_image(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, F32 blur, String8 string)
+ui_image(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, F32 blur, StringView string)
 {
   UI_Box *box = ui_build_box_from_string(0, string);
   UI_ImageDrawData *draw_data = push_array(ui_build_arena(), UI_ImageDrawData, 1);
@@ -390,7 +390,7 @@ ui_imagef(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Signal result = ui_image(texture, sample_kind, region, tint, blur, string);
   scratch_end(scratch);
@@ -401,7 +401,7 @@ ui_imagef(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F
 //~ rjf: Special Buttons
 
 internal UI_Signal
-ui_expander(B32 is_expanded, String8 string)
+ui_expander(B32 is_expanded, StringView string)
 {
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
   ui_set_next_text_alignment(UI_TextAlign_Center);
@@ -418,7 +418,7 @@ ui_expanderf(B32 is_expanded, char *fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Signal sig = ui_expander(is_expanded, string);
   scratch_end(scratch);
@@ -426,7 +426,7 @@ ui_expanderf(B32 is_expanded, char *fmt, ...)
 }
 
 internal UI_Signal
-ui_sort_header(B32 sorting, B32 ascending, String8 string)
+ui_sort_header(B32 sorting, B32 ascending, StringView string)
 {
   ui_set_next_child_layout_axis(Axis2_X);
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
@@ -459,7 +459,7 @@ ui_sort_headerf(B32 sorting, B32 ascending, char *fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Signal sig = ui_sort_header(sorting, ascending, string);
   scratch_end(scratch);
@@ -613,7 +613,7 @@ internal UI_BOX_CUSTOM_DRAW(ui_sat_val_picker_draw)
 }
 
 internal UI_Signal
-ui_sat_val_picker(F32 hue, F32 *out_sat, F32 *out_val, String8 string)
+ui_sat_val_picker(F32 hue, F32 *out_sat, F32 *out_val, StringView string)
 {
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
@@ -661,7 +661,7 @@ ui_sat_val_pickerf(F32 hue, F32 *out_sat, F32 *out_val, char *fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Signal sig = ui_sat_val_picker(hue, out_sat, out_val, string);
   scratch_end(scratch);
@@ -722,7 +722,7 @@ internal UI_BOX_CUSTOM_DRAW(ui_hue_picker_draw)
 }
 
 internal UI_Signal
-ui_hue_picker(F32 *out_hue, F32 sat, F32 val, String8 string)
+ui_hue_picker(F32 *out_hue, F32 sat, F32 val, StringView string)
 {
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
@@ -765,7 +765,7 @@ ui_hue_pickerf(F32 *out_hue, F32 sat, F32 val, char *fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Signal sig = ui_hue_picker(out_hue, sat, val, string);
   scratch_end(scratch);
@@ -809,7 +809,7 @@ internal UI_BOX_CUSTOM_DRAW(ui_alpha_picker_draw)
 }
 
 internal UI_Signal
-ui_alpha_picker(F32 *out_alpha, String8 string)
+ui_alpha_picker(F32 *out_alpha, StringView string)
 {
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
@@ -850,7 +850,7 @@ ui_alpha_pickerf(F32 *out_alpha, char *fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Signal sig = ui_alpha_picker(out_alpha, string);
   scratch_end(scratch);
@@ -866,7 +866,7 @@ internal UI_Box *ui_column_begin(void) { return ui_named_column_begin(("")); }
 internal UI_Signal ui_column_end(void) { return ui_named_column_end(); }
 
 internal UI_Box *
-ui_named_row_begin(String8 string)
+ui_named_row_begin(StringView string)
 {
   ui_set_next_child_layout_axis(Axis2_X);
   UI_Box *box = ui_build_box_from_string(0, string);
@@ -883,7 +883,7 @@ ui_named_row_end(void)
 }
 
 internal UI_Box *
-ui_named_column_begin(String8 string)
+ui_named_column_begin(StringView string)
 {
   ui_set_next_child_layout_axis(Axis2_Y);
   UI_Box *box = ui_build_box_from_string(0, string);
@@ -903,7 +903,7 @@ ui_named_column_end(void)
 //~ rjf: Floating Panes
 
 internal UI_Box *
-ui_pane_begin(Rng2F32 rect, String8 string)
+ui_pane_begin(Rng2F32 rect, StringView string)
 {
   ui_push_rect(rect);
   ui_set_next_child_layout_axis(Axis2_Y);
@@ -920,7 +920,7 @@ ui_pane_beginf(Rng2F32 rect, char *fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Box *box = ui_pane_begin(rect, string);
   scratch_end(scratch);
@@ -945,7 +945,7 @@ thread_static U64 ui_ts_vector_idx = 0;
 thread_static U64 ui_ts_cell_idx = 0;
 
 internal void
-ui_table_begin(U64 column_pct_count, F32 **column_pcts, String8 string)
+ui_table_begin(U64 column_pct_count, F32 **column_pcts, StringView string)
 {
   //- rjf: store off persistent, user-provided column info
   ui_ts_col_pct_count = column_pct_count;
@@ -1064,7 +1064,7 @@ ui_table_beginf(U64 column_pct_count, F32 **column_pcts, char *fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   ui_table_begin(column_pct_count, column_pcts, string);
   scratch_end(scratch);
@@ -1077,7 +1077,7 @@ ui_table_end(void)
 }
 
 internal UI_Box *
-ui_named_table_vector_begin(String8 string)
+ui_named_table_vector_begin(StringView string)
 {
   ui_set_next_pref_width(ui_pct(1, 0));
   ui_set_next_child_layout_axis(Axis2_X);
@@ -1094,7 +1094,7 @@ ui_named_table_vector_beginf(char *fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  StringView string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Box *vector = ui_named_table_vector_begin(string);
   scratch_end(scratch);
@@ -1257,7 +1257,7 @@ ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_ran
     UI_TextAlignment(UI_TextAlign_Center)
     UI_Font(ui_icon_font())
   {
-    String8 arrow_string = ui_icon_string_from_kind(axis == Axis2_X ? UI_IconKind_LeftArrow : UI_IconKind_UpArrow);
+    StringView arrow_string = ui_icon_string_from_kind(axis == Axis2_X ? UI_IconKind_LeftArrow : UI_IconKind_UpArrow);
     min_scroll_sig = ui_buttonf("%S##_min_scroll_%i", arrow_string, axis);
   }
   
@@ -1307,7 +1307,7 @@ ui_scroll_bar(Axis2 axis, UI_Size off_axis_size, UI_ScrollPt pt, Rng1S64 idx_ran
     UI_TextAlignment(UI_TextAlign_Center)
     UI_Font(ui_icon_font())
   {
-    String8 arrow_string = ui_icon_string_from_kind(axis == Axis2_X ? UI_IconKind_RightArrow : UI_IconKind_DownArrow);
+    StringView arrow_string = ui_icon_string_from_kind(axis == Axis2_X ? UI_IconKind_RightArrow : UI_IconKind_DownArrow);
     max_scroll_sig = ui_buttonf("%S##_max_scroll_%i", arrow_string, axis);
   }
   

@@ -65,7 +65,7 @@ update_crc32(U32 crc, U8 *ptr, U64 size)
 }
 
 internal U32
-crc32_from_string(String8 string)
+crc32_from_string(StringView string)
 {
     return update_crc32(0, string.str, string.size);
 }

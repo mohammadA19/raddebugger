@@ -19,7 +19,7 @@ struct DR_FStrParams
 
 struct DR_FStr
 {
-    String8 string;
+    StringView string;
     DR_FStrParams params;
 };
 

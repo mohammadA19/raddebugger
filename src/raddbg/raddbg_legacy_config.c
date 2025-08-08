@@ -2,12 +2,12 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal RD_CfgList
-rd_cfg_tree_list_from_string__pre_0_9_16(Arena *arena, String8 file_path, String8 data)
+rd_cfg_tree_list_from_string__pre_0_9_16(Arena *arena, StringView file_path, StringView data)
 {
     RD_CfgList result = {0};
     {
         Temp scratch = scratch_begin(&arena, 1);
-        String8 folder_path = str8_skip_last_slash(file_path);
+        StringView folder_path = str8_skip_last_slash(file_path);
         MD_Node *src_root = md_parse_from_text(scratch.arena, file_path, data).root;
         {
             for MD_EachNode(tln, src_root.first)
@@ -15,15 +15,15 @@ rd_cfg_tree_list_from_string__pre_0_9_16(Arena *arena, String8 file_path, String
                 //- rjf: targets
                 if (str8_match(tln.string, ("target"), 0))
                 {
-                    String8 disabled_string   = md_child_from_string(tln, ("disabled"), 0)->first.string;
-                    String8 executable        = md_child_from_string(tln, ("executable"), 0)->first.string;
-                    String8 arguments         = md_child_from_string(tln, ("arguments"), 0)->first.string;
-                    String8 working_directory = md_child_from_string(tln, ("working_directory"), 0)->first.string;
-                    String8 entry_point       = md_child_from_string(tln, ("entry_point"), 0)->first.string;
-                    String8 stdout_path       = md_child_from_string(tln, ("stdout_path"), 0)->first.string;
-                    String8 stderr_path       = md_child_from_string(tln, ("stderr_path"), 0)->first.string;
-                    String8 stdin_path        = md_child_from_string(tln, ("stdin_path"), 0)->first.string;
-                    String8 debug_subprocesses= md_child_from_string(tln, ("debug_subprocesses"), 0)->first.string;
+                    StringView disabled_string   = md_child_from_string(tln, ("disabled"), 0)->first.string;
+                    StringView executable        = md_child_from_string(tln, ("executable"), 0)->first.string;
+                    StringView arguments         = md_child_from_string(tln, ("arguments"), 0)->first.string;
+                    StringView working_directory = md_child_from_string(tln, ("working_directory"), 0)->first.string;
+                    StringView entry_point       = md_child_from_string(tln, ("entry_point"), 0)->first.string;
+                    StringView stdout_path       = md_child_from_string(tln, ("stdout_path"), 0)->first.string;
+                    StringView stderr_path       = md_child_from_string(tln, ("stderr_path"), 0)->first.string;
+                    StringView stdin_path        = md_child_from_string(tln, ("stdin_path"), 0)->first.string;
+                    StringView debug_subprocesses= md_child_from_string(tln, ("debug_subprocesses"), 0)->first.string;
                     RD_Cfg *dst_root = rd_cfg_new(&rd_nil_cfg, ("target"));
                     rd_cfg_list_push(arena, &result, dst_root);
                     {
@@ -54,8 +54,8 @@ rd_cfg_tree_list_from_string__pre_0_9_16(Arena *arena, String8 file_path, String
                 //- rjf: file path maps
                 if (str8_match(tln.string, ("file_path_map"), 0))
                 {
-                    String8 source = md_child_from_string(tln, ("source"), 0)->first.string;
-                    String8 dest = md_child_from_string(tln, ("dest"), 0)->first.string;
+                    StringView source = md_child_from_string(tln, ("source"), 0)->first.string;
+                    StringView dest = md_child_from_string(tln, ("dest"), 0)->first.string;
                     RD_Cfg *dst_root = rd_cfg_new(&rd_nil_cfg, tln.string);
                     rd_cfg_list_push(arena, &result, dst_root);
                     rd_cfg_new(rd_cfg_new(dst_root, ("source")), path_absolute_dst_from_relative_dst_src(scratch.arena, source, folder_path));

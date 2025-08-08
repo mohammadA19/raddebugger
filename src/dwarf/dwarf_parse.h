@@ -6,8 +6,8 @@
 
 typedef struct DW_Section
 {
-    String8 name;
-    String8 data;
+    StringView name;
+    StringView data;
     B32     is_dwo;
 } DW_Section;
 
@@ -23,7 +23,7 @@ typedef struct DW_ListUnit
     U64        address_size;
     U64        segment_selector_size;
     U64        entry_size;
-    String8    entries;
+    StringView    entries;
 } DW_ListUnit;
 
 typedef struct DW_ListUnitInput
@@ -81,11 +81,11 @@ typedef struct DW_Abbrev
 
 typedef union DW_Form
 {
-    String8 addr;
-    String8 block;
-    String8 data;
-    String8 string;
-    String8 exprloc;
+    StringView addr;
+    StringView block;
+    StringView data;
+    StringView string;
+    StringView exprloc;
     B8      flag;
     S64     sdata;
     U64     udata;
@@ -143,7 +143,7 @@ typedef struct DW_TagNode
 typedef struct DW_Loc
 {
     Rng1U64 range;
-    String8 expr;
+    StringView expr;
 } DW_Loc;
 
 typedef struct DW_LocNode
@@ -171,7 +171,7 @@ typedef struct DW_CompUnit
     Rng1U64         info_range;
     U64             first_tag_info_off;
     DW_AbbrevTable  abbrev_table;
-    String8         abbrev_data;
+    StringView         abbrev_data;
     DW_ListUnit    *addr_lu;
     DW_ListUnit    *str_offsets_lu;
     DW_ListUnit    *rnglists_lu;
@@ -190,12 +190,12 @@ typedef struct DW_TagTree
 
 typedef struct DW_LineFile
 {
-    String8 file_name;
+    StringView file_name;
     U64     dir_idx;
     U64     modify_time;
     U64     file_size;
     U128    md5_digest;
-    String8 source;
+    StringView source;
 } DW_LineFile;
 
 typedef struct DW_LineVMFileNode
@@ -299,7 +299,7 @@ typedef struct DW_LineTableParseResult
 typedef struct DW_PubStringsBucket
 {
     struct DW_PubStringsBucket *next;
-    String8                     string;
+    StringView                     string;
     U64                         info_off;
     U64                         cu_info_off;
 } DW_PubStringsBucket;
@@ -344,7 +344,7 @@ typedef struct DW_Reference
 
 // line info
 
-internal U64 dw_read_line_file(String8      line_data,
+internal U64 dw_read_line_file(StringView      line_data,
                                                               U64          line_off,
                                                               DW_Input    *input,
                                                               DW_Version   unit_version,
@@ -356,11 +356,11 @@ internal U64 dw_read_line_file(String8      line_data,
                                                               U64         *enc_arr,
                                                               DW_LineFile *line_file_out);
 internal U64 dw_read_line_vm_header(Arena           *arena,
-                                                                        String8          line_data,
+                                                                        StringView          line_data,
                                                                         U64              line_off,
                                                                         DW_Input        *input,
-                                                                        String8          cu_dir,
-                                                                        String8          cu_name,
+                                                                        StringView          cu_dir,
+                                                                        StringView          cu_name,
                                                                         U8               cu_address_size,
                                                                         DW_ListUnit     *cu_str_offsets,
                                                                         DW_LineVMHeader *header_out);

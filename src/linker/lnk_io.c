@@ -49,14 +49,14 @@ lnk_write_file(void *raw_handle, uint64_t offset, void *buffer, uint64_t buffer_
 }
 
 internal String8List
-lnk_file_search(Arena *arena, String8List dir_list, String8 file_path)
+lnk_file_search(Arena *arena, String8List dir_list, StringView file_path)
 {
     ProfBeginFunction();
     Temp scratch = scratch_begin(&arena, 1);
     String8List match_list; MemoryZeroStruct(&match_list);
 
     if (os_file_path_exists(file_path)) {
-        String8 str = push_str8_copy(arena, file_path);
+        StringView str = push_str8_copy(arena, file_path);
         str8_list_push(arena, &match_list, str);
     }
 
@@ -69,7 +69,7 @@ lnk_file_search(Arena *arena, String8List dir_list, String8 file_path)
             String8List path_list = {0};
             str8_list_push(scratch.arena, &path_list, i.string);
             str8_list_push(scratch.arena, &path_list, file_path);
-            String8 path = str8_path_list_join_by_style(scratch.arena, &path_list, PathStyle_SystemAbsolute);
+            StringView path = str8_path_list_join_by_style(scratch.arena, &path_list, PathStyle_SystemAbsolute);
             B32 file_exists = os_file_path_exists(path);
             if (file_exists) {
                 B32 is_unique = 1;
@@ -83,7 +83,7 @@ lnk_file_search(Arena *arena, String8List dir_list, String8 file_path)
                     }
                 }
                 if (is_unique) {
-                    String8 str = push_str8_copy(arena, path);
+                    StringView str = push_str8_copy(arena, path);
                     str8_list_push(arena, &match_list, str);
                 }
             }
@@ -96,7 +96,7 @@ lnk_file_search(Arena *arena, String8List dir_list, String8 file_path)
 }
 
 internal OS_Handle
-lnk_file_open_with_rename_permissions(String8 path)
+lnk_file_open_with_rename_permissions(StringView path)
 {
     OS_Handle file_handle = os_handle_zero();
 #if OS_WINDOWS
@@ -137,7 +137,7 @@ lnk_file_set_delete_on_close(OS_Handle handle, B32 delete_file)
 }
 
 internal B32
-lnk_file_rename(OS_Handle handle, String8 new_name)
+lnk_file_rename(OS_Handle handle, StringView new_name)
 {
     Temp scratch = scratch_begin(0,0);
 #if OS_WINDOWS
@@ -161,13 +161,13 @@ lnk_file_rename(OS_Handle handle, String8 new_name)
 }
 
 internal void
-lnk_log_read(String8 path, U64 size)
+lnk_log_read(StringView path, U64 size)
 {
     lnk_log(LNK_Log_IO_Read, "Read from \"%S\" %M", path, size);
 }
 
-internal String8
-lnk_read_data_from_file_path(Arena *arena, LNK_IO_Flags io_flags, String8 path)
+internal StringView
+lnk_read_data_from_file_path(Arena *arena, LNK_IO_Flags io_flags, StringView path)
 {
     Temp scratch = scratch_begin(&arena, 1);
     TP_Context *single_thread_ctx = tp_alloc(scratch.arena, 1, 1, str8_zero());
@@ -180,7 +180,7 @@ internal
 THREAD_POOL_TASK_FUNC(lnk_data_size_from_file_path_task)
 {
     LNK_DiskReader *task = raw_task;
-    String8         path = task.path_arr.v[task_id];
+    StringView         path = task.path_arr.v[task_id];
 
     OS_Handle handle = {0};
     U64       size   = 0;
@@ -247,7 +247,7 @@ lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, LNK_IO_Flags
         reader.io_flags       = io_flags;
         reader.path_arr       = path_arr;
         reader.data_arr.count = path_arr.count;
-        reader.data_arr.v     = push_array(arena, String8, path_arr.count);
+        reader.data_arr.v     = push_array(arena, StringView, path_arr.count);
         tp_for_parallel(tp, 0, path_arr.count, lnk_memory_map_file_task, &reader);
     } else {
         Temp scratch = scratch_begin(&arena,1);
@@ -292,13 +292,13 @@ lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, LNK_IO_Flags
 }
 
 internal void
-lnk_write_data_list_to_file_path(String8 path, String8 temp_path, String8List data)
+lnk_write_data_list_to_file_path(StringView path, StringView temp_path, String8List data)
 {
     ProfBeginV("Write %M to %S", data.total_size, path);
 
     B32       open_with_rename = (temp_path.size > 0);
     OS_Handle file_handle      = {0};
-    String8   open_file_path   = {0};
+    StringView   open_file_path   = {0};
     if (open_with_rename) {
         file_handle    = lnk_file_open_with_rename_permissions(temp_path);
         open_file_path = temp_path;
@@ -364,7 +364,7 @@ lnk_write_data_list_to_file_path(String8 path, String8 temp_path, String8List da
 }
 
 internal void
-lnk_write_data_to_file_path(String8 path, String8 temp_path, String8 data)
+lnk_write_data_to_file_path(StringView path, StringView temp_path, StringView data)
 {
     Temp scratch = scratch_begin(0,0);
     String8List data_list = {0};

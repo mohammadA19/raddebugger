@@ -246,7 +246,7 @@ dw_are_attrib_class_and_form_kind_compatible(DW_Version ver, DW_AttribClass attr
     return are_compat;
 }
 
-internal String8
+internal StringView
 dw_name_string_from_section_kind(DW_SectionKind k)
 {
     switch (k) {
@@ -257,7 +257,7 @@ dw_name_string_from_section_kind(DW_SectionKind k)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 dw_mach_name_string_from_section_kind(DW_SectionKind k)
 {
     switch (k) {
@@ -268,7 +268,7 @@ dw_mach_name_string_from_section_kind(DW_SectionKind k)
     return str8_zero();
 }
 
-internal String8
+internal StringView
 dw_dwo_name_string_from_section_kind(DW_SectionKind k)
 {
     switch (k) {
@@ -389,10 +389,10 @@ dw_pick_default_lower_bound(DW_Language lang)
 ////////////////////////////////
 //~ rjf: String <=> Enum
 
-internal String8
+internal StringView
 dw_string_from_expr_op(Arena *arena, DW_Version ver, DW_Ext ext, DW_ExprOp op)
 {
-    String8 result = {0};
+    StringView result = {0};
     
 #define X(_N,...) case DW_ExprOp_##_N: result = (Stringify(_N)); goto exit;
     if (ext & DW_Ext_GNU) {
@@ -430,7 +430,7 @@ dw_string_from_expr_op(Arena *arena, DW_Version ver, DW_Ext ext, DW_ExprOp op)
     return result;
 }
 
-internal String8
+internal StringView
 dw_string_from_tag_kind(Arena *arena, DW_TagKind kind)
 {
     switch (kind) {
@@ -444,11 +444,11 @@ dw_string_from_tag_kind(Arena *arena, DW_TagKind kind)
     return push_str8f(arena, "%llx", kind);
 }
 
-internal String8
+internal StringView
 dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKind kind)
 {
 #define X(_N,...) case DW_AttribKind_##_N:{result = (Stringify(_N));}break;
-    String8 result = {0};
+    StringView result = {0};
     
     //- rjf: try extensions
     if (result.size != 0)
@@ -503,7 +503,7 @@ dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKi
     return result;
 }
 
-internal String8
+internal StringView
 dw_string_from_form_kind(Arena *arena, DW_Version ver, DW_FormKind kind)
 {
 #define X(_N,...) case DW_Form_##_N: return (Stringify(_N));
@@ -527,11 +527,11 @@ dw_string_from_form_kind(Arena *arena, DW_Version ver, DW_FormKind kind)
         case DW_Version_Null: break;
     }
 #undef X
-    String8 result = push_str8f(arena, "%x", kind);
+    StringView result = push_str8f(arena, "%x", kind);
     return result;
 }
 
-internal String8
+internal StringView
 dw_string_from_language(Arena *arena, DW_Language kind)
 {
     switch (kind) {
@@ -542,7 +542,7 @@ dw_string_from_language(Arena *arena, DW_Language kind)
     return push_str8f(arena, "%x", kind);
 }
 
-internal String8
+internal StringView
 dw_string_from_inl(Arena *arena, DW_InlKind kind)
 {
     switch (kind) {
@@ -553,7 +553,7 @@ dw_string_from_inl(Arena *arena, DW_InlKind kind)
     return push_str8f(arena, "%x", kind);
 }
 
-internal String8
+internal StringView
 dw_string_from_access_kind(Arena *arena, DW_AccessKind kind)
 {
     switch (kind) {
@@ -564,7 +564,7 @@ dw_string_from_access_kind(Arena *arena, DW_AccessKind kind)
     return push_str8f(arena, "%llx", kind);
 }
 
-internal String8
+internal StringView
 dw_string_from_calling_convetion(Arena *arena, DW_CallingConventionKind kind)
 {
     switch (kind) {
@@ -575,7 +575,7 @@ dw_string_from_calling_convetion(Arena *arena, DW_CallingConventionKind kind)
     return push_str8f(arena, "%llx", kind);
 }
 
-internal String8
+internal StringView
 dw_string_from_attrib_type_encoding(Arena *arena, DW_ATE kind)
 {
     switch (kind) {
@@ -586,7 +586,7 @@ dw_string_from_attrib_type_encoding(Arena *arena, DW_ATE kind)
     return push_str8f(arena, "%llx", kind);
 }
 
-internal String8
+internal StringView
 dw_string_from_std_opcode(Arena *arena, DW_StdOpcode kind)
 {
     switch (kind) {
@@ -597,7 +597,7 @@ dw_string_from_std_opcode(Arena *arena, DW_StdOpcode kind)
     return push_str8f(arena, "%x", kind);
 }
 
-internal String8
+internal StringView
 dw_string_from_ext_opcode(Arena *arena, DW_ExtOpcode kind)
 {
     switch (kind) {
@@ -609,31 +609,31 @@ dw_string_from_ext_opcode(Arena *arena, DW_ExtOpcode kind)
     return push_str8f(arena, "%x", kind);
 }
 
-internal String8
+internal StringView
 dw_string_from_loc_list_entry_kind(Arena *arena, DW_LLE kind)
 {
     NotImplemented;
     return str8_zero();
 }
 
-internal String8
+internal StringView
 dw_string_from_section_kind(Arena *arena, DW_SectionKind kind)
 {
     NotImplemented;
     return str8_zero();
 }
 
-internal String8
+internal StringView
 dw_string_from_rng_list_entry_kind(Arena *arena, DW_RLE kind)
 {
     NotImplemented;
     return str8_zero();
 }
 
-internal String8
+internal StringView
 dw_string_from_register(Arena *arena, Arch arch, U64 reg_id)
 {
-    String8 reg_str = str8_zero();
+    StringView reg_str = str8_zero();
     switch (arch) {
         case Arch_Null: break;
         case Arch_x86: {

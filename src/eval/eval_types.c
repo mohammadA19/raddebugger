@@ -475,21 +475,21 @@ e_type_key_cons_ptr(Arch arch, E_TypeKey element_type_key, U64 count, E_TypeFlag
 }
 
 internal E_TypeKey
-e_type_key_cons_meta_expr(E_TypeKey type_key, String8 expr)
+e_type_key_cons_meta_expr(E_TypeKey type_key, StringView expr)
 {
     E_TypeKey key = e_type_key_cons(.kind = E_TypeKind_MetaExpr, .direct_key = type_key, .name = expr);
     return key;
 }
 
 internal E_TypeKey
-e_type_key_cons_meta_display_name(E_TypeKey type_key, String8 name)
+e_type_key_cons_meta_display_name(E_TypeKey type_key, StringView name)
 {
     E_TypeKey key = e_type_key_cons(.kind = E_TypeKind_MetaDisplayName, .direct_key = type_key, .name = name);
     return key;
 }
 
 internal E_TypeKey
-e_type_key_cons_meta_description(E_TypeKey type_key, String8 desc)
+e_type_key_cons_meta_description(E_TypeKey type_key, StringView desc)
 {
     E_TypeKey key = e_type_key_cons(.kind = E_TypeKind_MetaDescription, .direct_key = type_key, .name = desc);
     return key;
@@ -582,8 +582,8 @@ e_hash_from_type(E_Type *type)
         str8_serial_push_struct(scratch.arena, &strings, &type.byte_size);
         str8_serial_push_struct(scratch.arena, &strings, &type.count);
         str8_serial_push_struct(scratch.arena, &strings, &type.off);
-        String8 direct_type_string = e_type_string_from_key(scratch.arena, type.direct_type_key);
-        String8 owner_type_string = e_type_string_from_key(scratch.arena, type.owner_type_key);
+        StringView direct_type_string = e_type_string_from_key(scratch.arena, type.direct_type_key);
+        StringView owner_type_string = e_type_string_from_key(scratch.arena, type.owner_type_key);
         U64 direct_hash = e_hash_from_string(5381, direct_type_string);
         U64 owner_hash = e_hash_from_string(5381, owner_type_string);
         str8_serial_push_struct(scratch.arena, &strings, &direct_hash);
@@ -592,7 +592,7 @@ e_hash_from_type(E_Type *type)
         {
             for EachIndex(idx, type.count)
             {
-                String8 param_type_string = e_type_string_from_key(scratch.arena, type.param_type_keys[idx]);
+                StringView param_type_string = e_type_string_from_key(scratch.arena, type.param_type_keys[idx]);
                 U64 param_type_hash = e_hash_from_string(5381, param_type_string);
                 str8_serial_push_struct(scratch.arena, &strings, &param_type_hash);
             }
@@ -601,13 +601,13 @@ e_hash_from_type(E_Type *type)
         {
             for EachIndex(idx, type.count)
             {
-                String8 member_type_string = e_type_string_from_key(scratch.arena, type.members[idx].type_key);
+                StringView member_type_string = e_type_string_from_key(scratch.arena, type.members[idx].type_key);
                 U64 member_type_hash = e_hash_from_string(5381, member_type_string);
                 str8_serial_push_struct(scratch.arena, &strings, &type.members[idx].off);
                 str8_serial_push_struct(scratch.arena, &strings, &member_type_hash);
             }
         }
-        String8 string = str8_serial_end(scratch.arena, &strings);
+        StringView string = str8_serial_end(scratch.arena, &strings);
         hash = e_hash_from_string(5381, string);
         scratch_end(scratch);
     }
@@ -769,7 +769,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                     if (RDI_TypeKind_FirstRecord <= rdi_type.kind && rdi_type.kind <= RDI_TypeKind_LastRecord)
                     {
                         // rjf: unpack name
-                        String8 name = {0};
+                        StringView name = {0};
                         name.str = rdi_string_from_idx(rdi, rdi_type.user_defined.name_string_idx, &name.size);
                         
                         // rjf: unpack UDT info
@@ -814,7 +814,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                     else if (rdi_type.kind == RDI_TypeKind_Enum)
                     {
                         // rjf: unpack name
-                        String8 name = {0};
+                        StringView name = {0};
                         name.str = rdi_string_from_idx(rdi, rdi_type.user_defined.name_string_idx, &name.size);
                         
                         // rjf: unpack direct type
@@ -1009,7 +1009,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                     else if (rdi_type.kind == RDI_TypeKind_Alias)
                     {
                         // rjf: unpack name
-                        String8 name = {0};
+                        StringView name = {0};
                         name.str = rdi_string_from_idx(rdi, rdi_type.user_defined.name_string_idx, &name.size);
                         
                         // rjf: unpack direct type
@@ -1060,7 +1060,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
                     else if (RDI_TypeKind_FirstIncomplete <= rdi_type.kind && rdi_type.kind <= RDI_TypeKind_LastIncomplete)
                     {
                         // rjf: unpack name
-                        String8 name = {0};
+                        StringView name = {0};
                         name.str = rdi_string_from_idx(rdi, rdi_type.user_defined.name_string_idx, &name.size);
                         
                         // rjf: produce
@@ -1649,7 +1649,7 @@ e_type_match(E_TypeKey l, E_TypeKey r)
 internal void
 e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec, B32 skip_return)
 {
-    String8 keyword = {0};
+    StringView keyword = {0};
     E_TypeKind kind = e_type_kind_from_key(key);
     switch (kind)
     {
@@ -1736,11 +1736,11 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
             E_Type *type = e_type_from_key(key);
             str8_list_pushf(arena, out, "%S(", type.name);
             E_TypeKey direct = e_type_key_direct(key);
-            String8 direct_string = e_type_string_from_key(arena, direct);
+            StringView direct_string = e_type_string_from_key(arena, direct);
             str8_list_push(arena, out, direct_string);
             for EachIndex(idx, type.count)
             {
-                String8 string = e_string_from_expr(arena, type.args[idx], str8_zero());
+                StringView string = e_string_from_expr(arena, type.args[idx], str8_zero());
                 str8_list_pushf(arena, out, ", ");
                 str8_list_push(arena, out, string);
             }
@@ -1831,7 +1831,7 @@ e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
             {
                 str8_list_push(arena, out, (")"));
             }
-            String8 count_str = str8_from_u64(arena, type.count, 10, 0, 0);
+            StringView count_str = str8_from_u64(arena, type.count, 10, 0, 0);
             str8_list_push(arena, out, ("["));
             str8_list_push(arena, out, count_str);
             str8_list_push(arena, out, ("]"));
@@ -1858,8 +1858,8 @@ e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
                 for (U64 param_idx = 0; param_idx < param_count; param_idx += 1)
                 {
                     E_TypeKey param_type_key = param_type_keys[param_idx];
-                    String8 param_str = e_type_string_from_key(arena, param_type_key);
-                    String8 param_str_trimmed = str8_skip_chop_whitespace(param_str);
+                    StringView param_str = e_type_string_from_key(arena, param_type_key);
+                    StringView param_str_trimmed = str8_skip_chop_whitespace(param_str);
                     str8_list_push(arena, out, param_str_trimmed);
                     if (param_idx+1 < param_count)
                     {
@@ -1880,14 +1880,14 @@ e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
     }
 }
 
-internal String8
+internal StringView
 e_type_string_from_key(Arena *arena, E_TypeKey key)
 {
     Temp scratch = scratch_begin(&arena, 1);
     String8List list = {0};
     e_type_lhs_string_from_key(scratch.arena, key, &list, 0, 0);
     e_type_rhs_string_from_key(scratch.arena, key, &list, 0);
-    String8 result = str8_list_join(arena, &list, 0);
+    StringView result = str8_list_join(arena, &list, 0);
     result = str8_skip_chop_whitespace(result);
     scratch_end(scratch);
     return result;
@@ -2062,7 +2062,7 @@ e_member_cache_node_from_type_key(E_TypeKey key)
 }
 
 internal E_MemberArray
-e_type_data_members_from_key_filter__cached(E_TypeKey key, String8 filter)
+e_type_data_members_from_key_filter__cached(E_TypeKey key, StringView filter)
 {
     E_MemberArray members = {0};
     E_MemberCacheNode *node = e_member_cache_node_from_type_key(key);
@@ -2123,7 +2123,7 @@ e_type_data_members_from_key__cached(E_TypeKey key)
 }
 
 internal E_Member
-e_type_member_from_key_name__cached(E_TypeKey key, String8 name)
+e_type_member_from_key_name__cached(E_TypeKey key, StringView name)
 {
     E_Member result = {0};
     E_MemberCacheNode *node = e_member_cache_node_from_type_key(key);
@@ -2186,7 +2186,7 @@ e_enum_val_cache_node_from_type_key(E_TypeKey key)
 }
 
 internal E_EnumValArray
-e_type_enum_vals_from_key_filter__cached(E_TypeKey key, String8 filter)
+e_type_enum_vals_from_key_filter__cached(E_TypeKey key, StringView filter)
 {
     E_EnumValArray enum_vals = {0};
     E_EnumValCacheNode *node = e_enum_val_cache_node_from_type_key(key);
@@ -2251,7 +2251,7 @@ e_type_enum_vals_from_key__cached(E_TypeKey key)
 }
 
 internal E_EnumVal
-e_type_enum_val_from_key_name__cached(E_TypeKey key, String8 name)
+e_type_enum_val_from_key_name__cached(E_TypeKey key, StringView name)
 {
     E_EnumVal result = {0};
     E_EnumValCacheNode *node = e_enum_val_cache_node_from_type_key(key);
@@ -2259,8 +2259,8 @@ e_type_enum_val_from_key_name__cached(E_TypeKey key, String8 name)
     {
         Temp scratch = scratch_begin(0, 0);
         E_Type *type = e_type_from_key(key);
-        String8 name_qualified_0 = push_str8f(scratch.arena, "%S%S", type.name, name);
-        String8 name_qualified_1 = push_str8f(scratch.arena, "%S_%S", type.name, name);
+        StringView name_qualified_0 = push_str8f(scratch.arena, "%S%S", type.name, name);
+        StringView name_qualified_1 = push_str8f(scratch.arena, "%S_%S", type.name, name);
         U64 hash = e_hash_from_string(5381, name);
         U64 slot_idx = hash%node.val_hash_slots_count;
         for (E_EnumValHashNode *n = node.val_hash_slots[slot_idx].first; n != 0; n = n.next)
@@ -2355,7 +2355,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(default)
             for (U64 idx = 0; idx < read_range_count; idx += 1)
             {
                 U64 member_idx = idx + read_range.min;
-                String8 member_name = data_members.v[member_idx].name;
+                StringView member_name = data_members.v[member_idx].name;
                 evals_out[idx] = e_eval_wrapf(eval, "$.%S", member_name);
             }
         }
@@ -2371,8 +2371,8 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(default)
             for (U64 idx = 0; idx < read_range_count; idx += 1)
             {
                 U64 val_idx = idx + read_range.min;
-                String8 member_name = enum_vals.v[val_idx].name;
-                String8 sufficient_suffix = member_name;
+                StringView member_name = enum_vals.v[val_idx].name;
+                StringView sufficient_suffix = member_name;
                 if (str8_match(sufficient_suffix, type.name, StringMatchFlag_RightSideSloppy))
                 {
                     sufficient_suffix = str8_skip(sufficient_suffix, type.name.size);
@@ -2476,7 +2476,7 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(omit)
                 {
                     if (evals[idx].expr.kind == E_ExprKind_MemberAccess)
                     {
-                        String8 name = evals[idx].expr.first->next.string;
+                        StringView name = evals[idx].expr.first->next.string;
                         B32 name_is_allowed = 1;
                         for EachIndex(arg_idx, type.count)
                         {
@@ -2509,7 +2509,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(omit)
     U64 out_idx = 0;
     for (U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
     {
-        String8 name = ext.v[idx];
+        StringView name = ext.v[idx];
         if (name.size != 0)
         {
             evals_out[out_idx] = e_eval_wrapf(eval, "$.%S", name);
@@ -2657,7 +2657,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(slice)
             E_IRNode *struct_base_tree = &e_irnode_nil;
             {
                 E_OpList lhs_oplist = e_oplist_from_irtree(scratch.arena, lhs_irtree.root);
-                String8 lhs_bytecode = e_bytecode_from_oplist(arena, &lhs_oplist);
+                StringView lhs_bytecode = e_bytecode_from_oplist(arena, &lhs_oplist);
                 struct_base_tree = e_irtree_bytecode_no_copy(arena, lhs_bytecode);
                 if (e_type_kind_is_pointer_or_ref(e_type_kind_from_key(e_type_key_unwrap(lhs_irtree.type_key, E_TypeUnwrapFlag_AllDecorative))))
                 {
@@ -2731,7 +2731,7 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(slice)
 typedef struct E_FolderAccel E_FolderAccel;
 struct E_FolderAccel
 {
-    String8 folder_path;
+    StringView folder_path;
     String8Array folders;
     String8Array files;
 };
@@ -2744,10 +2744,10 @@ E_TYPE_EXPAND_INFO_FUNCTION_DEF(folder)
         
         //- rjf: evaluate lhs file path ID
         U64 lhs_string_id = eval.value.u64;
-        String8 folder_path = e_string_from_id(lhs_string_id);
+        StringView folder_path = e_string_from_id(lhs_string_id);
         
         //- rjf: compute filter - omit common prefixes (common parent paths)
-        String8 local_filter = filter;
+        StringView local_filter = filter;
         {
             U64 folder_pos_in_filter = str8_find_needle(filter, 0, folder_path, StringMatchFlag_CaseInsensitive|StringMatchFlag_SlashInsensitive);
             if (folder_pos_in_filter < filter.size)
@@ -2803,17 +2803,17 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(folder)
     for (U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
     {
         Temp scratch = scratch_begin(&arena, 1);
-        String8 path_expr_string = {0};
+        StringView path_expr_string = {0};
         if (0 <= idx && idx < accel.folders.count)
         {
-            String8 folder_name = accel.folders.v[idx - 0];
-            String8 folder_path = push_str8f(scratch.arena, "%S%s%S", accel.folder_path, accel.folder_path.size != 0 ? "/" : "", folder_name);
+            StringView folder_name = accel.folders.v[idx - 0];
+            StringView folder_path = push_str8f(scratch.arena, "%S%s%S", accel.folder_path, accel.folder_path.size != 0 ? "/" : "", folder_name);
             path_expr_string = push_str8f(arena, "folder:\"%S/\"", escaped_from_raw_str8(scratch.arena, folder_path));
         }
         else if (accel.folders.count <= idx && idx < accel.folders.count + accel.files.count)
         {
-            String8 file_name = accel.files.v[idx - accel.folders.count];
-            String8 file_path = push_str8f(scratch.arena, "%S%s%S", accel.folder_path, accel.folder_path.size != 0 ? "/" : "", file_name);
+            StringView file_name = accel.files.v[idx - accel.folders.count];
+            StringView file_path = push_str8f(scratch.arena, "%S%s%S", accel.folder_path, accel.folder_path.size != 0 ? "/" : "", file_name);
             path_expr_string = push_str8f(arena, "file:\"%S\"", escaped_from_raw_str8(scratch.arena, file_path));
         }
         evals_out[out_idx] = e_eval_from_string(path_expr_string);
@@ -2825,7 +2825,7 @@ E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(folder)
 {
     U64 id = 0;
     E_FolderAccel *accel = (E_FolderAccel *)user_data;
-    String8 name = {0};
+    StringView name = {0};
     if (0 < num && num <= accel.folders.count)
     {
         name = accel.folders.v[num-1];
@@ -2844,7 +2844,7 @@ E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(folder)
     E_FolderAccel *accel = (E_FolderAccel *)user_data;
     for (U64 idx = 0; idx < accel.folders.count+accel.files.count; idx += 1)
     {
-        String8 name = {0};
+        StringView name = {0};
         if (0 <= idx && idx < accel.folders.count)
         {
             name = accel.folders.v[idx];
@@ -2869,7 +2869,7 @@ E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(folder)
 typedef struct E_FileAccel E_FileAccel;
 struct E_FileAccel
 {
-    String8 file_path;
+    StringView file_path;
     FileProperties props;
     String8Array fields;
 };
@@ -2883,13 +2883,13 @@ E_TYPE_IREXT_FUNCTION_DEF(file)
         
         //- rjf: evaluate lhs file path ID
         E_OpList lhs_oplist = e_oplist_from_irtree(scratch.arena, irtree.root);
-        String8 lhs_bytecode = e_bytecode_from_oplist(scratch.arena, &lhs_oplist);
+        StringView lhs_bytecode = e_bytecode_from_oplist(scratch.arena, &lhs_oplist);
         E_Interpretation lhs_interp = e_interpret(lhs_bytecode);
         E_Value lhs_value = lhs_interp.value;
         U64 lhs_string_id = lhs_value.u64;
         
         //- rjf: get file path
-        String8 file_path = e_string_from_id(lhs_string_id);
+        StringView file_path = e_string_from_id(lhs_string_id);
         
         //- rjf: build field list
         String8List fields = {0};
@@ -2916,7 +2916,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(file)
     if (expr.kind == E_ExprKind_MemberAccess)
     {
         E_Expr *rhs = expr.first->next;
-        String8 member_name = rhs.string;
+        StringView member_name = rhs.string;
         if (str8_match(member_name, ("size"), 0))
         {
             E_Space space = e_space_make(E_SpaceKind_FileSystem);
@@ -2967,10 +2967,10 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(file)
     for (U64 idx = idx_range.min; idx < idx_range.max; idx += 1, out_idx += 1)
     {
         E_Expr *expr = &e_expr_nil;
-        String8 string = {0};
+        StringView string = {0};
         if (0 <= idx && idx < accel.fields.count)
         {
-            String8 name = accel.fields.v[idx];
+            StringView name = accel.fields.v[idx];
             evals_out[out_idx] = e_eval_wrapf(eval, "$.%S", name);
         }
     }

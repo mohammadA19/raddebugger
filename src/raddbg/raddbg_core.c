@@ -64,7 +64,7 @@ rd_regs_copy(Arena *arena, RD_Regs *src)
 //~ rjf: Commands Type Functions
 
 internal void
-rd_cmd_list_push_new(Arena *arena, RD_CmdList *cmds, String8 name, RD_Regs *regs)
+rd_cmd_list_push_new(Arena *arena, RD_CmdList *cmds, StringView name, RD_Regs *regs)
 {
     RD_CmdNode *n = push_array(arena, RD_CmdNode, 1);
     n.cmd.name = push_str8_copy(arena, name);
@@ -86,7 +86,7 @@ rd_view_ui_rule_map_make(Arena *arena, U64 slots_count)
 }
 
 internal void
-rd_view_ui_rule_map_insert(Arena *arena, RD_ViewUIRuleMap *map, String8 string, RD_ViewUIFunctionType *ui)
+rd_view_ui_rule_map_insert(Arena *arena, RD_ViewUIRuleMap *map, StringView string, RD_ViewUIFunctionType *ui)
 {
     U64 hash = d_hash_from_string(string);
     U64 slot_idx = hash%map.slots_count;
@@ -97,7 +97,7 @@ rd_view_ui_rule_map_insert(Arena *arena, RD_ViewUIRuleMap *map, String8 string, 
 }
 
 internal RD_ViewUIRule *
-rd_view_ui_rule_from_string(String8 string)
+rd_view_ui_rule_from_string(StringView string)
 {
     RD_ViewUIRule *rule = &rd_nil_view_ui_rule;
     {
@@ -190,8 +190,8 @@ rd_name_bucket_num_from_string_size(U64 size)
     return bucket_num;
 }
 
-internal String8
-rd_name_alloc(String8 string)
+internal StringView
+rd_name_alloc(StringView string)
 {
     //- rjf: allocate node
     RD_NameChunkNode *node = 0;
@@ -246,7 +246,7 @@ rd_name_alloc(String8 string)
     }
     
     //- rjf: fill node
-    String8 result = {0};
+    StringView result = {0};
     if (node != 0)
     {
         result.str = (U8 *)node;
@@ -257,7 +257,7 @@ rd_name_alloc(String8 string)
 }
 
 internal void
-rd_name_release(String8 string)
+rd_name_release(StringView string)
 {
     U64 bucket_num = rd_name_bucket_num_from_string_size(string.size);
     if (1 <= bucket_num && bucket_num <= ArrayCount(rd_name_bucket_chunk_sizes))
@@ -397,7 +397,7 @@ rd_cfg_from_id(RD_CfgID id)
 }
 
 internal RD_Cfg *
-rd_cfg_new(RD_Cfg *parent, String8 string)
+rd_cfg_new(RD_Cfg *parent, StringView string)
 {
     RD_Cfg *cfg = rd_cfg_alloc();
     rd_cfg_insert_child(parent, parent.last, cfg);
@@ -411,7 +411,7 @@ rd_cfg_newf(RD_Cfg *parent, char *fmt, ...)
     Temp scratch = scratch_begin(0, 0);
     va_list args;
     va_start(args, fmt);
-    String8 string = push_str8fv(scratch.arena, fmt, args);
+    StringView string = push_str8fv(scratch.arena, fmt, args);
     RD_Cfg *result = rd_cfg_new(parent, string);
     va_end(args);
     scratch_end(scratch);
@@ -419,7 +419,7 @@ rd_cfg_newf(RD_Cfg *parent, char *fmt, ...)
 }
 
 internal RD_Cfg *
-rd_cfg_new_replace(RD_Cfg *parent, String8 string)
+rd_cfg_new_replace(RD_Cfg *parent, StringView string)
 {
     Temp scratch = scratch_begin(0, 0);
     string = push_str8_copy(scratch.arena, string);
@@ -444,7 +444,7 @@ rd_cfg_new_replacef(RD_Cfg *parent, char *fmt, ...)
     Temp scratch = scratch_begin(0, 0);
     va_list args;
     va_start(args, fmt);
-    String8 string = push_str8fv(scratch.arena, fmt, args);
+    StringView string = push_str8fv(scratch.arena, fmt, args);
     RD_Cfg *result = rd_cfg_new_replace(parent, string);
     va_end(args);
     scratch_end(scratch);
@@ -478,7 +478,7 @@ rd_cfg_deep_copy(RD_Cfg *src_root)
 }
 
 internal void
-rd_cfg_equip_string(RD_Cfg *cfg, String8 string)
+rd_cfg_equip_string(RD_Cfg *cfg, StringView string)
 {
     rd_name_release(cfg.string);
     cfg.string = rd_name_alloc(string);
@@ -491,7 +491,7 @@ rd_cfg_equip_stringf(RD_Cfg *cfg, char *fmt, ...)
     Temp scratch = scratch_begin(0, 0);
     va_list args;
     va_start(args, fmt);
-    String8 string = push_str8fv(scratch.arena, fmt, args);
+    StringView string = push_str8fv(scratch.arena, fmt, args);
     rd_cfg_equip_string(cfg, string);
     va_end(args);
     scratch_end(scratch);
@@ -522,7 +522,7 @@ rd_cfg_unhook(RD_Cfg *parent, RD_Cfg *child)
 }
 
 internal RD_Cfg *
-rd_cfg_child_from_string(RD_Cfg *parent, String8 string)
+rd_cfg_child_from_string(RD_Cfg *parent, StringView string)
 {
     RD_Cfg *child = &rd_nil_cfg;
     if (string.size != 0)
@@ -540,7 +540,7 @@ rd_cfg_child_from_string(RD_Cfg *parent, String8 string)
 }
 
 internal RD_Cfg *
-rd_cfg_child_from_string_or_alloc(RD_Cfg *parent, String8 string)
+rd_cfg_child_from_string_or_alloc(RD_Cfg *parent, StringView string)
 {
     RD_Cfg *child = rd_cfg_child_from_string(parent, string);
     if (child == &rd_nil_cfg)
@@ -551,7 +551,7 @@ rd_cfg_child_from_string_or_alloc(RD_Cfg *parent, String8 string)
 }
 
 internal RD_Cfg *
-rd_cfg_child_from_string_or_parent(RD_Cfg *parent, String8 string)
+rd_cfg_child_from_string_or_parent(RD_Cfg *parent, StringView string)
 {
     RD_Cfg *result = rd_cfg_child_from_string(parent, string);
     if (result == &rd_nil_cfg)
@@ -562,7 +562,7 @@ rd_cfg_child_from_string_or_parent(RD_Cfg *parent, String8 string)
 }
 
 internal RD_CfgList
-rd_cfg_child_list_from_string(Arena *arena, RD_Cfg *parent, String8 string)
+rd_cfg_child_list_from_string(Arena *arena, RD_Cfg *parent, StringView string)
 {
     RD_CfgList result = {0};
     for (RD_Cfg *child = parent.first; child != &rd_nil_cfg; child = child.next)
@@ -576,7 +576,7 @@ rd_cfg_child_list_from_string(Arena *arena, RD_Cfg *parent, String8 string)
 }
 
 internal RD_CfgList
-rd_cfg_top_level_list_from_string(Arena *arena, String8 string)
+rd_cfg_top_level_list_from_string(Arena *arena, StringView string)
 {
     RD_CfgList result = {0};
     for (RD_Cfg *bucket = rd_state.root_cfg.first; bucket != &rd_nil_cfg; bucket = bucket.next)
@@ -607,7 +607,7 @@ rd_cfg_array_from_list(Arena *arena, RD_CfgList *list)
 }
 
 internal RD_CfgList
-rd_cfg_tree_list_from_string(Arena *arena, String8 root_path, String8 string)
+rd_cfg_tree_list_from_string(Arena *arena, StringView root_path, StringView string)
 {
     RD_CfgList result = {0};
     Temp scratch = scratch_begin(&arena, 1);
@@ -635,10 +635,10 @@ rd_cfg_tree_list_from_string(Arena *arena, String8 root_path, String8 string)
             
             // rjf: extract & transform metadesk node's string (it is raw textual data, so we need to
             // go escaped -> raw, and derelativize paths)
-            String8 dst_n_string = {0};
+            StringView dst_n_string = {0};
             {
-                String8 src_n_string = src_n.string;
-                String8 src_n_string__raw = raw_from_escaped_str8(scratch.arena, src_n_string);
+                StringView src_n_string = src_n.string;
+                StringView src_n_string__raw = raw_from_escaped_str8(scratch.arena, src_n_string);
                 if (!md_node_has_tag(schema.first, ("no_relativize"), 0))
                 {
                     if (str8_match(schema.first.string, ("path"), 0))
@@ -683,8 +683,8 @@ rd_cfg_tree_list_from_string(Arena *arena, String8 root_path, String8 string)
     return result;
 }
 
-internal String8
-rd_string_from_cfg_tree(Arena *arena, String8 root_path, RD_Cfg *cfg)
+internal StringView
+rd_string_from_cfg_tree(Arena *arena, StringView root_path, RD_Cfg *cfg)
 {
     Temp scratch = scratch_begin(&arena, 1);
     String8List strings = {0};
@@ -720,7 +720,7 @@ rd_string_from_cfg_tree(Arena *arena, String8 root_path, RD_Cfg *cfg)
             if (c.string.size != 0 || c.first == &rd_nil_cfg)
             {
                 // rjf: extract the textualized form for this string (we may need to escape / relativize)
-                String8 c_serialized_string = c.string;
+                StringView c_serialized_string = c.string;
                 {
                     MD_Node *c_schema = &md_nil_node;
                     if (top_nest_task != 0)
@@ -733,15 +733,15 @@ rd_string_from_cfg_tree(Arena *arena, String8 root_path, RD_Cfg *cfg)
                     {
                         if (str8_match(c_schema.first.string, ("path"), 0))
                         {
-                            String8 path_absolute = c.string;
-                            String8 path_relative = path_relative_dst_from_absolute_dst_src(arena, path_absolute, root_path);
+                            StringView path_absolute = c.string;
+                            StringView path_relative = path_relative_dst_from_absolute_dst_src(arena, path_absolute, root_path);
                             c_serialized_string = path_relative;
                         }
                         else if (str8_match(c_schema.first.string, ("path_pt"), 0))
                         {
-                            String8 value = c.string;
+                            StringView value = c.string;
                             String8TxtPtPair parts = str8_txt_pt_pair_from_string(value);
-                            String8 path_relative = path_relative_dst_from_absolute_dst_src(scratch.arena, parts.string, root_path);
+                            StringView path_relative = path_relative_dst_from_absolute_dst_src(scratch.arena, parts.string, root_path);
                             c_serialized_string = push_str8f(arena, "%S:%I64d:%I64d", path_relative, parts.pt.line, parts.pt.column);
                         }
                     }
@@ -846,8 +846,8 @@ rd_string_from_cfg_tree(Arena *arena, String8 root_path, RD_Cfg *cfg)
             }
         }
     }
-    String8 result_unindented = str8_list_join(scratch.arena, &strings, 0);
-    String8 result = indented_from_string(arena, result_unindented);
+    StringView result_unindented = str8_list_join(scratch.arena, &strings, 0);
+    StringView result = indented_from_string(arena, result_unindented);
     scratch_end(scratch);
     return result;
 }
@@ -1107,7 +1107,7 @@ rd_cfg_is_project_filtered(RD_Cfg *cfg)
 }
 
 internal RD_KeyMapNodePtrList
-rd_key_map_node_ptr_list_from_name(Arena *arena, String8 string)
+rd_key_map_node_ptr_list_from_name(Arena *arena, StringView string)
 {
     RD_KeyMapNodePtrList list = {0};
     {
@@ -1182,7 +1182,7 @@ rd_disabled_from_cfg(RD_Cfg *cfg)
         child_schema = md_child_from_string(n.v, ("enabled"), 0);
     }
     MD_Node *default_tag = md_tag_from_string(child_schema, ("default"), 0);
-    String8 value_string = rd_cfg_child_from_string(cfg, ("enabled"))->first.string;
+    StringView value_string = rd_cfg_child_from_string(cfg, ("enabled"))->first.string;
     if (value_string.size == 0)
     {
         value_string = default_tag.first.string;
@@ -1217,27 +1217,27 @@ rd_location_from_cfg(RD_Cfg *cfg)
     return dst_loc;
 }
 
-internal String8
+internal StringView
 rd_label_from_cfg(RD_Cfg *cfg)
 {
     RD_Cfg *label_root = rd_cfg_child_from_string(cfg, ("label"));
-    String8 result = label_root.first.string;
+    StringView result = label_root.first.string;
     return result;
 }
 
-internal String8
+internal StringView
 rd_expr_from_cfg(RD_Cfg *cfg)
 {
     RD_Cfg *expr_root = rd_cfg_child_from_string(cfg, ("expression"));
-    String8 result = expr_root.first.string;
+    StringView result = expr_root.first.string;
     return result;
 }
 
-internal String8
+internal StringView
 rd_path_from_cfg(RD_Cfg *cfg)
 {
     RD_Cfg *root = rd_cfg_child_from_string(cfg, ("path"));
-    String8 result = root.first.string;
+    StringView result = root.first.string;
     return result;
 }
 
@@ -1264,7 +1264,7 @@ rd_target_from_cfg(Arena *arena, RD_Cfg *cfg)
 }
 
 internal MD_NodePtrList
-rd_schemas_from_name(String8 name)
+rd_schemas_from_name(StringView name)
 {
     MD_NodePtrList schemas = {0};
     for EachElement(idx, rd_name_schema_info_table)
@@ -1278,10 +1278,10 @@ rd_schemas_from_name(String8 name)
     return schemas;
 }
 
-internal String8
-rd_default_setting_from_names(String8 schema_name, String8 setting_name)
+internal StringView
+rd_default_setting_from_names(StringView schema_name, StringView setting_name)
 {
-    String8 result = {0};
+    StringView result = {0};
     {
         MD_Node *setting_schema = &md_nil_node;
         MD_NodePtrList schemas = rd_schemas_from_name(schema_name);
@@ -1301,10 +1301,10 @@ rd_default_setting_from_names(String8 schema_name, String8 setting_name)
     return result;
 }
 
-internal String8
-rd_setting_from_name(String8 name)
+internal StringView
+rd_setting_from_name(StringView name)
 {
-    String8 result = {0};
+    StringView result = {0};
     if (name.size != 0)
     {
         Temp scratch = scratch_begin(0, 0);
@@ -1342,7 +1342,7 @@ rd_setting_from_name(String8 name)
                 }
                 if (cfg.parent == rd_state.root_cfg && t.allow_bucket_chains)
                 {
-                    String8 next_bucket = {0};
+                    StringView next_bucket = {0};
                     B32 allow_bucket_chains = 0;
                     if (str8_match(cfg.string, ("user"), 0))
                     {
@@ -1395,14 +1395,14 @@ rd_setting_from_name(String8 name)
 }
 
 internal B32
-rd_setting_b32_from_name(String8 name)
+rd_setting_b32_from_name(StringView name)
 {
     B32 result = 0;
-    String8 value = rd_setting_from_name(name);
+    StringView value = rd_setting_from_name(name);
     if (value.size != 0)
     {
         Temp scratch = scratch_begin(0, 0);
-        String8 expr = push_str8f(scratch.arena, "raw((bool)(%S))", value);
+        StringView expr = push_str8f(scratch.arena, "raw((bool)(%S))", value);
         E_Eval eval = e_eval_from_string(expr);
         result = !!e_value_eval_from_eval(eval).value.u64;
         scratch_end(scratch);
@@ -1411,14 +1411,14 @@ rd_setting_b32_from_name(String8 name)
 }
 
 internal U64
-rd_setting_u64_from_name(String8 name)
+rd_setting_u64_from_name(StringView name)
 {
     U64 result = 0;
-    String8 value = rd_setting_from_name(name);
+    StringView value = rd_setting_from_name(name);
     if (value.size != 0)
     {
         Temp scratch = scratch_begin(0, 0);
-        String8 expr = push_str8f(scratch.arena, "raw((uint64)(%S))", value);
+        StringView expr = push_str8f(scratch.arena, "raw((uint64)(%S))", value);
         E_Eval eval = e_eval_from_string(expr);
         result = e_value_eval_from_eval(eval).value.u64;
         scratch_end(scratch);
@@ -1427,14 +1427,14 @@ rd_setting_u64_from_name(String8 name)
 }
 
 internal F32
-rd_setting_f32_from_name(String8 name)
+rd_setting_f32_from_name(StringView name)
 {
     F32 result = 0.f;
-    String8 value = rd_setting_from_name(name);
+    StringView value = rd_setting_from_name(name);
     if (value.size != 0)
     {
         Temp scratch = scratch_begin(0, 0);
-        String8 expr = push_str8f(scratch.arena, "raw((float32)(%S))", value);
+        StringView expr = push_str8f(scratch.arena, "raw((float32)(%S))", value);
         E_Eval eval = e_eval_from_string(expr);
         result = e_value_eval_from_eval(eval).value.f32;
         scratch_end(scratch);
@@ -1443,7 +1443,7 @@ rd_setting_f32_from_name(String8 name)
 }
 
 internal RD_Cfg *
-rd_immediate_cfg_from_key(String8 string)
+rd_immediate_cfg_from_key(StringView string)
 {
     RD_Cfg *transient = rd_cfg_child_from_string(rd_state.root_cfg, ("transient"));
     RD_Cfg *immediate = &rd_nil_cfg;
@@ -1475,27 +1475,27 @@ rd_immediate_cfg_from_keyf(char *fmt, ...)
     Temp scratch = scratch_begin(0, 0);
     va_list args;
     va_start(args, fmt);
-    String8 key = push_str8fv(scratch.arena, fmt, args);
+    StringView key = push_str8fv(scratch.arena, fmt, args);
     RD_Cfg *result = rd_immediate_cfg_from_key(key);
     va_end(args);
     scratch_end(scratch);
     return result;
 }
 
-internal String8
-rd_mapped_from_file_path(Arena *arena, String8 file_path)
+internal StringView
+rd_mapped_from_file_path(Arena *arena, StringView file_path)
 {
     Temp scratch = scratch_begin(&arena, 1);
     if (file_path.size != 0)
     {
         String8List file_path_parts = str8_split_path(scratch.arena, file_path);
         RD_CfgList maps = rd_cfg_top_level_list_from_string(scratch.arena, ("file_path_map"));
-        String8 best_map_dst = {0};
+        StringView best_map_dst = {0};
         U64 best_map_match_length = max_U64;
         String8Node *best_map_remaining_suffix_first = 0;
         for (RD_CfgNode *n = maps.first; n != 0; n = n.next)
         {
-            String8 map_src = rd_cfg_child_from_string(n.v, ("source"))->first.string;
+            StringView map_src = rd_cfg_child_from_string(n.v, ("source"))->first.string;
             String8List map_src_parts = str8_split_path(scratch.arena, map_src);
             B32 matches = 1;
             U64 match_length = 0;
@@ -1529,13 +1529,13 @@ rd_mapped_from_file_path(Arena *arena, String8 file_path)
             file_path = str8_list_join(scratch.arena, &best_map_dst_parts, &join);
         }
     }
-    String8 result = push_str8_copy(arena, file_path);
+    StringView result = push_str8_copy(arena, file_path);
     scratch_end(scratch);
     return result;
 }
 
 internal String8List
-rd_possible_overrides_from_file_path(Arena *arena, String8 file_path)
+rd_possible_overrides_from_file_path(Arena *arena, StringView file_path)
 {
     // NOTE(rjf): This path, given some target file path, scans all file path map
     // overrides, and collects the set of file paths which could've redirected
@@ -1598,7 +1598,7 @@ rd_possible_overrides_from_file_path(Arena *arena, String8 file_path)
                 }
                 StringJoin join = {0};
                 join.sep = ("/");
-                String8 candidate_path = str8_list_join(arena, &candidate_parts, &join);
+                StringView candidate_path = str8_list_join(arena, &candidate_parts, &join);
                 str8_list_push(arena, &result, candidate_path);
             }
         }
@@ -1639,10 +1639,10 @@ rd_color_from_ctrl_entity(CTRL_Entity *entity)
     return result;
 }
 
-internal String8
+internal StringView
 rd_name_from_ctrl_entity(Arena *arena, CTRL_Entity *entity)
 {
-    String8 string = entity.string;
+    StringView string = entity.string;
     if (string.size == 0)
     {
         string = ("unnamed");
@@ -1708,10 +1708,10 @@ rd_eval_space_from_ctrl_entity(CTRL_Entity *entity, E_SpaceKind kind)
 
 //- rjf: command name <-> eval space
 
-internal String8
+internal StringView
 rd_cmd_name_from_eval(E_Eval eval)
 {
-    String8 result = {0};
+    StringView result = {0};
     if (eval.space.kind == RD_EvalSpaceKind_MetaCmd)
     {
         result = e_string_from_id(eval.value.u64);
@@ -1752,7 +1752,7 @@ rd_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
             U128 hash = hs_hash_from_key(key, 0);
             HS_Scope *scope = hs_scope_open();
             {
-                String8 data = hs_data_from_hash(scope, hash);
+                StringView data = hs_data_from_hash(scope, hash);
                 Rng1U64 legal_range = r1u64(0, data.size);
                 Rng1U64 read_range = intersect_1u64(range, legal_range);
                 if (read_range.min < read_range.max)
@@ -1769,7 +1769,7 @@ rd_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
         {
             // rjf: unpack space/path
             U64 file_path_string_id = space.u64_0;
-            String8 file_path = e_string_from_id(file_path_string_id);
+            StringView file_path = e_string_from_id(file_path_string_id);
             
             // rjf: find containing chunk range
             U64 chunk_size = KB(4);
@@ -1785,7 +1785,7 @@ rd_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
             // rjf: look up from hash store
             HS_Scope *scope = hs_scope_open();
             {
-                String8 data = hs_data_from_hash(scope, hash);
+                StringView data = hs_data_from_hash(scope, hash);
                 Rng1U64 legal_range = r1u64(containing_range.min, containing_range.min + data.size);
                 Rng1U64 read_range = intersect_1u64(range, legal_range);
                 if (read_range.min < read_range.max)
@@ -1807,7 +1807,7 @@ rd_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
                 case CTRL_EntityKind_Process:
                 {
                     CTRL_ProcessMemorySlice slice = ctrl_process_memory_slice_from_vaddr_range(scratch.arena, entity.handle, range, rd_state.frame_eval_memread_endt_us);
-                    String8 data = slice.data;
+                    StringView data = slice.data;
                     if (data.size == dim_1u64(range))
                     {
                         result = 1;
@@ -1839,7 +1839,7 @@ rd_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
         {
             // rjf: unpack cfg
             RD_Cfg *root_cfg = rd_cfg_from_eval_space(space);
-            String8 child_key = e_string_from_id(space.u64s[1]);
+            StringView child_key = e_string_from_id(space.u64s[1]);
             RD_Cfg *cfg = root_cfg;
             if (child_key.size != 0)
             {
@@ -1847,7 +1847,7 @@ rd_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
             }
             
             // rjf: determine data to read from, depending on child type in schema
-            String8 read_data = {0};
+            StringView read_data = {0};
             if (child_key.size != 0)
             {
                 MD_NodePtrList schemas = rd_schemas_from_name(root_cfg.string);
@@ -1861,7 +1861,7 @@ rd_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
                         expr_child_schema = md_child_from_string(n.v, ("expression"), 0);
                     }
                 }
-                String8 child_type_name = child_schema.first.string;
+                StringView child_type_name = child_schema.first.string;
                 if (str8_match(child_type_name, ("path"), 0) ||
                       str8_match(child_type_name, ("path_pt"), 0) ||
                       str8_match(child_type_name, ("code_string"), 0) ||
@@ -1872,7 +1872,7 @@ rd_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
                 }
                 else
                 {
-                    String8 value_string = cfg.first.string;
+                    StringView value_string = cfg.first.string;
                     if (value_string.size == 0)
                     {
                         value_string = md_tag_from_string(child_schema, ("default"), 0)->first.string;
@@ -1946,10 +1946,10 @@ rd_eval_space_read(void *u, E_Space space, void *out, Rng1U64 range)
         {
             // rjf: unpack cfg
             CTRL_Entity *entity = rd_ctrl_entity_from_eval_space(space);
-            String8 child_key = e_string_from_id(space.u64s[2]);
+            StringView child_key = e_string_from_id(space.u64s[2]);
             
             // rjf: determine data to read from, depending on child name in schema
-            String8 read_data = {0};
+            StringView read_data = {0};
             if (child_key.size != 0)
             {
                 MD_NodePtrList schemas = rd_schemas_from_name(ctrl_entity_kind_code_name_table[entity.kind]);
@@ -2038,11 +2038,11 @@ rd_eval_space_write(void *u, E_Space space, void *in, Rng1U64 range)
             result = 1;
             
             // rjf: unpack write info
-            String8 write_string = str8_cstring_capped(in, (U8 *)in + dim_1u64(range));
+            StringView write_string = str8_cstring_capped(in, (U8 *)in + dim_1u64(range));
             
             // rjf: unpack cfg
             RD_Cfg *root_cfg = rd_cfg_from_eval_space(space);
-            String8 child_key = e_string_from_id(space.u64s[1]);
+            StringView child_key = e_string_from_id(space.u64s[1]);
             
             // rjf: no child key? -> overwrite child string
             if (child_key.size == 0)
@@ -2056,7 +2056,7 @@ rd_eval_space_write(void *u, E_Space space, void *in, Rng1U64 range)
                 // rjf: modifying a label? -> poison this identifier in the macro map
                 if (str8_match(child_key, ("label"), 0))
                 {
-                    String8 pre_edit_label = rd_label_from_cfg(root_cfg);
+                    StringView pre_edit_label = rd_label_from_cfg(root_cfg);
                     if (!str8_match(pre_edit_label, write_string, 0))
                     {
                         E_Expr *expr = e_string2expr_map_lookup(e_ir_ctx.macro_map, pre_edit_label);
@@ -2088,11 +2088,11 @@ rd_eval_space_write(void *u, E_Space space, void *in, Rng1U64 range)
             Temp scratch = scratch_begin(0, 0);
             
             // rjf: unpack write info
-            String8 write_string = str8_cstring_capped(in, (U8 *)in + dim_1u64(range));
+            StringView write_string = str8_cstring_capped(in, (U8 *)in + dim_1u64(range));
             
             // rjf: unpack cfg
             CTRL_Entity *entity = rd_ctrl_entity_from_eval_space(space);
-            String8 child_key = e_string_from_id(space.u64s[2]);
+            StringView child_key = e_string_from_id(space.u64s[2]);
             
             // rjf: perform write, based on child name in schema
             if (child_key.size != 0)
@@ -2152,7 +2152,7 @@ rd_key_from_eval_space_range(E_Space space, Rng1U64 range, B32 zero_terminated)
         case E_SpaceKind_File:
         {
             U64 file_path_string_id = space.u64_0;
-            String8 file_path = e_string_from_id(file_path_string_id);
+            StringView file_path = e_string_from_id(file_path_string_id);
             result = fs_key_from_path_range(file_path, range, 0);
         }break;
         case RD_EvalSpaceKind_CtrlEntity:
@@ -2183,7 +2183,7 @@ rd_whole_range_from_eval_space(E_Space space)
             U128 hash = hs_hash_from_key(key, 0);
             HS_Scope *hs_scope = hs_scope_open();
             {
-                String8 data = hs_data_from_hash(hs_scope, hash);
+                StringView data = hs_data_from_hash(hs_scope, hash);
                 result = r1u64(0, data.size);
             }
             hs_scope_close(hs_scope);
@@ -2191,7 +2191,7 @@ rd_whole_range_from_eval_space(E_Space space)
         case E_SpaceKind_File:
         {
             U64 file_path_string_id = space.u64_0;
-            String8 file_path = e_string_from_id(file_path_string_id);
+            StringView file_path = e_string_from_id(file_path_string_id);
             FileProperties props = os_properties_from_file_path(file_path);
             result = r1u64(0, props.size);
         }break;
@@ -2213,7 +2213,7 @@ rd_whole_range_from_eval_space(E_Space space)
 //- rjf: writing values back to child processes
 
 internal B32
-rd_commit_eval_value_string(E_Eval dst_eval, String8 string)
+rd_commit_eval_value_string(E_Eval dst_eval, StringView string)
 {
     B32 result = 0;
     if (dst_eval.irtree.mode == E_Mode_Offset)
@@ -2228,7 +2228,7 @@ rd_commit_eval_value_string(E_Eval dst_eval, String8 string)
         
         //- rjf: determine data we'll write
         B32 got_commit_data = 0;
-        String8 commit_data = {0};
+        StringView commit_data = {0};
         B32 commit_at_ptr_dest = 0;
         if (!e_type_key_match(e_type_key_zero(), type_key))
         {
@@ -2350,10 +2350,10 @@ rd_commit_eval_value_string(E_Eval dst_eval, String8 string)
 
 //- rjf: eval <-> file path
 
-internal String8
+internal StringView
 rd_file_path_from_eval(Arena *arena, E_Eval eval)
 {
-    String8 result = {0};
+    StringView result = {0};
     switch (eval.space.kind)
     {
         default:{}break;
@@ -2369,10 +2369,10 @@ rd_file_path_from_eval(Arena *arena, E_Eval eval)
     return result;
 }
 
-internal String8
-rd_file_path_from_eval_string(Arena *arena, String8 string)
+internal StringView
+rd_file_path_from_eval_string(Arena *arena, StringView string)
 {
-    String8 result = {0};
+    StringView result = {0};
     {
         Temp scratch = scratch_begin(&arena, 1);
         E_Eval eval = e_eval_from_string(string);
@@ -2382,22 +2382,22 @@ rd_file_path_from_eval_string(Arena *arena, String8 string)
     return result;
 }
 
-internal String8
-rd_eval_string_from_file_path(Arena *arena, String8 string)
+internal StringView
+rd_eval_string_from_file_path(Arena *arena, StringView string)
 {
     Temp scratch = scratch_begin(&arena, 1);
-    String8 string_escaped = escaped_from_raw_str8(scratch.arena, string);
-    String8 result = push_str8f(arena, "file:\"%S\".data", string_escaped);
+    StringView string_escaped = escaped_from_raw_str8(scratch.arena, string);
+    StringView result = push_str8f(arena, "file:\"%S\".data", string_escaped);
     scratch_end(scratch);
     return result;
 }
 
 //- rjf: eval -> query
 
-internal String8
-rd_query_from_eval_string(Arena *arena, String8 string)
+internal StringView
+rd_query_from_eval_string(Arena *arena, StringView string)
 {
-    String8 result = {0};
+    StringView result = {0};
     {
         Temp scratch = scratch_begin(&arena, 1);
         E_Expr *expr = e_parse_from_string(string).expr;
@@ -2420,7 +2420,7 @@ rd_view_from_eval(RD_Cfg *parent, E_Eval eval)
     Temp scratch = scratch_begin(0, 0);
     E_TypeKey type_key = eval.irtree.type_key;
     E_Type *type = e_type_from_key(type_key);
-    String8 schema_name = ("watch");
+    StringView schema_name = ("watch");
     B32 type_is_visualizer = 0;
     if (type.kind == E_TypeKind_Lens)
     {
@@ -2460,7 +2460,7 @@ rd_view_from_eval(RD_Cfg *parent, E_Eval eval)
             for EachIndex(arg_idx, args_count)
             {
                 E_Expr *arg = args[arg_idx];
-                String8 param_name = {0};
+                StringView param_name = {0};
                 E_Expr *arg_expr = arg;
                 if (arg.kind == E_ExprKind_Define)
                 {
@@ -2573,8 +2573,8 @@ rd_view_ui(Rng2F32 rect)
     ProfBeginFunction();
     RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
     RD_ViewState *vs = rd_view_state_from_cfg(view);
-    String8 view_name = view.string;
-    String8 expr_string = rd_expr_from_cfg(view);
+    StringView view_name = view.string;
+    StringView expr_string = rd_expr_from_cfg(view);
     B32 view_is_floating = 0;
     for (RD_Cfg *p = view.parent; p != &rd_nil_cfg; p = p.parent)
     {
@@ -2591,7 +2591,7 @@ rd_view_ui(Rng2F32 rect)
     RD_Cfg *query_root = rd_cfg_child_from_string(view, ("query"));
     RD_Cfg *input_root = rd_cfg_child_from_string(query_root, ("input"));
     RD_Cfg *cmd_root = rd_cfg_child_from_string(query_root, ("cmd"));
-    String8 current_input = input_root.first.string;
+    StringView current_input = input_root.first.string;
     B32 search_row_is_open = (vs.query_is_open);
     F32 search_row_open_t = ui_anim(ui_key_from_stringf(ui_key_zero(), "search_row_open_%p", view),
                                                                     (F32)!!search_row_is_open,
@@ -2600,7 +2600,7 @@ rd_view_ui(Rng2F32 rect)
                                                                     .rate    = rd_state.menu_animation_rate);
     if (search_row_open_t > 0.001f)
     {
-        String8 cmd_name = cmd_root.first.string;
+        StringView cmd_name = cmd_root.first.string;
         RD_IconKind icon = rd_icon_kind_from_code_name(cmd_name);
         RD_CmdKindInfo *cmd_kind_info = rd_cmd_kind_info_from_string(cmd_name);
         
@@ -2776,8 +2776,8 @@ rd_view_ui(Rng2F32 rect)
                         {
                             RD_Cfg *target_cfg = rd_cfg_list_first(&targets);
                             D_Target target = rd_target_from_cfg(scratch.arena, target_cfg);
-                            String8 target_full_path = target.exe;
-                            String8 target_name = str8_skip_last_slash(target_full_path);
+                            StringView target_full_path = target.exe;
+                            StringView target_name = str8_skip_last_slash(target_full_path);
                             UI_PrefHeight(ui_em(3.75f, 1.f))
                                 UI_Row
                                 UI_Padding(ui_pct(1, 0))
@@ -2877,12 +2877,12 @@ rd_view_ui(Rng2F32 rect)
             
             // rjf: determine if hash's blob is ready, and which viewer to use
             B32 data_is_ready = 0;
-            String8 new_view_name = {0};
+            StringView new_view_name = {0};
             {
                 HS_Scope *hs_scope = hs_scope_open();
                 if (!u128_match(hash, u128_zero()))
                 {
-                    String8 data = hs_data_from_hash(hs_scope, hash);
+                    StringView data = hs_data_from_hash(hs_scope, hash);
                     U64 num_utf8_bytes = 0;
                     U64 num_unknown_bytes = 0;
                     for (U64 idx = 0; idx < data.size && idx < range.max;)
@@ -2987,7 +2987,7 @@ rd_view_ui(Rng2F32 rect)
                 S64 num_possible_visible_rows = (S64)(dim_2f32(rect).y/row_height_px);
                 F32 row_string_max_size_px = dim_2f32(rect).x;
                 EV_StringFlags string_flags = EV_StringFlag_ReadOnlyDisplayRules;
-                String8 filter = rd_view_query_input();
+                StringView filter = rd_view_query_input();
                 Vec4F32 pop_background_rgba = {0};
                 UI_TagF("pop") pop_background_rgba = ui_color_from_name(("background"));
                 
@@ -3017,7 +3017,7 @@ rd_view_ui(Rng2F32 rect)
                 //////////////////////////////
                 //- rjf: determine autocompletion string
                 //
-                String8 autocomplete_hint_string = ui_autocomplete_string();
+                StringView autocomplete_hint_string = ui_autocomplete_string();
                 
                 //////////////////////////////
                 //- rjf: process commands
@@ -3244,7 +3244,7 @@ rd_view_ui(Rng2F32 rect)
                             {
                                 RD_Cfg *query = rd_cfg_child_from_string(view, ("query"));
                                 RD_Cfg *cmd = rd_cfg_child_from_string(query, ("cmd"));
-                                String8 cmd_name = cmd.first.string;
+                                StringView cmd_name = cmd.first.string;
                                 
                                 // rjf: if we have no selection, just pick the first row
                                 EV_Row *row = 0;
@@ -3279,7 +3279,7 @@ rd_view_ui(Rng2F32 rect)
                                             {
                                                 DI_Scope *scope = di_scope_open();
                                                 RDI_Parsed *rdi = di_rdi_from_key(scope, &dbgi_key, 1, 0);
-                                                String8 name = {0};
+                                                StringView name = {0};
                                                 if (name.size == 0)
                                                 {
                                                     RDI_Procedure *procedure = rdi_procedure_from_voff(rdi, voff);
@@ -3301,10 +3301,10 @@ rd_view_ui(Rng2F32 rect)
                                         case E_SpaceKind_FileSystem:
                                         {
                                             E_Type *type = e_type_from_key(eval.irtree.type_key);
-                                            String8 file = rd_file_path_from_eval(scratch.arena, eval);
+                                            StringView file = rd_file_path_from_eval(scratch.arena, eval);
                                             if (str8_match(type.name, ("folder"), 0))
                                             {
-                                                String8 new_input_string = push_str8f(scratch.arena, "%S/", file);
+                                                StringView new_input_string = push_str8f(scratch.arena, "%S/", file);
                                                 rd_cmd(RD_CmdKind_UpdateQuery, .string = new_input_string);
                                             }
                                             else
@@ -3337,12 +3337,12 @@ rd_view_ui(Rng2F32 rect)
                                         }break;
                                         case RD_EvalSpaceKind_MetaCmd:
                                         {
-                                            String8 cmd_name = rd_cmd_name_from_eval(eval);
+                                            StringView cmd_name = rd_cmd_name_from_eval(eval);
                                             rd_cmd(RD_CmdKind_CompleteQuery, .cmd_name = cmd_name);
                                         }break;
                                         case RD_EvalSpaceKind_MetaTheme:
                                         {
-                                            String8 name = e_string_from_id(eval.value.u64);
+                                            StringView name = e_string_from_id(eval.value.u64);
                                             rd_cmd(RD_CmdKind_CompleteQuery, .string = name);
                                         }break;
                                     }
@@ -3356,7 +3356,7 @@ rd_view_ui(Rng2F32 rect)
                                         {
                                             default:
                                             {
-                                                String8 name = {0};
+                                                StringView name = {0};
                                                 {
                                                     U64 vaddr = eval.value.u64;
                                                     CTRL_Entity *process = ctrl_entity_from_handle(&d_state.ctrl_entity_store.ctx, rd_regs()->process);
@@ -3391,7 +3391,7 @@ rd_view_ui(Rng2F32 rect)
                                             case E_SpaceKind_File:
                                             case E_SpaceKind_FileSystem:
                                             {
-                                                String8 file = rd_file_path_from_eval(scratch.arena, eval);
+                                                StringView file = rd_file_path_from_eval(scratch.arena, eval);
                                                 rd_cmd(RD_CmdKind_FindCodeLocation, .file_path = file, .vaddr = 0);
                                             }break;
                                             case RD_EvalSpaceKind_MetaCfg:
@@ -3424,7 +3424,7 @@ rd_view_ui(Rng2F32 rect)
                                             }break;
                                             case RD_EvalSpaceKind_MetaCmd:
                                             {
-                                                String8 cmd_name = rd_cmd_name_from_eval(eval);
+                                                StringView cmd_name = rd_cmd_name_from_eval(eval);
                                                 rd_cmd(RD_CmdKind_RunCommand, .cmd_name = cmd_name);
                                             }break;
                                             case RD_EvalSpaceKind_MetaCtrlEntity:
@@ -3479,7 +3479,7 @@ rd_view_ui(Rng2F32 rect)
                                     if (cell_info.flags & RD_WatchCellFlag_CanEdit)
                                     {
                                         any_edits_started = 1;
-                                        String8 string = {0};
+                                        StringView string = {0};
                                         if (cell_info.flags & RD_WatchCellFlag_NoEval)
                                         {
                                             string = cell.eval.string;
@@ -3605,7 +3605,7 @@ rd_view_ui(Rng2F32 rect)
                                         }
                                         RD_WatchPt pt = {row.block.key, row.key, rd_id_from_watch_cell(cell)};
                                         RD_WatchViewTextEditState *edit_state = rd_watch_view_text_edit_state_from_pt(ewv, pt);
-                                        String8 string = str8(edit_state.input_buffer, edit_state.input_size);
+                                        StringView string = str8(edit_state.input_buffer, edit_state.input_size);
                                         UI_TxtOp op = ui_single_line_txt_op_from_event(scratch.arena, evt, string, edit_state.cursor, edit_state.mark);
                                         
                                         // rjf: copy
@@ -3617,11 +3617,11 @@ rd_view_ui(Rng2F32 rect)
                                         // rjf: any valid *additive* op & autocomplete hint? -> perform autocomplete first, then re-compute op
                                         if (!(evt.flags & UI_EventFlag_Delete) && autocomplete_hint_string.size != 0)
                                         {
-                                            String8 autocomplete_string = ui_autocomplete();
+                                            StringView autocomplete_string = ui_autocomplete();
                                             RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
                                             RD_WindowState *ws = rd_window_state_from_cfg(window);
                                             RD_AutocompCursorInfo *autocomp_cursor_info = &ws.autocomp_cursor_info;
-                                            String8 new_string = ui_push_string_replace_range(scratch.arena, string, r1s64(autocomp_cursor_info.replaced_range.min+1, autocomp_cursor_info.replaced_range.max+1), autocomplete_string);
+                                            StringView new_string = ui_push_string_replace_range(scratch.arena, string, r1s64(autocomp_cursor_info.replaced_range.min+1, autocomp_cursor_info.replaced_range.max+1), autocomplete_string);
                                             new_string.size = Min(sizeof(edit_state.input_buffer), new_string.size);
                                             MemoryCopy(edit_state.input_buffer, new_string.str, new_string.size);
                                             edit_state.input_size = new_string.size;
@@ -3637,7 +3637,7 @@ rd_view_ui(Rng2F32 rect)
                                         }
                                         
                                         // rjf: obtain edited string
-                                        String8 new_string = string;
+                                        StringView new_string = string;
                                         if (!txt_pt_match(op.range.min, op.range.max) || op.replace.size != 0)
                                         {
                                             new_string = ui_push_string_replace_range(scratch.arena, string, r1s64(op.range.min.column, op.range.max.column), op.replace);
@@ -3657,7 +3657,7 @@ rd_view_ui(Rng2F32 rect)
                                             if (cell.flags & RD_WatchCellFlag_Expr && cell.flags & RD_WatchCellFlag_NoEval)
                                             {
                                                 RD_Cfg *cfg = row_info.group_cfg_child;
-                                                String8 child_key = {0}; // ("expression");
+                                                StringView child_key = {0}; // ("expression");
                                                 if (cfg == &rd_nil_cfg && editing_complete && new_string.size != 0)
                                                 {
                                                     RD_Cfg *new_cfg_parent = row_info.group_cfg_parent;
@@ -3740,7 +3740,7 @@ rd_view_ui(Rng2F32 rect)
                                     String8List cell_strings = {0};
                                     str8_list_push(scratch.arena, &cell_strings, dr_string_from_fstrs(scratch.arena, &cell_info.expr_fstrs));
                                     str8_list_push(scratch.arena, &cell_strings, dr_string_from_fstrs(scratch.arena, &cell_info.eval_fstrs));
-                                    String8 cell_string = str8_list_join(scratch.arena, &cell_strings, &(StringJoin){.sep = (" ")});
+                                    StringView cell_string = str8_list_join(scratch.arena, &cell_strings, &(StringJoin){.sep = (" ")});
                                     cell_string = str8_skip_chop_whitespace(cell_string);
                                     U64 comma_pos = str8_find_needle(cell_string, 0, (","), 0);
                                     if (selection_tbl.min.x != selection_tbl.max.x || selection_tbl.min.y != selection_tbl.max.y)
@@ -3761,7 +3761,7 @@ rd_view_ui(Rng2F32 rect)
                                     str8_list_push(scratch.arena, &strs, ("\n"));
                                 }
                             }
-                            String8 string = str8_list_join(scratch.arena, &strs, 0);
+                            StringView string = str8_list_join(scratch.arena, &strs, 0);
                             os_set_clipboard_text(string);
                         }
                         
@@ -3986,7 +3986,7 @@ rd_view_ui(Rng2F32 rect)
                                 }
                                 
                                 // rjf: determine collection info for the block
-                                String8 group_cfg_name = {0};
+                                StringView group_cfg_name = {0};
                                 {
                                     E_IRTreeAndType block_irtree = selection_block.eval.irtree;
                                     E_TypeKey block_type_key = e_type_key_unwrap(block_irtree.type_key, E_TypeUnwrapFlag_AllDecorative);
@@ -4075,7 +4075,7 @@ rd_view_ui(Rng2F32 rect)
                     if (cell != 0)
                     {
                         RD_WatchRowCellInfo cell_info = rd_info_from_watch_row_cell(scratch.arena, row, 0, &row_info, cell, ui_top_font(), ui_top_font_size(), dim_2f32(rect).y);
-                        String8 string = dr_string_from_fstrs(ui_build_arena(), &cell_info.eval_fstrs);
+                        StringView string = dr_string_from_fstrs(ui_build_arena(), &cell_info.eval_fstrs);
                         if (string.size != 0)
                         {
                             ui_set_autocomplete_string(string);
@@ -4675,7 +4675,7 @@ rd_view_ui(Rng2F32 rect)
                                                 {
                                                     E_TypeKey slider_value_type = e_type_key_unwrap(cell_type.direct_type_key, E_TypeUnwrapFlag_AllDecorative);
                                                     slider_value_type_kind = e_type_kind_from_key(slider_value_type);
-                                                    String8 slider_type_name = e_type_string_from_key(scratch.arena, slider_value_type);
+                                                    StringView slider_type_name = e_type_string_from_key(scratch.arena, slider_value_type);
                                                     cell_slider_min = e_value_from_key(e_key_wrapf(min_key, "(%S)$", slider_type_name));
                                                     cell_slider_max = e_value_from_key(e_key_wrapf(max_key, "(%S)$", slider_type_name));
                                                 }
@@ -4879,7 +4879,7 @@ rd_view_ui(Rng2F32 rect)
                                                     B32 is_slider = (cell_has_fancy_editors && cell.eval.irtree.mode != E_Mode_Null && cell_type.kind == E_TypeKind_Lens && str8_match(cell_type.name, ("range1"), 0));
                                                     B32 is_activated_on_single_click = !!(cell_info.flags & RD_WatchCellFlag_ActivateWithSingleClick);
                                                     B32 is_non_code = !!(cell_info.flags & RD_WatchCellFlag_IsNonCode);
-                                                    String8 ghost_text = {0};
+                                                    StringView ghost_text = {0};
                                                     if (cell_selected && ewv.text_editing && cell.flags & RD_WatchCellFlag_Expr && cell.flags & RD_WatchCellFlag_NoEval)
                                                     {
                                                         is_non_code = 0;
@@ -4889,7 +4889,7 @@ rd_view_ui(Rng2F32 rect)
                                                     ProfEnd();
                                                     
                                                     // rjf: determine query needle
-                                                    String8 needle = rd_view_query_input();
+                                                    StringView needle = rd_view_query_input();
                                                     if (cell.eval.space.kind == E_SpaceKind_FileSystem)
                                                     {
                                                         needle = str8_skip_last_slash(needle);
@@ -4937,7 +4937,7 @@ rd_view_ui(Rng2F32 rect)
                                                               !(cell.flags & RD_WatchCellFlag_NoEval))
                                                         {
                                                             RD_Cfg *cfg = rd_cfg_from_eval_space(cell.eval.space);
-                                                            String8 child_key = e_string_from_id(cell.eval.space.u64s[1]);
+                                                            StringView child_key = e_string_from_id(cell.eval.space.u64s[1]);
                                                             RD_Cfg *child_cfg = rd_cfg_child_from_string(cfg, child_key);
                                                             if (child_cfg != &rd_nil_cfg)
                                                             {
@@ -5062,7 +5062,7 @@ rd_view_ui(Rng2F32 rect)
                                                           selection_tbl.min.x == selection_tbl.max.x && selection_tbl.min.y == selection_tbl.max.y &&
                                                           txt_pt_match(cell_edit_state.cursor, cell_edit_state.mark))
                                                     {
-                                                        String8 input = str8(cell_edit_state.input_buffer, cell_edit_state.input_size);
+                                                        StringView input = str8(cell_edit_state.input_buffer, cell_edit_state.input_size);
                                                         rd_set_autocomp_regs(cell.eval, .ui_key = line_edit_key, .string = input, .cursor = cell_edit_state.cursor);
                                                     }
                                                 }
@@ -5077,7 +5077,7 @@ rd_view_ui(Rng2F32 rect)
                                                 {
                                                     if (ui_hovering(sig)) UI_Tooltip
                                                     {
-                                                        String8 text = e_debug_log_from_expr_string(scratch.arena, cell.eval.string);
+                                                        StringView text = e_debug_log_from_expr_string(scratch.arena, cell.eval.string);
                                                         String8List lines = str8_split(scratch.arena, text, (U8 *)"\n", 1, StringSplitFlag_KeepEmpties);
                                                         for (String8Node *n = lines.first; n != 0; n = n.next)
                                                         {
@@ -5119,7 +5119,7 @@ rd_view_ui(Rng2F32 rect)
                                                 {
                                                     if (cell.eval.space.kind == E_SpaceKind_FileSystem)
                                                     {
-                                                        String8 file_path = rd_file_path_from_eval(scratch.arena, cell.eval);
+                                                        StringView file_path = rd_file_path_from_eval(scratch.arena, cell.eval);
                                                         RD_RegsScope(.file_path = file_path) rd_drag_begin(RD_RegSlot_FilePath);
                                                     }
                                                     else if (cell_info.cfg != &rd_nil_cfg)
@@ -5164,7 +5164,7 @@ rd_view_ui(Rng2F32 rect)
                                                 if (revert_cell && cell.eval.space.kind == RD_EvalSpaceKind_MetaCfg)
                                                 {
                                                     RD_Cfg *cfg = rd_cfg_from_eval_space(cell.eval.space);
-                                                    String8 child_key = e_string_from_id(cell.eval.space.u64s[1]);
+                                                    StringView child_key = e_string_from_id(cell.eval.space.u64s[1]);
                                                     rd_cfg_release(rd_cfg_child_from_string(cfg, child_key));
                                                 }
                                                 
@@ -5227,7 +5227,7 @@ rd_view_ui(Rng2F32 rect)
                                                     // rjf: has a command name? -> push command
                                                     else if (cell_info.cmd_name.size != 0)
                                                     {
-                                                        String8 cmd_name = cell_info.cmd_name;
+                                                        StringView cmd_name = cell_info.cmd_name;
                                                         RD_CmdKindInfo *cmd_kind_info = rd_cmd_kind_info_from_string(cmd_name);
                                                         CTRL_Entity *entity = rd_ctrl_entity_from_eval_space(row.eval.space);
                                                         RD_Cfg *cfg = rd_cfg_from_eval_space(row.eval.space);
@@ -5302,7 +5302,7 @@ rd_view_ui(Rng2F32 rect)
                                                             DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
                                                             U64 voff = ctrl_voff_from_vaddr(module, vaddr);
                                                             D_LineList lines = d_lines_from_dbgi_key_voff(scratch.arena, &dbgi_key, voff);
-                                                            String8 file_path = {0};
+                                                            StringView file_path = {0};
                                                             TxtPt pt = {0};
                                                             if (lines.first != 0)
                                                             {
@@ -5384,7 +5384,7 @@ rd_view_ui(Rng2F32 rect)
                                             //
                                             if (next_cell_slider_value != cell_slider_value)
                                             {
-                                                String8 new_value_string = {0};
+                                                StringView new_value_string = {0};
                                                 switch (slider_value_type_kind)
                                                 {
                                                     default:
@@ -5529,8 +5529,8 @@ rd_view_ui(Rng2F32 rect)
         }
         if (ui_is_focus_active() && ui_slot_press(UI_EventActionSlot_Accept))
         {
-            String8 cmd_name = rd_view_query_cmd();
-            String8 input = rd_view_query_input();
+            StringView cmd_name = rd_view_query_cmd();
+            StringView input = rd_view_query_input();
             RD_CmdKindInfo *cmd_kind_info = rd_cmd_kind_info_from_string(cmd_name);
             RD_RegsScope()
             {
@@ -5573,31 +5573,31 @@ rd_view_eval_view(void)
     return view_state.ev_view;
 }
 
-internal String8
+internal StringView
 rd_view_query_cmd(void)
 {
     RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
     RD_Cfg *query = rd_cfg_child_from_string(view, ("query"));
     RD_Cfg *cmd = rd_cfg_child_from_string(query, ("cmd"));
-    String8 string = cmd.first.string;
+    StringView string = cmd.first.string;
     return string;
 }
 
-internal String8
+internal StringView
 rd_view_query_input(void)
 {
     RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
     RD_Cfg *query = rd_cfg_child_from_string(view, ("query"));
     RD_Cfg *input = rd_cfg_child_from_string(query, ("input"));
-    String8 string = input.first.string;
+    StringView string = input.first.string;
     return string;
 }
 
-internal String8
-rd_view_setting_from_name(String8 name)
+internal StringView
+rd_view_setting_from_name(StringView name)
 {
     RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
-    String8 result = rd_cfg_child_from_string(view, name)->first.string;
+    StringView result = rd_cfg_child_from_string(view, name)->first.string;
     if (result.size == 0)
     {
         result = rd_default_setting_from_names(view.string, name);
@@ -5606,34 +5606,34 @@ rd_view_setting_from_name(String8 name)
 }
 
 internal E_Value
-rd_view_setting_value_from_name(String8 name)
+rd_view_setting_value_from_name(StringView name)
 {
-    String8 expr = rd_view_setting_from_name(name);
+    StringView expr = rd_view_setting_from_name(name);
     E_Eval eval = e_eval_from_string(expr);
     E_Value result = e_value_eval_from_eval(eval).value;
     return result;
 }
 
 internal B32
-rd_view_setting_b32_from_name(String8 name)
+rd_view_setting_b32_from_name(StringView name)
 {
-    String8 string = rd_view_setting_from_name(name);
+    StringView string = rd_view_setting_from_name(name);
     B32 result = !!e_value_from_stringf("raw((bool)(%S))", string).u64;
     return result;
 }
 
 internal U64
-rd_view_setting_u64_from_name(String8 name)
+rd_view_setting_u64_from_name(StringView name)
 {
-    String8 string = rd_view_setting_from_name(name);
+    StringView string = rd_view_setting_from_name(name);
     U64 result = e_value_from_stringf("raw((uint64)(%S))", string).u64;
     return result;
 }
 
 internal F32
-rd_view_setting_f32_from_name(String8 name)
+rd_view_setting_f32_from_name(StringView name)
 {
-    String8 string = rd_view_setting_from_name(name);
+    StringView string = rd_view_setting_from_name(name);
     F32 result = e_value_from_stringf("raw((float32)(%S))", string).f32;
     return result;
 }
@@ -5657,7 +5657,7 @@ rd_lang_kind_from_eval(E_Eval eval)
 {
     TXT_LangKind lang_kind = TXT_LangKind_Null;
     Temp scratch = scratch_begin(0, 0);
-    String8 file_path = rd_file_path_from_eval(scratch.arena, eval);
+    StringView file_path = rd_file_path_from_eval(scratch.arena, eval);
     if (file_path.size != 0)
     {
         lang_kind = txt_lang_kind_from_extension(str8_skip_last_dot(file_path));
@@ -5690,7 +5690,7 @@ rd_arch_from_eval(E_Eval eval)
         {
             E_Expr *arg = type.args[idx];
             {
-                String8 arg_arch_string = arg.string;
+                StringView arg_arch_string = arg.string;
                 if (arg.kind == E_ExprKind_Define && str8_match(arg.first.string, ("arch"), 0))
                 {
                     arg_arch_string = arg.first.next.string;
@@ -5735,7 +5735,7 @@ rd_push_view_arena(void)
 //- rjf: storing view-attached state
 
 internal void
-rd_store_view_expr_string(String8 string)
+rd_store_view_expr_string(StringView string)
 {
     RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
     RD_Cfg *expr = rd_cfg_child_from_string_or_alloc(view, ("expression"));
@@ -5765,7 +5765,7 @@ rd_store_view_scroll_pos(UI_ScrollPt2 pos)
 }
 
 internal void
-rd_store_view_param(String8 key, String8 value)
+rd_store_view_param(StringView key, StringView value)
 {
     RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
     RD_Cfg *child = rd_cfg_child_from_string_or_alloc(view, key);
@@ -5773,12 +5773,12 @@ rd_store_view_param(String8 key, String8 value)
 }
 
 internal void
-rd_store_view_paramf(String8 key, char *fmt, ...)
+rd_store_view_paramf(StringView key, char *fmt, ...)
 {
     Temp scratch = scratch_begin(0, 0);
     va_list args;
     va_start(args, fmt);
-    String8 string = push_str8fv(scratch.arena, fmt, args);
+    StringView string = push_str8fv(scratch.arena, fmt, args);
     rd_store_view_param(key, string);
     va_end(args);
     scratch_end(scratch);
@@ -5787,10 +5787,10 @@ rd_store_view_paramf(String8 key, char *fmt, ...)
 ////////////////////////////////
 //~ rjf: Window Functions
 
-internal String8
+internal StringView
 rd_push_window_title(Arena *arena)
 {
-    String8 result = push_str8f(arena, "%S - %s", str8_skip_last_slash(rd_state.project_path), BUILD_TITLE " (" BUILD_VERSION_STRING_LITERAL " " BUILD_RELEASE_PHASE_STRING_LITERAL ")");
+    StringView result = push_str8f(arena, "%S - %s", str8_skip_last_slash(rd_state.project_path), BUILD_TITLE " (" BUILD_VERSION_STRING_LITERAL " " BUILD_RELEASE_PHASE_STRING_LITERAL ")");
     return result;
 }
 
@@ -5861,7 +5861,7 @@ rd_window_state_from_cfg(RD_Cfg *cfg)
             OS_HandleArray monitors = os_push_monitors_array(scratch.arena);
             for EachIndex(idx, monitors.count)
             {
-                String8 monitor_name = os_name_from_monitor(scratch.arena, monitors.v[idx]);
+                StringView monitor_name = os_name_from_monitor(scratch.arena, monitors.v[idx]);
                 if (str8_match(monitor_name, monitor_cfg.first.string, StringMatchFlag_CaseInsensitive))
                 {
                     preferred_monitor = monitors.v[idx];
@@ -5886,7 +5886,7 @@ rd_window_state_from_cfg(RD_Cfg *cfg)
         ws.cfg_id = id;
         ws.arena = arena_alloc();
         {
-            String8 title = rd_push_window_title(scratch.arena);
+            StringView title = rd_push_window_title(scratch.arena);
             ws.os = os_window_open(r2f32p(pos.x, pos.y, pos.x+size.x, pos.y+size.y), (!has_pos*OS_WindowFlag_UseDefaultPosition)|OS_WindowFlag_CustomBorder, title);
         }
         ws.r = r_window_equip(ws.os);
@@ -6134,7 +6134,7 @@ rd_window_frame(void)
         {
             Temp scratch = scratch_begin(0, 0);
             RD_FontSlot slot = english_font_slots[idx];
-            String8 sample_text = ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890~!@#$%^&*()-_+=[{]}\\|;:'\",<.>/?");
+            StringView sample_text = ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890~!@#$%^&*()-_+=[{]}\\|;:'\",<.>/?");
             fnt_run_from_string(rd_font_from_slot(slot),
                                                     font_size,
                                                     0, 0, 0,
@@ -6244,7 +6244,7 @@ rd_window_frame(void)
         if (!is_minimized)
         {
             OS_Handle monitor = os_monitor_from_window(ws.os);
-            String8 monitor_name = os_name_from_monitor(scratch.arena, monitor);
+            StringView monitor_name = os_name_from_monitor(scratch.arena, monitor);
             RD_Cfg *monitor_root = rd_cfg_child_from_string_or_alloc(window, ("monitor"));
             if (!str8_match(monitor_root.first.string, monitor_name, 0))
             {
@@ -6362,7 +6362,7 @@ rd_window_frame(void)
                 case RD_RegSlot_CmdName:
                 UI_Tooltip
                 {
-                    String8 cmd_name = regs.cmd_name;
+                    StringView cmd_name = regs.cmd_name;
                     DR_FStrList fstrs = rd_title_fstrs_from_code_name(scratch.arena, cmd_name);
                     UI_PrefWidth(ui_children_sum(1)) UI_Row UI_PrefWidth(ui_text_dim(5, 1))
                     {
@@ -6418,7 +6418,7 @@ rd_window_frame(void)
                 {
                     // rjf: unpack
                     Arch arch = ctrl_entity.arch;
-                    String8 arch_str = string_from_arch(arch);
+                    StringView arch_str = string_from_arch(arch);
                     DR_FStrList fstrs = rd_title_fstrs_from_ctrl_entity(scratch.arena, ctrl_entity, 0);
                     
                     // rjf: title
@@ -6475,7 +6475,7 @@ rd_window_frame(void)
                             ui_spacer(ui_em(1.5f, 1.f));
                         }
                         EV_StringParams string_params = {EV_StringFlag_ReadOnlyDisplayRules, .radix = 16};
-                        String8 thread_handle_string = ctrl_string_from_handle(scratch.arena, ctrl_entity.handle);
+                        StringView thread_handle_string = ctrl_string_from_handle(scratch.arena, ctrl_entity.handle);
                         for (U64 idx = 0; idx < 16; idx += 1)
                         {
                             E_Eval rip_eval = e_eval_from_stringf("query:control.%S.call_stack[%I64u]", thread_handle_string, idx);
@@ -6483,7 +6483,7 @@ rd_window_frame(void)
                             {
                                 break;
                             }
-                            String8 rip_value_string = rd_value_string_from_eval(scratch.arena, str8_zero(), &string_params, ui_top_font(), ui_top_font_size(), ui_top_font_size()*40.f, rip_eval);
+                            StringView rip_value_string = rd_value_string_from_eval(scratch.arena, str8_zero(), &string_params, ui_top_font(), ui_top_font_size(), ui_top_font_size()*40.f, rip_eval);
                             rd_code_label(1, 0, code_color, rip_value_string);
                         }
                         ctrl_scope_close(ctrl_scope);
@@ -6505,7 +6505,7 @@ rd_window_frame(void)
                         if (eval.irtree.mode != E_Mode_Null)
                         {
                             EV_StringParams string_params = {.flags = EV_StringFlag_ReadOnlyDisplayRules, .radix = 10};
-                            String8 value_string = rd_value_string_from_eval(scratch.arena, str8_zero(), &string_params, ui_top_font(), ui_top_font_size(), ui_top_font_size()*20.f, eval);
+                            StringView value_string = rd_value_string_from_eval(scratch.arena, str8_zero(), &string_params, ui_top_font(), ui_top_font_size(), ui_top_font_size()*20.f, eval);
                             if (value_string.size != 0)
                             {
                                 ui_spacer(ui_em(2.f, 1.f));
@@ -6620,7 +6620,7 @@ rd_window_frame(void)
                 ui_labelf("hover_reg_slot: %i", rd_state.hover_regs_slot);
                 struct
                 {
-                    String8 name;
+                    StringView name;
                     RD_Regs *regs;
                 }
                 regs_info[] =
@@ -6886,7 +6886,7 @@ rd_window_frame(void)
                     UI_Row UI_TextPadding(0) UI_PrefWidth(ui_text_dim(0, 1)) RD_Font(RD_FontSlot_Code)
                     {
                         Vec4F32 code_default = ui_color_from_name(("code_default"));
-                        String8 opener = push_str8f(scratch.arena, "%S(", type.name);
+                        StringView opener = push_str8f(scratch.arena, "%S(", type.name);
                         rd_code_label(1, 0, code_default, opener);
                         MD_NodePtrList schemas = rd_schemas_from_name(type.name);
                         B32 first = 1;
@@ -6915,8 +6915,8 @@ rd_window_frame(void)
                                 UI_Signal arg_sig = ui_signal_from_box(arg_box);
                                 if (ui_hovering(arg_sig))
                                 {
-                                    String8 display_name = md_tag_from_string(child, ("display_name"), 0)->first.string;
-                                    String8 desc = md_tag_from_string(child, ("description"), 0)->first.string;
+                                    StringView display_name = md_tag_from_string(child, ("display_name"), 0)->first.string;
+                                    StringView desc = md_tag_from_string(child, ("description"), 0)->first.string;
                                     if (desc.size != 0)
                                         UI_Tooltip RD_Font(RD_FontSlot_Main)
                                     {
@@ -6989,7 +6989,7 @@ rd_window_frame(void)
                 EV_BlockTree predicted_block_tree = {0};
                 RD_RegsScope(.view = view.id, .tab = 0)
                 {
-                    String8 expr = rd_expr_from_cfg(view);
+                    StringView expr = rd_expr_from_cfg(view);
                     E_Eval list_eval = e_eval_from_string(expr);
                     ev_key_set_expansion(rd_view_eval_view(), ev_key_root(), ev_key_make(ev_hash_from_key(ev_key_root()), 1), 1);
                     predicted_block_tree = ev_block_tree_from_eval(scratch.arena, rd_view_eval_view(), rd_view_query_input(), list_eval);
@@ -7054,7 +7054,7 @@ rd_window_frame(void)
                 }
                 
                 // rjf: choose hover evaluation expression
-                String8 hover_eval_expr = ws.hover_eval_string;
+                StringView hover_eval_expr = ws.hover_eval_string;
                 
                 // rjf: evaluate hover evaluation expression, & determine if it evaluates
                 // such that we want to build a hover eval.
@@ -7161,7 +7161,7 @@ rd_window_frame(void)
             //- rjf: force-close query, if it has an expression, but that expression does not evaluate
             if (query_is_open)
             {
-                String8 expr = ws.query_regs.expr;
+                StringView expr = ws.query_regs.expr;
                 E_Eval eval = e_eval_from_string(expr);
                 if (eval.msgs.max_kind > E_MsgKind_Null)
                 {
@@ -7203,9 +7203,9 @@ rd_window_frame(void)
                 }
                 
                 // rjf: unpack query info
-                String8 cmd_name = ws.query_regs.cmd_name;
+                StringView cmd_name = ws.query_regs.cmd_name;
                 RD_CmdKindInfo *cmd_kind_info = rd_cmd_kind_info_from_string(cmd_name);
-                String8 query_expr = ws.query_regs.expr;
+                StringView query_expr = ws.query_regs.expr;
                 if (query_expr.size == 0 && cmd_name.size != 0)
                 {
                     query_expr = cmd_kind_info.query.expr;
@@ -7223,10 +7223,10 @@ rd_window_frame(void)
                     U64 input_insertion_pos = str8_find_needle(query_expr, 0, ("$input"), 0);
                     if (input_insertion_pos < query_expr.size)
                     {
-                        String8 pre_insertion  = str8_prefix(query_expr, input_insertion_pos);
-                        String8 post_insertion = str8_skip(query_expr, input_insertion_pos + 6);
-                        String8 input_text = str8(vs.query_buffer, vs.query_string_size);
-                        String8 input_text__escaped = escaped_from_raw_str8(scratch.arena, input_text);
+                        StringView pre_insertion  = str8_prefix(query_expr, input_insertion_pos);
+                        StringView post_insertion = str8_skip(query_expr, input_insertion_pos + 6);
+                        StringView input_text = str8(vs.query_buffer, vs.query_string_size);
+                        StringView input_text__escaped = escaped_from_raw_str8(scratch.arena, input_text);
                         // TODO(rjf): @hack need to escape because this is putting the user's input
                         // into a containing "folder:"..."" in all cases. but this is kinda shady
                         // and should be replaced long-term with something more solid...
@@ -7353,8 +7353,8 @@ rd_window_frame(void)
                         rd_regs()->cfg = t.regs.cfg;
                     }
                     rd_regs()->view = view.id;
-                    String8 view_expr = rd_expr_from_cfg(view);
-                    String8 view_file_path = rd_file_path_from_eval_string(rd_frame_arena(), view_expr);
+                    StringView view_expr = rd_expr_from_cfg(view);
+                    StringView view_file_path = rd_file_path_from_eval_string(rd_frame_arena(), view_expr);
                     // NOTE(rjf): we want to only fill out this view's file path slot if it
                     // evaluates one - this way, a view can use the slot to know the selected
                     // file path (if there is one). this is useful when pushing commandas which
@@ -7505,7 +7505,7 @@ rd_window_frame(void)
                 {
                     RD_Cfg *view = query_floating_view_task.view;
                     RD_ViewState *vs = rd_view_state_from_cfg(query_floating_view_task.view);
-                    String8 cmd_name = ws.query_regs.cmd_name;
+                    StringView cmd_name = ws.query_regs.cmd_name;
                     RD_CmdKindInfo *cmd_kind_info = rd_cmd_kind_info_from_string(cmd_name);
                     
                     // rjf: close queries
@@ -7524,7 +7524,7 @@ rd_window_frame(void)
                         RD_Cfg *input = rd_cfg_child_from_string(query, ("input"));
                         if (input != &rd_nil_cfg)
                         {
-                            String8 path_chopped = str8_chop_last_slash(input.first.string);
+                            StringView path_chopped = str8_chop_last_slash(input.first.string);
                             RD_Cfg *user = rd_cfg_child_from_string(rd_state.root_cfg, ("user"));
                             RD_Cfg *current_path = rd_cfg_child_from_string_or_alloc(user, ("current_path"));
                             if (!str8_match(current_path.first.string, path_chopped, 0))
@@ -7584,7 +7584,7 @@ rd_window_frame(void)
                                 UI_Key file_menu_key = ui_key_from_string(ui_key_zero(), ("_file_menu_key_"));
                                 UI_CtxMenu(file_menu_key) UI_PrefWidth(ui_em(50.f, 1.f)) UI_TagF("implicit")
                                 {
-                                    String8 cmds[] =
+                                    StringView cmds[] =
                                     {
                                         rd_cmd_kind_info_table[RD_CmdKind_Open].string,
                                         rd_cmd_kind_info_table[RD_CmdKind_OpenPalette].string,
@@ -7622,7 +7622,7 @@ rd_window_frame(void)
                                 UI_Key window_menu_key = ui_key_from_string(ui_key_zero(), ("_window_menu_key_"));
                                 UI_CtxMenu(window_menu_key) UI_PrefWidth(ui_em(50.f, 1.f)) UI_TagF("implicit")
                                 {
-                                    String8 cmds[] =
+                                    StringView cmds[] =
                                     {
                                         rd_cmd_kind_info_table[RD_CmdKind_OpenWindow].string,
                                         rd_cmd_kind_info_table[RD_CmdKind_CloseWindow].string,
@@ -7644,7 +7644,7 @@ rd_window_frame(void)
                                 UI_Key panel_menu_key = ui_key_from_string(ui_key_zero(), ("_panel_menu_key_"));
                                 UI_CtxMenu(panel_menu_key) UI_PrefWidth(ui_em(50.f, 1.f)) UI_TagF("implicit")
                                 {
-                                    String8 cmds[] =
+                                    StringView cmds[] =
                                     {
                                         rd_cmd_kind_info_table[RD_CmdKind_NewPanelUp].string,
                                         rd_cmd_kind_info_table[RD_CmdKind_NewPanelDown].string,
@@ -7684,7 +7684,7 @@ rd_window_frame(void)
                                 UI_Key tab_menu_key = ui_key_from_string(ui_key_zero(), ("_tab_menu_key_"));
                                 UI_CtxMenu(tab_menu_key) UI_PrefWidth(ui_em(50.f, 1.f)) UI_TagF("implicit")
                                 {
-                                    String8 cmds[] =
+                                    StringView cmds[] =
                                     {
                                         rd_cmd_kind_info_table[RD_CmdKind_OpenTab].string,
                                         rd_cmd_kind_info_table[RD_CmdKind_CloseTab].string,
@@ -7715,7 +7715,7 @@ rd_window_frame(void)
                                 UI_CtxMenu(targets_menu_key) UI_PrefWidth(ui_em(50.f, 1.f)) UI_TagF("implicit")
                                 {
                                     Temp scratch = scratch_begin(0, 0);
-                                    String8 cmds[] =
+                                    StringView cmds[] =
                                     {
                                         rd_cmd_kind_info_table[RD_CmdKind_AddTarget].string,
                                         rd_cmd_kind_info_table[RD_CmdKind_LaunchAndRun].string,
@@ -7736,7 +7736,7 @@ rd_window_frame(void)
                                 UI_Key ctrl_menu_key = ui_key_from_string(ui_key_zero(), ("_ctrl_menu_key_"));
                                 UI_CtxMenu(ctrl_menu_key) UI_PrefWidth(ui_em(50.f, 1.f)) UI_TagF("implicit")
                                 {
-                                    String8 cmds[] =
+                                    StringView cmds[] =
                                     {
                                         rd_cmd_kind_info_table[D_CmdKind_Run].string,
                                         rd_cmd_kind_info_table[D_CmdKind_KillAll].string,
@@ -7795,7 +7795,7 @@ rd_window_frame(void)
                                         UI_Row UI_Padding(ui_pct(1, 0)) UI_TextAlignment(UI_TextAlign_Center) UI_PrefWidth(ui_text_dim(10, 1))
                                         UI_CornerRadius(ui_top_font_size()*0.5f)
                                     {
-                                        String8 url = ("https://github.com/EpicGamesExt/raddebugger/issues");
+                                        StringView url = ("https://github.com/EpicGamesExt/raddebugger/issues");
                                         UI_Signal sig = ui_button(("Submit Request, Issue, or Bug Report"));
                                         if (ui_clicked(sig))
                                         {
@@ -7811,7 +7811,7 @@ rd_window_frame(void)
                                     // rjf: set up table
                                     struct
                                     {
-                                        String8 name;
+                                        StringView name;
                                         U32 codepoint;
                                         OS_Key key;
                                         UI_Key menu_key;
@@ -7919,8 +7919,8 @@ rd_window_frame(void)
                     typedef struct CenterButtonTask CenterButtonTask;
                     struct CenterButtonTask
                     {
-                        String8 cmd_name;
-                        String8 tag;
+                        StringView cmd_name;
+                        StringView tag;
                         B32 is_enabled;
                     };
                     CenterButtonTask center_button_tasks[] =
@@ -7938,7 +7938,7 @@ rd_window_frame(void)
                         UI_Flags(center_button_tasks[idx].is_enabled ? 0 : UI_BoxFlag_Disabled)
                         UI_Tag(center_button_tasks[idx].is_enabled ? center_button_tasks[idx].tag : ("weak"))
                     {
-                        String8 cmd_name = center_button_tasks[idx].cmd_name;
+                        StringView cmd_name = center_button_tasks[idx].cmd_name;
                         UI_Signal sig = ui_button(rd_icon_kind_text_table[rd_icon_kind_from_code_name(cmd_name)]);
                         os_window_push_custom_title_bar_client_area(ws.os, sig.box.rect);
                         if (ui_hovering(sig))
@@ -7974,7 +7974,7 @@ rd_window_frame(void)
                         os_window_push_custom_title_bar_client_area(ws.os, user_box.rect);
                         UI_Parent(user_box) UI_PrefWidth(ui_text_dim(10, 0)) UI_TextAlignment(UI_TextAlign_Center)
                         {
-                            String8 user_path = rd_state.user_path;
+                            StringView user_path = rd_state.user_path;
                             user_path = str8_chop_last_dot(user_path);
                             RD_Font(RD_FontSlot_Icons)
                                 UI_TextRasterFlags(rd_raster_flags_from_slot(RD_FontSlot_Icons))
@@ -8007,7 +8007,7 @@ rd_window_frame(void)
                         os_window_push_custom_title_bar_client_area(ws.os, prof_box.rect);
                         UI_Parent(prof_box) UI_PrefWidth(ui_text_dim(10, 0)) UI_TextAlignment(UI_TextAlign_Center)
                         {
-                            String8 prof_path = rd_state.project_path;
+                            StringView prof_path = rd_state.project_path;
                             prof_path = str8_chop_last_dot(prof_path);
                             RD_Font(RD_FontSlot_Icons)
                                 ui_label(rd_icon_kind_text_table[RD_IconKind_Briefcase]);
@@ -8093,7 +8093,7 @@ rd_window_frame(void)
             //- rjf: unpack status info
             B32 is_running = d_ctrl_targets_running() && d_ctrl_last_run_frame_idx() < d_frame_index();
             CTRL_Event stop_event = d_ctrl_last_stop_event();
-            String8 tag = ("pop");
+            StringView tag = ("pop");
             RD_CfgList tasks = rd_cfg_top_level_list_from_string(scratch.arena, ("conversion_task"));
             RD_CfgList long_running_tasks = {0};
             F32 alive_t_rate = 1 - pow_f32(2, (-5.f * rd_state.frame_dt));
@@ -8139,14 +8139,14 @@ rd_window_frame(void)
                 if (rd_state.bind_change_active)
                 {
                     RD_CmdKindInfo *info = rd_cmd_kind_info_from_string(rd_state.bind_change_cmd_name);
-                    String8 display_name = rd_display_from_code_name(info.string);
-                    String8 string = push_str8f(scratch.arena, "Currently rebinding \"%S\"", display_name);
+                    StringView display_name = rd_display_from_code_name(info.string);
+                    StringView string = push_str8f(scratch.arena, "Currently rebinding \"%S\"", display_name);
                     DR_FStrParams params = {ui_top_font(), ui_top_text_raster_flags(), ui_color_from_name(("text")), ui_top_font_size()};
                     dr_fstrs_push_new(scratch.arena, &status_fstrs, &params, string);
                 }
                 else if (ws.error_t >= 0.01f && ws.error_string_size != 0)
                 {
-                    String8 error_string = str8(ws.error_buffer, ws.error_string_size);
+                    StringView error_string = str8(ws.error_buffer, ws.error_string_size);
                     ws.error_t -= rd_state.frame_dt/8.f;
                     rd_request_frame();
                     ui_set_next_pref_width(ui_children_sum(1));
@@ -8173,7 +8173,7 @@ rd_window_frame(void)
                     dr_fstrs_push_new(scratch.arena, &status_fstrs, &params, ("  Running..."));
                     if (long_running_tasks.count != 0)
                     {
-                        String8 string = push_str8f(scratch.arena, "  Loading %I64u debug information file%s...", long_running_tasks.count, long_running_tasks.count == 1 ? "" : "s");
+                        StringView string = push_str8f(scratch.arena, "  Loading %I64u debug information file%s...", long_running_tasks.count, long_running_tasks.count == 1 ? "" : "s");
                         dr_fstrs_push_new(scratch.arena, &status_fstrs, &params, string);
                     }
                 }
@@ -8845,8 +8845,8 @@ rd_window_frame(void)
                                                   .tab = selected_tab.id,
                                                   .view = selected_tab.id);
                         {
-                            String8 view_expr = rd_expr_from_cfg(selected_tab);
-                            String8 view_file_path = rd_file_path_from_eval_string(rd_frame_arena(), view_expr);
+                            StringView view_expr = rd_expr_from_cfg(selected_tab);
+                            StringView view_file_path = rd_file_path_from_eval_string(rd_frame_arena(), view_expr);
                             // NOTE(rjf): we want to only fill out this view's file path slot if it
                             // evaluates one - this way, a view can use the slot to know the selected
                             // file path (if there is one). this is useful when pushing commandas which
@@ -9315,7 +9315,7 @@ rd_window_frame(void)
                                 for (String8Node *n = evt.paths.first; n != 0; n = n.next)
                                 {
                                     Temp scratch = scratch_begin(0, 0);
-                                    String8 path = n.string;
+                                    StringView path = n.string;
                                     if (str8_match(str8_skip_last_dot(path), ("exe"), StringMatchFlag_CaseInsensitive))
                                     {
                                         str8_list_push(ws.drop_completion_arena, &ws.drop_completion_paths, push_str8_copy(ws.drop_completion_arena, path));
@@ -9814,7 +9814,7 @@ rd_window_frame(void)
                     // rjf: draw focus overlay
                     if (b.flags & UI_BoxFlag_Clickable && !(b.flags & UI_BoxFlag_DisableFocusOverlay) && b.focus_hot_t > 0.01f)
                     {
-                        String8 extras[] = {("focus"), ("overlay")};
+                        StringView extras[] = {("focus"), ("overlay")};
                         String8Array extras_array = {extras, ArrayCount(extras)};
                         Vec4F32 color = ui_color_from_tags_key_extras(b.tags_key, extras_array);
                         color.w *= b.focus_hot_t;
@@ -9831,7 +9831,7 @@ rd_window_frame(void)
                             rect = pad_2f32(rect, 1.f);
                             rect = intersect_2f32(window_rect, rect);
                         }
-                        String8 extras[] = {("focus"), ("border")};
+                        StringView extras[] = {("focus"), ("border")};
                         String8Array extras_array = {extras, ArrayCount(extras)};
                         Vec4F32 color = ui_color_from_tags_key_extras(b.tags_key, extras_array);
                         color.w *= b.focus_active_t;
@@ -9936,15 +9936,15 @@ rd_window_frame(void)
 ////////////////////////////////
 //~ rjf: Eval Visualization
 
-internal String8
-rd_value_string_from_eval(Arena *arena, String8 filter, EV_StringParams *params, FNT_Tag font, F32 font_size, F32 max_size, E_Eval eval)
+internal StringView
+rd_value_string_from_eval(Arena *arena, StringView filter, EV_StringParams *params, FNT_Tag font, F32 font_size, F32 max_size, E_Eval eval)
 {
     Temp scratch = scratch_begin(&arena, 1);
     String8List strs = {0};
     {
         EV_StringIter *iter = ev_string_iter_begin(scratch.arena, eval, params);
         F32 space_taken_px = 0;
-        for (String8 string = {0}; ev_string_iter_next(scratch.arena, iter, &string);)
+        for (StringView string = {0}; ev_string_iter_next(scratch.arena, iter, &string);)
         {
             if (space_taken_px > max_size)
             {
@@ -9958,7 +9958,7 @@ rd_value_string_from_eval(Arena *arena, String8 filter, EV_StringParams *params,
             }
         }
     }
-    String8 result = str8_list_join(arena, &strs, 0);
+    StringView result = str8_list_join(arena, &strs, 0);
     scratch_end(scratch);
     return result;
 }
@@ -9967,7 +9967,7 @@ rd_value_string_from_eval(Arena *arena, String8 filter, EV_StringParams *params,
 //~ rjf: Hover Eval
 
 internal void
-rd_set_hover_eval(Vec2F32 pos, String8 string)
+rd_set_hover_eval(Vec2F32 pos, StringView string)
 {
     RD_Cfg *window_cfg = rd_cfg_from_id(rd_regs()->window);
     RD_WindowState *ws = rd_window_state_from_cfg(window_cfg);
@@ -10013,13 +10013,13 @@ rd_set_autocomp_regs_(E_Eval dst_eval, RD_Regs *regs)
             // rjf: calculate most general list expression, given the dst_eval space
             B32 force_allow = 0;
             B32 expr_based_replace = 1;
-            String8 list_expr = ("query:locals, query:globals, query:thread_locals, query:procedures, query:types, query:constants");
+            StringView list_expr = ("query:locals, query:globals, query:thread_locals, query:procedures, query:types, query:constants");
             {
                 E_TypeKey maybe_enum_type = e_type_key_unwrap(dst_eval.irtree.type_key, E_TypeUnwrapFlag_AllDecorative & ~E_TypeUnwrapFlag_Enums);
                 if (dst_eval.space.kind == RD_EvalSpaceKind_MetaCfg)
                 {
                     RD_Cfg *parent = rd_cfg_from_eval_space(dst_eval.space);
-                    String8 child_key = e_string_from_id(dst_eval.space.u64s[1]);
+                    StringView child_key = e_string_from_id(dst_eval.space.u64s[1]);
                     MD_NodePtrList schemas = rd_schemas_from_name(parent.string);
                     MD_Node *child_schema = &md_nil_node;
                     for (MD_NodePtrNode *n = schemas.first; n != 0 && md_node_is_nil(child_schema); n = n.next)
@@ -10043,9 +10043,9 @@ rd_set_autocomp_regs_(E_Eval dst_eval, RD_Regs *regs)
             is_allowed = (force_allow || rd_setting_b32_from_name(("autocompletion_lister")));
             
             // rjf: tighten list_expr, and filter / replaced-range, if needed
-            String8 filter = regs.string;
+            StringView filter = regs.string;
             Rng1U64 replaced_range = r1u64(0, filter.size);
-            String8 callee_expr = {0};
+            StringView callee_expr = {0};
             U64 cursor_arg_idx = 0;
             if (expr_based_replace)
             {
@@ -10205,7 +10205,7 @@ rd_set_autocomp_regs_(E_Eval dst_eval, RD_Regs *regs)
 //- rjf: colors
 
 internal MD_Node *
-rd_theme_tree_from_name(Arena *arena, HS_Scope *scope, String8 theme_name)
+rd_theme_tree_from_name(Arena *arena, HS_Scope *scope, StringView theme_name)
 {
     Temp scratch = scratch_begin(&arena, 1);
     MD_Node *theme_tree = &md_nil_node;
@@ -10221,14 +10221,14 @@ rd_theme_tree_from_name(Arena *arena, HS_Scope *scope, String8 theme_name)
         }
         if (theme_tree == &md_nil_node)
         {
-            String8 path = push_str8f(scratch.arena, "%S/raddbg/themes/%S", os_get_process_info()->user_program_data_path, theme_name);
+            StringView path = push_str8f(scratch.arena, "%S/raddbg/themes/%S", os_get_process_info()->user_program_data_path, theme_name);
             U64 endt_us = os_now_microseconds()+100;
             if (rd_state.frame_index <= 5)
             {
                 endt_us = os_now_microseconds()+50000;
             }
             U128 hash = fs_hash_from_path_range(path, r1u64(0, max_U64), endt_us);
-            String8 data = hs_data_from_hash(scope, hash);
+            StringView data = hs_data_from_hash(scope, hash);
             theme_tree = md_tree_from_string(arena, data);
         }
     }
@@ -10262,7 +10262,7 @@ rd_code_color_slot_from_txt_token_kind(TXT_TokenKind kind)
 }
 
 internal RD_CodeColorSlot
-rd_code_color_slot_from_txt_token_kind_lookup_string(TXT_TokenKind kind, String8 string)
+rd_code_color_slot_from_txt_token_kind_lookup_string(TXT_TokenKind kind, StringView string)
 {
     RD_CodeColorSlot color = RD_CodeColorSlot_CodeDefault;
     if (kind == TXT_TokenKind_Identifier || kind == TXT_TokenKind_Keyword)
@@ -10368,10 +10368,10 @@ rd_raster_flags_from_slot(RD_FontSlot slot)
 ////////////////////////////////
 //~ rjf: Process Control Info Stringification
 
-internal String8
+internal StringView
 rd_string_from_exception_code(U32 code)
 {
-    String8 string = {0};
+    StringView string = {0};
     for EachNonZeroEnumVal(CTRL_ExceptionCodeKind, k)
     {
         if (code == ctrl_exception_code_kind_code_table[k])
@@ -10459,9 +10459,9 @@ rd_stop_explanation_fstrs_from_ctrl_event(Arena *arena, CTRL_Event *event)
                         dr_fstrs_concat_in_place(&fstrs, &thread_fstrs);
                         dr_fstrs_push_new(arena, &fstrs, &params, ("  "));
                         dr_fstrs_push_new(arena, &fstrs, &params, (" hit an exception: "));
-                        String8 exception_code_string = str8_from_u64(arena, event.exception_code, 16, 0, 0);
-                        String8 exception_explanation_string = rd_string_from_exception_code(event.exception_code);
-                        String8 exception_info_string = push_str8f(arena, "%S%s%S%s",
+                        StringView exception_code_string = str8_from_u64(arena, event.exception_code, 16, 0, 0);
+                        StringView exception_explanation_string = rd_string_from_exception_code(event.exception_code);
+                        StringView exception_info_string = push_str8f(arena, "%S%s%S%s",
                                                                                                               exception_code_string,
                                                                                                               exception_explanation_string.size != 0 ? " (" : "",
                                                                                                               exception_explanation_string,
@@ -10473,7 +10473,7 @@ rd_stop_explanation_fstrs_from_ctrl_event(Arena *arena, CTRL_Event *event)
                         dr_fstrs_concat_in_place(&fstrs, &thread_fstrs);
                         dr_fstrs_push_new(arena, &fstrs, &params, ("  "));
                         dr_fstrs_push_new(arena, &fstrs, &params, (" hit a C++ exception: "));
-                        String8 exception_code_string = str8_from_u64(arena, event.exception_code, 16, 0, 0);
+                        StringView exception_code_string = str8_from_u64(arena, event.exception_code, 16, 0, 0);
                         dr_fstrs_push_new(arena, &fstrs, &params, exception_code_string);
                     }break;
                     case CTRL_ExceptionKind_MemoryRead:
@@ -10481,7 +10481,7 @@ rd_stop_explanation_fstrs_from_ctrl_event(Arena *arena, CTRL_Event *event)
                         dr_fstrs_concat_in_place(&fstrs, &thread_fstrs);
                         dr_fstrs_push_new(arena, &fstrs, &params, ("  "));
                         dr_fstrs_push_new(arena, &fstrs, &params, (" hit an exception: "));
-                        String8 exception_info_string = push_str8f(arena, "Access violation reading from address 0x%I64x", event.vaddr_rng.min);
+                        StringView exception_info_string = push_str8f(arena, "Access violation reading from address 0x%I64x", event.vaddr_rng.min);
                         dr_fstrs_push_new(arena, &fstrs, &params, exception_info_string);
                     }break;
                     case CTRL_ExceptionKind_MemoryWrite:
@@ -10489,7 +10489,7 @@ rd_stop_explanation_fstrs_from_ctrl_event(Arena *arena, CTRL_Event *event)
                         dr_fstrs_concat_in_place(&fstrs, &thread_fstrs);
                         dr_fstrs_push_new(arena, &fstrs, &params, ("  "));
                         dr_fstrs_push_new(arena, &fstrs, &params, (" hit an exception: "));
-                        String8 exception_info_string = push_str8f(arena, "Access violation writing to address 0x%I64x", event.vaddr_rng.min);
+                        StringView exception_info_string = push_str8f(arena, "Access violation writing to address 0x%I64x", event.vaddr_rng.min);
                         dr_fstrs_push_new(arena, &fstrs, &params, exception_info_string);
                     }break;
                     case CTRL_ExceptionKind_MemoryExecute:
@@ -10497,8 +10497,8 @@ rd_stop_explanation_fstrs_from_ctrl_event(Arena *arena, CTRL_Event *event)
                         dr_fstrs_concat_in_place(&fstrs, &thread_fstrs);
                         dr_fstrs_push_new(arena, &fstrs, &params, ("  "));
                         dr_fstrs_push_new(arena, &fstrs, &params, (" hit an exception: "));
-                        String8 exception_code_string = str8_from_u64(arena, event.exception_code, 16, 0, 0);
-                        String8 exception_info_string = push_str8f(arena, "Access violation executing at address 0x%I64x", event.vaddr_rng.min);
+                        StringView exception_code_string = str8_from_u64(arena, event.exception_code, 16, 0, 0);
+                        StringView exception_info_string = push_str8f(arena, "Access violation executing at address 0x%I64x", event.vaddr_rng.min);
                         dr_fstrs_push_new(arena, &fstrs, &params, exception_info_string);
                     }break;
                 }
@@ -10507,9 +10507,9 @@ rd_stop_explanation_fstrs_from_ctrl_event(Arena *arena, CTRL_Event *event)
             {
                 dr_fstrs_push_new(arena, &fstrs, &params, rd_icon_kind_text_table[RD_IconKind_WarningBig], .font = rd_font_from_slot(RD_FontSlot_Icons), .raster_flags = rd_raster_flags_from_slot(RD_FontSlot_Icons));
                 dr_fstrs_push_new(arena, &fstrs, &params, ("  Hit an exception: "));
-                String8 exception_code_string = str8_from_u64(arena, event.exception_code, 16, 0, 0);
-                String8 exception_explanation_string = rd_string_from_exception_code(event.exception_code);
-                String8 exception_info_string = push_str8f(arena, "%S%s%S%s",
+                StringView exception_code_string = str8_from_u64(arena, event.exception_code, 16, 0, 0);
+                StringView exception_explanation_string = rd_string_from_exception_code(event.exception_code);
+                StringView exception_info_string = push_str8f(arena, "%S%s%S%s",
                                                                                                       exception_code_string,
                                                                                                       exception_explanation_string.size != 0 ? " (" : "",
                                                                                                       exception_explanation_string,
@@ -10541,7 +10541,7 @@ rd_stop_explanation_fstrs_from_ctrl_event(Arena *arena, CTRL_Event *event)
 //~ rjf: Vocab Info Lookups
 
 internal RD_VocabInfo *
-rd_vocab_info_from_code_name(String8 code_name)
+rd_vocab_info_from_code_name(StringView code_name)
 {
     RD_VocabInfo *result = &rd_nil_vocab_info;
     if (code_name.size != 0)
@@ -10563,7 +10563,7 @@ rd_vocab_info_from_code_name(String8 code_name)
 }
 
 internal RD_VocabInfo *
-rd_vocab_info_from_code_name_plural(String8 code_name_plural)
+rd_vocab_info_from_code_name_plural(StringView code_name_plural)
 {
     RD_VocabInfo *result = &rd_nil_vocab_info;
     if (code_name_plural.size != 0)
@@ -10629,7 +10629,7 @@ rd_pop_regs(void)
 }
 
 internal void
-rd_regs_fill_slot_from_string(RD_RegSlot slot, String8 query_expr, String8 string)
+rd_regs_fill_slot_from_string(RD_RegSlot slot, StringView query_expr, StringView string)
 {
     switch (slot)
     {
@@ -10677,7 +10677,7 @@ rd_regs_fill_slot_from_string(RD_RegSlot slot, String8 query_expr, String8 strin
             B32 good = 0;
             if (!good && str8_match(str8_prefix(string, 1), ("$"), 0))
             {
-                String8 numeric_part = str8_skip(string, 1);
+                StringView numeric_part = str8_skip(string, 1);
                 RD_CfgID id = u64_from_str8(numeric_part, 16);
                 rd_regs()->cfg = id;
                 good = 1;
@@ -10771,7 +10771,7 @@ rd_regs_fill_slot_from_string(RD_RegSlot slot, String8 query_expr, String8 strin
 //- rjf: name -> info
 
 internal RD_CmdKind
-rd_cmd_kind_from_string(String8 string)
+rd_cmd_kind_from_string(StringView string)
 {
     RD_CmdKind result = RD_CmdKind_Null;
     for (U64 idx = 0; idx < ArrayCount(rd_cmd_kind_info_table); idx += 1)
@@ -10786,7 +10786,7 @@ rd_cmd_kind_from_string(String8 string)
 }
 
 internal RD_CmdKindInfo *
-rd_cmd_kind_info_from_string(String8 string)
+rd_cmd_kind_info_from_string(StringView string)
 {
     RD_CmdKindInfo *info = &rd_nil_cmd_kind_info;
     {
@@ -10803,7 +10803,7 @@ rd_cmd_kind_info_from_string(String8 string)
 //- rjf: pushing
 
 internal void
-rd_push_cmd(String8 name, RD_Regs *regs)
+rd_push_cmd(StringView name, RD_Regs *regs)
 {
     rd_cmd_list_push_new(rd_state.cmds_arenas[0], &rd_state.cmds[0], name, regs);
 }
@@ -10876,8 +10876,8 @@ rd_init(CmdLine *cmdln)
     log_select(rd_state.log);
     {
         Temp scratch = scratch_begin(0, 0);
-        String8 user_program_data_path = os_get_process_info()->user_program_data_path;
-        String8 user_data_folder = push_str8f(scratch.arena, "%S/raddbg/logs", user_program_data_path);
+        StringView user_program_data_path = os_get_process_info()->user_program_data_path;
+        StringView user_data_folder = push_str8f(scratch.arena, "%S/raddbg/logs", user_program_data_path);
         rd_state.log_path = push_str8f(rd_state.arena, "%S/ui_thread.raddbg_log", user_data_folder);
         os_make_directory(user_data_folder);
         os_write_data_to_file_path(rd_state.log_path, str8_zero());
@@ -10911,7 +10911,7 @@ rd_init(CmdLine *cmdln)
             struct SchemaParseTask
             {
                 SchemaParseTask *next;
-                String8 schema_text;
+                StringView schema_text;
             };
             SchemaParseTask start_task = {0, rd_name_schema_info_table[idx].schema};
             SchemaParseTask *first_task = &start_task;
@@ -10999,8 +10999,8 @@ rd_init(CmdLine *cmdln)
     }
     
     //- rjf: setup initial target from command line args
-    String8 implicit_user_arg = {0};
-    String8 implicit_project_arg = {0};
+    StringView implicit_user_arg = {0};
+    StringView implicit_project_arg = {0};
     {
         Temp scratch = scratch_begin(0, 0);
         String8List target_args = {0};
@@ -11008,7 +11008,7 @@ rd_init(CmdLine *cmdln)
             B32 after_first_non_flag = 0;
             for (U64 idx = 1; idx < cmdln.argc; idx += 1)
             {
-                String8 arg = str8_cstring(cmdln.argv[idx]);
+                StringView arg = str8_cstring(cmdln.argv[idx]);
                 B32 is_flag = (str8_match(str8_prefix(arg, 1), ("-"), 0) ||
                                               str8_match(str8_prefix(arg, 1), ("--"), 0) ||
                                               str8_match(str8_prefix(arg, 1), ("/"), 0));
@@ -11023,10 +11023,10 @@ rd_init(CmdLine *cmdln)
                     {
                         is_cfg = 1;
                         U8 header_suffix_buffer[256] = {0};
-                        String8 header_suffix = {0};
+                        StringView header_suffix = {0};
                         header_suffix.str = header_suffix_buffer;
                         header_suffix.size = os_file_read(file, r1u64(10, 10+256), header_suffix_buffer);
-                        String8 header_type_suffix = str8_skip(header_suffix, str8_find_needle(header_suffix, 0, (" "), 0)+1);
+                        StringView header_type_suffix = str8_skip(header_suffix, str8_find_needle(header_suffix, 0, (" "), 0)+1);
                         if (str8_match(header_type_suffix, ("user"), StringMatchFlag_RightSideSloppy))
                         {
                             implicit_user_arg = arg;
@@ -11051,18 +11051,18 @@ rd_init(CmdLine *cmdln)
         if (target_args.node_count > 0 && target_args.first.string.size != 0)
         {
             //- rjf: unpack command line inputs
-            String8 executable_name_string = {0};
-            String8 arguments_string = {0};
-            String8 working_directory_string = {0};
+            StringView executable_name_string = {0};
+            StringView arguments_string = {0};
+            StringView working_directory_string = {0};
             {
                 // rjf: unpack full executable path
                 if (target_args.first.string.size != 0)
                 {
-                    String8 exe_name = target_args.first.string;
+                    StringView exe_name = target_args.first.string;
                     PathStyle style = path_style_from_str8(exe_name);
                     if (style == PathStyle_Relative)
                     {
-                        String8 current_path = os_get_current_path(scratch.arena);
+                        StringView current_path = os_get_current_path(scratch.arena);
                         exe_name = push_str8f(scratch.arena, "%S/%S", current_path, exe_name);
                         exe_name = path_normalized_from_string(scratch.arena, exe_name);
                     }
@@ -11072,10 +11072,10 @@ rd_init(CmdLine *cmdln)
                 // rjf: unpack working directory
                 if (target_args.first.string.size != 0)
                 {
-                    String8 path_part_of_arg = str8_chop_last_slash(target_args.first.string);
+                    StringView path_part_of_arg = str8_chop_last_slash(target_args.first.string);
                     if (path_part_of_arg.size != 0)
                     {
-                        String8 path = push_str8f(scratch.arena, "%S/", path_part_of_arg);
+                        StringView path = push_str8f(scratch.arena, "%S/", path_part_of_arg);
                         working_directory_string = path;
                     }
                 }
@@ -11109,8 +11109,8 @@ rd_init(CmdLine *cmdln)
         Temp scratch = scratch_begin(0, 0);
         
         // rjf: unpack command line arguments
-        String8 user_path = cmd_line_string(cmdln, ("user"));
-        String8 project_path = cmd_line_string(cmdln, ("project"));
+        StringView user_path = cmd_line_string(cmdln, ("user"));
+        StringView project_path = cmd_line_string(cmdln, ("project"));
         {
             if (user_path.size != 0)
             {
@@ -11122,8 +11122,8 @@ rd_init(CmdLine *cmdln)
             }
         }
         {
-            String8 user_program_data_path = os_get_process_info()->user_program_data_path;
-            String8 user_data_folder = push_str8f(scratch.arena, "%S/raddbg", user_program_data_path);
+            StringView user_program_data_path = os_get_process_info()->user_program_data_path;
+            StringView user_data_folder = push_str8f(scratch.arena, "%S/raddbg", user_program_data_path);
             os_make_directory(user_data_folder);
             if (user_path.size == 0)
             {
@@ -11131,7 +11131,7 @@ rd_init(CmdLine *cmdln)
             }
             if (user_path.size == 0)
             {
-                String8 last_user_path = push_str8f(scratch.arena, "%S/last_user", user_data_folder);
+                StringView last_user_path = push_str8f(scratch.arena, "%S/last_user", user_data_folder);
                 user_path = os_data_from_file_path(scratch.arena, last_user_path);
             }
             if (user_path.size == 0)
@@ -11162,7 +11162,7 @@ rd_init(CmdLine *cmdln)
     // rjf: unpack icon image data
     {
         Temp scratch = scratch_begin(0, 0);
-        String8 data = rd_icon_file_bytes;
+        StringView data = rd_icon_file_bytes;
         U8 *ptr = data.str;
         U8 *opl = ptr+data.size;
         
@@ -11273,7 +11273,7 @@ rd_frame(void)
         struct
         {
             HS_Key key;
-            String8 name;
+            StringView name;
         }
         table[] =
         {
@@ -11285,7 +11285,7 @@ rd_frame(void)
         for EachElement(idx, table)
         {
             Arena *arena = arena_alloc();
-            String8 data = rd_string_from_cfg_tree(arena,
+            StringView data = rd_string_from_cfg_tree(arena,
                                                                                           str8_zero(),
                                                                                           rd_cfg_child_from_string(rd_state.root_cfg, table[idx].name));
             hs_submit_data(table[idx].key, &arena, data);
@@ -11646,7 +11646,7 @@ rd_frame(void)
             RD_Cfg *keybindings_root = n.v;
             for (RD_Cfg *keybinding = keybindings_root.first; keybinding != &rd_nil_cfg; keybinding = keybinding.next)
             {
-                String8 name = {0};
+                StringView name = {0};
                 RD_Binding binding = {0};
                 for (RD_Cfg *child = keybinding.first; child != &rd_nil_cfg; child = child.next)
                 {
@@ -11704,8 +11704,8 @@ rd_frame(void)
     //
     ProfScope("get fonts from config")
     {
-        String8 main_font_name = rd_setting_from_name(("main_font"));
-        String8 code_font_name = rd_setting_from_name(("code_font"));
+        StringView main_font_name = rd_setting_from_name(("main_font"));
+        StringView code_font_name = rd_setting_from_name(("code_font"));
         rd_state.font_slot_table[RD_FontSlot_Main]  = fnt_tag_from_path(main_font_name);
         rd_state.font_slot_table[RD_FontSlot_Code]  = fnt_tag_from_path(code_font_name);
         if (fnt_tag_match(rd_state.font_slot_table[RD_FontSlot_Main], fnt_tag_zero()))
@@ -11828,7 +11828,7 @@ rd_frame(void)
             if (!take && event.kind == OS_EventKind_Text)
             {
                 String32 insertion32 = str32(&event.character, 1);
-                String8 insertion8 = str8_from_32(scratch.arena, insertion32);
+                StringView insertion8 = str8_from_32(scratch.arena, insertion32);
                 rd_cmd(RD_CmdKind_InsertText, .string = insertion8);
                 rd_request_frame();
                 take = 1;
@@ -11954,7 +11954,7 @@ rd_frame(void)
         {
             //- rjf: add macros for command groups
             {
-                String8 names[] =
+                StringView names[] =
                 {
                     ("commands"),
                     ("tab_commands"),
@@ -11963,7 +11963,7 @@ rd_frame(void)
                 };
                 for EachElement(idx, names)
                 {
-                    String8 name = names[idx];
+                    StringView name = names[idx];
                     E_TypeKey type_key = e_type_key_cons(.kind = E_TypeKind_Set,
                                                                                               .flags = E_TypeFlag_StubSingleLineExpansion,
                                                                                               .name = name,
@@ -11982,13 +11982,13 @@ rd_frame(void)
             
             //- rjf: add macro for themes
             {
-                String8 names[] =
+                StringView names[] =
                 {
                     ("themes"),
                 };
                 for EachElement(idx, names)
                 {
-                    String8 name = names[idx];
+                    StringView name = names[idx];
                     E_TypeKey type_key = e_type_key_cons(.kind = E_TypeKind_Set,
                                                                                               .flags = E_TypeFlag_StubSingleLineExpansion,
                                                                                               .name = name,
@@ -12008,7 +12008,7 @@ rd_frame(void)
             //- rjf: build schema types & cache (name -> type) mapping
             for EachElement(idx, rd_name_schema_info_table)
             {
-                String8 name = rd_name_schema_info_table[idx].name;
+                StringView name = rd_name_schema_info_table[idx].name;
                 E_TypeKey type_key = e_type_key_cons(.name = name,
                                                                                           .kind = E_TypeKind_Set,
                                                                                           .irext  = E_TYPE_IREXT_FUNCTION_NAME(schema),
@@ -12023,7 +12023,7 @@ rd_frame(void)
             
             //- rjf: add macro for top-level config root
             {
-                String8 name = ("config");
+                StringView name = ("config");
                 E_TypeKey type_key = e_type_key_cons(.name = name,
                                                                                           .kind = E_TypeKind_Set,
                                                                                           .access = E_TYPE_ACCESS_FUNCTION_NAME(cfgs));
@@ -12036,7 +12036,7 @@ rd_frame(void)
             
             //- rjf: add macro for top-level control root
             {
-                String8 name = ("control");
+                StringView name = ("control");
                 E_TypeKey type_key = e_type_key_cons(.name = name,
                                                                                           .kind = E_TypeKind_Set,
                                                                                           .access = E_TYPE_ACCESS_FUNCTION_NAME(control));
@@ -12048,7 +12048,7 @@ rd_frame(void)
             }
             
             //- rjf: add macros for config "slice" collections (targets, breakpoints, etc.)
-            String8 evallable_cfg_names[] =
+            StringView evallable_cfg_names[] =
             {
                 ("breakpoint"),
                 ("watch_pin"),
@@ -12060,8 +12060,8 @@ rd_frame(void)
             };
             for EachElement(cfg_name_idx, evallable_cfg_names)
             {
-                String8 cfg_name = evallable_cfg_names[cfg_name_idx];
-                String8 collection_name = rd_plural_from_code_name(cfg_name);
+                StringView cfg_name = evallable_cfg_names[cfg_name_idx];
+                StringView collection_name = rd_plural_from_code_name(cfg_name);
                 E_TypeKey collection_type_key = e_type_key_cons(.kind = E_TypeKind_Set, .name = collection_name,
                                                                                                                 .irext = E_TYPE_IREXT_FUNCTION_NAME(cfgs_slice),
                                                                                                                 .access = E_TYPE_ACCESS_FUNCTION_NAME(cfgs_slice),
@@ -12083,7 +12083,7 @@ rd_frame(void)
             // things with names either explicitly attached, or that we can infer
             for EachElement(idx, rd_name_schema_info_table)
             {
-                String8 name = rd_name_schema_info_table[idx].name;
+                StringView name = rd_name_schema_info_table[idx].name;
                 MD_NodePtrList schemas = rd_schemas_from_name(name);
                 B32 is_individually_evallable = 0;
                 for (MD_NodePtrNode *n = schemas.first; n != 0; n = n.next)
@@ -12102,7 +12102,7 @@ rd_frame(void)
                     for (RD_CfgNode *n = cfgs.first; n != 0; n = n.next)
                     {
                         RD_Cfg *cfg = n.v;
-                        String8 label = rd_label_from_cfg(cfg);
+                        StringView label = rd_label_from_cfg(cfg);
                         if (label.size != 0)
                         {
                             E_Space space = rd_eval_space_from_cfg(cfg);
@@ -12165,7 +12165,7 @@ rd_frame(void)
                     if (str8_match(child.string, ("watch"), 0))
                     {
                         RD_Cfg *watch = child;
-                        String8 expr = watch.first.string;
+                        StringView expr = watch.first.string;
                         E_Parse parse = e_parse_from_string(expr);
                         if (parse.msgs.max_kind == E_MsgKind_Null)
                         {
@@ -12232,7 +12232,7 @@ rd_frame(void)
             }
             
             //- rjf: add macros for evallable control entities
-            String8 evallable_ctrl_names[] =
+            StringView evallable_ctrl_names[] =
             {
                 ("machine"),
                 ("process"),
@@ -12241,7 +12241,7 @@ rd_frame(void)
             };
             for EachElement(idx, evallable_ctrl_names)
             {
-                String8 name = evallable_ctrl_names[idx];
+                StringView name = evallable_ctrl_names[idx];
                 CTRL_EntityKind kind = ctrl_entity_kind_from_string(name);
                 CTRL_EntityArray array = ctrl_entity_array_from_kind(&d_state.ctrl_entity_store.ctx, kind);
                 E_TypeKey type_key = e_string2typekey_map_lookup(rd_state.meta_name2type_map, name);
@@ -12279,8 +12279,8 @@ rd_frame(void)
             //- rjf: add macros for all ctrl entity collections
             for EachElement(ctrl_name_idx, evallable_ctrl_names)
             {
-                String8 kind_name = evallable_ctrl_names[ctrl_name_idx];
-                String8 collection_name = rd_plural_from_code_name(kind_name);
+                StringView kind_name = evallable_ctrl_names[ctrl_name_idx];
+                StringView collection_name = rd_plural_from_code_name(kind_name);
                 E_TypeKey collection_type_key = e_type_key_cons(.kind = E_TypeKind_Set,
                                                                                                                 .name = collection_name,
                                                                                                                 .access = E_TYPE_ACCESS_FUNCTION_NAME(ctrl_entities),
@@ -12298,7 +12298,7 @@ rd_frame(void)
             
             //- rjf: add macro / lookup rules for unattached processes
             {
-                String8 collection_name = ("unattached_processes");
+                StringView collection_name = ("unattached_processes");
                 E_TypeKey collection_type_key = e_type_key_cons(.kind = E_TypeKind_Set,
                                                                                                                 .name = collection_name,
                                                                                                                 .flags = E_TypeFlag_StubSingleLineExpansion,
@@ -12379,7 +12379,7 @@ rd_frame(void)
             {
                 struct
                 {
-                    String8 name;
+                    StringView name;
                     E_TypeExpandInfoFunctionType *info;
                     E_TypeExpandRangeFunctionType *range;
                 }
@@ -12392,7 +12392,7 @@ rd_frame(void)
                 };
                 for EachElement(idx, collection_infos)
                 {
-                    String8 collection_name = collection_infos[idx].name;
+                    StringView collection_name = collection_infos[idx].name;
                     E_Expr *expr = e_push_expr(scratch.arena, E_ExprKind_LeafOffset, r1u64(0, 0));
                     expr.type_key = e_type_key_cons(.kind = E_TypeKind_Set,
                                                                                       .name = collection_name,
@@ -12407,7 +12407,7 @@ rd_frame(void)
             }
             
             //- rjf: add macros for debug info table collections
-            String8 debug_info_table_collection_names[] =
+            StringView debug_info_table_collection_names[] =
             {
                 ("procedures"),
                 ("thread_locals"),
@@ -12418,7 +12418,7 @@ rd_frame(void)
             };
             for EachElement(idx, debug_info_table_collection_names)
             {
-                String8 name = debug_info_table_collection_names[idx];
+                StringView name = debug_info_table_collection_names[idx];
                 E_Expr *expr = e_push_expr(scratch.arena, E_ExprKind_LeafOffset, r1u64(0, 0));
                 expr.space = e_space_make(RD_EvalSpaceKind_MetaQuery);
                 expr.type_key = e_type_key_cons(.kind = E_TypeKind_Set,
@@ -12439,7 +12439,7 @@ rd_frame(void)
                 HS_Scope *hs_scope = hs_scope_open();
                 HS_Key key = d_state.output_log_key;
                 U128 hash = hs_hash_from_key(key, 0);
-                String8 data = hs_data_from_hash(hs_scope, hash);
+                StringView data = hs_data_from_hash(hs_scope, hash);
                 E_Space space = e_space_make(E_SpaceKind_HashStoreKey);
                 space.u64_0 = key.root.u64[0];
                 space.u128 = key.id.u128[0];
@@ -12457,7 +12457,7 @@ rd_frame(void)
                 struct
                 {
                     HS_Key key;
-                    String8 name;
+                    StringView name;
                 }
                 table[] =
                 {
@@ -12471,7 +12471,7 @@ rd_frame(void)
                     HS_Scope *hs_scope = hs_scope_open();
                     HS_Key key = table[idx].key;
                     U128 hash = hs_hash_from_key(key, 0);
-                    String8 data = hs_data_from_hash(hs_scope, hash);
+                    StringView data = hs_data_from_hash(hs_scope, hash);
                     E_Space space = e_space_make(E_SpaceKind_HashStoreKey);
                     E_Expr *expr = e_push_expr(scratch.arena, E_ExprKind_LeafOffset, r1u64(0, 0));
                     space.u64_0 = key.root.u64[0];
@@ -12489,7 +12489,7 @@ rd_frame(void)
             // TODO(rjf): @lenses generate via metaprogram
             struct
             {
-                String8 name;
+                StringView name;
                 B32 inherited_by_members;
                 B32 inherited_by_elements;
                 B32 array_like;
@@ -12579,15 +12579,15 @@ rd_frame(void)
             for EachIndex(idx, modules.count)
             {
                 CTRL_Entity *module = modules.v[idx];
-                String8 raddbg_data = ctrl_raddbg_data_from_module(scratch.arena, module.handle);
+                StringView raddbg_data = ctrl_raddbg_data_from_module(scratch.arena, module.handle);
                 U8 split_char = 0;
                 String8List raddbg_data_text_parts = str8_split(scratch.arena, raddbg_data, &split_char, 1, 0);
                 U64 cfg_idx = 0;
                 for (String8Node *text_n = raddbg_data_text_parts.first; text_n != 0; text_n = text_n.next)
                 {
-                    String8 text = text_n.string;
+                    StringView text = text_n.string;
                     RD_CfgList cfgs = rd_cfg_tree_list_from_string(scratch.arena, str8_zero(), text);
-                    String8 module_name = ctrl_string_from_handle(scratch.arena, module.handle);
+                    StringView module_name = ctrl_string_from_handle(scratch.arena, module.handle);
                     for (RD_CfgNode *n = cfgs.first; n != 0; n = n.next, cfg_idx += 1)
                     {
                         RD_Cfg *immediate_root = rd_immediate_cfg_from_keyf("module_%S_cfg_%I64x", module_name, cfg_idx);
@@ -12608,8 +12608,8 @@ rd_frame(void)
             {
                 B32 stl;
                 B32 ue;
-                String8 pattern;
-                String8 expr;
+                StringView pattern;
+                StringView expr;
             }
             type_views[] =
             {
@@ -12664,8 +12664,8 @@ rd_frame(void)
                 for (RD_CfgNode *n = list.first; n != 0; n = n.next)
                 {
                     RD_Cfg *rule = n.v;
-                    String8 type_string = rd_cfg_child_from_string(rule, ("type"))->first.string;
-                    String8 expr_string = rd_cfg_child_from_string(rule, ("expr"))->first.string;
+                    StringView type_string = rd_cfg_child_from_string(rule, ("type"))->first.string;
+                    StringView expr_string = rd_cfg_child_from_string(rule, ("expr"))->first.string;
                     e_auto_hook_map_insert_new(scratch.arena, auto_hook_map, .type_pattern = type_string, .tag_expr_string = expr_string);
                 }
             }
@@ -12742,8 +12742,8 @@ rd_frame(void)
                 
                 // rjf: process command
                 RD_Cfg *cfg = &rd_nil_cfg;
-                String8 dst_path = {0};
-                String8 bucket_name = {0};
+                StringView dst_path = {0};
+                StringView bucket_name = {0};
                 Dir2 split_dir = Dir2_Invalid;
                 RD_Cfg *split_panel = &rd_nil_cfg;
                 U64 panel_sib_off = 0;
@@ -12848,8 +12848,8 @@ rd_frame(void)
                         if (kind >= RD_CmdKind_FirstTabFastPathCmd)
                         {
                             U64 fast_path_idx = (kind - RD_CmdKind_FirstTabFastPathCmd);
-                            String8 view_name = rd_tab_fast_path_view_name_table[fast_path_idx];
-                            String8 query_name = rd_tab_fast_path_query_name_table[fast_path_idx];
+                            StringView view_name = rd_tab_fast_path_view_name_table[fast_path_idx];
+                            StringView query_name = rd_tab_fast_path_query_name_table[fast_path_idx];
                             rd_cmd(RD_CmdKind_BuildTab, .string = view_name, .expr = query_name);
                         }
                     }break;
@@ -12887,7 +12887,7 @@ rd_frame(void)
                             str8_list_pushf(scratch.arena, &exprs, "query:thread_locals");
                             str8_list_pushf(scratch.arena, &exprs, "query:source_files");
                         }
-                        String8 expr = str8_list_join(scratch.arena, &exprs, &(StringJoin){.sep = (", ")});
+                        StringView expr = str8_list_join(scratch.arena, &exprs, &(StringJoin){.sep = (", ")});
                         rd_cmd(RD_CmdKind_PushQuery, .expr = expr, .do_implicit_root = 1, .do_lister = 1, .do_big_rows = 1, .view = tab.id, .tab = tab.id);
                     }break;
                     
@@ -12908,12 +12908,12 @@ rd_frame(void)
                         {
                             RD_Cfg *user = rd_cfg_child_from_string(rd_state.root_cfg, ("user"));
                             RD_Cfg *current_path = rd_cfg_child_from_string(user, ("current_path"));
-                            String8 current_path_string = current_path.first.string;
+                            StringView current_path_string = current_path.first.string;
                             if (current_path_string.size == 0)
                             {
                                 current_path_string = path_normalized_from_string(scratch.arena, os_get_current_path(scratch.arena));
                             }
-                            String8 file_path = os_graphical_pick_file(scratch.arena, current_path_string);
+                            StringView file_path = os_graphical_pick_file(scratch.arena, current_path_string);
                             file_path = path_normalized_from_string(scratch.arena, file_path);
                             if (file_path.size != 0)
                             {
@@ -12934,23 +12934,23 @@ rd_frame(void)
                     //- rjf: external driver textual commands
                     case RD_CmdKind_RunExternalDriverTextCommand:
                     {
-                        String8 msg = rd_regs()->string;
+                        StringView msg = rd_regs()->string;
                         String8List msg_parts = str8_split(scratch.arena, msg, (U8 *)" ", 1, 0);
                         CmdLine msg_cmd_line = cmd_line_from_string_list(scratch.arena, msg_parts);
-                        String8 cmd_kind_name = str8_list_first(&msg_cmd_line.inputs);
+                        StringView cmd_kind_name = str8_list_first(&msg_cmd_line.inputs);
                         RD_CmdKindInfo *cmd_kind_info = rd_cmd_kind_info_from_string(cmd_kind_name);
                         if (cmd_kind_info != &rd_nil_cmd_kind_info) RD_RegsScope()
                         {
                             for EachNonZeroEnumVal(RD_RegSlot, s)
                             {
-                                String8 reg_slot_name = rd_reg_slot_code_name_table[s];
-                                String8 value = cmd_line_string(&msg_cmd_line, reg_slot_name);
+                                StringView reg_slot_name = rd_reg_slot_code_name_table[s];
+                                StringView value = cmd_line_string(&msg_cmd_line, reg_slot_name);
                                 if (value.size != 0)
                                 {
                                     rd_regs_fill_slot_from_string(s, cmd_kind_info.query.expr, value);
                                 }
                             }
-                            String8 primary_args_string = {0};
+                            StringView primary_args_string = {0};
                             if (msg_cmd_line.inputs.first != 0)
                             {
                                 String8List primary_args_strings = {0};
@@ -13031,7 +13031,7 @@ rd_frame(void)
                     }break;
                     case RD_CmdKind_WindowSettings:
                     {
-                        String8 expr = push_str8f(scratch.arena, "query:config.$%I64x", rd_regs()->window);
+                        StringView expr = push_str8f(scratch.arena, "query:config.$%I64x", rd_regs()->window);
                         rd_cmd(RD_CmdKind_PushQuery, .expr = expr, .do_implicit_root = 1, .do_big_rows = 1, .do_lister = 1);
                     }break;
                     case RD_CmdKind_CloseWindow:
@@ -13099,7 +13099,7 @@ rd_frame(void)
                         RD_Cfg *keybindings = rd_cfg_new(user, ("keybindings"));
                         for EachElement(idx, rd_default_binding_table)
                         {
-                            String8 name = rd_default_binding_table[idx].string;
+                            StringView name = rd_default_binding_table[idx].string;
                             RD_Binding binding = rd_default_binding_table[idx].binding;
                             RD_Cfg *binding_root = rd_cfg_new(keybindings, str8_zero());
                             rd_cfg_new(binding_root, name);
@@ -13124,20 +13124,20 @@ rd_frame(void)
                     case RD_CmdKind_OpenUser:
                     case RD_CmdKind_OpenProject:
                     {
-                        String8 file_root_key = (kind == RD_CmdKind_OpenUser    ? ("user") :
+                        StringView file_root_key = (kind == RD_CmdKind_OpenUser    ? ("user") :
                                                                           kind == RD_CmdKind_OpenProject ? ("project") :
                                                                           ("other"));
                         RD_Cfg *file_root = rd_cfg_child_from_string(rd_state.root_cfg, file_root_key);
                         
                         //- rjf: load the new file's data
-                        String8 file_path = rd_regs()->file_path;
-                        String8 file_data = os_data_from_file_path(scratch.arena, file_path);
+                        StringView file_path = rd_regs()->file_path;
+                        StringView file_data = os_data_from_file_path(scratch.arena, file_path);
                         FileProperties file_props = os_properties_from_file_path(file_path);
                         
                         //- rjf: determine if the file is good
                         B32 file_is_okay = 0;
                         {
-                            String8 stored_path = (kind == RD_CmdKind_OpenUser ? rd_state.user_path : rd_state.project_path);
+                            StringView stored_path = (kind == RD_CmdKind_OpenUser ? rd_state.user_path : rd_state.project_path);
                             file_is_okay = ((file_props.size == 0 && file_props.created == 0) ||
                                                             str8_match(file_path, stored_path, 0) ||
                                                             stored_path.size == 0 ||
@@ -13145,7 +13145,7 @@ rd_frame(void)
                         }
                         
                         //- rjf: determine file's version
-                        String8 file_version = {0};
+                        StringView file_version = {0};
                         if (file_is_okay && file_props.size != 0)
                         {
                             file_version = str8_skip(file_data, 10);
@@ -13175,7 +13175,7 @@ rd_frame(void)
                             U64 file_version_code = version_from_str8(file_version);
                             if (file_version_code < Version(0, 9, 16))
                             {
-                                RD_CfgList (*legacy_parse_function)(Arena *arena, String8 file_path, String8 data) = rd_cfg_tree_list_from_string__pre_0_9_16;
+                                RD_CfgList (*legacy_parse_function)(Arena *arena, StringView file_path, StringView data) = rd_cfg_tree_list_from_string__pre_0_9_16;
                                 file_cfg_list = legacy_parse_function(scratch.arena, file_path, file_data);
                             }
                             else
@@ -13219,7 +13219,7 @@ rd_frame(void)
                             if (all_user_windows.count == 0)
                             {
                                 OS_Handle monitor    = os_primary_monitor();
-                                String8 monitor_name = os_name_from_monitor(scratch.arena, monitor);
+                                StringView monitor_name = os_name_from_monitor(scratch.arena, monitor);
                                 Vec2F32 monitor_dim  = os_dim_from_monitor(monitor);
                                 F32 monitor_dpi      = os_dpi_from_monitor(monitor);
                                 Vec2F32 window_dim   = v2f32(monitor_dim.x*4/5, monitor_dim.y*4/5);
@@ -13298,11 +13298,11 @@ rd_frame(void)
                         {
                             RD_Cfg *user = rd_cfg_child_from_string(rd_state.root_cfg, ("user"));
                             RD_Cfg *recent_project = rd_cfg_child_from_string(user, ("recent_project"));
-                            String8 project_path = rd_path_from_cfg(recent_project);
+                            StringView project_path = rd_path_from_cfg(recent_project);
                             if (project_path.size == 0)
                             {
-                                String8 user_program_data_path = os_get_process_info()->user_program_data_path;
-                                String8 user_data_folder = push_str8f(scratch.arena, "%S/%S", user_program_data_path, ("raddbg"));
+                                StringView user_program_data_path = os_get_process_info()->user_program_data_path;
+                                StringView user_data_folder = push_str8f(scratch.arena, "%S/%S", user_program_data_path, ("raddbg"));
                                 os_make_directory(user_data_folder);
                                 project_path = push_str8f(scratch.arena, "%S/default.raddbg_project", user_data_folder);
                             }
@@ -13312,7 +13312,7 @@ rd_frame(void)
                         //- rjf: update all window titles
                         if (file_is_okay)
                         {
-                            String8 window_title = rd_push_window_title(scratch.arena);
+                            StringView window_title = rd_push_window_title(scratch.arena);
                             for (RD_WindowState *ws = rd_state.first_window_state; ws != &rd_nil_window_state; ws = ws.order_next)
                             {
                                 os_window_set_title(ws.os, window_title);
@@ -13322,7 +13322,7 @@ rd_frame(void)
                     case RD_CmdKind_NewUser:
                     case RD_CmdKind_NewProject:
                     {
-                        String8 new_path = rd_regs()->file_path;
+                        StringView new_path = rd_regs()->file_path;
                         B32 file_will_be_overwritten = (os_properties_from_file_path(new_path).created != 0);
                         UI_Key key = ui_key_from_string(ui_key_zero(), ("new_config_overwrite_confirm"));
                         if (file_will_be_overwritten && !rd_regs()->force_confirm && !ui_key_match(rd_state.popup_key, key))
@@ -13355,7 +13355,7 @@ rd_frame(void)
                     case RD_CmdKind_SaveUser:
                     case RD_CmdKind_SaveProject:
                     {
-                        String8 new_path = rd_regs()->file_path;
+                        StringView new_path = rd_regs()->file_path;
                         B32 file_will_be_overwritten = (os_properties_from_file_path(new_path).created != 0);
                         UI_Key key = ui_key_from_string(ui_key_zero(), ("save_config_overwrite_confirm"));
                         if (file_will_be_overwritten && !rd_regs()->force_confirm && !ui_key_match(rd_state.popup_key, key))
@@ -13391,7 +13391,7 @@ rd_frame(void)
                     }break;
                     case RD_CmdKind_RecordProjectInUser:
                     {
-                        String8 file_path = rd_regs()->file_path;
+                        StringView file_path = rd_regs()->file_path;
                         RD_Cfg *user = rd_cfg_child_from_string(rd_state.root_cfg, ("user"));
                         RD_CfgList recent_projects = rd_cfg_child_list_from_string(scratch.arena, user, ("recent_project"));
                         RD_Cfg *recent_project = &rd_nil_cfg;
@@ -13419,8 +13419,8 @@ rd_frame(void)
                     }break;
                     case RD_CmdKind_RecordUserAsLastOpened:
                     {
-                        String8 file_path = rd_regs()->file_path;
-                        String8 last_user_path = push_str8f(scratch.arena, "%S/raddbg/last_user", os_get_process_info()->user_program_data_path);
+                        StringView file_path = rd_regs()->file_path;
+                        StringView last_user_path = push_str8f(scratch.arena, "%S/raddbg/last_user", os_get_process_info()->user_program_data_path);
                         os_write_data_to_file_path(last_user_path, file_path);
                     }break;
                     
@@ -13430,8 +13430,8 @@ rd_frame(void)
                     write:;
                     {
                         B32 dst_exists = (os_properties_from_file_path(dst_path).created != 0);
-                        String8 temp_path = push_str8f(scratch.arena, "%S.temp", dst_path);
-                        String8 overwritten_path = push_str8f(scratch.arena, "%S.old", dst_path);
+                        StringView temp_path = push_str8f(scratch.arena, "%S.temp", dst_path);
+                        StringView overwritten_path = push_str8f(scratch.arena, "%S.old", dst_path);
                         RD_Cfg *tree_root = rd_cfg_child_from_string(rd_state.root_cfg, bucket_name);
                         String8List strings = {0};
                         str8_list_pushf(scratch.arena, &strings, "// raddbg %s %S file\n\n", BUILD_VERSION_STRING_LITERAL, bucket_name);
@@ -13439,7 +13439,7 @@ rd_frame(void)
                         {
                             str8_list_push(scratch.arena, &strings, rd_string_from_cfg_tree(scratch.arena, str8_chop_last_slash(dst_path), child));
                         }
-                        String8 data = str8_list_join(scratch.arena, &strings, 0);
+                        StringView data = str8_list_join(scratch.arena, &strings, 0);
                         B32 temp_write_good = os_write_data_to_file_path(temp_path, data);
                         B32 old_del_good    = (temp_write_good && os_delete_file_at_path(overwritten_path));
                         B32 old_move_good   = (temp_write_good && (!dst_exists || os_move_file_path(overwritten_path, dst_path)));
@@ -13834,8 +13834,8 @@ rd_frame(void)
                         // -> override C:/foo/bar/baz.c -> D:/1/2/3.c
                         
                         //- rjf: unpack
-                        String8 src_path = rd_regs()->string;
-                        String8 dst_path = rd_regs()->file_path;
+                        StringView src_path = rd_regs()->string;
+                        StringView dst_path = rd_regs()->file_path;
                         String8List src_path_parts = str8_split_path(scratch.arena, src_path);
                         String8List dst_path_parts = str8_split_path(scratch.arena, dst_path);
                         
@@ -13879,8 +13879,8 @@ rd_frame(void)
                             str8_list_push_front(scratch.arena, &map_dst_parts, n.string);
                         }
                         StringJoin map_join = {.sep = ("/")};
-                        String8 map_src = str8_list_join(scratch.arena, &map_src_parts, &map_join);
-                        String8 map_dst = str8_list_join(scratch.arena, &map_dst_parts, &map_join);
+                        StringView map_src = str8_list_join(scratch.arena, &map_src_parts, &map_join);
+                        StringView map_dst = str8_list_join(scratch.arena, &map_dst_parts, &map_join);
                         
                         //- rjf: store as file path map cfg
                         RD_Cfg *user = rd_cfg_child_from_string(rd_state.root_cfg, ("user"));
@@ -14167,7 +14167,7 @@ rd_frame(void)
                     }break;
                     case RD_CmdKind_BuildTab:
                     {
-                        String8 expr_file_path = rd_file_path_from_eval_string(scratch.arena, rd_regs()->expr);
+                        StringView expr_file_path = rd_file_path_from_eval_string(scratch.arena, rd_regs()->expr);
                         RD_Cfg *panel = rd_cfg_from_id(rd_regs()->panel);
                         RD_Cfg *tab = rd_cfg_new(panel, rd_regs()->string);
                         RD_Cfg *expr = rd_cfg_new(tab, ("expression"));
@@ -14189,8 +14189,8 @@ rd_frame(void)
                     case RD_CmdKind_CopyTabFullPath:
                     {
                         RD_Cfg *tab = rd_cfg_from_id(rd_regs()->tab);
-                        String8 expr = rd_expr_from_cfg(tab);
-                        String8 full_path = rd_file_path_from_eval_string(scratch.arena, expr);
+                        StringView expr = rd_expr_from_cfg(tab);
+                        StringView full_path = rd_file_path_from_eval_string(scratch.arena, expr);
                         os_set_clipboard_text(full_path);
                     }break;
                     case RD_CmdKind_CloseTab:
@@ -14267,14 +14267,14 @@ rd_frame(void)
                     }break;
                     case RD_CmdKind_TabSettings:
                     {
-                        String8 expr = push_str8f(scratch.arena, "query:config.$%I64x", rd_regs()->tab);
+                        StringView expr = push_str8f(scratch.arena, "query:config.$%I64x", rd_regs()->tab);
                         rd_cmd(RD_CmdKind_PushQuery, .expr = expr, .do_implicit_root = 1, .do_big_rows = 1, .do_lister = 1);
                     }break;
                     
                     //- rjf: files
                     case RD_CmdKind_Open:
                     {
-                        String8 path = path_absolute_dst_from_relative_dst_src(scratch.arena, rd_regs()->file_path, os_get_current_path(scratch.arena));
+                        StringView path = path_absolute_dst_from_relative_dst_src(scratch.arena, rd_regs()->file_path, os_get_current_path(scratch.arena));
                         FileProperties props = os_properties_from_file_path(path);
                         if (props.created != 0)
                         {
@@ -14288,7 +14288,7 @@ rd_frame(void)
                     }break;
                     case RD_CmdKind_Switch:
                     {
-                        String8 path = {0};
+                        StringView path = {0};
                         if (path.size == 0)
                         {
                             RD_Cfg *recent_file = rd_cfg_from_id(rd_regs()->cfg);
@@ -14303,11 +14303,11 @@ rd_frame(void)
                     }break;
                     case RD_CmdKind_SwitchToPartnerFile:
                     {
-                        String8 file_path      = rd_regs()->file_path;
-                        String8 file_folder    = str8_chop_last_slash(file_path);
-                        String8 file_name      = str8_skip_last_slash(str8_chop_last_dot(file_path));
-                        String8 file_ext       = str8_skip_last_dot(file_path);
-                        String8 partner_ext_candidates[] =
+                        StringView file_path      = rd_regs()->file_path;
+                        StringView file_folder    = str8_chop_last_slash(file_path);
+                        StringView file_name      = str8_skip_last_slash(str8_chop_last_dot(file_path));
+                        StringView file_ext       = str8_skip_last_dot(file_path);
+                        StringView partner_ext_candidates[] =
                         {
                             ("h"),
                             ("hpp"),
@@ -14321,8 +14321,8 @@ rd_frame(void)
                         {
                             if (!str8_match(partner_ext_candidates[idx], file_ext, StringMatchFlag_CaseInsensitive))
                             {
-                                String8 candidate = push_str8f(scratch.arena, "%S.%S", file_name, partner_ext_candidates[idx]);
-                                String8 candidate_path = push_str8f(scratch.arena, "%S/%S", file_folder, candidate);
+                                StringView candidate = push_str8f(scratch.arena, "%S.%S", file_name, partner_ext_candidates[idx]);
+                                StringView candidate_path = push_str8f(scratch.arena, "%S/%S", file_folder, candidate);
                                 FileProperties candidate_props = os_properties_from_file_path(candidate_path);
                                 if (candidate_props.modified != 0)
                                 {
@@ -14335,7 +14335,7 @@ rd_frame(void)
                     case RD_CmdKind_RecordFileInProject:
                     if (rd_regs()->file_path.size != 0)
                     {
-                        String8 path = rd_regs()->file_path;
+                        StringView path = rd_regs()->file_path;
                         RD_Cfg *project = rd_cfg_child_from_string(rd_state.root_cfg, ("project"));
                         RD_CfgList recent_files = rd_cfg_child_list_from_string(scratch.arena, project, ("recent_file"));
                         RD_Cfg *recent_file = &rd_nil_cfg;
@@ -14364,7 +14364,7 @@ rd_frame(void)
                     case RD_CmdKind_ShowFileInExplorer:
                     if (rd_regs()->file_path.size != 0)
                     {
-                        String8 full_path = rd_regs()->file_path;
+                        StringView full_path = rd_regs()->file_path;
                         os_show_in_filesystem_ui(full_path);
                     }break;
                     
@@ -14733,7 +14733,7 @@ rd_frame(void)
                     //- rjf: name finding
                     case RD_CmdKind_GoToName:
                     {
-                        String8 name = rd_regs()->string;
+                        StringView name = rd_regs()->string;
                         if (name.size != 0)
                         {
                             B32 name_resolved = 0;
@@ -14764,11 +14764,11 @@ rd_frame(void)
                             }
                             
                             // rjf: try to resolve name as a file
-                            String8 file_path = {0};
+                            StringView file_path = {0};
                             if (!name_resolved)
                             {
                                 // rjf: unpack quoted portion of string
-                                String8 file_part_of_name = name;
+                                StringView file_part_of_name = name;
                                 U64 quote_pos = str8_find_needle(name, 0, ("\""), 0);
                                 if (quote_pos < name.size)
                                 {
@@ -14780,8 +14780,8 @@ rd_frame(void)
                                 
                                 // rjf: get source path
                                 RD_Cfg *src_view = rd_cfg_from_id(rd_regs()->view);
-                                String8 src_view_expr = rd_expr_from_cfg(src_view);
-                                String8 src_file_path = rd_file_path_from_eval_string(scratch.arena, src_view_expr);
+                                StringView src_view_expr = rd_expr_from_cfg(src_view);
+                                StringView src_file_path = rd_file_path_from_eval_string(scratch.arena, src_view_expr);
                                 String8List src_file_parts = str8_split_path(scratch.arena, src_file_path);
                                 
                                 // rjf: search for actual file
@@ -14798,7 +14798,7 @@ rd_frame(void)
                                     {
                                         str8_list_push(temp.arena, &try_path_parts, try_n.string);
                                     }
-                                    String8 try_path = str8_list_join(temp.arena, &try_path_parts, &(StringJoin){.sep = ("/")});
+                                    StringView try_path = str8_list_join(temp.arena, &try_path_parts, &(StringJoin){.sep = ("/")});
                                     FileProperties try_props = os_properties_from_file_path(try_path);
                                     if (try_props.modified != 0)
                                     {
@@ -14896,7 +14896,7 @@ rd_frame(void)
                         //    panel.
                         
                         //- rjf: grab things to find. path * point, process * address, etc.
-                        String8 file_path = {0};
+                        StringView file_path = {0};
                         TxtPt point = {0};
                         CTRL_Entity *thread = &ctrl_entity_nil;
                         CTRL_Entity *process = &ctrl_entity_nil;
@@ -14996,8 +14996,8 @@ rd_frame(void)
                                 {
                                     RD_Cfg *tab = tab_n.v;
                                     if (rd_cfg_is_project_filtered(tab)) { continue; }
-                                    String8 tab_expr = rd_expr_from_cfg(tab);
-                                    String8 tab_file_path = rd_file_path_from_eval_string(scratch.arena, tab_expr);
+                                    StringView tab_expr = rd_expr_from_cfg(tab);
+                                    StringView tab_file_path = rd_file_path_from_eval_string(scratch.arena, tab_expr);
                                     if ((str8_match(tab.string, ("text"), 0) || str8_match(tab.string, ("pending"), 0)) && 
                                           path_match_normalized(tab_file_path, file_path))
                                     {
@@ -15058,8 +15058,8 @@ rd_frame(void)
                                     {
                                         RD_Cfg *tab = tab_n.v;
                                         if (rd_cfg_is_project_filtered(tab)) { continue; }
-                                        String8 view_expr = rd_expr_from_cfg(tab);
-                                        String8 file_path = rd_file_path_from_eval_string(scratch.arena, view_expr);
+                                        StringView view_expr = rd_expr_from_cfg(tab);
+                                        StringView file_path = rd_file_path_from_eval_string(scratch.arena, view_expr);
                                         if (str8_match(tab.string, ("text"), 0) && file_path.size != 0 && panel_area > best_panel_area)
                                         {
                                             info.panel_w_any_src_code = panel;
@@ -15094,7 +15094,7 @@ rd_frame(void)
                                         RD_RegsScope(.view = tab.id, .tab = tab.id)
                                         {
                                             B32 tab_is_selected = (tab == panel.selected_tab);
-                                            String8 expr_string = rd_expr_from_cfg(tab);
+                                            StringView expr_string = rd_expr_from_cfg(tab);
                                             if (str8_match(tab.string, ("disasm"), 0) && expr_string.size == 0 && panel_area > best_panel_area)
                                             {
                                                 info.panel_w_disasm = panel;
@@ -15463,7 +15463,7 @@ rd_frame(void)
                     //- rjf: queries
                     case RD_CmdKind_PushQuery:
                     {
-                        String8 cmd_name = rd_regs()->cmd_name;
+                        StringView cmd_name = rd_regs()->cmd_name;
                         RD_CmdKindInfo *cmd_kind_info = rd_cmd_kind_info_from_string(cmd_name);
                         
                         // rjf: floating queries -> set up window to build immediate-mode top-level query
@@ -15523,14 +15523,14 @@ rd_frame(void)
                             }
                             
                             // rjf: choose initial input string
-                            String8 initial_input = {0};
+                            StringView initial_input = {0};
                             if (cmd_name.size != 0)
                             {
                                 if (cmd_kind_info.query.slot == RD_RegSlot_FilePath)
                                 {
                                     RD_Cfg *user = rd_cfg_child_from_string(rd_state.root_cfg, ("user"));
                                     RD_Cfg *current_path = rd_cfg_child_from_string(user, ("current_path"));
-                                    String8 current_path_string = current_path.first.string;
+                                    StringView current_path_string = current_path.first.string;
                                     if (current_path_string.size == 0)
                                     {
                                         current_path_string = path_normalized_from_string(scratch.arena, os_get_current_path(scratch.arena));
@@ -15545,7 +15545,7 @@ rd_frame(void)
                             }
                             
                             // rjf: build query state
-                            String8 current_query_cmd_name = cmd.first.string;
+                            StringView current_query_cmd_name = cmd.first.string;
                             rd_cfg_new_replace(input, initial_input);
                             rd_cfg_new_replace(cmd, cmd_name);
                             RD_ViewState *vs = rd_view_state_from_cfg(view);
@@ -15583,7 +15583,7 @@ rd_frame(void)
                         RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
                         RD_WindowState *ws = rd_window_state_from_cfg(window);
                         RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
-                        String8 cmd_name = rd_view_query_cmd();
+                        StringView cmd_name = rd_view_query_cmd();
                         
                         // rjf: find out if this view is a lister
                         B32 is_lister = (rd_cfg_child_from_string(view, ("lister")) != &rd_nil_cfg);
@@ -15737,9 +15737,9 @@ rd_frame(void)
                         
                         // rjf: attach new location info
                         {
-                            String8 file_path = rd_regs()->file_path;
+                            StringView file_path = rd_regs()->file_path;
                             TxtPt pt = rd_regs()->cursor;
-                            String8 expr_string = rd_regs()->expr;
+                            StringView expr_string = rd_regs()->expr;
                             U64 vaddr = rd_regs()->vaddr;
                             if (expr_string.size == 0 && vaddr != 0)
                             {
@@ -15769,10 +15769,10 @@ rd_frame(void)
                     case RD_CmdKind_AddBreakpoint:
                     case RD_CmdKind_ToggleBreakpoint:
                     {
-                        String8 file_path = rd_regs()->file_path;
+                        StringView file_path = rd_regs()->file_path;
                         TxtPt pt = rd_regs()->cursor;
                         U64 vaddr = rd_regs()->vaddr;
-                        String8 expr = rd_regs()->expr;
+                        StringView expr = rd_regs()->expr;
                         if (expr.size == 0 && vaddr != 0)
                         {
                             expr = push_str8f(scratch.arena, "0x%I64x", vaddr);
@@ -15832,7 +15832,7 @@ rd_frame(void)
                         RD_CfgList list = rd_cfg_top_level_list_from_string(scratch.arena, ("breakpoint"));
                         for (RD_CfgNode *n = list.first; n != 0; n = n.next)
                         {
-                            String8 string = rd_string_from_cfg_tree(rd_state.cmd_output_arena, str8_zero(), n.v);
+                            StringView string = rd_string_from_cfg_tree(rd_state.cmd_output_arena, str8_zero(), n.v);
                             str8_list_push(rd_state.cmd_output_arena, &rd_state.cmd_outputs, string);
                         }
                     }break;
@@ -15848,9 +15848,9 @@ rd_frame(void)
                     case RD_CmdKind_AddWatchPin:
                     case RD_CmdKind_ToggleWatchPin:
                     {
-                        String8 file_path = rd_regs()->file_path;
+                        StringView file_path = rd_regs()->file_path;
                         TxtPt pt = rd_regs()->cursor;
-                        String8 expr_string = rd_regs()->expr;
+                        StringView expr_string = rd_regs()->expr;
                         U64 vaddr = rd_regs()->vaddr;
                         B32 removed_already_existing = 0;
                         if (kind == RD_CmdKind_ToggleWatchPin)
@@ -15931,7 +15931,7 @@ rd_frame(void)
                             rd_cfg_release(n.v);
                         }
                         RD_Cfg *theme_cfg = rd_cfg_child_from_string(parent, ("theme"));
-                        String8 theme_name = theme_cfg.first.string;
+                        StringView theme_name = theme_cfg.first.string;
                         MD_Node *theme_tree = rd_theme_tree_from_name(scratch.arena, hs_scope, theme_name);
                         if (theme_tree == &md_nil_node)
                         {
@@ -15954,13 +15954,13 @@ rd_frame(void)
                     case RD_CmdKind_SaveTheme:
                     case RD_CmdKind_SaveAndSetTheme:
                     {
-                        String8 name = rd_regs()->string;
+                        StringView name = rd_regs()->string;
                         if (name.size != 0)
                         {
-                            String8 themes_folder = push_str8f(scratch.arena, "%S/raddbg/themes", os_get_process_info()->user_program_data_path);
+                            StringView themes_folder = push_str8f(scratch.arena, "%S/raddbg/themes", os_get_process_info()->user_program_data_path);
                             if (os_make_directory(themes_folder))
                             {
-                                String8 dst_path = push_str8f(scratch.arena, "%S/%S", themes_folder, name);
+                                StringView dst_path = push_str8f(scratch.arena, "%S/%S", themes_folder, name);
                                 RD_Cfg *parent = rd_cfg_from_id(rd_regs()->cfg);
                                 RD_CfgList colors = rd_cfg_child_list_from_string(scratch.arena, parent, ("theme_color"));
                                 String8List strings = {0};
@@ -15968,7 +15968,7 @@ rd_frame(void)
                                 {
                                     str8_list_push(scratch.arena, &strings, rd_string_from_cfg_tree(scratch.arena, str8_chop_last_slash(dst_path), n.v));
                                 }
-                                String8 data = str8_list_join(scratch.arena, &strings, 0);
+                                StringView data = str8_list_join(scratch.arena, &strings, 0);
                                 if (os_write_data_to_file_path(dst_path, data))
                                 {
                                     if (kind == RD_CmdKind_SaveAndSetTheme)
@@ -16070,7 +16070,7 @@ rd_frame(void)
                         TxtRng range = txt_rng(regs.cursor, regs.mark);
                         U128 hash = {0};
                         TXT_TextInfo info = txt_text_info_from_key_lang(txt_scope, text_key, lang_kind, &hash);
-                        String8 data = hs_data_from_hash(hs_scope, hash);
+                        StringView data = hs_data_from_hash(hs_scope, hash);
                         Rng1U64 expr_off_range = {0};
                         if (range.min.column != range.max.column)
                         {
@@ -16080,7 +16080,7 @@ rd_frame(void)
                         {
                             expr_off_range = txt_expr_off_range_from_info_data_pt(&info, data, range.min);
                         }
-                        String8 expr = str8_substr(data, expr_off_range);
+                        StringView expr = str8_substr(data, expr_off_range);
                         rd_cmd((kind == RD_CmdKind_GoToNameAtCursor ? RD_CmdKind_GoToName :
                                         kind == RD_CmdKind_ToggleWatchExpressionAtCursor ? RD_CmdKind_ToggleWatchExpression :
                                         RD_CmdKind_GoToName),
@@ -16091,7 +16091,7 @@ rd_frame(void)
                     case RD_CmdKind_SetNextStatement:
                     {
                         CTRL_Entity *thread = ctrl_entity_from_handle(&d_state.ctrl_entity_store.ctx, rd_regs()->thread);
-                        String8 file_path = rd_regs()->file_path;
+                        StringView file_path = rd_regs()->file_path;
                         U64 new_rip_vaddr = rd_regs()->vaddr_range.min;
                         if (file_path.size != 0)
                         {
@@ -16113,12 +16113,12 @@ rd_frame(void)
                     //- rjf: targets
                     case RD_CmdKind_AddTarget:
                     {
-                        String8 file_path = rd_regs()->file_path;
+                        StringView file_path = rd_regs()->file_path;
                         RD_Cfg *project = rd_cfg_child_from_string(rd_state.root_cfg, ("project"));
                         RD_Cfg *target = rd_cfg_new(project, ("target"));
                         RD_Cfg *exe = rd_cfg_new(target, ("executable"));
                         rd_cfg_new(exe, file_path);
-                        String8 working_directory = str8_chop_last_slash(file_path);
+                        StringView working_directory = str8_chop_last_slash(file_path);
                         if (working_directory.size != 0)
                         {
                             RD_Cfg *wdir = rd_cfg_new(target, ("working_directory"));
@@ -16138,9 +16138,9 @@ rd_frame(void)
 #if OS_WINDOWS
                         char filename_cstr[MAX_PATH] = {0};
                         GetModuleFileName(0, filename_cstr, sizeof(filename_cstr));
-                        String8 debugger_binary_path = str8_cstring(filename_cstr);
-                        String8 name8 = ("Debugger");
-                        String8 data8 = push_str8f(scratch.arena, "%S --jit_pid:%%ld --jit_code:%%ld --jit_addr:0x%%p", debugger_binary_path);
+                        StringView debugger_binary_path = str8_cstring(filename_cstr);
+                        StringView name8 = ("Debugger");
+                        StringView data8 = push_str8f(scratch.arena, "%S --jit_pid:%%ld --jit_code:%%ld --jit_addr:0x%%p", debugger_binary_path);
                         String16 name16 = str16_from_8(scratch.arena, name8);
                         String16 data16 = str16_from_8(scratch.arena, data8);
                         B32 likely_not_in_admin_mode = 0;
@@ -16808,7 +16808,7 @@ rd_frame(void)
                     continue;
                 }
                 RD_Location src_bp_loc = rd_location_from_cfg(src_bp);
-                String8 src_bp_cnd = rd_cfg_child_from_string(src_bp, ("condition"))->first.string;
+                StringView src_bp_cnd = rd_cfg_child_from_string(src_bp, ("condition"))->first.string;
                 
                 //- rjf: walk conditional breakpoint expression tree - for each leaf identifier,
                 // determine if it resolves to a meta-evaluation. if it does, compute the meta
@@ -16865,7 +16865,7 @@ rd_frame(void)
                 // we can evaluate this condition early, and decide whether or not to send this
                 // breakpoint.
                 B32 is_statically_disqualified = 0;
-                String8 non_ctrl_thread_static_condition = src_bp_cnd;
+                StringView non_ctrl_thread_static_condition = src_bp_cnd;
                 if (is_static_for_ctrl_thread)
                 {
                     E_Eval eval = e_eval_from_string(src_bp_cnd);
@@ -16943,7 +16943,7 @@ rd_frame(void)
         {
             for EachNonZeroEnumVal(CTRL_ExceptionCodeKind, k)
             {
-                String8 name = ctrl_exception_code_kind_lowercase_code_string_table[k];
+                StringView name = ctrl_exception_code_kind_lowercase_code_string_table[k];
                 B32 setting = rd_setting_b32_from_name(name);
                 if (setting)
                 {
@@ -17146,11 +17146,11 @@ rd_frame(void)
                     }
                     RD_RegsScope(.tab = tab.id, .view = tab.id)
                     {
-                        String8 eval_string = rd_expr_from_cfg(tab);
-                        String8 file_path = rd_file_path_from_eval_string(scratch.arena, eval_string);
+                        StringView eval_string = rd_expr_from_cfg(tab);
+                        StringView file_path = rd_file_path_from_eval_string(scratch.arena, eval_string);
                         if (file_path.size != 0)
                         {
-                            String8 name = str8_skip_last_slash(file_path);
+                            StringView name = str8_skip_last_slash(file_path);
                             U64 hash = d_hash_from_string__case_insensitive(name);
                             U64 slot_idx = hash%rd_state.ambiguous_path_slots_count;
                             RD_AmbiguousPathNode *node = 0;
@@ -17367,9 +17367,9 @@ rd_frame(void)
         os_append_data_to_file_path(rd_state.log_path, log.strings[LogMsgKind_Info]);
         if (log.strings[LogMsgKind_UserError].size != 0)
         {
-            String8 error_log = log.strings[LogMsgKind_UserError];
+            StringView error_log = log.strings[LogMsgKind_UserError];
             String8List error_log_lines = str8_split(scratch.arena, error_log, (U8 *)"\n", 1, 0);
-            String8 error_log_string = str8_list_join(scratch.arena, &error_log_lines, &(StringJoin){.sep = (" ")});
+            StringView error_log_string = str8_list_join(scratch.arena, &error_log_lines, &(StringJoin){.sep = (" ")});
             for (RD_WindowState *ws = rd_state.first_window_state; ws != &rd_nil_window_state; ws = ws.order_next)
             {
                 ws.error_string_size = Min(sizeof(ws.error_buffer), error_log_string.size);

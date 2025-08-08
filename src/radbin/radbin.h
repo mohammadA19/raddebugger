@@ -21,8 +21,8 @@ struct RB_File
 {
     RB_FileFormat format;
     RB_FileFormatFlags format_flags;
-    String8 path;
-    String8 data;
+    StringView path;
+    StringView data;
 };
 
 struct RB_FileNode

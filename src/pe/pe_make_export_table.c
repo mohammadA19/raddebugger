@@ -1,10 +1,10 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal String8
+internal StringView
 pe_name_from_export_parse(PE_ExportParse *exp)
 {
-    String8 name;
+    StringView name;
     if (exp.is_forwarder) {
         name = exp.alias;
     } else if (exp.alias.size) {
@@ -193,9 +193,9 @@ pe_finalize_export_list(Arena *arena, PE_ExportParseList export_list)
     return result;
 }
 
-internal String8
+internal StringView
 pe_make_edata_obj(Arena               *arena,
-                                    String8              image_name,
+                                    StringView              image_name,
                                     COFF_TimeStamp       time_stamp,
                                     COFF_MachineType     machine,
                                     PE_FinalizedExports  finalized_exports)
@@ -230,7 +230,7 @@ pe_make_edata_obj(Arena               *arena,
                     COFF_ObjSymbol *exp_symbol;
                     if (exp.is_forwarder) {
                         U64     forwarder_name_offset = string_table_sect.data.total_size;
-                        String8 forwarder_name_cstr   = push_cstr(obj_writer.arena, exp.name);
+                        StringView forwarder_name_cstr   = push_cstr(obj_writer.arena, exp.name);
                         str8_list_push(obj_writer.arena, &string_table_sect.data, forwarder_name_cstr);
                         // symbol to the name string
                         exp_symbol = coff_obj_writer_push_symbol_static(obj_writer, exp.name, forwarder_name_offset, string_table_sect);
@@ -254,15 +254,15 @@ pe_make_edata_obj(Arena               *arena,
             for (U64 exp_idx = 0; exp_idx < exports.count; exp_idx += 1) {
                 PE_ExportParse *exp = exports.v[exp_idx];
 
-                String8 name = pe_name_from_export_parse(exp);
+                StringView name = pe_name_from_export_parse(exp);
 
                 // store symbol name string
                 U64     export_name_offset = string_table_sect.data.total_size;
-                String8 export_name_cstr   = push_cstr(obj_writer.arena, name);
+                StringView export_name_cstr   = push_cstr(obj_writer.arena, name);
                 str8_list_push(obj_writer.arena, &string_table_sect.data, export_name_cstr);
 
                 // create symbol for the name string
-                String8         export_name_symbol_name = push_str8f(obj_writer.arena, "%S", name);
+                StringView         export_name_symbol_name = push_str8f(obj_writer.arena, "%S", name);
                 COFF_ObjSymbol *export_name_symbol      = coff_obj_writer_push_symbol_static(obj_writer, export_name_symbol_name, export_name_offset, string_table_sect);
 
                 // create slot for export virtual offset
@@ -317,7 +317,7 @@ pe_make_edata_obj(Arena               *arena,
     coff_obj_writer_section_push_reloc_voff(obj_writer, header_sect, OffsetOf(PE_ExportTableHeader, name_pointer_table_voff),   name_table_symbol);
     coff_obj_writer_section_push_reloc_voff(obj_writer, header_sect, OffsetOf(PE_ExportTableHeader, ordinal_table_voff),        ordinal_table_symbol);
 
-    String8 obj = coff_obj_writer_serialize(arena, obj_writer);
+    StringView obj = coff_obj_writer_serialize(arena, obj_writer);
     coff_obj_writer_release(&obj_writer);
 
     scratch_end(scratch);
@@ -325,7 +325,7 @@ pe_make_edata_obj(Arena               *arena,
 }
 
 internal String8List
-pe_make_import_lib(Arena *arena, COFF_MachineType machine, COFF_TimeStamp time_stamp, String8 dll_name, String8 debug_symbols, PE_ExportParseList export_list)
+pe_make_import_lib(Arena *arena, COFF_MachineType machine, COFF_TimeStamp time_stamp, StringView dll_name, StringView debug_symbols, PE_ExportParseList export_list)
 {
     ProfBeginFunction();
 
@@ -333,9 +333,9 @@ pe_make_import_lib(Arena *arena, COFF_MachineType machine, COFF_TimeStamp time_s
 
     // These objects appear in first three members of any lib that linker produces with /dll.
     // Objects are used by MSVC linker to build import table.
-    String8 import_entry_obj = pe_make_import_entry_obj(lib_writer.arena, dll_name, time_stamp, machine, debug_symbols);
-    String8 null_import_descriptor_obj = pe_make_null_import_descriptor_obj(lib_writer.arena, time_stamp, machine, debug_symbols);
-    String8 null_thunk_data_obj = pe_make_null_thunk_data_obj(lib_writer.arena, dll_name, time_stamp, machine, debug_symbols);
+    StringView import_entry_obj = pe_make_import_entry_obj(lib_writer.arena, dll_name, time_stamp, machine, debug_symbols);
+    StringView null_import_descriptor_obj = pe_make_null_import_descriptor_obj(lib_writer.arena, time_stamp, machine, debug_symbols);
+    StringView null_thunk_data_obj = pe_make_null_thunk_data_obj(lib_writer.arena, dll_name, time_stamp, machine, debug_symbols);
 
     // push import table nulls
     coff_lib_writer_push_obj(lib_writer, dll_name, import_entry_obj);
@@ -348,7 +348,7 @@ pe_make_import_lib(Arena *arena, COFF_MachineType machine, COFF_TimeStamp time_s
         if (exp.is_private) {
             continue;
         }
-        String8 name = pe_name_from_export_parse(exp);
+        StringView name = pe_name_from_export_parse(exp);
         U16 hint_or_ordinal = pe_hint_or_ordinal_from_export_parse(exp);
         coff_lib_writer_push_import(lib_writer, machine, time_stamp, dll_name, exp.import_by, name, hint_or_ordinal, exp.type);
     }

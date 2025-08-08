@@ -49,7 +49,7 @@ typedef struct COFF_Symbol32Array
 
 typedef struct COFF_ParsedSymbol
 {
-    String8               name;
+    StringView               name;
     U64                   value;
     U32                   section_number;
     COFF_SymbolType       type;
@@ -119,7 +119,7 @@ typedef struct COFF_ResourceID
     COFF_ResourceIDType type;
     union {
         U16     number;
-        String8 string;
+        StringView string;
     } u;
 } COFF_ResourceID;
 
@@ -132,7 +132,7 @@ typedef struct COFF_ParsedResource
     U16                      language_id;
     U32                      version;
     U32                      characteristics;
-    String8                  data;
+    StringView                  data;
 } COFF_ParsedResource;
 
 typedef struct COFF_ParsedResourceNode
@@ -167,11 +167,11 @@ enum
 
 typedef struct COFF_ParsedArchiveMemberHeader
 {
-    String8        name;           // padded to 16 bytes with spaces
+    StringView        name;           // padded to 16 bytes with spaces
     COFF_TimeStamp time_stamp;
     U32            user_id;        // unix artifact that does not have meaning on windows
     U32            group_id;       // unix artifact that does not have meaning on windows
-    String8        mode;           // octal representation the members file mode
+    StringView        mode;           // octal representation the members file mode
     B32            is_end_correct; // set to true if found correct signature after header
     Rng1U64        data_range;
 } COFF_ParsedArchiveMemberHeader;
@@ -186,15 +186,15 @@ typedef struct COFF_ParsedArchiveImportHeader
     U16               hint_or_ordinal;
     COFF_ImportType   type;
     COFF_ImportByType import_by;
-    String8           func_name;
-    String8           dll_name;
+    StringView           func_name;
+    StringView           dll_name;
 } COFF_ParsedArchiveImportHeader;
 
 typedef struct COFF_ArchiveMember
 {
     COFF_ParsedArchiveMemberHeader header;
     U64                            offset;
-    String8                        data;
+    StringView                        data;
 } COFF_ArchiveMember;
 
 typedef struct COFF_ArchiveFirstMember
@@ -202,7 +202,7 @@ typedef struct COFF_ArchiveFirstMember
     U32      symbol_count;
     U64      member_offset_count;
     U32     *member_offsets;
-    String8  string_table;
+    StringView  string_table;
 } COFF_ArchiveFirstMember;
 
 typedef struct COFF_ArchiveSecondMember
@@ -213,7 +213,7 @@ typedef struct COFF_ArchiveSecondMember
     U32     *member_offsets;
     U64      symbol_index_count;
     U16     *symbol_indices;
-    String8  string_table;
+    StringView  string_table;
 } COFF_ArchiveSecondMember;
 
 typedef struct COFF_ArchiveMemberNode
@@ -235,8 +235,8 @@ typedef struct COFF_ArchiveParse
     B32                      has_long_names;
     COFF_ArchiveFirstMember  first_member;
     COFF_ArchiveSecondMember second_member;
-    String8                  long_names;
-    String8                  error;
+    StringView                  long_names;
+    StringView                  error;
 } COFF_ArchiveParse;
 
 ////////////////////////////////

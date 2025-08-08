@@ -14,12 +14,12 @@ R_OGL_ShaderKind_COUNT,
 } R_OGL_ShaderKind;
 
 C_LINKAGE_BEGIN
-extern String8 r_ogl_shader_kind_name_table[2];
-extern String8 * r_ogl_shader_kind_vshad_src_table[2];
-extern String8 * r_ogl_shader_kind_pshad_src_table[2];
+extern StringView r_ogl_shader_kind_name_table[2];
+extern StringView * r_ogl_shader_kind_vshad_src_table[2];
+extern StringView * r_ogl_shader_kind_pshad_src_table[2];
 extern R_OGL_AttributeArray r_ogl_shader_kind_input_attributes_table[2];
 extern R_OGL_AttributeArray r_ogl_shader_kind_output_attributes_table[2];
-read_only global String8 r_ogl_rect_vshad_src =
+read_only global StringView r_ogl_rect_vshad_src =
 (
 ""
 "\n"
@@ -91,7 +91,7 @@ read_only global String8 r_ogl_rect_vshad_src =
 ""
 );
 
-read_only global String8 r_ogl_rect_pshad_src =
+read_only global StringView r_ogl_rect_pshad_src =
 (
 ""
 "\n"
@@ -175,7 +175,7 @@ read_only global String8 r_ogl_rect_pshad_src =
 ""
 );
 
-read_only global String8 r_ogl_blur_vshad_src =
+read_only global StringView r_ogl_blur_vshad_src =
 (
 ""
 "\n"
@@ -218,7 +218,7 @@ read_only global String8 r_ogl_blur_vshad_src =
 ""
 );
 
-read_only global String8 r_ogl_blur_pshad_src =
+read_only global StringView r_ogl_blur_pshad_src =
 (
 ""
 "\n"

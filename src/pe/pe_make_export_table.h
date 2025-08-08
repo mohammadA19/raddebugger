@@ -6,10 +6,10 @@
 
 typedef struct PE_ExportParse
 {
-    String8           obj_path;
-    String8           lib_path;
-    String8           name;
-    String8           alias;
+    StringView           obj_path;
+    StringView           lib_path;
+    StringView           name;
+    StringView           alias;
     COFF_ImportType   type;
     COFF_ImportByType import_by;
     U16               hint;

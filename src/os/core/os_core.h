@@ -13,7 +13,7 @@ struct OS_SystemInfo
     U64 page_size;
     U64 large_page_size;
     U64 allocation_granularity;
-    String8 machine_name;
+    StringView machine_name;
 };
 
 ////////////////////////////////
@@ -23,9 +23,9 @@ struct OS_ProcessInfo
 {
     U32 pid;
     B32 large_pages_allowed;
-    String8 binary_path;
-    String8 initial_path;
-    String8 user_program_data_path;
+    StringView binary_path;
+    StringView initial_path;
+    StringView user_program_data_path;
     String8List module_load_paths;
     String8List environment;
 };
@@ -63,7 +63,7 @@ struct OS_FileIter
 
 struct OS_FileInfo
 {
-    String8 name;
+    StringView name;
     FileProperties props;
 };
 
@@ -106,7 +106,7 @@ struct OS_HandleArray
 struct OS_ProcessLaunchParams
 {
     String8List cmd_line;
-    String8 path;
+    StringView path;
     String8List env;
     B32 inherit_env;
     B32 debug_subprocesses;

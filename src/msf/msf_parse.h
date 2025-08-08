@@ -28,7 +28,7 @@ struct MSF_RawStreamTable
 
 struct MSF_Parsed
 {
-    String8 *streams;
+    StringView *streams;
     U64      stream_count;
     U64      page_size;
     U64      page_count;

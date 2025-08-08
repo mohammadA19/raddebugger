@@ -107,7 +107,7 @@ mtx_mut_thread__entry_point(void *p)
         
         //- rjf: get buffer's current data
         U128 hash = hs_hash_from_key(buffer_key, 0);
-        String8 data = hs_data_from_hash(hs_scope, hash);
+        StringView data = hs_data_from_hash(hs_scope, hash);
         
         //- rjf: clamp op by data
         op.range.min = Min(op.range.min, data.size);
@@ -119,8 +119,8 @@ mtx_mut_thread__entry_point(void *p)
             U64 new_data_size = data.size + op.replace.size - dim_1u64(op.range);
             Arena *arena = arena_alloc(.commit_size = new_data_size + ARENA_HEADER_SIZE, .reserve_size = new_data_size + ARENA_HEADER_SIZE);
             U8 *new_data_base = push_array_no_zero(arena, U8, new_data_size);
-            String8 pre_replace_data = str8_substr(data, r1u64(0, op.range.min));
-            String8 post_replace_data = str8_substr(data, r1u64(op.range.max, data.size));
+            StringView pre_replace_data = str8_substr(data, r1u64(0, op.range.min));
+            StringView post_replace_data = str8_substr(data, r1u64(op.range.max, data.size));
             if (pre_replace_data.size != 0)
             {
                 MemoryCopy(new_data_base+0,                                     pre_replace_data.str, pre_replace_data.size);
@@ -133,7 +133,7 @@ mtx_mut_thread__entry_point(void *p)
             {
                 MemoryCopy(new_data_base+pre_replace_data.size+op.replace.size, post_replace_data.str, post_replace_data.size);
             }
-            String8 new_data = str8(new_data_base, new_data_size);
+            StringView new_data = str8(new_data_base, new_data_size);
             hs_submit_data(buffer_key, &arena, new_data);
         }
         

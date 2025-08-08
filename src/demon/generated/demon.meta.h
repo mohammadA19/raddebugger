@@ -62,8 +62,8 @@ DMN_ExceptionKind_COUNT,
 } DMN_ExceptionKind;
 
 C_LINKAGE_BEGIN
-extern String8 dmn_event_kind_string_table[21];
-extern String8 dmn_exception_kind_string_table[5];
+extern StringView dmn_event_kind_string_table[21];
+extern StringView dmn_exception_kind_string_table[5];
 
 C_LINKAGE_END
 

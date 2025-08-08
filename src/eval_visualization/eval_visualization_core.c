@@ -52,7 +52,7 @@ ev_key_match(EV_Key a, EV_Key b)
 }
 
 internal U64
-ev_hash_from_seed_string(U64 seed, String8 string)
+ev_hash_from_seed_string(U64 seed, StringView string)
 {
     U64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
     return result;
@@ -247,10 +247,10 @@ ev_expansion_from_key(EV_View *view, EV_Key key)
     return (node != 0 && node.expanded);
 }
 
-internal String8
+internal StringView
 ev_view_rule_from_key(EV_View *view, EV_Key key)
 {
-    String8 result = {0};
+    StringView result = {0};
     
     //- rjf: key -> hash * slot idx * slot
     U64 hash = ev_hash_from_key(key);
@@ -350,7 +350,7 @@ ev_key_set_expansion(EV_View *view, EV_Key parent_key, EV_Key key, B32 expanded)
 }
 
 internal void
-ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_string)
+ev_key_set_view_rule(EV_View *view, EV_Key key, StringView view_rule_string)
 {
     //- rjf: key -> hash * slot idx * slot
     U64 hash = ev_hash_from_key(key);
@@ -414,7 +414,7 @@ ev_select_expand_rule_table(EV_ExpandRuleTable *table)
 }
 
 internal EV_ExpandRule *
-ev_expand_rule_from_string(String8 string)
+ev_expand_rule_from_string(StringView string)
 {
     EV_ExpandRule *info = &ev_nil_expand_rule;
     if (ev_view_rule_info_table != 0 && ev_view_rule_info_table.slots_count != 0)
@@ -464,7 +464,7 @@ ev_expand_rule_from_type_key(E_TypeKey type_key)
 //~ rjf: Block Building
 
 internal EV_BlockTree
-ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root_eval)
+ev_block_tree_from_eval(Arena *arena, EV_View *view, StringView filter, E_Eval root_eval)
 {
     ProfBeginFunction();
     EV_BlockTree tree = {&ev_nil_block};
@@ -557,7 +557,7 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
             }
             
             // rjf: get filter for this task
-            String8 task_filter = t.depth == 0 ? filter : str8_zero();
+            StringView task_filter = t.depth == 0 ? filter : str8_zero();
             
             // rjf: get top-level lookup/expansion info
             E_TypeExpandInfo type_expand_info = type_expand_rule.info(arena, eval, task_filter);
@@ -938,7 +938,7 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
             Rng1U64 block_relative_range = n.v.range;
             U64 block_num_visual_rows = dim_1u64(block_relative_range);
             Rng1U64 block_global_range = r1u64(base_vnum, base_vnum + block_num_visual_rows);
-            String8 block_filter = n.v.block.filter;
+            StringView block_filter = n.v.block.filter;
             
             // rjf: get skip/chop of global range
             U64 num_skipped = 0;
@@ -1113,10 +1113,10 @@ ev_row_is_editable(EV_Row *row)
 
 //- rjf: leaf stringification
 
-internal String8
+internal StringView
 ev_string_from_ascii_value(Arena *arena, U8 val)
 {
-    String8 result = {0};
+    StringView result = {0};
     switch (val)
     {
         case 0x00:{result = ("\\0");}break;
@@ -1140,10 +1140,10 @@ ev_string_from_ascii_value(Arena *arena, U8 val)
     return result;
 }
 
-internal String8
+internal StringView
 ev_string_from_hresult_facility_code(U32 code)
 {
-    String8 result = {0};
+    StringView result = {0};
     switch (code)
     {
         default:{}break;
@@ -1269,10 +1269,10 @@ ev_string_from_hresult_facility_code(U32 code)
     return result;
 }
 
-internal String8
+internal StringView
 ev_string_from_hresult_code(U32 code)
 {
-    String8 result = {0};
+    StringView result = {0};
     switch (code)
     {
         default:{}break;
@@ -1292,10 +1292,10 @@ ev_string_from_hresult_code(U32 code)
     return result;
 }
 
-internal String8
+internal StringView
 ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval eval)
 {
-    String8 result = {0};
+    StringView result = {0};
     E_TypeKey type_key = e_type_key_unwrap(eval.irtree.type_key, E_TypeUnwrapFlag_AllDecorative & ~E_TypeUnwrapFlag_Enums);
     E_TypeKind type_kind = e_type_kind_from_key(type_key);
     U64 type_byte_size = e_type_byte_size_from_key(type_key);
@@ -1325,9 +1325,9 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
                 U32 is_error   = !!(hresult_value & (1ull<<31));
                 U32 error_code = (hresult_value);
                 U32 facility   = (hresult_value & 0x7ff0000) >> 16;
-                String8 value_string = str8_from_s64(scratch.arena, eval.value.u64, params.radix, params.min_digits, digit_group_separator);
-                String8 facility_string = ev_string_from_hresult_facility_code(facility);
-                String8 error_string = ev_string_from_hresult_code(error_code);
+                StringView value_string = str8_from_s64(scratch.arena, eval.value.u64, params.radix, params.min_digits, digit_group_separator);
+                StringView facility_string = ev_string_from_hresult_facility_code(facility);
+                StringView error_string = ev_string_from_hresult_code(error_code);
                 result = push_str8f(arena, "%S%s%s%S%s%s%S%s",
                                                         error_string,
                                                         error_string.size != 0 ? " " : "",
@@ -1353,7 +1353,7 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
         case E_TypeKind_UChar32:
         {
             B32 type_is_unsigned = (E_TypeKind_UChar8 <= type_kind && type_kind <= E_TypeKind_UChar32);
-            String8 char_str = {0};
+            StringView char_str = {0};
             if (!(params.flags & EV_StringFlag_DisableChars))
             {
                 char_str = ev_string_from_ascii_value(arena, eval.value.s64);
@@ -1362,7 +1362,7 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
             {
                 if (params.flags & EV_StringFlag_ReadOnlyDisplayRules)
                 {
-                    String8 imm_string = (type_is_unsigned
+                    StringView imm_string = (type_is_unsigned
                                                                 ? str8_from_u64(arena, eval.value.u64, params.radix, params.min_digits, digit_group_separator)
                                                                 : str8_from_s64(arena, eval.value.s64, params.radix, params.min_digits, digit_group_separator));
                     result = push_str8f(arena, "'%S' (%S)", char_str, imm_string);
@@ -1401,8 +1401,8 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
         case E_TypeKind_U128:
         {
             Temp scratch = scratch_begin(&arena, 1);
-            String8 upper64 = str8_from_u64(scratch.arena, eval.value.u128.u64[0], params.radix, params.min_digits, digit_group_separator);
-            String8 lower64 = str8_from_u64(scratch.arena, eval.value.u128.u64[1], params.radix, params.min_digits, digit_group_separator);
+            StringView upper64 = str8_from_u64(scratch.arena, eval.value.u128.u64[0], params.radix, params.min_digits, digit_group_separator);
+            StringView lower64 = str8_from_u64(scratch.arena, eval.value.u128.u64[1], params.radix, params.min_digits, digit_group_separator);
             result = push_str8f(arena, "%S:%S", upper64, lower64);
             scratch_end(scratch);
         }break;
@@ -1436,8 +1436,8 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
     return result;
 }
 
-internal String8
-ev_escaped_from_raw_string(Arena *arena, String8 raw)
+internal StringView
+ev_escaped_from_raw_string(Arena *arena, StringView raw)
 {
     Temp scratch = scratch_begin(&arena, 1);
     String8List parts = {0};
@@ -1446,7 +1446,7 @@ ev_escaped_from_raw_string(Arena *arena, String8 raw)
     {
         U8 byte = (idx < raw.size) ? raw.str[idx] : 0;
         B32 split = 1;
-        String8 separator_replace = {0};
+        StringView separator_replace = {0};
         switch (byte)
         {
             default:{split = 0;}break;
@@ -1463,7 +1463,7 @@ ev_escaped_from_raw_string(Arena *arena, String8 raw)
         }
         if (split)
         {
-            String8 substr = str8_substr(raw, r1u64(start_split_idx, idx));
+            StringView substr = str8_substr(raw, r1u64(start_split_idx, idx));
             start_split_idx = idx+1;
             str8_list_push(scratch.arena, &parts, substr);
             if (separator_replace.size != 0)
@@ -1473,7 +1473,7 @@ ev_escaped_from_raw_string(Arena *arena, String8 raw)
         }
     }
     StringJoin join = {0};
-    String8 result = str8_list_join(arena, &parts, &join);
+    StringView result = str8_list_join(arena, &parts, &join);
     scratch_end(scratch);
     return result;
 }
@@ -1491,7 +1491,7 @@ ev_string_iter_begin(Arena *arena, E_Eval eval, EV_StringParams *params)
 }
 
 internal B32
-ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
+ev_string_iter_next(Arena *arena, EV_StringIter *it, StringView *out_string)
 {
     B32 result = 0;
     
@@ -1512,8 +1512,8 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
         E_Eval eval = it.top_task->eval;
         E_TypeKey type_key = eval.irtree.type_key;
         E_TypeKind type_kind = e_type_kind_from_key(type_key);
-        String8 expansion_opener_symbol = ("{");
-        String8 expansion_closer_symbol = ("}");
+        StringView expansion_opener_symbol = ("{");
+        StringView expansion_closer_symbol = ("}");
         
         //- rjf: type evaluations -> display type string
         if (eval.irtree.mode == E_Mode_Null && !e_type_key_match(e_type_key_zero(), eval.irtree.type_key))
@@ -1545,7 +1545,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                     {
                         E_Type *type = e_type_from_key(type_key);
                         E_Eval value_eval = e_value_eval_from_eval(eval);
-                        String8 constant_name = {0};
+                        StringView constant_name = {0};
                         for (U64 val_idx = 0; val_idx < type.count; val_idx += 1)
                         {
                             if (value_eval.value.u64 == type.enum_vals[val_idx].val)
@@ -1554,7 +1554,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                                 break;
                             }
                         }
-                        String8 sufficient_suffix = constant_name;
+                        StringView sufficient_suffix = constant_name;
                         if (str8_match(sufficient_suffix, type.name, StringMatchFlag_RightSideSloppy))
                         {
                             sufficient_suffix = str8_skip(sufficient_suffix, type.name.size);
@@ -1693,7 +1693,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                                 str8_list_pushf(scratch.arena, &strings, "%S(", type.name);
                                 for EachIndex(idx, type.count)
                                 {
-                                    String8 string = e_string_from_expr(scratch.arena, type.args[idx]);
+                                    StringView string = e_string_from_expr(scratch.arena, type.args[idx]);
                                     str8_list_push(scratch.arena, &strings, string);
                                     if (idx+1 < type.count)
                                     {
@@ -1853,7 +1853,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                             
                             // rjf: check element size - if non-U8, assume UTF-16 or UTF-32 based on type, and convert
                             U64 element_size = ptr_data.direct_type->byte_size;
-                            String8 string = {0};
+                            StringView string = {0};
                             switch (element_size)
                             {
                                 default:{string = str8_cstring((char *)string_buffer);}break;
@@ -1873,10 +1873,10 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                             
                             // rjf: escape and quote
                             B32 string__is_escaped_and_quoted = (!(params.flags & EV_StringFlag_DisableStringQuotes) || depth > 0);
-                            String8 string__escaped_and_quoted = string;
+                            StringView string__escaped_and_quoted = string;
                             if (string__is_escaped_and_quoted)
                             {
-                                String8 string_escaped = ev_escaped_from_raw_string(scratch.arena, string);
+                                StringView string_escaped = ev_escaped_from_raw_string(scratch.arena, string);
                                 string__escaped_and_quoted = push_str8f(scratch.arena, "\"%S\"", string_escaped);
                             }
                             
@@ -1953,7 +1953,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                                     {
                                         RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, inline_site.type_idx);
                                         E_TypeKey type = e_type_key_ext(e_type_kind_from_rdi(type_node.kind), inline_site.type_idx, module_idx);
-                                        String8 name = {0};
+                                        StringView name = {0};
                                         name.str = rdi_string_from_idx(rdi, inline_site.name_string_idx, &name.size);
                                         if (inline_site.type_idx != 0)
                                         {
@@ -1983,7 +1983,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                                     RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, proc_idx);
                                     RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, procedure.type_idx);
                                     E_TypeKey type = e_type_key_ext(e_type_kind_from_rdi(type_node.kind), procedure.type_idx, module_idx);
-                                    String8 name = {0};
+                                    StringView name = {0};
                                     name.str = rdi_string_from_idx(rdi, procedure.name_string_idx, &name.size);
                                     if (procedure.type_idx != 0)
                                     {
@@ -2019,7 +2019,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                                 
                                 // rjf: scope -> procedure / string
                                 RDI_Procedure *procedure = rdi_procedure_from_scope(rdi, scope);
-                                String8 procedure_name = {0};
+                                StringView procedure_name = {0};
                                 procedure_name.str = rdi_name_from_procedure(rdi, procedure, &procedure_name.size);
                                 
                                 *out_string = procedure_name;
@@ -2059,7 +2059,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                     case 1:
                     {
                         Temp scratch = scratch_begin(&arena, 1);
-                        String8 ptr_value_string = str8_from_u64(scratch.arena, ptr_data.value_eval.value.u64, 16, 0, 0);
+                        StringView ptr_value_string = str8_from_u64(scratch.arena, ptr_data.value_eval.value.u64, 16, 0, 0);
                         //
                         // NOTE(rjf): currently, we are not using the string-generation radix parameter when
                         // generating a pointer value - it is weird to want to change pointer value visualization

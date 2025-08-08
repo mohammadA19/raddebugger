@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal String8List
-lnk_arg_list_parse_windows_rules(Arena *arena, String8 string)
+lnk_arg_list_parse_windows_rules(Arena *arena, StringView string)
 {
     Temp scratch = scratch_begin(&arena, 1);
     
@@ -37,7 +37,7 @@ lnk_arg_list_parse_windows_rules(Arena *arena, String8 string)
             
             // handle string and strip quotes
             if (uni.codepoint == '"') {
-                String8 text_before_quote = str8(anchor, (U64)(ptr - anchor));
+                StringView text_before_quote = str8(anchor, (U64)(ptr - anchor));
                 str8_list_push(scratch.arena, &token_builder, text_before_quote);
                 
                 // advance past starting quote
@@ -58,7 +58,7 @@ lnk_arg_list_parse_windows_rules(Arena *arena, String8 string)
                     quote_end = ptr;
                 }
                 
-                String8 text_inside_quotes = str8(anchor, (U64)(quote_end - anchor));
+                StringView text_inside_quotes = str8(anchor, (U64)(quote_end - anchor));
                 str8_list_push(scratch.arena, &token_builder, text_inside_quotes);
                 anchor = ptr;
             } else {
@@ -67,11 +67,11 @@ lnk_arg_list_parse_windows_rules(Arena *arena, String8 string)
         }
         
         // push remaining text 
-        String8 text = str8(anchor, (U64)(ptr - anchor));
+        StringView text = str8(anchor, (U64)(ptr - anchor));
         str8_list_push(scratch.arena, &token_builder, text);
         
         // push token
-        String8 token = str8_list_join(arena, &token_builder, NULL);
+        StringView token = str8_list_join(arena, &token_builder, NULL);
         if (token.size) {
             str8_list_push(arena,  &list, token);
         }
@@ -89,7 +89,7 @@ lnk_cmd_line_push_option_node(LNK_CmdLine *cmd_line, LNK_CmdOption *opt)
 }
 
 internal LNK_CmdOption *
-lnk_cmd_line_push_option_list(Arena *arena, LNK_CmdLine *cmd_line, String8 string, String8List value_strings)
+lnk_cmd_line_push_option_list(Arena *arena, LNK_CmdLine *cmd_line, StringView string, String8List value_strings)
 {
     // fill out node
     LNK_CmdOption *opt = push_array_no_zero(arena, LNK_CmdOption, 1);
@@ -104,7 +104,7 @@ lnk_cmd_line_push_option_list(Arena *arena, LNK_CmdLine *cmd_line, String8 strin
 }
 
 internal LNK_CmdOption *
-lnk_cmd_line_push_option_string(Arena *arena, LNK_CmdLine *cmd_line, String8 string, String8 value)
+lnk_cmd_line_push_option_string(Arena *arena, LNK_CmdLine *cmd_line, StringView string, StringView value)
 {
     String8List value_list = str8_split_by_string_chars(arena, value, (","), StringSplitFlag_KeepEmpties);
     LNK_CmdOption *opt = lnk_cmd_line_push_option_list(arena, cmd_line, string, value_list);
@@ -133,18 +133,18 @@ lnk_cmd_line_parse_windows_rules(Arena *arena, String8List arg_list)
     cmd_line.raw_cmd_line = str8_list_copy(arena, &arg_list);
 
     for (String8Node *arg_node = arg_list.first; arg_node != 0; arg_node = arg_node.next) {
-        String8 arg = arg_node.string;
+        StringView arg = arg_node.string;
         B32 is_option = str8_match_lit("/", arg, StringMatchFlag_RightSideSloppy) ||
                                         str8_match_lit("-", arg, StringMatchFlag_RightSideSloppy);
         if (is_option) {
             U64 param_start_pos = str8_find_needle(arg, 0, (":"), 0);
-            String8 option_name = str8_chop(arg, arg.size - param_start_pos);
+            StringView option_name = str8_chop(arg, arg.size - param_start_pos);
 
             // remove '/' or '-' from option name
             option_name = str8_skip(option_name, 1);
 
             // skip ':'
-            String8 value_string = str8_skip(arg, param_start_pos + 1);
+            StringView value_string = str8_skip(arg, param_start_pos + 1);
 
             // make value list
             String8List value_list = str8_split_by_string_chars(arena, value_string, (","), 0);
@@ -159,7 +159,7 @@ lnk_cmd_line_parse_windows_rules(Arena *arena, String8List arg_list)
 }
 
 internal LNK_CmdOption *
-lnk_cmd_line_option_from_string(LNK_CmdLine cmd_line, String8 string)
+lnk_cmd_line_option_from_string(LNK_CmdLine cmd_line, StringView string)
 {
     LNK_CmdOption *opt;
     for (opt = cmd_line.first_option; opt != NULL; opt = opt.next) {
@@ -171,7 +171,7 @@ lnk_cmd_line_option_from_string(LNK_CmdLine cmd_line, String8 string)
 }
 
 internal B32
-lnk_cmd_line_has_option_string(LNK_CmdLine cmd_line, String8 string)
+lnk_cmd_line_has_option_string(LNK_CmdLine cmd_line, StringView string)
 {
     LNK_CmdOption *opt = lnk_cmd_line_option_from_string(cmd_line, string);
     B32 has_option = (opt != 0);

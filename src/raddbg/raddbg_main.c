@@ -356,7 +356,7 @@ ipc_signaler_thread__entry_point(void *p)
             if (os_semaphore_take(ipc_sender2main_lock_semaphore, max_U64))
             {
                 IPCInfo *ipc_info = (IPCInfo *)ipc_sender2main_shared_memory_base;
-                String8 msg = str8((U8 *)(ipc_info+1), ipc_info.msg_size);
+                StringView msg = str8((U8 *)(ipc_info+1), ipc_info.msg_size);
                 msg.size = Min(msg.size, IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo));
                 OS_MutexScope(ipc_s2m_ring_mutex) for (;;)
                 {
@@ -429,9 +429,9 @@ entry_point(CmdLine *cmd_line)
         }
         auto_run = cmd_line_has_flag(cmd_line, ("auto_run"));
         auto_step = cmd_line_has_flag(cmd_line, ("auto_step"));
-        String8 jit_pid_string = cmd_line_string(cmd_line, ("jit_pid"));
-        String8 jit_code_string = cmd_line_string(cmd_line, ("jit_code"));
-        String8 jit_addr_string = cmd_line_string(cmd_line, ("jit_addr"));
+        StringView jit_pid_string = cmd_line_string(cmd_line, ("jit_pid"));
+        StringView jit_code_string = cmd_line_string(cmd_line, ("jit_code"));
+        StringView jit_addr_string = cmd_line_string(cmd_line, ("jit_addr"));
         try_u64_from_str8_c_rules(jit_pid_string, &jit_pid);
         try_u64_from_str8_c_rules(jit_code_string, &jit_code);
         try_u64_from_str8_c_rules(jit_addr_string, &jit_addr);
@@ -500,18 +500,18 @@ entry_point(CmdLine *cmd_line)
                 U32 instance_pid = os_get_process_info()->pid;
                 
                 // rjf: set up cross-process sender -> main ring buffer
-                String8 ipc_sender2main_shared_memory_name = push_str8f(scratch.arena, "_raddbg_ipc_sender2main_shared_memory_%i_", instance_pid);
-                String8 ipc_sender2main_signal_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_sender2main_signal_semaphore_%i_", instance_pid);
-                String8 ipc_sender2main_lock_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_sender2main_lock_semaphore_%i_", instance_pid);
+                StringView ipc_sender2main_shared_memory_name = push_str8f(scratch.arena, "_raddbg_ipc_sender2main_shared_memory_%i_", instance_pid);
+                StringView ipc_sender2main_signal_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_sender2main_signal_semaphore_%i_", instance_pid);
+                StringView ipc_sender2main_lock_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_sender2main_lock_semaphore_%i_", instance_pid);
                 OS_Handle ipc_sender2main_shared_memory = os_shared_memory_alloc(IPC_SHARED_MEMORY_BUFFER_SIZE, ipc_sender2main_shared_memory_name);
                 ipc_sender2main_shared_memory_base = (U8 *)os_shared_memory_view_open(ipc_sender2main_shared_memory, r1u64(0, IPC_SHARED_MEMORY_BUFFER_SIZE));
                 ipc_sender2main_signal_semaphore = os_semaphore_alloc(0, 1, ipc_sender2main_signal_semaphore_name);
                 ipc_sender2main_lock_semaphore = os_semaphore_alloc(1, 1, ipc_sender2main_lock_semaphore_name);
                 
                 // rjf: set up cross-process main -> sender ring buffer
-                String8 ipc_main2sender_shared_memory_name = push_str8f(scratch.arena, "_raddbg_ipc_main2sender_shared_memory_%i_", instance_pid);
-                String8 ipc_main2sender_signal_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_main2sender_signal_semaphore_%i_", instance_pid);
-                String8 ipc_main2sender_lock_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_main2sender_lock_semaphore_%i_", instance_pid);
+                StringView ipc_main2sender_shared_memory_name = push_str8f(scratch.arena, "_raddbg_ipc_main2sender_shared_memory_%i_", instance_pid);
+                StringView ipc_main2sender_signal_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_main2sender_signal_semaphore_%i_", instance_pid);
+                StringView ipc_main2sender_lock_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_main2sender_lock_semaphore_%i_", instance_pid);
                 OS_Handle ipc_main2sender_shared_memory = os_shared_memory_alloc(IPC_SHARED_MEMORY_BUFFER_SIZE, ipc_main2sender_shared_memory_name);
                 ipc_main2sender_shared_memory_base = (U8 *)os_shared_memory_view_open(ipc_main2sender_shared_memory, r1u64(0, IPC_SHARED_MEMORY_BUFFER_SIZE));
                 ipc_main2sender_signal_semaphore = os_semaphore_alloc(0, 1, ipc_main2sender_signal_semaphore_name);
@@ -539,7 +539,7 @@ entry_point(CmdLine *cmd_line)
                     {
                         Temp scratch = scratch_begin(0, 0);
                         B32 consumed = 0;
-                        String8 msg = {0};
+                        StringView msg = {0};
                         OS_MutexScope(ipc_s2m_ring_mutex)
                         {
                             U64 unconsumed_size = ipc_s2m_ring_write_pos - ipc_s2m_ring_read_pos;
@@ -626,7 +626,7 @@ entry_point(CmdLine *cmd_line)
                             U8 *buffer = (U8 *)(ipc_info+1);
                             U64 buffer_max = IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo);
                             StringJoin join = {(""), ("\0"), ("")};
-                            String8 msg = str8_list_join(scratch.arena, &rd_state.cmd_outputs, &join);
+                            StringView msg = str8_list_join(scratch.arena, &rd_state.cmd_outputs, &join);
                             ipc_info.msg_size = Min(buffer_max, msg.size);
                             MemoryCopy(buffer, msg.str, ipc_info.msg_size);
                             os_semaphore_drop(ipc_main2sender_signal_semaphore);
@@ -647,7 +647,7 @@ entry_point(CmdLine *cmd_line)
             U32 dst_pid = 0;
             if (cmd_line_has_argument(cmd_line, ("pid")))
             {
-                String8 dst_pid_string = cmd_line_string(cmd_line, ("pid"));
+                StringView dst_pid_string = cmd_line_string(cmd_line, ("pid"));
                 U64 dst_pid_u64 = 0;
                 if (dst_pid_string.size != 0 &&
                       try_u64_from_str8_c_rules(dst_pid_string, &dst_pid_u64))
@@ -675,16 +675,16 @@ entry_point(CmdLine *cmd_line)
             }
             
             //- rjf: grab destination instance's shared memory resources
-            String8 ipc_sender2main_shared_memory_name = push_str8f(scratch.arena, "_raddbg_ipc_sender2main_shared_memory_%i_", dst_pid);
-            String8 ipc_sender2main_signal_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_sender2main_signal_semaphore_%i_", dst_pid);
-            String8 ipc_sender2main_lock_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_sender2main_lock_semaphore_%i_", dst_pid);
+            StringView ipc_sender2main_shared_memory_name = push_str8f(scratch.arena, "_raddbg_ipc_sender2main_shared_memory_%i_", dst_pid);
+            StringView ipc_sender2main_signal_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_sender2main_signal_semaphore_%i_", dst_pid);
+            StringView ipc_sender2main_lock_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_sender2main_lock_semaphore_%i_", dst_pid);
             OS_Handle ipc_sender2main_shared_memory = os_shared_memory_alloc(IPC_SHARED_MEMORY_BUFFER_SIZE, ipc_sender2main_shared_memory_name);
             ipc_sender2main_shared_memory_base = (U8 *)os_shared_memory_view_open(ipc_sender2main_shared_memory, r1u64(0, IPC_SHARED_MEMORY_BUFFER_SIZE));
             ipc_sender2main_signal_semaphore = os_semaphore_alloc(0, 1, ipc_sender2main_signal_semaphore_name);
             ipc_sender2main_lock_semaphore = os_semaphore_alloc(1, 1, ipc_sender2main_lock_semaphore_name);
-            String8 ipc_main2sender_shared_memory_name = push_str8f(scratch.arena, "_raddbg_ipc_main2sender_shared_memory_%i_", dst_pid);
-            String8 ipc_main2sender_signal_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_main2sender_signal_semaphore_%i_", dst_pid);
-            String8 ipc_main2sender_lock_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_main2sender_lock_semaphore_%i_", dst_pid);
+            StringView ipc_main2sender_shared_memory_name = push_str8f(scratch.arena, "_raddbg_ipc_main2sender_shared_memory_%i_", dst_pid);
+            StringView ipc_main2sender_signal_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_main2sender_signal_semaphore_%i_", dst_pid);
+            StringView ipc_main2sender_lock_semaphore_name = push_str8f(scratch.arena, "_raddbg_ipc_main2sender_lock_semaphore_%i_", dst_pid);
             OS_Handle ipc_main2sender_shared_memory = os_shared_memory_alloc(IPC_SHARED_MEMORY_BUFFER_SIZE, ipc_main2sender_shared_memory_name);
             ipc_main2sender_shared_memory_base = (U8 *)os_shared_memory_view_open(ipc_main2sender_shared_memory, r1u64(0, IPC_SHARED_MEMORY_BUFFER_SIZE));
             ipc_main2sender_signal_semaphore = os_semaphore_alloc(0, 1, ipc_main2sender_signal_semaphore_name);
@@ -702,7 +702,7 @@ entry_point(CmdLine *cmd_line)
                 U64 buffer_max = IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo);
                 String8List parts = os_string_list_from_argcv(scratch.arena, cmd_line.argc - 1, cmd_line.argv + 1);
                 StringJoin join = {(""), (" "), ("")};
-                String8 msg = str8_list_join(scratch.arena, &parts, &join);
+                StringView msg = str8_list_join(scratch.arena, &parts, &join);
                 ipc_info.msg_size = Min(buffer_max, msg.size);
                 MemoryCopy(buffer, msg.str, ipc_info.msg_size);
                 os_semaphore_drop(ipc_sender2main_signal_semaphore);
@@ -718,7 +718,7 @@ entry_point(CmdLine *cmd_line)
                 if (os_semaphore_take(ipc_main2sender_lock_semaphore, max_U64))
                 {
                     IPCInfo *ipc_info = (IPCInfo *)ipc_main2sender_shared_memory_base;
-                    String8 msg = str8((U8 *)(ipc_info+1), ipc_info.msg_size);
+                    StringView msg = str8((U8 *)(ipc_info+1), ipc_info.msg_size);
                     msg.size = Min(msg.size, IPC_SHARED_MEMORY_BUFFER_SIZE - sizeof(IPCInfo));
                     U8 split_char = 0;
                     outputs = str8_split(scratch.arena, msg, &split_char, 1, 0);

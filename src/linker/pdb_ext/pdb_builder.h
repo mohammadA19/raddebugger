@@ -11,16 +11,16 @@
 ////////////////////////////////
 // Hash table
 
-#define PDB_HASH_TABLE_PACK_FUNC(name) void name(Arena *arena, String8List *local_data_srl, String8List *key_value_srl, String8 key, String8 value, void *ud)
+#define PDB_HASH_TABLE_PACK_FUNC(name) void name(Arena *arena, String8List *local_data_srl, String8List *key_value_srl, StringView key, StringView value, void *ud)
 typedef PDB_HASH_TABLE_PACK_FUNC(PDB_HashTablePackFunc);
 
-#define PDB_HASH_TABLE_UNPACK_FUNC(name) B32 name(void *ud, String8 local_data, String8 key_value_data, U64 *key_value_cursor, String8 *key_out, String8 *value_out)
+#define PDB_HASH_TABLE_UNPACK_FUNC(name) B32 name(void *ud, StringView local_data, StringView key_value_data, U64 *key_value_cursor, StringView *key_out, StringView *value_out)
 typedef PDB_HASH_TABLE_UNPACK_FUNC(PDB_HashTableUnpackFunc);
 
 typedef struct PDB_HashTableBucket
 {
-    String8 key;
-    String8 value;
+    StringView key;
+    StringView value;
 } PDB_HashTableBucket;
 
 typedef struct PDB_HashTable
@@ -45,7 +45,7 @@ enum
 
 typedef struct PDB_StringTableBucket
 {
-    String8          data;
+    StringView          data;
     PDB_StringOffset offset;
     PDB_StringIndex  istr;
 } PDB_StringTableBucket;
@@ -89,7 +89,7 @@ enum
 typedef struct PDB_TypeBucket
 {
     struct PDB_TypeBucket *next;
-    String8                raw_leaf;
+    StringView                raw_leaf;
     CV_TypeIndex           type_index;
 } PDB_TypeBucket;
 
@@ -114,7 +114,7 @@ typedef struct PDB_TypeHashStreamInfo
 typedef struct PDB_TypeServerParse
 {
     Rng1U64 ti_range;
-    String8 leaf_data;
+    StringView leaf_data;
 } PDB_TypeServerParse;
 
 typedef struct
@@ -155,7 +155,7 @@ typedef struct PDB_InfoParse
     COFF_TimeStamp   time_stamp;
     U32              age;
     Guid             guid;
-    String8          extra_info;
+    StringView          extra_info;
 } PDB_InfoParse;
 
 typedef struct PDB_InfoContext
@@ -205,7 +205,7 @@ typedef struct PDB_GsiContext
 typedef struct PDB_GsiSortRecord
 {
     ISectOff isect_off;
-    String8 name;
+    StringView name;
     U64 offset;
 } PDB_GsiSortRecord;
 
@@ -220,7 +220,7 @@ typedef struct PDB_GsiBuildResult
     U64                compressed_bucket_count;
     U32               *compressed_bucket_arr;
     U64                total_hash_size;
-    String8            symbol_data;
+    StringView            symbol_data;
 } PDB_GsiBuildResult;
 
 typedef struct PDB_GsiSerializeSymbolsTask
@@ -258,8 +258,8 @@ typedef struct PDB_DbiModule
     U64                   c11_data_size;
     U64                   c13_data_size;
     U64                   globrefs_size; // TODO: what is this for?
-    String8               obj_path;
-    String8               lib_path;
+    StringView               obj_path;
+    StringView               lib_path;
     String8List           source_file_list;
 } PDB_DbiModule;
 
@@ -383,7 +383,7 @@ typedef struct
 ////////////////////////////////
 // Type Server
 
-//internal CV_LeafNode *     pdb_type_server_leaf_from_string(PDB_TypeServer *ts, String8 string);
+//internal CV_LeafNode *     pdb_type_server_leaf_from_string(PDB_TypeServer *ts, StringView string);
 
 ////////////////////////////////
 // Enum -> String

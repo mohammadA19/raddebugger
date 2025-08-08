@@ -43,11 +43,11 @@ typedef struct RC_Context
 {
     ExecutableImageKind        image;
     RC_Driver        driver;
-    String8          image_name;
-    String8          image_data;
-    String8          debug_name;
-    String8          debug_data;
-    String8          out_name;
+    StringView          image_name;
+    StringView          image_data;
+    StringView          debug_name;
+    StringView          debug_data;
+    StringView          out_name;
     RC_Flags         flags;
     Guid             guid;
     ELF_GnuDebugLink debug_link;

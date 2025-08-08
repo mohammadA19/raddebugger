@@ -29,7 +29,7 @@ struct ELF_Bin
 
 struct ELF_GnuDebugLink
 {
-    String8 path;
+    StringView path;
     U32 checksum;
 };
 

@@ -30,7 +30,7 @@ typedef struct LNK_SectionContribChunk
     struct LNK_SectionContribChunk *next;
     U64                             count;
     U64                             cap;
-    String8                         sort_idx;
+    StringView                         sort_idx;
     LNK_SectionContrib            **v;
     LNK_SectionContrib             *v2;
 } LNK_SectionContribChunk;
@@ -44,7 +44,7 @@ typedef struct LNK_SectionContribChunkList
 
 typedef struct LNK_Section
 {
-    String8                     name;
+    StringView                     name;
     COFF_SectionFlags           flags;
     LNK_SectionContribChunkList contribs;
 

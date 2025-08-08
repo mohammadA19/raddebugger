@@ -26,7 +26,7 @@ typedef struct CV_Symbol
 {
     CV_SymKind kind;
     U64        offset;
-    String8    data;
+    StringView    data;
 } CV_Symbol;
 
 typedef struct CV_SymbolNode
@@ -91,7 +91,7 @@ typedef struct CV_ScopeFrame
 typedef struct CV_Checksum
 {
     CV_C13Checksum *header;
-    String8 value;
+    StringView value;
 } CV_Checksum;
 
 typedef struct CV_ChecksumNode
@@ -154,7 +154,7 @@ typedef struct CV_C13LinesHeaderList
 
 typedef struct CV_TypeServerInfo
 {
-    String8 name;
+    StringView name;
     Guid    sig;
     U32     age;
 } CV_TypeServerInfo;
@@ -177,13 +177,13 @@ typedef struct CV_PrecompInfo
     CV_TypeIndex start_index;
     U32          sig;
     U32          leaf_count;
-    String8      obj_name;
+    StringView      obj_name;
 } CV_PrecompInfo;
 
 typedef struct CV_ObjInfo
 {
     U32     sig;
-    String8 name;
+    StringView name;
 } CV_ObjInfo;
 
 ////////////////////////////////
@@ -262,7 +262,7 @@ typedef struct CV_DebugT
 typedef struct CV_Leaf
 {
     CV_LeafKind kind;
-    String8     data;
+    StringView     data;
 } CV_Leaf;
 
 typedef struct CV_LeafNode
@@ -290,7 +290,7 @@ typedef struct CV_StringTableRange
 
 typedef struct CV_StringBucket
 {
-    String8 string;
+    StringView string;
     union {
         struct {
             U32 idx0;
@@ -373,11 +373,11 @@ typedef struct
 //~ Symbol Helpers
 
 
-internal String8       cv_make_comp3(Arena *arena,
+internal StringView       cv_make_comp3(Arena *arena,
                                                                           CV_Compile3Flags flags, CV_Language lang, CV_Arch arch, 
                                                                           U16 ver_fe_major, U16 ver_fe_minor, U16 ver_fe_build, U16 ver_feqfe,
                                                                           U16 ver_major, U16 ver_minor, U16 ver_build, U16 ver_qfe,
-                                                                          String8 version_string);
+                                                                          StringView version_string);
 
 ////////////////////////////////
 // .debug$S Helpers
@@ -395,7 +395,7 @@ internal String8       cv_make_comp3(Arena *arena,
 // $$Symbols
 
 // $$FileChksms
-#define CV_MAP_STRING_TO_OFFSET_FUNC(name) U64 name(void *ud, String8 string)
+#define CV_MAP_STRING_TO_OFFSET_FUNC(name) U64 name(void *ud, StringView string)
 typedef CV_MAP_STRING_TO_OFFSET_FUNC(CV_MapStringToOffsetFunc);
 
 

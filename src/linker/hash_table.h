@@ -6,13 +6,13 @@
 typedef struct KeyValuePair
 {
     union {
-        String8 key_string;
+        StringView key_string;
         void   *key_raw;
         U32     key_u32;
         U64     key_u64;
     };
     union {
-        String8  value_string;
+        StringView  value_string;
         void    *value_raw;
         U32      value_u32;
         U64      value_u64;

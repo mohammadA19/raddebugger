@@ -113,7 +113,7 @@ RD_Option_RdiStrings)
 typedef struct RD_Marker
 {
     U64     off;
-    String8 string;
+    StringView string;
 } RD_Marker;
 
 typedef struct RD_MarkerArray
@@ -137,14 +137,14 @@ typedef struct RD_MarkerList
 
 typedef struct RD_DisasmResult
 {
-    String8 text;
+    StringView text;
     U64     size;
 } RD_DisasmResult;
 
 typedef struct RD_Section
 {
-    String8 name;
-    String8 raw_data;
+    StringView name;
+    StringView raw_data;
 } RD_Section;
 
 typedef struct RD_SectionArray
@@ -155,7 +155,7 @@ typedef struct RD_SectionArray
 
 typedef struct RD_Line
 {
-    String8 file_path;
+    StringView file_path;
     U32     line_num;
 } RD_Line;
 

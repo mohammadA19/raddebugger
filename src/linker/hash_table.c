@@ -31,7 +31,7 @@ bucket_list_pop(BucketList *list)
 #include "third_party/xxHash/xxhash.h"
 
 internal U64
-hash_table_hasher(String8 string)
+hash_table_hasher(StringView string)
 {
     XXH64_hash_t hash64 = XXH3_64bits(string.str, string.size);
     return hash64;
@@ -78,21 +78,21 @@ hash_table_push(Arena *arena, HashTable *ht, U64 hash, KeyValuePair v)
 }
 
 internal BucketNode *
-hash_table_push_string_string(Arena *arena, HashTable *ht, String8 key, String8 value)
+hash_table_push_string_string(Arena *arena, HashTable *ht, StringView key, StringView value)
 {
     U64 hash = hash_table_hasher(key);
     return hash_table_push(arena, ht, hash, (KeyValuePair){ .key_string = key, .value_string = value });
 }
 
 internal BucketNode *
-hash_table_push_string_raw(Arena *arena, HashTable *ht, String8 key, void *value)
+hash_table_push_string_raw(Arena *arena, HashTable *ht, StringView key, void *value)
 {
     U64 hash = hash_table_hasher(key);
     return hash_table_push(arena, ht, hash, (KeyValuePair){ .key_string = key, .value_raw = value });
 }
 
 internal BucketNode *
-hash_table_push_string_u64(Arena *arena, HashTable *ht, String8 key, U64 value)
+hash_table_push_string_u64(Arena *arena, HashTable *ht, StringView key, U64 value)
 {
     U64 hash = hash_table_hasher(key);
     return hash_table_push(arena, ht, hash, (KeyValuePair){.key_string = key, .value_u64 = value });
@@ -106,7 +106,7 @@ hash_table_push_u32_raw(Arena *arena, HashTable *ht, U32 key, void *value)
 }
 
 internal BucketNode *
-hash_table_push_u32_string(Arena *arena, HashTable *ht, U32 key, String8 value)
+hash_table_push_u32_string(Arena *arena, HashTable *ht, U32 key, StringView value)
 {
     U64 hash = hash_table_hasher(str8_struct(&key));
     return hash_table_push(arena, ht, hash, (KeyValuePair){ .key_u32 = key, .value_string = value });
@@ -120,7 +120,7 @@ hash_table_push_u64_raw(Arena *arena, HashTable *ht, U64 key, void *value)
 }
 
 internal BucketNode *
-hash_table_push_u64_string(Arena *arena, HashTable *ht, U64 key, String8 value)
+hash_table_push_u64_string(Arena *arena, HashTable *ht, U64 key, StringView value)
 {
     U64 hash = hash_table_hasher(str8_struct(&key));
     return hash_table_push(arena, ht, hash, (KeyValuePair){ .key_u64 = key, .value_string = value });
@@ -133,11 +133,11 @@ hash_table_push_u64_u64(Arena *arena, HashTable *ht, U64 key, U64 value)
     return hash_table_push(arena, ht, hash, (KeyValuePair){ .key_u64 = key, .value_u64 = value });
 }
 
-internal String8
-hash_table_normalize_path_string(Arena *arena, String8 path)
+internal StringView
+hash_table_normalize_path_string(Arena *arena, StringView path)
 {
     Temp scratch = scratch_begin(&arena, 1);
-    String8 result;
+    StringView result;
     result = lower_from_str8(scratch.arena, path);
     result = path_convert_slashes(arena, result, PathStyle_UnixAbsolute);
     scratch_end(scratch);
@@ -145,24 +145,24 @@ hash_table_normalize_path_string(Arena *arena, String8 path)
 }
 
 internal BucketNode *
-hash_table_push_path_string(Arena *arena, HashTable *ht, String8 path, String8 value)
+hash_table_push_path_string(Arena *arena, HashTable *ht, StringView path, StringView value)
 {
-    String8 path_canon = hash_table_normalize_path_string(arena, path); 
+    StringView path_canon = hash_table_normalize_path_string(arena, path); 
     return hash_table_push_string_string(arena, ht, path_canon, value);
 }
 
 internal BucketNode *
-hash_table_push_path_u64(Arena *arena, HashTable *ht, String8 path, U64 value)
+hash_table_push_path_u64(Arena *arena, HashTable *ht, StringView path, U64 value)
 {
-    String8 path_canon = hash_table_normalize_path_string(arena, path);
+    StringView path_canon = hash_table_normalize_path_string(arena, path);
     U64 hash = hash_table_hasher(path_canon);
     return hash_table_push(arena, ht, hash, (KeyValuePair){ .key_string = path_canon, .value_u64 = value });
 }
 
 internal BucketNode *
-hash_table_push_path_raw(Arena *arena, HashTable *ht, String8 path, void *value)
+hash_table_push_path_raw(Arena *arena, HashTable *ht, StringView path, void *value)
 {
-    String8 path_canon = hash_table_normalize_path_string(arena, path);
+    StringView path_canon = hash_table_normalize_path_string(arena, path);
     U64 hash = hash_table_hasher(path_canon);
     return hash_table_push(arena, ht, hash, (KeyValuePair){ .key_string = path_canon, .value_raw = value });
 }
@@ -170,7 +170,7 @@ hash_table_push_path_raw(Arena *arena, HashTable *ht, String8 path, void *value)
 ////////////////////////////////
 
 internal KeyValuePair *
-hash_table_search_string(HashTable *ht, String8 key_string)
+hash_table_search_string(HashTable *ht, StringView key_string)
 {
     U64         hash    = hash_table_hasher(key_string);
     U64         ibucket = hash % ht.cap;
@@ -219,10 +219,10 @@ hash_table_search_u64_raw(HashTable *ht, U64 key_u64)
 }
 
 internal KeyValuePair *
-hash_table_search_path(HashTable *ht, String8 path)
+hash_table_search_path(HashTable *ht, StringView path)
 {
     Temp scratch = scratch_begin(0,0);
-    String8 path_canon = path;
+    StringView path_canon = path;
     path_canon = lower_from_str8(scratch.arena, path_canon);
     path_canon = path_convert_slashes(scratch.arena, path_canon, PathStyle_UnixAbsolute);
     KeyValuePair *result = hash_table_search_string(ht, path_canon);
@@ -231,14 +231,14 @@ hash_table_search_path(HashTable *ht, String8 path)
 }
 
 internal void *
-hash_table_search_path_raw(HashTable *ht, String8 path)
+hash_table_search_path_raw(HashTable *ht, StringView path)
 {
     KeyValuePair *kv = hash_table_search_path(ht, path);
     return kv ? kv.value_raw : 0;
 }
 
 internal B32
-hash_table_search_path_u64(HashTable *ht, String8 key, U64 *value_out)
+hash_table_search_path_u64(HashTable *ht, StringView key, U64 *value_out)
 {
     KeyValuePair *result = hash_table_search_path(ht, key);
     if (result != 0) {
@@ -251,7 +251,7 @@ hash_table_search_path_u64(HashTable *ht, String8 key, U64 *value_out)
 }
 
 internal B32
-hash_table_search_string_u64(HashTable *ht, String8 key, U64 *value_out)
+hash_table_search_string_u64(HashTable *ht, StringView key, U64 *value_out)
 {
     KeyValuePair *result = hash_table_search_string(ht, key);
     if (result != 0) {
@@ -264,7 +264,7 @@ hash_table_search_string_u64(HashTable *ht, String8 key, U64 *value_out)
 }
 
 internal B32
-hash_table_search_string_raw(HashTable *ht, String8 key, void *value_out)
+hash_table_search_string_raw(HashTable *ht, StringView key, void *value_out)
 {
     KeyValuePair *result = hash_table_search_string(ht, key);
     if (result) {
@@ -277,7 +277,7 @@ hash_table_search_string_raw(HashTable *ht, String8 key, void *value_out)
 }
 
 internal B32
-hash_table_search_string_string(HashTable *ht, String8 key, String8 *value_out)
+hash_table_search_string_string(HashTable *ht, StringView key, StringView *value_out)
 {
     KeyValuePair *result = hash_table_search_string(ht, key);
     if (result) {
@@ -335,10 +335,10 @@ keys_from_hash_table_u64(Arena *arena, HashTable *ht)
     return result;
 }
 
-internal String8 *
+internal StringView *
 keys_from_hash_table_string(Arena *arena, HashTable *ht)
 {
-    String8 *result = push_array_no_zero(arena, String8, ht.count);
+    StringView *result = push_array_no_zero(arena, StringView, ht.count);
     for (U64 bucket_idx = 0, cursor = 0; bucket_idx < ht.cap; ++bucket_idx) {
         for (BucketNode *n = ht.buckets[bucket_idx].first; n != 0; n = n.next) {
             Assert(cursor < ht.count);

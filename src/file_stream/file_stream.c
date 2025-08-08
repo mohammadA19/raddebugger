@@ -8,7 +8,7 @@
 //~ rjf: Basic Helpers
 
 internal U64
-fs_little_hash_from_string(String8 string)
+fs_little_hash_from_string(StringView string)
 {
     U64 result = 5381;
     for (U64 i = 0; i < string.size; i += 1)
@@ -19,7 +19,7 @@ fs_little_hash_from_string(String8 string)
 }
 
 internal U128
-fs_big_hash_from_string_range(String8 string, Rng1U64 range)
+fs_big_hash_from_string_range(StringView string, Rng1U64 range)
 {
     Temp scratch = scratch_begin(0, 0);
     U64 buffer_size = string.size + sizeof(U64)*2;
@@ -72,7 +72,7 @@ fs_change_gen(void)
 //~ rjf: Cache Interaction
 
 internal HS_Key
-fs_key_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
+fs_key_from_path_range(StringView path, Rng1U64 range, U64 endt_us)
 {
     Temp scratch = scratch_begin(0, 0);
     
@@ -201,7 +201,7 @@ fs_key_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
 }
 
 internal U128
-fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
+fs_hash_from_path_range(StringView path, Rng1U64 range, U64 endt_us)
 {
     U128 hash = {0};
     {
@@ -219,7 +219,7 @@ fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us)
 }
 
 internal FileProperties
-fs_properties_from_path(String8 path)
+fs_properties_from_path(StringView path)
 {
     Temp scratch = scratch_begin(0, 0);
     FileProperties result = {0};
@@ -248,7 +248,7 @@ fs_properties_from_path(String8 path)
 //~ rjf: Streamer Threads
 
 internal B32
-fs_u2s_enqueue_req(HS_Key key, Rng1U64 range, String8 path, U64 endt_us)
+fs_u2s_enqueue_req(HS_Key key, Rng1U64 range, StringView path, U64 endt_us)
 {
     B32 result = 0;
     path.size = Min(path.size, fs_shared.u2s_ring_size);
@@ -277,7 +277,7 @@ fs_u2s_enqueue_req(HS_Key key, Rng1U64 range, String8 path, U64 endt_us)
 }
 
 internal void
-fs_u2s_dequeue_req(Arena *arena, HS_Key *key_out, Rng1U64 *range_out, String8 *path_out)
+fs_u2s_dequeue_req(Arena *arena, HS_Key *key_out, Rng1U64 *range_out, StringView *path_out)
 {
     OS_MutexScope(fs_shared.u2s_ring_mutex) for (;;)
     {
@@ -305,7 +305,7 @@ ASYNC_WORK_DEF(fs_stream_work)
     //- rjf: get next request
     HS_Key key = {0};
     Rng1U64 range = {0};
-    String8 path = {0};
+    StringView path = {0};
     fs_u2s_dequeue_req(scratch.arena, &key, &range, &path);
     
     //- rjf: unpack request
@@ -329,7 +329,7 @@ ASYNC_WORK_DEF(fs_stream_work)
     Arena *data_arena = arena_alloc(.reserve_size = data_arena_size, .commit_size = data_arena_size);
     ProfEnd();
     ProfBegin("read");
-    String8 data = os_string_from_file_range(data_arena, file, r1u64(range.min, range.min+read_size));
+    StringView data = os_string_from_file_range(data_arena, file, r1u64(range.min, range.min+read_size));
     ProfEnd();
     os_file_close(file);
     FileProperties post_props = os_properties_from_file_path(path);

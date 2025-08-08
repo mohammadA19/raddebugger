@@ -9,10 +9,10 @@
 ////////////////////////////////
 //~ rjf: Event Functions (Helpers, Implemented Once)
 
-internal String8
+internal StringView
 os_string_from_event_kind(OS_EventKind kind)
 {
-    String8 result = {0};
+    StringView result = {0};
     switch (kind)
     {
         case OS_EventKind_Null:
@@ -35,7 +35,7 @@ internal String8List
 os_string_list_from_modifiers(Arena *arena, OS_Modifiers modifiers)
 {
     String8List result = {0};
-    String8 modifier_strs[] = 
+    StringView modifier_strs[] = 
     {
         ("Ctrl"),
         ("Shift"),
@@ -45,15 +45,15 @@ os_string_list_from_modifiers(Arena *arena, OS_Modifiers modifiers)
     return result;
 }
 
-internal String8
+internal StringView
 os_string_from_modifiers_key(Arena *arena, OS_Modifiers modifiers, OS_Key key)
 {
-    String8 result = {0};
+    StringView result = {0};
     if (key != OS_Key_Null)
     {
         Temp scratch = scratch_begin(&arena, 1);
         String8List mods = os_string_list_from_modifiers(scratch.arena, modifiers);
-        String8 key_string = os_g_key_display_string_table[key];
+        StringView key_string = os_g_key_display_string_table[key];
         str8_list_push(scratch.arena, &mods, key_string);
         StringJoin join = {0};
         join.sep = (" + ");

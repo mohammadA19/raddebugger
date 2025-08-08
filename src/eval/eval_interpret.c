@@ -29,7 +29,7 @@ e_select_interpret_ctx(E_InterpretCtx *ctx, RDI_Parsed *primary_rdi, U64 ip_voff
                         U8      *bytecode_ptr  = all_location_data + block.location_data_off + sizeof(RDI_LocationKind);
                         U8      *bytecode_opl  = all_location_data + all_location_data_size;
                         U64      bytecode_size = rdi_size_from_bytecode_stream(bytecode_ptr, bytecode_opl);
-                        String8  bytecode      = str8(bytecode_ptr, bytecode_size);
+                        StringView  bytecode      = str8(bytecode_ptr, bytecode_size);
                         frame_base = e_interpret(bytecode);
                     }
                     else if (loc_kind != RDI_LocationKind_NULL)
@@ -96,7 +96,7 @@ e_space_write(E_Space space, void *in, Rng1U64 range)
 //~ rjf: Interpretation Functions
 
 internal E_Interpretation
-e_interpret(String8 bytecode)
+e_interpret(StringView bytecode)
 {
     E_Interpretation result = {0};
     Temp scratch = scratch_begin(0, 0);

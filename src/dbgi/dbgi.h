@@ -9,7 +9,7 @@
 
 struct DI_Key
 {
-    String8 path;
+    StringView path;
     U64 min_timestamp;
 };
 
@@ -48,7 +48,7 @@ DI_EventKind;
 struct DI_Event
 {
     DI_EventKind kind;
-    String8 string;
+    StringView string;
 };
 
 struct DI_EventNode
@@ -156,7 +156,7 @@ struct DI_SearchParams
 struct DI_SearchBucket
 {
     Arena *arena;
-    String8 query;
+    StringView query;
     U64 params_hash;
     DI_SearchParams params;
 };
@@ -261,7 +261,7 @@ struct DI_MatchNameNode
     U64 last_gen_touched;
     U64 req_params_hash;
     U64 req_count;
-    String8 name;
+    StringView name;
     U64 hash;
     
     // rjf: atomically written by match work

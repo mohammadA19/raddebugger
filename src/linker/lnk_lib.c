@@ -54,7 +54,7 @@ lnk_array_from_lib_list(Arena *arena, LNK_LibList list)
 }
 
 internal B32
-lnk_lib_from_data(Arena *arena, String8 data, String8 path, LNK_Lib *lib_out)
+lnk_lib_from_data(Arena *arena, StringView data, StringView path, LNK_Lib *lib_out)
 {
     ProfBeginFunction();
 
@@ -70,7 +70,7 @@ lnk_lib_from_data(Arena *arena, String8 data, String8 path, LNK_Lib *lib_out)
     }
 
     U64     symbol_count;
-    String8 string_table;
+    StringView string_table;
     U32    *member_off_arr;
 
     // try to init library from optional second member

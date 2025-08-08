@@ -4,7 +4,7 @@
 //- GENERATED CODE
 
 C_LINKAGE_BEGIN
-String8 rd_tab_fast_path_view_name_table[24] =
+StringView rd_tab_fast_path_view_name_table[24] =
 {
 ("watch"),
 ("watch"),
@@ -32,7 +32,7 @@ String8 rd_tab_fast_path_view_name_table[24] =
 ("geo3d"),
 };
 
-String8 rd_tab_fast_path_query_name_table[24] =
+StringView rd_tab_fast_path_query_name_table[24] =
 {
 (""),
 ("query:locals"),
@@ -444,7 +444,7 @@ RD_NameSchemaInfo rd_name_schema_info_table[24] =
 {("thread"), ("x:{'label':code_string, 'id':u64, @no_expand 'active':bool, 'call_stack':query}")},
 };
 
-String8 rd_reg_slot_code_name_table[47] =
+StringView rd_reg_slot_code_name_table[47] =
 {
 {0},
 ("machine"),
@@ -514,7 +514,7 @@ Rng1U64 rd_reg_slot_range_table[47] =
 {OffsetOf(RD_Regs, eval_space), OffsetOf(RD_Regs, eval_space) + sizeof(E_Space)},
 {OffsetOf(RD_Regs, unwind_count), OffsetOf(RD_Regs, unwind_count) + sizeof(U64)},
 {OffsetOf(RD_Regs, inline_depth), OffsetOf(RD_Regs, inline_depth) + sizeof(U64)},
-{OffsetOf(RD_Regs, file_path), OffsetOf(RD_Regs, file_path) + sizeof(String8)},
+{OffsetOf(RD_Regs, file_path), OffsetOf(RD_Regs, file_path) + sizeof(StringView)},
 {OffsetOf(RD_Regs, cursor), OffsetOf(RD_Regs, cursor) + sizeof(TxtPt)},
 {OffsetOf(RD_Regs, mark), OffsetOf(RD_Regs, mark) + sizeof(TxtPt)},
 {OffsetOf(RD_Regs, text_key), OffsetOf(RD_Regs, text_key) + sizeof(HS_Key)},
@@ -525,7 +525,7 @@ Rng1U64 rd_reg_slot_range_table[47] =
 {OffsetOf(RD_Regs, voff), OffsetOf(RD_Regs, voff) + sizeof(U64)},
 {OffsetOf(RD_Regs, vaddr_range), OffsetOf(RD_Regs, vaddr_range) + sizeof(Rng1U64)},
 {OffsetOf(RD_Regs, voff_range), OffsetOf(RD_Regs, voff_range) + sizeof(Rng1U64)},
-{OffsetOf(RD_Regs, expr), OffsetOf(RD_Regs, expr) + sizeof(String8)},
+{OffsetOf(RD_Regs, expr), OffsetOf(RD_Regs, expr) + sizeof(StringView)},
 {OffsetOf(RD_Regs, ui_key), OffsetOf(RD_Regs, ui_key) + sizeof(UI_Key)},
 {OffsetOf(RD_Regs, src_ui_key), OffsetOf(RD_Regs, src_ui_key) + sizeof(UI_Key)},
 {OffsetOf(RD_Regs, off_px), OffsetOf(RD_Regs, off_px) + sizeof(Vec2F32)},
@@ -541,8 +541,8 @@ Rng1U64 rd_reg_slot_range_table[47] =
 {OffsetOf(RD_Regs, all_windows), OffsetOf(RD_Regs, all_windows) + sizeof(B32)},
 {OffsetOf(RD_Regs, non_graphical), OffsetOf(RD_Regs, non_graphical) + sizeof(B32)},
 {OffsetOf(RD_Regs, dir2), OffsetOf(RD_Regs, dir2) + sizeof(Dir2)},
-{OffsetOf(RD_Regs, string), OffsetOf(RD_Regs, string) + sizeof(String8)},
-{OffsetOf(RD_Regs, cmd_name), OffsetOf(RD_Regs, cmd_name) + sizeof(String8)},
+{OffsetOf(RD_Regs, string), OffsetOf(RD_Regs, string) + sizeof(StringView)},
+{OffsetOf(RD_Regs, cmd_name), OffsetOf(RD_Regs, cmd_name) + sizeof(StringView)},
 {OffsetOf(RD_Regs, os_event), OffsetOf(RD_Regs, os_event) + sizeof(OS_Event *)},
 };
 
@@ -795,7 +795,7 @@ RD_CmdKindInfo rd_cmd_kind_info_table[245] =
 { ("geo3d"), ("Opens a Geometry (3D) tab."), {0}, {0}, RD_CmdKindFlag_ListInUI|RD_CmdKindFlag_ListInIPCDocs|RD_CmdKindFlag_ListInTab},
 };
 
-struct {String8 string; RD_Binding binding;} rd_default_binding_table[116] =
+struct {StringView string; RD_Binding binding;} rd_default_binding_table[116] =
 {
 {("kill_all"), {OS_Key_F5, 0  |OS_Modifier_Shift }},
 {("step_into_inst"), {OS_Key_F11, 0   |OS_Modifier_Alt}},
@@ -915,7 +915,7 @@ struct {String8 string; RD_Binding binding;} rd_default_binding_table[116] =
 {("toggle_dev_menu"), {OS_Key_D, 0 |OS_Modifier_Ctrl |OS_Modifier_Shift |OS_Modifier_Alt}},
 };
 
-String8 rd_binding_version_remap_old_name_table[8] =
+StringView rd_binding_version_remap_old_name_table[8] =
 {
 ("commands"),
 ("load_user"),
@@ -927,7 +927,7 @@ String8 rd_binding_version_remap_old_name_table[8] =
 ("toggle_breakpoint_cursor"),
 };
 
-String8 rd_binding_version_remap_new_name_table[8] =
+StringView rd_binding_version_remap_new_name_table[8] =
 {
 ("run_command"),
 ("open_user"),
@@ -939,7 +939,7 @@ String8 rd_binding_version_remap_new_name_table[8] =
 ("toggle_breakpoint"),
 };
 
-String8 rd_icon_kind_text_table[75] =
+StringView rd_icon_kind_text_table[75] =
 {
 (""),
 ("b"),
@@ -1018,7 +1018,7 @@ String8 rd_icon_kind_text_table[75] =
 ("#"),
 };
 
-String8 rd_code_color_slot_name_table[14] =
+StringView rd_code_color_slot_name_table[14] =
 {
 ("code_default"),
 ("code_symbol"),
@@ -1036,7 +1036,7 @@ String8 rd_code_color_slot_name_table[14] =
 ("code_line_numbers_selected"),
 };
 
-String8 rd_theme_preset_display_string_table[11] =
+StringView rd_theme_preset_display_string_table[11] =
 {
 ("Default (Dark)"),
 ("Default (Light)"),
@@ -1051,7 +1051,7 @@ String8 rd_theme_preset_display_string_table[11] =
 ("Far Manager"),
 };
 
-String8 rd_theme_preset_code_string_table[11] =
+StringView rd_theme_preset_code_string_table[11] =
 {
 ("default_dark"),
 ("default_light"),
@@ -1066,7 +1066,7 @@ String8 rd_theme_preset_code_string_table[11] =
 ("far_manager"),
 };
 
-String8 rd_theme_preset_cfg_string_table[11] =
+StringView rd_theme_preset_cfg_string_table[11] =
 {
 ("theme:\n{\n  theme_color: {tags:\"background\",                             value: 0x1b1b1bff }\n  theme_color: {tags:\"alt background\",                         value: 0x222222ff }\n  theme_color: {tags:\"pop background\",                         value: 0x355b6eff }\n  theme_color: {tags:\"fresh background\",                       value: 0x31393dff }\n  theme_color: {tags:\"match background\",                       value: 0x31393dff }\n  theme_color: {tags:\"border\",                                 value: 0x404040ff }\n  theme_color: {tags:\"text\",                                   value: 0xe5e5e5ff }\n  theme_color: {tags:\"weak text\",                              value: 0xa4a4a4ff }\n  theme_color: {tags:\"good text\",                              value: 0x32a852ff }\n  theme_color: {tags:\"neutral text\",                           value: 0x3a90bbff }\n  theme_color: {tags:\"bad text\",                               value: 0xcf5242ff }\n  theme_color: {tags:\"hover\",                                  value: 0xffffffff }\n  theme_color: {tags:\"focus overlay\",                          value: 0xfda20012 }\n  theme_color: {tags:\"focus border\",                           value: 0xfda200ff }\n  theme_color: {tags:\"cursor\",                                 value: 0x8aff00ff }\n  theme_color: {tags:\"selection\",                              value: 0x99ccff0f }\n  theme_color: {tags:\"inactive background\",                    value: 0x0000002f }\n  theme_color: {tags:\"drop_shadow\",                            value: 0x0000007f }\n  theme_color: {tags:\"good_pop background\",                    value: 0x2c5b36ff }\n  theme_color: {tags:\"good_pop border\",                        value: 0x568761ff }\n  theme_color: {tags:\"good_pop hover\",                         value: 0xe3f5d3ff }\n  theme_color: {tags:\"good_pop weak text\",                     value: 0xe3f5d3ff }\n  theme_color: {tags:\"bad_pop background\",                     value: 0x803425ff }\n  theme_color: {tags:\"bad_pop hover\",                          value: 0xff825cff }\n  theme_color: {tags:\"code_default\",                           value: 0xcbcbcbff }\n  theme_color: {tags:\"code_symbol\",                            value: 0x42a2cfff }\n  theme_color: {tags:\"code_type\",                              value: 0xfec746ff }\n  theme_color: {tags:\"code_local\",                             value: 0x98bc80ff }\n  theme_color: {tags:\"code_register\",                          value: 0xb7afd5ff }\n  theme_color: {tags:\"code_keyword\",                           value: 0xb38d4cff }\n  theme_color: {tags:\"code_delimiter_or_operator\",             value: 0x767676ff }\n  theme_color: {tags:\"code_numeric\",                           value: 0x98abb1ff }\n  theme_color: {tags:\"code_numeric_alt_digit_group\",           value: 0x738287ff }\n  theme_color: {tags:\"code_string\",                            value: 0x98abb1ff }\n  theme_color: {tags:\"code_meta\",                              value: 0xd96759ff }\n  theme_color: {tags:\"code_comment\",                           value: 0x717171ff }\n  theme_color: {tags:\"line_info_0\",                            value: 0x4f3022ff }\n  theme_color: {tags:\"line_info_1\",                            value: 0x4f3e15ff }\n  theme_color: {tags:\"line_info_2\",                            value: 0x434e2aff }\n  theme_color: {tags:\"line_info_3\",                            value: 0x36241fff }\n  theme_color: {tags:\"line_info_4\",                            value: 0x4f3022ff }\n  theme_color: {tags:\"line_info_5\",                            value: 0x4f3e15ff }\n  theme_color: {tags:\"line_info_6\",                            value: 0x434e2aff }\n  theme_color: {tags:\"line_info_7\",                            value: 0x36241fff }\n  theme_color: {tags:\"thread_0\",                               value: 0xffcb7fff }\n  theme_color: {tags:\"thread_1\",                               value: 0xb2ff65ff }\n  theme_color: {tags:\"thread_2\",                               value: 0xff99e5ff }\n  theme_color: {tags:\"thread_3\",                               value: 0x6598ffff }\n  theme_color: {tags:\"thread_4\",                               value: 0x65ffcbff }\n  theme_color: {tags:\"thread_5\",                               value: 0xff9819ff }\n  theme_color: {tags:\"thread_6\",                               value: 0x9932ffff }\n  theme_color: {tags:\"thread_7\",                               value: 0x65ff4cff }\n  theme_color: {tags:\"thread_unwound\",                         value: 0xb2ccd8ff }\n  theme_color: {tags:\"thread_error\",                           value: 0xb23219ff }\n  theme_color: {tags:\"breakpoint\",                             value: 0xa72911ff }\n  theme_color: {tags:\"floating background\",                    value: 0x1b1b1baf }\n  theme_color: {tags:\"floating background alt\",                value: 0x0000005f }\n  theme_color: {tags:\"floating background fresh\",              value: 0x31393d5f }\n  theme_color: {tags:\"floating border\",                        value: 0xbfbfbf1f }\n  theme_color: {tags:\"floating scroll_bar background\",         value: 0x3b3b3b5f }\n  theme_color: {tags:\"floating scroll_bar border\",             value: 0x5f5f5f5f }\n  theme_color: {tags:\"menu_bar background\",                    value: 0x2b3740ff }\n  theme_color: {tags:\"menu_bar border\",                        value: 0x3e4c57ff }\n  theme_color: {tags:\"scroll_bar background\",                  value: 0x2b2b2bff }\n  theme_color: {tags:\"scroll_bar border\",                      value: 0x3f3f3fff }\n  theme_color: {tags:\"implicit background\",                    value: 0x00000000 }\n  theme_color: {tags:\"implicit border\",                        value: 0x00000000 }\n  theme_color: {tags:\"hollow background\",                      value: 0x00000000 }\n  theme_color: {tags:\"hollow border\",                          value: 0xffffff1f }\n  theme_color: {tags:\"tab background\",                         value: 0x6f5135ff }\n  theme_color: {tags:\"tab border\",                             value: 0x8a6e54ff }\n  theme_color: {tags:\"tab inactive background\",                value: 0x2b3740ff }\n  theme_color: {tags:\"tab inactive border\",                    value: 0x3e4c57ff }\n  theme_color: {tags:\"tab auto background\",                    value: 0x693847ff }\n  theme_color: {tags:\"tab auto border\",                        value: 0x9e6274ff }\n  theme_color: {tags:\"tab auto inactive background\",           value: 0x2f2633ff }\n  theme_color: {tags:\"tab auto inactive border\",               value: 0x685073ff }\n  theme_color: {tags:\"drop_site background\",                   value: 0xffffff05 }\n  theme_color: {tags:\"drop_site border\",                       value: 0xffffff0f }\n}\n"),
 ("theme:\n{\n  theme_color:{  tags: background  , value: 0xffffffff }\n  theme_color:{  tags: \"alt background\"  , value: 0xf8f8f8ff }\n  theme_color:{  tags: \"pop background\"  , value: 0xcbe4f2ff }\n  theme_color:{  tags: \"menu_bar pop background\"  , value: 0x5aabd9ff }\n  theme_color:{  tags: \"fresh background\"  , value: 0xeaddceff }\n  theme_color:{  tags: \"match background\"  , value: 0xc1e9c4ff }\n  theme_color:{  tags: border  , value: 0xcbcbcbff }\n  theme_color:{  tags: text  , value: 0xff }\n  theme_color:{  tags: \"weak text\"  , value: 0x727272ff }\n  theme_color:{  tags: \"good text\"  , value: 0x217538ff }\n  theme_color:{  tags: \"neutral text\"  , value: 0x1a5b7cff }\n  theme_color:{  tags: \"bad text\"  , value: 0x972717ff }\n  theme_color:{  tags: hover  , value: 0xff }\n  theme_color:{  tags: \"focus overlay\"  , value: 0x67ff4b }\n  theme_color:{  tags: \"focus border\"  , value: 0x67ffff }\n  theme_color:{  tags: cursor  , value: 0xff }\n  theme_color:{  tags: selection  , value: 0x283d5166 }\n  theme_color:{  tags: \"inactive background\"  , value: 0x8 }\n  theme_color:{  tags: drop_shadow  , value: 0xb }\n  theme_color:{  tags: \"good_pop background\"  , value: 0x90c09aff }\n  theme_color:{  tags: \"good_pop border\"  , value: 0x1e7231ff }\n  theme_color:{  tags: \"good_pop hover\"  , value: 0xe3f5d3ff }\n  theme_color:{  tags: \"good_pop weak text\"  , value: 0xe3f5d3ff }\n  theme_color:{  tags: \"good_pop text\"  , value: 0xe3f5d3ff }\n  theme_color:{  tags: \"bad_pop background\"  , value: 0xa93620ff }\n  theme_color:{  tags: \"bad_pop text\"  , value: 0xffffffff }\n  theme_color:{  tags: \"bad_pop text weak\"  , value: 0xffffffff }\n  theme_color:{  tags: \"menu_bar bad_pop background\"  , value: 0xff2a00ff }\n  theme_color:{  tags: \"menu_bar bad_pop text\"  , value: 0xffffffff }\n  theme_color:{  tags: \"bad_pop hover\"  , value: 0xff825cff }\n  theme_color:{  tags: code_default  , value: 0x80808ff }\n  theme_color:{  tags: code_symbol  , value: 0x4ac3ff }\n  theme_color:{  tags: code_type  , value: 0xf46200ff }\n  theme_color:{  tags: code_local  , value: 0x317c00ff }\n  theme_color:{  tags: code_register  , value: 0x9a00ffff }\n  theme_color:{  tags: code_keyword  , value: 0xff0600ff }\n  theme_color:{  tags: code_delimiter_or_operator  , value: 0x8a8a8aff }\n  theme_color:{  tags: code_numeric  , value: 0x7d49ff }\n  theme_color:{  tags: code_numeric_alt_digit_group  , value: 0xb56aff }\n  theme_color:{  tags: code_string  , value: 0x63549fff }\n  theme_color:{  tags: code_meta  , value: 0xd96759ff }\n  theme_color:{  tags: code_comment  , value: 0x717171ff }\n  theme_color:{  tags: line_info_0  , value: 0xe6d5cdff }\n  theme_color:{  tags: line_info_1  , value: 0xdbcfb2ff }\n  theme_color:{  tags: line_info_2  , value: 0xddeac1ff }\n  theme_color:{  tags: line_info_3  , value: 0xddc4bdff }\n  theme_color:{  tags: line_info_4  , value: 0xba917eff }\n  theme_color:{  tags: thread_0  , value: 0xffa700ff }\n  theme_color:{  tags: thread_1  , value: 0xb41fff }\n  theme_color:{  tags: thread_2  , value: 0xff99e5ff }\n  theme_color:{  tags: thread_3  , value: 0x6598ffff }\n  theme_color:{  tags: thread_4  , value: 0x65ffcbff }\n  theme_color:{  tags: thread_5  , value: 0xff9819ff }\n  theme_color:{  tags: thread_6  , value: 0x9932ffff }\n  theme_color:{  tags: thread_7  , value: 0x65ff4cff }\n  theme_color:{  tags: thread_unwound  , value: 0xb2ccd8ff }\n  theme_color:{  tags: thread_error  , value: 0xb23219ff }\n  theme_color:{  tags: breakpoint  , value: 0xff2800ff }\n  theme_color:{  tags: \"floating background\"  , value: 0xffffffc7 }\n  theme_color:{  tags: \"floating background alt\"  , value: 0x23 }\n  theme_color:{  tags: \"floating background fresh\"  , value: 0xeaddceff }\n  theme_color:{  tags: \"floating border\"  , value: 0x88888884 }\n  theme_color:{  tags: \"scroll_bar background\"  , value: 0xe9e9e9ff }\n  theme_color:{  tags: \"scroll_bar border\"  , value: 0x5f5f5f5f }\n  theme_color:{  tags: \"floating scroll_bar background\"  , value: 0xe9e9e9ff }\n  theme_color:{  tags: \"floating scroll_bar border\"  , value: 0x5f5f5f5f }\n  theme_color:{  tags: \"menu_bar background\"  , value: 0x2b6b9aff }\n  theme_color:{  tags: \"menu_bar border\"  , value: 0x4d }\n  theme_color:{  tags: \"menu_bar text\"  , value: 0xffffffff }\n  theme_color:{  tags: \"menu_bar text weak\"  , value: 0xffffffff }\n  theme_color:{  tags: \"good menu_bar text\"  , value: 0x70db8dff }\n  theme_color:{  tags: \"bad menu_bar text\"  , value: 0xffa79bff }\n  theme_color:{  tags: \"neutral menu_bar text\"  , value: 0xc4dbe7ff }\n  theme_color:{  tags: \"implicit background\"  , value: 0x00000000 }\n  theme_color:{  tags: \"implicit border\"  , value: 0x00000000 }\n  theme_color:{  tags: \"hollow background\"  , value: 0x00000000 }\n  theme_color:{  tags: \"hollow border\"  , value: 0xffffff1f }\n  theme_color:{  tags: \"tab text\"  , value: 0xffffffff }\n  theme_color:{  tags: \"tab text weak\"  , value: 0xffffffff }\n  theme_color:{  tags: \"tab background\"  , value: 0xb67e48ff }\n  theme_color:{  tags: \"tab border\"  , value: 0x875b31ff }\n  theme_color:{  tags: \"tab inactive background\"  , value: 0xcacacaff }\n  theme_color:{  tags: \"tab inactive border\"  , value: 0xb5b5b5ff }\n  theme_color:{  tags: \"tab auto background\"  , value: 0xc41c69ff }\n  theme_color:{  tags: \"tab auto border\"  , value: 0x981039ff }\n  theme_color:{  tags: \"tab auto inactive background\"  , value: 0x9b88a3ff }\n  theme_color:{  tags: \"tab auto inactive border\"  , value: 0x373737ff }\n  theme_color:{  tags: \"drop_site background\"  , value: 0xffffff05 }\n  theme_color:{  tags: \"drop_site border\"  , value: 0xffffff0f }\n}\n"),

@@ -12,7 +12,7 @@
 
 //- rjf: base layer string overrides
 #define RDI_STRING8_OVERRIDE
-#define RDIM_String8            String8
+#define RDIM_String8            StringView
 #define RDIM_String8_BaseMember str
 #define RDIM_String8_SizeMember size
 #define RDI_STRING8LIST_OVERRIDE

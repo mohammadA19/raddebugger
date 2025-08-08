@@ -32,7 +32,7 @@ typedef struct COFF_ObjSymbolSecDef
 
 typedef struct COFF_ObjSymbol
 {
-    String8                 name;
+    StringView                 name;
     U32                     value;
     COFF_SymbolLocation     loc;
     COFF_SymbolType         type;
@@ -62,7 +62,7 @@ typedef struct COFF_ObjRelocNode
 
 typedef struct COFF_ObjSection
 {
-    String8           name;
+    StringView           name;
     String8List       data;
     COFF_SectionFlags flags;
 

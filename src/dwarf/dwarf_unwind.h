@@ -62,7 +62,7 @@ typedef struct DW_CIEUnpacked
     
     B32     has_augmentation_size;
     U64     augmentation_size;
-    String8 augmentation;
+    StringView augmentation;
     
     U64 code_align_factor;
     S64 data_align_factor;
@@ -178,9 +178,9 @@ global read_only DW_CFAControlBits dw_unwind__cfa_control_bits_kind2[DW_CFA_OplK
 // x64 Unwind Function
 
 internal DW_UnwindResult
-dw_unwind_x64(String8           raw_text,
-                            String8           raw_eh_frame,
-                            String8           raw_eh_frame_header,
+dw_unwind_x64(StringView           raw_text,
+                            StringView           raw_eh_frame,
+                            StringView           raw_eh_frame_header,
                             Rng1U64           text_vrange,
                             Rng1U64           eh_frame_vrange,
                             Rng1U64           eh_frame_header_vrange,

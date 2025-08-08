@@ -1,10 +1,10 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal String8
+internal StringView
 cv_string_from_numeric(Arena *arena, CV_NumericParsed num)
 {
-    String8 result = str8_zero();
+    StringView result = str8_zero();
     switch (num.kind) {
         case CV_NumericKind_FLOAT16:   NotImplemented; break; // TODO: format float16
         case CV_NumericKind_FLOAT32:   result = push_str8f(arena, "%f", (F64)(*(F32*)num.val)); break;

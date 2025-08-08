@@ -140,7 +140,7 @@ enum TXT_LangKind
 }
 TXT_LangKind;
 
-typedef TXT_TokenArray TXT_LangLexFunctionType(Arena *arena, U64 *bytes_processed_counter, String8 string);
+typedef TXT_TokenArray TXT_LangLexFunctionType(Arena *arena, U64 *bytes_processed_counter, StringView string);
 
 ////////////////////////////////
 //~ rjf: Cache Types

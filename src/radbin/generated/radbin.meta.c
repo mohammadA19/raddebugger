@@ -4,7 +4,7 @@
 //- GENERATED CODE
 
 C_LINKAGE_BEGIN
-String8 rb_file_format_display_name_table[10] =
+StringView rb_file_format_display_name_table[10] =
 {
 {0},
 ("PDB"),

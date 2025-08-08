@@ -9,7 +9,7 @@
 
 typedef struct PDB_Strtbl
 {
-    String8 data;
+    StringView data;
     U32 bucket_count;
     U32 strblock_min;
     U32 strblock_max;
@@ -36,7 +36,7 @@ typedef struct PDB_NamedStreamTable
 typedef struct PDB_InfoNode
 {
     struct PDB_InfoNode *next;
-    String8 string;
+    StringView string;
     MSF_StreamNumber sn;
 } PDB_InfoNode;
 
@@ -82,7 +82,7 @@ enum
 
 typedef struct PDB_DbiParsed
 {
-    String8 data;
+    StringView data;
     COFF_MachineType machine_type;
     MSF_StreamNumber gsi_sn;
     MSF_StreamNumber psi_sn;
@@ -96,8 +96,8 @@ typedef struct PDB_CompUnit
     MSF_StreamNumber sn;
     U32 range_off[(U32)(PDB_DbiCompUnitRange_COUNT) + 1];
     
-    String8 obj_name;
-    String8 group_name;
+    StringView obj_name;
+    StringView group_name;
 } PDB_CompUnit;
 
 typedef struct PDB_CompUnitNode
@@ -131,7 +131,7 @@ typedef struct PDB_CompUnitContributionArray
 
 typedef struct PDB_TpiParsed
 {
-    String8 data;
+    StringView data;
     
     // leaf info
     U64 leaf_first;
@@ -162,8 +162,8 @@ typedef struct PDB_TpiHashBlock
 
 typedef struct PDB_TpiHashParsed
 {
-    String8 data;
-    String8 aux_data;
+    StringView data;
+    StringView aux_data;
     
     PDB_TpiHashBlock **buckets;
     U32 bucket_count;
@@ -191,21 +191,21 @@ typedef struct PDB_GsiParsed
 internal PDB_TpiHashParsed*   pdb_tpi_hash_from_data(Arena *arena,
                                                                                                           PDB_Strtbl *strtbl,
                                                                                                           PDB_TpiParsed *tpi,
-                                                                                                          String8 tpi_hash_data,
-                                                                                                          String8 tpi_hash_aux_data);
+                                                                                                          StringView tpi_hash_data,
+                                                                                                          StringView tpi_hash_aux_data);
 
 
 internal PDB_CompUnitArray*   pdb_comp_unit_array_from_data(Arena *arena,
-                                                                                                                        String8 module_info_data);
+                                                                                                                        StringView module_info_data);
 
 internal PDB_CompUnitContributionArray*
-pdb_comp_unit_contribution_array_from_data(Arena *arena, String8 seccontrib_data,
+pdb_comp_unit_contribution_array_from_data(Arena *arena, StringView seccontrib_data,
                                                                                       COFF_SectionHeaderArray sections);
 
 ////////////////////////////////
 //~ PDB Dbi Functions
 
-internal String8              pdb_data_from_unit_range(MSF_Parsed *msf, PDB_CompUnit *unit,
+internal StringView              pdb_data_from_unit_range(MSF_Parsed *msf, PDB_CompUnit *unit,
                                                                                                               PDB_DbiCompUnitRange range);
 
 ////////////////////////////////
@@ -215,19 +215,19 @@ internal String8              pdb_data_from_unit_range(MSF_Parsed *msf, PDB_Comp
 internal CV_TypeIdArray       pdb_tpi_itypes_from_name(Arena *arena,
                                                                                                               PDB_TpiHashParsed *tpi_hash,
                                                                                                               CV_LeafParsed *tpi_leaf,
-                                                                                                              String8 name,
+                                                                                                              StringView name,
                                                                                                               B32 compare_unique_name,
                                                                                                               U32 output_cap);
 
 internal CV_TypeId            pdb_tpi_first_itype_from_name(PDB_TpiHashParsed *tpi_hash,
                                                                                                                         CV_LeafParsed *tpi_leaf,
-                                                                                                                        String8 name,
+                                                                                                                        StringView name,
                                                                                                                         B32 compare_unique_name);
 
 ////////////////////////////////
 //~ PDB Strtbl Functions
 
-internal String8              pdb_strtbl_string_from_index(PDB_Strtbl *strtbl,
+internal StringView              pdb_strtbl_string_from_index(PDB_Strtbl *strtbl,
                                                                                                                       PDB_StringIndex idx);
 
 ////////////////////////////////

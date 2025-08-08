@@ -35,7 +35,7 @@ entry_point(CmdLine *cmdline)
     e_select_ir_ctx(ir_ctx);
     E_InterpretCtx *interpret_ctx = push_array(arena, E_InterpretCtx, 1);
     e_select_interpret_ctx(interpret_ctx, 0, 0);
-    String8 exprs[] =
+    StringView exprs[] =
     {
         ("123"),
         ("1 + 2"),
@@ -45,7 +45,7 @@ entry_point(CmdLine *cmdline)
     };
     for EachElement(idx, exprs)
     {
-        String8 debug_string = e_debug_log_from_expr_string(arena, exprs[idx]);
+        StringView debug_string = e_debug_log_from_expr_string(arena, exprs[idx]);
         raddbg_log("%S", debug_string);
     }
 }

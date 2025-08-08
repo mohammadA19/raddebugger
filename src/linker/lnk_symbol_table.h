@@ -31,7 +31,7 @@ typedef struct LNK_SymbolUndefined
 
 typedef struct LNK_Symbol
 {
-    String8 name;
+    StringView name;
     union {
         LNK_SymbolDefined   defined;
         LNK_SymbolLib       lib;
@@ -70,7 +70,7 @@ typedef struct LNK_SymbolArray
 
 typedef struct LNK_SymbolHashTrie
 {
-    String8                   *name;
+    StringView                   *name;
     LNK_Symbol                *symbol;
     struct LNK_SymbolHashTrie *child[4];
 } LNK_SymbolHashTrie;

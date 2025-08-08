@@ -39,14 +39,14 @@ enum DW_DumpSubsetFlags : U32
     DW_DumpSubsetFlag_All = 0xffffffffu,
 };
 
-read_only global String8 dw_name_lowercase_from_dump_subset_table[] =
+read_only global StringView dw_name_lowercase_from_dump_subset_table[] =
 {
 #define X(name, name_lower, title) (#name_lower),
     DW_DumpSubset_XList
 #undef X
 };
 
-read_only global String8 dw_name_title_from_dump_subset_table[] =
+read_only global StringView dw_name_title_from_dump_subset_table[] =
 {
 #define X(name, name_lower, title) (title),
     DW_DumpSubset_XList

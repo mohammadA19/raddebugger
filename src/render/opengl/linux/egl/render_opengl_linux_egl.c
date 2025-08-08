@@ -39,7 +39,7 @@ r_ogl_os_init(CmdLine *cmdln)
     if (egl_version_major < 1 || (egl_version_major == 1 && egl_version_minor < 5))
     {
         Temp scratch = scratch_begin(0, 0);
-        String8 message = push_str8f(scratch.arena, "Unsupported EGL version (%i.%i, need at least 1.5)", egl_version_major, egl_version_minor);
+        StringView message = push_str8f(scratch.arena, "Unsupported EGL version (%i.%i, need at least 1.5)", egl_version_major, egl_version_minor);
         os_graphical_message(1, ("Fatal Error"), message);
         os_abort(1);
         scratch_end(scratch);

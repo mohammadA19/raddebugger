@@ -54,7 +54,7 @@ e_oplist_push_sconst(Arena *arena, E_OpList *list, S64 x)
 }
 
 internal void
-e_oplist_push_bytecode(Arena *arena, E_OpList *list, String8 bytecode)
+e_oplist_push_bytecode(Arena *arena, E_OpList *list, StringView bytecode)
 {
     E_Op *node = push_array_no_zero(arena, E_Op, 1);
     node.opcode = E_IRExtKind_Bytecode;
@@ -77,7 +77,7 @@ e_oplist_push_set_space(Arena *arena, E_OpList *list, E_Space space)
 }
 
 internal void
-e_oplist_push_string_literal(Arena *arena, E_OpList *list, String8 string)
+e_oplist_push_string_literal(Arena *arena, E_OpList *list, StringView string)
 {
     RDI_EvalOp opcode = RDI_EvalOp_ConstString;
     U16 ctrlbits = rdi_eval_op_ctrlbits_table[opcode];
@@ -190,7 +190,7 @@ e_irtree_conditional(Arena *arena, E_IRNode *c, E_IRNode *l, E_IRNode *r)
 }
 
 internal E_IRNode *
-e_irtree_bytecode_no_copy(Arena *arena, String8 bytecode)
+e_irtree_bytecode_no_copy(Arena *arena, StringView bytecode)
 {
     E_IRNode *n = e_push_irnode(arena, E_IRExtKind_Bytecode);
     n.string = bytecode;
@@ -198,7 +198,7 @@ e_irtree_bytecode_no_copy(Arena *arena, String8 bytecode)
 }
 
 internal E_IRNode *
-e_irtree_string_literal(Arena *arena, String8 string)
+e_irtree_string_literal(Arena *arena, StringView string)
 {
     E_IRNode *root = e_push_irnode(arena, RDI_EvalOp_ConstString);
     root.string = string;
@@ -400,7 +400,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(default)
             B32 r_found = 0;
             E_TypeKey r_type = zero_struct;
             U64 r_value = 0;
-            String8 r_query_name = {0};
+            StringView r_query_name = {0};
             B32 r_is_constant_value = 0;
             {
                 Temp scratch = scratch_begin(&arena, 1);
@@ -415,9 +415,9 @@ E_TYPE_ACCESS_FUNCTION_DEF(default)
                 if (match.kind == E_MemberKind_Null)
                 {
                     E_Type *type = e_type_from_key(check_type_key);
-                    String8 lookup_string = exprr.string;
-                    String8 lookup_string_append_1 = push_str8f(scratch.arena, "%S_%S", type.name, lookup_string);
-                    String8 lookup_string_append_2 = push_str8f(scratch.arena, "%S%S", type.name, lookup_string);
+                    StringView lookup_string = exprr.string;
+                    StringView lookup_string_append_1 = push_str8f(scratch.arena, "%S_%S", type.name, lookup_string);
+                    StringView lookup_string_append_2 = push_str8f(scratch.arena, "%S%S", type.name, lookup_string);
                     E_EnumVal enum_val = {0};
                     if (enum_val.name.size == 0) { enum_val = e_type_enum_val_from_key_name__cached(check_type_key, lookup_string); }
                     if (enum_val.name.size == 0) { enum_val = e_type_enum_val_from_key_name__cached(check_type_key, lookup_string_append_1); }
@@ -733,7 +733,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
                                 str8_list_push_front(scratch.arena, &parts, l.first->next.string);
                             }
                         }
-                        String8 full_qualified_name = str8_list_join(scratch.arena, &parts, &(StringJoin){.sep = (".")});
+                        StringView full_qualified_name = str8_list_join(scratch.arena, &parts, &(StringJoin){.sep = (".")});
                         E_Expr *leaf_expr_name = e_push_expr(scratch.arena, E_ExprKind_LeafIdentifier, r1u64(0, 0));
                         leaf_expr_name.string = full_qualified_name;
                         E_IRTreeAndType new_result_maybe = e_push_irtree_and_type_from_expr(arena, parent, &e_default_identifier_resolution_rule, disallow_autohooks, disallow_autohooks, leaf_expr_name);
@@ -867,7 +867,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
                 else if (conversion_rule != RDI_EvalConversionKind_Noop &&
                                 conversion_rule != RDI_EvalConversionKind_Legal)
                 {
-                    String8 text = ("Unknown cast conversion rule.");
+                    StringView text = ("Unknown cast conversion rule.");
                     if (conversion_rule < RDI_EvalConversionKind_COUNT)
                     {
                         text.str = rdi_explanation_string_from_eval_conversion_kind(conversion_rule, &text.size);
@@ -959,7 +959,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
                 E_IRTreeAndType r_tree = e_push_irtree_and_type_from_expr(arena, parent, &e_default_identifier_resolution_rule, disallow_autohooks, 1, expr.first);
                 E_IRNode *r_value_tree = e_irtree_resolve_to_value(arena, r_tree.mode, r_tree.root, r_tree.type_key);
                 E_OpList oplist = e_oplist_from_irtree(scratch.arena, r_value_tree);
-                String8 bytecode = e_bytecode_from_oplist(scratch.arena, &oplist);
+                StringView bytecode = e_bytecode_from_oplist(scratch.arena, &oplist);
                 E_Interpretation interpretation = e_interpret(bytecode);
                 E_Module *module = &e_module_nil;
                 U32 rdi_idx = 0;
@@ -1409,7 +1409,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
                 {
                     E_IRNode *c_value_tree = e_irtree_resolve_to_value(arena, c_tree.mode, c_tree.root, c_type);
                     E_OpList oplist = e_oplist_from_irtree(scratch.arena, c_value_tree);
-                    String8 bytecode = e_bytecode_from_oplist(scratch.arena, &oplist);
+                    StringView bytecode = e_bytecode_from_oplist(scratch.arena, &oplist);
                     E_Interpretation interpretation = e_interpret(bytecode);
                     if (interpretation.value.u64 != 0)
                     {
@@ -1476,7 +1476,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
                     else if (conversion_rule != RDI_EvalConversionKind_Noop &&
                                     conversion_rule != RDI_EvalConversionKind_Legal)
                     {
-                        String8 text = ("Unknown cast conversion rule.");
+                        StringView text = ("Unknown cast conversion rule.");
                         if (conversion_rule < RDI_EvalConversionKind_COUNT)
                         {
                             text.str = rdi_explanation_string_from_eval_conversion_kind(conversion_rule, &text.size);
@@ -1624,7 +1624,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
             //- rjf: leaf string literal
             case E_ExprKind_LeafStringLiteral:
             {
-                String8 string = expr.string;
+                StringView string = expr.string;
                 E_TypeKey type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_UChar8), string.size, 0);
                 E_IRNode *new_tree = e_irtree_string_literal(arena, string);
                 result.root     = new_tree;
@@ -1671,9 +1671,9 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
             case E_ExprKind_LeafIdentifier:
             {
                 Temp scratch = scratch_begin(&arena, 1);
-                String8 qualifier = expr.qualifier;
-                String8 string = expr.string;
-                String8 string__redirected = string;
+                StringView qualifier = expr.qualifier;
+                StringView string = expr.string;
+                StringView string__redirected = string;
                 B32 string_mapped = 0;
                 B32 string_is_implicit_member_name = 0;
                 E_TypeKey mapped_type_key = zero_struct;
@@ -1681,7 +1681,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
                 RDI_LocationBlock *mapped_location_block = 0;
                 E_Mode mapped_bytecode_mode = E_Mode_Offset;
                 E_Space mapped_bytecode_space = zero_struct;
-                String8 mapped_bytecode = {0};
+                StringView mapped_bytecode = {0};
                 void *mapped_user_data = 0;
                 B32 generated = 0;
                 
@@ -1729,7 +1729,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
                             generated = 1;
                             disallow_autohooks = 1;
                             E_OpList oplist = e_oplist_from_irtree(scratch.arena, parent_irtree.root);
-                            String8 bytecode = e_bytecode_from_oplist(arena, &oplist);
+                            StringView bytecode = e_bytecode_from_oplist(arena, &oplist);
                             result.root = e_irtree_bytecode_no_copy(arena, bytecode);
                             result.type_key = parent_irtree.type_key;
                             result.mode = parent_irtree.mode;
@@ -1865,7 +1865,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
                                         RDI_Procedure *procedure = e_cache.thread_ip_procedure;
                                         U64 name_size = 0;
                                         U8 *name_ptr = rdi_string_from_idx(rdi, procedure.name_string_idx, &name_size);
-                                        String8 containing_procedure_name = str8(name_ptr, name_size);
+                                        StringView containing_procedure_name = str8(name_ptr, name_size);
                                         U64 last_past_scope_resolution_pos = 0;
                                         for (;;)
                                         {
@@ -1876,8 +1876,8 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
                                             {
                                                 break;
                                             }
-                                            String8 new_namespace_prefix_possibility = str8_prefix(containing_procedure_name, past_next_scope_resolution_pos);
-                                            String8 namespaceified_string = push_str8f(scratch.arena, "%S%S", new_namespace_prefix_possibility, string);
+                                            StringView new_namespace_prefix_possibility = str8_prefix(containing_procedure_name, past_next_scope_resolution_pos);
+                                            StringView namespaceified_string = push_str8f(scratch.arena, "%S%S", new_namespace_prefix_possibility, string);
                                             str8_list_push_front(scratch.arena, &namespaceified_strings, namespaceified_string);
                                             last_past_scope_resolution_pos = past_next_scope_resolution_pos;
                                         }
@@ -2186,7 +2186,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
             case E_ExprKind_LeafFilePath:
             {
                 Temp scratch = scratch_begin(&arena, 1);
-                String8 file_path = expr.string;
+                StringView file_path = expr.string;
                 FileProperties props = os_properties_from_file_path(file_path);
                 if (!str8_match(expr.qualifier, ("folder"), 0) && !(props.flags & FilePropertyFlag_IsFolder) && file_path.size != 0)
                 {
@@ -2197,7 +2197,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
                 }
                 else
                 {
-                    String8 folder_path = str8_chop_last_slash(file_path);
+                    StringView folder_path = str8_chop_last_slash(file_path);
                     props = os_properties_from_file_path(folder_path);
                     if (props.flags & FilePropertyFlag_IsFolder || folder_path.size == 0 || str8_match(folder_path, ("/"), StringMatchFlag_SlashInsensitive))
                     {
@@ -2283,8 +2283,8 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
         {
             local_persist struct
             {
-                String8 shorthand;
-                String8 full_name;
+                StringView shorthand;
+                StringView full_name;
             }
             shorthand_lens_pair_table[] =
             {
@@ -2305,7 +2305,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
                     {
                         if (str8_match(chained_expr.string, shorthand_lens_pair_table[shorthand_idx].shorthand, 0))
                         {
-                            String8 full_name = shorthand_lens_pair_table[shorthand_idx].full_name;
+                            StringView full_name = shorthand_lens_pair_table[shorthand_idx].full_name;
                             result.type_key = e_type_key_cons(.kind       = E_TypeKind_Lens,
                                                                                                 .direct_key = result.type_key,
                                                                                                 .name       = full_name);
@@ -2388,7 +2388,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
                     {
                         E_IRNode *class_base_value_tree = e_irtree_resolve_to_value(scratch.arena, result.mode, result.root, result.type_key);
                         E_OpList oplist = e_oplist_from_irtree(scratch.arena, class_base_value_tree);
-                        String8 bytecode = e_bytecode_from_oplist(scratch.arena, &oplist);
+                        StringView bytecode = e_bytecode_from_oplist(scratch.arena, &oplist);
                         E_Interpretation interpret = e_interpret(bytecode);
                         U64 class_base_vaddr = interpret.value.u64;
                         U64 vtable_vaddr = 0;
@@ -2629,7 +2629,7 @@ e_oplist_from_irtree(Arena *arena, E_IRNode *root)
     return ops;
 }
 
-internal String8
+internal StringView
 e_bytecode_from_oplist(Arena *arena, E_OpList *oplist)
 {
     // rjf: allocate buffer
@@ -2709,7 +2709,7 @@ e_bytecode_from_oplist(Arena *arena, E_OpList *oplist)
     }
     
     // rjf: fill result
-    String8 result = {0};
+    StringView result = {0};
     result.size = size;
     result.str = str;
     return result;
@@ -2718,7 +2718,7 @@ e_bytecode_from_oplist(Arena *arena, E_OpList *oplist)
 //- rjf: leaf-bytecode expression extensions
 
 internal E_Expr *
-e_expr_irext_member_access(Arena *arena, E_Expr *lhs, E_IRTreeAndType *lhs_irtree, String8 member_name)
+e_expr_irext_member_access(Arena *arena, E_Expr *lhs, E_IRTreeAndType *lhs_irtree, StringView member_name)
 {
     E_Expr *root = e_push_expr(arena, E_ExprKind_MemberAccess, r1u64(0, 0));
     E_Expr *lhs_bytecode = e_push_expr(arena, E_ExprKind_LeafBytecode, lhs.range);

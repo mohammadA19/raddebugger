@@ -49,14 +49,14 @@ enum RDI_DumpSubsetFlags : U32
     RDI_DumpSubsetFlag_All = 0xffffffffu,
 };
 
-read_only global String8 rdi_name_lowercase_from_dump_subset_table[] =
+read_only global StringView rdi_name_lowercase_from_dump_subset_table[] =
 {
 #define X(name, name_lower, title) (#name_lower),
     RDI_DumpSubset_XList
 #undef X
 };
 
-read_only global String8 rdi_name_title_from_dump_subset_table[] =
+read_only global StringView rdi_name_title_from_dump_subset_table[] =
 {
 #define X(name, name_lower, title) (title),
     RDI_DumpSubset_XList

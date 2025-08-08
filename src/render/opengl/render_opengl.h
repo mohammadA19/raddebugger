@@ -90,7 +90,7 @@ typedef ptrdiff_t GLintptr;
 struct R_OGL_Attribute
 {
     U64 index;
-    String8 name;
+    StringView name;
     GLenum type;
     U64 count;
 };

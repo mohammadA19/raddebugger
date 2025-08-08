@@ -12,9 +12,9 @@ struct CmdLineOpt
     CmdLineOpt *next;
     CmdLineOpt *hash_next;
     U64 hash;
-    String8 string;
+    StringView string;
     String8List value_strings;
-    String8 value_string;
+    StringView value_string;
 };
 
 struct CmdLineOptList
@@ -26,7 +26,7 @@ struct CmdLineOptList
 
 struct CmdLine
 {
-    String8 exe_name;
+    StringView exe_name;
     CmdLineOptList options;
     String8List inputs;
     U64 option_table_size;

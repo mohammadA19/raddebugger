@@ -1,7 +1,7 @@
-internal String8
-rc_data_from_file_path(Arena *arena, String8 path)
+internal StringView
+rc_data_from_file_path(Arena *arena, StringView path)
 {
-  String8 data = os_data_from_file_path(arena, path);
+  StringView data = os_data_from_file_path(arena, path);
   if (data.size == 0) {
     fprintf(stderr, "error: unable to read file %.*s\n", str8_varg(path));
     os_abort(1);
@@ -23,14 +23,14 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
   B32 is_pdb_present       = 0;
   B32 is_elf_present       = 0;
   B32 is_elf_debug_present = 0;
-  String8 pe_name        = {0};
-  String8 pe_data        = {0};
-  String8 pdb_name       = {0};
-  String8 pdb_data       = {0};
-  String8 elf_name       = {0};
-  String8 elf_data       = {0};
-  String8 elf_debug_name = {0};
-  String8 elf_debug_data = {0};
+  StringView pe_name        = {0};
+  StringView pe_data        = {0};
+  StringView pdb_name       = {0};
+  StringView pdb_data       = {0};
+  StringView elf_name       = {0};
+  StringView elf_data       = {0};
+  StringView elf_debug_name = {0};
+  StringView elf_debug_data = {0};
   
   //
   // Set typed inputs
@@ -77,7 +77,7 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
   //
   RC_Driver driver = RC_Driver_Null;
   if (cmd_line_has_flag(cmdl, ("driver"))) {
-    String8 driver_name = cmd_line_string(cmdl, ("driver"));
+    StringView driver_name = cmd_line_string(cmdl, ("driver"));
     if (str8_match(driver_name, ("dwarf"), StringMatchFlag_CaseInsensitive)) {
       driver = RC_Driver_Dwarf;
     } else if (str8_match(driver_name, ("pdb"), StringMatchFlag_CaseInsensitive)) {
@@ -92,7 +92,7 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
   // Load inputs
   //
   for (String8Node *input_n = cmdl.inputs.first; input_n != 0; input_n = input_n.next) {
-    String8 input_data = os_data_from_file_path(arena, input_n.string);
+    StringView input_data = os_data_from_file_path(arena, input_n.string);
     
     if (input_data.size == 0) {
       fprintf(stderr, "unable to read input %.*s\n", str8_varg(input_n.string));
@@ -167,10 +167,10 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
   
   
   ExecutableImageKind image      = ExecutableImageKind_Null;
-  String8   image_name = {0};
-  String8   image_data = {0};
-  String8   debug_name = {0};
-  String8   debug_data = {0};
+  StringView   image_name = {0};
+  StringView   image_data = {0};
+  StringView   debug_name = {0};
+  StringView   debug_data = {0};
   
   B32  check_guid  = 0;
   Guid pe_pdb_guid = {0};
@@ -187,7 +187,7 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
     image_data = pe_data;
     
     PE_BinInfo       pe            = pe_bin_info_from_data(scratch.arena, pe_data);
-    String8          raw_debug_dir = str8_substr(pe_data, pe.data_dir_franges[PE_DataDirectoryIndex_DEBUG]);
+    StringView          raw_debug_dir = str8_substr(pe_data, pe.data_dir_franges[PE_DataDirectoryIndex_DEBUG]);
     PE_DebugInfoList debug_dir     = pe_debug_info_list_from_raw_debug_dir(scratch.arena, pe_data, raw_debug_dir);
     for (PE_DebugInfoNode *debug_n = debug_dir.first; debug_n != 0; debug_n = debug_n.next) {
       PE_DebugInfo *debug = &debug_n.v;
@@ -209,8 +209,8 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
     
     if (driver == RC_Driver_Null || driver == RC_Driver_Dwarf) {
       PE_BinInfo          pe                = pe_bin_info_from_data(scratch.arena, pe_data);
-      String8             raw_section_table = str8_substr(pe_data, pe.section_table_range);
-      String8             string_table      = str8_substr(pe_data, pe.string_table_range);
+      StringView             raw_section_table = str8_substr(pe_data, pe.section_table_range);
+      StringView             string_table      = str8_substr(pe_data, pe.string_table_range);
       U64                 section_count     = raw_section_table.size / sizeof(COFF_SectionHeader);
       COFF_SectionHeader *section_table     = (COFF_SectionHeader *)raw_section_table.str;
       if (dw_is_dwarf_present_coff_section_table(pe_data, string_table, section_count, section_table)) {
@@ -318,7 +318,7 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
   //
   // Handle -out param
   //
-  String8 out_name = {0};
+  StringView out_name = {0};
   if (cmd_line_has_flag(cmdl, ("out"))) {
     out_name = cmd_line_string(cmdl, ("out"));
     if (out_name.size == 0) {
@@ -425,13 +425,13 @@ rc_run(Arena *arena, RC_Context *rc)
   return raw_rdi;
 }
 
-internal String8
+internal StringView
 rc_rdi_from_cmd_line(Arena *arena, CmdLine *cmdl)
 {
   Temp scratch = scratch_begin(&arena, 1);
   RC_Context  rc      = rc_context_from_cmd_line(scratch.arena, cmdl);
   String8List raw_rdi = rc_run(scratch.arena, &rc);
-  String8     result  = str8_list_join(arena, &raw_rdi, 0);
+  StringView     result  = str8_list_join(arena, &raw_rdi, 0);
   scratch_end(scratch);
   return result;
 }

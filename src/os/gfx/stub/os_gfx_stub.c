@@ -20,11 +20,11 @@ os_get_gfx_info(void)
 //~ rjf: @os_hooks Clipboards (Implemented Per-OS)
 
 internal void
-os_set_clipboard_text(String8 string)
+os_set_clipboard_text(StringView string)
 {
 }
 
-internal String8
+internal StringView
 os_get_clipboard_text(Arena *arena)
 {
     return str8_zero();
@@ -34,7 +34,7 @@ os_get_clipboard_text(Arena *arena)
 //~ rjf: @os_hooks Windows (Implemented Per-OS)
 
 internal OS_Handle
-os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title)
+os_window_open(Rng2F32 rect, OS_WindowFlags flags, StringView title)
 {
     OS_Handle handle = {1};
     return handle;
@@ -46,7 +46,7 @@ os_window_close(OS_Handle window)
 }
 
 internal void
-os_window_set_title(OS_Handle window, String8 title)
+os_window_set_title(OS_Handle window, StringView title)
 {
 }
 
@@ -173,7 +173,7 @@ os_monitor_from_window(OS_Handle window)
     return handle;
 }
 
-internal String8
+internal StringView
 os_name_from_monitor(Arena *arena, OS_Handle monitor)
 {
     return str8_zero();
@@ -238,12 +238,12 @@ os_set_cursor(OS_Cursor cursor)
 //~ rjf: @os_hooks Native User-Facing Graphical Messages (Implemented Per-OS)
 
 internal void
-os_graphical_message(B32 error, String8 title, String8 message)
+os_graphical_message(B32 error, StringView title, StringView message)
 {
 }
 
-internal String8
-os_graphical_pick_file(Arena *arena, String8 initial_path)
+internal StringView
+os_graphical_pick_file(Arena *arena, StringView initial_path)
 {
     return str8_zero();
 }
@@ -252,11 +252,11 @@ os_graphical_pick_file(Arena *arena, String8 initial_path)
 //~ rjf: @os_hooks Shell Operations
 
 internal void
-os_show_in_filesystem_ui(String8 path)
+os_show_in_filesystem_ui(StringView path)
 {
 }
 
 internal void
-os_open_in_browser(String8 url)
+os_open_in_browser(StringView url)
 {
 }

@@ -54,13 +54,13 @@ struct CV_SymTopLevelInfo
 {
     CV_Arch     arch;
     CV_Language language;
-    String8     compiler_name;
+    StringView     compiler_name;
 };
 
 struct CV_SymParsed
 {
     // source information
-    String8 data;
+    StringView data;
     U64     sym_align;
     
     // sym index derived from source
@@ -76,7 +76,7 @@ struct CV_SymParsed
 struct CV_LeafParsed
 {
     // source information
-    String8   data;
+    StringView   data;
     CV_TypeId itype_first;
     CV_TypeId itype_opl;
     
@@ -137,7 +137,7 @@ struct CV_C13LinesParsed
     U64 secrel_base_off;
     
     // parsed info
-    String8  file_name;
+    StringView  file_name;
     U64     *voffs;     // [line_count + 1]
     U32     *line_nums; // [line_count]
     U16     *col_nums;  // [2*line_count]
@@ -154,7 +154,7 @@ struct CV_C13InlineeLinesParsed
 {
     CV_ItemId  inlinee;
     U32        file_off;
-    String8    file_name;
+    StringView    file_name;
     U32        first_source_ln;
     U32        extra_file_count;
     U32       *extra_files;
@@ -182,7 +182,7 @@ struct CV_C13SubSectionNode
 struct CV_C13Parsed
 {
     // rjf: source data
-    String8 data;
+    StringView data;
     
     // rjf: full sub-section list
     CV_C13SubSectionNode *first_sub_section;
@@ -199,8 +199,8 @@ struct CV_C13Parsed
 
 struct CV_UDTInfo
 {
-    String8      name;
-    String8      unique_name;
+    StringView      name;
+    StringView      unique_name;
     CV_TypeProps props;
 };
 

@@ -5,7 +5,7 @@
 //~ rjf: Message Type Functions
 
 internal void
-md_msg_list_push(Arena *arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind, String8 string)
+md_msg_list_push(Arena *arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind, StringView string)
 {
     MD_Msg *msg = push_array(arena, MD_Msg, 1);
     msg.node = node;
@@ -21,7 +21,7 @@ md_msg_list_pushf(Arena *arena, MD_MsgList *msgs, MD_Node *node, MD_MsgKind kind
 {
     va_list args;
     va_start(args, fmt);
-    String8 string = push_str8fv(arena, fmt, args);
+    StringView string = push_str8fv(arena, fmt, args);
     md_msg_list_push(arena, msgs, node, kind, string);
     va_end(args);
 }
@@ -114,8 +114,8 @@ md_token_array_from_chunk_list(Arena *arena, MD_TokenChunkList *chunks)
     return result;
 }
 
-internal String8
-md_content_string_from_token_flags_str8(MD_TokenFlags flags, String8 string)
+internal StringView
+md_content_string_from_token_flags_str8(MD_TokenFlags flags, StringView string)
 {
     U64 num_chop = 0;
     U64 num_skip = 0;
@@ -125,7 +125,7 @@ md_content_string_from_token_flags_str8(MD_TokenFlags flags, String8 string)
         num_skip += 1*(!(flags & MD_TokenFlag_StringTriplet) && flags & MD_TokenFlag_StringLiteral);
         num_chop += 1*(!(flags & MD_TokenFlag_StringTriplet) && flags & MD_TokenFlag_StringLiteral);
     }
-    String8 result = string;
+    StringView result = string;
     result = str8_chop(result, num_chop);
     result = str8_skip(result, num_skip);
     return result;
@@ -185,7 +185,7 @@ md_node_rec_depth_first(MD_Node *node, MD_Node *subtree_root, U64 child_off, U64
 //- rjf: tree building
 
 internal MD_Node *
-md_push_node(Arena *arena, MD_NodeKind kind, MD_NodeFlags flags, String8 string, String8 raw_string, U64 src_offset)
+md_push_node(Arena *arena, MD_NodeKind kind, MD_NodeFlags flags, StringView string, StringView raw_string, U64 src_offset)
 {
     MD_Node *node = push_array(arena, MD_Node, 1);
     node.first = node.last = node.parent = node.next = node.prev = node.first_tag = node.last_tag = &md_nil_node;
@@ -248,7 +248,7 @@ md_unhook(MD_Node *node)
 //- rjf: tree introspection
 
 internal MD_Node *
-md_node_from_chain_string(MD_Node *first, MD_Node *opl, String8 string, StringMatchFlags flags)
+md_node_from_chain_string(MD_Node *first, MD_Node *opl, StringView string, StringMatchFlags flags)
 {
     MD_Node *result = &md_nil_node;
     for (MD_Node *n = first; !md_node_is_nil(n) && n != opl; n = n.next)
@@ -316,13 +316,13 @@ md_root_from_node(MD_Node *node)
 }
 
 internal MD_Node *
-md_child_from_string(MD_Node *node, String8 child_string, StringMatchFlags flags)
+md_child_from_string(MD_Node *node, StringView child_string, StringMatchFlags flags)
 {
     return md_node_from_chain_string(node.first, &md_nil_node, child_string, flags);
 }
 
 internal MD_Node *
-md_tag_from_string(MD_Node *node, String8 tag_string, StringMatchFlags flags)
+md_tag_from_string(MD_Node *node, StringView tag_string, StringMatchFlags flags)
 {
     return md_node_from_chain_string(node.first_tag, &md_nil_node, tag_string, flags);
 }
@@ -340,14 +340,14 @@ md_tag_from_index(MD_Node *node, U64 index)
 }
 
 internal MD_Node *
-md_tag_arg_from_index(MD_Node *node, String8 tag_string, StringMatchFlags flags, U64 index)
+md_tag_arg_from_index(MD_Node *node, StringView tag_string, StringMatchFlags flags, U64 index)
 {
     MD_Node *tag = md_tag_from_string(node, tag_string, flags);
     return md_child_from_index(tag, index);
 }
 
 internal MD_Node *
-md_tag_arg_from_string(MD_Node *node, String8 tag_string, StringMatchFlags tag_str_flags, String8 arg_string, StringMatchFlags arg_str_flags)
+md_tag_arg_from_string(MD_Node *node, StringView tag_string, StringMatchFlags tag_str_flags, StringView arg_string, StringMatchFlags arg_str_flags)
 {
     MD_Node *tag = md_tag_from_string(node, tag_string, tag_str_flags);
     MD_Node *arg = md_child_from_string(tag, arg_string, arg_str_flags);
@@ -355,13 +355,13 @@ md_tag_arg_from_string(MD_Node *node, String8 tag_string, StringMatchFlags tag_s
 }
 
 internal B32
-md_node_has_child(MD_Node *node, String8 string, StringMatchFlags flags)
+md_node_has_child(MD_Node *node, StringView string, StringMatchFlags flags)
 {
     return !md_node_is_nil(md_child_from_string(node, string, flags));
 }
 
 internal B32
-md_node_has_tag(MD_Node *node, String8 string, StringMatchFlags flags)
+md_node_has_tag(MD_Node *node, StringView string, StringMatchFlags flags)
 {
     return !md_node_is_nil(md_tag_from_string(node, string, flags));
 }
@@ -388,7 +388,7 @@ md_tag_count_from_node(MD_Node *node)
     return result;
 }
 
-internal String8
+internal StringView
 md_string_from_children(Arena *arena, MD_Node *root)
 {
     Temp scratch = scratch_begin(&arena, 1);
@@ -401,7 +401,7 @@ md_string_from_children(Arena *arena, MD_Node *root)
         }
         str8_list_push(scratch.arena, &strs, child.string);
     }
-    String8 result = str8_list_join(arena, &strs, 0);
+    StringView result = str8_list_join(arena, &strs, 0);
     scratch_end(scratch);
     return result;
 }
@@ -517,7 +517,7 @@ md_tree_copy(Arena *arena, MD_Node *src_root)
 //~ rjf: Text -> Tokens Functions
 
 internal MD_TokenizeResult
-md_tokenize_from_text(Arena *arena, String8 text)
+md_tokenize_from_text(Arena *arena, StringView text)
 {
     Temp scratch = scratch_begin(&arena, 1);
     MD_TokenChunkList tokens = {0};
@@ -788,7 +788,7 @@ md_tokenize_from_text(Arena *arena, String8 text)
         if (token_flags & MD_TokenFlag_BrokenComment)
         {
             MD_Node *error = md_push_node(arena, MD_NodeKind_ErrorMarker, 0, (""), (""), token_start - byte_first);
-            String8 error_string = ("Unterminated comment.");
+            StringView error_string = ("Unterminated comment.");
             md_msg_list_push(arena, &msgs, error, MD_MsgKind_Error, error_string);
         }
         
@@ -796,7 +796,7 @@ md_tokenize_from_text(Arena *arena, String8 text)
         if (token_flags & MD_TokenFlag_BrokenStringLiteral)
         {
             MD_Node *error = md_push_node(arena, MD_NodeKind_ErrorMarker, 0, (""), (""), token_start - byte_first);
-            String8 error_string = ("Unterminated string literal.");
+            StringView error_string = ("Unterminated string literal.");
             md_msg_list_push(arena, &msgs, error, MD_MsgKind_Error, error_string);
         }
     }
@@ -815,7 +815,7 @@ md_tokenize_from_text(Arena *arena, String8 text)
 //~ rjf: Tokens -> Tree Functions
 
 internal MD_ParseResult
-md_parse_from_text_tokens(Arena *arena, String8 filename, String8 text, MD_TokenArray tokens)
+md_parse_from_text_tokens(Arena *arena, StringView filename, StringView text, MD_TokenArray tokens)
 {
     Temp scratch = scratch_begin(&arena, 1);
     
@@ -874,7 +874,7 @@ if (work_top == 0) {work_top = &broken_work;}\
     for (;token < tokens_opl;)
     {
         //- rjf: unpack token
-        String8 token_string = str8_substr(text, token[0].range);
+        StringView token_string = str8_substr(text, token[0].range);
         
         //- rjf: whitespace -> always no-op & inc
         if (token.flags & MD_TokenFlag_Whitespace)
@@ -943,7 +943,7 @@ if (work_top == 0) {work_top = &broken_work;}\
                 str8_match(token_string, (":"), 0)))
         {
             MD_Node *error = md_push_node(arena, MD_NodeKind_ErrorMarker, 0, token_string, token_string, token.range.min);
-            String8 error_string = push_str8f(arena, "Unexpected reserved symbol \"%S\".", token_string);
+            StringView error_string = push_str8f(arena, "Unexpected reserved symbol \"%S\".", token_string);
             md_msg_list_push(arena, &msgs, error, MD_MsgKind_Error, error_string);
             token += 1;
             goto end_consume;
@@ -957,15 +957,15 @@ if (work_top == 0) {work_top = &broken_work;}\
                   !(token[1].flags & MD_TokenGroup_Label))
             {
                 MD_Node *error = md_push_node(arena, MD_NodeKind_ErrorMarker, 0, token_string, token_string, token.range.min);
-                String8 error_string = ("Tag label expected after @ symbol.");
+                StringView error_string = ("Tag label expected after @ symbol.");
                 md_msg_list_push(arena, &msgs, error, MD_MsgKind_Error, error_string);
                 token += 1;
                 goto end_consume;
             }
             else
             {
-                String8 tag_name_raw = str8_substr(text, token[1].range);
-                String8 tag_name = md_content_string_from_token_flags_str8(token[1].flags, tag_name_raw);
+                StringView tag_name_raw = str8_substr(text, token[1].range);
+                StringView tag_name = md_content_string_from_token_flags_str8(token[1].flags, tag_name_raw);
                 MD_Node *node = md_push_node(arena, MD_NodeKind_Tag, md_node_flags_from_token_flags(token[1].flags), tag_name, tag_name_raw, token[0].range.min);
                 DLLPushBack_NPZ(&md_nil_node, work_top.first_gathered_tag, work_top.last_gathered_tag, node, next, prev);
                 if (token+2 < tokens_opl && token[2].flags & MD_TokenFlag_Reserved &&
@@ -988,8 +988,8 @@ if (work_top == 0) {work_top = &broken_work;}\
         if ((work_top.kind == MD_ParseWorkKind_Main || work_top.kind == MD_ParseWorkKind_MainImplicit) &&
               token.flags & MD_TokenGroup_Label)
         {
-            String8 node_string_raw = token_string;
-            String8 node_string = md_content_string_from_token_flags_str8(token.flags, node_string_raw);
+            StringView node_string_raw = token_string;
+            StringView node_string = md_content_string_from_token_flags_str8(token.flags, node_string_raw);
             MD_NodeFlags flags = md_node_flags_from_token_flags(token.flags)|work_top.gathered_node_flags;
             work_top.gathered_node_flags = 0;
             MD_Node *node = md_push_node(arena, MD_NodeKind_Main, flags, node_string, node_string_raw, token[0].range.min);
@@ -1081,7 +1081,7 @@ if (work_top == 0) {work_top = &broken_work;}\
             {
                 MD_Node *node = work_top.parent;
                 MD_Node *error = md_push_node(arena, MD_NodeKind_ErrorMarker, 0, token_string, token_string, token.range.min);
-                String8 error_string = push_str8f(arena, "More than two newlines following \"%S\", which has implicitly-delimited children, resulting in an empty list of children.", node.string);
+                StringView error_string = push_str8f(arena, "More than two newlines following \"%S\", which has implicitly-delimited children, resulting in an empty list of children.", node.string);
                 md_msg_list_push(arena, &msgs, error, MD_MsgKind_Warning, error_string);
                 MD_ParseWorkPop();
             }
@@ -1122,7 +1122,7 @@ if (work_top == 0) {work_top = &broken_work;}\
         //- rjf: no consumption -> unexpected token! we don't know what to do with this.
         {
             MD_Node *error = md_push_node(arena, MD_NodeKind_ErrorMarker, 0, token_string, token_string, token.range.min);
-            String8 error_string = push_str8f(arena, "Unexpected \"%S\" token.", token_string);
+            StringView error_string = push_str8f(arena, "Unexpected \"%S\" token.", token_string);
             md_msg_list_push(arena, &msgs, error, MD_MsgKind_Error, error_string);
             token += 1;
         }
@@ -1142,7 +1142,7 @@ if (work_top == 0) {work_top = &broken_work;}\
 //~ rjf: Bundled Text -> Tree Functions
 
 internal MD_ParseResult
-md_parse_from_text(Arena *arena, String8 filename, String8 text)
+md_parse_from_text(Arena *arena, StringView filename, StringView text)
 {
     Temp scratch = scratch_begin(&arena, 1);
     MD_TokenizeResult tokenize = md_tokenize_from_text(scratch.arena, text);
@@ -1168,7 +1168,7 @@ md_debug_string_list_from_tree(Arena *arena, MD_Node *root)
             next = rec.next;
             
             // rjf: extract node info
-            String8 kind_string = ("Unknown");
+            StringView kind_string = ("Unknown");
             switch (node.kind)
             {
                 default:{}break;

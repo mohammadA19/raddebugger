@@ -36,9 +36,9 @@ case Arch_x86:{result = REGS_AliasCodeX86_COUNT;}break;
 }
 return result;
 }
-internal String8 *regs_reg_code_string_table_from_arch(Arch arch)
+internal StringView *regs_reg_code_string_table_from_arch(Arch arch)
 {
-String8 *result = 0;
+StringView *result = 0;
 switch (arch)
 {
 default:{}break;
@@ -47,9 +47,9 @@ case Arch_x86:{result = regs_g_reg_code_x86_string_table;}break;
 }
 return result;
 }
-internal String8 *regs_alias_code_string_table_from_arch(Arch arch)
+internal StringView *regs_alias_code_string_table_from_arch(Arch arch)
 {
-String8 *result = 0;
+StringView *result = 0;
 switch (arch)
 {
 default:{}break;
@@ -308,7 +308,7 @@ REGS_UsageKind_Normal,
 REGS_UsageKind_Normal,
 };
 
-String8 regs_g_reg_code_x64_string_table[101] =
+StringView regs_g_reg_code_x64_string_table[101] =
 {
 (""),
 ("rax"),
@@ -413,7 +413,7 @@ String8 regs_g_reg_code_x64_string_table[101] =
 ("k7"),
 };
 
-String8 regs_g_alias_code_x64_string_table[96] =
+StringView regs_g_alias_code_x64_string_table[96] =
 {
 (""),
 ("eax"),
@@ -823,7 +823,7 @@ REGS_UsageKind_Normal,
 REGS_UsageKind_Normal,
 };
 
-String8 regs_g_reg_code_x86_string_table[61] =
+StringView regs_g_reg_code_x86_string_table[61] =
 {
 (""),
 ("eax"),
@@ -888,7 +888,7 @@ String8 regs_g_reg_code_x86_string_table[61] =
 ("ymm7"),
 };
 
-String8 regs_g_alias_code_x86_string_table[36] =
+StringView regs_g_alias_code_x86_string_table[36] =
 {
 (""),
 ("ax"),

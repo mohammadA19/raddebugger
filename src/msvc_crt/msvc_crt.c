@@ -1,10 +1,10 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-internal String8
+internal StringView
 mscrt_delay_load_helper_name_from_machine(COFF_MachineType machine)
 {
-    String8 delay_load_helper_name = str8_zero();
+    StringView delay_load_helper_name = str8_zero();
     switch (machine) {
     case COFF_MachineType_Unknown: break;
     case COFF_MachineType_X86: delay_load_helper_name = str8_cstring(MSCRT_DELAY_LOAD_HELPER2_X86_SYMBOL_NAME); break;
@@ -16,7 +16,7 @@ mscrt_delay_load_helper_name_from_machine(COFF_MachineType machine)
 
 internal U64
 mscrt_parse_func_info(Arena              *arena,
-                                            String8             raw_data,
+                                            StringView             raw_data,
                                             U64                 section_count,
                                             COFF_SectionHeader *sections,
                                             U64                 off,
@@ -100,7 +100,7 @@ mscrt_parse_func_info(Arena              *arena,
 ////////////////////////////////
 
 internal U64
-mscrt_v4_parse_u32(String8 raw_data, U64 offset, U32 *uint_out)
+mscrt_v4_parse_u32(StringView raw_data, U64 offset, U32 *uint_out)
 {
     U64 cursor = offset;
     
@@ -138,13 +138,13 @@ mscrt_v4_parse_u32(String8 raw_data, U64 offset, U32 *uint_out)
 }
 
 internal U64
-mscrt_v4_parse_s32(String8 raw_data, U64 offset, S32 *int_out)
+mscrt_v4_parse_s32(StringView raw_data, U64 offset, S32 *int_out)
 {
     return str8_deserial_read_struct(raw_data, offset, int_out);
 }
 
 internal U64
-mscrt_parse_handler_type_v4(String8 raw_data, U64 offset, U64 func_voff, MSCRT_EhHandlerTypeV4 *handler)
+mscrt_parse_handler_type_v4(StringView raw_data, U64 offset, U64 func_voff, MSCRT_EhHandlerTypeV4 *handler)
 {
     U64 cursor = offset;
     
@@ -206,7 +206,7 @@ mscrt_parse_handler_type_v4(String8 raw_data, U64 offset, U64 func_voff, MSCRT_E
 
 internal U64
 mscrt_parse_handler_type_v4_array(Arena                      *arena,
-                                                                    String8                     raw_data,
+                                                                    StringView                     raw_data,
                                                                     U64                         offset,
                                                                     U64                         func_voff,
                                                                     MSCRT_EhHandlerTypeV4Array *array_out)
@@ -231,7 +231,7 @@ mscrt_parse_handler_type_v4_array(Arena                      *arena,
 }
 
 internal U64
-mscrt_parse_unwind_v4_entry(String8 raw_data, U64 offset, MSCRT_UnwindEntryV4 *entry_out)
+mscrt_parse_unwind_v4_entry(StringView raw_data, U64 offset, MSCRT_UnwindEntryV4 *entry_out)
 {
     U64 cursor = offset;
     
@@ -263,7 +263,7 @@ mscrt_parse_unwind_v4_entry(String8 raw_data, U64 offset, MSCRT_UnwindEntryV4 *e
 }
 
 internal U64
-mscrt_parse_unwind_map_v4(Arena *arena, String8 raw_data, U64 off, MSCRT_UnwindMapV4 *map_out)
+mscrt_parse_unwind_map_v4(Arena *arena, StringView raw_data, U64 off, MSCRT_UnwindMapV4 *map_out)
 {
     U64 cursor = off;
     cursor += mscrt_v4_parse_u32(raw_data, cursor, &map_out.count);
@@ -277,7 +277,7 @@ mscrt_parse_unwind_map_v4(Arena *arena, String8 raw_data, U64 off, MSCRT_UnwindM
 
 internal U64
 mscrt_parse_try_block_map_array_v4(Arena                   *arena,
-                                                                      String8                  raw_data,
+                                                                      StringView                  raw_data,
                                                                       U64                      off,
                                                                       U64                      section_count,
                                                                       COFF_SectionHeader      *sections,
@@ -312,7 +312,7 @@ mscrt_parse_try_block_map_array_v4(Arena                   *arena,
 
 internal U64
 mscrt_parse_ip2state_map_v4(Arena              *arena,
-                                                        String8             raw_data,
+                                                        StringView             raw_data,
                                                         U64                 off,
                                                         U64                 func_voff,
                                                         MSCRT_IP2State32V4 *ip2state_map_out)
@@ -348,7 +348,7 @@ mscrt_parse_ip2state_map_v4(Arena              *arena,
 
 internal U64
 mscrt_parse_func_info_v4(Arena                     *arena,
-                                                  String8                 raw_data,
+                                                  StringView                 raw_data,
                                                   U64                     section_count,
                                                   COFF_SectionHeader     *sections,
                                                   U64                     off,
@@ -412,7 +412,7 @@ mscrt_parse_func_info_v4(Arena                     *arena,
 
 internal Rng1U64List
 mscrt_catch_blocks_from_data_x8664(Arena              *arena,
-                                                                      String8             raw_data,
+                                                                      StringView             raw_data,
                                                                       U64                 section_count,
                                                                       COFF_SectionHeader *sections,
                                                                       Rng1U64             except_frange)
@@ -421,7 +421,7 @@ mscrt_catch_blocks_from_data_x8664(Arena              *arena,
     
     Rng1U64List result = {0};
     
-    String8        raw_pdata   = str8_substr(raw_data, except_frange);
+    StringView        raw_pdata   = str8_substr(raw_data, except_frange);
     U64            pdata_count = raw_pdata.size / sizeof(PE_IntelPdata);
     PE_IntelPdata *src_pdata   = (PE_IntelPdata *)raw_pdata.str;
     PE_IntelPdata *opl_pdata   = src_pdata + pdata_count;
@@ -441,7 +441,7 @@ mscrt_catch_blocks_from_data_x8664(Arena              *arena,
             U64 handler_data_foff = uwinfo_foff + sizeof(PE_UnwindInfo) + actual_code_count * sizeof(PE_UnwindCode);
             U32 handler_voff      = *(U32 *)str8_deserial_get_raw_ptr(raw_data, handler_data_foff, sizeof(handler_voff));
             
-            String8 handler_name = str8_zero();
+            StringView handler_name = str8_zero();
             /* TODO:
             {
                 UnitID     uid  = syms_group_uid_from_voff__accelerated(group, handler_voff);
@@ -502,7 +502,7 @@ mscrt_catch_blocks_from_data_x8664(Arena              *arena,
 ////////////////////////////////
 //~ rjf: Enum -> String
 
-internal String8
+internal StringView
 mscrt_string_from_eh_adjectives(Arena *arena, MSCRT_EhHandlerTypeFlags adjectives)
 {
     Temp scratch = scratch_begin(&arena, 1);
@@ -528,7 +528,7 @@ mscrt_string_from_eh_adjectives(Arena *arena, MSCRT_EhHandlerTypeFlags adjective
     if (adjectives & MSCRT_EhHandlerTypeFlag_IsComplusEH) {
         str8_list_pushf(scratch.arena, &adj_list, "ComplusEH");
     }
-    String8 result = str8_list_join(arena, &adj_list, &(StringJoin){.sep=(", ")});
+    StringView result = str8_list_join(arena, &adj_list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return result;
 }

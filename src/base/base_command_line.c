@@ -5,7 +5,7 @@
 //~ rjf: Command Line Parsing Functions
 
 internal CmdLineOpt **
-cmd_line_slot_from_string(CmdLine *cmd_line, String8 string)
+cmd_line_slot_from_string(CmdLine *cmd_line, StringView string)
 {
     CmdLineOpt **slot = 0;
     if (cmd_line.option_table_size != 0)
@@ -18,7 +18,7 @@ cmd_line_slot_from_string(CmdLine *cmd_line, String8 string)
 }
 
 internal CmdLineOpt *
-cmd_line_opt_from_slot(CmdLineOpt **slot, String8 string)
+cmd_line_opt_from_slot(CmdLineOpt **slot, StringView string)
 {
     CmdLineOpt *result = 0;
     for (CmdLineOpt *var = *slot; var; var = var.hash_next)
@@ -40,7 +40,7 @@ cmd_line_push_opt(CmdLineOptList *list, CmdLineOpt *var)
 }
 
 internal CmdLineOpt *
-cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line, String8 string, String8List values)
+cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line, StringView string, String8List values)
 {
     CmdLineOpt *var = 0;
     CmdLineOpt **slot = cmd_line_slot_from_string(cmd_line, string);
@@ -87,7 +87,7 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
         // single "--" (with no trailing string on the command line will be
         // considered as passthrough input strings.
         B32 is_option = 0;
-        String8 option_name = node.string;
+        StringView option_name = node.string;
         if (!after_passthrough_option)
         {
             is_option = 1;
@@ -123,7 +123,7 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
             U64 value_signifier_position1 = str8_find_needle(option_name, 0, (":"), 0);
             U64 value_signifier_position2 = str8_find_needle(option_name, 0, ("="), 0);
             U64 value_signifier_position = Min(value_signifier_position1, value_signifier_position2);
-            String8 value_portion_this_string = str8_skip(option_name, value_signifier_position+1);
+            StringView value_portion_this_string = str8_skip(option_name, value_signifier_position+1);
             if (value_signifier_position < option_name.size)
             {
                 has_values = 1;
@@ -137,7 +137,7 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
                 for (String8Node *n = node; n; n = n.next)
                 {
                     next = n.next;
-                    String8 string = n.string;
+                    StringView string = n.string;
                     if (n == node)
                     {
                         string = value_portion_this_string;
@@ -184,13 +184,13 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
 }
 
 internal CmdLineOpt *
-cmd_line_opt_from_string(CmdLine *cmd_line, String8 name)
+cmd_line_opt_from_string(CmdLine *cmd_line, StringView name)
 {
     return cmd_line_opt_from_slot(cmd_line_slot_from_string(cmd_line, name), name);
 }
 
 internal String8List 
-cmd_line_strings(CmdLine *cmd_line, String8 name)
+cmd_line_strings(CmdLine *cmd_line, StringView name)
 {
     String8List result = {0};
     CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
@@ -201,10 +201,10 @@ cmd_line_strings(CmdLine *cmd_line, String8 name)
     return result;
 }
 
-internal String8     
-cmd_line_string(CmdLine *cmd_line, String8 name)
+internal StringView     
+cmd_line_string(CmdLine *cmd_line, StringView name)
 {
-    String8 result = {0};
+    StringView result = {0};
     CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
     if (var != 0)
     {
@@ -214,14 +214,14 @@ cmd_line_string(CmdLine *cmd_line, String8 name)
 }
 
 internal B32
-cmd_line_has_flag(CmdLine *cmd_line, String8 name)
+cmd_line_has_flag(CmdLine *cmd_line, StringView name)
 {
     CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
     return (var != 0);
 }
 
 internal B32
-cmd_line_has_argument(CmdLine *cmd_line, String8 name)
+cmd_line_has_argument(CmdLine *cmd_line, StringView name)
 {
     CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
     return (var != 0 && var.value_strings.node_count > 0);

@@ -83,15 +83,15 @@ os_get_gfx_info(void)
 //~ rjf: @os_hooks Clipboards (Implemented Per-OS)
 
 internal void
-os_set_clipboard_text(String8 string)
+os_set_clipboard_text(StringView string)
 {
     
 }
 
-internal String8
+internal StringView
 os_get_clipboard_text(Arena *arena)
 {
-    String8 result = {0};
+    StringView result = {0};
     return result;
 }
 
@@ -99,7 +99,7 @@ os_get_clipboard_text(Arena *arena)
 //~ rjf: @os_hooks Windows (Implemented Per-OS)
 
 internal OS_Handle
-os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title)
+os_window_open(Rng2F32 rect, OS_WindowFlags flags, StringView title)
 {
     Vec2F32 resolution = dim_2f32(rect);
     
@@ -156,7 +156,7 @@ os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title)
     
     //- rjf: attach name
     Temp scratch = scratch_begin(0, 0);
-    String8 title_copy = push_str8_copy(scratch.arena, title);
+    StringView title_copy = push_str8_copy(scratch.arena, title);
     XStoreName(os_lnx_gfx_state.display, w.window, (char *)title_copy.str);
     scratch_end(scratch);
     
@@ -174,12 +174,12 @@ os_window_close(OS_Handle handle)
 }
 
 internal void
-os_window_set_title(OS_Handle handle, String8 title)
+os_window_set_title(OS_Handle handle, StringView title)
 {
     if (os_handle_match(handle, os_handle_zero())) {return;}
     Temp scratch = scratch_begin(0, 0);
     OS_LNX_Window *w = (OS_LNX_Window *)handle.u64[0];
-    String8 title_copy = push_str8_copy(scratch.arena, title);
+    StringView title_copy = push_str8_copy(scratch.arena, title);
     XStoreName(os_lnx_gfx_state.display, w.window, (char *)title_copy.str);
     scratch_end(scratch);
 }
@@ -354,7 +354,7 @@ os_monitor_from_window(OS_Handle window)
     return result;
 }
 
-internal String8
+internal StringView
 os_name_from_monitor(Arena *arena, OS_Handle monitor)
 {
     // TODO(rjf)
@@ -670,7 +670,7 @@ os_set_cursor(OS_Cursor cursor)
 //~ rjf: @os_hooks Native User-Facing Graphical Messages (Implemented Per-OS)
 
 internal void
-os_graphical_message(B32 error, String8 title, String8 message)
+os_graphical_message(B32 error, StringView title, StringView message)
 {
     if (error)
     {
@@ -680,8 +680,8 @@ os_graphical_message(B32 error, String8 title, String8 message)
     fprintf(stderr, "%.*s\n\n", str8_varg(message));
 }
 
-internal String8
-os_graphical_pick_file(Arena *arena, String8 initial_path)
+internal StringView
+os_graphical_pick_file(Arena *arena, StringView initial_path)
 {
     return str8_zero();
 }
@@ -690,13 +690,13 @@ os_graphical_pick_file(Arena *arena, String8 initial_path)
 //~ rjf: @os_hooks Shell Operations
 
 internal void
-os_show_in_filesystem_ui(String8 path)
+os_show_in_filesystem_ui(StringView path)
 {
     // TODO(rjf)
 }
 
 internal void
-os_open_in_browser(String8 url)
+os_open_in_browser(StringView url)
 {
     // TODO(rjf)
 }

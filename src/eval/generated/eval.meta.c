@@ -4,7 +4,7 @@
 //- GENERATED CODE
 
 C_LINKAGE_BEGIN
-String8 e_token_kind_strings[6] =
+StringView e_token_kind_strings[6] =
 {
 ("Null"),
 ("Identifier"),
@@ -14,7 +14,7 @@ String8 e_token_kind_strings[6] =
 ("Symbol"),
 };
 
-String8 e_type_kind_basic_string_table[61] =
+StringView e_type_kind_basic_string_table[61] =
 {
 (""),
 ("void"),
@@ -144,7 +144,7 @@ U8 e_type_kind_basic_byte_size_table[61] =
 0,
 };
 
-String8 e_expr_kind_strings[50] =
+StringView e_expr_kind_strings[50] =
 {
 ("Nil"),
 ("Ref"),
@@ -252,7 +252,7 @@ E_OpInfo e_expr_kind_op_info_table[50] =
 { E_OpKind_Binary, 13, (""), (" = "), (""), ("") },
 };
 
-String8 e_interpretation_code_display_strings[11] =
+StringView e_interpretation_code_display_strings[11] =
 {
 (""),
 ("Cannot divide by zero."),

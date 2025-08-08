@@ -643,7 +643,7 @@ enum ELF_Identifier
 } ELF_Identifier;
 
 read_only global U8 elf_magic[] = {0x7f, 'E', 'L', 'F'};
-read_only global String8 elf_magic_string = {elf_magic, sizeof(elf_magic)};
+read_only global StringView elf_magic_string = {elf_magic, sizeof(elf_magic)};
 
 typedef U16 ELF_Type;
 enum ELF_TypeEnum

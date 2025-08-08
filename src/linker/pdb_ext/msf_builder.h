@@ -120,7 +120,7 @@ typedef struct
     MSF_PageDataList page_data_list;
     MSF_PageList     page_list;
     MSF_UInt         stream_pos;
-    String8          data;
+    StringView          data;
     Rng1U64         *range_arr;
 } MSF_WriteTask;
 

@@ -72,7 +72,7 @@ struct FNT_FontHashNode
     FNT_Tag tag;
     FP_Handle handle;
     FP_Metrics metrics;
-    String8 path;
+    StringView path;
 };
 
 struct FNT_FontHashSlot
@@ -113,7 +113,7 @@ struct FNT_Hash2InfoRasterCacheSlot
 struct FNT_RunCacheNode
 {
     FNT_RunCacheNode *next;
-    String8 string;
+    StringView string;
     FNT_Run run;
 };
 

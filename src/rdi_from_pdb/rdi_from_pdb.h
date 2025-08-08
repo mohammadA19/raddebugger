@@ -9,10 +9,10 @@
 
 struct P2R_ConvertParams
 {
-    String8 input_pdb_name;
-    String8 input_pdb_data;
-    String8 input_exe_name;
-    String8 input_exe_data;
+    StringView input_pdb_name;
+    StringView input_pdb_data;
+    StringView input_exe_name;
+    StringView input_exe_data;
     RDIM_SubsetFlags subset_flags;
     B32 deterministic;
 };
@@ -26,15 +26,15 @@ struct P2R_TPIHashParseIn
 {
     PDB_Strtbl *strtbl;
     PDB_TpiParsed *tpi;
-    String8 hash_data;
-    String8 aux_data;
+    StringView hash_data;
+    StringView aux_data;
 };
 
 //- rjf: tpi leaves parsing
 
 struct P2R_TPILeafParseIn
 {
-    String8 leaf_data;
+    StringView leaf_data;
     CV_TypeId itype_first;
 };
 
@@ -42,22 +42,22 @@ struct P2R_TPILeafParseIn
 
 struct P2R_EXEHashIn
 {
-    String8 exe_data;
+    StringView exe_data;
 };
 
 //- rjf: symbol stream parsing
 
 struct P2R_SymbolStreamParseIn
 {
-    String8 data;
+    StringView data;
 };
 
 //- rjf: c13 line info stream parsing
 
 struct P2R_C13StreamParseIn
 {
-    String8 data;
-    String8 strtbl;
+    StringView data;
+    StringView strtbl;
     COFF_SectionHeaderArray coff_sections;
 };
 
@@ -65,14 +65,14 @@ struct P2R_C13StreamParseIn
 
 struct P2R_CompUnitParseIn
 {
-    String8 data;
+    StringView data;
 };
 
 //- rjf: comp unit contribution table parsing
 
 struct P2R_CompUnitContributionsParseIn
 {
-    String8 data;
+    StringView data;
     COFF_SectionHeaderArray coff_sections;
 };
 
@@ -98,7 +98,7 @@ struct P2R_LinkNameNode
 {
     P2R_LinkNameNode *next;
     U64 voff;
-    String8 name;
+    StringView name;
 };
 
 struct P2R_LinkNameMap

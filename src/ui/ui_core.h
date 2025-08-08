@@ -27,7 +27,7 @@ UI_IconKind;
 struct UI_IconInfo
 {
     FNT_Tag icon_font;
-    String8 icon_kind_text_map[UI_IconKind_COUNT];
+    StringView icon_kind_text_map[UI_IconKind_COUNT];
 };
 
 ////////////////////////////////
@@ -139,7 +139,7 @@ struct UI_Event
     UI_EventDeltaUnit delta_unit;
     OS_Key key;
     OS_Modifiers modifiers;
-    String8 string;
+    StringView string;
     String8List paths;
     Vec2F32 pos;
     Vec2F32 delta_2f32;
@@ -173,8 +173,8 @@ enum UI_TxtOpFlags : U32
 struct UI_TxtOp
 {
     UI_TxtOpFlags flags;
-    String8 replace;
-    String8 copy;
+    StringView replace;
+    StringView copy;
     TxtRng range;
     TxtPt cursor;
     TxtPt mark;
@@ -364,7 +364,7 @@ struct UI_Box
     UI_Key key;
     UI_BoxFlags flags;
     UI_Key tags_key;
-    String8 string;
+    StringView string;
     UI_TextAlign text_align;
     Vec2F32 fixed_position;
     Vec2F32 fixed_size;
@@ -640,7 +640,7 @@ struct UI_State
     
     //- rjf: build state machine state
     B32 is_in_open_ctx_menu;
-    String8 autocomplete_string;
+    StringView autocomplete_string;
     B32 tooltip_can_overflow_window;
     UI_Key tooltip_anchor_key;
     String8Array current_gen_tags;
@@ -687,9 +687,9 @@ struct UI_State
     Vec2F32 press_pos_history[UI_MouseButtonKind_COUNT][3];
     Vec2F32 drag_start_mouse;
     Arena *drag_state_arena;
-    String8 drag_state_data;
+    StringView drag_state_data;
     Arena *string_hover_arena;
-    String8 string_hover_string;
+    StringView string_hover_string;
     F32 string_hover_size;
     DR_FStrList string_hover_fstrs;
     U64 string_hover_begin_us;

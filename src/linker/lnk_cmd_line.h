@@ -6,7 +6,7 @@
 typedef struct LNK_CmdOption
 {
     struct LNK_CmdOption *next;
-    String8               string;
+    StringView               string;
     String8List           value_strings;
 } LNK_CmdOption;
 

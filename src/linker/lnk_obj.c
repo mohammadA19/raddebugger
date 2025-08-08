@@ -5,8 +5,8 @@ internal void
 lnk_error_obj(LNK_ErrorCode code, LNK_Obj *obj, char *fmt, ...)
 {
     va_list args; va_start(args, fmt);
-    String8 obj_path = obj ? obj.path : ("RADLINK");
-    String8 lib_path = lnk_obj_get_lib_path(obj);
+    StringView obj_path = obj ? obj.path : ("RADLINK");
+    StringView lib_path = lnk_obj_get_lib_path(obj);
     lnk_error_with_loc_fv(code, obj_path, lib_path, fmt, args);
     va_end(args);
 }
@@ -53,9 +53,9 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
     //
     // extract COFF info
     //
-    String8 raw_coff_section_table = str8_substr(input.data, header.section_table_range);
-    String8 raw_coff_symbol_table  = str8_substr(input.data, header.symbol_table_range);
-    String8 raw_coff_string_table  = str8_substr(input.data, header.string_table_range);
+    StringView raw_coff_section_table = str8_substr(input.data, header.section_table_range);
+    StringView raw_coff_symbol_table  = str8_substr(input.data, header.symbol_table_range);
+    StringView raw_coff_string_table  = str8_substr(input.data, header.string_table_range);
 
     //
     // error check: section table / symbol table / string table
@@ -78,7 +78,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
         COFF_SectionHeader *coff_sect_header = &coff_section_table[sect_idx];
 
         // read name
-        String8 sect_name = coff_name_from_section_header(raw_coff_string_table, coff_sect_header);
+        StringView sect_name = coff_name_from_section_header(raw_coff_string_table, coff_sect_header);
 
         if (~coff_sect_header.flags & COFF_SectionFlag_CntUninitializedData) {
             if (coff_sect_header.fsize > 0) {
@@ -108,8 +108,8 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
     //
     {
         COFF_SectionHeader *section_table = (COFF_SectionHeader *)str8_substr(input.data, header.section_table_range).str;
-        String8 string_table = str8_substr(input.data, header.string_table_range);
-        String8 symbol_table = str8_substr(input.data, header.symbol_table_range);
+        StringView string_table = str8_substr(input.data, header.string_table_range);
+        StringView symbol_table = str8_substr(input.data, header.symbol_table_range);
         COFF_ParsedSymbol symbol;
         for (U64 symbol_idx = 0; symbol_idx < header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
             symbol = coff_parse_symbol(header, string_table, symbol_table, symbol_idx);
@@ -140,8 +140,8 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
         comdats = push_array_no_zero(arena, U32, header.section_count_no_null);
         MemorySet(comdats, 0xff, header.section_count_no_null * sizeof(comdats[0]));
 
-        String8 string_table = str8_substr(input.data, header.string_table_range);
-        String8 symbol_table = str8_substr(input.data, header.symbol_table_range);
+        StringView string_table = str8_substr(input.data, header.string_table_range);
+        StringView symbol_table = str8_substr(input.data, header.symbol_table_range);
         COFF_ParsedSymbol symbol;
         for (U64 symbol_idx = 0; symbol_idx < header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
             symbol = coff_parse_symbol(header, string_table, symbol_table, symbol_idx);
@@ -180,8 +180,8 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
     {
         Temp scratch = scratch_begin(&arena, 1);
 
-        String8    string_table     = str8_substr(input.data, header.string_table_range);
-        String8    symbol_table     = str8_substr(input.data, header.symbol_table_range);
+        StringView    string_table     = str8_substr(input.data, header.string_table_range);
+        StringView    symbol_table     = str8_substr(input.data, header.symbol_table_range);
         HashTable *visited_sections = hash_table_init(scratch.arena, 32);
         for (U64 sect_idx = 0; sect_idx < header.section_count_no_null; sect_idx += 1) {
             for (U32 curr_section = sect_idx;;) {
@@ -230,8 +230,8 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
     //
     U32Node **associated_sections = push_array(arena, U32Node *, header.section_count_no_null + 1);
     {
-        String8 string_table = str8_substr(input.data, header.string_table_range);
-        String8 symbol_table = str8_substr(input.data, header.symbol_table_range);
+        StringView string_table = str8_substr(input.data, header.string_table_range);
+        StringView symbol_table = str8_substr(input.data, header.symbol_table_range);
 
         COFF_ParsedSymbol symbol;
         for (U32 symbol_idx = 0; symbol_idx < header.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
@@ -262,10 +262,10 @@ THREAD_POOL_TASK_FUNC(lnk_obj_initer)
         CV_Symbol comp_symbol = {0};
         for (U64 sect_idx = 0; sect_idx < obj.header.section_count_no_null; sect_idx += 1) {
             COFF_SectionHeader *sect_header = &coff_section_table[sect_idx];
-            String8 name = str8_cstring_capped_reverse(sect_header.name, sect_header.name+sizeof(sect_header.name));
+            StringView name = str8_cstring_capped_reverse(sect_header.name, sect_header.name+sizeof(sect_header.name));
             if (str8_match(name, (".debug$S"), 0)) {
                 Temp temp = temp_begin(scratch.arena);
-                String8 debug_s_data = str8_substr(input.data, rng_1u64(sect_header.foff, sect_header.foff+sect_header.fsize));
+                StringView debug_s_data = str8_substr(input.data, rng_1u64(sect_header.foff, sect_header.foff+sect_header.fsize));
                 CV_DebugS debug_s = cv_parse_debug_s(temp.arena, debug_s_data);
                 for (String8Node *symbols_n = debug_s.data_list[CV_C13SubSectionIdxKind_Symbols].first; symbols_n != 0; symbols_n = symbols_n.next) {
                     CV_SymbolList symbol_list = {0};
@@ -450,14 +450,14 @@ lnk_input_obj_symbols(TP_Context *tp, TP_Arena *arena, LNK_SymbolTable *symtab, 
 }
 
 internal COFF_ParsedSymbol
-lnk_obj_match_symbol(LNK_Obj *obj, String8 match_name)
+lnk_obj_match_symbol(LNK_Obj *obj, StringView match_name)
 {
     COFF_ParsedSymbol result = {0};
 
     COFF_FileHeaderInfo coff_info = coff_file_header_info_from_data(obj.data);
 
-    String8 raw_coff_symbol_table = str8_substr(obj.data, coff_info.symbol_table_range);
-    String8 raw_coff_string_table = str8_substr(obj.data, coff_info.string_table_range);
+    StringView raw_coff_symbol_table = str8_substr(obj.data, coff_info.symbol_table_range);
+    StringView raw_coff_string_table = str8_substr(obj.data, coff_info.string_table_range);
 
     COFF_ParsedSymbol symbol;
     for (U64 symbol_idx = 0; symbol_idx < coff_info.symbol_count; symbol_idx += (1 + symbol.aux_symbol_count)) {
@@ -499,10 +499,10 @@ lnk_obj_get_vol_md(LNK_Obj *obj)
     return lnk_obj_match_symbol(obj, ("@vol.md")).value;
 }
 
-internal String8
+internal StringView
 lnk_obj_get_lib_path(LNK_Obj *obj)
 {
-    String8 lib_path = {0};
+    StringView lib_path = {0};
     if (obj && obj.lib) {
         lib_path = obj.lib.path;
     }
@@ -562,11 +562,11 @@ lnk_try_comdat_props_from_section_number(LNK_Obj *obj, U32 section_number, COFF_
 internal B32
 lnk_is_coff_section_debug(LNK_Obj *obj, U64 sect_idx)
 {
-    String8 string_table = str8_substr(obj.data, obj.header.string_table_range);
+    StringView string_table = str8_substr(obj.data, obj.header.string_table_range);
     COFF_SectionHeader *section_header = lnk_coff_section_header_from_section_number(obj, sect_idx+1);
     
-    String8 full_name = coff_name_from_section_header(string_table, section_header);
-    String8 name, postfix;
+    StringView full_name = coff_name_from_section_header(string_table, section_header);
+    StringView name, postfix;
     coff_parse_section_name(full_name, &name, &postfix);
 
     B32 is_debug = str8_match(name, (".debug"), 0);
@@ -576,8 +576,8 @@ lnk_is_coff_section_debug(LNK_Obj *obj, U64 sect_idx)
 internal COFF_ParsedSymbol
 lnk_parsed_symbol_from_coff_symbol_idx(LNK_Obj *obj, U64 symbol_idx)
 {
-    String8 string_table = str8_substr(obj.data, obj.header.string_table_range);
-    String8 symbol_table = str8_substr(obj.data, obj.header.symbol_table_range);
+    StringView string_table = str8_substr(obj.data, obj.header.string_table_range);
+    StringView symbol_table = str8_substr(obj.data, obj.header.symbol_table_range);
 
     COFF_ParsedSymbol result = {0};
     if (obj.header.is_big_obj) {
@@ -596,7 +596,7 @@ THREAD_POOL_TASK_FUNC(lnk_collect_obj_chunks_task)
     LNK_Obj              *obj  = task.objs[task_id];
 
     COFF_SectionHeader *section_table = (COFF_SectionHeader *)str8_substr(obj.data, obj.header.section_table_range).str;
-    String8             string_table  = str8_substr(obj.data, obj.header.string_table_range);
+    StringView             string_table  = str8_substr(obj.data, obj.header.string_table_range);
     for (U32 sect_idx = 0; sect_idx < obj.header.section_count_no_null; sect_idx += 1) {
         COFF_SectionHeader *section_header = &section_table[sect_idx];
 
@@ -606,16 +606,16 @@ THREAD_POOL_TASK_FUNC(lnk_collect_obj_chunks_task)
             }
         }
 
-        String8 section_name = coff_name_from_section_header(string_table, section_header);
+        StringView section_name = coff_name_from_section_header(string_table, section_header);
         if (str8_match(section_name, task.name, 0)) {
-            String8 section_data = str8_substr(obj.data, rng_1u64(section_header.foff, section_header.foff + section_header.fsize));
+            StringView section_data = str8_substr(obj.data, rng_1u64(section_header.foff, section_header.foff + section_header.fsize));
             str8_list_push(arena, &task.out_lists[task_id], section_data);
         }
     }
 }
 
 internal String8List *
-lnk_collect_obj_sections(TP_Context *tp, TP_Arena *arena, U64 objs_count, LNK_Obj **objs, String8 name, B32 collect_discarded)
+lnk_collect_obj_sections(TP_Context *tp, TP_Arena *arena, U64 objs_count, LNK_Obj **objs, StringView name, B32 collect_discarded)
 {
     LNK_SectionCollector task = {0};
     task.objs              = objs;
@@ -634,11 +634,11 @@ lnk_obj_is_before(void *raw_a, void *raw_b)
 }
 
 internal void
-lnk_parse_msvc_linker_directive(Arena *arena, LNK_Obj *obj, LNK_DirectiveInfo *directive_info, String8 buffer)
+lnk_parse_msvc_linker_directive(Arena *arena, LNK_Obj *obj, LNK_DirectiveInfo *directive_info, StringView buffer)
 {
     Temp scratch = scratch_begin(&arena, 1);
 
-    String8 to_parse;
+    StringView to_parse;
     {
         local_persist const U8 bom_sig[]   = { 0xEF, 0xBB, 0xBF };
         local_persist const U8 ascii_sig[] = { 0x20, 0x20, 0x20 };
@@ -688,7 +688,7 @@ lnk_raw_directives_from_obj(Arena *arena, LNK_Obj *obj)
     for (U64 sect_idx = 0; sect_idx < obj.header.section_count_no_null; sect_idx += 1) {
         COFF_SectionHeader *sect_header = &section_table[sect_idx];
         if (sect_header.flags & COFF_SectionFlag_LnkInfo) {
-            String8 sect_name = str8_cstring_capped(sect_header.name, sect_header.name + sizeof(sect_header.name));
+            StringView sect_name = str8_cstring_capped(sect_header.name, sect_header.name + sizeof(sect_header.name));
             if (str8_match(sect_name, (".drectve"), 0)) {
                 if (sect_header.flags & COFF_SectionFlag_CntUninitializedData) {
                     lnk_error_obj(LNK_Error_IllData, obj, ".drectve section header has flag COFF_SectionFlag_CntUninitializedData");

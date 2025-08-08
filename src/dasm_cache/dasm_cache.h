@@ -34,7 +34,7 @@ struct DASM_Inst
 {
     DASM_InstFlags flags;
     U32 size;
-    String8 string;
+    StringView string;
     U64 jump_dest_vaddr;
 };
 
@@ -135,7 +135,7 @@ struct DASM_LineArray
 
 struct DASM_Result
 {
-    String8 text;
+    StringView text;
     DASM_LineArray lines;
 };
 

@@ -22,7 +22,7 @@ rdim_data_model_from_os_arch(OperatingSystem os, RDI_Arch arch)
 ////////////////////////////////
 
 internal RDIM_TopLevelInfo
-rdim_make_top_level_info(String8 image_name, Arch arch, U64 exe_hash, RDIM_BinarySectionList sections)
+rdim_make_top_level_info(StringView image_name, Arch arch, U64 exe_hash, RDIM_BinarySectionList sections)
 {
     // convert arch
     RDI_Arch arch_rdi;

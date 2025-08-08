@@ -50,10 +50,10 @@ dmn_lnx_write(int memory_fd, Rng1U64 range, void *src)
     return result;
 }
 
-internal String8
+internal StringView
 dmn_lnx_read_string(Arena *arena, int memory_fd, U64 base_vaddr)
 {
-    String8 result = {0};
+    StringView result = {0};
     U64 string_size = 0;
     for (U64 vaddr = base_vaddr; string_size < 4096; vaddr += 1, string_size += 1)
     {
@@ -79,13 +79,13 @@ dmn_lnx_read_string(Arena *arena, int memory_fd, U64 base_vaddr)
 
 //- rjf: pid => info extraction
 
-internal String8
+internal StringView
 dmn_lnx_exe_path_from_pid(Arena *arena, pid_t pid)
 {
     Temp scratch = scratch_begin(&arena, 1);
     
     //- rjf: get exe link path
-    String8 exe_link_path = str8f(scratch.arena, "/proc/%d/exe", pid);
+    StringView exe_link_path = str8f(scratch.arena, "/proc/%d/exe", pid);
     
     //- rjf: read the link
     Temp restore_point = temp_begin(arena);
@@ -106,7 +106,7 @@ dmn_lnx_exe_path_from_pid(Arena *arena, pid_t pid)
     }
     
     //- rjf: package result
-    String8 result = {0};
+    StringView result = {0};
     if (!good || readlink_result == -1)
     {
         temp_end(restore_point);
@@ -127,7 +127,7 @@ dmn_lnx_arch_from_pid(pid_t pid)
     Arch result = Arch_Null;
     {
         Temp scratch = scratch_begin(0, 0);
-        String8 exe_path = dmn_lnx_exe_path_from_pid(scratch.arena, pid);
+        StringView exe_path = dmn_lnx_exe_path_from_pid(scratch.arena, pid);
         
         // rjf: unpack exe handle
         int exe_fd = -1;
@@ -184,7 +184,7 @@ dmn_lnx_aux_from_pid(pid_t pid, Arch arch)
     DMN_LNX_ProcessAux result = {0};
     
     // rjf: open aux data
-    String8 auxv_path = push_str8f(scratch.arena, "/proc/%d/auxv", pid);
+    StringView auxv_path = push_str8f(scratch.arena, "/proc/%d/auxv", pid);
     int aux_fd = open((char*)auxv_path.str, O_RDONLY);
     
     // rjf: scan aux data
@@ -1768,7 +1768,7 @@ dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info
 {
     // rjf: scan for the next process ID in the directory
     B32 got_pid = 0;
-    String8 pid_string = {0};
+    StringView pid_string = {0};
     {
         DIR *dir = (DIR*)PtrFromInt(iter.v[0]);
         if (dir != 0 && iter.v[1] == 0)
@@ -1783,7 +1783,7 @@ dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info
                 }
                 
                 // rjf: check file name is integer
-                String8 file_name = str8_cstring((char*)d.d_name);
+                StringView file_name = str8_cstring((char*)d.d_name);
                 B32 is_integer = str8_is_integer(file_name, 10);
                 
                 // rjf: break on integers (which represent processes)
@@ -1802,7 +1802,7 @@ dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info
     if (got_pid)
     {
         pid_t pid = u64_from_str8(pid_string, 10);
-        String8 name = dmn_lnx_exe_path_from_pid(arena, pid);
+        StringView name = dmn_lnx_exe_path_from_pid(arena, pid);
         if (name.size == 0)
         {
             name = ("(unknown process)");

@@ -36,10 +36,10 @@ struct CTRL_UserBreakpoint
     CTRL_UserBreakpointKind kind;
     CTRL_UserBreakpointFlags flags;
     U64 id;
-    String8 string;
+    StringView string;
     TxtPt pt;
     U64 size;
-    String8 condition;
+    StringView condition;
 };
 
 struct CTRL_UserBreakpointNode
@@ -103,7 +103,7 @@ struct CTRL_Entity
     U64 stack_base;
     U64 timestamp;
     CTRL_UserBreakpointFlags bp_flags;
-    String8 string;
+    StringView string;
 };
 
 struct CTRL_EntityNode
@@ -331,13 +331,13 @@ struct CTRL_Msg
     B32 env_inherit;
     B32 debug_subprocesses;
     U64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64];
-    String8 path;
+    StringView path;
     String8List entry_points;
     String8List cmd_line_string_list;
     String8List env_string_list;
-    String8 stdout_path;
-    String8 stderr_path;
-    String8 stdin_path;
+    StringView stdout_path;
+    StringView stderr_path;
+    StringView stdin_path;
     CTRL_TrapList traps;
     CTRL_UserBreakpointList user_bps;
 };
@@ -444,7 +444,7 @@ struct CTRL_Event
     U32 exception_code;
     U32 rgba;
     CTRL_UserBreakpointFlags bp_flags;
-    String8 string;
+    StringView string;
 };
 
 struct CTRL_EventNode
@@ -520,7 +520,7 @@ struct CTRL_ProcessMemoryCache
 
 struct CTRL_ProcessMemorySlice
 {
-    String8 data;
+    StringView data;
     U64 *byte_bad_flags;
     U64 *byte_changed_flags;
     B32 stale;
@@ -617,9 +617,9 @@ struct CTRL_ModuleImageInfoCacheNode
     U64 pdatas_count;
     U64 entry_point_voff;
     Rng1U64 tls_vaddr_range;
-    String8 initial_debug_info_path;
+    StringView initial_debug_info_path;
     Rng1U64 raddbg_section_voff_range;
-    String8 raddbg_data;
+    StringView raddbg_data;
 };
 
 struct CTRL_ModuleImageInfoCacheSlot
@@ -652,7 +652,7 @@ struct CTRL_DbgDirNode
     CTRL_DbgDirNode *next;
     CTRL_DbgDirNode *prev;
     CTRL_DbgDirNode *parent;
-    String8 name;
+    StringView name;
     U64 search_count;
     U64 child_count;
     U64 module_direct_count;
@@ -751,7 +751,7 @@ struct CTRL_State
     
     // rjf: ctrl thread state
     U64 ctrl_thread_run_state;
-    String8 ctrl_thread_log_path;
+    StringView ctrl_thread_log_path;
     OS_Handle ctrl_thread;
     Log *ctrl_thread_log;
     OS_Handle ctrl_thread_entity_ctx_rw_mutex;

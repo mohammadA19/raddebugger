@@ -80,14 +80,14 @@ struct EV_ExpandInfo
     B32 rows_default_expanded;
 };
 
-#define EV_EXPAND_RULE_INFO_FUNCTION_SIG(name) EV_ExpandInfo name(Arena *arena, EV_View *view, String8 filter, E_Expr *expr)
+#define EV_EXPAND_RULE_INFO_FUNCTION_SIG(name) EV_ExpandInfo name(Arena *arena, EV_View *view, StringView filter, E_Expr *expr)
 #define EV_EXPAND_RULE_INFO_FUNCTION_NAME(name) ev_expand_rule_info__##name
 #define EV_EXPAND_RULE_INFO_FUNCTION_DEF(name) internal EV_EXPAND_RULE_INFO_FUNCTION_SIG(EV_EXPAND_RULE_INFO_FUNCTION_NAME(name))
 typedef EV_EXPAND_RULE_INFO_FUNCTION_SIG(EV_ExpandRuleInfoHookFunctionType);
 
 struct EV_ExpandRule
 {
-    String8 string;
+    StringView string;
     EV_ExpandRuleInfoHookFunctionType *info;
 };
 
@@ -134,9 +134,9 @@ struct EV_Block
     U64 split_relative_idx;
     
     // rjf: evaluation info
-    String8 string;
+    StringView string;
     E_Eval eval;
-    String8 filter;
+    StringView filter;
     E_TypeExpandInfo type_expand_info;
     E_TypeExpandRule *type_expand_rule;
     EV_ExpandInfo viz_expand_info;
@@ -180,7 +180,7 @@ struct EV_Row
     EV_Block *block;
     EV_Key key;
     U64 visual_size;
-    String8 edit_string;
+    StringView edit_string;
     E_Eval eval;
 };
 
@@ -220,7 +220,7 @@ struct EV_StringParams
     U32 radix;
     U32 min_digits;
     U8 digit_group_separator;
-    String8 filter;
+    StringView filter;
     B32 limit_strings;
     U64 limit_strings_size;
 };

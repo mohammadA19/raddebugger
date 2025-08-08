@@ -752,7 +752,7 @@ read_only global U8 pe_dos_program_data[] =
     0x74, 0x20, 0x62, 0x65, 0x20, 0x72, 0x75, 0x6E, 0x20, 0x69, 0x6E, 0x20, 0x44, 0x4F, 0x53, 0x20,
     0x6D, 0x6F, 0x64, 0x65, 0x2E, 0x24, 0x00, 0x00
 };
-read_only global String8 pe_dos_program = {pe_dos_program_data, sizeof(pe_dos_program_data)};
+read_only global StringView pe_dos_program = {pe_dos_program_data, sizeof(pe_dos_program_data)};
 
 ////////////////////////////////
 //~ rjf: Parsed Info Types
@@ -795,7 +795,7 @@ struct PE_Resource
             U32                      data_version;
             U32                      version;
             COFF_ResourceMemoryFlags memory_flags;
-            String8                  data;
+            StringView                  data;
         } coff_res;
     } u;
 };
@@ -833,8 +833,8 @@ struct PE_ResourceDir
 
 struct PE_ParsedExport
 {
-    String8 forwarder;
-    String8 name;
+    StringView forwarder;
+    StringView name;
     U64     voff;
     U64     ordinal;
 };
@@ -866,14 +866,14 @@ struct PE_ParsedImport
         struct
         {
             U64     hint;
-            String8 string;
+            StringView string;
         } name;
     } u;
 };
 
 struct PE_ParsedStaticDLLImport
 {
-    String8          name;
+    StringView          name;
     U64              import_address_table_voff;
     U64              import_name_table_voff;
     COFF_TimeStamp   time_stamp;
@@ -891,7 +891,7 @@ struct PE_ParsedStaticImportTable
 struct PE_ParsedDelayDLLImport
 {
     U32              attributes;
-    String8          name;
+    StringView          name;
     U64              module_handle_voff;
     U64              iat_voff;
     U64              name_table_voff;
@@ -962,7 +962,7 @@ typedef struct PE_DebugInfo
     PE_CvHeaderPDB20 cv_pdb20_header;
     PE_CvHeaderPDB70 cv_pdb70_header;
     PE_CvHeaderRDI cv_rdi_header;
-    String8 path;
+    StringView path;
 }
 PE_DebugInfo;
 

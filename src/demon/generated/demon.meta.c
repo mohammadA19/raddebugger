@@ -4,7 +4,7 @@
 //- GENERATED CODE
 
 C_LINKAGE_BEGIN
-String8 dmn_event_kind_string_table[21] =
+StringView dmn_event_kind_string_table[21] =
 {
 ("Null"),
 ("Error"),
@@ -29,7 +29,7 @@ String8 dmn_event_kind_string_table[21] =
 ("SetVAddrRangeNote"),
 };
 
-String8 dmn_exception_kind_string_table[5] =
+StringView dmn_exception_kind_string_table[5] =
 {
 ("Null"),
 ("MemoryRead"),

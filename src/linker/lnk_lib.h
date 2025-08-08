@@ -5,13 +5,13 @@
 
 typedef struct LNK_Lib
 {
-    String8          path;
-    String8          data;
+    StringView          path;
+    StringView          data;
     COFF_ArchiveType type;
     U32              symbol_count;
     U32             *member_off_arr;
     String8List      symbol_name_list;
-    String8          long_names;
+    StringView          long_names;
     U64              input_idx;
 } LNK_Lib;
 
@@ -35,8 +35,8 @@ typedef struct LNK_LibList
   
 typedef struct
 {
-    String8     *data_arr;
-    String8     *path_arr;
+    StringView     *data_arr;
+    StringView     *path_arr;
     LNK_LibList  free_libs;
     LNK_LibList  valid_libs;
     LNK_LibList  invalid_libs;

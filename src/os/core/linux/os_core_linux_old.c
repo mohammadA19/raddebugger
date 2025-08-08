@@ -11,7 +11,7 @@ global Arena *lnx_perm_arena = 0;
 global String8List lnx_cmd_line_args = {0};
 global LNX_Entity lnx_entity_buffer[1024];
 global LNX_Entity *lnx_entity_free = 0;
-global String8 lnx_initial_path = {0};
+global StringView lnx_initial_path = {0};
 thread_static LNX_SafeCallChain *lnx_safe_call_chain = 0;
 
 ////////////////////////////////
@@ -97,9 +97,9 @@ lnx_file_properties_from_stat(FileProperties *out, struct stat *in){
     }
 }
 
-internal String8
+internal StringView
 lnx_string_from_signal(int signum){
-    String8 result = ("<unknown-signal>");
+    StringView result = ("<unknown-signal>");
     switch (signum){
         case SIGABRT:
         {
@@ -229,9 +229,9 @@ lnx_string_from_signal(int signum){
     return (result);
 }
 
-internal String8
+internal StringView
 lnx_string_from_errno(int error_number){
-    String8 result = ("<unknown-errno>");
+    StringView result = ("<unknown-errno>");
     switch (error_number){
         case EPERM:
         {
@@ -908,10 +908,10 @@ os_large_page_size(void)
 ////////////////////////////////
 //~ rjf: @os_hooks System Info (Implemented Per-OS)
 
-internal String8
+internal StringView
 os_machine_name(void){
     local_persist B32 first = true;
-    local_persist String8 name = {0};
+    local_persist StringView name = {0};
     
     // TODO(allen): let's just pre-compute this at init and skip the complexity
     pthread_mutex_lock(&lnx_mutex);
@@ -1012,7 +1012,7 @@ os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *o
         case OS_SystemPath_Binary:
         {
             local_persist B32 first = true;
-            local_persist String8 name = {0};
+            local_persist StringView name = {0};
             
             // TODO(allen): let's just pre-compute this at init and skip the complexity
             pthread_mutex_lock(&lnx_mutex);
@@ -1038,8 +1038,8 @@ os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *o
                 
                 // save string
                 if (got_final_result && size > 0){
-                    String8 full_name = str8(buffer, size);
-                    String8 name_chopped = string_path_chop_last_slash(full_name);
+                    StringView full_name = str8(buffer, size);
+                    StringView name_chopped = string_path_chop_last_slash(full_name);
                     name = push_str8_copy(lnx_perm_arena, name_chopped);
                 }
                 
@@ -1061,7 +1061,7 @@ os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *o
         case OS_SystemPath_Current:
         {
             char *cwdir = getcwd(0, 0);
-            String8 string = push_str8_copy(arena, str8_cstring(cwdir));
+            StringView string = push_str8_copy(arena, str8_cstring(cwdir));
             free(cwdir);
             result = 1;
             str8_list_push(arena, out, string);
@@ -1070,7 +1070,7 @@ os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *o
         case OS_SystemPath_UserProgramData:
         {
             char *home = getenv("HOME");
-            String8 string = str8_cstring(home);
+            StringView string = str8_cstring(home);
             result = 1;
             str8_list_push(arena, out, string);
         }break;
@@ -1100,7 +1100,7 @@ os_abort(S32 exit_code){
 //- rjf: files
 
 internal OS_Handle
-os_file_open(OS_AccessFlags flags, String8 path)
+os_file_open(OS_AccessFlags flags, StringView path)
 {
     OS_Handle file = {0};
     NotImplemented;
@@ -1150,11 +1150,11 @@ os_id_from_file(OS_Handle file)
 }
 
 internal B32
-os_delete_file_at_path(String8 path)
+os_delete_file_at_path(StringView path)
 {
     Temp scratch = scratch_begin(0, 0);
     B32 result = false;
-    String8 name_copy = push_str8_copy(scratch.arena, name);
+    StringView name_copy = push_str8_copy(scratch.arena, name);
     if (remove((char*)name_copy.str) != -1){
         result = true;
     }
@@ -1163,30 +1163,30 @@ os_delete_file_at_path(String8 path)
 }
 
 internal B32
-os_copy_file_path(String8 dst, String8 src)
+os_copy_file_path(StringView dst, StringView src)
 {
     NotImplemented;
     return 0;
 }
 
-internal String8
-os_full_path_from_path(Arena *arena, String8 path)
+internal StringView
+os_full_path_from_path(Arena *arena, StringView path)
 {
     // TODO: realpath can be used to resolve full path
-    String8 result = {0};
+    StringView result = {0};
     NotImplemented;
     return result;
 }
 
 internal B32
-os_file_path_exists(String8 path)
+os_file_path_exists(StringView path)
 {
     NotImplemented;
     return 0;
 }
 
 internal FileProperties
-os_properties_from_file_path(String8 path)
+os_properties_from_file_path(StringView path)
 {
     FileProperties props = {0};
     NotImplemented;
@@ -1225,7 +1225,7 @@ os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range)
 //- rjf: directory iteration
 
 internal OS_FileIter *
-os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags)
+os_file_iter_begin(Arena *arena, StringView path, OS_FileIterFlags flags)
 {
     NotImplemented;
     return 0;
@@ -1247,11 +1247,11 @@ os_file_iter_end(OS_FileIter *iter)
 //- rjf: directory creation
 
 internal B32
-os_make_directory(String8 path)
+os_make_directory(StringView path)
 {
     Temp scratch = scratch_begin(0, 0);
     B32 result = false;
-    String8 name_copy = push_str8_copy(scratch.arena, name);
+    StringView name_copy = push_str8_copy(scratch.arena, name);
     if (mkdir((char*)name_copy.str, 0777) != -1){
         result = true;
     }
@@ -1263,7 +1263,7 @@ os_make_directory(String8 path)
 //~ rjf: @os_hooks Shared Memory (Implemented Per-OS)
 
 internal OS_Handle
-os_shared_memory_alloc(U64 size, String8 name)
+os_shared_memory_alloc(U64 size, StringView name)
 {
     OS_Handle result = {0};
     NotImplemented;
@@ -1271,7 +1271,7 @@ os_shared_memory_alloc(U64 size, String8 name)
 }
 
 internal OS_Handle
-os_shared_memory_open(String8 name)
+os_shared_memory_open(StringView name)
 {
     OS_Handle result = {0};
     NotImplemented;
@@ -1566,7 +1566,7 @@ os_condition_variable_broadcast_(OS_Handle cv){
 //- rjf: cross-process semaphores
 
 internal OS_Handle
-os_semaphore_alloc(U32 initial_count, U32 max_count, String8 name)
+os_semaphore_alloc(U32 initial_count, U32 max_count, StringView name)
 {
     OS_Handle result = {0};
     NotImplemented;
@@ -1580,7 +1580,7 @@ os_semaphore_release(OS_Handle semaphore)
 }
 
 internal OS_Handle
-os_semaphore_open(String8 name)
+os_semaphore_open(StringView name)
 {
     OS_Handle result = {0};
     NotImplemented;
@@ -1610,7 +1610,7 @@ os_semaphore_drop(OS_Handle semaphore)
 //~ rjf: @os_hooks Dynamically-Loaded Libraries (Implemented Per-OS)
 
 internal OS_Handle
-os_library_open(String8 path)
+os_library_open(StringView path)
 {
     Temp scratch = scratch_begin(0, 0);
     char *path_cstr = (char *)push_str8_copy(scratch.arena, path).str;
@@ -1621,7 +1621,7 @@ os_library_open(String8 path)
 }
 
 internal VoidProc *
-os_library_load_proc(OS_Handle lib, String8 name)
+os_library_load_proc(OS_Handle lib, StringView name)
 {
     Temp scratch = scratch_begin(0, 0);
     void *so = (void *)lib.id;

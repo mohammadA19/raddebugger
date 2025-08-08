@@ -15,10 +15,10 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
         B32 is_disabled = rd_disabled_from_cfg(cfg);
         RD_Location loc = rd_location_from_cfg(cfg);
         D_Target target = rd_target_from_cfg(scratch.arena, cfg);
-        String8 label_string = rd_label_from_cfg(cfg);
-        String8 expr_string = rd_expr_from_cfg(cfg);
-        String8 collection_name = {0};
-        String8 file_path = rd_path_from_cfg(cfg);
+        StringView label_string = rd_label_from_cfg(cfg);
+        StringView expr_string = rd_expr_from_cfg(cfg);
+        StringView collection_name = {0};
+        StringView file_path = rd_path_from_cfg(cfg);
         Vec4F32 rgba = rd_color_from_cfg(cfg);
         if (rgba.w == 0)
         {
@@ -55,11 +55,11 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
         }
         if (expr_string.size != 0)
         {
-            String8 query_name = rd_query_from_eval_string(arena, expr_string);
+            StringView query_name = rd_query_from_eval_string(arena, expr_string);
             if (query_name.size != 0)
             {
-                String8 query_code_name = query_name;
-                String8 query_display_name = rd_display_from_code_name(query_code_name);
+                StringView query_code_name = query_name;
+                StringView query_display_name = rd_display_from_code_name(query_code_name);
                 collection_name = query_display_name;
                 if (query_display_name.size == 0)
                 {
@@ -137,7 +137,7 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
         //- rjf: push view title, if from window, and no file path, and no label
         if (is_within_window && file_path.size == 0 && collection_name.size == 0 && label_string.size == 0)
         {
-            String8 view_display_name = rd_display_from_code_name(cfg.string);
+            StringView view_display_name = rd_display_from_code_name(cfg.string);
             if (view_display_name.size != 0)
             {
                 dr_fstrs_push_new(arena, &result, &params, view_display_name);
@@ -184,7 +184,7 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
         {
             // rjf: compute disambiguated file name
             String8List qualifiers = {0};
-            String8 file_name = str8_skip_last_slash(file_path);
+            StringView file_name = str8_skip_last_slash(file_path);
             if (rd_state.ambiguous_path_slots_count != 0)
             {
                 U64 hash = d_hash_from_string__case_insensitive(file_name);
@@ -266,7 +266,7 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
             {
                 for (String8Node *n = qualifiers.first; n != 0; n = n.next)
                 {
-                    String8 string = push_str8f(arena, "<%S> ", n.string);
+                    StringView string = push_str8f(arena, "<%S> ", n.string);
                     dr_fstrs_push_new(arena, &result, &params, string, .color = ui_color_from_name(("text")));
                 }
             }
@@ -288,12 +288,12 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
         //- rjf: push text location
         if (loc.file_path.size != 0)
         {
-            String8 path = loc.file_path;
+            StringView path = loc.file_path;
             if (!include_extras)
             {
                 path = str8_skip_last_slash(loc.file_path);
             }
-            String8 location_string = push_str8f(arena, "%S:%I64d:%I64d", path, loc.pt.line, loc.pt.column);
+            StringView location_string = push_str8f(arena, "%S:%I64d:%I64d", path, loc.pt.line, loc.pt.column);
             dr_fstrs_push_new(arena, &result, &params, location_string);
             dr_fstrs_push_new(arena, &result, &params, ("  "));
             start_secondary();
@@ -328,7 +328,7 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
         
         //- rjf: push conditions
         {
-            String8 condition = rd_cfg_child_from_string(cfg, ("condition"))->first.string;
+            StringView condition = rd_cfg_child_from_string(cfg, ("condition"))->first.string;
             if (condition.size != 0)
             {
                 dr_fstrs_push_new(arena, &result, &params, ("if "), .font = rd_font_from_slot(RD_FontSlot_Code), .raster_flags = rd_raster_flags_from_slot(RD_FontSlot_Code));
@@ -350,11 +350,11 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
         
         //- rjf: push hit count
         {
-            String8 hit_count_value_string = rd_cfg_child_from_string(cfg, ("hit_count"))->first.string;
+            StringView hit_count_value_string = rd_cfg_child_from_string(cfg, ("hit_count"))->first.string;
             U64 hit_count = 0;
             if (try_u64_from_str8_c_rules(hit_count_value_string, &hit_count) && hit_count != 0)
             {
-                String8 hit_count_text = push_str8f(arena, "(%I64u hit%s)", hit_count, hit_count == 1 ? "" : "s");
+                StringView hit_count_text = push_str8f(arena, "(%I64u hit%s)", hit_count, hit_count == 1 ? "" : "s");
                 dr_fstrs_push_new(arena, &result, &params, hit_count_text);
             }
         }
@@ -362,8 +362,8 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
         //- rjf: special case: type views
         if (str8_match(cfg.string, ("type_view"), 0))
         {
-            String8 src_string = rd_cfg_child_from_string(cfg, ("type"))->first.string;
-            String8 dst_string = rd_cfg_child_from_string(cfg, ("expr"))->first.string;
+            StringView src_string = rd_cfg_child_from_string(cfg, ("type"))->first.string;
+            StringView dst_string = rd_cfg_child_from_string(cfg, ("expr"))->first.string;
             Vec4F32 src_color = rgba;
             Vec4F32 dst_color = rgba;
             DR_FStrList src_fstrs = {0};
@@ -398,8 +398,8 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
         //- rjf: special case: file path maps
         if (str8_match(cfg.string, ("file_path_map"), 0))
         {
-            String8 src_string = rd_cfg_child_from_string(cfg, ("source"))->first.string;
-            String8 dst_string = rd_cfg_child_from_string(cfg, ("dest"))->first.string;
+            StringView src_string = rd_cfg_child_from_string(cfg, ("source"))->first.string;
+            StringView dst_string = rd_cfg_child_from_string(cfg, ("dest"))->first.string;
             Vec4F32 src_color = rgba;
             Vec4F32 dst_color = rgba;
             if (src_string.size == 0)
@@ -422,8 +422,8 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
         //- rjf: special case: colors
         if (str8_match(cfg.string, ("theme_color"), 0))
         {
-            String8 tags = rd_cfg_child_from_string(cfg, ("tags"))->first.string;
-            String8 color_string = rd_cfg_child_from_string(cfg, ("value"))->first.string;
+            StringView tags = rd_cfg_child_from_string(cfg, ("tags"))->first.string;
+            StringView color_string = rd_cfg_child_from_string(cfg, ("value"))->first.string;
             U32 color_u32 = e_value_from_stringf("(uint32)(%S)", color_string).u32;
             Vec4F32 color = linear_from_srgba(rgba_from_u32(color_u32));
             if (tags.size != 0)
@@ -461,7 +461,7 @@ rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, B32 include_e
     {
         secondary_color = ui_color_from_name(("text"));
     }
-    String8 name = rd_name_from_ctrl_entity(arena, entity);
+    StringView name = rd_name_from_ctrl_entity(arena, entity);
     RD_IconKind icon_kind = RD_IconKind_Null;
     B32 name_is_code = 0;
     switch (entity.kind)
@@ -513,7 +513,7 @@ rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, B32 include_e
         if (processes.count > 1)
         {
             CTRL_Entity *process = ctrl_entity_ancestor_from_kind(entity, CTRL_EntityKind_Process);
-            String8 process_name = rd_name_from_ctrl_entity(arena, process);
+            StringView process_name = rd_name_from_ctrl_entity(arena, process);
             Vec4F32 process_color = rd_color_from_ctrl_entity(process);
             if (process_color.w == 0)
             {
@@ -562,7 +562,7 @@ rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, B32 include_e
             U64 rip_vaddr = regs_rip_from_arch_block(arch, f.regs);
             CTRL_Entity *module = ctrl_module_from_process_vaddr(process, rip_vaddr);
             U64 rip_voff = ctrl_voff_from_vaddr(module, rip_vaddr);
-            String8 name = {0};
+            StringView name = {0};
             {
                 DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
                 RDI_Parsed *rdi = di_rdi_from_key(di_scope, &dbgi_key, 1, 0);
@@ -613,7 +613,7 @@ rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, B32 include_e
 }
 
 internal DR_FStrList
-rd_title_fstrs_from_code_name(Arena *arena, String8 code_name)
+rd_title_fstrs_from_code_name(Arena *arena, StringView code_name)
 {
     DR_FStrList result = {0};
     {
@@ -651,10 +651,10 @@ rd_title_fstrs_from_code_name(Arena *arena, String8 code_name)
 }
 
 internal DR_FStrList
-rd_title_fstrs_from_file_path(Arena *arena, String8 file_path)
+rd_title_fstrs_from_file_path(Arena *arena, StringView file_path)
 {
     DR_FStrList fstrs = {0};
-    String8 file_name = str8_skip_last_slash(file_path);
+    StringView file_name = str8_skip_last_slash(file_path);
     FileProperties props = os_properties_from_file_path(file_path);
     RD_IconKind icon_kind = RD_IconKind_FileOutline;
     if (props.flags & FilePropertyFlag_IsFolder)
@@ -753,7 +753,7 @@ rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U64 progress_v_t
 //~ rjf: UI Widgets: Fancy Buttons
 
 internal void
-rd_cmd_binding_buttons(String8 name, String8 filter, B32 add_new)
+rd_cmd_binding_buttons(StringView name, StringView filter, B32 add_new)
 {
     Temp scratch = scratch_begin(0, 0);
     RD_KeyMapNodePtrList key_map_nodes = rd_key_map_node_ptr_list_from_name(scratch.arena, name);
@@ -782,7 +782,7 @@ rd_cmd_binding_buttons(String8 name, String8 filter, B32 add_new)
         }
         
         //- rjf: form binding string
-        String8 keybinding_str = {0};
+        StringView keybinding_str = {0};
         {
             if (binding.key != OS_Key_Null)
             {
@@ -846,7 +846,7 @@ rd_cmd_binding_buttons(String8 name, String8 filter, B32 add_new)
                 {
                     if (!str8_match(n2.v.name, n.v.name, 0))
                     {
-                        String8 display_name = rd_display_from_code_name(n2.v.name);
+                        StringView display_name = rd_display_from_code_name(n2.v.name);
                         ui_labelf("%S", display_name);
                     }
                 }
@@ -909,7 +909,7 @@ rd_cmd_binding_buttons(String8 name, String8 filter, B32 add_new)
 }
 
 internal UI_Signal
-rd_menu_bar_button(String8 string)
+rd_menu_bar_button(StringView string)
 {
     UI_Box *box = ui_build_box_from_string(UI_BoxFlag_DrawText|UI_BoxFlag_DrawBorder|UI_BoxFlag_DrawBackground|UI_BoxFlag_Clickable|UI_BoxFlag_DrawHotEffects, string);
     UI_Signal sig = ui_signal_from_box(box);
@@ -917,7 +917,7 @@ rd_menu_bar_button(String8 string)
 }
 
 internal UI_Signal
-rd_cmd_spec_button(String8 name)
+rd_cmd_spec_button(StringView name)
 {
     RD_CmdKindInfo *info = rd_cmd_kind_info_from_string(name);
     ui_set_next_child_layout_axis(Axis2_X);
@@ -963,7 +963,7 @@ rd_cmd_spec_button(String8 name)
 }
 
 internal void
-rd_cmd_list_menu_buttons(U64 count, String8 *cmd_names, U32 *fastpath_codepoints)
+rd_cmd_list_menu_buttons(U64 count, StringView *cmd_names, U32 *fastpath_codepoints)
 {
     Temp scratch = scratch_begin(0, 0);
     for (U64 idx = 0; idx < count; idx += 1)
@@ -983,9 +983,9 @@ rd_cmd_list_menu_buttons(U64 count, String8 *cmd_names, U32 *fastpath_codepoints
 }
 
 internal UI_Signal
-rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList *matches, String8 string)
+rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList *matches, StringView string)
 {
-    String8 display_string = ui_display_part_from_key_string(string);
+    StringView display_string = ui_display_part_from_key_string(string);
     ui_set_next_child_layout_axis(Axis2_X);
     UI_Box *box = ui_build_box_from_string(UI_BoxFlag_Clickable|
                                                                                   UI_BoxFlag_DrawBorder|
@@ -1040,7 +1040,7 @@ rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList *matches, char *fmt, ...)
     Temp scratch = scratch_begin(0, 0);
     va_list args;
     va_start(args, fmt);
-    String8 string = push_str8fv(scratch.arena, fmt, args);
+    StringView string = push_str8fv(scratch.arena, fmt, args);
     va_end(args);
     UI_Signal sig = rd_icon_button(kind, matches, string);
     scratch_end(scratch);
@@ -1244,7 +1244,7 @@ internal UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
 }
 
 internal RD_CodeSliceSignal
-rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, String8 string)
+rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, StringView string)
 {
     RD_CodeSliceSignal result = {0};
     ProfBeginFunction();
@@ -1311,7 +1311,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     B32 drop_can_hit_lines = 0;
     RD_Cfg *drop_cfg = &rd_nil_cfg;
     CTRL_Entity *drop_thread = &ctrl_entity_nil;
-    String8 drop_expr = {0};
+    StringView drop_expr = {0};
     Vec4F32 drop_color = pop_color;
     UI_Key drop_site_key = ui_key_from_stringf(top_container_box.key, "drop_site");
     if (rd_drag_is_active())
@@ -1932,7 +1932,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         
         // rjf: index => line num
         S64 line_num = (params.line_num_range.min + mouse_y_line_idx);
-        String8 line_string = (params.line_num_range.min <= line_num && line_num <= params.line_num_range.max) ? (params.line_text[mouse_y_line_idx]) : str8_zero();
+        StringView line_string = (params.line_num_range.min <= line_num && line_num <= params.line_num_range.max) ? (params.line_text[mouse_y_line_idx]) : str8_zero();
         
         // rjf: mouse x * string => column
         S64 column = fnt_char_pos_from_tag_size_string_p(params.font, params.font_size, 0, params.tab_size, line_string, mouse.x-text_container_box.rect.x0-params.line_num_width_px-line_num_padding_px)+1;
@@ -2152,7 +2152,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                 line_num <= params.line_num_range.max;
                 line_num += 1, line_idx += 1)
         {
-            String8 line_string = params.line_text[line_idx];
+            StringView line_string = params.line_text[line_idx];
             Rng1U64 line_range = params.line_ranges[line_idx];
             TXT_TokenArray *line_tokens = &params.line_tokens[line_idx];
             DR_FStrList fstrs = {0};
@@ -2167,7 +2167,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                 for (TXT_Token *token = line_tokens_first; token < line_tokens_opl; token += 1)
                 {
                     // rjf: token -> token string
-                    String8 token_string = {0};
+                    StringView token_string = {0};
                     {
                         Rng1U64 token_range = r1u64(0, line_string.size);
                         if (token.range.min > line_range.min)
@@ -2288,18 +2288,18 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                 line_num += 1, line_idx += 1)
         {
             RD_CfgList immediate_pins = {0};
-            String8 line_text = params.line_text[line_idx];
+            StringView line_text = params.line_text[line_idx];
             for (U64 off = 0, next_off = line_text.size;
                     off < line_text.size;
                     off = next_off)
             {
                 // rjf: find next opener
-                String8 markup_opener = ("raddbg_pin(");
+                StringView markup_opener = ("raddbg_pin(");
                 next_off = str8_find_needle(line_text, off, markup_opener, 0);
                 next_off += markup_opener.size;
                 
                 // rjf: extract contents of markup
-                String8 contents = {0};
+                StringView contents = {0};
                 S32 nest = 1;
                 for (U64 off2 = next_off; off2 < line_text.size; off2 += 1)
                 {
@@ -2327,7 +2327,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                     {
                         if (nest == 0 && (contents_off == contents.size || contents.str[contents_off] == ','))
                         {
-                            String8 arg = str8_substr(contents, r1u64(arg_start_off, contents_off));
+                            StringView arg = str8_substr(contents, r1u64(arg_start_off, contents_off));
                             arg = str8_skip_chop_whitespace(arg);
                             str8_list_push(scratch.arena, &args, arg);
                             arg_start_off = contents_off+1;
@@ -2347,7 +2347,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                 }
                 
                 // rjf: extract fixed arguments
-                String8 expr_string = {0};
+                StringView expr_string = {0};
                 if (args.first != 0)
                 {
                     expr_string = args.first.string;
@@ -2379,9 +2379,9 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                     for (RD_CfgNode *n = pins.first; n != 0; n = n.next)
                     {
                         RD_Cfg *pin = n.v;
-                        String8 pin_expr = rd_expr_from_cfg(pin);
+                        StringView pin_expr = rd_expr_from_cfg(pin);
                         E_Eval eval = e_eval_from_string(pin_expr);
-                        String8 eval_string = {0};
+                        StringView eval_string = {0};
                         if (!e_type_key_match(e_type_key_zero(), eval.irtree.type_key))
                         {
                             EV_StringParams string_params = {.flags = EV_StringFlag_ReadOnlyDisplayRules, .radix = 10};
@@ -2422,7 +2422,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
     //
     TxtRng mouse_expr_rng = {0};
     Vec2F32 mouse_expr_baseline_pos = {0};
-    String8 mouse_expr = {0};
+    StringView mouse_expr = {0};
     B32 mouse_expr_is_explicit = 0;
     if (ui_hovering(text_container_sig) && contains_1s64(params.line_num_range, mouse_pt.line)) ProfScope("mouse -> expression range")
     {
@@ -2432,7 +2432,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
                 txt_pt_less_than(mouse_pt, selected_rng.max)))
         {
             U64 line_slice_idx = mouse_pt.line-params.line_num_range.min;
-            String8 line_text = params.line_text[line_slice_idx];
+            StringView line_text = params.line_text[line_slice_idx];
             F32 expr_hoff_px = params.line_num_width_px + fnt_dim_from_tag_size_string(params.font, params.font_size, 0, params.tab_size, str8_prefix(line_text, selected_rng.min.column-1)).x;
             result.mouse_expr_rng = mouse_expr_rng = selected_rng;
             mouse_expr_baseline_pos = v2f32(text_container_box.rect.x0+expr_hoff_px,
@@ -2443,7 +2443,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
         else
         {
             U64 line_slice_idx = mouse_pt.line-params.line_num_range.min;
-            String8 line_text = params.line_text[line_slice_idx];
+            StringView line_text = params.line_text[line_slice_idx];
             TXT_TokenArray line_tokens = params.line_tokens[line_slice_idx];
             Rng1U64 line_range = params.line_ranges[line_slice_idx];
             U64 mouse_pt_off = line_range.min + (mouse_pt.column-1);
@@ -2583,7 +2583,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
             for (S64 line_num = params.line_num_range.min;
                     line_num <= params.line_num_range.max; line_num += 1, line_idx += 1)
             {
-                String8 line_string = params.line_text[line_idx];
+                StringView line_string = params.line_text[line_idx];
                 Rng1U64 line_range = params.line_ranges[line_idx];
                 DR_FStrList line_fstrs = lines_fstrs[line_idx];
                 ui_set_next_text_padding(line_num_padding_px);
@@ -2756,7 +2756,7 @@ rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *pref
     Temp scratch = scratch_begin(0, 0);
     va_list args;
     va_start(args, fmt);
-    String8 string = push_str8fv(scratch.arena, fmt, args);
+    StringView string = push_str8fv(scratch.arena, fmt, args);
     RD_CodeSliceSignal sig = rd_code_slice(params, cursor, mark, preferred_column, string);
     va_end(args);
     scratch_end(scratch);
@@ -2764,7 +2764,7 @@ rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *pref
 }
 
 internal B32
-rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, TxtPt *cursor, TxtPt *mark, S64 *preferred_column)
+rd_do_txt_controls(TXT_TextInfo *info, StringView data, U64 line_count_per_page, TxtPt *cursor, TxtPt *mark, S64 *preferred_column)
 {
     Temp scratch = scratch_begin(0, 0);
     B32 change = 0;
@@ -2775,15 +2775,15 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
             continue;
         }
         B32 taken = 0;
-        String8 line = txt_string_from_info_data_line_num(info, data, cursor.line);
+        StringView line = txt_string_from_info_data_line_num(info, data, cursor.line);
         UI_TxtOp single_line_op = ui_single_line_txt_op_from_event(scratch.arena, evt, line, *cursor, *mark);
         
         //- rjf: invalid single-line op or endpoint units => try multiline
         if (evt.delta_unit == UI_EventDeltaUnit_Whole || single_line_op.flags & UI_TxtOpFlag_Invalid)
         {
             U64 line_count = info.lines_count;
-            String8 prev_line = txt_string_from_info_data_line_num(info, data, cursor.line-1);
-            String8 next_line = txt_string_from_info_data_line_num(info, data, cursor.line+1);
+            StringView prev_line = txt_string_from_info_data_line_num(info, data, cursor.line-1);
+            StringView next_line = txt_string_from_info_data_line_num(info, data, cursor.line+1);
             Vec2S32 delta = evt.delta_2s32;
             
             //- rjf: wrap lines right
@@ -2829,7 +2829,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
             {
                 for (S64 line_num = cursor.line+1; line_num <= line_count; line_num += 1)
                 {
-                    String8 line = txt_string_from_info_data_line_num(info, data, line_num);
+                    StringView line = txt_string_from_info_data_line_num(info, data, line_num);
                     U64 line_size = line.size;
                     if (line_size == 0)
                     {
@@ -2852,7 +2852,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
             {
                 for (S64 line_num = cursor.line-1; line_num > 0; line_num -= 1)
                 {
-                    String8 line = txt_string_from_info_data_line_num(info, data, line_num);
+                    StringView line = txt_string_from_info_data_line_num(info, data, line_num);
                     U64 line_size = line.size;
                     if (line_size == 0)
                     {
@@ -2926,7 +2926,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
         //- rjf: copy
         if (evt.flags & UI_EventFlag_Copy)
         {
-            String8 text = txt_string_from_info_data_txt_rng(info, data, txt_rng(*cursor, *mark));
+            StringView text = txt_string_from_info_data_txt_rng(info, data, txt_rng(*cursor, *mark));
             os_set_clipboard_text(text);
             taken = 1;
         }
@@ -2946,7 +2946,7 @@ rd_do_txt_controls(TXT_TextInfo *info, String8 data, U64 line_count_per_page, Tx
 //~ rjf: UI Widgets: Fancy Labels
 
 internal DR_FStrList
-rd_fstrs_from_rich_string(Arena *arena, String8 string)
+rd_fstrs_from_rich_string(Arena *arena, StringView string)
 {
     Temp scratch = scratch_begin(&arena, 1);
     typedef U32 StringPartFlags;
@@ -2961,7 +2961,7 @@ rd_fstrs_from_rich_string(Arena *arena, String8 string)
     {
         StringPart *next;
         StringPartFlags flags;
-        String8 string;
+        StringView string;
     };
     StringPart *first_part = 0;
     StringPart *last_part = 0;
@@ -3010,7 +3010,7 @@ rd_fstrs_from_rich_string(Arena *arena, String8 string)
 }
 
 internal UI_Signal
-rd_label(String8 string)
+rd_label(StringView string)
 {
     Temp scratch = scratch_begin(0, 0);
     DR_FStrList fstrs = rd_fstrs_from_rich_string(scratch.arena, string);
@@ -3022,7 +3022,7 @@ rd_label(String8 string)
 }
 
 internal UI_Signal
-rd_error_label(String8 string)
+rd_error_label(StringView string)
 {
     UI_Box *box = ui_build_box_from_key(0, ui_key_zero());
     UI_Signal sig = ui_signal_from_box(box);
@@ -3038,7 +3038,7 @@ rd_error_label(String8 string)
 }
 
 internal B32
-rd_help_label(String8 string)
+rd_help_label(StringView string)
 {
     B32 result = 0;
     UI_Box *box = ui_build_box_from_stringf(UI_BoxFlag_Clickable, "###%S_help_label", string);
@@ -3064,7 +3064,7 @@ rd_help_label(String8 string)
 }
 
 internal DR_FStrList
-rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string)
+rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, StringView string)
 {
     ProfBeginFunction();
     Temp scratch = scratch_begin(&arena, 1);
@@ -3078,7 +3078,7 @@ rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, 
         RD_CodeColorSlot token_color_slot = rd_code_color_slot_from_txt_token_kind(token.kind);
         Vec4F32 token_color_rgba = rd_rgba_from_code_color_slot(token_color_slot);
         token_color_rgba.w *= alpha;
-        String8 token_string = str8_substr(string, token.range);
+        StringView token_string = str8_substr(string, token.range);
         if (str8_match(token_string, ("{"), 0)) { indirection_counter += 1; }
         if (str8_match(token_string, ("["), 0)) { indirection_counter += 1; }
         indirection_counter = ClampBot(0, indirection_counter);
@@ -3151,9 +3151,9 @@ rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, 
                 
                 // rjf: grab string parts
                 U64 dot_pos = str8_find_needle(token_string, 0, ("."), 0);
-                String8 prefix = str8_prefix(token_string, prefix_skip);
-                String8 whole = str8_substr(token_string, r1u64(prefix_skip, dot_pos));
-                String8 decimal = str8_skip(token_string, dot_pos);
+                StringView prefix = str8_prefix(token_string, prefix_skip);
+                StringView whole = str8_substr(token_string, r1u64(prefix_skip, dot_pos));
+                StringView decimal = str8_skip(token_string, dot_pos);
                 
                 // rjf: determine # of digits
                 U64 num_digits = 0;
@@ -3239,7 +3239,7 @@ rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, 
 }
 
 internal UI_Box *
-rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String8 string)
+rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, StringView string)
 {
     Temp scratch = scratch_begin(0, 0);
     DR_FStrList fstrs = rd_fstrs_from_code_string(scratch.arena, alpha, indirection_size_change, base_color, string);
@@ -3253,7 +3253,7 @@ rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, String
 //~ rjf: UI Widgets: Line Edit
 
 internal UI_Signal
-rd_cell(RD_CellParams *params, String8 string)
+rd_cell(RD_CellParams *params, StringView string)
 {
     ProfBeginFunction();
     Temp scratch = scratch_begin(0, 0);
@@ -3297,7 +3297,7 @@ rd_cell(RD_CellParams *params, String8 string)
     //////////////////////////////
     //- rjf: determine autocompletion string
     //
-    String8 autocomplete_hint_string = {0};
+    StringView autocomplete_hint_string = {0};
     if (is_focus_active)
     {
         autocomplete_hint_string = ui_autocomplete_string();
@@ -3613,7 +3613,7 @@ rd_cell(RD_CellParams *params, String8 string)
                 // always store this new key if not in batch
                 if (ui_dragging(switch_sig))
                 {
-                    String8 all_keys_data = ui_get_drag_data(sizeof(UI_Key));
+                    StringView all_keys_data = ui_get_drag_data(sizeof(UI_Key));
                     UI_Key *keys = (UI_Key *)all_keys_data.str;
                     U64 keys_count = all_keys_data.size / sizeof(UI_Key);
                     B32 key_is_touched = 0;
@@ -3774,7 +3774,7 @@ rd_cell(RD_CellParams *params, String8 string)
         }
         if (start_editing_via_sig || start_editing_via_typing)
         {
-            String8 edit_string = params.pre_edit_value;
+            StringView edit_string = params.pre_edit_value;
             edit_string.size = Min(params.edit_buffer_size, params.pre_edit_value.size);
             MemoryCopy(params.edit_buffer, edit_string.str, edit_string.size);
             params.edit_string_size_out[0] = edit_string.size;
@@ -3804,7 +3804,7 @@ rd_cell(RD_CellParams *params, String8 string)
         rd_state.text_edit_mode = 1;
         for (UI_Event *evt = 0; ui_next_event(&evt);)
         {
-            String8 edit_string = str8(params.edit_buffer, params.edit_string_size_out[0]);
+            StringView edit_string = str8(params.edit_buffer, params.edit_string_size_out[0]);
             
             // rjf: do not consume anything that doesn't fit a single-line's operations
             B32 is_autocompletion_completion = (autocomplete_hint_string.size != 0 &&
@@ -3828,7 +3828,7 @@ rd_cell(RD_CellParams *params, String8 string)
                 RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
                 RD_WindowState *ws = rd_window_state_from_cfg(window);
                 RD_AutocompCursorInfo *autocomp_cursor_info = &ws.autocomp_cursor_info;
-                String8 new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(autocomp_cursor_info.replaced_range.min+1, autocomp_cursor_info.replaced_range.max+1), autocomplete_hint_string);
+                StringView new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(autocomp_cursor_info.replaced_range.min+1, autocomp_cursor_info.replaced_range.max+1), autocomplete_hint_string);
                 new_string.size = Min(params.edit_buffer_size, new_string.size);
                 MemoryCopy(params.edit_buffer, new_string.str, new_string.size);
                 params.edit_string_size_out[0] = new_string.size;
@@ -3841,7 +3841,7 @@ rd_cell(RD_CellParams *params, String8 string)
             // rjf: perform replace range
             if (!txt_pt_match(op.range.min, op.range.max) || op.replace.size != 0)
             {
-                String8 new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(op.range.min.column, op.range.max.column), op.replace);
+                StringView new_string = ui_push_string_replace_range(scratch.arena, edit_string, r1s64(op.range.min.column, op.range.max.column), op.replace);
                 new_string.size = Min(params.edit_buffer_size, new_string.size);
                 MemoryCopy(params.edit_buffer, new_string.str, new_string.size);
                 params.edit_string_size_out[0] = new_string.size;
@@ -3889,12 +3889,12 @@ rd_cell(RD_CellParams *params, String8 string)
         }
         else if (!is_focus_active && !is_focus_active_disabled && params.flags & RD_CellFlag_CodeContents && params.pre_edit_value.size != 0)
         {
-            String8 display_string = params.pre_edit_value;
+            StringView display_string = params.pre_edit_value;
             fstrs = rd_fstrs_from_code_string(scratch.arena, 1, 0, ui_color_from_name(("text")), display_string);
         }
         else if (!is_focus_active && !is_focus_active_disabled)
         {
-            String8 display_string = params.pre_edit_value;
+            StringView display_string = params.pre_edit_value;
             if (params.pre_edit_value.size == 0)
             {
                 display_string = ui_display_part_from_key_string(string);
@@ -3909,7 +3909,7 @@ rd_cell(RD_CellParams *params, String8 string)
         //- rjf: (editing)
         else if (is_focus_active || is_focus_active_disabled)
         {
-            String8 edit_string = str8(params.edit_buffer, params.edit_string_size_out[0]);
+            StringView edit_string = str8(params.edit_buffer, params.edit_string_size_out[0]);
             DR_FStrList edit_string_fstrs = {0};
             if (params.flags & RD_CellFlag_CodeContents)
             {
@@ -3917,7 +3917,7 @@ rd_cell(RD_CellParams *params, String8 string)
             }
             else
             {
-                String8 edit_string = str8(params.edit_buffer, params.edit_string_size_out[0]);
+                StringView edit_string = str8(params.edit_buffer, params.edit_string_size_out[0]);
                 DR_FStrParams params = {ui_top_font(), ui_top_text_raster_flags(), ui_color_from_name(("text")), ui_top_font_size()};
                 dr_fstrs_push_new(scratch.arena, &edit_string_fstrs, &params, edit_string);
             }
@@ -3926,7 +3926,7 @@ rd_cell(RD_CellParams *params, String8 string)
                 RD_Cfg *window = rd_cfg_from_id(rd_regs()->window);
                 RD_WindowState *ws = rd_window_state_from_cfg(window);
                 RD_AutocompCursorInfo *autocomp_cursor_info = &ws.autocomp_cursor_info;
-                String8 autocomplete_append_string = str8_skip(autocomplete_hint_string, params.cursor.column-1 - autocomp_cursor_info.replaced_range.min);
+                StringView autocomplete_append_string = str8_skip(autocomplete_hint_string, params.cursor.column-1 - autocomp_cursor_info.replaced_range.min);
                 U64 off = 0;
                 U64 cursor_off = params.cursor.column-1;
                 DR_FStrNode *prev_n = 0;
@@ -3965,13 +3965,13 @@ rd_cell(RD_CellParams *params, String8 string)
                     edit_string_fstrs.total_size += autocomplete_hint_string.size;
                     if (prev_n != 0 && cursor_off - off < prev_n.v.string.size)
                     {
-                        String8 full_string = prev_n.v.string;
+                        StringView full_string = prev_n.v.string;
                         U64 chop_amt = full_string.size - (cursor_off - off);
                         prev_n.v.string = str8_chop(full_string, chop_amt);
                         edit_string_fstrs.total_size -= chop_amt;
                         if (chop_amt != 0)
                         {
-                            String8 post_cursor = str8_skip(full_string, cursor_off - off);
+                            StringView post_cursor = str8_skip(full_string, cursor_off - off);
                             DR_FStrNode *post_fstr_n = push_array(scratch.arena, DR_FStrNode, 1);
                             DR_FStr *post_fstr = &post_fstr_n.v;
                             MemoryCopyStruct(post_fstr, &prev_n.v);
@@ -4018,7 +4018,7 @@ rd_cell(RD_CellParams *params, String8 string)
         ui_box_equip_fuzzy_match_ranges(text_box, &fuzzy_matches);
         if (is_focus_active || is_focus_active_disabled)
         {
-            String8 edit_string = str8(params.edit_buffer, params.edit_string_size_out[0]);
+            StringView edit_string = str8(params.edit_buffer, params.edit_string_size_out[0]);
             UI_LineEditDrawData *draw_data = push_array(ui_build_arena(), UI_LineEditDrawData, 1);
             draw_data.edited_string = push_str8_copy(ui_build_arena(), edit_string);
             draw_data.cursor = params.cursor[0];
@@ -4095,7 +4095,7 @@ rd_cellf(RD_CellParams *params, char *fmt, ...)
     Temp scratch = scratch_begin(0, 0);
     va_list args;
     va_start(args, fmt);
-    String8 string = push_str8fv(scratch.arena, fmt, args);
+    StringView string = push_str8fv(scratch.arena, fmt, args);
     va_end(args);
     UI_Signal sig = rd_cell(params, string);
     scratch_end(scratch);

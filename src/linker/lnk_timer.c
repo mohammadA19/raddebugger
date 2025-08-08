@@ -15,7 +15,7 @@ lnk_timer_end(LNK_TimerType timer)
     g_timers[timer].end = os_now_microseconds();
 }
 
-internal String8
+internal StringView
 lnk_string_from_timer_type(LNK_TimerType type)
 {
     switch (type) {

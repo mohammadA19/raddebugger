@@ -7,8 +7,8 @@
 
 typedef struct LNK_Obj
 {
-    String8              data;
-    String8              path;
+    StringView              data;
+    StringView              path;
     struct LNK_Lib      *lib;
     U32                  input_idx;
     COFF_FileHeaderInfo  header;
@@ -48,7 +48,7 @@ typedef struct LNK_SymbolInputResult
 typedef struct LNK_Directive
 {
     struct LNK_Directive *next;
-    String8               id;
+    StringView               id;
     String8List           value_list;
 } LNK_Directive;
 
@@ -85,7 +85,7 @@ typedef struct
 typedef struct
 {
     LNK_Obj    **objs;
-    String8      name;
+    StringView      name;
     B32          collect_discarded;
     String8List *out_lists;
 } LNK_SectionCollector;

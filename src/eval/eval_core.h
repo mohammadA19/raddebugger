@@ -31,7 +31,7 @@ struct E_Msg
     E_Msg *next;
     E_MsgKind kind;
     Rng1U64 range;
-    String8 text;
+    StringView text;
 };
 
 struct E_MsgList
@@ -77,7 +77,7 @@ struct E_Op
     E_Op *next;
     RDI_EvalOp opcode;
     E_Value value;
-    String8 string;
+    StringView string;
 };
 
 struct E_OpList
@@ -103,10 +103,10 @@ struct E_OpInfo
 {
     E_OpKind kind;
     S64 precedence;
-    String8 pre;
-    String8 sep;
-    String8 post;
-    String8 chain;
+    StringView pre;
+    StringView sep;
+    StringView post;
+    StringView chain;
 };
 
 ////////////////////////////////
@@ -244,9 +244,9 @@ struct E_Expr
     E_Space space;
     E_TypeKey type_key;
     E_Value value;
-    String8 string;
-    String8 qualifier;
-    String8 bytecode;
+    StringView string;
+    StringView qualifier;
+    StringView bytecode;
 };
 
 struct E_ExprChain
@@ -287,7 +287,7 @@ struct E_IRNode
     E_IRNode *next;
     RDI_EvalOp op;
     E_Space space;
-    String8 string;
+    StringView string;
     E_Value value;
 };
 
@@ -319,10 +319,10 @@ struct E_Eval
 {
     E_Key key;
     E_Key parent_key;
-    String8 string;
+    StringView string;
     E_Expr *expr;
     E_IRTreeAndType irtree;
-    String8 bytecode;
+    StringView bytecode;
     E_InterpretationCode code;
     E_Value value;
     E_Space space;
@@ -368,7 +368,7 @@ struct E_Member
 {
     E_MemberKind kind;
     E_TypeKey type_key;
-    String8 name;
+    StringView name;
     U64 off;
     E_TypeKeyList inheritance_key_chain;
 };
@@ -394,7 +394,7 @@ struct E_MemberArray
 
 struct E_EnumVal
 {
-    String8 name;
+    StringView name;
     U64 val;
 };
 
@@ -438,12 +438,12 @@ typedef E_TYPE_IREXT_FUNCTION_SIG(E_TypeIRExtFunctionType);
 #define E_TYPE_ACCESS_FUNCTION_DEF(name) internal E_TYPE_ACCESS_FUNCTION_SIG(E_TYPE_ACCESS_FUNCTION_NAME(name))
 typedef E_TYPE_ACCESS_FUNCTION_SIG(E_TypeAccessFunctionType);
 
-#define E_TYPE_EXPAND_INFO_FUNCTION_SIG(name) E_TypeExpandInfo name(Arena *arena, E_Eval eval, String8 filter)
+#define E_TYPE_EXPAND_INFO_FUNCTION_SIG(name) E_TypeExpandInfo name(Arena *arena, E_Eval eval, StringView filter)
 #define E_TYPE_EXPAND_INFO_FUNCTION_NAME(name) e_type_expand_info__##name
 #define E_TYPE_EXPAND_INFO_FUNCTION_DEF(name) internal E_TYPE_EXPAND_INFO_FUNCTION_SIG(E_TYPE_EXPAND_INFO_FUNCTION_NAME(name))
 typedef E_TYPE_EXPAND_INFO_FUNCTION_SIG(E_TypeExpandInfoFunctionType);
 
-#define E_TYPE_EXPAND_RANGE_FUNCTION_SIG(name) void name(Arena *arena, void *user_data, E_Eval eval, String8 filter, Rng1U64 idx_range, E_Eval *evals_out)
+#define E_TYPE_EXPAND_RANGE_FUNCTION_SIG(name) void name(Arena *arena, void *user_data, E_Eval eval, StringView filter, Rng1U64 idx_range, E_Eval *evals_out)
 #define E_TYPE_EXPAND_RANGE_FUNCTION_NAME(name) e_type_expand_range__##name
 #define E_TYPE_EXPAND_RANGE_FUNCTION_DEF(name) internal E_TYPE_EXPAND_RANGE_FUNCTION_SIG(E_TYPE_EXPAND_RANGE_FUNCTION_NAME(name))
 typedef E_TYPE_EXPAND_RANGE_FUNCTION_SIG(E_TypeExpandRangeFunctionType);
@@ -470,7 +470,7 @@ struct E_Type
 {
     E_TypeKind kind;
     E_TypeFlags flags;
-    String8 name;
+    StringView name;
     U64 byte_size;
     U64 count;
     U64 depth;
@@ -495,7 +495,7 @@ struct E_ConsTypeParams
     Arch arch;
     E_TypeKind kind;
     E_TypeFlags flags;
-    String8 name;
+    StringView name;
     E_TypeKey direct_key;
     U64 count;
     U64 depth;
@@ -540,7 +540,7 @@ struct E_String2NumMapNode
 {
     E_String2NumMapNode *order_next;
     E_String2NumMapNode *hash_next;
-    String8 string;
+    StringView string;
     U64 num;
 };
 
@@ -571,7 +571,7 @@ struct E_String2NumMap
 struct E_String2ExprMapNode
 {
     E_String2ExprMapNode *hash_next;
-    String8 string;
+    StringView string;
     E_Expr *expr;
     U64 poison_count;
 };
@@ -594,7 +594,7 @@ struct E_String2ExprMap
 struct E_String2TypeKeyNode
 {
     E_String2TypeKeyNode *next;
-    String8 string;
+    StringView string;
     E_TypeKey key;
 };
 
@@ -616,7 +616,7 @@ struct E_String2TypeKeyMap
 struct E_PatternPart
 {
     E_PatternPart *next;
-    String8 string;
+    StringView string;
     String8List wildcard_inst_names;
 };
 
@@ -630,7 +630,7 @@ struct E_Pattern
 struct E_AutoHookWildcardInst
 {
     E_AutoHookWildcardInst *next;
-    String8 name;
+    StringView name;
     E_Expr *inst_expr;
 };
 
@@ -653,9 +653,9 @@ struct E_AutoHookNode
 {
     E_AutoHookNode *hash_next;
     E_AutoHookNode *pattern_order_next;
-    String8 type_string;
+    StringView type_string;
     E_Pattern type_pattern;
-    String8 expr_string;
+    StringView expr_string;
 };
 
 struct E_AutoHookSlot
@@ -675,8 +675,8 @@ struct E_AutoHookMap
 struct E_AutoHookParams
 {
     E_TypeKey type_key;
-    String8 type_pattern;
-    String8 tag_expr_string;
+    StringView type_pattern;
+    StringView tag_expr_string;
 };
 
 ////////////////////////////////
@@ -756,7 +756,7 @@ struct E_MemberHashSlot
 struct E_MemberFilterNode
 {
     E_MemberFilterNode *next;
-    String8 filter;
+    StringView filter;
     E_MemberArray members_filtered;
 };
 
@@ -800,7 +800,7 @@ struct E_EnumValHashSlot
 struct E_EnumValFilterNode
 {
     E_EnumValFilterNode *next;
-    String8 filter;
+    StringView filter;
     E_EnumValArray vals_filtered;
 };
 
@@ -875,7 +875,7 @@ struct E_StringIDNode
     E_StringIDNode *hash_next;
     E_StringIDNode *id_next;
     U64 id;
-    String8 string;
+    StringView string;
 };
 
 struct E_StringIDSlot
@@ -907,10 +907,10 @@ struct E_CacheBundle
     E_CacheBundleFlags flags;
     E_Key key;
     E_Key parent_key;
-    String8 string;
+    StringView string;
     E_Parse parse;
     E_IRTreeAndType irtree;
-    String8 bytecode;
+    StringView bytecode;
     E_Interpretation interpretation;
     U64 space_gen;
     E_MsgList msgs;

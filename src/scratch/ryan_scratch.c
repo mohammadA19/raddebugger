@@ -47,7 +47,7 @@ frame(void)
     {
         if (ev.kind != OS_EventKind_MouseMove)
         {
-            String8 string = push_str8f(scratch.arena, "%S (%S)\n", os_string_from_event_kind(ev.kind), os_g_key_display_string_table[ev.key]);
+            StringView string = push_str8f(scratch.arena, "%S (%S)\n", os_string_from_event_kind(ev.kind), os_g_key_display_string_table[ev.key]);
             printf("%.*s", str8_varg(string));
             raddbg_log((char *)string.str);
             fflush(stdout);

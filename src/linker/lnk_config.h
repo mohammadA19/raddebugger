@@ -251,8 +251,8 @@ enum
 
 typedef struct LNK_AltName
 {
-    String8 from;
-    String8 to;
+    StringView from;
+    StringView to;
     struct LNK_Obj *obj;
 } LNK_AltName;
 
@@ -271,8 +271,8 @@ typedef struct LNK_AltNameList
 
 typedef struct LNK_MergeDirective
 {
-    String8 src;
-    String8 dst;
+    StringView src;
+    StringView dst;
 } LNK_MergeDirective;
 
 typedef struct LNK_MergeDirectiveNode
@@ -329,7 +329,7 @@ typedef struct LNK_Config
     U64                         pdb_page_size;
     U64                         worker_count;
     U64                         max_worker_count;
-    String8                     shared_thread_pool_name;
+    StringView                     shared_thread_pool_name;
     LNK_SwitchState             do_function_pad_min;
     B32                         infer_function_pad_min;
     U64                         function_pad_min;
@@ -344,19 +344,19 @@ typedef struct LNK_Config
     Version                     subsystem_ver;
     PE_ImageFileCharacteristics file_characteristics;
     PE_DllCharacteristics       dll_characteristics;
-    String8                     entry_point_name;
+    StringView                     entry_point_name;
     String8List                 lib_dir_list;
     PathStyle                   path_style;
     LNK_ManifestOpt             manifest_opt;
-    String8                     work_dir;
-    String8                     image_name;
-    String8                     imp_lib_name;
+    StringView                     work_dir;
+    StringView                     image_name;
+    StringView                     imp_lib_name;
     String8List                 raw_cmd_line;
-    String8                     pdb_name;
-    String8                     pdb_alt_path;
-    String8                     mt_path;
+    StringView                     pdb_name;
+    StringView                     pdb_alt_path;
+    StringView                     mt_path;
     LNK_TypeNameHashMode        pdb_hash_type_names;
-    String8                     pdb_hash_type_name_map;
+    StringView                     pdb_hash_type_name_map;
     U64                         pdb_hash_type_name_length;
     PE_ExportParseList          export_symbol_list;
     String8List                 input_list[LNK_Input_Count];
@@ -365,16 +365,16 @@ typedef struct LNK_Config
     String8List                 disallow_lib_list;
     String8List                 delay_load_dll_list;
     String8List                 natvis_list;
-    String8                     manifest_name;
+    StringView                     manifest_name;
     B32                         manifest_uac;
-    String8                     manifest_level;
-    String8                     manifest_ui_access;
+    StringView                     manifest_level;
+    StringView                     manifest_ui_access;
     String8List                 manifest_dependency_list;
     LNK_SwitchState             rad_debug;
     LNK_SwitchState             rad_chunk_map;
-    String8                     rad_chunk_map_name;
-    String8                     rad_debug_name;
-    String8                     rad_debug_alt_path;
+    StringView                     rad_chunk_map_name;
+    StringView                     rad_debug_name;
+    StringView                     rad_debug_alt_path;
     String8List                 include_symbol_list;
     LNK_AltNameList             alt_name_list;
     LNK_MergeDirectiveList      merge_list;
@@ -386,10 +386,10 @@ typedef struct LNK_Config
     B32                         build_imp_lib;
     B32                         build_exp;
     LNK_SwitchState             write_temp_files;
-    String8                     temp_image_name;
-    String8                     temp_pdb_name;
-    String8                     temp_rad_debug_name;
-    String8                     temp_rad_chunk_map_name;
+    StringView                     temp_image_name;
+    StringView                     temp_pdb_name;
+    StringView                     temp_rad_debug_name;
+    StringView                     temp_rad_chunk_map_name;
     String8List                 remove_sections;
     LNK_IO_Flags                io_flags;
     HashTable                  *export_ht;

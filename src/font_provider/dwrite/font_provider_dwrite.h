@@ -231,7 +231,7 @@ struct FP_DWrite_FontFileStreamVTable
 struct FP_DWrite_FontFileStream
 {
     FP_DWrite_FontFileStreamVTable *lpVtbl;
-    String8 *data;
+    StringView *data;
 };
 
 struct FP_DWrite_FontFileStreamNode

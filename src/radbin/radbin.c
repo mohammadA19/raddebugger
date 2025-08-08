@@ -233,7 +233,7 @@ rb_entry_point(CmdLine *cmdline)
       //////////////////////////
       //- rjf: load recognized files
       //
-      String8 file_data = {0};
+      StringView file_data = {0};
       if (file_format != RB_FileFormat_Null) ProfScope("load recognized file")
       {
         file_data = os_data_from_file_path(arena, n.string);
@@ -246,7 +246,7 @@ rb_entry_point(CmdLine *cmdline)
       {
         Temp scratch = scratch_begin(&arena, 1);
         PE_BinInfo pe_bin_info = pe_bin_info_from_data(scratch.arena, file_data);
-        String8 raw_debug_dir = str8_substr(file_data, pe_bin_info.data_dir_franges[PE_DataDirectoryIndex_DEBUG]);
+        StringView raw_debug_dir = str8_substr(file_data, pe_bin_info.data_dir_franges[PE_DataDirectoryIndex_DEBUG]);
         PE_DebugInfoList debug_dir = pe_debug_info_list_from_raw_debug_dir(scratch.arena, file_data, raw_debug_dir);
         for (PE_DebugInfoNode *n = debug_dir.first; n != 0; n = n.next)
         {
@@ -281,8 +281,8 @@ rb_entry_point(CmdLine *cmdline)
       {
         Temp scratch = scratch_begin(&arena, 1);
         PE_BinInfo pe_bin_info = pe_bin_info_from_data(scratch.arena, file_data);
-        String8 raw_section_table = str8_substr(file_data, pe_bin_info.section_table_range);
-        String8 string_table = str8_substr(file_data, pe_bin_info.string_table_range);
+        StringView raw_section_table = str8_substr(file_data, pe_bin_info.section_table_range);
+        StringView string_table = str8_substr(file_data, pe_bin_info.string_table_range);
         U64 section_count = raw_section_table.size / sizeof(COFF_SectionHeader);
         COFF_SectionHeader *section_table = (COFF_SectionHeader *)raw_section_table.str;
         if (dw_is_dwarf_present_coff_section_table(file_data, string_table, section_count, section_table))
@@ -350,8 +350,8 @@ rb_entry_point(CmdLine *cmdline)
   OutputKind;
   struct
   {
-    String8 arg;
-    String8 title;
+    StringView arg;
+    StringView title;
   }
   output_kind_info[] =
   {
@@ -361,7 +361,7 @@ rb_entry_point(CmdLine *cmdline)
     {("breakpad"), ("Breakpad Debug Info Conversion")},
   };
   OutputKind output_kind = OutputKind_Null;
-  String8 output_path = cmd_line_string(cmdline, ("out"));
+  StringView output_path = cmd_line_string(cmdline, ("out"));
   {
     //- rjf: user manually specified output kind
     if (output_kind == OutputKind_Null)
@@ -657,10 +657,10 @@ rb_entry_point(CmdLine *cmdline)
           // rjf: get EXE/PDB file data
           RB_File *exe_file = rb_file_list_first(&input_files_from_format_table[RB_FileFormat_PE]);
           RB_File *pdb_file = rb_file_list_first(&input_files_from_format_table[RB_FileFormat_PDB]);
-          String8 exe_path  = exe_file.path;
-          String8 pdb_path  = pdb_file.path;
-          String8 exe_data  = exe_file.data;
-          String8 pdb_data  = pdb_file.data;
+          StringView exe_path  = exe_file.path;
+          StringView pdb_path  = pdb_file.path;
+          StringView exe_data  = exe_file.data;
+          StringView pdb_data  = pdb_file.data;
           
           // rjf: convert
           P2R_ConvertParams convert_params = {0};
@@ -763,7 +763,7 @@ rb_entry_point(CmdLine *cmdline)
               for (U64 idx = 0; idx < n.count; idx += 1)
               {
                 U64 file_idx = rdim_idx_from_src_file(&n.v[idx]);
-                String8 src_path = n.v[idx].path;
+                StringView src_path = n.v[idx].path;
                 str8_list_pushf(arena, &dump, "FILE %I64u %S\n", file_idx, src_path);
               }
             }
@@ -917,10 +917,10 @@ rb_entry_point(CmdLine *cmdline)
           {
             if (f.format == RB_FileFormat_PE)
             {
-              String8             raw_sections  = str8_substr(f.data, pe.section_table_range);
+              StringView             raw_sections  = str8_substr(f.data, pe.section_table_range);
               U64                 section_count = raw_sections.size / sizeof(COFF_SectionHeader);
               COFF_SectionHeader *section_table = (COFF_SectionHeader *)raw_sections.str;
-              String8 string_table = str8_substr(f.data, pe.string_table_range);
+              StringView string_table = str8_substr(f.data, pe.string_table_range);
               dw = dw_input_from_coff_section_table(arena, f.data, string_table, section_count, section_table);
             }
             else if (f.format == RB_FileFormat_ELF32 ||
@@ -979,7 +979,7 @@ rb_entry_point(CmdLine *cmdline)
           {
             RDI_Parsed rdi = {0};
             RDI_ParseStatus rdi_status = rdi_parse(f.data.str, f.data.size, &rdi);
-            String8 error = {0};
+            StringView error = {0};
             switch (rdi_status)
             {
               default:{}break;

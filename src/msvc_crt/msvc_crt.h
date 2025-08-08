@@ -347,7 +347,7 @@ typedef struct MSCRT_ParsedFuncInfoV4
 
 internal Rng1U64List
 mscrt_catch_blocks_from_data_x8664(Arena              *arena,
-                                                                      String8             raw_data,
+                                                                      StringView             raw_data,
                                                                       U64                 section_count,
                                                                       COFF_SectionHeader *sections,
                                                                       Rng1U64             except_frange);

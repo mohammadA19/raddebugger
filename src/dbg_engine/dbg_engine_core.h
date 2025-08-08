@@ -9,13 +9,13 @@
 
 struct D_Target
 {
-    String8 exe;
-    String8 args;
-    String8 working_directory;
-    String8 custom_entry_point_name;
-    String8 stdout_path;
-    String8 stderr_path;
-    String8 stdin_path;
+    StringView exe;
+    StringView args;
+    StringView working_directory;
+    StringView custom_entry_point_name;
+    StringView stdout_path;
+    StringView stderr_path;
+    StringView stdin_path;
     B32 debug_subprocesses;
     String8List env;
 };
@@ -37,10 +37,10 @@ struct D_Breakpoint
 {
     D_BreakpointFlags flags;
     U64 id;
-    String8 file_path;
+    StringView file_path;
     TxtPt pt;
-    String8 vaddr_expr;
-    String8 condition;
+    StringView vaddr_expr;
+    StringView condition;
     U64 size;
 };
 
@@ -52,8 +52,8 @@ struct D_BreakpointArray
 
 struct D_PathMap
 {
-    String8 src;
-    String8 dst;
+    StringView src;
+    StringView dst;
 };
 
 struct D_PathMapArray
@@ -112,7 +112,7 @@ struct D_EventList
 
 struct D_Line
 {
-    String8 file_path;
+    StringView file_path;
     TxtPt pt;
     Rng1U64 voff_range;
     DI_Key dbgi_key;
@@ -164,8 +164,8 @@ struct D_CmdParams
     CTRL_Handle process;
     CTRL_Handle thread;
     CTRL_Handle entity;
-    String8 string;
-    String8 file_path;
+    StringView string;
+    StringView file_path;
     TxtPt cursor;
     U64 vaddr;
     B32 prefer_disasm;

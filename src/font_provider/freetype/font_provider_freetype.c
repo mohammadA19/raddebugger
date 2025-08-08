@@ -31,10 +31,10 @@ fp_init(void)
 }
 
 fp_hook FP_Handle
-fp_font_open(String8 path)
+fp_font_open(StringView path)
 {
     Temp scratch = scratch_begin(0, 0);
-    String8 path_copy = push_str8_copy(scratch.arena, path);
+    StringView path_copy = push_str8_copy(scratch.arena, path);
     FP_FT_Font font = {0};
     FT_New_Face(fp_ft_state.library, (char *)path_copy.str, 0, &font.face);
     FP_Handle handle = fp_ft_handle_from_font(font);
@@ -43,7 +43,7 @@ fp_font_open(String8 path)
 }
 
 fp_hook FP_Handle
-fp_font_open_from_static_data_string(String8 *data_ptr)
+fp_font_open_from_static_data_string(StringView *data_ptr)
 {
     FP_FT_Font font = {0};
     FT_New_Memory_Face(fp_ft_state.library, data_ptr.str, (FT_Long)data_ptr.size, 0, &font.face);
@@ -78,7 +78,7 @@ fp_metrics_from_font(FP_Handle handle)
 }
 
 fp_hook FP_RasterResult
-fp_raster(Arena *arena, FP_Handle handle, F32 size, FP_RasterFlags flags, String8 string)
+fp_raster(Arena *arena, FP_Handle handle, F32 size, FP_RasterFlags flags, StringView string)
 {
     ProfBeginFunction();
     FP_FT_Font font = fp_ft_font_from_handle(handle);

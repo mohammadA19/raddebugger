@@ -4,18 +4,18 @@
 ////////////////////////////////
 //~ rjf: Stringification Helpers
 
-internal String8
+internal StringView
 dw_string_from_reg_off(Arena *arena, Arch arch, U64 reg_idx, S64 reg_off)
 {
     Temp scratch = scratch_begin(&arena, 1);
-    String8 reg_str = dw_string_from_register(scratch.arena, arch, reg_idx);
-    String8 result = push_str8f(arena, "%S%+lld", reg_str, reg_off);
+    StringView reg_str = dw_string_from_register(scratch.arena, arch, reg_idx);
+    StringView result = push_str8f(arena, "%S%+lld", reg_str, reg_off);
     scratch_end(scratch);
     return result;
 }
 
 internal String8List
-dw_string_list_from_expression(Arena *arena, String8 raw_data, U64 cu_base, U64 address_size, Arch arch, DW_Version ver, DW_Ext ext, DW_Format format)
+dw_string_list_from_expression(Arena *arena, StringView raw_data, U64 cu_base, U64 address_size, Arch arch, DW_Version ver, DW_Ext ext, DW_Format format)
 {
     Temp scratch = scratch_begin(&arena, 1);
     String8List result = {0};
@@ -23,7 +23,7 @@ dw_string_list_from_expression(Arena *arena, String8 raw_data, U64 cu_base, U64 
         U8 op = 0;
         cursor += str8_deserial_read_struct(raw_data, cursor, &op);
         
-        String8 op_value   = str8_zero();
+        StringView op_value   = str8_zero();
         U64     size_param = 0;
         B32     is_signed  = 0;
         switch (op) {
@@ -107,7 +107,7 @@ dw_string_list_from_expression(Arena *arena, String8 raw_data, U64 cu_base, U64 
                 U64 value_size = 0;
                 cursor += str8_deserial_read_uleb128(raw_data, cursor, &value_size);
                 Rng1U64 value_range = rng_1u64(cursor, cursor + value_size);
-                String8 value_data  = str8_substr(raw_data, value_range);
+                StringView value_data  = str8_substr(raw_data, value_range);
                 cursor += value_size;
                 String8List value_strings = numeric_str8_list_from_data(scratch.arena, 16, value_data, 1);
                 op_value = str8_list_join(scratch.arena, &value_strings, &(StringJoin){.pre = ("{ "), .sep = (", "), .post = (" }")});
@@ -239,9 +239,9 @@ dw_string_list_from_expression(Arena *arena, String8 raw_data, U64 cu_base, U64 
                 cursor += str8_deserial_read_uleb128(raw_data, cursor, &type_cu_off);
                 cursor += str8_deserial_read_struct(raw_data, cursor, &const_value_size);
                 Rng1U64 const_value_range = rng_1u64(cursor, cursor + const_value_size);
-                String8 const_value_data  = str8_substr(raw_data, const_value_range);
+                StringView const_value_data  = str8_substr(raw_data, const_value_range);
                 String8List const_value_strings = numeric_str8_list_from_data(scratch.arena, 16, const_value_data, 1);
-                String8 const_value_str = str8_list_join(scratch.arena, &const_value_strings, &(StringJoin){.sep = (", ")});
+                StringView const_value_str = str8_list_join(scratch.arena, &const_value_strings, &(StringJoin){.sep = (", ")});
                 op_value = push_str8f(scratch.arena, "TypeCuOff %#llx, Const Value { %S }", cu_base + type_cu_off, const_value_str);
                 cursor += const_value_size;
             } break;
@@ -257,7 +257,7 @@ dw_string_list_from_expression(Arena *arena, String8 raw_data, U64 cu_base, U64 
                 U64 block_size = 0;
                 cursor += str8_deserial_read_uleb128(raw_data, cursor, &block_size);
                 Rng1U64     block_range = rng_1u64(cursor, cursor + block_size);
-                String8     block_data  = str8_substr(raw_data, block_range);
+                StringView     block_data  = str8_substr(raw_data, block_range);
                 String8List block_expr  = dw_string_list_from_expression(scratch.arena, block_data, cu_base, address_size, arch, ver, ext, format);
                 op_value = str8_list_join(scratch.arena, &block_expr, &(StringJoin){.pre = ("{ "), .sep = (","), .post = (" }")});
                 cursor += block_size;
@@ -304,7 +304,7 @@ dw_string_list_from_expression(Arena *arena, String8 raw_data, U64 cu_base, U64 
             } break;
         }
         
-        String8 opcode_str = dw_string_from_expr_op(scratch.arena, ver, ext, op);
+        StringView opcode_str = dw_string_from_expr_op(scratch.arena, ver, ext, op);
         if (op_value.size == 0) {
             str8_list_pushf(arena, &result, "DW_OP_%S", opcode_str);
         } else {
@@ -315,12 +315,12 @@ dw_string_list_from_expression(Arena *arena, String8 raw_data, U64 cu_base, U64 
     return result;
 }
 
-internal String8
-dw_single_line_string_from_expression(Arena *arena, String8 raw_data, U64 cu_base, U64 address_size, Arch arch, DW_Version ver, DW_Ext ext, DW_Format format)
+internal StringView
+dw_single_line_string_from_expression(Arena *arena, StringView raw_data, U64 cu_base, U64 address_size, Arch arch, DW_Version ver, DW_Ext ext, DW_Format format)
 {
     Temp        scratch    = scratch_begin(&arena, 1);
     String8List list       = dw_string_list_from_expression(scratch.arena, raw_data, cu_base, address_size, arch, ver, ext, format);
-    String8     expression = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
+    StringView     expression = str8_list_join(arena, &list, &(StringJoin){.sep=(", ")});
     scratch_end(scratch);
     return expression;
 }
@@ -328,7 +328,7 @@ dw_single_line_string_from_expression(Arena *arena, String8 raw_data, U64 cu_bas
 #if 0
 
 internal void
-dw_string_from_cfi_program(Arena *arena, String8List *out, String8 indent, String8 raw_data, DW_CIEUnpacked *cie, DW_EhPtrCtx *ptr_ctx, Arch arch, DW_Version ver, DW_Ext ext, DW_Format format)
+dw_string_from_cfi_program(Arena *arena, String8List *out, StringView indent, StringView raw_data, DW_CIEUnpacked *cie, DW_EhPtrCtx *ptr_ctx, Arch arch, DW_Version ver, DW_Ext ext, DW_Format format)
 {
     Temp scratch = scratch_begin(&arena, 1);
     
@@ -436,7 +436,7 @@ dw_string_from_cfi_program(Arena *arena, String8List *out, String8 indent, Strin
             case DW_CFA_DefCfaExpr: {
                 U64 block_size = 0;
                 cursor += str8_deserial_read_uleb128(raw_data, cursor, &block_size);
-                String8 raw_expr = str8_substr(raw_data, rng_1u64(cursor, cursor + block_size));
+                StringView raw_expr = str8_substr(raw_data, rng_1u64(cursor, cursor + block_size));
                 cursor += block_size;
                 
                 rd_printf("DW_CFA_def_cfa_expression: %S",
@@ -446,7 +446,7 @@ dw_string_from_cfi_program(Arena *arena, String8List *out, String8 indent, Strin
                 U64 reg = 0, block_size = 0;
                 cursor += str8_deserial_read_uleb128(raw_data, cursor, &reg);
                 cursor += str8_deserial_read_uleb128(raw_data, cursor, &block_size);
-                String8 raw_expr = str8_substr(raw_data, rng_1u64(cursor, cursor + block_size));
+                StringView raw_expr = str8_substr(raw_data, rng_1u64(cursor, cursor + block_size));
                 cursor += block_size;
                 
                 rd_printf("DW_CFA_expression: %S, expression %S", 
@@ -489,7 +489,7 @@ dw_string_from_cfi_program(Arena *arena, String8List *out, String8 indent, Strin
                 U64 block_size = 0;
                 cursor += str8_deserial_read_uleb128(raw_data, cursor, &val);
                 cursor += str8_deserial_read_uleb128(raw_data, cursor, &block_size);
-                String8 raw_expr = str8_substr(raw_data, rng_1u64(cursor, cursor + block_size));
+                StringView raw_expr = str8_substr(raw_data, rng_1u64(cursor, cursor + block_size));
                 cursor += block_size;
                 
                 rd_printf("DW_CFA_val_expr: value %+llu, expression %S",
@@ -518,11 +518,11 @@ dw_string_from_cfi_program(Arena *arena, String8List *out, String8 indent, Strin
     scratch_end(scratch);
 }
 
-internal String8
+internal StringView
 dw_string_from_eh_ptr_enc(Arena *arena, DW_EhPtrEnc enc)
 {
     U8 type = enc & DW_EhPtrEnc_TypeMask;
-    String8 type_str = ("NULL");
+    StringView type_str = ("NULL");
     switch (type) {
         case DW_EhPtrEnc_Ptr:     type_str = ("PTR");      break;
         case DW_EhPtrEnc_ULEB128: type_str = ("ULEB128");  break;
@@ -536,14 +536,14 @@ dw_string_from_eh_ptr_enc(Arena *arena, DW_EhPtrEnc enc)
         case DW_EhPtrEnc_SData8:  type_str = ("SDATA8");   break;
     }
     U8 modifier = enc & DW_EhPtrEnc_ModifyMask;
-    String8 modifier_str = ("NULL");
+    StringView modifier_str = ("NULL");
     switch (modifier) {
         case DW_EhPtrEnc_PcRel:   modifier_str = ("PCREL");   break;
         case DW_EhPtrEnc_TextRel: modifier_str = ("TEXTREL"); break;
         case DW_EhPtrEnc_DataRel: modifier_str = ("DATAREL"); break;
         case DW_EhPtrEnc_FuncRel: modifier_str = ("FUNCREL"); break;
     }
-    String8 indir_str = ("");
+    StringView indir_str = ("");
     if (enc & DW_EhPtrEnc_Indirect) {
         indir_str = ("(INDIRECT)");
     }
@@ -551,7 +551,7 @@ dw_string_from_eh_ptr_enc(Arena *arena, DW_EhPtrEnc enc)
 }
 
 internal void
-dw_print_eh_frame(Arena *arena, String8List *out, String8 indent, String8 raw_eh_frame, Arch arch, DW_Version ver, DW_Ext ext, DW_EhPtrCtx *ptr_ctx)
+dw_print_eh_frame(Arena *arena, String8List *out, StringView indent, StringView raw_eh_frame, Arch arch, DW_Version ver, DW_Ext ext, DW_EhPtrCtx *ptr_ctx)
 {
     Temp scratch = scratch_begin(&arena, 1);
     DW_CIEUnpacked cie = {0};
@@ -576,7 +576,7 @@ dw_print_eh_frame(Arena *arena, String8List *out, String8 indent, String8 raw_eh
         // it assumes "frame_base" points to the first byte of .eh_frame
         // but here base is start of ELF and we use range to select .eh_frame
         // bytes to read, which breaks parsing.
-        String8 raw_frame = str8_substr(raw_eh_frame, rng_1u64(cursor, cursor + length - sizeof(entry_id)));
+        StringView raw_frame = str8_substr(raw_eh_frame, rng_1u64(cursor, cursor + length - sizeof(entry_id)));
         Rng1U64 cfi_range = rng_1u64(0,0);
         
         // CIE
@@ -617,7 +617,7 @@ dw_print_eh_frame(Arena *arena, String8List *out, String8 indent, String8 raw_eh
         rd_indent();
         
         DW_Format format  = DW_FormatFromSize(length);
-        String8   raw_cfi = str8_substr(raw_eh_frame, cfi_range);
+        StringView   raw_cfi = str8_substr(raw_eh_frame, cfi_range);
         dw_string_from_cfi_program(scratch.arena, out, indent, raw_cfi, &cie, ptr_ctx, arch, ver, ext, format);
         
         rd_unindent();
@@ -631,7 +631,7 @@ dw_print_eh_frame(Arena *arena, String8List *out, String8 indent, String8 raw_eh
 }
 
 internal void
-dw_print_debug_loc(Arena *arena, String8List *out, String8 indent, DW_Input *input, Arch arch, ExecutableImageKind image_type, B32 relaxed)
+dw_print_debug_loc(Arena *arena, String8List *out, StringView indent, DW_Input *input, Arch arch, ExecutableImageKind image_type, B32 relaxed)
 {
 #if 0
     DW_Section info = input.sec[DW_Section_Info];
@@ -745,8 +745,8 @@ dw_print_debug_loc(Arena *arena, String8List *out, String8 indent, DW_Input *inp
                     
                     // format dwarf expression
                     B32     is_dwarf64 = (address_size == 8);
-                    String8 raw_expr   = str8((U8*)base+expr_range.min, dim_1u64(expr_range));
-                    String8 expression = dw_single_line_string_from_expression(range_temp.arena, raw_expr, cu_bases[comp_idx], address_size, arch, ver, ext, input.sec[DW_Section_Loc].mode);
+                    StringView raw_expr   = str8((U8*)base+expr_range.min, dim_1u64(expr_range));
+                    StringView expression = dw_single_line_string_from_expression(range_temp.arena, raw_expr, cu_bases[comp_idx], address_size, arch, ver, ext, input.sec[DW_Section_Loc].mode);
                     
                     // push entry
                     U64 min = base_address + v0;
@@ -755,7 +755,7 @@ dw_print_debug_loc(Arena *arena, String8List *out, String8 indent, DW_Input *inp
                 }
                 
                 // print entry
-                String8 print = str8_list_join(range_temp.arena, &list, &(StringJoin){.sep=(" ")});
+                StringView print = str8_list_join(range_temp.arena, &list, &(StringJoin){.sep=(" ")});
                 rd_printf("%S", print);
                 
                 // cleanup temp
@@ -778,7 +778,7 @@ dw_print_debug_loc(Arena *arena, String8List *out, String8 indent, DW_Input *inp
 }
 
 internal void
-dw_print_debug_ranges(Arena *arena, String8List *out, String8 indent, DW_Input *input, Arch arch, ExecutableImageKind image_type, B32 relaxed)
+dw_print_debug_ranges(Arena *arena, String8List *out, StringView indent, DW_Input *input, Arch arch, ExecutableImageKind image_type, B32 relaxed)
 {
     NotImplemented;
 #if 0
@@ -868,7 +868,7 @@ dw_print_debug_ranges(Arena *arena, String8List *out, String8 indent, DW_Input *
                 }
                 
                 // print entry
-                String8 print = str8_list_join(range_temp.arena, &list, &(StringJoin){.sep=(" ")});
+                StringView print = str8_list_join(range_temp.arena, &list, &(StringJoin){.sep=(" ")});
                 rd_printf("%S", print);
                 
                 temp_end(range_temp);
@@ -884,7 +884,7 @@ dw_print_debug_ranges(Arena *arena, String8List *out, String8 indent, DW_Input *
 }
 
 internal void
-dw_print_debug_aranges(Arena *arena, String8List *out, String8 indent, DW_Input *input)
+dw_print_debug_aranges(Arena *arena, String8List *out, StringView indent, DW_Input *input)
 {
     NotImplemented;
 #if 0
@@ -958,7 +958,7 @@ dw_print_debug_aranges(Arena *arena, String8List *out, String8 indent, DW_Input 
                 str8_list_pushf(temp.arena, &list, "%llx-%llx", address, address+length);
             }
             
-            String8 print = str8_list_join(temp.arena, &list, &(StringJoin){.sep=(" ") });
+            StringView print = str8_list_join(temp.arena, &list, &(StringJoin){.sep=(" ") });
             rd_printf("%S", print);
             
             temp_end(temp);
@@ -973,7 +973,7 @@ dw_print_debug_aranges(Arena *arena, String8List *out, String8 indent, DW_Input 
 }
 
 internal void
-dw_print_debug_addr(Arena *arena, String8List *out, String8 indent, DW_Input *input)
+dw_print_debug_addr(Arena *arena, String8List *out, StringView indent, DW_Input *input)
 {
     NotImplemented;
 #if 0
@@ -1040,7 +1040,7 @@ dw_print_debug_addr(Arena *arena, String8List *out, String8 indent, DW_Input *in
                 str8_list_pushf(temp.arena, &list, "%llx", address);
             }
             
-            String8 print = str8_list_join(arena, &list, &(StringJoin){.sep=(" ")});
+            StringView print = str8_list_join(arena, &list, &(StringJoin){.sep=(" ")});
             rd_printf("%S", print);
             
             temp_end(temp);
@@ -1082,7 +1082,7 @@ dw_based_range_read_address(void *base, Rng1U64 range, U64 offset, Rng1U64Array 
 }
 
 internal void
-dw_print_debug_loclists(Arena *arena, String8List *out, String8 indent, DW_Input *input, Rng1U64Array segment_virtual_ranges, Arch arch)
+dw_print_debug_loclists(Arena *arena, String8List *out, StringView indent, DW_Input *input, Rng1U64Array segment_virtual_ranges, Arch arch)
 {
     NotImplemented;
 #if 0
@@ -1199,12 +1199,12 @@ dw_print_debug_loclists(Arena *arena, String8List *out, String8 indent, DW_Input
                     U8 expr_length = 0;
                     cursor += dw_based_range_read_struct(base, range, cursor, &expr_length); 
                     
-                    String8 raw_expr = str8((U8*)base+cursor, expr_length);
+                    StringView raw_expr = str8((U8*)base+cursor, expr_length);
                     cursor += expr_length;
                     
                     // TODO: we need actual cu base to format expression correctly
                     NotImplemented;
-                    String8 expression = dw_single_line_string_from_expression(temp.arena, raw_expr, 0, address_size, arch, version, DW_Ext_Null, is_dwarf64);
+                    StringView expression = dw_single_line_string_from_expression(temp.arena, raw_expr, 0, address_size, arch, version, DW_Ext_Null, is_dwarf64);
                     str8_list_pushf(temp.arena, &list, "(%S)", expression);
                 } break;
                 case DW_LocListEntryKind_StartXLength: {
@@ -1220,7 +1220,7 @@ dw_print_debug_loclists(Arena *arena, String8List *out, String8 indent, DW_Input
                 } break;
             }
             
-            String8 print = str8_list_join(temp.arena, &list, &(StringJoin){.sep=(" ")});
+            StringView print = str8_list_join(temp.arena, &list, &(StringJoin){.sep=(" ")});
             rd_printf("%S", print);
             
             temp_end(temp);
@@ -1235,7 +1235,7 @@ dw_print_debug_loclists(Arena *arena, String8List *out, String8 indent, DW_Input
 }
 
 internal void
-dw_print_debug_rnglists(Arena *arena, String8List *out, String8 indent, DW_Input *input, Rng1U64Array segment_ranges)
+dw_print_debug_rnglists(Arena *arena, String8List *out, StringView indent, DW_Input *input, Rng1U64Array segment_ranges)
 {
     NotImplemented;
 #if 0
@@ -1359,7 +1359,7 @@ dw_print_debug_rnglists(Arena *arena, String8List *out, String8 indent, DW_Input
             }
             
             // output row
-            String8 print = str8_list_join(temp.arena, &list, &(StringJoin){.sep=(" ")});
+            StringView print = str8_list_join(temp.arena, &list, &(StringJoin){.sep=(" ")});
             rd_printf("%S", print);
             
             temp_end(temp);
@@ -1374,7 +1374,7 @@ dw_print_debug_rnglists(Arena *arena, String8List *out, String8 indent, DW_Input
 }
 
 internal void
-dw_format_string_table(Arena *arena, String8List *out, String8 indent, DW_Input *input, DW_SectionKind sec)
+dw_format_string_table(Arena *arena, String8List *out, StringView indent, DW_Input *input, DW_SectionKind sec)
 {
     NotImplemented;
 #if 0
@@ -1421,7 +1421,7 @@ dw_format_string_table(Arena *arena, String8List *out, String8 indent, DW_Input 
         for (; cursor < unit_opl; ) {
             U64 info_offset = 0;
             cursor += dw_based_range_read(base, range, cursor, sec_offset_size, &info_offset);
-            String8 string = dw_based_range_read_string(base, range, cursor);
+            StringView string = dw_based_range_read_string(base, range, cursor);
             cursor += (string.size + 1);
             
             rd_printf("%08llx %S", info_offset, string);
@@ -1436,19 +1436,19 @@ dw_format_string_table(Arena *arena, String8List *out, String8 indent, DW_Input 
 }
 
 internal void
-dw_print_debug_pubnames(Arena *arena, String8List *out, String8 indent, DW_Input *input)
+dw_print_debug_pubnames(Arena *arena, String8List *out, StringView indent, DW_Input *input)
 {
     dw_format_string_table(arena, out, indent, input, DW_Section_PubNames);
 }
 
 internal void
-dw_print_debug_pubtypes(Arena *arena, String8List *out, String8 indent, DW_Input *input)
+dw_print_debug_pubtypes(Arena *arena, String8List *out, StringView indent, DW_Input *input)
 {
     dw_format_string_table(arena, out, indent, input, DW_Section_PubTypes);
 }
 
 internal void
-dw_print_debug_line_str(Arena *arena, String8List *out, String8 indent, DW_Input *input)
+dw_print_debug_line_str(Arena *arena, String8List *out, StringView indent, DW_Input *input)
 {
     NotImplemented;
 #if 0
@@ -1467,7 +1467,7 @@ dw_print_debug_line_str(Arena *arena, String8List *out, String8 indent, DW_Input
     rd_printf("%-8s %-8s", "Offset", "String");
     for (U64 cursor = 0; cursor < dim_1u64(range); ) {
         U64 offset = cursor;
-        String8 string = dw_based_range_read_string(base, range, cursor);
+        StringView string = dw_based_range_read_string(base, range, cursor);
         cursor += (string.size + 1);
         rd_printf("%08llX %S", offset, string);
     }
@@ -1478,7 +1478,7 @@ dw_print_debug_line_str(Arena *arena, String8List *out, String8 indent, DW_Input
 }
 
 internal void
-dw_print_debug_str_offsets(Arena *arena, String8List *out, String8 indent, DW_Input *input)
+dw_print_debug_str_offsets(Arena *arena, String8List *out, StringView indent, DW_Input *input)
 {
     NotImplemented;
 #if 0
@@ -1529,7 +1529,7 @@ dw_print_debug_str_offsets(Arena *arena, String8List *out, String8 indent, DW_In
             cursor += dw_based_range_read(base, range, cursor, offset_size, &offset);
             rd_printf("%08llx %08llx", read_at, offset);
             if (dim_1u64(debug_str_range) > 0) {
-                String8 string = dw_based_range_read_string(debug_str_base, debug_str_range, offset);
+                StringView string = dw_based_range_read_string(debug_str_base, debug_str_range, offset);
                 rd_printf(" %S", string);
             }
             rd_newline();
@@ -1552,7 +1552,7 @@ internal String8List
 dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubsetFlags subset_flags)
 {
     String8List strings = {0};
-    String8 indent = ("                                                                                                                                ");
+    StringView indent = ("                                                                                                                                ");
 #define dump(str)  str8_list_push(arena, &strings, (str))
 #define dumpf(...) str8_list_pushf(arena, &strings, __VA_ARGS__)
 #define DumpSubset(name) if (subset_flags & DW_DumpSubsetFlag_##name) DeferLoop(dumpf("// %S\n\n", dw_name_title_from_dump_subset_table[DW_DumpSubset_##name]), dump(("\n")))
@@ -1575,9 +1575,9 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
             //- rjf: unpack unit
             Rng1U64 unit_range = unit_ranges.v[unit_idx];
             DW_CompUnit unit  = dw_cu_from_info_off(unit_temp.arena, input, lu_input, unit_range.min, relaxed);
-            String8 unit_dir  = dw_string_from_tag_attrib_kind(input, &unit, unit.tag, DW_AttribKind_CompDir );
-            String8 unit_name = dw_string_from_tag_attrib_kind(input, &unit, unit.tag, DW_AttribKind_Name    );
-            String8 stmt_list = dw_line_ptr_from_tag_attrib_kind(input, &unit, unit.tag, DW_AttribKind_StmtList);
+            StringView unit_dir  = dw_string_from_tag_attrib_kind(input, &unit, unit.tag, DW_AttribKind_CompDir );
+            StringView unit_name = dw_string_from_tag_attrib_kind(input, &unit, unit.tag, DW_AttribKind_Name    );
+            StringView stmt_list = dw_line_ptr_from_tag_attrib_kind(input, &unit, unit.tag, DW_AttribKind_StmtList);
             DW_LineVMHeader line_vm   = {0};
             dw_read_line_vm_header(unit_temp.arena, stmt_list, 0, input, unit_dir, unit_name, unit.address_size, unit.str_offsets_lu, &line_vm);
             
@@ -1596,7 +1596,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                 Temp tag_temp = temp_begin(scratch.arena);
                 
                 // rjf: unpack tag
-                String8 tag_indent = str8_prefix(indent, (tag_depth+1)*2);
+                StringView tag_indent = str8_prefix(indent, (tag_depth+1)*2);
                 U64 tag_info_off = info_off;
                 DW_Tag tag = {0};
                 info_off += dw_read_tag_cu(tag_temp.arena, input, &unit, tag_info_off, &tag);
@@ -1634,15 +1634,15 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                         case DW_AttribClass_Const:     {dumpf("0x%I64x", dw_const_u64_from_attrib(input, &unit, attrib));}break;
                         case DW_AttribClass_Block:
                         {
-                            String8 block = dw_block_from_attrib(input, &unit, attrib);
+                            StringView block = dw_block_from_attrib(input, &unit, attrib);
                             String8List block_strs = numeric_str8_list_from_data(attrib_temp.arena, 16, block, 1);
-                            String8 block_str = str8_list_join(attrib_temp.arena, &block_strs, &(StringJoin){.sep = (", ")});
+                            StringView block_str = str8_list_join(attrib_temp.arena, &block_strs, &(StringJoin){.sep = (", ")});
                             dump(block_str);
                         }break;
                         case DW_AttribClass_ExprLoc:
                         {
-                            String8 exprloc = dw_exprloc_from_attrib(input, &unit, attrib);
-                            String8 exprloc_str = dw_single_line_string_from_expression(attrib_temp.arena, exprloc, unit_range.min, unit.address_size, arch, unit.version, unit.ext, unit.format);
+                            StringView exprloc = dw_exprloc_from_attrib(input, &unit, attrib);
+                            StringView exprloc_str = dw_single_line_string_from_expression(attrib_temp.arena, exprloc, unit_range.min, unit.address_size, arch, unit.version, unit.ext, unit.format);
                             dump(exprloc_str);
                         }break;
                         case DW_AttribClass_Flag:
@@ -1693,7 +1693,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                             {
                                 dumpf("0x%I64x", attrib.form.sec_offset);
                             }
-                            String8 string = dw_string_from_attrib(input, &unit, attrib);
+                            StringView string = dw_string_from_attrib(input, &unit, attrib);
                             dumpf(": \"%S\"", string);
                         }break;
                     }
@@ -1807,8 +1807,8 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                 cursor += str8_deserial_read_uleb128(abbrev.data, cursor, &attrib_id);
                 cursor += str8_deserial_read_uleb128(abbrev.data, cursor, &form_id);
                 if (attrib_id == 0) { break; }
-                String8 attrib_str = dw_string_from_attrib_kind(temp.arena, DW_Version_Last, DW_Ext_All, attrib_id);
-                String8 form_str   = dw_string_from_form_kind(temp.arena, DW_Version_Last, form_id);
+                StringView attrib_str = dw_string_from_attrib_kind(temp.arena, DW_Version_Last, DW_Ext_All, attrib_id);
+                StringView form_str   = dw_string_from_form_kind(temp.arena, DW_Version_Last, form_id);
                 dumpf("  attrib: { offset: 0x%I64x, kind: %S, form_kind: %S }\n", attrib_off, attrib_str, form_str);
             }
             dumpf("}\n");
@@ -1827,9 +1827,9 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
             Temp unit_temp = temp_begin(scratch.arena);
             
             // rjf: unpack unit
-            String8         unit_data      = str8_substr(input.sec[DW_Section_Line].data, unit_ranges.v[unit_idx]);
-            String8         cu_dir         = {0};
-            String8         cu_name        = {0};
+            StringView         unit_data      = str8_substr(input.sec[DW_Section_Line].data, unit_ranges.v[unit_idx]);
+            StringView         cu_dir         = {0};
+            StringView         cu_name        = {0};
             DW_ListUnit     cu_str_offsets = {0};
             DW_LineVMHeader line_vm        = {0};
             U64             line_vm_size   = dw_read_line_vm_header(unit_temp.arena, unit_data, 0, input, cu_dir, cu_name, line_vm.address_size, &cu_str_offsets, &line_vm);
@@ -1845,7 +1845,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
             DeferLoop(dumpf("  header:\n  {\n"), dumpf("  }\n\n"))
             {
                 String8List opcode_length_strings = numeric_str8_list_from_data(unit_temp.arena, 16, str8(line_vm.opcode_lens, line_vm.num_opcode_lens), 1);
-                String8 opcode_lengths_string = str8_list_join(arena, &opcode_length_strings, &(StringJoin){.sep = (", ")});
+                StringView opcode_lengths_string = str8_list_join(arena, &opcode_length_strings, &(StringJoin){.sep = (", ")});
                 dumpf("    version:                 %u\n",        line_vm.version              );
                 dumpf("    line_table_off:          0x%I64x\n",   line_vm.unit_range.min       );
                 dumpf("    line_table_size:         %I64u\n",     dim_1u64(line_vm.unit_range) );
@@ -1892,7 +1892,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
             // rjf: log opcodes
             DeferLoop(dumpf("  opcodes:\n  {\n"), dumpf("  }\n\n"))
             {
-                String8        opcodes    = str8_skip(unit_data, line_vm_size);
+                StringView        opcodes    = str8_skip(unit_data, line_vm_size);
                 B32            end_of_seq = 0;
                 DW_LineVMState vm_state   = {0};
                 dw_line_vm_reset(&vm_state, line_vm.default_is_stmt);
@@ -1909,7 +1909,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                     cursor += str8_deserial_read_struct(opcodes, cursor, &opcode);
                     
                     // push opcode id
-                    String8 opcode_str = dw_string_from_std_opcode(opcode_temp.arena, opcode);
+                    StringView opcode_str = dw_string_from_std_opcode(opcode_temp.arena, opcode);
                     str8_list_push(arena, &opcode_fmt, opcode_str);
                     
                     // format operands
@@ -1983,7 +1983,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                             U64 file_idx = 0;
                             cursor += str8_deserial_read_uleb128(opcodes, cursor, &file_idx);
                             vm_state.file_index = file_idx;
-                            String8 path = dw_path_from_file_idx(opcode_temp.arena, &line_vm, file_idx);
+                            StringView path = dw_path_from_file_idx(opcode_temp.arena, &line_vm, file_idx);
                             str8_list_pushf(opcode_temp.arena, &opcode_fmt, "%llu \"%S\"", file_idx, path);
                         }break;
                         case DW_StdOpcode_SetColumn:
@@ -2038,7 +2038,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                             cursor += str8_deserial_read_uleb128(opcodes, cursor, &length);
                             U64 opcode_end = cursor + length;
                             cursor += str8_deserial_read_struct(opcodes, cursor, &ext_opcode);
-                            String8 ext_opcode_str = dw_string_from_ext_opcode(opcode_temp.arena, ext_opcode);
+                            StringView ext_opcode_str = dw_string_from_ext_opcode(opcode_temp.arena, ext_opcode);
                             //str8_list_pushf(opcode_temp.arena, &opcode_fmt, "length: %u", length);
                             str8_list_push(opcode_temp.arena, &opcode_fmt, ext_opcode_str);
                             switch (ext_opcode)
@@ -2059,7 +2059,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                                 }break;
                                 case DW_ExtOpcode_DefineFile:
                                 {
-                                    String8 file_name = {0};
+                                    StringView file_name = {0};
                                     cursor += str8_deserial_read_cstr(opcodes, cursor, &file_name);
                                     U64 dir_idx = 0, modify_time = 0, file_size = 0;
                                     cursor += str8_deserial_read_uleb128(opcodes, cursor, &dir_idx);
@@ -2078,7 +2078,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
                             cursor = opcode_end;
                         }break;
                     }
-                    String8 string = str8_list_join(opcode_temp.arena, &opcode_fmt, &(StringJoin){.sep=(" ")});
+                    StringView string = str8_list_join(opcode_temp.arena, &opcode_fmt, &(StringJoin){.sep=(" ")});
                     dumpf("%S\n", string);
                     temp_end(opcode_temp);
                 }
@@ -2092,10 +2092,10 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
     //
     DumpSubset(DebugStr) DeferLoop(dumpf("strings:\n{\n"), dumpf("}\n\n"))
     {
-        String8 data = input.sec[DW_Section_Str].data;
+        StringView data = input.sec[DW_Section_Str].data;
         for (U64 cursor = 0, read_size = 0; cursor < data.size; cursor += read_size)
         {
-            String8 string = {0};
+            StringView string = {0};
             read_size = str8_deserial_read_cstr(data, cursor, &string);
             dumpf("  { 0x%08I64x  %llu  \"%S\" }\n", cursor, string.size, string);
         }

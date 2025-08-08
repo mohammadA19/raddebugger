@@ -22,7 +22,7 @@ struct MD_Msg
     MD_Msg *next;
     struct MD_Node *node;
     MD_MsgKind kind;
-    String8 string;
+    StringView string;
 };
 
 struct MD_MsgList
@@ -167,8 +167,8 @@ struct MD_Node
     // rjf: node info
     MD_NodeKind kind;
     MD_NodeFlags flags;
-    String8 string;
-    String8 raw_string;
+    StringView string;
+    StringView raw_string;
     
     // rjf: source code info
     U64 src_offset;

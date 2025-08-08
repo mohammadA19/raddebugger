@@ -4,7 +4,7 @@
 //- GENERATED CODE
 
 C_LINKAGE_BEGIN
-String8 os_g_key_display_string_table[143] =
+StringView os_g_key_display_string_table[143] =
 {
 ("Invalid Key"),
 ("Escape"),
@@ -151,7 +151,7 @@ String8 os_g_key_display_string_table[143] =
 ("Right Mouse Button"),
 };
 
-String8 os_g_key_cfg_string_table[143] =
+StringView os_g_key_cfg_string_table[143] =
 {
 ("null"),
 ("esc"),

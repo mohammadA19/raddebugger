@@ -288,7 +288,7 @@ d2r_bytecode_from_expression(Arena       *arena,
                                                           U64          address_size,
                                                           Arch         arch,
                                                           DW_ListUnit *addr_lu,
-                                                          String8      expr,
+                                                          StringView      expr,
                                                           DW_CompUnit *cu,
                                                           B32         *is_addr_out)
 {
@@ -470,7 +470,7 @@ SLLStackPush(stack, f);                                       \
             
             case DW_ExprOp_ImplicitValue: {
                 U64     val_size = 0;
-                String8 val      = {0};
+                StringView val      = {0};
                 cursor += str8_deserial_read_uleb128(expr, cursor, &val_size);
                 cursor += str8_deserial_read_block(expr, cursor, val_size, &val);
                 if (val.size <= sizeof(U64)) {
@@ -696,7 +696,7 @@ SLLStackPush(stack, f);                                       \
             case DW_ExprOp_EntryValue:
             case DW_ExprOp_GNU_EntryValue: {
                 U64     entry_value_expr_size = 0;
-                String8 entry_value_expr      = {0};
+                StringView entry_value_expr      = {0};
                 cursor += str8_deserial_read_uleb128(expr, cursor, &entry_value_expr_size);
                 cursor += str8_deserial_read_block(expr, cursor, entry_value_expr_size, &entry_value_expr);
                 
@@ -864,7 +864,7 @@ SLLStackPush(stack, f);                                       \
 }
 
 internal RDIM_Location *
-d2r_transpile_expression(Arena *arena, DW_Input *input, U64 image_base, U64 address_size, Arch arch, DW_ListUnit *addr_lu, DW_CompUnit *cu, String8 expr)
+d2r_transpile_expression(Arena *arena, DW_Input *input, U64 image_base, U64 address_size, Arch arch, DW_ListUnit *addr_lu, DW_CompUnit *cu, StringView expr)
 {
     RDIM_Location *loc = 0;
     if (expr.size) {
@@ -881,7 +881,7 @@ d2r_transpile_expression(Arena *arena, DW_Input *input, U64 image_base, U64 addr
 internal RDIM_Location *
 d2r_location_from_attrib(Arena *arena, DW_Input *input, DW_CompUnit *cu, U64 image_base, Arch arch, DW_Tag tag, DW_AttribKind kind)
 {
-    String8 expr = dw_exprloc_from_tag_attrib_kind(input, cu, tag, kind);
+    StringView expr = dw_exprloc_from_tag_attrib_kind(input, cu, tag, kind);
     RDIM_Location *location = d2r_transpile_expression(arena, input, image_base, cu.address_size, arch, cu.addr_lu, cu, expr);
     return location;
 }
@@ -919,7 +919,7 @@ d2r_locset_from_attrib(Arena               *arena,
         scratch_end(scratch);
     } else if (attrib_class == DW_AttribClass_ExprLoc) {
         // extract expression from attrib
-        String8 expr = dw_exprloc_from_attrib(input, cu, attrib);
+        StringView expr = dw_exprloc_from_attrib(input, cu, attrib);
         
         // convert expression and inherit life-time ranges from enclosed scope
         RDIM_Location *location = d2r_transpile_expression(arena, input, image_base, cu.address_size, arch, cu.addr_lu, cu, expr);
@@ -982,7 +982,7 @@ d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, U64 image_base)
 {
     Temp scratch = scratch_begin(&arena, 1);
     
-    String8     aranges_data    = input.sec[DW_Section_ARanges].data;
+    StringView     aranges_data    = input.sec[DW_Section_ARanges].data;
     Rng1U64List unit_range_list = dw_unit_ranges_from_data(scratch.arena, aranges_data);
     
     D2R_CompUnitContribMap cm = {0};
@@ -991,7 +991,7 @@ d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, U64 image_base)
     cm.voff_range_arr         = push_array(arena, RDIM_Rng1U64ChunkList, unit_range_list.count);
     
     for (Rng1U64Node *range_n = unit_range_list.first; range_n != 0; range_n = range_n.next) {
-        String8 unit_data = str8_substr(aranges_data, range_n.v);
+        StringView unit_data = str8_substr(aranges_data, range_n.v);
         U64     unit_cursor    = 0;
         
         U64 unit_length = 0;
@@ -1148,10 +1148,10 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
             PE_BinInfo pe = pe_bin_info_from_data(scratch.arena, params.exe_data);
             arch = pe.arch;
             image_base = pe.image_base;
-            String8 raw_sections  = str8_substr(params.exe_data, pe.section_table_range);
+            StringView raw_sections  = str8_substr(params.exe_data, pe.section_table_range);
             U64 section_count = raw_sections.size / sizeof(COFF_SectionHeader);
             COFF_SectionHeader *section_table = (COFF_SectionHeader *)raw_sections.str;
-            String8 string_table = str8_substr(params.exe_data, pe.string_table_range);
+            StringView string_table = str8_substr(params.exe_data, pe.string_table_range);
             binary_sections = c2r_rdi_binary_sections_from_coff_sections(arena, params.exe_data, string_table, section_count, section_table);
             input = dw_input_from_coff_section_table(scratch.arena, params.exe_data, string_table, section_count, section_table);
         }break;
@@ -1239,9 +1239,9 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
     DW_LineTableParseResult *cu_line_tables = push_array(scratch.arena, DW_LineTableParseResult, cu_ranges.count);
     for (U64 cu_idx = 0; cu_idx < cu_ranges.count; ++cu_idx) {
         DW_CompUnit *cu           = &cu_arr[cu_idx];
-        String8      cu_stmt_list = dw_line_ptr_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_StmtList);
-        String8      cu_dir       = dw_string_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_CompDir);
-        String8      cu_name      = dw_string_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_Name);
+        StringView      cu_stmt_list = dw_line_ptr_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_StmtList);
+        StringView      cu_dir       = dw_string_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_CompDir);
+        StringView      cu_name      = dw_string_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_Name);
         cu_line_tables[cu_idx] = dw_parsed_line_table_from_data(scratch.arena, cu_stmt_list, &input, cu_dir, cu_name, cu.address_size, cu.str_offsets_lu);
     }
     ProfEnd();
@@ -1262,10 +1262,10 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
         RDIM_SrcFile           **src_file_map = push_array(scratch.arena, RDIM_SrcFile *, file_table.count);
         for (U64 file_idx = 0; file_idx < file_table.count; ++file_idx) {
             DW_LineFile  *file                 = &file_table.v[file_idx];
-            String8       file_path            = dw_path_from_file_idx(scratch.arena, &line_table.vm_header, file_idx);
+            StringView       file_path            = dw_path_from_file_idx(scratch.arena, &line_table.vm_header, file_idx);
             String8List   file_path_split      = str8_split_path(scratch.arena, file_path);
             str8_path_list_resolve_dots_in_place(&file_path_split, PathStyle_WindowsAbsolute);
-            String8       file_path_resolved   = str8_path_list_join_by_style(scratch.arena, &file_path_split, PathStyle_WindowsAbsolute);
+            StringView       file_path_resolved   = str8_path_list_join_by_style(scratch.arena, &file_path_split, PathStyle_WindowsAbsolute);
             RDIM_SrcFile *src_file             = hash_table_search_path_raw(source_file_ht, file_path_resolved);
             if (src_file == 0) {
                 src_file       = rdim_src_file_chunk_list_push(arena, &src_files, SRC_FILE_CAP);
@@ -1363,8 +1363,8 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
         // build tag hash table for abstract origin resolution
         cu.tag_ht = dw_make_tag_hash_table(comp_temp.arena, tag_tree);
         
-        String8 dwo_name     = dw_string_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_DwoName);
-        String8 gnu_dwo_name = dw_string_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_GNU_DwoName);
+        StringView dwo_name     = dw_string_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_DwoName);
+        StringView gnu_dwo_name = dw_string_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_GNU_DwoName);
         if (dwo_name.size || gnu_dwo_name.size || cu.dwo_id) {
             // TODO: report that we dont support DWO
             continue;
@@ -1373,9 +1373,9 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
         // get unit's contribution ranges
         RDIM_Rng1U64ChunkList cu_voff_ranges = d2r_voff_ranges_from_cu_info_off(cu_contrib_map, cu_ranges.v[cu_idx].min);
         
-        String8     cu_name      = dw_string_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_Name);
-        String8     cu_dir       = dw_string_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_CompDir);
-        String8     cu_prod      = dw_string_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_Producer);
+        StringView     cu_name      = dw_string_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_Name);
+        StringView     cu_dir       = dw_string_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_CompDir);
+        StringView     cu_prod      = dw_string_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_Producer);
         DW_Language cu_lang      = dw_const_u64_from_tag_attrib_kind(&input, cu, cu.tag, DW_AttribKind_Language);
         
         RDIM_Unit *unit     = rdim_unit_chunk_list_push(arena, &units, UNIT_CHUNK_CAP);
@@ -1853,7 +1853,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
                                 }
                                 
                                 // get frame base expression
-                                String8 frame_base_expr = dw_exprloc_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_FrameBase);
+                                StringView frame_base_expr = dw_exprloc_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_FrameBase);
                                 
                                 // get proc container symbol
                                 RDIM_Symbol *proc = rdim_symbol_chunk_list_push(arena, &procs,  PROC_CHUNK_CAP );
@@ -1938,7 +1938,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
                         root_scope.inline_site = inline_site;
                     } break;
                     case DW_TagKind_Variable: {
-                        String8    name = dw_string_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_Name);
+                        StringView    name = dw_string_from_tag_attrib_kind(&input, cu, tag, DW_AttribKind_Name);
                         RDIM_Type *type = d2r_type_from_attrib(arena, type_table, &input, cu, tag, DW_AttribKind_Type);
                         
                         DW_TagKind parent_tag_kind = tag_stack.next.cur_node.tag.kind;

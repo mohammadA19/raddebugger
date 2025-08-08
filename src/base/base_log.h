@@ -24,7 +24,7 @@ struct LogScope
 
 struct LogScopeResult
 {
-    String8 strings[LogMsgKind_COUNT];
+    StringView strings[LogMsgKind_COUNT];
 };
 
 struct Log

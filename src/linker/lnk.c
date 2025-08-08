@@ -216,13 +216,13 @@ lnk_config_from_argcv(Arena *arena, int argc, char **argv)
 
 #if PROFILE_TELEMETRY
     {
-        String8 cmdl = str8_list_join(scratch.arena, &config.raw_cmd_line, &(StringJoin){ .sep = (" ") });
+        StringView cmdl = str8_list_join(scratch.arena, &config.raw_cmd_line, &(StringJoin){ .sep = (" ") });
         tmMessage(0, TMMF_ICON_NOTE, "Command Line: %.*s", str8_varg(cmdl));
     }
 #endif
 
     if (lnk_get_log_status(LNK_Log_Debug)) {
-        String8 full_cmd_line = str8_list_join(scratch.arena, &raw_cmd_line, &(StringJoin){ .sep = (" ") });
+        StringView full_cmd_line = str8_list_join(scratch.arena, &raw_cmd_line, &(StringJoin){ .sep = (" ") });
         fprintf(stderr, "--------------------------------------------------------------------------------\n");
         fprintf(stderr, "Command Line: %.*s\n", str8_varg(full_cmd_line));
         fprintf(stderr, "Work Dir    : %.*s\n", str8_varg(config.work_dir));
@@ -233,11 +233,11 @@ lnk_config_from_argcv(Arena *arena, int argc, char **argv)
     return config;
 }
 
-internal String8
-lnk_make_full_path(Arena *arena, PathStyle system_path_style, String8 work_dir, String8 path)
+internal StringView
+lnk_make_full_path(Arena *arena, PathStyle system_path_style, StringView work_dir, StringView path)
 {
     ProfBeginFunction();
-    String8 result = str8(0,0);
+    StringView result = str8(0,0);
     PathStyle path_style = path_style_from_str8(path);
     if (path_style == PathStyle_Relative) {
         Temp scratch = scratch_begin(&arena, 1);
@@ -260,7 +260,7 @@ THREAD_POOL_TASK_FUNC(lnk_blake3_hasher_task)
     
     LNK_Blake3Hasher *task     = raw_task;
     Rng1U64           range    = task.ranges[task_id];
-    String8           sub_data = str8_substr(task.data, range);
+    StringView           sub_data = str8_substr(task.data, range);
     
     blake3_hasher hasher; blake3_hasher_init(&hasher);
     blake3_hasher_update(&hasher, sub_data.str, sub_data.size);
@@ -270,7 +270,7 @@ THREAD_POOL_TASK_FUNC(lnk_blake3_hasher_task)
 }
 
 internal U128
-lnk_blake3_hash_parallel(TP_Context *tp, U64 chunk_count, String8 data)
+lnk_blake3_hash_parallel(TP_Context *tp, U64 chunk_count, StringView data)
 {
     ProfBeginFunction();
     Temp scratch = scratch_begin(0, 0);
@@ -297,11 +297,11 @@ lnk_blake3_hash_parallel(TP_Context *tp, U64 chunk_count, String8 data)
     return result;
 }
 
-internal String8
+internal StringView
 lnk_make_linker_manifest(Arena      *arena,
                                                   B32         manifest_uac,
-                                                  String8     manifest_level,
-                                                  String8     manifest_ui_access,
+                                                  StringView     manifest_level,
+                                                  StringView     manifest_ui_access,
                                                   String8List manifest_dependency_list)
 {
     // TODO: we write a temp file with manifest attributes collected from obj directives and command line switches
@@ -318,7 +318,7 @@ lnk_make_linker_manifest(Arena      *arena,
                                                                                                 "          manifestVersion=\"1.0\">\n"));
     if (manifest_uac) {
 #if 1
-        String8 uac = push_str8f(scratch.arena,
+        StringView uac = push_str8f(scratch.arena,
                                                           "   <trustInfo>\n"
                                                           "     <security>\n"
                                                           "       <requestedPrivileges>\n"
@@ -329,7 +329,7 @@ lnk_make_linker_manifest(Arena      *arena,
                                                           manifest_level,
                                                           manifest_ui_access);
 #else
-        String8 uac = push_str8f(scratch.arena,
+        StringView uac = push_str8f(scratch.arena,
         	        	"<ms_asmv2:trustInfo xmlns:ms_asmv2="urn:schemas-microsoft-com:asm.v2" xmlns="urn:schemas-microsoft-com:asm.v3">\n"
 		        		        "<ms_asmv2:security>"
 			        			        "<ms_asmv2:requestedPrivileges>"
@@ -342,7 +342,7 @@ lnk_make_linker_manifest(Arena      *arena,
         str8_serial_push_string(scratch.arena, &srl, uac);
     }
     for (String8Node *node = manifest_dependency_list.first; node != 0; node = node.next) {
-        String8 dep = push_str8f(scratch.arena, 
+        StringView dep = push_str8f(scratch.arena, 
                                                           " <dependency>\n"
                                                           "   <dependentAssembly>\n"
                                                           "     <assemblyIdentity %S/>\n"
@@ -353,14 +353,14 @@ lnk_make_linker_manifest(Arena      *arena,
     }
     str8_serial_push_string(scratch.arena, &srl, ("</assembly>\n"));
 
-    String8 result = str8_list_join(arena, &srl, 0);
+    StringView result = str8_list_join(arena, &srl, 0);
 
     scratch_end(scratch);
     return result;
 }
 
 internal void
-lnk_merge_manifest_files(String8 mt_path, String8 out_name, String8List manifest_path_list)
+lnk_merge_manifest_files(StringView mt_path, StringView out_name, String8List manifest_path_list)
 {
     ProfBeginFunction();
     Temp scratch = scratch_begin(0,0);
@@ -371,12 +371,12 @@ lnk_merge_manifest_files(String8 mt_path, String8 out_name, String8List manifest
     str8_list_pushf(scratch.arena, &cmd_line, "-nologo");
 
     // register input manifest files on command line
-    String8 work_dir = os_get_current_path(scratch.arena);
+    StringView work_dir = os_get_current_path(scratch.arena);
     for (String8Node *man_node = manifest_path_list.first;
               man_node != 0;
               man_node = man_node.next) {
         // resolve relativ path inputs
-        String8 full_path = path_absolute_dst_from_relative_dst_src(scratch.arena, man_node.string, work_dir);
+        StringView full_path = path_absolute_dst_from_relative_dst_src(scratch.arena, man_node.string, work_dir);
 
         // normalize slashes
         full_path = path_convert_slashes(scratch.arena, full_path, PathStyle_UnixAbsolute);
@@ -403,14 +403,14 @@ lnk_merge_manifest_files(String8 mt_path, String8 out_name, String8List manifest
     ProfEnd();
 } 
 
-internal String8
+internal StringView
 lnk_manifest_from_inputs(Arena       *arena,
                                                   LNK_IO_Flags io_flags,
-                                                  String8      mt_path,
-                                                  String8      manifest_name,
+                                                  StringView      mt_path,
+                                                  StringView      manifest_name,
                                                   B32          manifest_uac,
-                                                  String8      manifest_level,
-                                                  String8      manifest_ui_access,
+                                                  StringView      manifest_level,
+                                                  StringView      manifest_ui_access,
                                                   String8List  input_manifest_path_list,
                                                   String8List  deps_list)
 {
@@ -418,15 +418,15 @@ lnk_manifest_from_inputs(Arena       *arena,
 
     String8List unique_deps = remove_duplicates_str8_list(scratch.arena, deps_list);
 
-    String8 manifest_data;
+    StringView manifest_data;
 
     if (input_manifest_path_list.node_count > 0) {
         ProfBegin("Merge Manifests");
         
-        String8 linker_manifest = lnk_make_linker_manifest(scratch.arena, manifest_uac, manifest_level, manifest_ui_access, unique_deps);
+        StringView linker_manifest = lnk_make_linker_manifest(scratch.arena, manifest_uac, manifest_level, manifest_ui_access, unique_deps);
 
         // write linker manifest to temp file
-        String8 linker_manifest_path = push_str8f(scratch.arena, "%S.manifest.temp", manifest_name);
+        StringView linker_manifest_path = push_str8f(scratch.arena, "%S.manifest.temp", manifest_name);
         lnk_write_data_to_file_path(linker_manifest_path, str8_zero(), linker_manifest);
 
         String8List unique_input_manifest_paths = remove_duplicates_str8_list(scratch.arena, input_manifest_path_list);
@@ -435,7 +435,7 @@ lnk_manifest_from_inputs(Arena       *arena,
         str8_list_push(scratch.arena, &unique_input_manifest_paths, linker_manifest_path);
 
         // launch mt.exe to merge input manifests
-        String8 merged_manifest_path = push_str8f(scratch.arena, "%S.manifest.merged", manifest_name);
+        StringView merged_manifest_path = push_str8f(scratch.arena, "%S.manifest.merged", manifest_name);
         lnk_merge_manifest_files(mt_path, merged_manifest_path, unique_input_manifest_paths);
 
         // read mt.exe output from disk
@@ -457,7 +457,7 @@ lnk_manifest_from_inputs(Arena       *arena,
     return manifest_data;
 }
 
-internal String8
+internal StringView
 lnk_make_null_obj(Arena *arena)
 {
     COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0,COFF_MachineType_Unknown);
@@ -469,9 +469,9 @@ lnk_make_null_obj(Arena *arena)
     }
 
     // push .debug$T sections with null leaf
-    String8 null_debug_data;
+    StringView null_debug_data;
     {
-        String8 raw_null_leaf = cv_serialize_raw_leaf(obj_writer.arena, CV_LeafKind_NOTYPE, str8(0,0), 1);
+        StringView raw_null_leaf = cv_serialize_raw_leaf(obj_writer.arena, CV_LeafKind_NOTYPE, str8(0,0), 1);
 
         String8List srl = {0};
         str8_serial_begin(obj_writer.arena, &srl);
@@ -481,7 +481,7 @@ lnk_make_null_obj(Arena *arena)
     }
     coff_obj_writer_push_section(obj_writer, (".debug$T"), PE_DEBUG_SECTION_FLAGS, null_debug_data);
 
-    String8 obj = coff_obj_writer_serialize(arena, obj_writer);
+    StringView obj = coff_obj_writer_serialize(arena, obj_writer);
     coff_obj_writer_release(&obj_writer);
     return obj;
 }
@@ -593,7 +593,7 @@ lnk_serialize_pe_resource_tree(COFF_ObjWriter *obj_writer, PE_ResourceDir *root_
 
                         // append resource name
                         U32     res_name_off = safe_cast_u32(rsrc1.data.total_size);
-                        String8 res_name     = coff_resource_string_from_str8(obj_writer.arena, res.id.u.string);
+                        StringView res_name     = coff_resource_string_from_str8(obj_writer.arena, res.id.u.string);
                         str8_list_push(obj_writer.arena, &rsrc1.data, res_name);
 
                         // not sure why high bit has to be turned on here since number id and string id entries are
@@ -655,9 +655,9 @@ lnk_serialize_pe_resource_tree(COFF_ObjWriter *obj_writer, PE_ResourceDir *root_
 
 internal void
 lnk_add_resource_debug_s(COFF_ObjWriter *obj_writer,
-                                                  String8         obj_path,
-                                                  String8         cwd_path,
-                                                  String8         exe_path,
+                                                  StringView         obj_path,
+                                                  StringView         cwd_path,
+                                                  StringView         exe_path,
                                                   CV_Arch         arch,
                                                   String8List     res_file_list,
                                                   MD5Hash        *res_hash_array)
@@ -688,16 +688,16 @@ lnk_add_resource_debug_s(COFF_ObjWriter *obj_writer,
     }
     
     // build symbols
-    String8 obj_data = cv_make_obj_name(scratch.arena, obj_path, 0);
+    StringView obj_data = cv_make_obj_name(scratch.arena, obj_path, 0);
     
-    String8 exe_name_with_ext = str8_skip_last_slash(exe_path);
-    String8 exe_name_ext = str8_skip_last_dot(exe_name_with_ext);
-    String8 exe_name = str8_chop(exe_name_with_ext, exe_name_ext.size);
+    StringView exe_name_with_ext = str8_skip_last_slash(exe_path);
+    StringView exe_name_ext = str8_skip_last_dot(exe_name_with_ext);
+    StringView exe_name = str8_chop(exe_name_with_ext, exe_name_ext.size);
     if (exe_name_ext.size > 0) {
         exe_name = str8_chop(exe_name, 1);
     }
-    String8 version_string = push_str8f(scratch.arena, BUILD_TITLE_STRING_LITERAL);
-    String8 comp_data = cv_make_comp3(scratch.arena, CV_Compile3Flag_EC, CV_Language_CVTRES, arch,
+    StringView version_string = push_str8f(scratch.arena, BUILD_TITLE_STRING_LITERAL);
+    StringView comp_data = cv_make_comp3(scratch.arena, CV_Compile3Flag_EC, CV_Language_CVTRES, arch,
                                                                         0, 0, 0, 0,
                                                                         1, 0, 1, 0,
                                                                         version_string);
@@ -709,11 +709,11 @@ lnk_add_resource_debug_s(COFF_ObjWriter *obj_writer,
     str8_list_push(scratch.arena, &env_list, exe_path);
     str8_list_push(scratch.arena, &env_list, (""));
     str8_list_push(scratch.arena, &env_list, (""));
-    String8 envblock_data = cv_make_envblock(scratch.arena, env_list);
+    StringView envblock_data = cv_make_envblock(scratch.arena, env_list);
     
-    String8 obj_symbol      = cv_make_symbol(scratch.arena, CV_SymKind_OBJNAME,  obj_data);
-    String8 comp_symbol     = cv_make_symbol(scratch.arena, CV_SymKind_COMPILE3, comp_data);
-    String8 envblock_symbol = cv_make_symbol(scratch.arena, CV_SymKind_ENVBLOCK, envblock_data);
+    StringView obj_symbol      = cv_make_symbol(scratch.arena, CV_SymKind_OBJNAME,  obj_data);
+    StringView comp_symbol     = cv_make_symbol(scratch.arena, CV_SymKind_COMPILE3, comp_data);
+    StringView envblock_symbol = cv_make_symbol(scratch.arena, CV_SymKind_ENVBLOCK, envblock_data);
     
     String8List symbol_srl = {0};
     str8_serial_begin(scratch.arena, &symbol_srl);
@@ -748,22 +748,22 @@ lnk_add_resource_debug_s(COFF_ObjWriter *obj_writer,
     str8_serial_push_data_list(scratch.arena, &sub_sect_srl, symbol_srl.first);
     str8_serial_push_align(scratch.arena, &sub_sect_srl, CV_C13SubSectionAlign);
     
-    String8 sub_sect_data = str8_serial_end(obj_writer.arena, &sub_sect_srl);
+    StringView sub_sect_data = str8_serial_end(obj_writer.arena, &sub_sect_srl);
     coff_obj_writer_push_section(obj_writer, (".debug$S"), PE_DEBUG_SECTION_FLAGS, sub_sect_data);
     
     scratch_end(scratch);
     ProfEnd();
 }
 
-internal String8
+internal StringView
 lnk_make_res_obj(Arena            *arena,
                                   String8List       res_data_list,
                                   String8List       res_path_list,
                                   COFF_MachineType  machine,
                                   U32               time_stamp,
-                                  String8           work_dir,
+                                  StringView           work_dir,
                                   PathStyle         system_path_style,
-                                  String8           obj_name)
+                                  StringView           obj_name)
 {
     ProfBeginFunction();
     Temp scratch = scratch_begin(&arena,1);
@@ -782,7 +782,7 @@ lnk_make_res_obj(Arena            *arena,
     // convert res paths to stable paths
     String8List stable_res_file_list = {0};
     for (String8Node *node = res_path_list.first; node != 0; node = node.next) {
-        String8 stable_res_path = lnk_make_full_path(scratch.arena, system_path_style, work_dir, node.string);
+        StringView stable_res_path = lnk_make_full_path(scratch.arena, system_path_style, work_dir, node.string);
         str8_list_push(scratch.arena, &stable_res_file_list, stable_res_path);
     }
     
@@ -790,9 +790,9 @@ lnk_make_res_obj(Arena            *arena,
     OS_ProcessInfo *process_info = os_get_process_info();
     String8List exe_path_strs = {0};
     str8_list_push(scratch.arena, &exe_path_strs, process_info.binary_path);
-    String8 exe_path = str8_list_first(&exe_path_strs);
+    StringView exe_path = str8_list_first(&exe_path_strs);
 
-    String8 res_obj;
+    StringView res_obj;
     {
         COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(time_stamp, machine);
 
@@ -816,28 +816,28 @@ lnk_make_res_obj(Arena            *arena,
     return res_obj;
 }
 
-internal String8
+internal StringView
 lnk_make_linker_coff_obj(Arena            *arena,
                                                   COFF_TimeStamp    time_stamp,
                                                   COFF_MachineType  machine,
-                                                  String8           cwd_path,
-                                                  String8           exe_path,
-                                                  String8           pdb_path,
-                                                  String8           cmd_line,
-                                                  String8           obj_name)
+                                                  StringView           cwd_path,
+                                                  StringView           exe_path,
+                                                  StringView           pdb_path,
+                                                  StringView           cmd_line,
+                                                  StringView           obj_name)
 {
     Temp scratch = scratch_begin(&arena, 1);
     
-    String8 debug_symbols = {0};
+    StringView debug_symbols = {0};
     {
         CV_SymbolList symbol_list = { .signature = CV_Signature_C13 };
         
         // S_OBJ
-        String8 obj_data = cv_make_obj_name(scratch.arena, obj_name, 0);
+        StringView obj_data = cv_make_obj_name(scratch.arena, obj_name, 0);
         cv_symbol_list_push_data(scratch.arena, &symbol_list, CV_SymKind_OBJNAME, obj_data);
         
         // S_COMPILE3
-        String8 comp3_data = lnk_make_linker_compile3(scratch.arena, machine);
+        StringView comp3_data = lnk_make_linker_compile3(scratch.arena, machine);
         cv_symbol_list_push_data(scratch.arena, &symbol_list, CV_SymKind_COMPILE3, comp3_data);
         
         // S_ENVBLOCK
@@ -860,7 +860,7 @@ lnk_make_linker_coff_obj(Arena            *arena,
         debug_symbols = lnk_make_debug_s(scratch.arena, symbol_list);
     }
 
-    String8 obj;
+    StringView obj;
     {
         COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(time_stamp, machine);
         coff_obj_writer_push_section(obj_writer, (".debug$S"), PE_DEBUG_SECTION_FLAGS|COFF_SectionFlag_Align1Bytes, debug_symbols);
@@ -872,16 +872,16 @@ lnk_make_linker_coff_obj(Arena            *arena,
     return obj;
 }
 
-internal String8
-lnk_get_lib_name(String8 path)
+internal StringView
+lnk_get_lib_name(StringView path)
 {
-    static String8 LIB_EXT = (".LIB");
+    static StringView LIB_EXT = (".LIB");
     
     // strip path
-    String8 name = str8_skip_last_slash(path);
+    StringView name = str8_skip_last_slash(path);
     
     // strip extension
-    String8 name_ext = str8_postfix(name, LIB_EXT.size);
+    StringView name_ext = str8_postfix(name, LIB_EXT.size);
     if (str8_match(name_ext, LIB_EXT, StringMatchFlag_CaseInsensitive)) {
         name = str8_chop(name, LIB_EXT.size);
     }
@@ -890,36 +890,36 @@ lnk_get_lib_name(String8 path)
 }
 
 internal B32
-lnk_is_lib_disallowed(HashTable *disallow_lib_ht, String8 path)
+lnk_is_lib_disallowed(HashTable *disallow_lib_ht, StringView path)
 {
-    String8 lib_name = lnk_get_lib_name(path);
+    StringView lib_name = lnk_get_lib_name(path);
     return hash_table_search_path(disallow_lib_ht, lib_name) != 0;
 }
 
 internal B32
-lnk_is_lib_loaded(HashTable *loaded_lib_ht, String8 path)
+lnk_is_lib_loaded(HashTable *loaded_lib_ht, StringView path)
 {
     KeyValuePair *is_loaded = hash_table_search_path(loaded_lib_ht, path);
     return is_loaded != 0;
 }
 
 internal void
-lnk_push_disallow_lib(Arena *arena, HashTable *disallow_lib_ht, String8 path)
+lnk_push_disallow_lib(Arena *arena, HashTable *disallow_lib_ht, StringView path)
 {
-    String8 lib_name = lnk_get_lib_name(path);
+    StringView lib_name = lnk_get_lib_name(path);
     hash_table_push_path_u64(arena, disallow_lib_ht, lib_name, 0);
 }
 
 internal void
-lnk_push_loaded_lib(Arena *arena, HashTable *loaded_lib_ht, String8 path)
+lnk_push_loaded_lib(Arena *arena, HashTable *loaded_lib_ht, StringView path)
 {
     if (!hash_table_search_path(loaded_lib_ht, path)) {
-        String8 path_copy = push_str8_copy(arena, path);
+        StringView path_copy = push_str8_copy(arena, path);
         hash_table_push_path_u64(arena, loaded_lib_ht, path_copy, 0);
     }
 }
 
-internal String8
+internal StringView
 lnk_make_linker_obj(Arena *arena, LNK_Config *config)
 {
     ProfBeginFunction();
@@ -955,7 +955,7 @@ lnk_make_linker_obj(Arena *arena, LNK_Config *config)
         coff_obj_writer_push_symbol_abs(obj_writer, (MSCRT_GUARD_EHCONT_COUNT_SYMBOL_NAME) , 0, COFF_SymStorageClass_External);
     }
 
-    String8 obj = coff_obj_writer_serialize(arena, obj_writer);
+    StringView obj = coff_obj_writer_serialize(arena, obj_writer);
     coff_obj_writer_release(&obj_writer);
 
     ProfEnd();
@@ -985,12 +985,12 @@ lnk_queue_lib_member_input(Arena               *arena,
     } break;
     case COFF_DataType_BigObj:
     case COFF_DataType_Obj: {
-        String8 obj_path = coff_parse_long_name(lib.long_names, member_info.header.name);
+        StringView obj_path = coff_parse_long_name(lib.long_names, member_info.header.name);
 
         // obj path in thin archive has slash appended which screws up 
         // file lookup on disk; it couble be there to enable paths to symbols
         // but we don't use this feature
-        String8 slash = ("/");
+        StringView slash = ("/");
         if (str8_ends_with(obj_path, slash, 0)) {
             obj_path = str8_chop(obj_path, slash.size);
         }
@@ -1228,7 +1228,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
     LNK_ObjList       obj_list                         = {0};
     LNK_LibList       lib_index[LNK_InputSource_Count] = {0};
     Arena            *ht_arena                         = arena_alloc();
-    String8           delay_load_helper_name           = {0};
+    StringView           delay_load_helper_name           = {0};
     HashTable        *disallow_lib_ht                  = hash_table_init(scratch.arena, 0x100);
     HashTable        *delay_load_dll_ht                = hash_table_init(scratch.arena, 0x100);
     HashTable        *loaded_lib_ht                    = hash_table_init(scratch.arena, 0x100);
@@ -1365,7 +1365,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
                     if (was_obj_loaded) { continue; }
 
                     if (input.is_thin) {
-                        String8 full_path          = input.dedup_id.size ? os_full_path_from_path(scratch.arena, input.dedup_id) : str8_zero();
+                        StringView full_path          = input.dedup_id.size ? os_full_path_from_path(scratch.arena, input.dedup_id) : str8_zero();
                         B32     was_full_path_used = hash_table_search_path_u64(loaded_obj_ht, full_path, 0);
                         if (was_full_path_used) { continue; }
                         if (!str8_match(input.dedup_id, full_path, StringMatchFlag_CaseInsensitive|StringMatchFlag_SlashInsensitive)) {
@@ -1464,7 +1464,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
 
                     ProfBegin("Collect unique input libs");
                     for (; *input_libs[input_source] != 0; input_libs[input_source] = &(*input_libs[input_source])->next) {
-                        String8 path = (*input_libs[input_source])->string;
+                        StringView path = (*input_libs[input_source])->string;
 
                         if (input_source == LNK_InputSource_Default || input_source == LNK_InputSource_Obj) {
                             if (!str8_ends_with(path, (".lib"), StringMatchFlag_CaseInsensitive)) {
@@ -1493,7 +1493,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
                         }
 
                         // pick first match
-                        String8 full_path = str8_list_first(&match_list);
+                        StringView full_path = str8_list_first(&match_list);
                         
                         if (lnk_is_lib_loaded(loaded_lib_ht, full_path)) {
                             continue;
@@ -1582,7 +1582,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
             } break;
             case State_PushLoadConfigUndefSymbol: {
                 ProfBegin("Push Load Config Undef Symbol");
-                String8 load_config_name = (MSCRT_LOAD_CONFIG_SYMBOL_NAME);
+                StringView load_config_name = (MSCRT_LOAD_CONFIG_SYMBOL_NAME);
 
                 // TODO: config_refactor
                 String8List value_strings = {0};
@@ -1782,18 +1782,18 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
                     COFF_TimeStamp time_stamp = COFF_TimeStamp_Max;
                     B32 emit_biat = config.import_table_emit_biat == LNK_SwitchState_Yes;
                     B32 emit_uiat = config.import_table_emit_uiat == LNK_SwitchState_Yes;
-                    String8 *dll_names = keys_from_hash_table_string(scratch.arena, delayed_imports);
+                    StringView *dll_names = keys_from_hash_table_string(scratch.arena, delayed_imports);
                     String8List **dll_import_headers = values_from_hash_table_raw(scratch.arena, delayed_imports);
 
                     for (U64 dll_idx = 0; dll_idx < delayed_imports.count; dll_idx += 1) {
-                        String8 import_debug_symbols = lnk_make_dll_import_debug_symbols(scratch.arena, config.machine, dll_names[dll_idx]);
+                        StringView import_debug_symbols = lnk_make_dll_import_debug_symbols(scratch.arena, config.machine, dll_names[dll_idx]);
                         LNK_InputObj *input = lnk_input_obj_list_push(scratch.arena, &input_obj_list);
                         input.input_idx = input_obj_list.count;
                         input.data = pe_make_import_dll_obj_delayed(tp_arena.v[0], time_stamp, config.machine, dll_names[dll_idx], delay_load_helper_name, import_debug_symbols, *dll_import_headers[dll_idx], emit_biat, emit_uiat);
                         input.path = dll_names[dll_idx];
                         input.dedup_id = input.path;
                     }
-                    String8 linker_debug_symbols = lnk_make_linker_debug_symbols(tp_arena.v[0], config.machine);
+                    StringView linker_debug_symbols = lnk_make_linker_debug_symbols(tp_arena.v[0], config.machine);
                     {
                         LNK_InputObj *input = lnk_input_obj_list_push(scratch.arena, &input_obj_list);
                         input.input_idx = input_obj_list.count;
@@ -1817,17 +1817,17 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
                     ProfBegin("Build Static Import Table");
 
                     COFF_TimeStamp time_stamp = COFF_TimeStamp_Max;
-                    String8 *dll_names = keys_from_hash_table_string(scratch.arena, static_imports);
+                    StringView *dll_names = keys_from_hash_table_string(scratch.arena, static_imports);
                     String8List **dll_import_headers = values_from_hash_table_raw(scratch.arena, static_imports);
                     for (U64 dll_idx = 0; dll_idx < static_imports.count; dll_idx += 1) {
-                        String8 import_debug_symbols = lnk_make_dll_import_debug_symbols(scratch.arena, config.machine, dll_names[dll_idx]);
+                        StringView import_debug_symbols = lnk_make_dll_import_debug_symbols(scratch.arena, config.machine, dll_names[dll_idx]);
                         LNK_InputObj *input = lnk_input_obj_list_push(scratch.arena, &input_obj_list);
                         input.input_idx = input_obj_list.count;
                         input.data = pe_make_import_dll_obj_static(tp_arena.v[0], time_stamp, config.machine, dll_names[dll_idx], import_debug_symbols, *dll_import_headers[dll_idx]);
                         input.path = dll_names[dll_idx];
                         input.dedup_id = dll_names[dll_idx];
                     }
-                    String8 linker_debug_symbols = lnk_make_linker_debug_symbols(scratch.arena, config.machine);
+                    StringView linker_debug_symbols = lnk_make_linker_debug_symbols(scratch.arena, config.machine);
                     {
                         LNK_InputObj *input = lnk_input_obj_list_push(scratch.arena, &input_obj_list);
                         input.input_idx = input_obj_list.count;
@@ -1876,7 +1876,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
                     }
 
                     PE_FinalizedExports finalized_exports = pe_finalize_export_list(scratch.arena, resolved_exports);
-                    String8 edata_obj = pe_make_edata_obj(tp_arena.v[0], str8_skip_last_slash(config.image_name), COFF_TimeStamp_Max, config.machine, finalized_exports);
+                    StringView edata_obj = pe_make_edata_obj(tp_arena.v[0], str8_skip_last_slash(config.image_name), COFF_TimeStamp_Max, config.machine, finalized_exports);
 
                     LNK_InputObj *input = lnk_input_obj_list_push(scratch.arena, &input_obj_list);
                     input.path = ("* Exports *");
@@ -1901,8 +1901,8 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
                         ProfBegin("Embed Manifest");
                         // TODO: currently we convert manifest to res and parse res again, this unnecessary instead push manifest 
                         // resource to the tree directly
-                        String8 manifest_data = lnk_manifest_from_inputs(scratch.arena, config.io_flags, config.mt_path, config.manifest_name, config.manifest_uac, config.manifest_level, config.manifest_ui_access, config.input_list[LNK_Input_Manifest], config.manifest_dependency_list);
-                        String8 manifest_res  = pe_make_manifest_resource(scratch.arena, *config.manifest_resource_id, manifest_data);
+                        StringView manifest_data = lnk_manifest_from_inputs(scratch.arena, config.io_flags, config.mt_path, config.manifest_name, config.manifest_uac, config.manifest_level, config.manifest_ui_access, config.input_list[LNK_Input_Manifest], config.manifest_dependency_list);
+                        StringView manifest_res  = pe_make_manifest_resource(scratch.arena, *config.manifest_resource_id, manifest_data);
                         str8_list_push(scratch.arena, &res_data_list, manifest_res);
                         str8_list_push(scratch.arena, &res_path_list, ("* Manifest *"));
                         ProfEnd();
@@ -1910,7 +1910,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
                     case LNK_ManifestOpt_WriteToFile: {
                         ProfBeginDynamic("Write Manifest To: %.*s", str8_varg(config.manifest_name));
                         Temp temp = temp_begin(scratch.arena);
-                        String8 manifest_data = lnk_manifest_from_inputs(temp.arena, config.io_flags, config.mt_path, config.manifest_name, config.manifest_uac, config.manifest_level, config.manifest_ui_access, config.input_list[LNK_Input_Manifest], config.manifest_dependency_list);
+                        StringView manifest_data = lnk_manifest_from_inputs(temp.arena, config.io_flags, config.mt_path, config.manifest_name, config.manifest_uac, config.manifest_level, config.manifest_ui_access, config.input_list[LNK_Input_Manifest], config.manifest_dependency_list);
                         lnk_write_data_to_file_path(config.manifest_name, str8_zero(), manifest_data);
                         temp_end(temp);
                         ProfEnd();
@@ -1926,11 +1926,11 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
                     
                     ProfBegin("Load .res files from disk");
                     for (String8Node *node = config.input_list[LNK_Input_Res].first; node != 0; node = node.next) {
-                        String8 res_data = lnk_read_data_from_file_path(scratch.arena, config.io_flags, node.string);
+                        StringView res_data = lnk_read_data_from_file_path(scratch.arena, config.io_flags, node.string);
                         if (res_data.size > 0) {
                             if (pe_is_res(res_data)) {
                                 str8_list_push(scratch.arena, &res_data_list, res_data);
-                                String8 stable_res_path = lnk_make_full_path(scratch.arena, config.path_style, config.work_dir, node.string);
+                                StringView stable_res_path = lnk_make_full_path(scratch.arena, config.path_style, config.work_dir, node.string);
                                 str8_list_push(scratch.arena, &res_path_list, stable_res_path);
                             } else {
                                 lnk_error(LNK_Error_LoadRes, "file is not of RES format: %S", node.string);
@@ -1944,8 +1944,8 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
                     if (res_data_list.node_count > 0) {
                         ProfBegin("Build * Resources *");
 
-                        String8 obj_name = ("* Resources *");
-                        String8 obj_data = lnk_make_res_obj(tp_arena.v[0],
+                        StringView obj_name = ("* Resources *");
+                        StringView obj_data = lnk_make_res_obj(tp_arena.v[0],
                                                                                                 res_data_list,
                                                                                                 res_path_list,
                                                                                                 config.machine,
@@ -1967,9 +1967,9 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
                     {
                         ProfBegin("Build * Linker * Obj");
 
-                        String8 obj_name     = ("* Linker *");
-                        String8 raw_cmd_line = str8_list_join(scratch.arena, &config.raw_cmd_line, &(StringJoin){ (""),  (" "), ("") });
-                        String8 obj_data     = lnk_make_linker_coff_obj(tp_arena.v[0], config.time_stamp, config.machine, config.work_dir, config.image_name, config.pdb_name, raw_cmd_line, obj_name);
+                        StringView obj_name     = ("* Linker *");
+                        StringView raw_cmd_line = str8_list_join(scratch.arena, &config.raw_cmd_line, &(StringJoin){ (""),  (" "), ("") });
+                        StringView obj_data     = lnk_make_linker_coff_obj(tp_arena.v[0], config.time_stamp, config.machine, config.work_dir, config.image_name, config.pdb_name, raw_cmd_line, obj_name);
                         
                         LNK_InputObj *input = lnk_input_obj_list_push(scratch.arena, &input_obj_list);
                         input.dedup_id = obj_name;
@@ -2321,7 +2321,7 @@ THREAD_POOL_TASK_FUNC(lnk_gather_section_definitions_task)
     HashTable          *sect_defn_ht  = task.u.gather_sects.defns[worker_id];
     LNK_Obj            *obj           = task.objs[obj_idx];
     COFF_SectionHeader *section_table = (COFF_SectionHeader *)str8_substr(obj.data, obj.header.section_table_range).str;
-    String8             string_table  = str8_substr(obj.data, obj.header.string_table_range);
+    StringView             string_table  = str8_substr(obj.data, obj.header.string_table_range);
 
     for (U64 sect_idx = 0; sect_idx < obj.header.section_count_no_null; sect_idx += 1) {
         COFF_SectionHeader *sect_header = &section_table[sect_idx];
@@ -2330,8 +2330,8 @@ THREAD_POOL_TASK_FUNC(lnk_gather_section_definitions_task)
             Temp temp = temp_begin(scratch.arena);
 
             // was section defined?
-            String8                sect_name            = coff_name_from_section_header(string_table, sect_header);
-            String8                sect_name_with_flags = lnk_make_name_with_flags(temp.arena, sect_name, sect_header.flags & ~COFF_SectionFlags_LnkFlags);
+            StringView                sect_name            = coff_name_from_section_header(string_table, sect_header);
+            StringView                sect_name_with_flags = lnk_make_name_with_flags(temp.arena, sect_name, sect_header.flags & ~COFF_SectionFlags_LnkFlags);
             LNK_SectionDefinition *sect_defn            = 0;
             hash_table_search_string_raw(sect_defn_ht, sect_name_with_flags, &sect_defn);
 
@@ -2367,7 +2367,7 @@ THREAD_POOL_TASK_FUNC(lnk_gather_section_contribs_task)
 
     LNK_Obj            *obj           = task.objs[obj_idx];
     COFF_SectionHeader *section_table = (COFF_SectionHeader *)str8_substr(obj.data, obj.header.section_table_range).str;
-    String8             string_table  = str8_substr(obj.data, obj.header.string_table_range);
+    StringView             string_table  = str8_substr(obj.data, obj.header.string_table_range);
 
     ProfBeginV("Gather Section Contribs [%S]", obj.path);
     for (U64 sect_idx = 0; sect_idx < obj.header.section_count_no_null; sect_idx += 1) {
@@ -2377,14 +2377,14 @@ THREAD_POOL_TASK_FUNC(lnk_gather_section_contribs_task)
             LNK_SectionContribChunk *sc_chunk = 0;
             {
                 Temp temp = temp_begin(scratch.arena);
-                String8 sect_name            = coff_name_from_section_header(string_table, sect_header);
-                String8 sect_name_with_flags = lnk_make_name_with_flags(temp.arena, sect_name, sect_header.flags & ~COFF_SectionFlags_LnkFlags);
+                StringView sect_name            = coff_name_from_section_header(string_table, sect_header);
+                StringView sect_name_with_flags = lnk_make_name_with_flags(temp.arena, sect_name, sect_header.flags & ~COFF_SectionFlags_LnkFlags);
                 hash_table_search_string_raw(task.contribs_ht, sect_name_with_flags, &sc_chunk);
                 temp_end(temp);
             }
 
             if (sc_chunk) {
-                String8 data;
+                StringView data;
                 if (sect_header.flags & COFF_SectionFlag_CntUninitializedData) {
                     data = str8(0, sect_header.fsize);
                 } else {
@@ -2748,8 +2748,8 @@ THREAD_POOL_TASK_FUNC(lnk_obj_reloc_patcher)
 
     COFF_FileHeaderInfo  obj_header    = obj.header;
     COFF_SectionHeader  *section_table = (COFF_SectionHeader *)str8_substr(obj.data, obj_header.section_table_range).str;
-    String8              symbol_table  = str8_substr(obj.data, obj_header.symbol_table_range);
-    String8              string_table  = str8_substr(obj.data, obj_header.string_table_range);
+    StringView              symbol_table  = str8_substr(obj.data, obj_header.symbol_table_range);
+    StringView              string_table  = str8_substr(obj.data, obj_header.string_table_range);
 
     for (U64 sect_idx = 0; sect_idx < obj_header.section_count_no_null; sect_idx += 1) {
         COFF_SectionHeader *section_header = &section_table[sect_idx];
@@ -2758,9 +2758,9 @@ THREAD_POOL_TASK_FUNC(lnk_obj_reloc_patcher)
         if (section_header.flags & COFF_SectionFlag_CntUninitializedData) { continue; }
 
         // get section bytes (special case debug info because it is not copied to the image)
-        String8 data           = lnk_is_coff_section_debug(obj, sect_idx) ? obj.data : task.image_data;
+        StringView data           = lnk_is_coff_section_debug(obj, sect_idx) ? obj.data : task.image_data;
         Rng1U64 section_frange = rng_1u64(section_header.foff, section_header.foff + section_header.fsize);
-        String8 section_data   = str8_substr(data, section_frange);
+        StringView section_data   = str8_substr(data, section_frange);
 
         // find section relocs
         COFF_RelocInfo reloc_info = coff_reloc_info_from_section_header(obj.data, section_header);
@@ -2792,7 +2792,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_reloc_patcher)
                 if (interp == COFF_SymbolValueInterp_Regular) {
                     if (symbol.section_number == lnk_obj_get_removed_section_number(obj)) {
                         if (!lnk_is_coff_section_debug(obj, sect_idx)) {
-                            String8 sect_name = coff_name_from_section_header(string_table, &section_table[sect_idx]);
+                            StringView sect_name = coff_name_from_section_header(string_table, &section_table[sect_idx]);
                             lnk_error_obj(LNK_Error_RelocationAgainstRemovedSection, obj, "relocating against symbol that is in a removed section (symbol: %S, reloc-section: %S 0x%llx, reloc-index: 0x%llx)", symbol.name, sect_name, sect_idx+1, reloc_idx);
                         }
                         continue;
@@ -2914,7 +2914,7 @@ THREAD_POOL_TASK_FUNC(lnk_flag_hotpatch_contribs_task)
 }
 
 internal void
-lnk_push_coff_symbols_from_data(Arena *arena, LNK_SymbolList *symbol_list, String8 data, LNK_SymbolArray obj_symbols)
+lnk_push_coff_symbols_from_data(Arena *arena, LNK_SymbolList *symbol_list, StringView data, LNK_SymbolArray obj_symbols)
 {
     if (data.size % sizeof(U32)) {
         // TODO: report invalid data size
@@ -2932,7 +2932,7 @@ lnk_push_coff_symbols_from_data(Arena *arena, LNK_SymbolList *symbol_list, Strin
     }
 }
 
-internal String8
+internal StringView
 lnk_build_guard_data(Arena *arena, U64Array voff_arr, U64 stride)
 {
     Assert(stride >= sizeof(U32));
@@ -2951,7 +2951,7 @@ lnk_build_guard_data(Arena *arena, U64Array voff_arr, U64 stride)
         *voff_ptr = voff_arr.v[i];
     }
     
-    String8 guard_data = str8(buffer, buffer_size);
+    StringView guard_data = str8(buffer, buffer_size);
     return guard_data;
 }
 
@@ -2962,7 +2962,7 @@ lnk_build_guard_tables(TP_Context       *tp,
                                               U64               objs_count,
                                               LNK_Obj         **objs,
                                               COFF_MachineType  machine,
-                                              String8           entry_point_name,
+                                              StringView           entry_point_name,
                                               LNK_GuardFlags    guard_flags,
                                               B32               emit_suppress_flag)
 {
@@ -3165,10 +3165,10 @@ lnk_build_guard_tables(TP_Context       *tp,
     }
     
     // make guard data from virtual offsets
-    String8 gfids_data   = lnk_build_guard_data(gfids_sect.arena, guard_voff_arr_table[GUARD_FIDS], entry_stride);
-    String8 giats_data   = lnk_build_guard_data(giats_sect.arena, guard_voff_arr_table[GUARD_IATS], entry_stride);
-    String8 gljmp_data   = lnk_build_guard_data(gljmp_sect.arena, guard_voff_arr_table[GUARD_LJMP], entry_stride);
-    String8 gehcont_data = lnk_build_guard_data(gehcont_sect.arena, guard_voff_arr_table[GUARD_EHCONT], entry_stride);
+    StringView gfids_data   = lnk_build_guard_data(gfids_sect.arena, guard_voff_arr_table[GUARD_FIDS], entry_stride);
+    StringView giats_data   = lnk_build_guard_data(giats_sect.arena, guard_voff_arr_table[GUARD_IATS], entry_stride);
+    StringView gljmp_data   = lnk_build_guard_data(gljmp_sect.arena, guard_voff_arr_table[GUARD_LJMP], entry_stride);
+    StringView gehcont_data = lnk_build_guard_data(gehcont_sect.arena, guard_voff_arr_table[GUARD_EHCONT], entry_stride);
     
     // push guard data
     lnk_section_push_chunk_data(gfids_sect, gfids_array_chunk, gfids_data, str8_zero());
@@ -3884,7 +3884,7 @@ lnk_build_image(TP_Arena            *arena,
 
             for EachIndex(defn_idx, sect_defns_count) {
                 LNK_SectionDefinition *defn            = sect_defns[defn_idx];
-                String8                name_with_flags = lnk_make_name_with_flags(arena.v[0], defn.name, defn.flags);
+                StringView                name_with_flags = lnk_make_name_with_flags(arena.v[0], defn.name, defn.flags);
                 LNK_SectionDefinition *main_defn       = 0;
                 hash_table_search_string_raw(task.u.gather_sects.defns[0], name_with_flags, &main_defn);
                 if (main_defn == 0) {
@@ -3913,7 +3913,7 @@ lnk_build_image(TP_Arena            *arena,
             LNK_SectionDefinition *sect_defn = sect_defns[defn_idx];
 
             // parse section name
-            String8 sect_name, sort_idx;
+            StringView sect_name, sort_idx;
             coff_parse_section_name(sect_defn.name, &sect_name, &sort_idx);
 
             // do not create definitions for sections that are removed from the image
@@ -3925,9 +3925,9 @@ lnk_build_image(TP_Arena            *arena,
                     LNK_Obj            *obj                = sect_defn.obj;
                     U32                 sect_number        = sect_defn.obj_sect_idx + 1;
                     COFF_SectionHeader *sect_header        = lnk_coff_section_header_from_section_number(obj, sect_number);
-                    String8             sect_name          = coff_name_from_section_header(str8_substr(obj.data, obj.header.string_table_range), sect_header);
-                    String8             expected_flags_str = coff_string_from_section_flags(arena.v[0], sect_n.data.flags);
-                    String8             current_flags_str  = coff_string_from_section_flags(arena.v[0], sect_defn.flags);
+                    StringView             sect_name          = coff_name_from_section_header(str8_substr(obj.data, obj.header.string_table_range), sect_header);
+                    StringView             expected_flags_str = coff_string_from_section_flags(arena.v[0], sect_n.data.flags);
+                    StringView             current_flags_str  = coff_string_from_section_flags(arena.v[0], sect_defn.flags);
                     lnk_error_obj(LNK_Warning_SectionFlagsConflict, sect_defn.obj, "detected section flags conflict in %S(No. %X); expected {%S} but got {%S}", sect_name, sect_number, expected_flags_str, current_flags_str);
                 }
             }
@@ -3940,7 +3940,7 @@ lnk_build_image(TP_Arena            *arena,
                     sect = lnk_section_table_push(sectab, sect_name, sect_defn.flags);
                 }
 
-                String8                  defn_name_with_flags = lnk_make_name_with_flags(sectab.arena, sect_defn.name, sect_defn.flags);
+                StringView                  defn_name_with_flags = lnk_make_name_with_flags(sectab.arena, sect_defn.name, sect_defn.flags);
                 LNK_SectionContribChunk *contrib_chunk        = 0;
                 hash_table_search_string_raw(task.contribs_ht, defn_name_with_flags, &contrib_chunk);
                 if (!contrib_chunk) {
@@ -4192,7 +4192,7 @@ lnk_build_image(TP_Arena            *arena,
 
     tp_for_parallel_prof(tp, 0, task.objs_count, lnk_patch_section_symbols_task, &task, "Patch Section Symbols");
 
-    String8 image_data = {0};
+    StringView image_data = {0};
     {
         ProfBegin("Image Fill");
 
@@ -4266,7 +4266,7 @@ lnk_build_image(TP_Arena            *arena,
             LNK_Symbol *load_config_symbol = lnk_symbol_table_search(symtab, LNK_SymbolScope_Defined, (MSCRT_LOAD_CONFIG_SYMBOL_NAME));
             if (load_config_symbol) {
                 U64     load_config_foff   = lnk_file_off_from_symbol(image_section_table, load_config_symbol);
-                String8 load_config_data   = str8_skip(image_data, load_config_foff);
+                StringView load_config_data   = str8_skip(image_data, load_config_foff);
 
                 U32 load_config_size = 0;
                 if (sizeof(load_config_size) <= load_config_data.size) {
@@ -4283,7 +4283,7 @@ lnk_build_image(TP_Arena            *arena,
         {
             LNK_Section *pdata_sect = lnk_section_table_search(sectab, (".pdata"), PE_PDATA_SECTION_FLAGS);
             if (pdata_sect) {
-                String8 raw_pdata = str8_substr(image_data, rng_1u64(pdata_sect.foff, pdata_sect.foff + pdata_sect.vsize));
+                StringView raw_pdata = str8_substr(image_data, rng_1u64(pdata_sect.foff, pdata_sect.foff + pdata_sect.vsize));
                 pe_pdata_sort(config.machine, raw_pdata);
 
                 PE_DataDirectory *pdata_dir = pe_data_directory_from_idx(image_data, pe, PE_DataDirectoryIndex_EXCEPTIONS);
@@ -4486,11 +4486,11 @@ lnk_obj_sect_idx_from_section(Arena *arena, U64 objs_count, LNK_Obj **objs, LNK_
     for (U64 obj_idx = 0; obj_idx < objs_count; obj_idx += 1) {
         LNK_Obj *obj = objs[obj_idx];
         COFF_SectionHeader *section_table = str8_deserial_get_raw_ptr(obj.data, obj.header.section_table_range.min, 0);
-        String8             string_table  = str8_substr(obj.data, obj.header.string_table_range);
+        StringView             string_table  = str8_substr(obj.data, obj.header.string_table_range);
         for (U64 sect_idx = 0; sect_idx < obj.header.section_count_no_null; sect_idx += 1) {
             COFF_SectionHeader *section_header    = &section_table[sect_idx];
-            String8             full_section_name = coff_name_from_section_header(string_table, section_header);
-            String8             section_name, section_postfix;
+            StringView             full_section_name = coff_name_from_section_header(string_table, section_header);
+            StringView             section_name, section_postfix;
             coff_parse_section_name(full_section_name, &section_name, &section_postfix);
 
             if (section_header.flags & COFF_SectionFlag_LnkRemove) { continue; }
@@ -4571,7 +4571,7 @@ lnk_pair_u32_nearest_section(PairU32 *arr, U64 count, LNK_Obj **objs, U32 voff)
 }
 
 internal String8List
-lnk_build_rad_map(Arena *arena, String8 image_data, LNK_Config *config, U64 objs_count, LNK_Obj **objs, LNK_LibList lib_index[LNK_InputSource_Count], LNK_SectionTable *sectab)
+lnk_build_rad_map(Arena *arena, StringView image_data, LNK_Config *config, U64 objs_count, LNK_Obj **objs, LNK_LibList lib_index[LNK_InputSource_Count], LNK_SectionTable *sectab)
 {
     ProfBeginFunction();
     Temp scratch = scratch_begin(&arena, 1);
@@ -4604,7 +4604,7 @@ lnk_build_rad_map(Arena *arena, String8 image_data, LNK_Config *config, U64 objs
                 U64        virt_off   = image_section_table[sc.u.sect_idx+1]->voff + sc.u.off;
                 U64        virt_size  = lnk_size_from_section_contrib(sc);
                 U64        file_size  = lnk_size_from_section_contrib(sc);
-                String8    sc_data    = str8_substr(image_data, rng_1u64(file_off, file_off + virt_size));
+                StringView    sc_data    = str8_substr(image_data, rng_1u64(file_off, file_off + virt_size));
 
                 LNK_Obj *obj      = 0;
                 U32      sect_idx = 0;
@@ -4621,24 +4621,24 @@ lnk_build_rad_map(Arena *arena, String8 image_data, LNK_Config *config, U64 objs
                     blake3_hasher_finalize(&hasher, (U8 *)&sc_hash, sizeof(sc_hash));
                 }
 
-                String8 sc_idx_str    = push_str8f(temp.arena, "%4llx",      global_sc_idx);
-                String8 virt_size_str = push_str8f(temp.arena, "%08x",       virt_size);
-                String8 sc_hash_str   = (~sect.flags & COFF_SectionFlag_CntUninitializedData) ? push_str8f(temp.arena, "%08x%08x",   sc_hash.u64[0], sc_hash.u64[1]) : ("--------");
-                String8 file_off_str  = (~sect.flags & COFF_SectionFlag_CntUninitializedData) ? push_str8f(temp.arena, "%08x", file_off)  : ("--------");
-                String8 file_size_str = (~sect.flags & COFF_SectionFlag_CntUninitializedData) ? push_str8f(temp.arena, "%08x", file_size) : ("--------");
-                String8 virt_off_str  = push_str8f(temp.arena, "%08x",       virt_off);
-                String8 align_str     = push_str8f(temp.arena, "%4x",        sc.align);
-                String8 contrib_str;
+                StringView sc_idx_str    = push_str8f(temp.arena, "%4llx",      global_sc_idx);
+                StringView virt_size_str = push_str8f(temp.arena, "%08x",       virt_size);
+                StringView sc_hash_str   = (~sect.flags & COFF_SectionFlag_CntUninitializedData) ? push_str8f(temp.arena, "%08x%08x",   sc_hash.u64[0], sc_hash.u64[1]) : ("--------");
+                StringView file_off_str  = (~sect.flags & COFF_SectionFlag_CntUninitializedData) ? push_str8f(temp.arena, "%08x", file_off)  : ("--------");
+                StringView file_size_str = (~sect.flags & COFF_SectionFlag_CntUninitializedData) ? push_str8f(temp.arena, "%08x", file_size) : ("--------");
+                StringView virt_off_str  = push_str8f(temp.arena, "%08x",       virt_off);
+                StringView align_str     = push_str8f(temp.arena, "%4x",        sc.align);
+                StringView contrib_str;
                 {
                     String8List source_list = {0};
                     if (obj) {
                         COFF_SectionHeader *section_header = lnk_coff_section_header_from_section_number(obj, sect_idx+1);
-                        String8 string_table = str8_substr(obj.data, obj.header.string_table_range);
-                        String8 section_name = coff_name_from_section_header(string_table, section_header);
+                        StringView string_table = str8_substr(obj.data, obj.header.string_table_range);
+                        StringView section_name = coff_name_from_section_header(string_table, section_header);
                         if (obj.lib) {
-                            String8 lib_path = lnk_obj_get_lib_path(obj);
-                            String8 lib_name = str8_chop_last_dot(str8_skip_last_slash(lib_path));
-                            String8 obj_name = str8_skip_last_slash(obj.path);
+                            StringView lib_path = lnk_obj_get_lib_path(obj);
+                            StringView lib_name = str8_chop_last_dot(str8_skip_last_slash(lib_path));
+                            StringView obj_name = str8_skip_last_slash(obj.path);
                             str8_list_pushf(temp.arena, &source_list, "%S(%S) SECT%X (%S)", lib_name, obj_name, sect_idx+1, section_name);
                         } else {
                             str8_list_pushf(temp.arena, &source_list, "%S SECT%X (%S)", obj.path, sect_idx+1, section_name);
@@ -4667,9 +4667,9 @@ lnk_build_rad_map(Arena *arena, String8 image_data, LNK_Config *config, U64 objs
                 COFF_SectionHeader *section_header = &section_table[sect_idx];
                 if (~section_header.flags & COFF_SectionFlag_LnkRemove) {
                     if (obj.lib) {
-                        String8 lib_path = lnk_obj_get_lib_path(obj);
-                        String8 lib_name = str8_chop_last_dot(str8_skip_last_slash(lib_path));
-                        String8 obj_name = str8_skip_last_slash(obj.path);
+                        StringView lib_path = lnk_obj_get_lib_path(obj);
+                        StringView lib_name = str8_chop_last_dot(str8_skip_last_slash(lib_path));
+                        StringView obj_name = str8_skip_last_slash(obj.path);
                         str8_list_pushf(arena, &map, "%S(%S) SECT%X\n", lib_name, obj_name, sect_idx+1);
                     } else {
                         str8_list_pushf(arena, &map, "%S SECT%X\n", obj.path, sect_idx+1);
@@ -4720,19 +4720,19 @@ lnk_log_timers(void)
     for (U64 i = 0; i < LNK_Timer_Count; ++i) {
         U64 build_time_micro = g_timers[i].end - g_timers[i].begin;
         if (build_time_micro != 0) {
-            String8  timer_name = lnk_string_from_timer_type(i);
+            StringView  timer_name = lnk_string_from_timer_type(i);
             DateTime time       = date_time_from_micro_seconds(build_time_micro);
-            String8  time_str   = string_from_elapsed_time(scratch.arena, time);
+            StringView  time_str   = string_from_elapsed_time(scratch.arena, time);
             str8_list_pushf(scratch.arena, &output_list, "  %-5S Time: %S", timer_name, time_str);
         }
     }
     
     DateTime total_time = date_time_from_micro_seconds(total_build_time_micro);
-    String8 total_time_str = string_from_elapsed_time(scratch.arena, total_time);
+    StringView total_time_str = string_from_elapsed_time(scratch.arena, total_time);
     str8_list_pushf(scratch.arena, &output_list, "  Total Time: %S", total_time_str);
     
     StringJoin new_line_join = { (""), ("\n"), ("") };
-    String8 output = str8_list_join(scratch.arena, &output_list, &new_line_join);
+    StringView output = str8_list_join(scratch.arena, &output_list, &new_line_join);
     lnk_log(LNK_Log_Timers, "%S\n", output);
     
     scratch_end(scratch);
@@ -4776,7 +4776,7 @@ lnk_run(TP_Context *tp, TP_Arena *arena, LNK_Config *config)
     if (config.build_imp_lib && (config.file_characteristics & PE_ImageFileCharacteristic_FILE_DLL)) {
         ProfBegin("Build Import Library");
         lnk_timer_begin(LNK_Timer_Lib);
-        String8 linker_debug_symbols = lnk_make_linker_debug_symbols(scratch.arena, config.machine);
+        StringView linker_debug_symbols = lnk_make_linker_debug_symbols(scratch.arena, config.machine);
         String8List lib_list = pe_make_import_lib(arena.v[0], config.machine, config.time_stamp, str8_skip_last_slash(config.image_name), linker_debug_symbols, config.export_symbol_list);
         lnk_write_data_list_to_file_path(config.imp_lib_name, str8_zero(), lib_list);
         lnk_timer_end(LNK_Timer_Lib);

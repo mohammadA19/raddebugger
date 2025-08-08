@@ -5,10 +5,10 @@
 
 struct D2R_ConvertParams
 {
-    String8 dbg_name;
-    String8 dbg_data;
-    String8 exe_name;
-    String8 exe_data;
+    StringView dbg_name;
+    StringView dbg_data;
+    StringView exe_name;
+    StringView exe_data;
     ExecutableImageKind exe_kind;
     RDIM_SubsetFlags subset_flags;
     B32 deterministic;
@@ -55,7 +55,7 @@ d2r_bytecode_from_expression(Arena       *arena,
                                                           U64          address_size,
                                                           Arch         arch,
                                                           DW_ListUnit *addr_lu,
-                                                          String8      expr,
+                                                          StringView      expr,
                                                           DW_CompUnit *cu,
                                                           B32         *is_addr_out);
 internal RDIM_LocationSet d2r_locset_from_attrib(Arena               *arena,
