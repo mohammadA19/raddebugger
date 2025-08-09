@@ -114,13 +114,13 @@ elf_chdr64_from_chdr32(ELF_Chdr32 chdr32)
 
 ////////////////////////////////
 
-internal String8
+internal string
 elf_string_from_class(Arena *arena, ELF_Class v)
 {
   switch (v) {
-  case ELF_Class_None: return str8_lit("None");
-  case ELF_Class_32:   return str8_lit("32Bit");
-  case ELF_Class_64:   return str8_lit("64Bit");
+  case ELF_Class_None: return ("None");
+  case ELF_Class_32:   return ("32Bit");
+  case ELF_Class_64:   return ("64Bit");
   }
   return push_str8f(arena, "%#x", v);
 }

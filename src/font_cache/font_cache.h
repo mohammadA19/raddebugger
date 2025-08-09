@@ -80,7 +80,7 @@ struct FNT_FontHashNode
   FNT_Tag tag;
   FP_Handle handle;
   FP_Metrics metrics;
-  String8 path;
+  string path;
 };
 
 typedef struct FNT_FontHashSlot FNT_FontHashSlot;
@@ -126,7 +126,7 @@ typedef struct FNT_RunCacheNode FNT_RunCacheNode;
 struct FNT_RunCacheNode
 {
   FNT_RunCacheNode *next;
-  String8 string;
+  string string;
   FNT_Run run;
 };
 
@@ -237,8 +237,8 @@ global FNT_State *fnt_state = 0;
 ////////////////////////////////
 //~ rjf: Basic Functions
 
-internal U128 fnt_hash_from_string(String8 string);
-internal U64 fnt_little_hash_from_string(U64 seed, String8 string);
+internal U128 fnt_hash_from_string(string string);
+internal U64 fnt_little_hash_from_string(U64 seed, string string);
 internal Vec2S32 fnt_vertex_from_corner(Corner corner);
 
 ////////////////////////////////
@@ -248,9 +248,9 @@ internal FNT_Tag fnt_tag_zero(void);
 internal B32 fnt_tag_match(FNT_Tag a, FNT_Tag b);
 internal FP_Handle fnt_handle_from_tag(FNT_Tag tag);
 internal FP_Metrics fnt_fp_metrics_from_tag(FNT_Tag tag);
-internal FNT_Tag fnt_tag_from_path(String8 path);
-internal FNT_Tag fnt_tag_from_static_data_string(String8 *data_ptr);
-internal String8 fnt_path_from_tag(FNT_Tag tag);
+internal FNT_Tag fnt_tag_from_path(string path);
+internal FNT_Tag fnt_tag_from_static_data_string(string *data_ptr);
+internal string fnt_path_from_tag(FNT_Tag tag);
 
 ////////////////////////////////
 //~ rjf: Atlas
@@ -271,14 +271,14 @@ internal FNT_PieceArray fnt_piece_array_copy(Arena *arena, FNT_PieceArray *src);
 
 //- rjf: base cache lookups
 internal FNT_Hash2StyleRasterCacheNode *fnt_hash2style_from_tag_size_flags(FNT_Tag tag, F32 size, FNT_RasterFlags flags);
-internal FNT_Run fnt_run_from_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, String8 string);
+internal FNT_Run fnt_run_from_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, string string);
 
 //- rjf: helpers
-internal String8List fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, String8 string, F32 max);
-internal Vec2F32 fnt_dim_from_tag_size_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8 string);
+internal String8List fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, string string, F32 max);
+internal Vec2F32 fnt_dim_from_tag_size_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, string string);
 internal Vec2F32 fnt_dim_from_tag_size_string_list(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8List list);
 internal F32 fnt_column_size_from_tag_size(FNT_Tag tag, F32 size);
-internal U64 fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8 string, F32 p);
+internal U64 fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, string string, F32 p);
 
 ////////////////////////////////
 //~ rjf: Metrics

@@ -5,7 +5,7 @@
 //~ rjf: Type Info Lookups
 
 internal Member *
-member_from_name(Type *type, String8 name)
+member_from_name(Type *type, string name)
 {
   Member *member = &member_nil;
   if(type->members != 0 && name.size != 0)
@@ -26,7 +26,7 @@ member_from_name(Type *type, String8 name)
 //~ rjf: Type Info * Instance Operations
 
 internal void
-typed_data_rebase_ptrs(Type *type, String8 data, void *base_ptr)
+typed_data_rebase_ptrs(Type *type, string data, void *base_ptr)
 {
   Temp scratch = scratch_begin(0, 0);
   typedef struct RebaseTypeTask RebaseTypeTask;
@@ -74,8 +74,8 @@ typed_data_rebase_ptrs(Type *type, String8 data, void *base_ptr)
   scratch_end(scratch);
 }
 
-internal String8
-serialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerializeParams *params)
+internal string
+serialized_from_typed_data(Arena *arena, Type *type, string data, TypeSerializeParams *params)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List strings = {0};
@@ -230,15 +230,15 @@ serialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerialize
       }
     }
   }
-  String8 result = str8_serial_end(arena, &strings);
+  string result = str8_serial_end(arena, &strings);
   scratch_end(scratch);
   return result;
 }
 
-internal String8
-deserialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerializeParams *params)
+internal string
+deserialized_from_typed_data(Arena *arena, Type *type, string data, TypeSerializeParams *params)
 {
-  String8 result = {0};
+  string result = {0};
   result.size = type->size;
   result.str  = push_array(arena, U8, result.size);
   {
@@ -410,12 +410,12 @@ deserialized_from_typed_data(Arena *arena, Type *type, String8 data, TypeSeriali
   return result;
 }
 
-internal String8
-deep_copy_from_typed_data(Arena *arena, Type *type, String8 data, TypeSerializeParams *params)
+internal string
+deep_copy_from_typed_data(Arena *arena, Type *type, string data, TypeSerializeParams *params)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  String8 data_srlz = serialized_from_typed_data(scratch.arena, type, data, params);
-  String8 data_copy = deserialized_from_typed_data(arena, type, data_srlz, params);
+  string data_srlz = serialized_from_typed_data(scratch.arena, type, data, params);
+  string data_copy = deserialized_from_typed_data(arena, type, data_srlz, params);
   scratch_end(scratch);
   return data_copy;
 }

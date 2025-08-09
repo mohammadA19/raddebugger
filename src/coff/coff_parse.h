@@ -49,7 +49,7 @@ typedef struct COFF_Symbol32Array
 
 typedef struct COFF_ParsedSymbol
 {
-  String8               name;
+  string               name;
   U64                   value;
   U32                   section_number;
   COFF_SymbolType       type;
@@ -121,7 +121,7 @@ typedef struct COFF_ResourceID
   COFF_ResourceIDType type;
   union {
     U16     number;
-    String8 string;
+    string string;
   } u;
 } COFF_ResourceID;
 
@@ -134,7 +134,7 @@ typedef struct COFF_ParsedResource
   U16                      language_id;
   U32                      version;
   U32                      characteristics;
-  String8                  data;
+  string                  data;
 } COFF_ParsedResource;
 
 typedef struct COFF_ParsedResourceNode
@@ -169,11 +169,11 @@ typedef enum
 
 typedef struct COFF_ParsedArchiveMemberHeader
 {
-  String8        name;           // padded to 16 bytes with spaces
+  string        name;           // padded to 16 bytes with spaces
   COFF_TimeStamp time_stamp;
   U32            user_id;        // unix artifact that does not have meaning on windows
   U32            group_id;       // unix artifact that does not have meaning on windows
-  String8        mode;           // octal representation the members file mode
+  string        mode;           // octal representation the members file mode
   B32            is_end_correct; // set to true if found correct signature after header
   Rng1U64        data_range;
 } COFF_ParsedArchiveMemberHeader;
@@ -188,15 +188,15 @@ typedef struct COFF_ParsedArchiveImportHeader
   U16               hint_or_ordinal;
   COFF_ImportType   type;
   COFF_ImportByType import_by;
-  String8           func_name;
-  String8           dll_name;
+  string           func_name;
+  string           dll_name;
 } COFF_ParsedArchiveImportHeader;
 
 typedef struct COFF_ArchiveMember
 {
   COFF_ParsedArchiveMemberHeader header;
   U64                            offset;
-  String8                        data;
+  string                        data;
 } COFF_ArchiveMember;
 
 typedef struct COFF_ArchiveFirstMember
@@ -204,7 +204,7 @@ typedef struct COFF_ArchiveFirstMember
   U32      symbol_count;
   U64      member_offset_count;
   U32     *member_offsets;
-  String8  string_table;
+  string  string_table;
 } COFF_ArchiveFirstMember;
 
 typedef struct COFF_ArchiveSecondMember
@@ -215,7 +215,7 @@ typedef struct COFF_ArchiveSecondMember
   U32     *member_offsets;
   U64      symbol_index_count;
   U16     *symbol_indices;
-  String8  string_table;
+  string  string_table;
 } COFF_ArchiveSecondMember;
 
 typedef struct COFF_ArchiveMemberNode
@@ -237,32 +237,32 @@ typedef struct COFF_ArchiveParse
   B32                      has_long_names;
   COFF_ArchiveFirstMember  first_member;
   COFF_ArchiveSecondMember second_member;
-  String8                  long_names;
-  String8                  error;
+  string                  long_names;
+  string                  error;
 } COFF_ArchiveParse;
 
 ////////////////////////////////
 // Obj Header
 
-internal B32 coff_is_big_obj(String8 raw_coff);
-internal B32 coff_is_obj    (String8 raw_coff);
-internal COFF_FileHeaderInfo coff_file_header_info_from_data(String8 raw_coff);
+internal B32 coff_is_big_obj(string raw_coff);
+internal B32 coff_is_obj    (string raw_coff);
+internal COFF_FileHeaderInfo coff_file_header_info_from_data(string raw_coff);
 
 ////////////////////////////////
 // Section
 
-internal COFF_SectionHeader ** coff_section_table_from_data(Arena *arena, String8 data, Rng1U64 section_table_range);
+internal COFF_SectionHeader ** coff_section_table_from_data(Arena *arena, string data, Rng1U64 section_table_range);
 
 ////////////////////////////////
 // Symbol
 
-internal COFF_ParsedSymbol coff_parse_symbol32(String8 string_table, COFF_Symbol32 *sym32);
-internal COFF_ParsedSymbol coff_parse_symbol16(String8 string_table, COFF_Symbol16 *sym16);
-internal COFF_ParsedSymbol coff_parse_symbol(COFF_FileHeaderInfo header, String8 string_table, String8 symbol_table, U32 symbol_idx);
+internal COFF_ParsedSymbol coff_parse_symbol32(string string_table, COFF_Symbol32 *sym32);
+internal COFF_ParsedSymbol coff_parse_symbol16(string string_table, COFF_Symbol16 *sym16);
+internal COFF_ParsedSymbol coff_parse_symbol(COFF_FileHeaderInfo header, string string_table, string symbol_table, U32 symbol_idx);
 
-internal COFF_Symbol32Array coff_symbol_array_from_data_16(Arena *arena, String8 data, U64 symbol_array_off, U64 symbol_count);
-internal COFF_Symbol32Array coff_symbol_array_from_data_32(Arena *arena, String8 data, U64 symbol_array_off, U64 symbol_count);
-internal COFF_Symbol32Array coff_symbol_array_from_data   (Arena *arena, String8 data, U64 symbol_array_off, U64 symbol_count, U64 symbol_size);
+internal COFF_Symbol32Array coff_symbol_array_from_data_16(Arena *arena, string data, U64 symbol_array_off, U64 symbol_count);
+internal COFF_Symbol32Array coff_symbol_array_from_data_32(Arena *arena, string data, U64 symbol_array_off, U64 symbol_count);
+internal COFF_Symbol32Array coff_symbol_array_from_data   (Arena *arena, string data, U64 symbol_array_off, U64 symbol_count, U64 symbol_size);
 
 internal COFF_Symbol16Node *coff_symbol16_list_push(Arena *arena, COFF_Symbol16List *list, COFF_Symbol16 symbol);
 
@@ -275,53 +275,53 @@ internal COFF_SymbolWeakExt * coff_parse_weak_tag(COFF_ParsedSymbol symbol, B32 
 ////////////////////////////////
 // Reloc
 
-internal COFF_RelocInfo coff_reloc_info_from_section_header(String8 data, COFF_SectionHeader *header);
+internal COFF_RelocInfo coff_reloc_info_from_section_header(string data, COFF_SectionHeader *header);
 
 ////////////////////////////////
 // Resource
 
-internal String8         coff_resource_string_from_str16 (Arena *arena, String16 string);
-internal String8         coff_resource_string_from_str8  (Arena *arena, String8 string);
-internal String8         coff_resource_number_from_u16   (Arena *arena, U16 number);
+internal string         coff_resource_string_from_str16 (Arena *arena, String16 string);
+internal string         coff_resource_string_from_str8  (Arena *arena, string string);
+internal string         coff_resource_number_from_u16   (Arena *arena, U16 number);
 internal COFF_ResourceID coff_utf8_resource_id_from_utf16(Arena *arena, COFF_ResourceID16 *id_16);
 
-internal U64                     coff_read_resource_id_utf16 (String8 raw_res, U64 off, COFF_ResourceID16 *id_out);
-internal U64                     coff_read_resource          (Arena *arena, String8 raw_res, U64 off, COFF_ParsedResource *res_out);
-internal COFF_ParsedResourceList coff_resource_list_from_data(Arena *arena, String8 data);
+internal U64                     coff_read_resource_id_utf16 (string raw_res, U64 off, COFF_ResourceID16 *id_out);
+internal U64                     coff_read_resource          (Arena *arena, string raw_res, U64 off, COFF_ParsedResource *res_out);
+internal COFF_ParsedResourceList coff_resource_list_from_data(Arena *arena, string data);
 
-internal String8 coff_write_resource_id(Arena *arena, COFF_ResourceID id);
-internal String8 coff_write_resource   (Arena *arena, COFF_ResourceID type, COFF_ResourceID name, U32 data_version, COFF_ResourceMemoryFlags memory_flags, U16 language_id, U32 version, U32 characteristics, String8 data);
+internal string coff_write_resource_id(Arena *arena, COFF_ResourceID id);
+internal string coff_write_resource   (Arena *arena, COFF_ResourceID type, COFF_ResourceID name, U32 data_version, COFF_ResourceMemoryFlags memory_flags, U16 language_id, U32 version, U32 characteristics, string data);
 
 internal int coff_resource_id_compar(void *raw_a, void *raw_b); // COFF_ResourceID
 
 ////////////////////////////////
 // Archive
 
-internal B32              coff_is_import             (String8 raw_archive_member);
-internal COFF_DataType    coff_data_type_from_data   (String8 raw_archive_member);
-internal B32              coff_is_regular_archive    (String8 raw_archive);
-internal B32              coff_is_thin_archive       (String8 raw_archive);
-internal COFF_ArchiveType coff_archive_type_from_data(String8 raw_archive);
+internal B32              coff_is_import             (string raw_archive_member);
+internal COFF_DataType    coff_data_type_from_data   (string raw_archive_member);
+internal B32              coff_is_regular_archive    (string raw_archive);
+internal B32              coff_is_thin_archive       (string raw_archive);
+internal COFF_ArchiveType coff_archive_type_from_data(string raw_archive);
 
-internal U64                      coff_parse_archive_member_header(String8 raw_archive, U64 offset, COFF_ParsedArchiveMemberHeader *header_out);
+internal U64                      coff_parse_archive_member_header(string raw_archive, U64 offset, COFF_ParsedArchiveMemberHeader *header_out);
 internal COFF_ArchiveFirstMember  coff_parse_first_archive_member (COFF_ArchiveMember *member);
 internal COFF_ArchiveSecondMember coff_parse_second_archive_member(COFF_ArchiveMember *member);
-internal String8                  coff_parse_long_name            (String8 long_names, String8 name);
-internal U64                      coff_parse_import               (String8 raw_archive_member, U64 offset, COFF_ParsedArchiveImportHeader *header_out);
+internal string                  coff_parse_long_name            (string long_names, string name);
+internal U64                      coff_parse_import               (string raw_archive_member, U64 offset, COFF_ParsedArchiveImportHeader *header_out);
 
-internal COFF_ArchiveMember             coff_archive_member_from_offset(String8 raw_archive, U64 offset);
-internal COFF_ArchiveMember             coff_archive_member_from_data  (String8 raw_archive_member);
-internal COFF_ParsedArchiveImportHeader coff_archive_import_from_data  (String8 raw_archive_member);
+internal COFF_ArchiveMember             coff_archive_member_from_offset(string raw_archive, U64 offset);
+internal COFF_ArchiveMember             coff_archive_member_from_data  (string raw_archive_member);
+internal COFF_ParsedArchiveImportHeader coff_archive_import_from_data  (string raw_archive_member);
 
-internal U64 coff_regular_archive_member_iter_init(String8 raw_archive);
-internal B32 coff_regular_archive_member_iter_next(String8 raw_archive, U64 *offset, COFF_ArchiveMember *member_out);
+internal U64 coff_regular_archive_member_iter_init(string raw_archive);
+internal B32 coff_regular_archive_member_iter_next(string raw_archive, U64 *offset, COFF_ArchiveMember *member_out);
 
-internal U64 coff_thin_archive_member_iter_init(String8 raw_archive);
-internal B32 coff_thin_archive_member_iter_next(String8 raw_archive, U64 *offset, COFF_ArchiveMember *member_out);
+internal U64 coff_thin_archive_member_iter_init(string raw_archive);
+internal B32 coff_thin_archive_member_iter_next(string raw_archive, U64 *offset, COFF_ArchiveMember *member_out);
 
 internal COFF_ArchiveParse coff_regular_archive_parse_from_member_list(COFF_ArchiveMemberList list);
-internal COFF_ArchiveParse coff_thin_archive_parse_from_data          (String8 raw_archive);
-internal COFF_ArchiveParse coff_regular_archive_parse_from_data       (String8 raw_archive);
-internal COFF_ArchiveParse coff_archive_parse_from_data               (String8 raw_archive);
+internal COFF_ArchiveParse coff_thin_archive_parse_from_data          (string raw_archive);
+internal COFF_ArchiveParse coff_regular_archive_parse_from_data       (string raw_archive);
+internal COFF_ArchiveParse coff_archive_parse_from_data               (string raw_archive);
 
 #endif // COFF_PARSE_H

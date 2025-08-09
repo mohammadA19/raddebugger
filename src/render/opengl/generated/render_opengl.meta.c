@@ -4,19 +4,19 @@
 //- GENERATED CODE
 
 C_LINKAGE_BEGIN
-String8 r_ogl_shader_kind_name_table[2] =
+string r_ogl_shader_kind_name_table[2] =
 {
-str8_lit_comp("rect"),
-str8_lit_comp("blur"),
+("rect"),
+("blur"),
 };
 
-String8 * r_ogl_shader_kind_vshad_src_table[2] =
+string * r_ogl_shader_kind_vshad_src_table[2] =
 {
 &r_ogl_rect_vshad_src,
 &r_ogl_blur_vshad_src,
 };
 
-String8 * r_ogl_shader_kind_pshad_src_table[2] =
+string * r_ogl_shader_kind_pshad_src_table[2] =
 {
 &r_ogl_rect_pshad_src,
 &r_ogl_blur_pshad_src,

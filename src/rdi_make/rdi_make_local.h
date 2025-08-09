@@ -12,7 +12,7 @@
 
 //- rjf: base layer string overrides
 #define RDI_STRING8_OVERRIDE
-#define RDIM_String8            String8
+#define RDIM_String8            string
 #define RDIM_String8_BaseMember str
 #define RDIM_String8_SizeMember size
 #define RDI_STRING8LIST_OVERRIDE
@@ -377,7 +377,7 @@ global ASYNC_Root *rdim_local_async_root = 0;
 ////////////////////////////////
 
 internal RDIM_DataModel    rdim_data_model_from_os_arch(OperatingSystem os, RDI_Arch arch);
-internal RDIM_TopLevelInfo rdim_make_top_level_info(String8 image_name, Arch arch, U64 exe_hash, RDIM_BinarySectionList sections);
+internal RDIM_TopLevelInfo rdim_make_top_level_info(string image_name, Arch arch, U64 exe_hash, RDIM_BinarySectionList sections);
 
 ////////////////////////////////
 

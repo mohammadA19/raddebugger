@@ -236,7 +236,7 @@ struct FP_DWrite_FontFileStreamVTable
 struct FP_DWrite_FontFileStream
 {
   FP_DWrite_FontFileStreamVTable *lpVtbl;
-  String8 *data;
+  string *data;
 };
 
 struct FP_DWrite_FontFileStreamNode
@@ -282,7 +282,7 @@ internal FP_DWrite_Font fp_dwrite_font_from_handle(FP_Handle handle);
 internal FP_Handle fp_dwrite_handle_from_font(FP_DWrite_Font font);
 
 //- rjf: file stream allocator
-internal FP_DWrite_FontFileStreamNode *fp_dwrite_font_file_stream_node_alloc(String8 *data_ptr);
+internal FP_DWrite_FontFileStreamNode *fp_dwrite_font_file_stream_node_alloc(string *data_ptr);
 internal void fp_dwrite_font_file_stream_node_release(FP_DWrite_FontFileStreamNode *node);
 
 //- rjf: iunknown no-op helpers

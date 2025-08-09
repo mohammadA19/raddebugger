@@ -672,7 +672,7 @@ typedef enum ELF_Identifier
 } ELF_Identifier;
 
 read_only global U8 elf_magic[] = {0x7f, 'E', 'L', 'F'};
-read_only global String8 elf_magic_string = {elf_magic, sizeof(elf_magic)};
+read_only global string elf_magic_string = {elf_magic, sizeof(elf_magic)};
 
 typedef U16 ELF_Type;
 typedef enum ELF_TypeEnum
@@ -989,7 +989,7 @@ internal ELF_Chdr64 elf_chdr64_from_chdr32(ELF_Chdr32 chdr32);
 
 ////////////////////////////////
 
-internal String8 elf_string_from_class(Arena *arena, ELF_Class v);
+internal string elf_string_from_class(Arena *arena, ELF_Class v);
 
 ////////////////////////////////
 

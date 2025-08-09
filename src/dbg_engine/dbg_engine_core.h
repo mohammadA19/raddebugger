@@ -10,13 +10,13 @@
 typedef struct D_Target D_Target;
 struct D_Target
 {
-  String8 exe;
-  String8 args;
-  String8 working_directory;
-  String8 custom_entry_point_name;
-  String8 stdout_path;
-  String8 stderr_path;
-  String8 stdin_path;
+  string exe;
+  string args;
+  string working_directory;
+  string custom_entry_point_name;
+  string stdout_path;
+  string stderr_path;
+  string stdin_path;
   B32 debug_subprocesses;
   String8List env;
 };
@@ -41,10 +41,10 @@ struct D_Breakpoint
 {
   D_BreakpointFlags flags;
   U64 id;
-  String8 file_path;
+  string file_path;
   TxtPt pt;
-  String8 vaddr_expr;
-  String8 condition;
+  string vaddr_expr;
+  string condition;
   U64 size;
 };
 
@@ -58,8 +58,8 @@ struct D_BreakpointArray
 typedef struct D_PathMap D_PathMap;
 struct D_PathMap
 {
-  String8 src;
-  String8 dst;
+  string src;
+  string dst;
 };
 
 typedef struct D_PathMapArray D_PathMapArray;
@@ -123,7 +123,7 @@ struct D_EventList
 typedef struct D_Line D_Line;
 struct D_Line
 {
-  String8 file_path;
+  string file_path;
   TxtPt pt;
   Rng1U64 voff_range;
   DI_Key dbgi_key;
@@ -179,8 +179,8 @@ struct D_CmdParams
   CTRL_Handle process;
   CTRL_Handle thread;
   CTRL_Handle entity;
-  String8 string;
-  String8 file_path;
+  string string;
+  string file_path;
   TxtPt cursor;
   U64 vaddr;
   B32 prefer_disasm;
@@ -326,10 +326,10 @@ global D_State *d_state = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 d_hash_from_seed_string(U64 seed, String8 string);
-internal U64 d_hash_from_string(String8 string);
-internal U64 d_hash_from_seed_string__case_insensitive(U64 seed, String8 string);
-internal U64 d_hash_from_string__case_insensitive(String8 string);
+internal U64 d_hash_from_seed_string(U64 seed, string string);
+internal U64 d_hash_from_string(string string);
+internal U64 d_hash_from_seed_string__case_insensitive(U64 seed, string string);
+internal U64 d_hash_from_string__case_insensitive(string string);
 
 ////////////////////////////////
 //~ rjf: Breakpoints
@@ -339,7 +339,7 @@ internal D_BreakpointArray d_breakpoint_array_copy(Arena *arena, D_BreakpointArr
 ////////////////////////////////
 //~ rjf: Path Map Application
 
-internal String8List d_possible_path_overrides_from_maps_path(Arena *arena, D_PathMapArray *path_maps, String8 file_path);
+internal String8List d_possible_path_overrides_from_maps_path(Arena *arena, D_PathMapArray *path_maps, string file_path);
 
 ////////////////////////////////
 //~ rjf: Debug Info Extraction Type Pure Functions
@@ -366,7 +366,7 @@ internal CTRL_TrapList d_trap_net_from_thread__step_into_line(Arena *arena, CTRL
 //~ rjf: Debug Info Lookups
 
 //- rjf: symbol -> voff lookups
-internal U64 d_voff_from_dbgi_key_symbol_name(DI_Key *dbgi_key, String8 symbol_name);
+internal U64 d_voff_from_dbgi_key_symbol_name(DI_Key *dbgi_key, string symbol_name);
 
 //- rjf: voff -> line info
 internal D_LineList d_lines_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff);
@@ -374,10 +374,10 @@ internal D_LineList d_lines_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U
 //- rjf: file:line -> line info
 // TODO(rjf): this depends on file path maps, needs to move
 // TODO(rjf): need to clean this up & dedup
-internal D_LineListArray d_lines_array_from_dbgi_key_file_path_line_range(Arena *arena, DI_Key dbgi_key, String8 file_path, Rng1S64 line_num_range);
-internal D_LineListArray d_lines_array_from_file_path_line_range(Arena *arena, String8 file_path, Rng1S64 line_num_range);
-internal D_LineList d_lines_from_dbgi_key_file_path_line_num(Arena *arena, DI_Key dbgi_key, String8 file_path, S64 line_num);
-internal D_LineList d_lines_from_file_path_line_num(Arena *arena, String8 file_path, S64 line_num);
+internal D_LineListArray d_lines_array_from_dbgi_key_file_path_line_range(Arena *arena, DI_Key dbgi_key, string file_path, Rng1S64 line_num_range);
+internal D_LineListArray d_lines_array_from_file_path_line_range(Arena *arena, string file_path, Rng1S64 line_num_range);
+internal D_LineList d_lines_from_dbgi_key_file_path_line_num(Arena *arena, DI_Key dbgi_key, string file_path, S64 line_num);
+internal D_LineList d_lines_from_file_path_line_num(Arena *arena, string file_path, S64 line_num);
 
 ////////////////////////////////
 //~ rjf: Process/Thread/Module Info Lookups

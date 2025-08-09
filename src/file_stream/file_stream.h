@@ -28,7 +28,7 @@ struct FS_Node
   FS_Node *next;
   
   // rjf: file metadata
-  String8 path;
+  string path;
   FileProperties props;
   
   // rjf: hash store root
@@ -89,8 +89,8 @@ global FS_Shared *fs_shared = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 fs_little_hash_from_string(String8 string);
-internal U128 fs_big_hash_from_string_range(String8 string, Rng1U64 range);
+internal U64 fs_little_hash_from_string(string string);
+internal U128 fs_big_hash_from_string_range(string string, Rng1U64 range);
 
 ////////////////////////////////
 //~ rjf: Top-Level API
@@ -105,15 +105,15 @@ internal U64 fs_change_gen(void);
 ////////////////////////////////
 //~ rjf: Cache Interaction
 
-internal HS_Key fs_key_from_path_range(String8 path, Rng1U64 range, U64 endt_us);
-internal U128 fs_hash_from_path_range(String8 path, Rng1U64 range, U64 endt_us);
-internal FileProperties fs_properties_from_path(String8 path);
+internal HS_Key fs_key_from_path_range(string path, Rng1U64 range, U64 endt_us);
+internal U128 fs_hash_from_path_range(string path, Rng1U64 range, U64 endt_us);
+internal FileProperties fs_properties_from_path(string path);
 
 ////////////////////////////////
 //~ rjf: Streaming Work
 
-internal B32 fs_u2s_enqueue_req(HS_Key key, Rng1U64 range, String8 path, U64 endt_us);
-internal void fs_u2s_dequeue_req(Arena *arena, HS_Key *key_out, Rng1U64 *range_out, String8 *path_out);
+internal B32 fs_u2s_enqueue_req(HS_Key key, Rng1U64 range, string path, U64 endt_us);
+internal void fs_u2s_dequeue_req(Arena *arena, HS_Key *key_out, Rng1U64 *range_out, string *path_out);
 ASYNC_WORK_DEF(fs_stream_work);
 
 ////////////////////////////////

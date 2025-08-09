@@ -47,7 +47,7 @@ frame(void)
   {
     if(ev->kind != OS_EventKind_MouseMove)
     {
-      String8 string = push_str8f(scratch.arena, "%S (%S)\n", os_string_from_event_kind(ev->kind), os_g_key_display_string_table[ev->key]);
+      string string = push_str8f(scratch.arena, "%S (%S)\n", os_string_from_event_kind(ev->kind), os_g_key_display_string_table[ev->key]);
       printf("%.*s", str8_varg(string));
       raddbg_log((char *)string.str);
       fflush(stdout);
@@ -98,7 +98,7 @@ frame(void)
 internal void
 entry_point(CmdLine *cmdline)
 {
-  window_os = os_window_open(r2f32p(0, 0, 1280, 720), OS_WindowFlag_UseDefaultPosition, str8_lit("Window"));
+  window_os = os_window_open(r2f32p(0, 0, 1280, 720), OS_WindowFlag_UseDefaultPosition, ("Window"));
   os_window_first_paint(window_os);
   window_r = r_window_equip(window_os);
   for(;!update(););

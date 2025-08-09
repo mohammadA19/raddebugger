@@ -6,10 +6,10 @@
 typedef struct D2R_ConvertParams D2R_ConvertParams;
 struct D2R_ConvertParams
 {
-  String8 dbg_name;
-  String8 dbg_data;
-  String8 exe_name;
-  String8 exe_data;
+  string dbg_name;
+  string dbg_data;
+  string exe_name;
+  string exe_data;
   ExecutableImageKind exe_kind;
   RDIM_SubsetFlags subset_flags;
   B32 deterministic;
@@ -68,10 +68,10 @@ d2r_bytecode_from_expression(Arena       *arena,
                              U64          address_size,
                              Arch         arch,
                              DW_ListUnit *addr_lu,
-                             String8      expr,
+                             string      expr,
                              DW_CompUnit *cu,
                              B32         *is_addr_out);
-internal RDIM_Location *d2r_transpile_expression(Arena *arena, DW_Input *input, U64 image_base, U64 address_size, Arch arch, DW_ListUnit *addr_lu, DW_CompUnit *cu, String8 expr);
+internal RDIM_Location *d2r_transpile_expression(Arena *arena, DW_Input *input, U64 image_base, U64 address_size, Arch arch, DW_ListUnit *addr_lu, DW_CompUnit *cu, string expr);
 internal RDIM_Location *d2r_location_from_attrib(Arena *arena, DW_Input *input, DW_CompUnit *cu, U64 image_base, Arch arch, DW_Tag tag, DW_AttribKind kind);
 internal RDIM_LocationSet d2r_locset_from_attrib(Arena               *arena,
                                                  DW_Input            *input,

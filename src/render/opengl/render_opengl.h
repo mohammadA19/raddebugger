@@ -91,7 +91,7 @@ typedef struct R_OGL_Attribute R_OGL_Attribute;
 struct R_OGL_Attribute
 {
   U64 index;
-  String8 name;
+  string name;
   GLenum type;
   U64 count;
 };

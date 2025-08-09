@@ -94,7 +94,7 @@ cv_precomp_info_from_leaf(CV_Leaf leaf)
 //~ Leaf Helpers
 
 internal U64
-cv_compute_leaf_record_size(String8 data, U64 align)
+cv_compute_leaf_record_size(string data, U64 align)
 {
   U64 size = 0;
   size += sizeof(CV_LeafSize);
@@ -105,7 +105,7 @@ cv_compute_leaf_record_size(String8 data, U64 align)
 }
 
 internal U64
-cv_serialize_leaf_to_buffer(U8 *buffer, U64 buffer_cursor, U64 buffer_size, CV_LeafKind kind, String8 data, U64 align)
+cv_serialize_leaf_to_buffer(U8 *buffer, U64 buffer_cursor, U64 buffer_size, CV_LeafKind kind, string data, U64 align)
 {
   U64 buffer_cursor_start = buffer_cursor;
 
@@ -139,33 +139,33 @@ cv_serialize_leaf_to_buffer(U8 *buffer, U64 buffer_cursor, U64 buffer_size, CV_L
   return write_size;
 }
 
-internal String8
-cv_serialize_raw_leaf(Arena *arena, CV_LeafKind kind, String8 data, U64 align)
+internal string
+cv_serialize_raw_leaf(Arena *arena, CV_LeafKind kind, string data, U64 align)
 {
   U64      buffer_size = cv_compute_leaf_record_size(data, align);
   U8      *buffer      = push_array_no_zero(arena, U8, buffer_size);
   U64      size        = cv_serialize_leaf_to_buffer(buffer, 0, buffer_size, kind, data, align);
-  String8  raw_leaf    = str8(buffer, size);
+  string  raw_leaf    = str8(buffer, size);
   return raw_leaf;
 }
 
-internal String8
+internal string
 cv_serialize_leaf(Arena *arena, CV_Leaf *leaf, U64 align)
 {
   return cv_serialize_raw_leaf(arena, leaf->kind, leaf->data, align);
 }
 
 internal CV_Leaf
-cv_make_leaf(Arena *arena, CV_LeafKind kind, String8 data)
+cv_make_leaf(Arena *arena, CV_LeafKind kind, string data)
 {
   CV_Leaf result = {0};
-  String8 raw_leaf = cv_serialize_raw_leaf(arena, kind, data, 1);
+  string raw_leaf = cv_serialize_raw_leaf(arena, kind, data, 1);
   cv_deserial_leaf(raw_leaf, 0, 1, &result);
   return result;
 }
 
 internal U64
-cv_deserial_leaf(String8 raw_data, U64 off, U64 align, CV_Leaf *leaf_out)
+cv_deserial_leaf(string raw_data, U64 off, U64 align, CV_Leaf *leaf_out)
 {
   // do we have enough bytes to read header?
   Assert(raw_data.size >= sizeof(CV_LeafHeader));
@@ -188,7 +188,7 @@ cv_deserial_leaf(String8 raw_data, U64 off, U64 align, CV_Leaf *leaf_out)
 }
 
 internal CV_Leaf
-cv_leaf_from_string(String8 raw_data)
+cv_leaf_from_string(string raw_data)
 {
   CV_Leaf result;
   cv_deserial_leaf(raw_data, 0, 1, &result);
@@ -238,18 +238,18 @@ cv_serialize_symbol_to_buffer(U8 *buffer, U64 buffer_cursor, U64 buffer_size, CV
   return write_size;
 }
 
-internal String8
+internal string
 cv_serialize_symbol(Arena *arena, CV_Symbol *symbol, U64 align)
 {
   U64 buffer_size = cv_compute_symbol_record_size(symbol, align);
   U8 *buffer = push_array(arena, U8, buffer_size);
   cv_serialize_symbol_to_buffer(buffer, 0, buffer_size, symbol, align);
-  String8 result = str8(buffer, buffer_size);
+  string result = str8(buffer, buffer_size);
   return result;
 }
 
-internal String8
-cv_make_symbol(Arena *arena, CV_SymKind kind, String8 data)
+internal string
+cv_make_symbol(Arena *arena, CV_SymKind kind, string data)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -260,14 +260,14 @@ cv_make_symbol(Arena *arena, CV_SymKind kind, String8 data)
   str8_serial_push_struct(scratch.arena, &srl, &symbol_size);
   str8_serial_push_struct(scratch.arena, &srl, &kind);
   str8_serial_push_string(scratch.arena, &srl, data);
-  String8 symbol = str8_serial_end(arena, &srl);
+  string symbol = str8_serial_end(arena, &srl);
   scratch_end(scratch);
   ProfEnd();
   return symbol;
 }
 
-internal String8
-cv_make_obj_name(Arena *arena, String8 obj_path, U32 sig)
+internal string
+cv_make_obj_name(Arena *arena, string obj_path, U32 sig)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -279,19 +279,19 @@ cv_make_obj_name(Arena *arena, String8 obj_path, U32 sig)
   str8_serial_begin(scratch.arena, &serial);
   str8_serial_push_struct(scratch.arena, &serial, &obj);
   str8_serial_push_cstr(scratch.arena, &serial, obj_path);
-  String8 result = str8_serial_end(arena, &serial);
+  string result = str8_serial_end(arena, &serial);
   
   scratch_end(scratch);
   ProfEnd();
   return result;
 }
 
-internal String8
+internal string
 cv_make_comp3(Arena *arena,
               CV_Compile3Flags flags, CV_Language lang, CV_Arch arch, 
               U16 ver_fe_major, U16 ver_fe_minor, U16 ver_fe_build, U16 ver_feqfe,
               U16 ver_major, U16 ver_minor, U16 ver_build, U16 ver_qfe,
-              String8 version_string)
+              string version_string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -312,14 +312,14 @@ cv_make_comp3(Arena *arena,
   str8_serial_begin(scratch.arena, &serial);
   str8_serial_push_struct(scratch.arena, &serial, &comp);
   str8_serial_push_cstr(scratch.arena, &serial, version_string);
-  String8 result = str8_serial_end(arena, &serial);
+  string result = str8_serial_end(arena, &serial);
   
   scratch_end(scratch);
   ProfEnd();
   return result;
 }
 
-internal String8
+internal string
 cv_make_envblock(Arena *arena, String8List string_list)
 {
   ProfBeginFunction();
@@ -331,14 +331,14 @@ cv_make_envblock(Arena *arena, String8List string_list)
   for (String8Node *n = string_list.first; n != NULL; n = n->next) {
     str8_serial_push_cstr(scratch.arena, &serial, n->string);
   }
-  String8 result = str8_serial_end(arena, &serial);
+  string result = str8_serial_end(arena, &serial);
   scratch_end(scratch);
   ProfEnd();
   return result;
 }
 
 internal CV_Symbol
-cv_make_proc_ref(Arena *arena, CV_ModIndex imod, U32 stream_offset, String8 name, B32 is_local)
+cv_make_proc_ref(Arena *arena, CV_ModIndex imod, U32 stream_offset, string name, B32 is_local)
 {
   U64 buffer_size = sizeof(CV_SymRef2) + name.size + 1;
   U8 *buffer      = push_array_no_zero(arena, U8, buffer_size);
@@ -361,7 +361,7 @@ cv_make_proc_ref(Arena *arena, CV_ModIndex imod, U32 stream_offset, String8 name
 }
 
 internal CV_Symbol
-cv_make_pub32(Arena *arena, CV_Pub32Flags flags, U32 off, U16 isect, String8 name)
+cv_make_pub32(Arena *arena, CV_Pub32Flags flags, U32 off, U16 isect, string name)
 {
   U64 buffer_size = sizeof(CV_SymPub32) + name.size + 1;
   U8 *buffer      = push_array_no_zero(arena, U8, buffer_size);
@@ -389,12 +389,12 @@ cv_make_proc_refs(Arena *arena, CV_ModIndex imod, CV_SymbolList symbol_list)
   for (CV_SymbolNode *symbol_node = symbol_list.first; symbol_node != 0; symbol_node = symbol_node->next) {
     CV_Symbol *symbol = &symbol_node->data;
     if (symbol->kind == CV_SymKind_GPROC32) {
-      String8        name          = cv_name_from_symbol(symbol->kind, symbol->data);
+      string        name          = cv_name_from_symbol(symbol->kind, symbol->data);
       CV_Symbol      ref           = cv_make_proc_ref(arena, imod, safe_cast_u32(symbol->offset), name, /* is_local: */ 0);
       CV_SymbolNode *proc_ref_node = cv_symbol_list_push(arena, &proc_ref_list);
       proc_ref_node->data = ref;
     } else if (symbol->kind == CV_SymKind_LPROC32) {
-      String8        name          = cv_name_from_symbol(symbol->kind, symbol->data);
+      string        name          = cv_name_from_symbol(symbol->kind, symbol->data);
       CV_Symbol      ref           = cv_make_proc_ref(arena, imod, safe_cast_u32(symbol->offset), name, /* is_local */ 1);
       CV_SymbolNode *proc_ref_node = cv_symbol_list_push(arena, &proc_ref_list);
       proc_ref_node->data = ref;
@@ -407,7 +407,7 @@ cv_make_proc_refs(Arena *arena, CV_ModIndex imod, CV_SymbolList symbol_list)
 //~ .debug$S helpers
 
 internal void
-cv_parse_debug_s_c13_(Arena *arena, CV_DebugS *debug_s, String8 raw_debug_s)
+cv_parse_debug_s_c13_(Arena *arena, CV_DebugS *debug_s, string raw_debug_s)
 {
   for (U64 cursor = 0; cursor + sizeof(CV_C13SubSectionHeader) <= raw_debug_s.size; ) {
     // read header
@@ -421,7 +421,7 @@ cv_parse_debug_s_c13_(Arena *arena, CV_DebugS *debug_s, String8 raw_debug_s)
 
       // push data to sub-section
       Rng1U64 sub_sect_range = r1u64(cursor, cursor + header.size);
-      String8 sub_sect_data  = str8_substr(raw_debug_s, sub_sect_range);
+      string sub_sect_data  = str8_substr(raw_debug_s, sub_sect_range);
       str8_list_push(arena, sub_sect_list, sub_sect_data);
     }
 
@@ -432,7 +432,7 @@ cv_parse_debug_s_c13_(Arena *arena, CV_DebugS *debug_s, String8 raw_debug_s)
 }
 
 internal CV_DebugS
-cv_parse_debug_s_c13(Arena *arena, String8 raw_debug_s)
+cv_parse_debug_s_c13(Arena *arena, string raw_debug_s)
 {
   CV_DebugS debug_s = {0};
   cv_parse_debug_s_c13_(arena, &debug_s, raw_debug_s);
@@ -450,14 +450,14 @@ cv_parse_debug_s_c13_list(Arena *arena, String8List raw_debug_s)
 }
 
 internal CV_DebugS 
-cv_parse_debug_s(Arena *arena, String8 raw_debug_s)
+cv_parse_debug_s(Arena *arena, string raw_debug_s)
 {
   CV_DebugS result; MemoryZeroStruct(&result);
   if (raw_debug_s.size >= sizeof(CV_Signature)) {
     CV_Signature sig = *(CV_Signature *)raw_debug_s.str;
     switch (sig) {
     case CV_Signature_C13: {
-      String8 raw_debug_s_past_sig = str8_substr(raw_debug_s, r1u64(sizeof(sig), raw_debug_s.size));
+      string raw_debug_s_past_sig = str8_substr(raw_debug_s, r1u64(sizeof(sig), raw_debug_s.size));
       result = cv_parse_debug_s_c13(arena, raw_debug_s_past_sig);
     } break;
     case CV_Signature_C6: {
@@ -559,22 +559,22 @@ cv_sub_section_from_debug_s(CV_DebugS debug_s, CV_C13SubSectionKind kind)
   return *list_ptr;
 }
 
-internal String8
+internal string
 cv_string_table_from_debug_s(CV_DebugS debug_s)
 {
   String8List data_list = cv_sub_section_from_debug_s(debug_s, CV_C13SubSectionKind_StringTable);
-  String8 string_data = str8_zero();
+  string string_data = str8_zero();
   if (data_list.node_count > 0) {
     string_data = data_list.first->string;
   }
   return string_data;
 }
 
-internal String8
+internal string
 cv_file_chksms_from_debug_s(CV_DebugS debug_s)
 {
   String8List data_list = cv_sub_section_from_debug_s(debug_s, CV_C13SubSectionKind_FileChksms);
-  String8 file_chksms = str8_zero();
+  string file_chksms = str8_zero();
   if (data_list.node_count > 0) {
     file_chksms = data_list.first->string;
   }
@@ -585,7 +585,7 @@ cv_file_chksms_from_debug_s(CV_DebugS debug_s)
 //~ String Table Deduper
 
 internal U64
-cv_string_hash_table_hash(String8 string)
+cv_string_hash_table_hash(string string)
 {
   return hash_from_str8(string);
 }
@@ -677,7 +677,7 @@ THREAD_POOL_TASK_FUNC(cv_count_strings_in_debug_s_arr_task)
 
   for (CV_StringTableRange *range_n = range_list; range_n != 0; range_n = range_n->next) {
     CV_DebugS debug_s       = task->arr[range_n->debug_s_idx];
-    String8   string_buffer = cv_string_table_from_debug_s(debug_s);
+    string   string_buffer = cv_string_table_from_debug_s(debug_s);
 
     Assert(range_n->range.min <= range_n->range.max);
     Assert(range_n->range.min <= string_buffer.size);
@@ -707,8 +707,8 @@ THREAD_POOL_TASK_FUNC(cv_dedup_strings_in_debug_s_arr_task)
   CV_DedupStringTablesTask *task        = raw_task;
   CV_DebugS                 debug_s     = task->arr[debug_s_idx];
 
-  String8     string_table = cv_string_table_from_debug_s(debug_s);
-  String8List strings_list = str8_split_by_string_chars(scratch.arena, string_table, str8_lit("\0"), 0);
+  string     string_table = cv_string_table_from_debug_s(debug_s);
+  String8List strings_list = str8_split_by_string_chars(scratch.arena, string_table, ("\0"), 0);
 
   CV_StringBucket *bucket = 0;
 
@@ -756,7 +756,7 @@ cv_dedup_string_tables(TP_Arena *arena, TP_Context *tp, U64 count, CV_DebugS *ar
   ProfBegin("Compute Total Weight");
   U64 total_weight = 0;
   for (U64 i = 0; i < count; ++i) {
-    String8 string_table = cv_string_table_from_debug_s(arr[i]);
+    string string_table = cv_string_table_from_debug_s(arr[i]);
     total_weight += string_table.size;
   }
   ProfEnd();
@@ -768,7 +768,7 @@ cv_dedup_string_tables(TP_Arena *arena, TP_Context *tp, U64 count, CV_DebugS *ar
 
   ProfBegin("Divide Work");
   for (U64 debug_s_idx = 0; debug_s_idx < count; ++debug_s_idx) {
-    String8 string_table = cv_string_table_from_debug_s(arr[debug_s_idx]);
+    string string_table = cv_string_table_from_debug_s(arr[debug_s_idx]);
 
     for (U64 cursor = 0; cursor < string_table.size; cursor += per_task_weight) {
       if (task_weight >= per_task_weight) {
@@ -858,7 +858,7 @@ cv_string_hash_table_assign_buffer_offsets(TP_Context *tp, CV_StringHashTable st
 }
 
 internal CV_StringBucket *
-cv_string_hash_table_lookup(CV_StringHashTable ht, String8 string)
+cv_string_hash_table_lookup(CV_StringHashTable ht, string string)
 {
   U64 hash     = cv_string_hash_table_hash(string);
   U64 best_idx = hash % ht.bucket_cap;
@@ -895,7 +895,7 @@ THREAD_POOL_TASK_FUNC(cv_pack_string_hash_table_task)
   ProfEnd();
 }
 
-internal String8
+internal string
 cv_pack_string_hash_table(Arena *arena, TP_Context *tp, CV_StringHashTable string_ht)
 {
   ProfBeginFunction();
@@ -910,7 +910,7 @@ cv_pack_string_hash_table(Arena *arena, TP_Context *tp, CV_StringHashTable strin
   task.ranges                     = tp_divide_work(scratch.arena, string_ht.bucket_cap, tp->worker_count);
   tp_for_parallel(tp, 0, tp->worker_count, cv_pack_string_hash_table_task, &task);
 
-  String8 result = str8(buffer, buffer_size);
+  string result = str8(buffer, buffer_size);
   scratch_end(scratch);
   ProfEnd();
   return result;
@@ -1066,7 +1066,7 @@ cv_debug_t_from_data_arr(Arena *arena, String8Array data_arr, U64 align)
   ProfBegin("Upfront parse");
   U64 max_leaf_count = 0;
   for (U64 data_idx = 0; data_idx < data_arr.count; data_idx += 1) {
-    String8 data = data_arr.v[data_idx];
+    string data = data_arr.v[data_idx];
     for (U64 cursor = 0; cursor < data.size; ) {
       CV_Leaf leaf;
       cursor += cv_deserial_leaf(data, cursor, align, &leaf);
@@ -1078,7 +1078,7 @@ cv_debug_t_from_data_arr(Arena *arena, String8Array data_arr, U64 align)
   U8 **leaf_arr   = push_array_no_zero(arena, U8 *, max_leaf_count);
   U64  leaf_count = 0;
   for (U64 data_idx = 0; data_idx < data_arr.count; data_idx += 1) {
-    String8 data = data_arr.v[data_idx];
+    string data = data_arr.v[data_idx];
 
     U64 cursor = 0;
     while (cursor < data.size) {
@@ -1101,7 +1101,7 @@ cv_debug_t_from_data_arr(Arena *arena, String8Array data_arr, U64 align)
 }
 
 internal CV_DebugT
-cv_debug_t_from_data(Arena *arena, String8 data, U64 align)
+cv_debug_t_from_data(Arena *arena, string data, U64 align)
 {
   String8Array arr = {0};
   arr.count        = 1;
@@ -1115,7 +1115,7 @@ cv_debug_t_get_leaf(CV_DebugT debug_t, U64 leaf_idx)
   Assert(leaf_idx < debug_t.count);
 
   U8 *ptr = debug_t.v[leaf_idx];
-  String8 data = str8(ptr, max_U64);
+  string data = str8(ptr, max_U64);
 
   CV_Leaf leaf;
   cv_deserial_leaf(data, 0, 1, &leaf);
@@ -1126,14 +1126,14 @@ cv_debug_t_get_leaf(CV_DebugT debug_t, U64 leaf_idx)
   return leaf;
 }
 
-internal String8
+internal string
 cv_debug_t_get_raw_leaf(CV_DebugT debug_t, U64 leaf_idx)
 {
   Assert(leaf_idx < debug_t.count);
   U8          *leaf_ptr   = debug_t.v[leaf_idx];
   CV_LeafSize *size_ptr   = (CV_LeafSize *)leaf_ptr;
   CV_LeafSize  total_size = sizeof(*size_ptr) + *size_ptr;
-  String8 raw_leaf = str8(leaf_ptr, total_size);
+  string raw_leaf = str8(leaf_ptr, total_size);
   return raw_leaf;
 }
 
@@ -1213,7 +1213,7 @@ cv_str8_list_from_debug_t_parallel(TP_Context *tp, Arena *arena, CV_DebugT debug
 // $$Symbols
 
 internal void
-cv_parse_symbol_sub_section_capped(Arena *arena, CV_SymbolList *list, U64 offset_base, String8 data, U64 align, U64 cap)
+cv_parse_symbol_sub_section_capped(Arena *arena, CV_SymbolList *list, U64 offset_base, string data, U64 align, U64 cap)
 {
   U64 count = 0;
   for (U64 cursor = 0, opl = data.size; cursor < opl && count < cap; count += 1) {
@@ -1236,7 +1236,7 @@ cv_parse_symbol_sub_section_capped(Arena *arena, CV_SymbolList *list, U64 offset
     
     // get symbol data
     Rng1U64 symbol_data_range = r1u64(cursor, symbol_opl);
-    String8 symbol_data       = str8_substr(data, symbol_data_range);
+    string symbol_data       = str8_substr(data, symbol_data_range);
     
     // init symbol
     CV_SymbolNode *node = cv_symbol_list_push(arena, list);
@@ -1251,7 +1251,7 @@ cv_parse_symbol_sub_section_capped(Arena *arena, CV_SymbolList *list, U64 offset
 }
 
 internal void
-cv_parse_symbol_sub_section(Arena *arena, CV_SymbolList *list, U64 offset_base, String8 data, U64 align)
+cv_parse_symbol_sub_section(Arena *arena, CV_SymbolList *list, U64 offset_base, string data, U64 align)
 {
   cv_parse_symbol_sub_section_capped(arena, list, offset_base, data, align, max_U64);
 }
@@ -1285,7 +1285,7 @@ cv_symbol_list_push(Arena *arena, CV_SymbolList *list)
 }
 
 internal CV_SymbolNode *
-cv_symbol_list_push_data(Arena *arena, CV_SymbolList *list, CV_SymKind kind, String8 data)
+cv_symbol_list_push_data(Arena *arena, CV_SymbolList *list, CV_SymKind kind, string data)
 {
   CV_SymbolNode *node = cv_symbol_list_push(arena, list);
   node->data.kind = kind;
@@ -1338,7 +1338,7 @@ cv_data_from_symbol_list(Arena *arena, CV_SymbolList symbol_list, U64 align)
 {
   String8List data_list = {0};
   for (CV_SymbolNode *node = symbol_list.first; node != 0; node = node->next) {
-    String8 data = cv_serialize_symbol(arena, &node->data, align);
+    string data = cv_serialize_symbol(arena, &node->data, align);
     str8_list_push(arena, &data_list, data);
   }
   return data_list;
@@ -1535,7 +1535,7 @@ cv_patch_symbol_tree_offsets(CV_SymbolList list, U64 base_offset, U64 align)
 // $$FileChksms
 
 internal void
-cv_parse_checksum_data(Arena *arena, CV_ChecksumList *list, String8 checksum_data)
+cv_parse_checksum_data(Arena *arena, CV_ChecksumList *list, string checksum_data)
 {
   for (U64 cursor = 0, cursor_opl = checksum_data.size; cursor < cursor_opl; ) {
     U64 expected_cursor_after_checksum = cursor + sizeof(CV_C13Checksum);
@@ -1549,7 +1549,7 @@ cv_parse_checksum_data(Arena *arena, CV_ChecksumList *list, String8 checksum_dat
     if (expected_cursor_after_value > cursor_opl) {
       break;
     }
-    String8 value = str8(0,0);
+    string value = str8(0,0);
     cursor += str8_deserial_read_block(checksum_data, cursor, header->len, &value);
     cursor = AlignPow2(cursor, 4);
     
@@ -1576,12 +1576,12 @@ cv_c13_parse_checksum_data_list(Arena *arena, String8List checksum_data_list)
 }
 
 internal void
-cv_c13_patch_string_offsets_in_checksum_list(CV_ChecksumList checksum_list, String8 string_data, U64 string_data_base_offset, CV_StringHashTable string_ht)
+cv_c13_patch_string_offsets_in_checksum_list(CV_ChecksumList checksum_list, string string_data, U64 string_data_base_offset, CV_StringHashTable string_ht)
 {
   for (CV_ChecksumNode *node = checksum_list.first; node != 0; node = node->next) {
     CV_Checksum     *checksum = &node->data;
     CV_C13Checksum  *header   = checksum->header;
-    String8          name     = str8_cstring_capped(string_data.str + header->name_off, string_data.str + string_data.size);
+    string          name     = str8_cstring_capped(string_data.str + header->name_off, string_data.str + string_data.size);
     CV_StringBucket *bucket   = cv_string_hash_table_lookup(string_ht, name);
 
     U64 name_off64 = string_data_base_offset + bucket->u.offset;
@@ -1590,14 +1590,14 @@ cv_c13_patch_string_offsets_in_checksum_list(CV_ChecksumList checksum_list, Stri
 }
 
 internal String8List
-cv_c13_collect_source_file_names(Arena *arena, CV_ChecksumList checksum_list, String8 string_data)
+cv_c13_collect_source_file_names(Arena *arena, CV_ChecksumList checksum_list, string string_data)
 {
   String8List source_file_name_list = {0};
   for (CV_ChecksumNode *node = checksum_list.first; node != 0; node = node->next) {
     CV_Checksum *checksum = &node->data;
     CV_C13Checksum *header = checksum->header;
     Assert(header->name_off < string_data.size);
-    String8 name = str8_cstring_capped(string_data.str + header->name_off, string_data.str + string_data.size);
+    string name = str8_cstring_capped(string_data.str + header->name_off, string_data.str + string_data.size);
     str8_list_push(arena, &source_file_name_list, name);
   }
   return source_file_name_list;
@@ -1606,13 +1606,13 @@ cv_c13_collect_source_file_names(Arena *arena, CV_ChecksumList checksum_list, St
 // $$Lines
 
 internal CV_C13LinesHeaderList
-cv_c13_lines_from_sub_sections(Arena *arena, String8 c13_data, Rng1U64 ss_range)
+cv_c13_lines_from_sub_sections(Arena *arena, string c13_data, Rng1U64 ss_range)
 {
   ProfBeginFunction();
 
   CV_C13LinesHeaderList parsed_line_list = {0};
 
-  String8 sub_sect_data  = str8_substr(c13_data, ss_range);
+  string sub_sect_data  = str8_substr(c13_data, ss_range);
 
   for (U64 cursor = 0; cursor + sizeof(CV_C13SubSecLinesHeader) <= sub_sect_data.size; ) {
     CV_C13SubSecLinesHeader *hdr = (CV_C13SubSecLinesHeader *)(sub_sect_data.str + cursor);
@@ -1668,7 +1668,7 @@ cv_c13_lines_from_sub_sections(Arena *arena, String8 c13_data, Rng1U64 ss_range)
 }
 
 internal CV_LineArray
-cv_c13_line_array_from_data(Arena *arena, String8 c13_data, U64 sec_base, CV_C13LinesHeader parsed_lines)
+cv_c13_line_array_from_data(Arena *arena, string c13_data, U64 sec_base, CV_C13LinesHeader parsed_lines)
 {
   CV_LineArray result;
   result.file_off   = parsed_lines.file_off;
@@ -1698,7 +1698,7 @@ cv_c13_patch_checksum_offsets_in_line_data_list(String8List line_data, U64 check
 {
   for(String8Node *node = line_data.first; node != 0; node = node->next)
   {
-    String8 raw_data = node->string;
+    string raw_data = node->string;
     if(raw_data.size < sizeof(CV_C13SubSecLinesHeader))
     {
       Assert(!"unable to patch checksum in line sub seciton header");
@@ -1769,7 +1769,7 @@ cv_c13_patch_checksum_offsets_in_frame_data_list(String8List frame_data, U32 che
 {
   for(String8Node *node = frame_data.first; node != 0; node = node->next)
   {
-    String8 raw_data = node->string;
+    string raw_data = node->string;
     U64 count = raw_data.size / sizeof(CV_C13FrameData);
     CV_C13FrameData *arr = (CV_C13FrameData *)raw_data.str;
     CV_C13FrameData *ptr = arr;
@@ -1962,7 +1962,7 @@ internal CV_InlineBinaryAnnotsParsed
 cv_c13_parse_inline_binary_annots(Arena                    *arena,
                                   U64                       parent_voff,
                                   CV_C13InlineeLinesParsed *inlinee_parsed,
-                                  String8                   binary_annots)
+                                  string                   binary_annots)
 {
   Temp scratch = scratch_begin(&arena, 1);
 

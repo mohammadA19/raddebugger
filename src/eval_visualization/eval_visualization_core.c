@@ -52,7 +52,7 @@ ev_key_match(EV_Key a, EV_Key b)
 }
 
 internal U64
-ev_hash_from_seed_string(U64 seed, String8 string)
+ev_hash_from_seed_string(U64 seed, string string)
 {
   U64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
   return result;
@@ -247,10 +247,10 @@ ev_expansion_from_key(EV_View *view, EV_Key key)
   return (node != 0 && node->expanded);
 }
 
-internal String8
+internal string
 ev_view_rule_from_key(EV_View *view, EV_Key key)
 {
-  String8 result = {0};
+  string result = {0};
   
   //- rjf: key -> hash * slot idx * slot
   U64 hash = ev_hash_from_key(key);
@@ -350,7 +350,7 @@ ev_key_set_expansion(EV_View *view, EV_Key parent_key, EV_Key key, B32 expanded)
 }
 
 internal void
-ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_string)
+ev_key_set_view_rule(EV_View *view, EV_Key key, string view_rule_string)
 {
   //- rjf: key -> hash * slot idx * slot
   U64 hash = ev_hash_from_key(key);
@@ -414,7 +414,7 @@ ev_select_expand_rule_table(EV_ExpandRuleTable *table)
 }
 
 internal EV_ExpandRule *
-ev_expand_rule_from_string(String8 string)
+ev_expand_rule_from_string(string string)
 {
   EV_ExpandRule *info = &ev_nil_expand_rule;
   if(ev_view_rule_info_table != 0 && ev_view_rule_info_table->slots_count != 0)
@@ -464,7 +464,7 @@ ev_expand_rule_from_type_key(E_TypeKey type_key)
 //~ rjf: Block Building
 
 internal EV_BlockTree
-ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root_eval)
+ev_block_tree_from_eval(Arena *arena, EV_View *view, string filter, E_Eval root_eval)
 {
   ProfBeginFunction();
   EV_BlockTree tree = {&ev_nil_block};
@@ -557,7 +557,7 @@ ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root
       }
       
       // rjf: get filter for this task
-      String8 task_filter = t->depth == 0 ? filter : str8_zero();
+      string task_filter = t->depth == 0 ? filter : str8_zero();
       
       // rjf: get top-level lookup/expansion info
       E_TypeExpandInfo type_expand_info = type_expand_rule->info(arena, eval, task_filter);
@@ -938,7 +938,7 @@ ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_Block
       Rng1U64 block_relative_range = n->v.range;
       U64 block_num_visual_rows = dim_1u64(block_relative_range);
       Rng1U64 block_global_range = r1u64(base_vnum, base_vnum + block_num_visual_rows);
-      String8 block_filter = n->v.block->filter;
+      string block_filter = n->v.block->filter;
       
       // rjf: get skip/chop of global range
       U64 num_skipped = 0;
@@ -1113,24 +1113,24 @@ ev_row_is_editable(EV_Row *row)
 
 //- rjf: leaf stringification
 
-internal String8
+internal string
 ev_string_from_ascii_value(Arena *arena, U8 val)
 {
-  String8 result = {0};
+  string result = {0};
   switch(val)
   {
-    case 0x00:{result = str8_lit("\\0");}break;
-    case 0x07:{result = str8_lit("\\a");}break;
-    case 0x08:{result = str8_lit("\\b");}break;
-    case 0x0c:{result = str8_lit("\\f");}break;
-    case 0x0a:{result = str8_lit("\\n");}break;
-    case 0x0d:{result = str8_lit("\\r");}break;
-    case 0x09:{result = str8_lit("\\t");}break;
-    case 0x0b:{result = str8_lit("\\v");}break;
-    case 0x3f:{result = str8_lit("\\?");}break;
-    case '"': {result = str8_lit("\\\"");}break;
-    case '\'':{result = str8_lit("\\'");}break;
-    case '\\':{result = str8_lit("\\\\");}break;
+    case 0x00:{result = ("\\0");}break;
+    case 0x07:{result = ("\\a");}break;
+    case 0x08:{result = ("\\b");}break;
+    case 0x0c:{result = ("\\f");}break;
+    case 0x0a:{result = ("\\n");}break;
+    case 0x0d:{result = ("\\r");}break;
+    case 0x09:{result = ("\\t");}break;
+    case 0x0b:{result = ("\\v");}break;
+    case 0x3f:{result = ("\\?");}break;
+    case '"': {result = ("\\\"");}break;
+    case '\'':{result = ("\\'");}break;
+    case '\\':{result = ("\\\\");}break;
     default:
     if(32 <= val && val < 255)
     {
@@ -1140,162 +1140,162 @@ ev_string_from_ascii_value(Arena *arena, U8 val)
   return result;
 }
 
-internal String8
+internal string
 ev_string_from_hresult_facility_code(U32 code)
 {
-  String8 result = {0};
+  string result = {0};
   switch(code)
   {
     default:{}break;
-    case 0x1:{result = str8_lit("RPC");}break;
-    case 0x2:{result = str8_lit("DISPATCH");}break;
-    case 0x3:{result = str8_lit("STORAGE");}break;
-    case 0x4:{result = str8_lit("ITF");}break;
-    case 0x7:{result = str8_lit("WIN32");}break;
-    case 0x8:{result = str8_lit("WINDOWS");}break;
-    case 0x9:{result = str8_lit("SECURITY|SSPI");}break;
-    case 0xA:{result = str8_lit("CONTROL");}break;
-    case 0xB:{result = str8_lit("CERT");}break;
-    case 0xC:{result = str8_lit("INTERNET");}break;
-    case 0xD:{result = str8_lit("MEDIASERVER");}break;
-    case 0xE:{result = str8_lit("MSMQ");}break;
-    case 0xF:{result = str8_lit("SETUPAPI");}break;
-    case 0x10:{result = str8_lit("SCARD");}break;
-    case 0x11:{result = str8_lit("COMPLUS");}break;
-    case 0x12:{result = str8_lit("AAF");}break;
-    case 0x13:{result = str8_lit("URT");}break;
-    case 0x14:{result = str8_lit("ACS");}break;
-    case 0x15:{result = str8_lit("DPLAY");}break;
-    case 0x16:{result = str8_lit("UMI");}break;
-    case 0x17:{result = str8_lit("SXS");}break;
-    case 0x18:{result = str8_lit("WINDOWS_CE");}break;
-    case 0x19:{result = str8_lit("HTTP");}break;
-    case 0x1A:{result = str8_lit("USERMODE_COMMONLOG");}break;
-    case 0x1B:{result = str8_lit("WER");}break;
-    case 0x1F:{result = str8_lit("USERMODE_FILTER_MANAGER");}break;
-    case 0x20:{result = str8_lit("BACKGROUNDCOPY");}break;
-    case 0x21:{result = str8_lit("CONFIGURATION|WIA");}break;
-    case 0x22:{result = str8_lit("STATE_MANAGEMENT");}break;
-    case 0x23:{result = str8_lit("METADIRECTORY");}break;
-    case 0x24:{result = str8_lit("WINDOWSUPDATE");}break;
-    case 0x25:{result = str8_lit("DIRECTORYSERVICE");}break;
-    case 0x26:{result = str8_lit("GRAPHICS");}break;
-    case 0x27:{result = str8_lit("SHELL|NAP");}break;
-    case 0x28:{result = str8_lit("TPM_SERVICES");}break;
-    case 0x29:{result = str8_lit("TPM_SOFTWARE");}break;
-    case 0x2A:{result = str8_lit("UI");}break;
-    case 0x2B:{result = str8_lit("XAML");}break;
-    case 0x2C:{result = str8_lit("ACTION_QUEUE");}break;
-    case 0x30:{result = str8_lit("WINDOWS_SETUP|PLA");}break;
-    case 0x31:{result = str8_lit("FVE");}break;
-    case 0x32:{result = str8_lit("FWP");}break;
-    case 0x33:{result = str8_lit("WINRM");}break;
-    case 0x34:{result = str8_lit("NDIS");}break;
-    case 0x35:{result = str8_lit("USERMODE_HYPERVISOR");}break;
-    case 0x36:{result = str8_lit("CMI");}break;
-    case 0x37:{result = str8_lit("USERMODE_VIRTUALIZATION");}break;
-    case 0x38:{result = str8_lit("USERMODE_VOLMGR");}break;
-    case 0x39:{result = str8_lit("BCD");}break;
-    case 0x3A:{result = str8_lit("USERMODE_VHD");}break;
-    case 0x3C:{result = str8_lit("SDIAG");}break;
-    case 0x3D:{result = str8_lit("WINPE|WEBSERVICES");}break;
-    case 0x3E:{result = str8_lit("WPN");}break;
-    case 0x3F:{result = str8_lit("WINDOWS_STORE");}break;
-    case 0x40:{result = str8_lit("INPUT");}break;
-    case 0x42:{result = str8_lit("EAP");}break;
-    case 0x50:{result = str8_lit("WINDOWS_DEFENDER");}break;
-    case 0x51:{result = str8_lit("OPC");}break;
-    case 0x52:{result = str8_lit("XPS");}break;
-    case 0x53:{result = str8_lit("RAS");}break;
-    case 0x54:{result = str8_lit("POWERSHELL|MBN");}break;
-    case 0x55:{result = str8_lit("EAS");}break;
-    case 0x62:{result = str8_lit("P2P_INT");}break;
-    case 0x63:{result = str8_lit("P2P");}break;
-    case 0x64:{result = str8_lit("DAF");}break;
-    case 0x65:{result = str8_lit("BLUETOOTH_ATT");}break;
-    case 0x66:{result = str8_lit("AUDIO");}break;
-    case 0x6D:{result = str8_lit("VISUALCPP");}break;
-    case 0x70:{result = str8_lit("SCRIPT");}break;
-    case 0x71:{result = str8_lit("PARSE");}break;
-    case 0x78:{result = str8_lit("BLB");}break;
-    case 0x79:{result = str8_lit("BLB_CLI");}break;
-    case 0x7A:{result = str8_lit("WSBAPP");}break;
-    case 0x80:{result = str8_lit("BLBUI");}break;
-    case 0x81:{result = str8_lit("USN");}break;
-    case 0x82:{result = str8_lit("USERMODE_VOLSNAP");}break;
-    case 0x83:{result = str8_lit("TIERING");}break;
-    case 0x85:{result = str8_lit("WSB_ONLINE");}break;
-    case 0x86:{result = str8_lit("ONLINE_ID");}break;
-    case 0x99:{result = str8_lit("DLS");}break;
-    case 0xA0:{result = str8_lit("SOS");}break;
-    case 0xB0:{result = str8_lit("DEBUGGERS");}break;
-    case 0xE7:{result = str8_lit("USERMODE_SPACES");}break;
-    case 0x100:{result = str8_lit("DMSERVER|RESTORE|SPP");}break;
-    case 0x101:{result = str8_lit("DEPLOYMENT_SERVICES_SERVER");}break;
-    case 0x102:{result = str8_lit("DEPLOYMENT_SERVICES_IMAGING");}break;
-    case 0x103:{result = str8_lit("DEPLOYMENT_SERVICES_MANAGEMENT");}break;
-    case 0x104:{result = str8_lit("DEPLOYMENT_SERVICES_UTIL");}break;
-    case 0x105:{result = str8_lit("DEPLOYMENT_SERVICES_BINLSVC");}break;
-    case 0x107:{result = str8_lit("DEPLOYMENT_SERVICES_PXE");}break;
-    case 0x108:{result = str8_lit("DEPLOYMENT_SERVICES_TFTP");}break;
-    case 0x110:{result = str8_lit("DEPLOYMENT_SERVICES_TRANSPORT_MANAGEMENT");}break;
-    case 0x116:{result = str8_lit("DEPLOYMENT_SERVICES_DRIVER_PROVISIONING");}break;
-    case 0x121:{result = str8_lit("DEPLOYMENT_SERVICES_MULTICAST_SERVER");}break;
-    case 0x122:{result = str8_lit("DEPLOYMENT_SERVICES_MULTICAST_CLIENT");}break;
-    case 0x125:{result = str8_lit("DEPLOYMENT_SERVICES_CONTENT_PROVIDER");}break;
-    case 0x131:{result = str8_lit("LINGUISTIC_SERVICES");}break;
-    case 0x375:{result = str8_lit("WEB");}break;
-    case 0x376:{result = str8_lit("WEB_SOCKET");}break;
-    case 0x446:{result = str8_lit("AUDIOSTREAMING");}break;
-    case 0x600:{result = str8_lit("ACCELERATOR");}break;
-    case 0x701:{result = str8_lit("MOBILE");}break;
-    case 0x7CC:{result = str8_lit("WMAAECMA");}break;
-    case 0x801:{result = str8_lit("WEP");}break;
-    case 0x802:{result = str8_lit("SYNCENGINE");}break;
-    case 0x878:{result = str8_lit("DIRECTMUSIC");}break;
-    case 0x879:{result = str8_lit("DIRECT3D10");}break;
-    case 0x87A:{result = str8_lit("DXGI");}break;
-    case 0x87B:{result = str8_lit("DXGI_DDI");}break;
-    case 0x87C:{result = str8_lit("DIRECT3D11");}break;
-    case 0x888:{result = str8_lit("LEAP");}break;
-    case 0x889:{result = str8_lit("AUDCLNT");}break;
-    case 0x898:{result = str8_lit("WINCODEC_DWRITE_DWM");}break;
-    case 0x899:{result = str8_lit("DIRECT2D");}break;
-    case 0x900:{result = str8_lit("DEFRAG");}break;
-    case 0x901:{result = str8_lit("USERMODE_SDBUS");}break;
-    case 0x902:{result = str8_lit("JSCRIPT");}break;
-    case 0xA01:{result = str8_lit("PIDGENX");}break;
+    case 0x1:{result = ("RPC");}break;
+    case 0x2:{result = ("DISPATCH");}break;
+    case 0x3:{result = ("STORAGE");}break;
+    case 0x4:{result = ("ITF");}break;
+    case 0x7:{result = ("WIN32");}break;
+    case 0x8:{result = ("WINDOWS");}break;
+    case 0x9:{result = ("SECURITY|SSPI");}break;
+    case 0xA:{result = ("CONTROL");}break;
+    case 0xB:{result = ("CERT");}break;
+    case 0xC:{result = ("INTERNET");}break;
+    case 0xD:{result = ("MEDIASERVER");}break;
+    case 0xE:{result = ("MSMQ");}break;
+    case 0xF:{result = ("SETUPAPI");}break;
+    case 0x10:{result = ("SCARD");}break;
+    case 0x11:{result = ("COMPLUS");}break;
+    case 0x12:{result = ("AAF");}break;
+    case 0x13:{result = ("URT");}break;
+    case 0x14:{result = ("ACS");}break;
+    case 0x15:{result = ("DPLAY");}break;
+    case 0x16:{result = ("UMI");}break;
+    case 0x17:{result = ("SXS");}break;
+    case 0x18:{result = ("WINDOWS_CE");}break;
+    case 0x19:{result = ("HTTP");}break;
+    case 0x1A:{result = ("USERMODE_COMMONLOG");}break;
+    case 0x1B:{result = ("WER");}break;
+    case 0x1F:{result = ("USERMODE_FILTER_MANAGER");}break;
+    case 0x20:{result = ("BACKGROUNDCOPY");}break;
+    case 0x21:{result = ("CONFIGURATION|WIA");}break;
+    case 0x22:{result = ("STATE_MANAGEMENT");}break;
+    case 0x23:{result = ("METADIRECTORY");}break;
+    case 0x24:{result = ("WINDOWSUPDATE");}break;
+    case 0x25:{result = ("DIRECTORYSERVICE");}break;
+    case 0x26:{result = ("GRAPHICS");}break;
+    case 0x27:{result = ("SHELL|NAP");}break;
+    case 0x28:{result = ("TPM_SERVICES");}break;
+    case 0x29:{result = ("TPM_SOFTWARE");}break;
+    case 0x2A:{result = ("UI");}break;
+    case 0x2B:{result = ("XAML");}break;
+    case 0x2C:{result = ("ACTION_QUEUE");}break;
+    case 0x30:{result = ("WINDOWS_SETUP|PLA");}break;
+    case 0x31:{result = ("FVE");}break;
+    case 0x32:{result = ("FWP");}break;
+    case 0x33:{result = ("WINRM");}break;
+    case 0x34:{result = ("NDIS");}break;
+    case 0x35:{result = ("USERMODE_HYPERVISOR");}break;
+    case 0x36:{result = ("CMI");}break;
+    case 0x37:{result = ("USERMODE_VIRTUALIZATION");}break;
+    case 0x38:{result = ("USERMODE_VOLMGR");}break;
+    case 0x39:{result = ("BCD");}break;
+    case 0x3A:{result = ("USERMODE_VHD");}break;
+    case 0x3C:{result = ("SDIAG");}break;
+    case 0x3D:{result = ("WINPE|WEBSERVICES");}break;
+    case 0x3E:{result = ("WPN");}break;
+    case 0x3F:{result = ("WINDOWS_STORE");}break;
+    case 0x40:{result = ("INPUT");}break;
+    case 0x42:{result = ("EAP");}break;
+    case 0x50:{result = ("WINDOWS_DEFENDER");}break;
+    case 0x51:{result = ("OPC");}break;
+    case 0x52:{result = ("XPS");}break;
+    case 0x53:{result = ("RAS");}break;
+    case 0x54:{result = ("POWERSHELL|MBN");}break;
+    case 0x55:{result = ("EAS");}break;
+    case 0x62:{result = ("P2P_INT");}break;
+    case 0x63:{result = ("P2P");}break;
+    case 0x64:{result = ("DAF");}break;
+    case 0x65:{result = ("BLUETOOTH_ATT");}break;
+    case 0x66:{result = ("AUDIO");}break;
+    case 0x6D:{result = ("VISUALCPP");}break;
+    case 0x70:{result = ("SCRIPT");}break;
+    case 0x71:{result = ("PARSE");}break;
+    case 0x78:{result = ("BLB");}break;
+    case 0x79:{result = ("BLB_CLI");}break;
+    case 0x7A:{result = ("WSBAPP");}break;
+    case 0x80:{result = ("BLBUI");}break;
+    case 0x81:{result = ("USN");}break;
+    case 0x82:{result = ("USERMODE_VOLSNAP");}break;
+    case 0x83:{result = ("TIERING");}break;
+    case 0x85:{result = ("WSB_ONLINE");}break;
+    case 0x86:{result = ("ONLINE_ID");}break;
+    case 0x99:{result = ("DLS");}break;
+    case 0xA0:{result = ("SOS");}break;
+    case 0xB0:{result = ("DEBUGGERS");}break;
+    case 0xE7:{result = ("USERMODE_SPACES");}break;
+    case 0x100:{result = ("DMSERVER|RESTORE|SPP");}break;
+    case 0x101:{result = ("DEPLOYMENT_SERVICES_SERVER");}break;
+    case 0x102:{result = ("DEPLOYMENT_SERVICES_IMAGING");}break;
+    case 0x103:{result = ("DEPLOYMENT_SERVICES_MANAGEMENT");}break;
+    case 0x104:{result = ("DEPLOYMENT_SERVICES_UTIL");}break;
+    case 0x105:{result = ("DEPLOYMENT_SERVICES_BINLSVC");}break;
+    case 0x107:{result = ("DEPLOYMENT_SERVICES_PXE");}break;
+    case 0x108:{result = ("DEPLOYMENT_SERVICES_TFTP");}break;
+    case 0x110:{result = ("DEPLOYMENT_SERVICES_TRANSPORT_MANAGEMENT");}break;
+    case 0x116:{result = ("DEPLOYMENT_SERVICES_DRIVER_PROVISIONING");}break;
+    case 0x121:{result = ("DEPLOYMENT_SERVICES_MULTICAST_SERVER");}break;
+    case 0x122:{result = ("DEPLOYMENT_SERVICES_MULTICAST_CLIENT");}break;
+    case 0x125:{result = ("DEPLOYMENT_SERVICES_CONTENT_PROVIDER");}break;
+    case 0x131:{result = ("LINGUISTIC_SERVICES");}break;
+    case 0x375:{result = ("WEB");}break;
+    case 0x376:{result = ("WEB_SOCKET");}break;
+    case 0x446:{result = ("AUDIOSTREAMING");}break;
+    case 0x600:{result = ("ACCELERATOR");}break;
+    case 0x701:{result = ("MOBILE");}break;
+    case 0x7CC:{result = ("WMAAECMA");}break;
+    case 0x801:{result = ("WEP");}break;
+    case 0x802:{result = ("SYNCENGINE");}break;
+    case 0x878:{result = ("DIRECTMUSIC");}break;
+    case 0x879:{result = ("DIRECT3D10");}break;
+    case 0x87A:{result = ("DXGI");}break;
+    case 0x87B:{result = ("DXGI_DDI");}break;
+    case 0x87C:{result = ("DIRECT3D11");}break;
+    case 0x888:{result = ("LEAP");}break;
+    case 0x889:{result = ("AUDCLNT");}break;
+    case 0x898:{result = ("WINCODEC_DWRITE_DWM");}break;
+    case 0x899:{result = ("DIRECT2D");}break;
+    case 0x900:{result = ("DEFRAG");}break;
+    case 0x901:{result = ("USERMODE_SDBUS");}break;
+    case 0x902:{result = ("JSCRIPT");}break;
+    case 0xA01:{result = ("PIDGENX");}break;
   }
   return result;
 }
 
-internal String8
+internal string
 ev_string_from_hresult_code(U32 code)
 {
-  String8 result = {0};
+  string result = {0};
   switch(code)
   {
     default:{}break;
-    case 0x00000000: {result = str8_lit("S_OK: Operation successful");}break;
-    case 0x00000001: {result = str8_lit("S_FALSE: Operation successful but returned no results");}break;
-    case 0x80004004: {result = str8_lit("E_ABORT: Operation aborted");}break;
-    case 0x80004005: {result = str8_lit("E_FAIL: Unspecified failure");}break;
-    case 0x80004002: {result = str8_lit("E_NOINTERFACE: No such interface supported");}break;
-    case 0x80004001: {result = str8_lit("E_NOTIMPL: Not implemented");}break;
-    case 0x80004003: {result = str8_lit("E_POINTER: Pointer that is not valid");}break;
-    case 0x8000FFFF: {result = str8_lit("E_UNEXPECTED: Unexpected failure");}break;
-    case 0x80070005: {result = str8_lit("E_ACCESSDENIED: General access denied error");}break;
-    case 0x80070006: {result = str8_lit("E_HANDLE: Handle that is not valid");}break;
-    case 0x80070057: {result = str8_lit("E_INVALIDARG: One or more arguments are not valid");}break;
-    case 0x8007000E: {result = str8_lit("E_OUTOFMEMORY: Failed to allocate necessary memory");}break;
+    case 0x00000000: {result = ("S_OK: Operation successful");}break;
+    case 0x00000001: {result = ("S_FALSE: Operation successful but returned no results");}break;
+    case 0x80004004: {result = ("E_ABORT: Operation aborted");}break;
+    case 0x80004005: {result = ("E_FAIL: Unspecified failure");}break;
+    case 0x80004002: {result = ("E_NOINTERFACE: No such interface supported");}break;
+    case 0x80004001: {result = ("E_NOTIMPL: Not implemented");}break;
+    case 0x80004003: {result = ("E_POINTER: Pointer that is not valid");}break;
+    case 0x8000FFFF: {result = ("E_UNEXPECTED: Unexpected failure");}break;
+    case 0x80070005: {result = ("E_ACCESSDENIED: General access denied error");}break;
+    case 0x80070006: {result = ("E_HANDLE: Handle that is not valid");}break;
+    case 0x80070057: {result = ("E_INVALIDARG: One or more arguments are not valid");}break;
+    case 0x8007000E: {result = ("E_OUTOFMEMORY: Failed to allocate necessary memory");}break;
   }
   return result;
 }
 
-internal String8
+internal string
 ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval eval)
 {
-  String8 result = {0};
+  string result = {0};
   E_TypeKey type_key = e_type_key_unwrap(eval.irtree.type_key, E_TypeUnwrapFlag_AllDecorative & ~E_TypeUnwrapFlag_Enums);
   E_TypeKind type_kind = e_type_kind_from_key(type_key);
   U64 type_byte_size = e_type_byte_size_from_key(type_key);
@@ -1325,9 +1325,9 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
         U32 is_error   = !!(hresult_value & (1ull<<31));
         U32 error_code = (hresult_value);
         U32 facility   = (hresult_value & 0x7ff0000) >> 16;
-        String8 value_string = str8_from_s64(scratch.arena, eval.value.u64, params->radix, params->min_digits, digit_group_separator);
-        String8 facility_string = ev_string_from_hresult_facility_code(facility);
-        String8 error_string = ev_string_from_hresult_code(error_code);
+        string value_string = str8_from_s64(scratch.arena, eval.value.u64, params->radix, params->min_digits, digit_group_separator);
+        string facility_string = ev_string_from_hresult_facility_code(facility);
+        string error_string = ev_string_from_hresult_code(error_code);
         result = push_str8f(arena, "%S%s%s%S%s%s%S%s",
                             error_string,
                             error_string.size != 0 ? " " : "",
@@ -1353,7 +1353,7 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
     case E_TypeKind_UChar32:
     {
       B32 type_is_unsigned = (E_TypeKind_UChar8 <= type_kind && type_kind <= E_TypeKind_UChar32);
-      String8 char_str = {0};
+      string char_str = {0};
       if(!(params->flags & EV_StringFlag_DisableChars))
       {
         char_str = ev_string_from_ascii_value(arena, eval.value.s64);
@@ -1362,7 +1362,7 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
       {
         if(params->flags & EV_StringFlag_ReadOnlyDisplayRules)
         {
-          String8 imm_string = (type_is_unsigned
+          string imm_string = (type_is_unsigned
                                 ? str8_from_u64(arena, eval.value.u64, params->radix, params->min_digits, digit_group_separator)
                                 : str8_from_s64(arena, eval.value.s64, params->radix, params->min_digits, digit_group_separator));
           result = push_str8f(arena, "'%S' (%S)", char_str, imm_string);
@@ -1401,8 +1401,8 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
     case E_TypeKind_U128:
     {
       Temp scratch = scratch_begin(&arena, 1);
-      String8 upper64 = str8_from_u64(scratch.arena, eval.value.u128.u64[0], params->radix, params->min_digits, digit_group_separator);
-      String8 lower64 = str8_from_u64(scratch.arena, eval.value.u128.u64[1], params->radix, params->min_digits, digit_group_separator);
+      string upper64 = str8_from_u64(scratch.arena, eval.value.u128.u64[0], params->radix, params->min_digits, digit_group_separator);
+      string lower64 = str8_from_u64(scratch.arena, eval.value.u128.u64[1], params->radix, params->min_digits, digit_group_separator);
       result = push_str8f(arena, "%S:%S", upper64, lower64);
       scratch_end(scratch);
     }break;
@@ -1436,8 +1436,8 @@ ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval e
   return result;
 }
 
-internal String8
-ev_escaped_from_raw_string(Arena *arena, String8 raw)
+internal string
+ev_escaped_from_raw_string(Arena *arena, string raw)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List parts = {0};
@@ -1446,24 +1446,24 @@ ev_escaped_from_raw_string(Arena *arena, String8 raw)
   {
     U8 byte = (idx < raw.size) ? raw.str[idx] : 0;
     B32 split = 1;
-    String8 separator_replace = {0};
+    string separator_replace = {0};
     switch(byte)
     {
       default:{split = 0;}break;
       case 0:    {}break;
-      case '\a': {separator_replace = str8_lit("\\a");}break;
-      case '\b': {separator_replace = str8_lit("\\b");}break;
-      case '\f': {separator_replace = str8_lit("\\f");}break;
-      case '\n': {separator_replace = str8_lit("\\n");}break;
-      case '\r': {separator_replace = str8_lit("\\r");}break;
-      case '\t': {separator_replace = str8_lit("\\t");}break;
-      case '\v': {separator_replace = str8_lit("\\v");}break;
-      case '\\': {separator_replace = str8_lit("\\\\");}break;
-      case '"':  {separator_replace = str8_lit("\\\"");}break;
+      case '\a': {separator_replace = ("\\a");}break;
+      case '\b': {separator_replace = ("\\b");}break;
+      case '\f': {separator_replace = ("\\f");}break;
+      case '\n': {separator_replace = ("\\n");}break;
+      case '\r': {separator_replace = ("\\r");}break;
+      case '\t': {separator_replace = ("\\t");}break;
+      case '\v': {separator_replace = ("\\v");}break;
+      case '\\': {separator_replace = ("\\\\");}break;
+      case '"':  {separator_replace = ("\\\"");}break;
     }
     if(split)
     {
-      String8 substr = str8_substr(raw, r1u64(start_split_idx, idx));
+      string substr = str8_substr(raw, r1u64(start_split_idx, idx));
       start_split_idx = idx+1;
       str8_list_push(scratch.arena, &parts, substr);
       if(separator_replace.size != 0)
@@ -1473,7 +1473,7 @@ ev_escaped_from_raw_string(Arena *arena, String8 raw)
     }
   }
   StringJoin join = {0};
-  String8 result = str8_list_join(arena, &parts, &join);
+  string result = str8_list_join(arena, &parts, &join);
   scratch_end(scratch);
   return result;
 }
@@ -1491,7 +1491,7 @@ ev_string_iter_begin(Arena *arena, E_Eval eval, EV_StringParams *params)
 }
 
 internal B32
-ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
+ev_string_iter_next(Arena *arena, EV_StringIter *it, string *out_string)
 {
   B32 result = 0;
   
@@ -1512,8 +1512,8 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
     E_Eval eval = it->top_task->eval;
     E_TypeKey type_key = eval.irtree.type_key;
     E_TypeKind type_kind = e_type_kind_from_key(type_key);
-    String8 expansion_opener_symbol = str8_lit("{");
-    String8 expansion_closer_symbol = str8_lit("}");
+    string expansion_opener_symbol = ("{");
+    string expansion_closer_symbol = ("}");
     
     //- rjf: type evaluations -> display type string
     if(eval.irtree.mode == E_Mode_Null && !e_type_key_match(e_type_key_zero(), eval.irtree.type_key))
@@ -1545,7 +1545,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
           {
             E_Type *type = e_type_from_key(type_key);
             E_Eval value_eval = e_value_eval_from_eval(eval);
-            String8 constant_name = {0};
+            string constant_name = {0};
             for(U64 val_idx = 0; val_idx < type->count; val_idx += 1)
             {
               if(value_eval.value.u64 == type->enum_vals[val_idx].val)
@@ -1554,11 +1554,11 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                 break;
               }
             }
-            String8 sufficient_suffix = constant_name;
+            string sufficient_suffix = constant_name;
             if(str8_match(sufficient_suffix, type->name, StringMatchFlag_RightSideSloppy))
             {
               sufficient_suffix = str8_skip(sufficient_suffix, type->name.size);
-              if(str8_match(sufficient_suffix, str8_lit("_"), StringMatchFlag_RightSideSloppy))
+              if(str8_match(sufficient_suffix, ("_"), StringMatchFlag_RightSideSloppy))
               {
                 sufficient_suffix = str8_skip(sufficient_suffix, 1);
               }
@@ -1582,7 +1582,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
           }break;
           case 1:
           {
-            *out_string = str8_lit(" (");
+            *out_string = (" (");
             need_pop = 0;
             need_new_task = 1;
             new_task.params = *params;
@@ -1591,7 +1591,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
           }break;
           case 2:
           {
-            *out_string = str8_lit(")");
+            *out_string = (")");
           }break;
         }
       }break;
@@ -1606,8 +1606,8 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
           E_Type *type = e_type_from_key(type_key);
           if(type->flags & E_TypeFlag_ArrayLikeExpansion)
           {
-            expansion_opener_symbol = str8_lit("[");
-            expansion_closer_symbol = str8_lit("]");
+            expansion_opener_symbol = ("[");
+            expansion_closer_symbol = ("]");
           }
           goto arrays_and_sets_and_structs;
         }
@@ -1616,11 +1616,11 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
         B32 lens_applied = 1;
         EV_StringParams lens_params = *params;
         if(0){}
-        else if(str8_match(type->name, str8_lit("bin"), 0)) { lens_params.radix = 2; }
-        else if(str8_match(type->name, str8_lit("oct"), 0)) { lens_params.radix = 8; }
-        else if(str8_match(type->name, str8_lit("dec"), 0)) { lens_params.radix = 10; }
-        else if(str8_match(type->name, str8_lit("hex"), 0)) { lens_params.radix = 16; }
-        else if(str8_match(type->name, str8_lit("digits"), 0) && type->count >= 1)
+        else if(str8_match(type->name, ("bin"), 0)) { lens_params.radix = 2; }
+        else if(str8_match(type->name, ("oct"), 0)) { lens_params.radix = 8; }
+        else if(str8_match(type->name, ("dec"), 0)) { lens_params.radix = 10; }
+        else if(str8_match(type->name, ("hex"), 0)) { lens_params.radix = 16; }
+        else if(str8_match(type->name, ("digits"), 0) && type->count >= 1)
         {
           E_ParentKey(eval.key)
           {
@@ -1628,19 +1628,19 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
             lens_params.min_digits = value.u64;
           }
         }
-        else if(str8_match(type->name, str8_lit("no_string"), 0))
+        else if(str8_match(type->name, ("no_string"), 0))
         {
           lens_params.flags |= EV_StringFlag_DisableStrings;
         }
-        else if(str8_match(type->name, str8_lit("no_char"), 0))
+        else if(str8_match(type->name, ("no_char"), 0))
         {
           lens_params.flags |= EV_StringFlag_DisableChars;
         }
-        else if(str8_match(type->name, str8_lit("no_addr"), 0))
+        else if(str8_match(type->name, ("no_addr"), 0))
         {
           lens_params.flags |= EV_StringFlag_DisableAddresses;
         }
-        else if(str8_match(type->name, str8_lit("array"), 0) &&
+        else if(str8_match(type->name, ("array"), 0) &&
                 type->count >= 1 &&
                 (((E_TypeKind_Char8 <= element_type_kind && element_type_kind <= E_TypeKind_UChar32) ||
                   element_type_kind == E_TypeKind_S8 ||
@@ -1693,7 +1693,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                 str8_list_pushf(scratch.arena, &strings, "%S(", type->name);
                 for EachIndex(idx, type->count)
                 {
-                  String8 string = e_string_from_expr(scratch.arena, type->args[idx]);
+                  string string = e_string_from_expr(scratch.arena, type->args[idx]);
                   str8_list_push(scratch.arena, &strings, string);
                   if(idx+1 < type->count)
                   {
@@ -1714,7 +1714,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
             // rjf: step 1 -> close
             case 1:
             {
-              *out_string = str8_lit(")");
+              *out_string = (")");
             }break;
           }
 #endif
@@ -1743,7 +1743,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
             }break;
             case 1:
             {
-              *out_string = str8_lit(")");
+              *out_string = (")");
             }break;
           }
         }
@@ -1779,8 +1779,8 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
       {
         if(type_kind == E_TypeKind_Array && it->top_task->redirect_to_sets_and_structs)
         {
-          expansion_opener_symbol = str8_lit("[");
-          expansion_closer_symbol = str8_lit("]");
+          expansion_opener_symbol = ("[");
+          expansion_closer_symbol = ("]");
           goto arrays_and_sets_and_structs;
         } 
         typedef struct EV_StringPtrData EV_StringPtrData;
@@ -1853,7 +1853,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
               
               // rjf: check element size - if non-U8, assume UTF-16 or UTF-32 based on type, and convert
               U64 element_size = ptr_data->direct_type->byte_size;
-              String8 string = {0};
+              string string = {0};
               switch(element_size)
               {
                 default:{string = str8_cstring((char *)string_buffer);}break;
@@ -1873,10 +1873,10 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
               
               // rjf: escape and quote
               B32 string__is_escaped_and_quoted = (!(params->flags & EV_StringFlag_DisableStringQuotes) || depth > 0);
-              String8 string__escaped_and_quoted = string;
+              string string__escaped_and_quoted = string;
               if(string__is_escaped_and_quoted)
               {
-                String8 string_escaped = ev_escaped_from_raw_string(scratch.arena, string);
+                string string_escaped = ev_escaped_from_raw_string(scratch.arena, string);
                 string__escaped_and_quoted = push_str8f(scratch.arena, "\"%S\"", string_escaped);
               }
               
@@ -1953,7 +1953,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                   {
                     RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, inline_site->type_idx);
                     E_TypeKey type = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), inline_site->type_idx, module_idx);
-                    String8 name = {0};
+                    string name = {0};
                     name.str = rdi_string_from_idx(rdi, inline_site->name_string_idx, &name.size);
                     if(inline_site->type_idx != 0)
                     {
@@ -1983,7 +1983,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                   RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, proc_idx);
                   RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, procedure->type_idx);
                   E_TypeKey type = e_type_key_ext(e_type_kind_from_rdi(type_node->kind), procedure->type_idx, module_idx);
-                  String8 name = {0};
+                  string name = {0};
                   name.str = rdi_string_from_idx(rdi, procedure->name_string_idx, &name.size);
                   if(procedure->type_idx != 0)
                   {
@@ -2005,7 +2005,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                 // rjf: if we have a function type, but we did not generate any name, then just put a ???
                 if(out_string->size == 0 && e_type_kind_from_key(ptr_data->type->direct_type_key) == E_TypeKind_Function)
                 {
-                  *out_string = str8_lit("???");
+                  *out_string = ("???");
                   good_symbol_match = 1;
                 }
               }
@@ -2019,7 +2019,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
                 
                 // rjf: scope -> procedure / string
                 RDI_Procedure *procedure = rdi_procedure_from_scope(rdi, scope);
-                String8 procedure_name = {0};
+                string procedure_name = {0};
                 procedure_name.str = rdi_name_from_procedure(rdi, procedure, &procedure_name.size);
                 
                 *out_string = procedure_name;
@@ -2059,7 +2059,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
           case 1:
           {
             Temp scratch = scratch_begin(&arena, 1);
-            String8 ptr_value_string = str8_from_u64(scratch.arena, ptr_data->value_eval.value.u64, 16, 0, 0);
+            string ptr_value_string = str8_from_u64(scratch.arena, ptr_data->value_eval.value.u64, 16, 0, 0);
             //
             // NOTE(rjf): currently, we are not using the string-generation radix parameter when
             // generating a pointer value - it is weird to want to change pointer value visualization
@@ -2174,7 +2174,7 @@ ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string)
               new_task.eval = next_eval;
               if(task_idx > 1)
               {
-                *out_string = str8_lit(", ");
+                *out_string = (", ");
               }
             }
             else

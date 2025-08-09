@@ -4,7 +4,7 @@
 internal String8Node *
 str8_list_push_raw(Arena *arena, String8List *list, void *data_ptr, U64 data_size)
 {
-  String8 data = str8((U8 *)data_ptr, data_size);
+  string data = str8((U8 *)data_ptr, data_size);
   String8Node *node = str8_list_push(arena, list, data);
   return node;
 }
@@ -64,7 +64,7 @@ str8_list_pop_front(String8List *list)
 }
 
 internal U64
-hash_from_str8(String8 string)
+hash_from_str8(string string)
 {
   XXH64_hash_t hash64 = XXH3_64bits(string.str, string.size);
   return hash64;

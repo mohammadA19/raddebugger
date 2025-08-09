@@ -16,7 +16,7 @@
 #endif
 
 internal U64
-ctrl_hash_from_string(String8 string)
+ctrl_hash_from_string(string string)
 {
   U64 result = XXH3_64bits_withSeed(string.str, string.size, 5381);
   return result;
@@ -60,56 +60,56 @@ ctrl_exception_kind_from_dmn(DMN_ExceptionKind kind)
   return result;
 }
 
-internal String8
+internal string
 ctrl_string_from_event_kind(CTRL_EventKind kind)
 {
-  String8 result = {0};
+  string result = {0};
   switch(kind)
   {
     default:{}break;
-    case CTRL_EventKind_Null:                              { result = str8_lit("Null");}break;
-    case CTRL_EventKind_Error:                             { result = str8_lit("Error");}break;
-    case CTRL_EventKind_Started:                           { result = str8_lit("Started");}break;
-    case CTRL_EventKind_Stopped:                           { result = str8_lit("Stopped");}break;
-    case CTRL_EventKind_NewProc:                           { result = str8_lit("NewProc");}break;
-    case CTRL_EventKind_NewThread:                         { result = str8_lit("NewThread");}break;
-    case CTRL_EventKind_NewModule:                         { result = str8_lit("NewModule");}break;
-    case CTRL_EventKind_EndProc:                           { result = str8_lit("EndProc");}break;
-    case CTRL_EventKind_EndThread:                         { result = str8_lit("EndThread");}break;
-    case CTRL_EventKind_EndModule:                         { result = str8_lit("EndModule");}break;
-    case CTRL_EventKind_ModuleDebugInfoPathChange:         { result = str8_lit("ModuleDebugInfoPathChange");}break;
-    case CTRL_EventKind_DebugString:                       { result = str8_lit("DebugString");}break;
-    case CTRL_EventKind_ThreadName:                        { result = str8_lit("ThreadName");}break;
-    case CTRL_EventKind_MemReserve:                        { result = str8_lit("MemReserve");}break;
-    case CTRL_EventKind_MemCommit:                         { result = str8_lit("MemCommit");}break;
-    case CTRL_EventKind_MemDecommit:                       { result = str8_lit("MemDecommit");}break;
-    case CTRL_EventKind_MemRelease:                        { result = str8_lit("MemRelease");}break;
+    case CTRL_EventKind_Null:                              { result = ("Null");}break;
+    case CTRL_EventKind_Error:                             { result = ("Error");}break;
+    case CTRL_EventKind_Started:                           { result = ("Started");}break;
+    case CTRL_EventKind_Stopped:                           { result = ("Stopped");}break;
+    case CTRL_EventKind_NewProc:                           { result = ("NewProc");}break;
+    case CTRL_EventKind_NewThread:                         { result = ("NewThread");}break;
+    case CTRL_EventKind_NewModule:                         { result = ("NewModule");}break;
+    case CTRL_EventKind_EndProc:                           { result = ("EndProc");}break;
+    case CTRL_EventKind_EndThread:                         { result = ("EndThread");}break;
+    case CTRL_EventKind_EndModule:                         { result = ("EndModule");}break;
+    case CTRL_EventKind_ModuleDebugInfoPathChange:         { result = ("ModuleDebugInfoPathChange");}break;
+    case CTRL_EventKind_DebugString:                       { result = ("DebugString");}break;
+    case CTRL_EventKind_ThreadName:                        { result = ("ThreadName");}break;
+    case CTRL_EventKind_MemReserve:                        { result = ("MemReserve");}break;
+    case CTRL_EventKind_MemCommit:                         { result = ("MemCommit");}break;
+    case CTRL_EventKind_MemDecommit:                       { result = ("MemDecommit");}break;
+    case CTRL_EventKind_MemRelease:                        { result = ("MemRelease");}break;
   }
   return result;
 }
 
-internal String8
+internal string
 ctrl_string_from_msg_kind(CTRL_MsgKind kind)
 {
-  String8 result = {0};
+  string result = {0};
   switch(kind)
   {
     default:{}break;
-    case CTRL_MsgKind_Launch:                    {result = str8_lit("Launch");}break;
-    case CTRL_MsgKind_Attach:                    {result = str8_lit("Attach");}break;
-    case CTRL_MsgKind_Kill:                      {result = str8_lit("Kill");}break;
-    case CTRL_MsgKind_KillAll:                   {result = str8_lit("KillAll");}break;
-    case CTRL_MsgKind_Detach:                    {result = str8_lit("Detach");}break;
-    case CTRL_MsgKind_Run:                       {result = str8_lit("Run");}break;
-    case CTRL_MsgKind_SingleStep:                {result = str8_lit("SingleStep");}break;
-    case CTRL_MsgKind_SetUserEntryPoints:        {result = str8_lit("SetUserEntryPoints");}break;
-    case CTRL_MsgKind_SetModuleDebugInfoPath:    {result = str8_lit("SetModuleDebugInfoPath");}break;
+    case CTRL_MsgKind_Launch:                    {result = ("Launch");}break;
+    case CTRL_MsgKind_Attach:                    {result = ("Attach");}break;
+    case CTRL_MsgKind_Kill:                      {result = ("Kill");}break;
+    case CTRL_MsgKind_KillAll:                   {result = ("KillAll");}break;
+    case CTRL_MsgKind_Detach:                    {result = ("Detach");}break;
+    case CTRL_MsgKind_Run:                       {result = ("Run");}break;
+    case CTRL_MsgKind_SingleStep:                {result = ("SingleStep");}break;
+    case CTRL_MsgKind_SetUserEntryPoints:        {result = ("SetUserEntryPoints");}break;
+    case CTRL_MsgKind_SetModuleDebugInfoPath:    {result = ("SetModuleDebugInfoPath");}break;
   }
   return result;
 }
 
 internal CTRL_EntityKind
-ctrl_entity_kind_from_string(String8 string)
+ctrl_entity_kind_from_string(string string)
 {
   CTRL_EntityKind result = CTRL_EntityKind_Null;
   for EachNonZeroEnumVal(CTRL_EntityKind, k)
@@ -188,15 +188,15 @@ ctrl_handle_list_copy(Arena *arena, CTRL_HandleList *src)
   return dst;
 }
 
-internal String8
+internal string
 ctrl_string_from_handle(Arena *arena, CTRL_Handle handle)
 {
-  String8 result = push_str8f(arena, "$%I64x$%I64x", handle.machine_id, handle.dmn_handle.u64[0]);
+  string result = push_str8f(arena, "$%I64x$%I64x", handle.machine_id, handle.dmn_handle.u64[0]);
   return result;
 }
 
 internal CTRL_Handle
-ctrl_handle_from_string(String8 string)
+ctrl_handle_from_string(string string)
 {
   CTRL_Handle handle = {0};
   {
@@ -326,7 +326,7 @@ ctrl_msg_list_concat_in_place(CTRL_MsgList *dst, CTRL_MsgList *src)
 
 //- rjf: serialization
 
-internal String8
+internal string
 ctrl_serialized_string_from_msg_list(Arena *arena, CTRL_MsgList *msgs)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -415,13 +415,13 @@ ctrl_serialized_string_from_msg_list(Arena *arena, CTRL_MsgList *msgs)
       }
     }
   }
-  String8 string = str8_serial_end(arena, &msgs_srlzed);
+  string string = str8_serial_end(arena, &msgs_srlzed);
   scratch_end(scratch);
   return string;
 }
 
 internal CTRL_MsgList
-ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
+ctrl_msg_list_from_serialized_string(Arena *arena, string string)
 {
   CTRL_MsgList msgs = {0};
   {
@@ -462,7 +462,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       read_off += str8_deserial_read_struct(string, read_off, &entry_point_list_string_count);
       for(U64 idx = 0; idx < entry_point_list_string_count; idx += 1)
       {
-        String8 str = {0};
+        string str = {0};
         read_off += str8_deserial_read_struct(string, read_off, &str.size);
         str.str = push_array_no_zero(arena, U8, str.size);
         read_off += str8_deserial_read(string, read_off, str.str, str.size, 1);
@@ -474,7 +474,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       read_off += str8_deserial_read_struct(string, read_off, &cmd_line_string_count);
       for(U64 idx = 0; idx < cmd_line_string_count; idx += 1)
       {
-        String8 cmd_line_str = {0};
+        string cmd_line_str = {0};
         read_off += str8_deserial_read_struct(string, read_off, &cmd_line_str.size);
         cmd_line_str.str = push_array_no_zero(arena, U8, cmd_line_str.size);
         read_off += str8_deserial_read(string, read_off, cmd_line_str.str, cmd_line_str.size, 1);
@@ -486,7 +486,7 @@ ctrl_msg_list_from_serialized_string(Arena *arena, String8 string)
       read_off += str8_deserial_read_struct(string, read_off, &env_string_count);
       for(U64 idx = 0; idx < env_string_count; idx += 1)
       {
-        String8 env_str = {0};
+        string env_str = {0};
         read_off += str8_deserial_read_struct(string, read_off, &env_str.size);
         env_str.str = push_array_no_zero(arena, U8, env_str.size);
         read_off += str8_deserial_read(string, read_off, env_str.str, env_str.size, 1);
@@ -576,7 +576,7 @@ ctrl_event_list_concat_in_place(CTRL_EventList *dst, CTRL_EventList *to_push)
 
 //- rjf: serialization
 
-internal String8
+internal string
 ctrl_serialized_string_from_event(Arena *arena, CTRL_Event *event, U64 max)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -600,18 +600,18 @@ ctrl_serialized_string_from_event(Arena *arena, CTRL_Event *event, U64 max)
     str8_serial_push_struct(scratch.arena, &srl, &event->exception_code);
     str8_serial_push_struct(scratch.arena, &srl, &event->rgba);
     str8_serial_push_struct(scratch.arena, &srl, &event->bp_flags);
-    String8 string = event->string;
+    string string = event->string;
     string.size = Min(string.size, max-srl.total_size);
     str8_serial_push_struct(scratch.arena, &srl, &string.size);
     str8_serial_push_data(scratch.arena, &srl, string.str, string.size);
   }
-  String8 string = str8_serial_end(arena, &srl);
+  string string = str8_serial_end(arena, &srl);
   scratch_end(scratch);
   return string;
 }
 
 internal CTRL_Event
-ctrl_event_from_serialized_string(Arena *arena, String8 string)
+ctrl_event_from_serialized_string(Arena *arena, string string)
 {
   CTRL_Event event = zero_struct;
   {
@@ -861,7 +861,7 @@ ctrl_entity_ctx_rw_store_alloc(void)
   CTRL_Entity *root = store->ctx.root = ctrl_entity_alloc(store, &ctrl_entity_nil, CTRL_EntityKind_Root, Arch_Null, ctrl_handle_zero(), 0);
   CTRL_Entity *local_machine = ctrl_entity_alloc(store, root, CTRL_EntityKind_Machine, arch_from_context(), ctrl_handle_make(CTRL_MachineID_Local, dmn_handle_zero()), 0);
   Temp scratch = scratch_begin(0, 0);
-  String8 local_machine_name = push_str8f(scratch.arena, "This PC (%S)", os_get_system_info()->machine_name);
+  string local_machine_name = push_str8f(scratch.arena, "This PC (%S)", os_get_system_info()->machine_name);
   ctrl_entity_equip_string(store, local_machine, local_machine_name);
   scratch_end(scratch);
   return store;
@@ -893,8 +893,8 @@ ctrl_name_bucket_num_from_string_size(U64 size)
   return bucket_num;
 }
 
-internal String8
-ctrl_entity_string_alloc(CTRL_EntityCtxRWStore *store, String8 string)
+internal string
+ctrl_entity_string_alloc(CTRL_EntityCtxRWStore *store, string string)
 {
   //- rjf: allocate node
   CTRL_EntityStringChunkNode *node = 0;
@@ -949,7 +949,7 @@ ctrl_entity_string_alloc(CTRL_EntityCtxRWStore *store, String8 string)
   }
   
   //- rjf: fill node
-  String8 result = {0};
+  string result = {0};
   if(node != 0)
   {
     result.str = (U8 *)node;
@@ -960,7 +960,7 @@ ctrl_entity_string_alloc(CTRL_EntityCtxRWStore *store, String8 string)
 }
 
 internal void
-ctrl_entity_string_release(CTRL_EntityCtxRWStore *store, String8 string)
+ctrl_entity_string_release(CTRL_EntityCtxRWStore *store, string string)
 {
   U64 bucket_num = ctrl_name_bucket_num_from_string_size(string.size);
   if(1 <= bucket_num && bucket_num <= ArrayCount(rd_name_bucket_chunk_sizes))
@@ -1107,7 +1107,7 @@ ctrl_entity_release(CTRL_EntityCtxRWStore *store, CTRL_Entity *entity)
 //- rjf: entity equipment
 
 internal void
-ctrl_entity_equip_string(CTRL_EntityCtxRWStore *store, CTRL_Entity *entity, String8 string)
+ctrl_entity_equip_string(CTRL_EntityCtxRWStore *store, CTRL_Entity *entity, string string)
 {
   if(entity->string.size != 0)
   {
@@ -1258,7 +1258,7 @@ ctrl_entity_store_apply_events(CTRL_EntityCtxRWStore *store, CTRL_EventList *lis
         CTRL_Entity *first_thread = ctrl_entity_child_from_kind(process, CTRL_EntityKind_Thread);
         if(first_thread == thread)
         {
-          ctrl_entity_equip_string(store, thread, str8_lit("main_thread"));
+          ctrl_entity_equip_string(store, thread, ("main_thread"));
         }
         CTRL_EntityArray pending_thread_names = ctrl_entity_array_from_kind(&store->ctx, CTRL_EntityKind_PendingThreadName);
         for EachIndex(idx, pending_thread_names.count)
@@ -1483,9 +1483,9 @@ ctrl_init(void)
   ctrl_state->arena = arena;
   for(Arch arch = (Arch)0; arch < Arch_COUNT; arch = (Arch)(arch+1))
   {
-    String8 *reg_names = regs_reg_code_string_table_from_arch(arch);
+    string *reg_names = regs_reg_code_string_table_from_arch(arch);
     U64 reg_count = regs_reg_code_count_from_arch(arch);
-    String8 *alias_names = regs_alias_code_string_table_from_arch(arch);
+    string *alias_names = regs_alias_code_string_table_from_arch(arch);
     U64 alias_count = regs_alias_code_count_from_arch(arch);
     ctrl_state->arch_string2reg_tables[arch] = e_string2num_map_make(ctrl_state->arena, 256);
     ctrl_state->arch_string2alias_tables[arch] = e_string2num_map_make(ctrl_state->arena, 256);
@@ -1546,8 +1546,8 @@ ctrl_init(void)
   ctrl_state->c2u_ring_cv = os_condition_variable_alloc();
   {
     Temp scratch = scratch_begin(0, 0);
-    String8 user_program_data_path = os_get_process_info()->user_program_data_path;
-    String8 user_data_folder = push_str8f(scratch.arena, "%S/raddbg/logs", user_program_data_path);
+    string user_program_data_path = os_get_process_info()->user_program_data_path;
+    string user_data_folder = push_str8f(scratch.arena, "%S/raddbg/logs", user_program_data_path);
     os_make_directory(user_data_folder);
     ctrl_state->ctrl_thread_log_path = push_str8f(ctrl_state->arena, "%S/ctrl_thread.raddbg_log", user_data_folder);
     os_write_data_to_file_path(ctrl_state->ctrl_thread_log_path, str8_zero());
@@ -1862,11 +1862,11 @@ ctrl_process_memory_slice_from_vaddr_range(Arena *arena, CTRL_Handle process, Rn
       for(U64 page_idx = 0; page_idx < page_count; page_idx += 1)
       {
         // rjf: read data for this page
-        String8 data = hs_data_from_hash(scope, page_hashes[page_idx]);
+        string data = hs_data_from_hash(scope, page_hashes[page_idx]);
         Rng1U64 data_vaddr_range = r1u64(page_range.min + page_idx*page_size, page_range.min + page_idx*page_size+data.size);
         
         // rjf: skip/chop bytes which are irrelevant for the actual requested read
-        String8 in_range_data = data;
+        string in_range_data = data;
         if(page_idx == page_count-1 && data_vaddr_range.max > range.max)
         {
           in_range_data = str8_chop(in_range_data, data_vaddr_range.max-range.max);
@@ -1898,8 +1898,8 @@ ctrl_process_memory_slice_from_vaddr_range(Arena *arena, CTRL_Handle process, Rn
         // fill out changed flags
         if(!u128_match(page_hashes[page_idx], page_last_hashes[page_idx])) ProfScope("hashes don't match; diff each byte")
         {
-          String8 last_data = hs_data_from_hash(scope, page_last_hashes[page_idx]);
-          String8 in_range_last_data = last_data;
+          string last_data = hs_data_from_hash(scope, page_last_hashes[page_idx]);
+          string in_range_last_data = last_data;
           if(page_idx == page_count-1 && data_vaddr_range.max > range.max)
           {
             in_range_last_data = str8_chop(in_range_last_data, data_vaddr_range.max-range.max);
@@ -2273,10 +2273,10 @@ ctrl_tls_vaddr_range_from_module(CTRL_Handle module_handle)
   return result;
 }
 
-internal String8
+internal string
 ctrl_initial_debug_info_path_from_module(Arena *arena, CTRL_Handle module_handle)
 {
-  String8 result = {0};
+  string result = {0};
   U64 hash = ctrl_hash_from_handle(module_handle);
   U64 slot_idx = hash%ctrl_state->module_image_info_cache.slots_count;
   U64 stripe_idx = slot_idx%ctrl_state->module_image_info_cache.stripes_count;
@@ -2293,10 +2293,10 @@ ctrl_initial_debug_info_path_from_module(Arena *arena, CTRL_Handle module_handle
   return result;
 }
 
-internal String8
+internal string
 ctrl_raddbg_data_from_module(Arena *arena, CTRL_Handle module_handle)
 {
-  String8 result = {0};
+  string result = {0};
   U64 hash = ctrl_hash_from_handle(module_handle);
   U64 slot_idx = hash%ctrl_state->module_image_info_cache.slots_count;
   U64 stripe_idx = slot_idx%ctrl_state->module_image_info_cache.stripes_count;
@@ -3572,7 +3572,7 @@ internal B32
 ctrl_u2c_push_msgs(CTRL_MsgList *msgs, U64 endt_us)
 {
   Temp scratch = scratch_begin(0, 0);
-  String8 msgs_srlzed_baked = ctrl_serialized_string_from_msg_list(scratch.arena, msgs);
+  string msgs_srlzed_baked = ctrl_serialized_string_from_msg_list(scratch.arena, msgs);
   B32 good = 0;
   OS_MutexScope(ctrl_state->u2c_ring_mutex) for(;;)
   {
@@ -3604,7 +3604,7 @@ internal CTRL_MsgList
 ctrl_u2c_pop_msgs(Arena *arena)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  String8 msgs_srlzed_baked = {0};
+  string msgs_srlzed_baked = {0};
   OS_MutexScope(ctrl_state->u2c_ring_mutex) for(;;)
   {
     U64 unconsumed_size = (ctrl_state->u2c_ring_write_pos-ctrl_state->u2c_ring_read_pos);
@@ -3639,7 +3639,7 @@ ctrl_c2u_push_events(CTRL_EventList *events)
     for(CTRL_EventNode *n = events->first; n != 0; n = n ->next)
     {
       Temp scratch = scratch_begin(0, 0);
-      String8 event_srlzed = ctrl_serialized_string_from_event(scratch.arena, &n->v, ctrl_state->c2u_ring_size-sizeof(U64));
+      string event_srlzed = ctrl_serialized_string_from_event(scratch.arena, &n->v, ctrl_state->c2u_ring_size-sizeof(U64));
       OS_MutexScope(ctrl_state->c2u_ring_mutex) for(;;)
       {
         U64 unconsumed_size = (ctrl_state->c2u_ring_write_pos-ctrl_state->c2u_ring_read_pos);
@@ -3676,7 +3676,7 @@ ctrl_c2u_pop_events(Arena *arena)
     {
       U64 size_to_decode = 0;
       ctrl_state->c2u_ring_read_pos += ring_read_struct(ctrl_state->c2u_ring_base, ctrl_state->c2u_ring_size, ctrl_state->c2u_ring_read_pos, &size_to_decode);
-      String8 event_srlzed = {0};
+      string event_srlzed = {0};
       event_srlzed.size = size_to_decode;
       event_srlzed.str = push_array_no_zero(scratch.arena, U8, event_srlzed.size);
       ctrl_state->c2u_ring_read_pos += ring_read(ctrl_state->c2u_ring_base, ctrl_state->c2u_ring_size, ctrl_state->c2u_ring_read_pos, event_srlzed.str, event_srlzed.size);
@@ -3824,7 +3824,7 @@ ctrl_thread__entry_point(void *p)
           case CTRL_MsgKind_SetModuleDebugInfoPath:
           {
             CTRL_EntityCtx *entity_ctx = &ctrl_state->ctrl_thread_entity_store->ctx;
-            String8 path = msg->path;
+            string path = msg->path;
             CTRL_Entity *module = ctrl_entity_from_handle(entity_ctx, msg->entity);
             CTRL_Entity *debug_info_path = ctrl_entity_child_from_kind(module, CTRL_EntityKind_DebugInfoPath);
             DI_Key old_dbgi_key = {debug_info_path->string, debug_info_path->timestamp};
@@ -3920,8 +3920,8 @@ ctrl_thread__append_resolved_module_user_bp_traps(Arena *arena, CTRL_EvalScope *
       {
         // rjf: unpack & normalize
         TxtPt pt = bp->pt;
-        String8 filename = bp->string;
-        String8 filename_normalized = push_str8_copy(scratch.arena, filename);
+        string filename = bp->string;
+        string filename_normalized = push_str8_copy(scratch.arena, filename);
         for(U64 idx = 0; idx < filename_normalized.size; idx += 1)
         {
           filename_normalized.str[idx] = char_to_lower(filename_normalized.str[idx]);
@@ -3970,7 +3970,7 @@ ctrl_thread__append_resolved_module_user_bp_traps(Arena *arena, CTRL_EvalScope *
       //- rjf: expression-based breakpoints
       case CTRL_UserBreakpointKind_Expression:
       {
-        String8 expr = bp->string;
+        string expr = bp->string;
         E_Value value = e_value_from_string(expr);
         if(value.u64 != 0 || bp->flags != 0)
         {
@@ -3994,7 +3994,7 @@ ctrl_thread__append_resolved_process_user_bp_traps(Arena *arena, CTRL_EvalScope 
     CTRL_UserBreakpoint *bp = &n->v;
     if(bp->kind == CTRL_UserBreakpointKind_Expression)
     {
-      String8 expr = bp->string;
+      string expr = bp->string;
       E_Value value = e_value_from_string(expr);
       if(value.u64 != 0 || bp->flags != 0)
       {
@@ -4025,7 +4025,7 @@ ctrl_thread__append_program_defined_bp_traps(Arena *arena, CTRL_Entity *bp, DMN_
 //- rjf: module lifetime open/close work
 
 internal void
-ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_range, String8 path)
+ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_range, string path)
 {
   //////////////////////////////
   //- rjf: parse module image info
@@ -4038,11 +4038,11 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
   U32 pdb_dbg_time = 0;
   U32 pdb_dbg_age = 0;
   Guid pdb_dbg_guid = {0};
-  String8 pdb_dbg_path = str8_zero();
+  string pdb_dbg_path = str8_zero();
   U32 rdi_dbg_time = 0;
   Guid rdi_dbg_guid = {0};
-  String8 rdi_dbg_path = str8_zero();
-  String8 raddbg_data = str8_zero();
+  string rdi_dbg_path = str8_zero();
+  string raddbg_data = str8_zero();
   Rng1U64 raddbg_section_voff_range = r1u64(0, 0);
   Rng1U64 raddbg_is_attached_section_voff_range = r1u64(0, 0);
   ProfScope("unpack relevant PE info")
@@ -4237,13 +4237,13 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
         dmn_process_read(process.dmn_handle, r1u64(vaddr_range.min + sec_array_off, vaddr_range.min + sec_array_off + sec_count*sizeof(COFF_SectionHeader)), sec);
         for EachIndex(idx, sec_count)
         {
-          String8 section_name = str8_cstring((char *)sec[idx].name);
-          if(str8_match(section_name, str8_lit(".raddbg"), 0))
+          string section_name = str8_cstring((char *)sec[idx].name);
+          if(str8_match(section_name, (".raddbg"), 0))
           {
             raddbg_section_voff_range.min = sec[idx].voff;
             raddbg_section_voff_range.max = sec[idx].voff + sec[idx].vsize;
           }
-          else if(str8_match(section_name, str8_lit(".rdbgia"), 0))
+          else if(str8_match(section_name, (".rdbgia"), 0))
           {
             raddbg_is_attached_section_voff_range.min = sec[idx].voff;
             raddbg_is_attached_section_voff_range.max = sec[idx].voff + sec[idx].vsize;
@@ -4268,10 +4268,10 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
   //////////////////////////////
   //- rjf: pick default initial debug info path
   //
-  String8 initial_debug_info_path = str8_zero();
+  string initial_debug_info_path = str8_zero();
   {
     Temp scratch = scratch_begin(0, 0);
-    String8 exe_folder = str8_chop_last_slash(path);
+    string exe_folder = str8_chop_last_slash(path);
     String8List dbg_path_candidates = {0};
     //
     //~ TODO(rjf): @linux_port PLEASE READ RYAN vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
@@ -4299,7 +4299,7 @@ ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_
     str8_list_pushf(scratch.arena, &dbg_path_candidates, "%S.rdi", path);
     for(String8Node *n = dbg_path_candidates.first; n != 0; n = n->next)
     {
-      String8 candidate_path = n->string;
+      string candidate_path = n->string;
       FileProperties props = os_properties_from_file_path(candidate_path);
       if(props.modified != 0 && props.size != 0)
       {
@@ -4493,7 +4493,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
                 {
                   RDI_ParsedNameMap map = {0};
                   rdi_parsed_from_name_map(rdi, unparsed_map, &map);
-                  String8 name = str8_lit("__asan_shadow_memory_dynamic_address");
+                  string name = ("__asan_shadow_memory_dynamic_address");
                   RDI_NameMapNode *node = rdi_name_map_lookup(rdi, &map, name.str, name.size);
                   if(node != 0)
                   {
@@ -4677,7 +4677,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
       CTRL_Handle process_handle = ctrl_handle_make(CTRL_MachineID_Local, event->process);
       CTRL_Handle module_handle = ctrl_handle_make(CTRL_MachineID_Local, event->module);
       CTRL_Event *out_evt1 = ctrl_event_list_push(scratch.arena, &evts);
-      String8 module_path = path_normalized_from_string(scratch.arena, event->string);
+      string module_path = path_normalized_from_string(scratch.arena, event->string);
       U64 exe_timestamp = os_properties_from_file_path(module_path).modified;
       ctrl_thread__module_open(process_handle, module_handle, r1u64(event->address, event->address+event->size), module_path);
       out_evt1->kind       = CTRL_EventKind_NewModule;
@@ -4691,7 +4691,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
       out_evt1->timestamp  = exe_timestamp;
       out_evt1->string     = module_path;
       CTRL_Event *out_evt2 = ctrl_event_list_push(scratch.arena, &evts);
-      String8 initial_debug_info_path = ctrl_initial_debug_info_path_from_module(scratch.arena, module_handle);
+      string initial_debug_info_path = ctrl_initial_debug_info_path_from_module(scratch.arena, module_handle);
       U64 debug_info_timestamp = os_properties_from_file_path(initial_debug_info_path).modified;
       out_evt2->kind       = CTRL_EventKind_ModuleDebugInfoPathChange;
       out_evt2->msg_id     = msg->msg_id;
@@ -4726,7 +4726,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
       CTRL_Handle module_handle = ctrl_handle_make(CTRL_MachineID_Local, event->module);
       CTRL_Entity *module_ent = ctrl_entity_from_handle(entity_ctx, module_handle);
       CTRL_Entity *process_ent = ctrl_process_from_entity(module_ent);
-      String8 module_path = event->string;
+      string module_path = event->string;
       ctrl_thread__module_close(process_ent->handle, module_handle, module_ent->vaddr_range);
       out_evt->kind       = CTRL_EventKind_EndModule;
       out_evt->msg_id     = msg->msg_id;
@@ -4844,12 +4844,12 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
     {
       //- rjf: calculate seed path
       DI_Key loaded_di_key = ctrl_dbgi_key_from_module(loaded_module);
-      String8 loaded_di_name = str8_skip_last_slash(loaded_di_key.path);
-      String8 debug_info_ext = str8_skip_last_dot(loaded_di_key.path);
-      String8 seed_folder_path = str8_chop_last_slash(loaded_di_key.path);
+      string loaded_di_name = str8_skip_last_slash(loaded_di_key.path);
+      string debug_info_ext = str8_skip_last_dot(loaded_di_key.path);
+      string seed_folder_path = str8_chop_last_slash(loaded_di_key.path);
       if(seed_folder_path.size == 0)
       {
-        String8 module_path = loaded_module->string;
+        string module_path = loaded_module->string;
         seed_folder_path = str8_chop_last_slash(module_path);
       }
       
@@ -4860,7 +4860,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
       CTRL_DbgDirNode *parent_dir_node = ctrl_state->dbg_dir_root;
       for(String8Node *n = seed_path_parts.first; n != 0; n = n->next)
       {
-        String8 name = n->string;
+        string name = n->string;
         CTRL_DbgDirNode *next_child = 0;
         for(CTRL_DbgDirNode *child = parent_dir_node->first; child != 0; child = child->next)
         {
@@ -4905,7 +4905,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
               str8_list_push_front(scratch.arena, &dir_node_path_parts, n->name);
             }
           }
-          String8 dir_node_path = str8_list_join(scratch.arena, &dir_node_path_parts, &(StringJoin){.sep = str8_lit("/")});
+          string dir_node_path = str8_list_join(scratch.arena, &dir_node_path_parts, &(StringJoin){.sep = ("/")});
           
           //- rjf: iterate downwards from this directory recursively, locate
           // debug infos, and pre-emptively convert
@@ -4914,7 +4914,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
           {
             Task *next;
             CTRL_DbgDirNode *node;
-            String8 path;
+            string path;
           };
           Task start_task = {0, dir_node, dir_node_path};
           Task *first_task = &start_task;
@@ -4936,7 +4936,7 @@ ctrl_thread__next_dmn_event(Arena *arena, DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg, 
             for(OS_FileInfo info = {0}; idx < 16384 && os_file_iter_next(scratch.arena, it, &info); idx += 1)
             {
               // rjf: folder -> do sub-search if not duplicative
-              if(info.props.flags & FilePropertyFlag_IsFolder && task_count < 16384 && !str8_match(str8_prefix(info.name, 1), str8_lit("."), 0))
+              if(info.props.flags & FilePropertyFlag_IsFolder && task_count < 16384 && !str8_match(str8_prefix(info.name, 1), ("."), 0))
               {
                 CTRL_DbgDirNode *existing_dir_child = 0;
                 for(CTRL_DbgDirNode *child = t->node->first; child != 0; child = child->next)
@@ -5181,7 +5181,7 @@ ctrl_thread__eval_scope_begin(Arena *arena, CTRL_UserBreakpointList *user_bps, C
                   FileProperties props = os_properties_from_file(file);
                   OS_Handle map = os_file_map_open(OS_AccessFlag_Read, file);
                   void *file_base = os_file_map_view_open(map, OS_AccessFlag_Read, r1u64(0, props.size));
-                  String8 file_data = str8(file_base, props.size);
+                  string file_data = str8(file_base, props.size);
                   {
                     rdi_is_necessary = pdb_has_symbol_or_file_ref(file_data, ctrl_state->msg_user_bp_touched_symbols, ctrl_state->msg_user_bp_touched_files);
                   }
@@ -5318,9 +5318,9 @@ ctrl_thread__launch(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
   Temp scratch = scratch_begin(0, 0);
   
   //- rjf: produce full stdout/stderr/stdin paths
-  String8 stdout_path = path_absolute_dst_from_relative_dst_src(scratch.arena, msg->stdout_path, msg->path);
-  String8 stdin_path  = path_absolute_dst_from_relative_dst_src(scratch.arena, msg->stdin_path, msg->path);
-  String8 stderr_path = path_absolute_dst_from_relative_dst_src(scratch.arena, msg->stderr_path, msg->path);
+  string stdout_path = path_absolute_dst_from_relative_dst_src(scratch.arena, msg->stdout_path, msg->path);
+  string stdin_path  = path_absolute_dst_from_relative_dst_src(scratch.arena, msg->stdin_path, msg->path);
+  string stderr_path = path_absolute_dst_from_relative_dst_src(scratch.arena, msg->stderr_path, msg->path);
   
   //- rjf: obtain stdout/stderr/stdin handles
   OS_Handle stdout_handle = {0};
@@ -5368,7 +5368,7 @@ ctrl_thread__launch(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
   {
     for(String8Node *n = msg->entry_points.first; n != 0; n = n->next)
     {
-      String8 string = n->string;
+      string string = n->string;
       CTRL_Entity *entry = ctrl_entity_alloc(entity_ctx_rw_store, entity_ctx_rw_store->ctx.root, CTRL_EntityKind_EntryPoint, Arch_Null, ctrl_handle_zero(), (U64)id);
       ctrl_entity_equip_string(entity_ctx_rw_store, entry, string);
     }
@@ -6032,7 +6032,7 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
           {
             U32 procedure_id = 0;
             {
-              String8 name = n->string;
+              string name = n->string;
               RDI_NameMapNode *node = rdi_name_map_lookup(rdi, &map, name.str, name.size);
               U32 id_count = 0;
               U32 *ids = rdi_matches_from_map_node(rdi, node, &id_count);
@@ -6055,16 +6055,16 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
         //- rjf: add traps for module-baked entry points, if specified
         if(!entries_found)
         {
-          String8 raddbg_data = ctrl_raddbg_data_from_module(scratch.arena, module->handle);
+          string raddbg_data = ctrl_raddbg_data_from_module(scratch.arena, module->handle);
           U8 split_char = 0;
           String8List raddbg_data_text_parts = str8_split(scratch.arena, raddbg_data, &split_char, 1, 0);
           for(String8Node *text_n = raddbg_data_text_parts.first; text_n != 0; text_n = text_n->next)
           {
-            String8 text = text_n->string;
+            string text = text_n->string;
             MD_Node *root = md_tree_from_string(scratch.arena, text);
-            if(str8_match(root->first->string, str8_lit("entry_point"), 0))
+            if(str8_match(root->first->string, ("entry_point"), 0))
             {
-              String8 name = root->first->first->string;
+              string name = root->first->first->string;
               U32 procedure_id = 0;
               {
                 RDI_NameMapNode *node = rdi_name_map_lookup(rdi, &map, name.str, name.size);
@@ -6096,7 +6096,7 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
             {
               U32 procedure_id = 0;
               {
-                String8 name = e->string;
+                string name = e->string;
                 RDI_NameMapNode *node = rdi_name_map_lookup(rdi, &map, name.str, name.size);
                 U32 id_count = 0;
                 U32 *ids = rdi_matches_from_map_node(rdi, node, &id_count);
@@ -6124,7 +6124,7 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
           {
             U32 procedure_id = 0;
             {
-              String8 name = n->string;
+              string name = n->string;
               RDI_NameMapNode *node = rdi_name_map_lookup(rdi, &map, name.str, name.size);
               U32 id_count = 0;
               U32 *ids = rdi_matches_from_map_node(rdi, node, &id_count);
@@ -6147,18 +6147,18 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
         //- rjf: add traps for all high-level entry points
         if(!entries_found)
         {
-          String8 hi_entry_points[] =
+          string hi_entry_points[] =
           {
-            str8_lit("WinMain"),
-            str8_lit("wWinMain"),
-            str8_lit("main"),
-            str8_lit("wmain"),
+            ("WinMain"),
+            ("wWinMain"),
+            ("main"),
+            ("wmain"),
           };
           for(U64 idx = 0; idx < ArrayCount(hi_entry_points); idx += 1)
           {
             U32 procedure_id = 0;
             {
-              String8 name = hi_entry_points[idx];
+              string name = hi_entry_points[idx];
               RDI_NameMapNode *node = rdi_name_map_lookup(rdi, &map, name.str, name.size);
               U32 id_count = 0;
               U32 *ids = rdi_matches_from_map_node(rdi, node, &id_count);
@@ -6192,18 +6192,18 @@ ctrl_thread__run(DMN_CtrlCtx *ctrl_ctx, CTRL_Msg *msg)
         //- rjf: add traps for all low-level entry points
         if(!entries_found)
         {
-          String8 lo_entry_points[] =
+          string lo_entry_points[] =
           {
-            str8_lit("WinMainCRTStartup"),
-            str8_lit("wWinMainCRTStartup"),
-            str8_lit("mainCRTStartup"),
-            str8_lit("wmainCRTStartup"),
+            ("WinMainCRTStartup"),
+            ("wWinMainCRTStartup"),
+            ("mainCRTStartup"),
+            ("wmainCRTStartup"),
           };
           for(U64 idx = 0; idx < ArrayCount(lo_entry_points); idx += 1)
           {
             U32 procedure_id = 0;
             {
-              String8 name = lo_entry_points[idx];
+              string name = lo_entry_points[idx];
               RDI_NameMapNode *node = rdi_name_map_lookup(rdi, &map, name.str, name.size);
               U32 id_count = 0;
               U32 *ids = rdi_matches_from_map_node(rdi, node, &id_count);
@@ -6950,12 +6950,12 @@ ASYNC_WORK_DEF(ctrl_mem_stream_work)
 #if CTRL_MEM_STREAM_WORK_DEBUG
   {
     Temp scratch = scratch_begin(0, 0);
-    String8 sample_data_str = str8_lit("no data");
+    string sample_data_str = ("no data");
     if(range_base != 0)
     {
-      String8 sample_data = str8((U8*)range_base + 0x100, 16);
+      string sample_data = str8((U8*)range_base + 0x100, 16);
       String8List sample_data_strs = numeric_str8_list_from_data(scratch.arena, 16, sample_data, 1);
-      sample_data_str = str8_list_join(scratch.arena, &sample_data_strs, &(StringJoin){.sep = str8_lit(", ")});
+      sample_data_str = str8_list_join(scratch.arena, &sample_data_strs, &(StringJoin){.sep = (", ")});
     }
     LogScopeResult log = log_scope_end(scratch.arena);
     raddbg_log("[0x%I64x, 0x%I64x) { pre_gen: %I64u, post_gen: %I64u, pre_run: %i, post_run: %i, bytes: [%S], info:```%S``` }\n", vaddr_range.min, vaddr_range.max, pre_read_mem_gen, post_read_mem_gen, pre_run_state, post_run_state, sample_data_str, log.strings[LogMsgKind_Info]);

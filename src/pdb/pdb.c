@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal U32
-pdb_hash_v1(String8 string)
+pdb_hash_v1(string string)
 {
   U32 result = 0;
   U8 *ptr = string.str;

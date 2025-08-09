@@ -9,14 +9,14 @@ lnk_error_input_obj(LNK_ErrorCode code, LNK_InputObj *input, char *fmt, ...)
   va_end(args);
 }
 
-internal String8
+internal string
 lnk_string_from_input_source(LNK_InputSourceType input_source)
 {
-  String8 result = str8_zero();
+  string result = str8_zero();
   switch (input_source) {
-  case LNK_InputSource_CmdLine: result = str8_lit("CmdLine"); break;
-  case LNK_InputSource_Default: result = str8_lit("Default"); break;
-  case LNK_InputSource_Obj:     result = str8_lit("Obj");     break;
+  case LNK_InputSource_CmdLine: result = ("CmdLine"); break;
+  case LNK_InputSource_Default: result = ("Default"); break;
+  case LNK_InputSource_Obj:     result = ("Obj");     break;
   default:                      InvalidPath;
   }
   return result;
@@ -74,7 +74,7 @@ lnk_path_array_from_input_obj_array(Arena *arena, LNK_InputObj **arr, U64 count)
 {
   String8Array paths = {0};
   paths.count = count;
-  paths.v     = push_array(arena, String8, count);
+  paths.v     = push_array(arena, string, count);
   for (U64 i = 0; i < count; i += 1) {
     paths.v[i] = arr[i]->path;
   }

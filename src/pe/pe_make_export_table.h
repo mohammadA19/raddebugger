@@ -6,10 +6,10 @@
 
 typedef struct PE_ExportParse
 {
-  String8           obj_path;
-  String8           lib_path;
-  String8           name;
-  String8           alias;
+  string           obj_path;
+  string           lib_path;
+  string           name;
+  string           alias;
   COFF_ImportType   type;
   COFF_ImportByType import_by;
   U16               hint;
@@ -57,6 +57,6 @@ typedef struct PE_FinalizedExports
 
 internal PE_ExportParsePtrArray pe_array_from_export_list(Arena *arena, PE_ExportParseList list);
 internal PE_ExportParseNode * pe_export_parse_list_push(Arena *arena, PE_ExportParseList *list, PE_ExportParse data);
-internal String8List pe_make_import_lib(Arena *arena, COFF_MachineType machine, COFF_TimeStamp time_stamp, String8 dll_name, String8 debug_symbols, PE_ExportParseList export_list);
+internal String8List pe_make_import_lib(Arena *arena, COFF_MachineType machine, COFF_TimeStamp time_stamp, string dll_name, string debug_symbols, PE_ExportParseList export_list);
 
 #endif // COFF_EXPORT_TABLE_H

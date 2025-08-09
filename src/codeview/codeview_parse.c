@@ -4,7 +4,7 @@
 //- Hasher
 
 internal U64
-cv_hash_from_string(String8 string)
+cv_hash_from_string(string string)
 {
   U64 result = 5381;
   for(U64 i = 0; i < string.size; i += 1)
@@ -77,7 +77,7 @@ cv_numeric_from_data_range(U8 *first, U8 *opl)
 }
 
 internal U64
-cv_read_numeric(String8 data, U64 offset, CV_NumericParsed *out)
+cv_read_numeric(string data, U64 offset, CV_NumericParsed *out)
 {
   *out = cv_numeric_from_data_range(data.str + offset, data.str + data.size);
   return out->encoded_size;
@@ -177,7 +177,7 @@ cv_f64_from_numeric(CV_NumericParsed *num)
 //- Inline Site Binary Annot Decoder
 
 internal U64
-cv_decode_inline_annot_u32(String8 data, U64 offset, U32 *out_value)
+cv_decode_inline_annot_u32(string data, U64 offset, U32 *out_value)
 {
   U64 cursor = offset;
   
@@ -230,7 +230,7 @@ cv_decode_inline_annot_u32(String8 data, U64 offset, U32 *out_value)
 }
 
 internal U64
-cv_decode_inline_annot_s32(String8 data, U64 offset, S32 *out_value)
+cv_decode_inline_annot_s32(string data, U64 offset, S32 *out_value)
 {
   U32 value;
   U64 read_size = cv_decode_inline_annot_u32(data, offset, &value);
@@ -274,7 +274,7 @@ cv_c13_inline_site_decoder_init(U32 file_off, U32 first_source_ln, U32 parent_vo
 }
 
 internal CV_C13InlineSiteDecoderStep
-cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder *decoder, String8 binary_annots)
+cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder *decoder, string binary_annots)
 {
   CV_C13InlineSiteDecoderStep result = {0};
   
@@ -459,7 +459,7 @@ cv_c13_inline_site_decoder_step(CV_C13InlineSiteDecoder *decoder, String8 binary
 //- Symbol/Leaf Helpers
 
 internal B32
-cv_is_udt_name_anon(String8 name)
+cv_is_udt_name_anon(string name)
 {
   // corresponds to fUDTAnon from dbi/tm.cpp:817
   B32 is_anon = str8_match_lit("<unnamed-tag>",   name, 0) ||
@@ -591,7 +591,7 @@ cv_symbol_type_index_info_push(Arena *arena, CV_TypeIndexInfoList *list, CV_Type
 }
 
 internal CV_TypeIndexInfoList
-cv_get_symbol_type_index_offsets(Arena *arena, CV_SymKind kind, String8 data)
+cv_get_symbol_type_index_offsets(Arena *arena, CV_SymKind kind, string data)
 {
   CV_TypeIndexInfoList list = {0};
   switch (kind) {
@@ -658,7 +658,7 @@ cv_get_symbol_type_index_offsets(Arena *arena, CV_SymKind kind, String8 data)
 }
 
 internal CV_TypeIndexInfoList
-cv_get_leaf_type_index_offsets(Arena *arena, CV_LeafKind leaf_kind, String8 data)
+cv_get_leaf_type_index_offsets(Arena *arena, CV_LeafKind leaf_kind, string data)
 {
   CV_TypeIndexInfoList list = {0};
   switch (leaf_kind) {
@@ -808,21 +808,21 @@ cv_get_leaf_type_index_offsets(Arena *arena, CV_LeafKind leaf_kind, String8 data
             CV_NumericParsed size;
             cursor += cv_read_numeric(data, cursor, &size);
             
-            String8 name;
+            string name;
             cursor += str8_deserial_read_cstr(data, cursor, &name);
           } break;
           case CV_LeafKind_STMEMBER: {
             cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_TPI, cursor + OffsetOf(CV_LeafStMember, itype));
             cursor += sizeof(CV_LeafStMember);
             
-            String8 name;
+            string name;
             cursor += str8_deserial_read_cstr(data, cursor, &name);
           } break;
           case CV_LeafKind_METHOD: {
             cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_TPI, cursor + OffsetOf(CV_LeafMethod, list_itype));
             cursor += sizeof(CV_LeafMethod);
             
-            String8 name;
+            string name;
             cursor += str8_deserial_read_cstr(data, cursor, &name);
           } break;
           case CV_LeafKind_ONEMETHOD: {
@@ -837,7 +837,7 @@ cv_get_leaf_type_index_offsets(Arena *arena, CV_LeafKind leaf_kind, String8 data
               cursor += sizeof(U32); // virtoff
             }
             
-            String8 name;
+            string name;
             cursor += str8_deserial_read_cstr(data, cursor, &name);
           } break;
           case CV_LeafKind_ENUMERATE: {
@@ -845,21 +845,21 @@ cv_get_leaf_type_index_offsets(Arena *arena, CV_LeafKind leaf_kind, String8 data
             cursor += sizeof(CV_LeafEnumerate);
             CV_NumericParsed value;
             cursor += cv_read_numeric(data, cursor, &value);
-            String8 name;
+            string name;
             cursor += str8_deserial_read_cstr(data, cursor, &name);
           } break;
           case CV_LeafKind_NESTTYPE: {
             cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_TPI, cursor + OffsetOf(CV_LeafNestType, itype));
             cursor += sizeof(CV_LeafNestType);
             
-            String8 name;
+            string name;
             cursor += str8_deserial_read_cstr(data, cursor, &name);
           } break;
           case CV_LeafKind_NESTTYPEEX: {
             cv_symbol_type_index_info_push(arena, &list, CV_TypeIndexSource_TPI, cursor + OffsetOf(CV_LeafNestTypeEx, itype));
             
             cursor += sizeof(CV_LeafNestTypeEx);
-            String8 name;
+            string name;
             cursor += str8_deserial_read_cstr(data, cursor, &name);
           } break;
           case CV_LeafKind_BCLASS: {
@@ -956,7 +956,7 @@ cv_get_leaf_type_index_offsets(Arena *arena, CV_LeafKind leaf_kind, String8 data
 }
 
 internal CV_TypeIndexInfoList
-cv_get_inlinee_type_index_offsets(Arena *arena, String8 raw_data)
+cv_get_inlinee_type_index_offsets(Arena *arena, string raw_data)
 {
   CV_TypeIndexInfoList list = {0};
   
@@ -991,13 +991,13 @@ cv_get_inlinee_type_index_offsets(Arena *arena, String8 raw_data)
 }
 
 internal String8Array
-cv_get_data_around_type_indices(Arena *arena, CV_TypeIndexInfoList ti_list, String8 data)
+cv_get_data_around_type_indices(Arena *arena, CV_TypeIndexInfoList ti_list, string data)
 {
   String8Array result;
   if(ti_list.count > 0)
   {
     result.count = ti_list.count + 1;
-    result.v = push_array_no_zero(arena, String8, result.count);
+    result.v = push_array_no_zero(arena, string, result.count);
     
     U64 cursor = 0;
     U64 ti_idx = 0;
@@ -1015,14 +1015,14 @@ cv_get_data_around_type_indices(Arena *arena, CV_TypeIndexInfoList ti_list, Stri
   else
   {
     result.count = 1;
-    result.v = push_array_no_zero(arena, String8, 1);
+    result.v = push_array_no_zero(arena, string, 1);
     result.v[0] = data;
   }
   return result;
 }
 
 internal U64
-cv_name_offset_from_symbol(CV_SymKind kind, String8 data)
+cv_name_offset_from_symbol(CV_SymKind kind, string data)
 {
   U64 offset = data.size;
   switch (kind) {
@@ -1086,21 +1086,21 @@ cv_name_offset_from_symbol(CV_SymKind kind, String8 data)
   return offset;
 }
 
-internal String8
-cv_name_from_symbol(CV_SymKind kind, String8 data)
+internal string
+cv_name_from_symbol(CV_SymKind kind, string data)
 {
   U64 buf_off = cv_name_offset_from_symbol(kind, data);
   U8 *buf_ptr = data.str + buf_off;
   U8 *buf_opl = data.str + data.size;
-  String8 name = str8_cstring_capped(buf_ptr, buf_opl);
+  string name = str8_cstring_capped(buf_ptr, buf_opl);
   return name;
 }
 
 internal CV_UDTInfo
-cv_get_udt_info(CV_LeafKind kind, String8 data)
+cv_get_udt_info(CV_LeafKind kind, string data)
 {
-  String8      name        = str8_zero();
-  String8      unique_name = str8_zero();
+  string      name        = str8_zero();
+  string      unique_name = str8_zero();
   CV_TypeProps props       = 0;
   
   switch(kind) {
@@ -1202,7 +1202,7 @@ cv_get_udt_info(CV_LeafKind kind, String8 data)
   return info;
 }
 
-internal String8
+internal string
 cv_name_from_udt_info(CV_UDTInfo udt_info)
 {
   if (udt_info.props & CV_TypeProp_HasUniqueName) {
@@ -1214,7 +1214,7 @@ cv_name_from_udt_info(CV_UDTInfo udt_info)
 //- rjf: record range stream parsing
 
 internal CV_RecRangeStream*
-cv_rec_range_stream_from_data(Arena *arena, String8 sym_data, U64 sym_align)
+cv_rec_range_stream_from_data(Arena *arena, string sym_data, U64 sym_align)
 {
   Assert(1 <= sym_align && IsPow2OrZero(sym_align));
   CV_RecRangeStream *result = push_array(arena, CV_RecRangeStream, 1);
@@ -1269,7 +1269,7 @@ cv_rec_range_array_from_stream(Arena *arena, CV_RecRangeStream *stream)
 //- rjf: sym stream parsing
 
 internal CV_SymParsed *
-cv_sym_from_data(Arena *arena, String8 sym_data, U64 sym_align)
+cv_sym_from_data(Arena *arena, string sym_data, U64 sym_align)
 {
   Assert(1 <= sym_align && IsPow2OrZero(sym_align));
   ProfBeginFunction();
@@ -1298,7 +1298,7 @@ cv_sym_from_data(Arena *arena, String8 sym_data, U64 sym_align)
         if(sizeof(CV_SymCompile) <= cap)
         {
           CV_SymCompile *compile = (CV_SymCompile*)first;
-          String8 ver_str = str8_cstring_capped((char*)(compile + 1), (char *)(first + cap));
+          string ver_str = str8_cstring_capped((char*)(compile + 1), (char *)(first + cap));
           result->info.arch = compile->machine;
           result->info.language = CV_CompileFlags_Extract_Language(compile->flags);;
           result->info.compiler_name = ver_str;
@@ -1307,8 +1307,8 @@ cv_sym_from_data(Arena *arena, String8 sym_data, U64 sym_align)
         if(sizeof(CV_SymCompile2) <= cap)
         {
           CV_SymCompile2 *compile2 = (CV_SymCompile2*)first;
-          String8 ver_str = str8_cstring_capped((char*)(compile2 + 1), (char*)(first + cap));
-          String8 compiler_name = push_str8f(arena, "%.*s %u.%u.%u",
+          string ver_str = str8_cstring_capped((char*)(compile2 + 1), (char*)(first + cap));
+          string compiler_name = push_str8f(arena, "%.*s %u.%u.%u",
                                              str8_varg(ver_str),
                                              compile2->ver_major,
                                              compile2->ver_minor,
@@ -1321,8 +1321,8 @@ cv_sym_from_data(Arena *arena, String8 sym_data, U64 sym_align)
         if(sizeof(CV_SymCompile3) <= cap)
         {
           CV_SymCompile3 *compile3 = (CV_SymCompile3*)first;
-          String8 ver_str = str8_cstring_capped((char*)(compile3 + 1), (char *)(first + cap));
-          String8 compiler_name = push_str8f(arena, "%.*s %u.%u.%u",
+          string ver_str = str8_cstring_capped((char*)(compile3 + 1), (char *)(first + cap));
+          string compiler_name = push_str8f(arena, "%.*s %u.%u.%u",
                                              str8_varg(ver_str),
                                              compile3->ver_major,
                                              compile3->ver_minor,
@@ -1343,7 +1343,7 @@ cv_sym_from_data(Arena *arena, String8 sym_data, U64 sym_align)
 //- rjf: leaf stream parsing
 
 internal CV_LeafParsed *
-cv_leaf_from_data(Arena *arena, String8 leaf_data, CV_TypeId itype_first)
+cv_leaf_from_data(Arena *arena, string leaf_data, CV_TypeId itype_first)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -1364,7 +1364,7 @@ cv_leaf_from_data(Arena *arena, String8 leaf_data, CV_TypeId itype_first)
 }
 
 internal CV_C13Parsed *
-cv_c13_parsed_from_data(Arena *arena, String8 c13_data, String8 strtbl, COFF_SectionHeaderArray sections)
+cv_c13_parsed_from_data(Arena *arena, string c13_data, string strtbl, COFF_SectionHeaderArray sections)
 {
   ProfBeginFunction();
   
@@ -1461,7 +1461,7 @@ cv_c13_parsed_from_data(Arena *arena, String8 c13_data, String8 strtbl, COFF_Sec
           U32 block_size = file->block_size;
           
           // file_name from file_off
-          String8 file_name = {0};
+          string file_name = {0};
           if(file_off + sizeof(CV_C13Checksum) <= file_chksms->size)
           {
             CV_C13Checksum *checksum = (CV_C13Checksum*)(c13_data.str + file_chksms->off + file_off);
@@ -1538,7 +1538,7 @@ cv_c13_parsed_from_data(Arena *arena, String8 c13_data, String8 strtbl, COFF_Sec
           read_off += sizeof(*hdr);
           
           // rjf: file_off -> file_name
-          String8 file_name = {0};
+          string file_name = {0};
           if(hdr->file_off + sizeof(CV_C13Checksum) <= file_chksms->size)
           {
             CV_C13Checksum *checksum = (CV_C13Checksum*)(c13_data.str + file_chksms->off + hdr->file_off);

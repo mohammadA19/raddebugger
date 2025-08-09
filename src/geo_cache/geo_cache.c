@@ -272,7 +272,7 @@ ASYNC_WORK_DEF(geo_xfer_work)
   }
   
   //- rjf: hash -> data
-  String8 data = {0};
+  string data = {0};
   if(got_task)
   {
     data = hs_data_from_hash(scope, hash);

@@ -168,12 +168,12 @@ E_InterpretationCode_COUNT,
 } E_InterpretationCode;
 
 C_LINKAGE_BEGIN
-extern String8 e_token_kind_strings[6];
-extern String8 e_type_kind_basic_string_table[61];
+extern string e_token_kind_strings[6];
+extern string e_type_kind_basic_string_table[61];
 extern U8 e_type_kind_basic_byte_size_table[61];
-extern String8 e_expr_kind_strings[50];
+extern string e_expr_kind_strings[50];
 extern E_OpInfo e_expr_kind_op_info_table[50];
-extern String8 e_interpretation_code_display_strings[11];
+extern string e_interpretation_code_display_strings[11];
 
 C_LINKAGE_END
 

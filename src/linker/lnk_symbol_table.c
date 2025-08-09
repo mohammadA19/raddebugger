@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal LNK_Symbol *
-lnk_make_defined_symbol(Arena *arena, String8 name, struct LNK_Obj *obj, U32 symbol_idx)
+lnk_make_defined_symbol(Arena *arena, string name, struct LNK_Obj *obj, U32 symbol_idx)
 {
   LNK_Symbol *symbol = push_array(arena, LNK_Symbol, 1);
   symbol->name                 = name;
@@ -12,7 +12,7 @@ lnk_make_defined_symbol(Arena *arena, String8 name, struct LNK_Obj *obj, U32 sym
 }
 
 internal LNK_Symbol *
-lnk_make_lib_symbol(Arena *arena, String8 name, struct LNK_Lib *lib, U64 member_offset)
+lnk_make_lib_symbol(Arena *arena, string name, struct LNK_Lib *lib, U64 member_offset)
 {
   LNK_Symbol *symbol = push_array(arena, LNK_Symbol, 1);
   symbol->name                = name;
@@ -22,7 +22,7 @@ lnk_make_lib_symbol(Arena *arena, String8 name, struct LNK_Lib *lib, U64 member_
 }
 
 internal LNK_Symbol *
-lnk_make_undefined_symbol(Arena *arena, String8 name, struct LNK_Obj *obj)
+lnk_make_undefined_symbol(Arena *arena, string name, struct LNK_Obj *obj)
 {
   LNK_Symbol *symbol = push_array(arena, LNK_Symbol, 1);
   symbol->name        = name;
@@ -253,8 +253,8 @@ lnk_can_replace_symbol(LNK_SymbolScope scope, LNK_Symbol *dst, LNK_Symbol *src)
           case COFF_ComdatSelect_ExactMatch: {
             COFF_SectionHeader *dst_sect_header = lnk_coff_section_header_from_section_number(dst_obj, dst_parsed.section_number);
             COFF_SectionHeader *src_sect_header = lnk_coff_section_header_from_section_number(src_obj, src_parsed.section_number);
-            String8             dst_data        = str8_substr(dst_obj->data, rng_1u64(dst_sect_header->foff, dst_sect_header->foff + dst_sect_header->fsize));
-            String8             src_data        = str8_substr(src_obj->data, rng_1u64(src_sect_header->foff, src_sect_header->foff + src_sect_header->fsize));
+            string             dst_data        = str8_substr(dst_obj->data, rng_1u64(dst_sect_header->foff, dst_sect_header->foff + dst_sect_header->fsize));
+            string             src_data        = str8_substr(src_obj->data, rng_1u64(src_sect_header->foff, src_sect_header->foff + src_sect_header->fsize));
             B32                 is_exact_match  = 0;
             if (dst_check_sum != 0 && src_check_sum != 0) {
               is_exact_match = dst_check_sum == src_check_sum && str8_match(dst_data, src_data, 0);
@@ -375,7 +375,7 @@ lnk_symbol_hash_trie_insert_or_replace(Arena                        *arena,
     }
 
     // load current symbol
-    String8 *curr_name = ins_atomic_ptr_eval(&curr_trie->name);
+    string *curr_name = ins_atomic_ptr_eval(&curr_trie->name);
 
     if (curr_name && str8_match(*curr_name, symbol->name, 0)) {
       for (LNK_Symbol *src = symbol;;) {
@@ -414,7 +414,7 @@ lnk_symbol_hash_trie_insert_or_replace(Arena                        *arena,
 }
 
 internal LNK_SymbolHashTrie *
-lnk_symbol_hash_trie_search(LNK_SymbolHashTrie *trie, U64 hash, String8 name)
+lnk_symbol_hash_trie_search(LNK_SymbolHashTrie *trie, U64 hash, string name)
 {
   LNK_SymbolHashTrie  *result   = 0;
   LNK_SymbolHashTrie **curr_ptr = &trie;
@@ -440,7 +440,7 @@ lnk_symbol_hash_trie_remove(LNK_SymbolHashTrie *trie)
 }
 
 internal U64
-lnk_symbol_hash(String8 string)
+lnk_symbol_hash(string string)
 {
   XXH3_state_t hasher; XXH3_64bits_reset(&hasher);
   XXH3_64bits_update(&hasher, &string.size, sizeof(string.size));
@@ -474,14 +474,14 @@ lnk_symbol_table_push(LNK_SymbolTable *symtab, LNK_SymbolScope scope, LNK_Symbol
 }
 
 internal LNK_SymbolHashTrie *
-lnk_symbol_table_search_(LNK_SymbolTable *symtab, LNK_SymbolScope scope, String8 name)
+lnk_symbol_table_search_(LNK_SymbolTable *symtab, LNK_SymbolScope scope, string name)
 {
   U64 hash = lnk_symbol_hash(name);
   return lnk_symbol_hash_trie_search(symtab->scopes[scope], hash, name);
 }
 
 internal LNK_Symbol *
-lnk_symbol_table_search(LNK_SymbolTable *symtab, LNK_SymbolScope scope, String8 name)
+lnk_symbol_table_search(LNK_SymbolTable *symtab, LNK_SymbolScope scope, string name)
 {
   LNK_SymbolHashTrie *trie = lnk_symbol_table_search_(symtab, scope, name);
   return trie ? trie->symbol : 0;
@@ -493,7 +493,7 @@ lnk_symbol_table_searchf(LNK_SymbolTable *symtab, LNK_SymbolScope scope, char *f
   Temp scratch = scratch_begin(0, 0);
  
   va_list args; va_start(args, fmt);
-  String8 name = push_str8fv(scratch.arena, fmt, args);
+  string name = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   
   LNK_Symbol *symbol = lnk_symbol_table_search(symtab, scope, name);
@@ -574,7 +574,7 @@ THREAD_POOL_TASK_FUNC(lnk_finalize_weak_symbols_task)
           str8_list_pushf(temp.arena, &ref_list, "\t%S Symbol %S (No. %#x)", lookup_first->symbol.obj->path, loc_symbol.name, lookup_first->symbol.symbol_idx);
 
           COFF_ParsedSymbol parsed_symbol = lnk_parsed_symbol_from_coff_symbol_idx(symbol->u.defined.obj, symbol->u.defined.symbol_idx);
-          String8           loc_string    = str8_list_join(temp.arena, &ref_list, &(StringJoin){ .sep = str8_lit("\n") });
+          string           loc_string    = str8_list_join(temp.arena, &ref_list, &(StringJoin){ .sep = ("\n") });
           lnk_error_obj(LNK_Error_WeakCycle, symbol->u.defined.obj, "unable to resolve cyclic symbol %S; ref chain:\n%S", parsed_symbol.name, loc_string);
 
           MemoryZeroStruct(&current_symbol);

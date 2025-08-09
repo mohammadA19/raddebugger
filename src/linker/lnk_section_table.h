@@ -30,7 +30,7 @@ typedef struct LNK_SectionContribChunk
   struct LNK_SectionContribChunk *next;
   U64                             count;
   U64                             cap;
-  String8                         sort_idx;
+  string                         sort_idx;
   LNK_SectionContrib            **v;
   LNK_SectionContrib             *v2;
 } LNK_SectionContribChunk;
@@ -44,7 +44,7 @@ typedef struct LNK_SectionContribChunkList
 
 typedef struct LNK_Section
 {
-  String8                     name;
+  string                     name;
   COFF_SectionFlags           flags;
   LNK_SectionContribChunkList contribs;
 
@@ -90,7 +90,7 @@ typedef struct LNK_SectionTable
 
 internal LNK_SectionContrib *       lnk_section_contrib_chunk_push(LNK_SectionContribChunk *chunk, U64 count);
 internal LNK_SectionContrib *       lnk_section_contrib_chunk_push_atomic(LNK_SectionContribChunk *chunk, U64 count);
-internal LNK_SectionContribChunk *  lnk_section_contrib_chunk_list_push_chunk(Arena *arena, LNK_SectionContribChunkList *list, U64 cap, String8 sort_idx);
+internal LNK_SectionContribChunk *  lnk_section_contrib_chunk_list_push_chunk(Arena *arena, LNK_SectionContribChunkList *list, U64 cap, string sort_idx);
 internal void                       lnk_section_contrib_chunk_list_concat_in_place(LNK_SectionContribChunkList *list, LNK_SectionContribChunkList *to_concat);
 internal LNK_SectionContribChunk ** lnk_array_from_section_contrib_chunk_list(Arena *arena, LNK_SectionContribChunkList list);
 
@@ -100,14 +100,14 @@ internal LNK_SectionArray lnk_section_array_from_list(Arena *arena, LNK_SectionL
 
 // --- Section Table -----------------------------------------------------------
 
-internal String8 lnk_make_name_with_flags(Arena *arena, String8 name, COFF_SectionFlags flags);
+internal string lnk_make_name_with_flags(Arena *arena, string name, COFF_SectionFlags flags);
 
 internal LNK_SectionTable *  lnk_section_table_alloc(void);
 internal void                lnk_section_table_release(LNK_SectionTable **sectab_ptr);
-internal LNK_Section *       lnk_section_table_push(LNK_SectionTable *sectab, String8 name, COFF_SectionFlags flags);
-internal LNK_SectionNode *   lnk_section_table_remove(LNK_SectionTable *sectab, String8 name);
-internal LNK_Section *       lnk_section_table_search(LNK_SectionTable *sectab, String8 name, COFF_SectionFlags flags);
-internal LNK_SectionArray    lnk_section_table_search_many(Arena *arena, LNK_SectionTable *sectab, String8 full_or_partial_name);
+internal LNK_Section *       lnk_section_table_push(LNK_SectionTable *sectab, string name, COFF_SectionFlags flags);
+internal LNK_SectionNode *   lnk_section_table_remove(LNK_SectionTable *sectab, string name);
+internal LNK_Section *       lnk_section_table_search(LNK_SectionTable *sectab, string name, COFF_SectionFlags flags);
+internal LNK_SectionArray    lnk_section_table_search_many(Arena *arena, LNK_SectionTable *sectab, string full_or_partial_name);
 internal void                lnk_section_table_merge(LNK_SectionTable *sectab, LNK_MergeDirectiveList merge_list);
 
 // --- Section Finalization ----------------------------------------------------

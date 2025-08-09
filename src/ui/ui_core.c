@@ -15,14 +15,14 @@ thread_static UI_State *ui_state = 0;
 # include "third_party/xxHash/xxhash.h"
 #endif
 
-internal String8
-ui_hash_part_from_key_string(String8 string)
+internal string
+ui_hash_part_from_key_string(string string)
 {
-  String8 result = string;
+  string result = string;
   
   // rjf: look for ### patterns, which can replace the entirety of the part of
   // the string that is hashed.
-  U64 hash_replace_signifier_pos = str8_find_needle(string, 0, str8_lit("###"), 0);
+  U64 hash_replace_signifier_pos = str8_find_needle(string, 0, ("###"), 0);
   if(hash_replace_signifier_pos < string.size)
   {
     result = str8_skip(string, hash_replace_signifier_pos);
@@ -31,10 +31,10 @@ ui_hash_part_from_key_string(String8 string)
   return result;
 }
 
-internal String8
-ui_display_part_from_key_string(String8 string)
+internal string
+ui_display_part_from_key_string(string string)
 {
-  U64 hash_pos = str8_find_needle(string, 0, str8_lit("##"), 0);
+  U64 hash_pos = str8_find_needle(string, 0, ("##"), 0);
   string.size = hash_pos;
   return string;
 }
@@ -54,13 +54,13 @@ ui_key_make(U64 v)
 }
 
 internal UI_Key
-ui_key_from_string(UI_Key seed_key, String8 string)
+ui_key_from_string(UI_Key seed_key, string string)
 {
   ProfBeginFunction();
   UI_Key result = {0};
   if(string.size != 0)
   {
-    String8 hash_part = ui_hash_part_from_key_string(string);
+    string hash_part = ui_hash_part_from_key_string(string);
     result.u64[0] = u64_hash_from_seed_str8(seed_key.u64[0], hash_part);
   }
   ProfEnd();
@@ -73,7 +73,7 @@ ui_key_from_stringf(UI_Key seed_key, char *fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  string string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Key key = ui_key_from_string(seed_key, string);
   scratch_end(scratch);
@@ -117,7 +117,7 @@ ui_char_is_scan_boundary(U8 c)
 }
 
 internal S64
-ui_scanned_column_from_column(String8 string, S64 start_column, Side side)
+ui_scanned_column_from_column(string string, S64 start_column, Side side)
 {
   S64 new_column = start_column;
   S64 delta = (!!side)*2 - 1;
@@ -150,13 +150,13 @@ ui_scanned_column_from_column(String8 string, S64 start_column, Side side)
 }
 
 internal UI_TxtOp
-ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, TxtPt cursor, TxtPt mark)
+ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, string string, TxtPt cursor, TxtPt mark)
 {
   TxtPt next_cursor = cursor;
   TxtPt next_mark = mark;
   TxtRng range = {0};
-  String8 replace = {0};
-  String8 copy = {0};
+  string replace = {0};
+  string copy = {0};
   UI_TxtOpFlags flags = 0;
   Vec2S32 delta = event->delta_2s32;
   Vec2S32 original_delta = delta;
@@ -250,7 +250,7 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   {
     TxtPt new_pos = txt_pt_min(next_cursor, next_mark);
     range = txt_rng(next_cursor, next_mark);
-    replace = str8_lit("");
+    replace = ("");
     next_cursor = next_mark = new_pos;
   }
   
@@ -291,8 +291,8 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   return op;
 }
 
-internal String8
-ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 col_range, String8 replace)
+internal string
+ui_push_string_replace_range(Arena *arena, string string, Rng1S64 col_range, string replace)
 {
   //- rjf: convert to offset range
   Rng1U64 range =
@@ -326,7 +326,7 @@ ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 col_range, St
     }
   }
   
-  String8 result = str8(push_base, new_size);
+  string result = str8(push_base, new_size);
   return result;
 }
 
@@ -416,7 +416,7 @@ ui_state_alloc(void)
   Arena *arena = arena_alloc();
   UI_State *ui = push_array(arena, UI_State, 1);
   ui->arena = arena;
-  ui->external_key = ui_key_from_string(ui_key_zero(), str8_lit("###external_interaction_key###"));
+  ui->external_key = ui_key_from_string(ui_key_zero(), ("###external_interaction_key###"));
   ui->build_arenas[0] = arena_alloc();
   ui->build_arenas[1] = arena_alloc();
   ui->drag_state_arena = arena_alloc();
@@ -497,7 +497,7 @@ ui_icon_font(void)
   return ui_state->icon_info.icon_font;
 }
 
-internal String8
+internal string
 ui_icon_string_from_kind(UI_IconKind icon_kind)
 {
   return ui_state->icon_info.icon_kind_text_map[icon_kind];
@@ -638,7 +638,7 @@ ui_text(U32 character)
 {
   B32 result = 0;
   Temp scratch = scratch_begin(0, 0);
-  String8 character_text = str8_from_32(scratch.arena, str32(&character, 1));
+  string character_text = str8_from_32(scratch.arena, str32(&character, 1));
   for(UI_Event *evt = 0; ui_next_event(&evt);)
   {
     if(evt->kind == UI_EventKind_Text && str8_match(character_text, evt->string, 0))
@@ -671,21 +671,21 @@ ui_slot_press(UI_EventActionSlot slot)
 //- rjf: autocomplete info
 
 internal void
-ui_set_autocomplete_string(String8 string)
+ui_set_autocomplete_string(string string)
 {
   ui_state->autocomplete_string = push_str8_copy(ui_build_arena(), string);
 }
 
-internal String8
+internal string
 ui_autocomplete_string(void)
 {
   return ui_state->autocomplete_string;
 }
 
-internal String8
+internal string
 ui_autocomplete(void)
 {
-  String8 result = ui_state->autocomplete_string;
+  string result = ui_state->autocomplete_string;
   MemoryZeroStruct(&ui_state->autocomplete_string);
   return result;
 }
@@ -705,19 +705,19 @@ ui_drag_delta(void)
 }
 
 internal void
-ui_store_drag_data(String8 string)
+ui_store_drag_data(string string)
 {
   arena_clear(ui_state->drag_state_arena);
   ui_state->drag_state_data = push_str8_copy(ui_state->drag_state_arena, string);
 }
 
-internal String8
+internal string
 ui_get_drag_data(U64 min_required_size)
 {
   if(ui_state->drag_state_data.size < min_required_size)
   {
     Temp scratch = scratch_begin(0, 0);
-    String8 str = {push_array(scratch.arena, U8, min_required_size), min_required_size};
+    string str = {push_array(scratch.arena, U8, min_required_size), min_required_size};
     ui_store_drag_data(str);
     scratch_end(scratch);
   }
@@ -1582,15 +1582,15 @@ ui_end_build(void)
       {
         if(b->flags & UI_BoxFlag_DrawText && b->flags & UI_BoxFlag_HasDisplayString && !fnt_tag_match(b->font, ui_icon_font()))
         {
-          String8 display_string = ui_box_display_string(b);
+          string display_string = ui_box_display_string(b);
           str8_list_push(scratch.arena, &strs, display_string);
         }
       }
       if(strs.node_count != 0)
       {
         StringJoin join = {0};
-        join.sep = str8_lit(" ");
-        String8 string = str8_list_join(scratch.arena, &strs, &join);
+        join.sep = (" ");
+        string string = str8_list_join(scratch.arena, &strs, &join);
         os_set_clipboard_text(string);
       }
       scratch_end(scratch);
@@ -1628,7 +1628,7 @@ ui_end_build(void)
                 rect = intersect_2f32(rect, p->rect);
               }
             }
-            String8 box_display_string = ui_box_display_string(b);
+            string box_display_string = ui_box_display_string(b);
             Vec2F32 text_pos = ui_box_text_position(b);
             Vec2F32 drawn_text_dim = {0};
             {
@@ -1992,8 +1992,8 @@ ui_tooltip_begin_base(void)
   ui_push_flags(0);
   ui_push_text_raster_flags(ui_bottom_text_raster_flags());
   ui_push_font_size(ui_bottom_font_size());
-  ui_push_tag(str8_lit("."));
-  ui_push_tag(str8_lit("floating"));
+  ui_push_tag(("."));
+  ui_push_tag(("floating"));
 }
 
 internal void
@@ -2080,7 +2080,7 @@ ui_begin_ctx_menu(UI_Key key)
   ui_push_pref_height(ui_bottom_pref_height());
   ui_push_focus_hot(UI_FocusKind_Root);
   ui_push_focus_active(UI_FocusKind_Root);
-  ui_push_tag(str8_lit("."));
+  ui_push_tag(("."));
   B32 is_open = ui_key_match(key, ui_state->ctx_menu_key) && ui_state->ctx_menu_open;
   if(is_open != 0) UI_TagF("floating")
   {
@@ -2095,8 +2095,8 @@ ui_begin_ctx_menu(UI_Key key)
     ui_state->ctx_menu_root->corner_radii[Corner_00] = ui_state->ctx_menu_root->corner_radii[Corner_01] = ui_state->ctx_menu_root->corner_radii[Corner_10] = ui_state->ctx_menu_root->corner_radii[Corner_11] = ui_top_font_size()*0.25f;
     ui_state->ctx_menu_root->tags_key = ui_top_tags_key();
     ui_state->ctx_menu_root->blur_size = ui_top_blur_size();
-    ui_state->ctx_menu_root->text_color = ui_color_from_name(str8_lit("text"));
-    ui_state->ctx_menu_root->background_color = ui_color_from_name(str8_lit("background"));
+    ui_state->ctx_menu_root->text_color = ui_color_from_name(("text"));
+    ui_state->ctx_menu_root->background_color = ui_color_from_name(("background"));
     ui_spacer(ui_em(1.f, 1.f));
   }
   ui_state->is_in_open_ctx_menu = is_open;
@@ -2261,7 +2261,7 @@ ui_top_tags_key(void)
 //- rjf: theme color lookups
 
 internal Vec4F32
-ui_color_from_name(String8 name)
+ui_color_from_name(string name)
 {
   Vec4F32 result = ui_color_from_tags_key_name(ui_top_tags_key(), name);
   return result;
@@ -2327,7 +2327,7 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
           B32 p_tag_in_key = 0;
           for EachIndex(key_tags_idx, tags.count + extras.count)
           {
-            String8 key_string = key_tags_idx < tags.count ? tags.v[key_tags_idx] : extras.v[key_tags_idx - tags.count];
+            string key_string = key_tags_idx < tags.count ? tags.v[key_tags_idx] : extras.v[key_tags_idx - tags.count];
             if(str8_match(p->tags.v[p_tags_idx], key_string, 0))
             {
               if(key_tags_idx == tags.count + extras.count - 1)
@@ -2404,7 +2404,7 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
 }
 
 internal Vec4F32
-ui_color_from_tags_key_name(UI_Key key, String8 name)
+ui_color_from_tags_key_name(UI_Key key, string name)
 {
   String8Array extras = {&name, 1};
   Vec4F32 result = ui_color_from_tags_key_extras(key, extras);
@@ -2585,7 +2585,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
       }
       else
       {
-        box->background_color = ui_color_from_name(str8_lit("background"));
+        box->background_color = ui_color_from_name(("background"));
       }
     }
     if(box->flags & UI_BoxFlag_DrawText)
@@ -2596,7 +2596,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
       }
       else
       {
-        box->text_color = ui_color_from_name(str8_lit("text"));
+        box->text_color = ui_color_from_name(("text"));
       }
     }
     if(box->flags & (UI_BoxFlag_DrawBorder|
@@ -2611,7 +2611,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
       }
       else
       {
-        box->border_color = ui_color_from_name(str8_lit("border"));
+        box->border_color = ui_color_from_name(("border"));
       }
     }
   }
@@ -2644,7 +2644,7 @@ ui_active_seed_key(void)
 }
 
 internal UI_Box *
-ui_build_box_from_string(UI_BoxFlags flags, String8 string)
+ui_build_box_from_string(UI_BoxFlags flags, string string)
 {
   ProfBeginFunction();
   
@@ -2672,7 +2672,7 @@ ui_build_box_from_stringf(UI_BoxFlags flags, char *fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  string string = push_str8fv(scratch.arena, fmt, args);
   va_end(args);
   UI_Box *box = ui_build_box_from_string(flags, string);
   scratch_end(scratch);
@@ -2682,7 +2682,7 @@ ui_build_box_from_stringf(UI_BoxFlags flags, char *fmt, ...)
 //- rjf: box node equipment
 
 internal void
-ui_box_equip_display_string(UI_Box *box, String8 string)
+ui_box_equip_display_string(UI_Box *box, string string)
 {
   ProfBeginFunction();
   box->string = push_str8_copy(ui_build_arena(), string);
@@ -2690,7 +2690,7 @@ ui_box_equip_display_string(UI_Box *box, String8 string)
   Vec4F32 text_color = box->text_color;
   if(box->flags & UI_BoxFlag_DrawText && (box->fastpath_codepoint == 0 || !(box->flags & UI_BoxFlag_DrawTextFastpathCodepoint)))
   {
-    String8 display_string = ui_box_display_string(box);
+    string display_string = ui_box_display_string(box);
     DR_FStrNode fstr_n = {0, {display_string, {box->font, box->text_raster_flags, text_color, box->font_size, 0, 0}}};
     DR_FStrList fstrs = {&fstr_n, &fstr_n, 1};
     box->display_fstrs = dr_fstrs_copy(ui_build_arena(), &fstrs);
@@ -2699,9 +2699,9 @@ ui_box_equip_display_string(UI_Box *box, String8 string)
   else if(box->flags & UI_BoxFlag_DrawText && box->flags & UI_BoxFlag_DrawTextFastpathCodepoint && box->fastpath_codepoint != 0)
   {
     Temp scratch = scratch_begin(0, 0);
-    String8 display_string = ui_box_display_string(box);
+    string display_string = ui_box_display_string(box);
     String32 fpcp32 = str32(&box->fastpath_codepoint, 1);
-    String8 fpcp = str8_from_32(scratch.arena, fpcp32);
+    string fpcp = str8_from_32(scratch.arena, fpcp32);
     U64 fpcp_pos = str8_find_needle(display_string, 0, fpcp, StringMatchFlag_CaseInsensitive);
     if(fpcp_pos < display_string.size)
     {
@@ -2763,10 +2763,10 @@ ui_box_equip_custom_draw(UI_Box *box, UI_BoxCustomDrawFunctionType *custom_draw,
 
 //- rjf: box accessors / queries
 
-internal String8
+internal string
 ui_box_display_string(UI_Box *box)
 {
-  String8 result = box->string;
+  string result = box->string;
   if(!(box->flags & UI_BoxFlag_DisableIDString))
   {
     result = ui_display_part_from_key_string(result);
@@ -2811,7 +2811,7 @@ ui_box_char_pos_from_xy(UI_Box *box, Vec2F32 xy)
 {
   FNT_Tag font = box->font;
   F32 font_size = box->font_size;
-  String8 line = ui_box_display_string(box);
+  string line = ui_box_display_string(box);
   U64 result = fnt_char_pos_from_tag_size_string_p(font, font_size, 0, box->tab_size, line, xy.x - ui_box_text_position(box).x);
   return result;
 }
@@ -3346,9 +3346,9 @@ state->name_lower##_stack.gen += 1;\
 return old_value;
 
 internal void
-ui__push_tags_key_from_appended_string(String8 string)
+ui__push_tags_key_from_appended_string(string string)
 {
-  B32 is_new_root = str8_match(str8_lit("."), string, 0);
+  B32 is_new_root = str8_match(("."), string, 0);
   
   // rjf: generate new key, by combining hash of this new string with the top
   // of the tags key stack
@@ -3433,37 +3433,37 @@ ui__pop_tags_key(void)
 
 //- rjf: manual implementations
 
-internal String8
+internal string
 ui_top_tag(void)
 {
   UI_StackTopImpl(ui_state, Tag, tag)
 }
 
-internal String8
+internal string
 ui_bottom_tag(void)
 {
   UI_StackBottomImpl(ui_state, Tag, tag)
 }
 
-internal String8
-ui_push_tag(String8 v)
+internal string
+ui_push_tag(string v)
 {
   ui__push_tags_key_from_appended_string(v);
-  UI_StackPushImpl(ui_state, Tag, tag, String8, push_str8_copy(ui_build_arena(), v))
+  UI_StackPushImpl(ui_state, Tag, tag, string, push_str8_copy(ui_build_arena(), v))
 }
 
-internal String8
+internal string
 ui_pop_tag(void)
 {
   ui__pop_tags_key();
   UI_StackPopImpl(ui_state, Tag, tag)
 }
 
-internal String8
-ui_set_next_tag(String8 v)
+internal string
+ui_set_next_tag(string v)
 {
   ui__push_tags_key_from_appended_string(v);
-  UI_StackSetNextImpl(ui_state, Tag, tag, String8, push_str8_copy(ui_build_arena(), v))
+  UI_StackSetNextImpl(ui_state, Tag, tag, string, push_str8_copy(ui_build_arena(), v))
 }
 
 //- rjf: helpers
@@ -3557,7 +3557,7 @@ ui_push_tagf(char *fmt, ...)
   Temp scratch = scratch_begin(0, 0);
   va_list args;
   va_start(args, fmt);
-  String8 string = push_str8fv(scratch.arena, fmt, args);
+  string string = push_str8fv(scratch.arena, fmt, args);
   ui_push_tag(string);
   va_end(args);
   scratch_end(scratch);

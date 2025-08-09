@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal U32
-pdb_hash_udt(CV_UDTInfo udt_info, String8 data)
+pdb_hash_udt(CV_UDTInfo udt_info, string data)
 {
   B32 is_fwdref       = !!(udt_info.props & CV_TypeProp_FwdRef);
   B32 is_scoped       = !!(udt_info.props & CV_TypeProp_Scoped);
@@ -27,7 +27,7 @@ pdb_hash_udt(CV_UDTInfo udt_info, String8 data)
 }
 
 internal U32
-pdb_crc32_from_string(String8 string)
+pdb_crc32_from_string(string string)
 {
   return ~update_crc32(~0, string.str, string.size);
 }

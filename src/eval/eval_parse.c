@@ -4,18 +4,18 @@
 ////////////////////////////////
 //~ rjf: Lexing/Parsing Data Tables
 
-global read_only String8 e_multichar_symbol_strings[] =
+global read_only string e_multichar_symbol_strings[] =
 {
-  str8_lit_comp("<<"),
-  str8_lit_comp(">>"),
-  str8_lit_comp("->"),
-  str8_lit_comp("<="),
-  str8_lit_comp(">="),
-  str8_lit_comp("=="),
-  str8_lit_comp("!="),
-  str8_lit_comp("&&"),
-  str8_lit_comp("||"),
-  str8_lit_comp("=>"),
+  ("<<"),
+  (">>"),
+  ("->"),
+  ("<="),
+  (">="),
+  ("=="),
+  ("!="),
+  ("&&"),
+  ("||"),
+  ("=>"),
 };
 
 global read_only S64 e_max_precedence = 15;
@@ -63,7 +63,7 @@ e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list)
 }
 
 internal E_TokenArray
-e_token_array_from_text(Arena *arena, String8 text)
+e_token_array_from_text(Arena *arena, string text)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -265,8 +265,8 @@ e_token_array_from_text(Arena *arena, String8 text)
               multichar_symbol_idx < ArrayCount(e_multichar_symbol_strings);
               multichar_symbol_idx += 1)
           {
-            String8 multichar_symbol_string = e_multichar_symbol_strings[multichar_symbol_idx];
-            String8 part_of_token = str8_substr(text, r1u64(idx2, idx2+multichar_symbol_string.size));
+            string multichar_symbol_string = e_multichar_symbol_strings[multichar_symbol_idx];
+            string part_of_token = str8_substr(text, r1u64(idx2, idx2+multichar_symbol_string.size));
             if(str8_match(part_of_token, multichar_symbol_string, 0))
             {
               advance2 = multichar_symbol_string.size;
@@ -423,14 +423,14 @@ e_expr_list_push(Arena *arena, E_ExprList *list, E_Expr *expr)
 //~ rjf: Expression Tree -> String Conversions
 
 internal void
-e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_string, String8List *out)
+e_append_strings_from_expr(Arena *arena, E_Expr *expr, string parent_expr_string, String8List *out)
 {
   switch(expr->kind)
   {
     default:
     {
       E_OpInfo *op_info = &e_expr_kind_op_info_table[expr->kind];
-      String8 seps[] =
+      string seps[] =
       {
         op_info->pre,
         op_info->sep,
@@ -468,7 +468,7 @@ e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_strin
     case E_ExprKind_LeafBytecode:
     case E_ExprKind_LeafIdentifier:
     {
-      if(str8_match(expr->string, str8_lit("$"), 0) && parent_expr_string.size != 0)
+      if(str8_match(expr->string, ("$"), 0) && parent_expr_string.size != 0)
       {
         str8_list_push(arena, out, parent_expr_string);
       }
@@ -503,7 +503,7 @@ e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_strin
     }break;
     case E_ExprKind_TypeIdent:
     {
-      String8 type_string = e_type_string_from_key(arena, expr->type_key);
+      string type_string = e_type_string_from_key(arena, expr->type_key);
       str8_list_push(arena, out, type_string);
     }break;
     case E_ExprKind_Ref:
@@ -513,12 +513,12 @@ e_append_strings_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_strin
   }
 }
 
-internal String8
-e_string_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_string)
+internal string
+e_string_from_expr(Arena *arena, E_Expr *expr, string parent_expr_string)
 {
   String8List strings = {0};
   e_append_strings_from_expr(arena, expr, parent_expr_string, &strings);
-  String8 result = str8_list_join(arena, &strings, 0);
+  string result = str8_list_join(arena, &strings, 0);
   return result;
 }
 
@@ -526,7 +526,7 @@ e_string_from_expr(Arena *arena, E_Expr *expr, String8 parent_expr_string)
 //~ rjf: Parsing Functions
 
 internal E_TypeKey
-e_leaf_builtin_type_key_from_name(String8 name)
+e_leaf_builtin_type_key_from_name(string name)
 {
   E_TypeKey result = {0};
   if(0){}
@@ -573,14 +573,14 @@ BasicCase("float", F32)\
 BasicCase("float32", F32)\
 BasicCase("double", F64)\
 BasicCase("float64", F64)
-#define BasicCase(str, kind) else if(str8_match(name, str8_lit(str), 0)) {result = e_type_key_basic(E_TypeKind_##kind);}
+#define BasicCase(str, kind) else if(str8_match(name, (str), 0)) {result = e_type_key_basic(E_TypeKind_##kind);}
   BuiltInType_XList
 #undef BasicCase
   return result;
 }
 
 internal E_TypeKey
-e_leaf_type_key_from_name(String8 name)
+e_leaf_type_key_from_name(string name)
 {
   E_TypeKey key = e_leaf_builtin_type_key_from_name(name);
   if(!e_type_key_match(e_type_key_zero(), key))
@@ -631,7 +631,7 @@ e_type_key_from_expr(E_Expr *expr)
 }
 
 internal E_Parse
-e_push_type_parse_from_text_tokens(Arena *arena, String8 text, E_TokenArray tokens)
+e_push_type_parse_from_text_tokens(Arena *arena, string text, E_TokenArray tokens)
 {
   E_Parse parse = {tokens, 0, &e_expr_nil, &e_expr_nil};
   E_Token *token_it = tokens.v;
@@ -642,8 +642,8 @@ e_push_type_parse_from_text_tokens(Arena *arena, String8 text, E_TokenArray toke
     E_Token token = e_token_at_it(token_it, &tokens);
     if(token.kind == E_TokenKind_Identifier)
     {
-      String8 token_string = str8_substr(text, token.range);
-      if(str8_match(token_string, str8_lit("unsigned"), 0))
+      string token_string = str8_substr(text, token.range);
+      if(str8_match(token_string, ("unsigned"), 0))
       {
         token_it += 1;
         unsigned_marker = 1;
@@ -656,7 +656,7 @@ e_push_type_parse_from_text_tokens(Arena *arena, String8 text, E_TokenArray toke
     E_Token token = e_token_at_it(token_it, &tokens);
     if(token.kind == E_TokenKind_Identifier)
     {
-      String8 token_string = str8_substr(text, token.range);
+      string token_string = str8_substr(text, token.range);
       if(token_string.size >= 2 &&
          token_string.str[0] == '`' &&
          token_string.str[token_string.size-1] == '`')
@@ -701,8 +701,8 @@ e_push_type_parse_from_text_tokens(Arena *arena, String8 text, E_TokenArray toke
       {
         break;
       }
-      String8 token_string = str8_substr(text, token.range);
-      if(str8_match(token_string, str8_lit("*"), 0))
+      string token_string = str8_substr(text, token.range);
+      if(str8_match(token_string, ("*"), 0))
       {
         token_it += 1;
         E_Expr *ptee = parse.expr;
@@ -722,7 +722,7 @@ e_push_type_parse_from_text_tokens(Arena *arena, String8 text, E_TokenArray toke
 }
 
 internal E_Parse
-e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray tokens, S64 max_precedence, U64 max_chain_count)
+e_push_parse_from_string_tokens__prec(Arena *arena, string text, E_TokenArray tokens, S64 max_precedence, U64 max_chain_count)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -740,12 +740,12 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
     //
     {
       E_Token token = e_token_at_it(it, &tokens);
-      String8 token_string = str8_substr(text, token.range);
+      string token_string = str8_substr(text, token.range);
       if(token.kind == E_TokenKind_Symbol &&
-         (str8_match(token_string, str8_lit(")"), 0) ||
-          str8_match(token_string, str8_lit("]"), 0) ||
-          str8_match(token_string, str8_lit(":"), 0) ||
-          str8_match(token_string, str8_lit("?"), 0)))
+         (str8_match(token_string, (")"), 0) ||
+          str8_match(token_string, ("]"), 0) ||
+          str8_match(token_string, (":"), 0) ||
+          str8_match(token_string, ("?"), 0)))
       {
         break;
       }
@@ -757,10 +757,10 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
     for(;it < it_opl;)
     {
       E_Token token = e_token_at_it(it, &tokens);
-      String8 token_string = str8_substr(text, token.range);
+      string token_string = str8_substr(text, token.range);
       if(token.kind == E_TokenKind_Symbol &&
-         (str8_match(token_string, str8_lit(","), 0) ||
-          str8_match(token_string, str8_lit(";"), 0)))
+         (str8_match(token_string, (","), 0) ||
+          str8_match(token_string, (";"), 0)))
       {
         it += 1;
       }
@@ -792,7 +792,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
       //
       {
         E_Token token = e_token_at_it(it, &tokens);
-        String8 token_string = str8_substr(text, token.range);
+        string token_string = str8_substr(text, token.range);
         S64 prefix_unary_precedence = 0;
         E_ExprKind prefix_unary_kind = 0;
         E_Expr *prefix_unary_cast_expr = &e_expr_nil;
@@ -827,19 +827,19 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         }
         
         // rjf: try 'unsigned' marker
-        if(str8_match(token_string, str8_lit("unsigned"), 0))
+        if(str8_match(token_string, ("unsigned"), 0))
         {
           prefix_unary_kind = E_ExprKind_Unsigned;
           prefix_unary_precedence = 2;
         }
         
         // rjf: try explicit cast
-        if(str8_match(token_string, str8_lit("cast"), 0))
+        if(str8_match(token_string, ("cast"), 0))
         {
           // rjf: consume cast & open paren
           E_Token open_paren_maybe = e_token_at_it(it+1, &tokens);
-          String8 open_paren_maybe_string = str8_substr(text, open_paren_maybe.range);
-          if(!str8_match(open_paren_maybe_string, str8_lit("("), 0))
+          string open_paren_maybe_string = str8_substr(text, open_paren_maybe.range);
+          if(!str8_match(open_paren_maybe_string, ("("), 0))
           {
             e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token.range, "Expected `(` following `cast`.");
             goto end_cast_parse;
@@ -853,8 +853,8 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
           
           // rjf: expect )
           E_Token close_paren_maybe = e_token_at_it(it, &tokens);
-          String8 close_paren_maybe_string = str8_substr(text, close_paren_maybe.range);
-          if(close_paren_maybe.kind != E_TokenKind_Symbol || !str8_match(close_paren_maybe_string, str8_lit(")"), 0))
+          string close_paren_maybe_string = str8_substr(text, close_paren_maybe.range);
+          if(close_paren_maybe.kind != E_TokenKind_Symbol || !str8_match(close_paren_maybe_string, (")"), 0))
           {
             e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token.range, "Missing `)`.");
           }
@@ -890,15 +890,15 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         ////////////////////////
         //- rjf: consume resolution qualifiers
         //
-        String8 resolution_qualifier = {0};
+        string resolution_qualifier = {0};
         {
           E_Token token = e_token_at_it(it, &tokens);
-          String8 token_string = str8_substr(text, token.range);
+          string token_string = str8_substr(text, token.range);
           if(token.kind == E_TokenKind_Identifier)
           {
             E_Token next_token = e_token_at_it(it+1, &tokens);
-            String8 next_token_string = str8_substr(text, next_token.range);
-            if(next_token.range.min == token.range.max && next_token.kind == E_TokenKind_Symbol && str8_match(next_token_string, str8_lit(":"), 0))
+            string next_token_string = str8_substr(text, next_token.range);
+            if(next_token.range.min == token.range.max && next_token.kind == E_TokenKind_Symbol && str8_match(next_token_string, (":"), 0))
             {
               it += 2;
               resolution_qualifier = token_string;
@@ -912,8 +912,8 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         if(!got_new_atom)
         {
           E_Token token = e_token_at_it(it, &tokens);
-          String8 token_string = str8_substr(text, token.range);
-          if(token.kind == E_TokenKind_Symbol && str8_match(token_string, str8_lit("("), 0))
+          string token_string = str8_substr(text, token.range);
+          if(token.kind == E_TokenKind_Symbol && str8_match(token_string, ("("), 0))
           {
             // rjf: skip (
             it += 1;
@@ -928,8 +928,8 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
             
             // rjf: expect )
             E_Token close_paren_maybe = e_token_at_it(it, &tokens);
-            String8 close_paren_maybe_string = str8_substr(text, close_paren_maybe.range);
-            if(close_paren_maybe.kind != E_TokenKind_Symbol || !str8_match(close_paren_maybe_string, str8_lit(")"), 0))
+            string close_paren_maybe_string = str8_substr(text, close_paren_maybe.range);
+            if(close_paren_maybe.kind != E_TokenKind_Symbol || !str8_match(close_paren_maybe_string, (")"), 0))
             {
               e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token.range, "Missing `)`.");
             }
@@ -948,8 +948,8 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         if(atom == &e_expr_nil && !got_new_atom)
         {
           E_Token token = e_token_at_it(it, &tokens);
-          String8 token_string = str8_substr(text, token.range);
-          if(token.kind == E_TokenKind_Symbol && str8_match(token_string, str8_lit("["), 0))
+          string token_string = str8_substr(text, token.range);
+          if(token.kind == E_TokenKind_Symbol && str8_match(token_string, ("["), 0))
           {
             // rjf: skip [
             it += 1;
@@ -980,8 +980,8 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
             
             // rjf: expect ]
             E_Token close_paren_maybe = e_token_at_it(it, &tokens);
-            String8 close_paren_maybe_string = str8_substr(text, close_paren_maybe.range);
-            if(close_paren_maybe.kind != E_TokenKind_Symbol || !str8_match(close_paren_maybe_string, str8_lit("]"), 0))
+            string close_paren_maybe_string = str8_substr(text, close_paren_maybe.range);
+            if(close_paren_maybe.kind != E_TokenKind_Symbol || !str8_match(close_paren_maybe_string, ("]"), 0))
             {
               e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token.range, "Missing `]`.");
             }
@@ -1000,15 +1000,15 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         if(!got_new_atom)
         {
           E_Token token = e_token_at_it(it, &tokens);
-          String8 token_string = str8_substr(text, token.range);
+          string token_string = str8_substr(text, token.range);
           
           // rjf: skip no-op prefix keywords
           if(token.kind == E_TokenKind_Identifier &&
-             (str8_match(token_string, str8_lit("struct"), 0) ||
-              str8_match(token_string, str8_lit("union"), 0) ||
-              str8_match(token_string, str8_lit("enum"), 0) ||
-              str8_match(token_string, str8_lit("class"), 0) ||
-              str8_match(token_string, str8_lit("typename"), 0)))
+             (str8_match(token_string, ("struct"), 0) ||
+              str8_match(token_string, ("union"), 0) ||
+              str8_match(token_string, ("enum"), 0) ||
+              str8_match(token_string, ("class"), 0) ||
+              str8_match(token_string, ("typename"), 0)))
           {
             it += 1;
             token = e_token_at_it(it, &tokens);
@@ -1018,7 +1018,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
           // rjf: build identifier atom
           if(token.kind == E_TokenKind_Identifier)
           {
-            String8 identifier_string = token_string;
+            string identifier_string = token_string;
             if(identifier_string.size >= 2 && identifier_string.str[0] == '`' && identifier_string.str[identifier_string.size-1] == '`')
             {
               identifier_string = str8_skip(str8_chop(identifier_string, 1), 1);
@@ -1036,10 +1036,10 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         if(!got_new_atom)
         {
           E_Token token = e_token_at_it(it, &tokens);
-          String8 token_string = str8_substr(text, token.range);
+          string token_string = str8_substr(text, token.range);
           if(token.kind == E_TokenKind_Numeric)
           {
-            U64 dot_pos = str8_find_needle(token_string, 0, str8_lit("."), 0);
+            U64 dot_pos = str8_find_needle(token_string, 0, ("."), 0);
             it += 1;
             
             // rjf: no . => integral
@@ -1055,7 +1055,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
             if(dot_pos < token_string.size)
             {
               F64 val = f64_from_str8(token_string);
-              U64 f_pos = str8_find_needle(token_string, 0, str8_lit("f"), StringMatchFlag_CaseInsensitive);
+              U64 f_pos = str8_find_needle(token_string, 0, ("f"), StringMatchFlag_CaseInsensitive);
               
               // rjf: presence of f after . => f32
               if(f_pos < token_string.size)
@@ -1082,14 +1082,14 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         if(!got_new_atom)
         {
           E_Token token = e_token_at_it(it, &tokens);
-          String8 token_string = str8_substr(text, token.range);
+          string token_string = str8_substr(text, token.range);
           if(token.kind == E_TokenKind_CharLiteral)
           {
             it += 1;
             if(token_string.size > 1 && token_string.str[0] == '\'' && token_string.str[1] != '\'')
             {
-              String8 char_literal_escaped = str8_skip(str8_chop(token_string, 1), 1);
-              String8 char_literal_raw = raw_from_escaped_str8(scratch.arena, char_literal_escaped);
+              string char_literal_escaped = str8_skip(str8_chop(token_string, 1), 1);
+              string char_literal_raw = raw_from_escaped_str8(scratch.arena, char_literal_escaped);
               U8 char_val = char_literal_raw.size > 0 ? char_literal_raw.str[0] : 0;
               atom = e_push_expr(arena, E_ExprKind_LeafU64, token.range);
               atom->value.u64 = (U64)char_val;
@@ -1108,13 +1108,13 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         if(!got_new_atom)
         {
           E_Token token = e_token_at_it(it, &tokens);
-          String8 token_string = str8_substr(text, token.range);
+          string token_string = str8_substr(text, token.range);
           if(token.kind == E_TokenKind_StringLiteral &&
-             (str8_match(resolution_qualifier, str8_lit("file"), 0) ||
-              str8_match(resolution_qualifier, str8_lit("folder"), 0)))
+             (str8_match(resolution_qualifier, ("file"), 0) ||
+              str8_match(resolution_qualifier, ("folder"), 0)))
           {
-            String8 string_value_escaped = str8_chop(str8_skip(token_string, 1), 1);
-            String8 string_value_raw = raw_from_escaped_str8(arena, string_value_escaped);
+            string string_value_escaped = str8_chop(str8_skip(token_string, 1), 1);
+            string string_value_raw = raw_from_escaped_str8(arena, string_value_escaped);
             atom = e_push_expr(arena, E_ExprKind_LeafFilePath, token.range);
             atom->string = string_value_raw;
             it += 1;
@@ -1128,11 +1128,11 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         if(!got_new_atom)
         {
           E_Token token = e_token_at_it(it, &tokens);
-          String8 token_string = str8_substr(text, token.range);
+          string token_string = str8_substr(text, token.range);
           if(token.kind == E_TokenKind_StringLiteral)
           {
-            String8 string_value_escaped = str8_chop(str8_skip(token_string, 1), 1);
-            String8 string_value_raw = raw_from_escaped_str8(arena, string_value_escaped);
+            string string_value_escaped = str8_chop(str8_skip(token_string, 1), 1);
+            string string_value_raw = raw_from_escaped_str8(arena, string_value_escaped);
             atom = e_push_expr(arena, E_ExprKind_LeafStringLiteral, token.range);
             atom->string = string_value_raw;
             it += 1;
@@ -1174,14 +1174,14 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
     if(atom != &e_expr_nil) for(;it < it_opl;)
     {
       E_Token token = e_token_at_it(it, &tokens);
-      String8 token_string = str8_substr(text, token.range);
+      string token_string = str8_substr(text, token.range);
       B32 is_postfix_unary = 0;
       
       // rjf: dot/arrow operator
       if(max_precedence >= 1 &&
          token.kind == E_TokenKind_Symbol &&
-         (str8_match(token_string, str8_lit("."), 0) ||
-          str8_match(token_string, str8_lit("->"), 0)))
+         (str8_match(token_string, ("."), 0) ||
+          str8_match(token_string, ("->"), 0)))
       {
         is_postfix_unary = 1;
         
@@ -1190,7 +1190,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         
         // rjf: look for member name
         E_Token member_name_maybe = e_token_at_it(it, &tokens);
-        String8 member_name_maybe_string = str8_substr(text, member_name_maybe.range);
+        string member_name_maybe_string = str8_substr(text, member_name_maybe.range);
         B32 member_name_is_good = (member_name_maybe.kind == E_TokenKind_Identifier);
         
         // rjf: build dot-operator tree
@@ -1221,7 +1221,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
       
       // rjf: array index
       if(token.kind == E_TokenKind_Symbol &&
-         str8_match(token_string, str8_lit("["), 0))
+         str8_match(token_string, ("["), 0))
       {
         is_postfix_unary = 1;
         
@@ -1246,8 +1246,8 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         // rjf: expect ]
         {
           E_Token close_brace_maybe = e_token_at_it(it, &tokens);
-          String8 close_brace_maybe_string = str8_substr(text, close_brace_maybe.range);
-          if(close_brace_maybe.kind != E_TokenKind_Symbol || !str8_match(close_brace_maybe_string, str8_lit("]"), 0))
+          string close_brace_maybe_string = str8_substr(text, close_brace_maybe.range);
+          if(close_brace_maybe.kind != E_TokenKind_Symbol || !str8_match(close_brace_maybe_string, ("]"), 0))
           {
             e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token.range, "Unclosed `[`.");
           }
@@ -1260,7 +1260,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
       
       // rjf: calls
       if(token.kind == E_TokenKind_Symbol &&
-         str8_match(token_string, str8_lit("("), 0))
+         str8_match(token_string, ("("), 0))
       {
         is_postfix_unary = 1;
         
@@ -1289,8 +1289,8 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
         // rjf: expect )
         {
           E_Token close_paren_maybe = e_token_at_it(it, &tokens);
-          String8 close_paren_maybe_string = str8_substr(text, close_paren_maybe.range);
-          if(close_paren_maybe.kind != E_TokenKind_Symbol || !str8_match(close_paren_maybe_string, str8_lit(")"), 0))
+          string close_paren_maybe_string = str8_substr(text, close_paren_maybe.range);
+          if(close_paren_maybe.kind != E_TokenKind_Symbol || !str8_match(close_paren_maybe_string, (")"), 0))
           {
             e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token.range, "Unclosed `(`.");
             call_expr->range.max = text.size;
@@ -1346,7 +1346,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
     {
       E_Token *start_it = it;
       E_Token token = e_token_at_it(it, &tokens);
-      String8 token_string = str8_substr(text, token.range);
+      string token_string = str8_substr(text, token.range);
       
       //- rjf: parse binaries
       {
@@ -1398,7 +1398,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
       
       //- rjf: parse ternaries
       {
-        if(token.kind == E_TokenKind_Symbol && str8_match(token_string, str8_lit("?"), 0) && 13 <= max_precedence)
+        if(token.kind == E_TokenKind_Symbol && str8_match(token_string, ("?"), 0) && 13 <= max_precedence)
         {
           it += 1;
           
@@ -1415,11 +1415,11 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
           // rjf: expect :
           B32 got_colon = 0;
           E_Token colon_token = zero_struct;
-          String8 colon_token_string = {0};
+          string colon_token_string = {0};
           {
             E_Token colon_token_maybe = e_token_at_it(it, &tokens);
-            String8 colon_token_maybe_string = str8_substr(text, colon_token_maybe.range);
-            if(colon_token_maybe.kind != E_TokenKind_Symbol || !str8_match(colon_token_maybe_string, str8_lit(":"), 0))
+            string colon_token_maybe_string = str8_substr(text, colon_token_maybe.range);
+            if(colon_token_maybe.kind != E_TokenKind_Symbol || !str8_match(colon_token_maybe_string, (":"), 0))
             {
               e_msgf(arena, &result.msgs, E_MsgKind_MalformedInput, token.range, "Expected `:` after `?`.");
             }
@@ -1487,7 +1487,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, String8 text, E_TokenArray t
 }
 
 internal E_Parse
-e_push_parse_from_string(Arena *arena, String8 text)
+e_push_parse_from_string(Arena *arena, string text)
 {
   Temp scratch = scratch_begin(&arena, 1);
   E_TokenArray tokens = e_token_array_from_text(scratch.arena, text);

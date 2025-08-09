@@ -7,8 +7,8 @@
 
 typedef struct LNK_Obj
 {
-  String8              data;
-  String8              path;
+  string              data;
+  string              path;
   struct LNK_Lib      *lib;
   U32                  input_idx;
   COFF_FileHeaderInfo  header;
@@ -48,7 +48,7 @@ typedef struct LNK_SymbolInputResult
 typedef struct LNK_Directive
 {
   struct LNK_Directive *next;
-  String8               id;
+  string               id;
   String8List           value_list;
 } LNK_Directive;
 
@@ -85,7 +85,7 @@ typedef struct
 typedef struct
 {
   LNK_Obj    **objs;
-  String8      name;
+  string      name;
   B32          collect_discarded;
   String8List *out_lists;
 } LNK_SectionCollector;
@@ -105,7 +105,7 @@ internal LNK_SymbolInputResult lnk_input_obj_symbols(TP_Context *tp, TP_Arena *a
 internal U32          lnk_obj_get_features(LNK_Obj *obj);
 internal U32          lnk_obj_get_comp_id(LNK_Obj *obj);
 internal U32          lnk_obj_get_vol_md(LNK_Obj *obj);
-internal String8      lnk_obj_get_lib_path(LNK_Obj *obj);
+internal string      lnk_obj_get_lib_path(LNK_Obj *obj);
 internal U32          lnk_obj_get_removed_section_number(LNK_Obj *obj);
 internal LNK_Symbol * lnk_obj_get_comdat_symlink(LNK_Obj *obj, U64 section_number);
 
@@ -120,12 +120,12 @@ internal B32                  lnk_is_coff_section_debug(LNK_Obj *obj, U64 sect_i
 
 // --- Helpers ----------------------------------------------------------------- 
 
-internal String8List * lnk_collect_obj_sections(TP_Context *tp, TP_Arena *arena, U64 objs_count, LNK_Obj **objs, String8 name, B32 collect_discarded);
+internal String8List * lnk_collect_obj_sections(TP_Context *tp, TP_Arena *arena, U64 objs_count, LNK_Obj **objs, string name, B32 collect_discarded);
 internal B32           lnk_obj_is_before(void *raw_a, void *raw_b);
 
 // --- Directive Parser --------------------------------------------------------
 
-internal void              lnk_parse_msvc_linker_directive(Arena *arena, LNK_Obj *obj, LNK_DirectiveInfo *directive_info, String8 buffer);
+internal void              lnk_parse_msvc_linker_directive(Arena *arena, LNK_Obj *obj, LNK_DirectiveInfo *directive_info, string buffer);
 internal String8List       lnk_raw_directives_from_obj(Arena *arena, LNK_Obj *obj);
 internal LNK_DirectiveInfo lnk_directive_info_from_raw_directives(Arena *arena, LNK_Obj *obj, String8List raw_directives);
 

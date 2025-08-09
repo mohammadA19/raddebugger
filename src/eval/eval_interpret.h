@@ -42,6 +42,6 @@ internal B32 e_space_write(E_Space space, void *in, Rng1U64 range);
 ////////////////////////////////
 //~ rjf: Interpretation Functions
 
-internal E_Interpretation e_interpret(String8 bytecode);
+internal E_Interpretation e_interpret(string bytecode);
 
 #endif // EVAL_INTERPRET_H

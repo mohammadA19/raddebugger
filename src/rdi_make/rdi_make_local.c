@@ -22,7 +22,7 @@ rdim_data_model_from_os_arch(OperatingSystem os, RDI_Arch arch)
 ////////////////////////////////
 
 internal RDIM_TopLevelInfo
-rdim_make_top_level_info(String8 image_name, Arch arch, U64 exe_hash, RDIM_BinarySectionList sections)
+rdim_make_top_level_info(string image_name, Arch arch, U64 exe_hash, RDIM_BinarySectionList sections)
 {
   // convert arch
   RDI_Arch arch_rdi;
@@ -46,7 +46,7 @@ rdim_make_top_level_info(String8 image_name, Arch arch, U64 exe_hash, RDIM_Binar
   top_level_info.arch              = arch_rdi;
   top_level_info.exe_hash          = exe_hash;
   top_level_info.voff_max          = exe_voff_max;
-  top_level_info.producer_name     = str8_lit(BUILD_TITLE_STRING_LITERAL);
+  top_level_info.producer_name     = (BUILD_TITLE_STRING_LITERAL);
   
   
   return top_level_info;

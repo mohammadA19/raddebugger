@@ -17,19 +17,19 @@
 
 global read_only R_OGL_Attribute r_ogl_rect_input_attributes[] =
 {
-  {0, str8_lit_comp("c2v_dst_rect"),        GL_FLOAT,  4},
-  {1, str8_lit_comp("c2v_src_rect"),        GL_FLOAT,  4},
-  {2, str8_lit_comp("c2v_colors_0"),        GL_FLOAT,  4},
-  {3, str8_lit_comp("c2v_colors_1"),        GL_FLOAT,  4},
-  {4, str8_lit_comp("c2v_colors_2"),        GL_FLOAT,  4},
-  {5, str8_lit_comp("c2v_colors_3"),        GL_FLOAT,  4},
-  {6, str8_lit_comp("c2v_corner_radii"),    GL_FLOAT,  4},
-  {7, str8_lit_comp("c2v_style"),           GL_FLOAT,  4},
+  {0, ("c2v_dst_rect"),        GL_FLOAT,  4},
+  {1, ("c2v_src_rect"),        GL_FLOAT,  4},
+  {2, ("c2v_colors_0"),        GL_FLOAT,  4},
+  {3, ("c2v_colors_1"),        GL_FLOAT,  4},
+  {4, ("c2v_colors_2"),        GL_FLOAT,  4},
+  {5, ("c2v_colors_3"),        GL_FLOAT,  4},
+  {6, ("c2v_corner_radii"),    GL_FLOAT,  4},
+  {7, ("c2v_style"),           GL_FLOAT,  4},
 };
 
 global read_only R_OGL_Attribute r_ogl_single_color_output_attributes[] =
 {
-  {0, str8_lit_comp("final_color")},
+  {0, ("final_color")},
 };
 
 ////////////////////////////////
@@ -120,7 +120,7 @@ r_init(CmdLine *cmdln)
   for EachEnumVal(R_OGL_ShaderKind, k)
   {
     // rjf: compile
-    struct {GLenum type; String8 *src; GLuint out; String8 errors;} stages[] =
+    struct {GLenum type; string *src; GLuint out; string errors;} stages[] =
     {
       {GL_VERTEX_SHADER,   r_ogl_shader_kind_vshad_src_table[k]},
       {GL_FRAGMENT_SHADER, r_ogl_shader_kind_pshad_src_table[k]},
@@ -187,7 +187,7 @@ r_init(CmdLine *cmdln)
   r_ogl_state->buffer_flush_arena = arena_alloc();
   
   //- rjf: set up debug callback
-  B32 debug_mode = cmd_line_has_flag(cmdln, str8_lit("opengl_debug"));
+  B32 debug_mode = cmd_line_has_flag(cmdln, ("opengl_debug"));
 #if BUILD_DEBUG
   debug_mode = 1;
 #endif

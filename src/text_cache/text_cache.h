@@ -153,7 +153,7 @@ typedef enum TXT_LangKind
 }
 TXT_LangKind;
 
-typedef TXT_TokenArray TXT_LangLexFunctionType(Arena *arena, U64 *bytes_processed_counter, String8 string);
+typedef TXT_TokenArray TXT_LangLexFunctionType(Arena *arena, U64 *bytes_processed_counter, string string);
 
 ////////////////////////////////
 //~ rjf: Cache Types
@@ -265,8 +265,8 @@ global TXT_Shared *txt_shared = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal TXT_LangKind txt_lang_kind_from_extension(String8 extension);
-internal String8 txt_extension_from_lang_kind(TXT_LangKind kind);
+internal TXT_LangKind txt_lang_kind_from_extension(string extension);
+internal string txt_extension_from_lang_kind(TXT_LangKind kind);
 internal TXT_LangKind txt_lang_kind_from_arch(Arch arch);
 internal TXT_LangLexFunctionType *txt_lex_function_from_lang_kind(TXT_LangKind kind);
 
@@ -281,11 +281,11 @@ internal TXT_TokenArray txt_token_array_from_list(Arena *arena, TXT_TokenList *l
 ////////////////////////////////
 //~ rjf: Lexing Functions
 
-internal TXT_TokenArray txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, String8 string);
-internal TXT_TokenArray txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, String8 string);
-internal TXT_TokenArray txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, String8 string);
-internal TXT_TokenArray txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, String8 string);
-internal TXT_TokenArray txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed_counter, String8 string);
+internal TXT_TokenArray txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, string string);
+internal TXT_TokenArray txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, string string);
+internal TXT_TokenArray txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, string string);
+internal TXT_TokenArray txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, string string);
+internal TXT_TokenArray txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed_counter, string string);
 
 ////////////////////////////////
 //~ rjf: Main Layer Initialization
@@ -316,11 +316,11 @@ internal TXT_TextInfo txt_text_info_from_key_lang(TXT_Scope *scope, HS_Key key, 
 internal U64 txt_off_from_info_pt(TXT_TextInfo *info, TxtPt pt);
 internal TxtPt txt_pt_from_info_off__linear_scan(TXT_TextInfo *info, U64 off);
 internal TXT_TokenArray txt_token_array_from_info_line_num__linear_scan(TXT_TextInfo *info, S64 line_num);
-internal Rng1U64 txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range, String8 line_text, TXT_TokenArray *line_tokens);
-internal Rng1U64 txt_expr_off_range_from_info_data_pt(TXT_TextInfo *info, String8 data, TxtPt pt);
-internal String8 txt_string_from_info_data_txt_rng(TXT_TextInfo *info, String8 data, TxtRng rng);
-internal String8 txt_string_from_info_data_line_num(TXT_TextInfo *info, String8 data, S64 line_num);
-internal TXT_LineTokensSlice txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info, String8 data, Rng1S64 line_range);
+internal Rng1U64 txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range, string line_text, TXT_TokenArray *line_tokens);
+internal Rng1U64 txt_expr_off_range_from_info_data_pt(TXT_TextInfo *info, string data, TxtPt pt);
+internal string txt_string_from_info_data_txt_rng(TXT_TextInfo *info, string data, TxtRng rng);
+internal string txt_string_from_info_data_line_num(TXT_TextInfo *info, string data, S64 line_num);
+internal TXT_LineTokensSlice txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info, string data, Rng1S64 line_range);
 internal TXT_ScopeNode *txt_scope_node_from_info_num(TXT_TextInfo *info, U64 num);
 internal TXT_ScopeNode *txt_scope_node_from_info_off(TXT_TextInfo *info, U64 off);
 internal TXT_ScopeNode *txt_scope_node_from_info_pt(TXT_TextInfo *info, TxtPt pt);

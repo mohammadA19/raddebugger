@@ -37,11 +37,11 @@ log_select(Log *log)
 //~ rjf: Log Building/Clearing
 
 internal void
-log_msg(LogMsgKind kind, String8 string)
+log_msg(LogMsgKind kind, string string)
 {
   if(log_active != 0 && log_active->top_scope != 0)
   {
-    String8 string_copy = push_str8_copy(log_active->arena, string);
+    string string_copy = push_str8_copy(log_active->arena, string);
     str8_list_push(log_active->arena, &log_active->top_scope->strings[kind], string_copy);
   }
 }
@@ -54,7 +54,7 @@ log_msgf(LogMsgKind kind, char *fmt, ...)
     Temp scratch = scratch_begin(0, 0);
     va_list args;
     va_start(args, fmt);
-    String8 string = push_str8fv(scratch.arena, fmt, args);
+    string string = push_str8fv(scratch.arena, fmt, args);
     log_msg(kind, string);
     va_end(args);
     scratch_end(scratch);
@@ -91,7 +91,7 @@ log_scope_end(Arena *arena)
         for EachEnumVal(LogMsgKind, kind)
         {
           Temp scratch = scratch_begin(&arena, 1);
-          String8 result_unindented = str8_list_join(scratch.arena, &scope->strings[kind], 0);
+          string result_unindented = str8_list_join(scratch.arena, &scope->strings[kind], 0);
           result.strings[kind] = indented_from_string(arena, result_unindented);
           scratch_end(scratch);
         }

@@ -128,7 +128,7 @@ struct HS_Node
   HS_Node *prev;
   U128 hash;
   Arena *arena;
-  String8 data;
+  string data;
   U64 scope_ref_count;
   U64 key_ref_count;
   U64 downstream_ref_count;
@@ -220,8 +220,8 @@ global HS_Shared *hs_shared = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 hs_little_hash_from_data(String8 data);
-internal U128 hs_hash_from_data(String8 data);
+internal U64 hs_little_hash_from_data(string data);
+internal U128 hs_hash_from_data(string data);
 internal HS_ID hs_id_make(U64 u64_0, U64 u64_1);
 internal B32 hs_id_match(HS_ID a, HS_ID b);
 internal HS_Key hs_key_make(HS_Root root, HS_ID id);
@@ -241,7 +241,7 @@ internal void hs_root_release(HS_Root root);
 ////////////////////////////////
 //~ rjf: Cache Submission
 
-internal U128 hs_submit_data(HS_Key key, Arena **data_arena, String8 data);
+internal U128 hs_submit_data(HS_Key key, Arena **data_arena, string data);
 
 ////////////////////////////////
 //~ rjf: Scoped Access
@@ -260,7 +260,7 @@ internal void hs_hash_downstream_dec(U128 hash);
 //~ rjf: Cache Lookups
 
 internal U128 hs_hash_from_key(HS_Key key, U64 rewind_count);
-internal String8 hs_data_from_hash(HS_Scope *scope, U128 hash);
+internal string hs_data_from_hash(HS_Scope *scope, U128 hash);
 
 ////////////////////////////////
 //~ rjf: Evictor Thread

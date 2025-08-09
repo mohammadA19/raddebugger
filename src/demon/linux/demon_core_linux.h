@@ -310,10 +310,10 @@ internal U64 dmn_lnx_read(int memory_fd, Rng1U64 range, void *dst);
 internal B32 dmn_lnx_write(int memory_fd, Rng1U64 range, void *src);
 #define dmn_lnx_read_struct(fd, vaddr, ptr) dmn_lnx_read((fd), r1u64((vaddr), (vaddr)+sizeof(*(ptr))), (ptr))
 #define dmn_lnx_write_struct(fd, vaddr, ptr) dmn_lnx_write((fd), r1u64((vaddr), (vaddr)+sizeof(*(ptr))), (ptr))
-internal String8 dmn_lnx_read_string(Arena *arena, int memory_fd, U64 base_vaddr);
+internal string dmn_lnx_read_string(Arena *arena, int memory_fd, U64 base_vaddr);
 
 //- rjf: pid => info extraction
-internal String8 dmn_lnx_exe_path_from_pid(Arena *arena, pid_t pid);
+internal string dmn_lnx_exe_path_from_pid(Arena *arena, pid_t pid);
 internal Arch dmn_lnx_arch_from_pid(pid_t pid);
 internal DMN_LNX_ProcessAux dmn_lnx_aux_from_pid(pid_t pid, Arch arch);
 

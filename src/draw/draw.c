@@ -31,7 +31,7 @@ return top_val
 //~ rjf: Basic Helpers
 
 internal U64
-dr_hash_from_string(String8 string)
+dr_hash_from_string(string string)
 {
   U64 result = 5381;
   for(U64 i = 0; i < string.size; i += 1)
@@ -55,7 +55,7 @@ dr_fstrs_push(Arena *arena, DR_FStrList *list, DR_FStr *str)
 }
 
 internal void
-dr_fstrs_push_new_(Arena *arena, DR_FStrList *list, DR_FStrParams *params, DR_FStrParams *overrides, String8 string)
+dr_fstrs_push_new_(Arena *arena, DR_FStrList *list, DR_FStrParams *params, DR_FStrParams *overrides, string string)
 {
   DR_FStr fstr = {string, *params};
   if(!fnt_tag_match(fnt_tag_zero(), overrides->font))
@@ -115,10 +115,10 @@ dr_fstrs_copy(Arena *arena, DR_FStrList *src)
   return dst;
 }
 
-internal String8
+internal string
 dr_string_from_fstrs(Arena *arena, DR_FStrList *list)
 {
-  String8 result = {0};
+  string result = {0};
   {
     Temp scratch = scratch_begin(&arena, 1);
     String8List parts = {0};
@@ -137,10 +137,10 @@ dr_string_from_fstrs(Arena *arena, DR_FStrList *list)
 }
 
 internal FuzzyMatchRangeList
-dr_fuzzy_match_find_from_fstrs(Arena *arena, DR_FStrList *fstrs, String8 needle)
+dr_fuzzy_match_find_from_fstrs(Arena *arena, DR_FStrList *fstrs, string needle)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  String8 fstrs_string = {0};
+  string fstrs_string = {0};
   fstrs_string.size = fstrs->total_size;
   fstrs_string.str = push_array(arena, U8, fstrs_string.size);
   {
@@ -709,7 +709,7 @@ dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run)
 }
 
 internal void
-dr_text(FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, String8 string)
+dr_text(FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, string string)
 {
   Temp scratch = scratch_begin(0, 0);
   FNT_Run run = fnt_run_from_string(font, size, base_align_px, tab_size_px, flags, string);

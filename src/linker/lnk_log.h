@@ -21,5 +21,5 @@ internal void set_log_level(LNK_LogType type, B32 is_enabled);
 internal B32  lnk_get_log_status(LNK_LogType type);
 internal void lnk_log(LNK_LogType type, char *fmt, ...);
 
-internal LNK_LogType lnk_log_type_from_string(String8 string);
+internal LNK_LogType lnk_log_type_from_string(string string);
 

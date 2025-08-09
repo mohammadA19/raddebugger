@@ -197,7 +197,7 @@ global read_only struct
 };
 
 internal LNK_CmdSwitchType
-lnk_cmd_switch_type_from_string(String8 name)
+lnk_cmd_switch_type_from_string(string name)
 {
   for (U64 i = 0; i < ArrayCount(g_cmd_switch_map); i += 1) {
     if (str8_match_cstr(g_cmd_switch_map[i].name, name, StringMatchFlag_CaseInsensitive)) {
@@ -208,7 +208,7 @@ lnk_cmd_switch_type_from_string(String8 name)
 }
 
 internal LNK_CmdSwitch *
-lnk_cmd_switch_from_string(String8 name)
+lnk_cmd_switch_from_string(string name)
 {
   for (U64 i = 0; i < ArrayCount(g_cmd_switch_map); i += 1) {
     if (str8_match_cstr(g_cmd_switch_map[i].name, name, StringMatchFlag_CaseInsensitive)) {
@@ -229,7 +229,7 @@ lnk_cmd_switch_from_type(LNK_CmdSwitchType type)
   return 0;
 }
 
-internal String8
+internal string
 lnk_string_from_cmd_switch_type(LNK_CmdSwitchType type)
 {
   LNK_CmdSwitch *cmd_switch = lnk_cmd_switch_from_type(type);
@@ -237,7 +237,7 @@ lnk_string_from_cmd_switch_type(LNK_CmdSwitchType type)
 }
 
 internal LNK_InputType
-lnk_input_type_from_string(String8 name)
+lnk_input_type_from_string(string name)
 {
   for (U64 i = 0; i < ArrayCount(g_input_type_map); i += 1) {
     if (str8_match_cstr(g_input_type_map[i].name, name, StringMatchFlag_CaseInsensitive)) {
@@ -248,7 +248,7 @@ lnk_input_type_from_string(String8 name)
 }
 
 internal LNK_DebugMode
-lnk_debug_mode_from_string(String8 name)
+lnk_debug_mode_from_string(string name)
 {
   for (U64 i = 0; i < ArrayCount(g_debug_mode_map); i += 1) {
     if (str8_match_cstr(g_debug_mode_map[i].name, name, StringMatchFlag_CaseInsensitive)) {
@@ -259,7 +259,7 @@ lnk_debug_mode_from_string(String8 name)
 }
 
 internal LNK_TypeNameHashMode
-lnk_type_name_hash_mode_from_string(String8 name)
+lnk_type_name_hash_mode_from_string(string name)
 {
   for (U64 i = 0; i < ArrayCount(g_type_name_hash_mode_map); i += 1) {
     if (str8_match_cstr(g_type_name_hash_mode_map[i].name, name, StringMatchFlag_CaseInsensitive)) {
@@ -273,11 +273,11 @@ internal LNK_CmdOption *
 lnk_cmd_line_push_option_if_not_presentf(Arena *arena, LNK_CmdLine *cmd_line, LNK_CmdSwitchType cmd_switch_type, char *param_fmt, ...)
 {
   LNK_CmdOption *opt = 0;
-  String8 cmd_switch_name = lnk_string_from_cmd_switch_type(cmd_switch_type);
+  string cmd_switch_name = lnk_string_from_cmd_switch_type(cmd_switch_type);
   if (!lnk_cmd_line_has_option_string(*cmd_line, cmd_switch_name)) {
     va_list param_args;
     va_start(param_args, param_fmt);
-    String8 param_str = push_str8fv(arena, param_fmt, param_args);
+    string param_str = push_str8fv(arena, param_fmt, param_args);
     va_end(param_args);
 
     opt = lnk_cmd_line_push_option_string(arena, cmd_line, cmd_switch_name, param_str);
@@ -290,9 +290,9 @@ lnk_cmd_line_push_optionf(Arena *arena, LNK_CmdLine *cmd_line, LNK_CmdSwitchType
 {
   va_list param_args;
   va_start(param_args, param_fmt);
-  String8 param_str = push_str8fv(arena, param_fmt, param_args);
+  string param_str = push_str8fv(arena, param_fmt, param_args);
   va_end(param_args);
-  String8 cmd_switch_name = lnk_string_from_cmd_switch_type(cmd_switch);
+  string cmd_switch_name = lnk_string_from_cmd_switch_type(cmd_switch);
   LNK_CmdOption *opt = lnk_cmd_line_push_option_string(arena, cmd_line, cmd_switch_name, param_str);
   return opt;
 }
@@ -300,7 +300,7 @@ lnk_cmd_line_push_optionf(Arena *arena, LNK_CmdLine *cmd_line, LNK_CmdSwitchType
 internal B32
 lnk_cmd_line_has_switch(LNK_CmdLine cmd_line, LNK_CmdSwitchType cmd_switch)
 {
-  String8 cmd_switch_name = lnk_string_from_cmd_switch_type(cmd_switch);
+  string cmd_switch_name = lnk_string_from_cmd_switch_type(cmd_switch);
   return lnk_cmd_line_has_option_string(cmd_line, cmd_switch_name);
 }
 
@@ -309,9 +309,9 @@ lnk_error_cmd_switch(LNK_ErrorCode code, LNK_Obj *obj, LNK_CmdSwitchType cmd_swi
 {
   Temp scratch = scratch_begin(0,0);
   va_list args; va_start(args, fmt);
-  String8 switch_name = lnk_string_from_cmd_switch_type(cmd_switch);
-  String8 message     = push_str8fv(scratch.arena, fmt, args);
-  String8 output      = push_str8f(scratch.arena, "/%S: %S", switch_name, message);
+  string switch_name = lnk_string_from_cmd_switch_type(cmd_switch);
+  string message     = push_str8fv(scratch.arena, fmt, args);
+  string output      = push_str8f(scratch.arena, "/%S: %S", switch_name, message);
   lnk_error_obj(code, obj, "%S", output);
   va_end(args);
   scratch_end(scratch);
@@ -324,15 +324,15 @@ lnk_error_cmd_switch_invalid_param_count(LNK_ErrorCode code, LNK_Obj *obj, LNK_C
 }
 
 internal void
-lnk_error_cmd_switch_invalid_param(LNK_ErrorCode code, LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8 param)
+lnk_error_cmd_switch_invalid_param(LNK_ErrorCode code, LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, string param)
 {
   lnk_error_cmd_switch(code, obj, cmd_switch, "invalid parameter \"%S\"", param);
 }
 
-internal String8
-lnk_error_check_and_strip_quotes(LNK_ErrorCode error_code, LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8 string)
+internal string
+lnk_error_check_and_strip_quotes(LNK_ErrorCode error_code, LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, string string)
 {
-  String8 result = string;
+  string result = string;
   B32 starts_with_quote = str8_match_lit("\"", string, StringMatchFlag_RightSideSloppy);
   if (starts_with_quote) {
     if (str8_ends_with_lit(string, "\"", 0)) {
@@ -346,13 +346,13 @@ lnk_error_check_and_strip_quotes(LNK_ErrorCode error_code, LNK_Obj *obj, LNK_Cmd
 }
 
 internal void
-lnk_error_invalid_uac_level_param(LNK_ErrorCode error_code, LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8 input)
+lnk_error_invalid_uac_level_param(LNK_ErrorCode error_code, LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, string input)
 {
   lnk_error_cmd_switch(error_code, obj, cmd_switch, "invalid param format, expected \"level={'asInvoker'|'highestAvailable'|'requireAdministrator'}\" but got \"%S\"", input);
 }
 
 internal void
-lnk_error_invalid_uac_ui_access_param(LNK_ErrorCode error_code, LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8 input)
+lnk_error_invalid_uac_ui_access_param(LNK_ErrorCode error_code, LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, string input)
 {
   lnk_error_cmd_switch(error_code, obj, cmd_switch, "invalid param format, expected \"uiAccess={'true'|'false'}\" but got \"%S\"", input);
 }
@@ -364,10 +364,10 @@ lnk_cmd_switch_parse_version(LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8
   B32 is_parsed = 0;
 
   if (value_strings.node_count == 1) {
-    String8List split_list = str8_split_by_string_chars(scratch.arena, value_strings.first->string, str8_lit("."), StringSplitFlag_KeepEmpties);
+    String8List split_list = str8_split_by_string_chars(scratch.arena, value_strings.first->string, ("."), StringSplitFlag_KeepEmpties);
 
-    String8 maj_str = str8_lit("0");
-    String8 min_str = str8_lit("0");
+    string maj_str = ("0");
+    string min_str = ("0");
     if (split_list.node_count == 1) {
       maj_str = split_list.first->string;
     } else if (split_list.node_count == 2) {
@@ -429,7 +429,7 @@ lnk_cmd_switch_parse_tuple(LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8Li
 }
 
 internal B32
-lnk_try_parse_u64(String8 string, LNK_ParseU64Flags flags, U64 *value_out)
+lnk_try_parse_u64(string string, LNK_ParseU64Flags flags, U64 *value_out)
 {
   if (try_u64_from_str8_c_rules(string, value_out)) {
     if (flags & LNK_ParseU64Flag_CheckUnder32bit) {
@@ -577,7 +577,7 @@ lnk_cmd_switch_set_flag_64(LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8Li
 }
 
 internal B32
-lnk_cmd_switch_parse_string(LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8List value_strings, String8 *string_out)
+lnk_cmd_switch_parse_string(LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8List value_strings, string *string_out)
 {
   if (value_strings.node_count == 1) {
     if (value_strings.first->string.size > 0) {
@@ -593,7 +593,7 @@ lnk_cmd_switch_parse_string(LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8L
 }
 
 internal void
-lnk_cmd_switch_parse_string_copy(Arena *arena, LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8List value_strings, String8 *string_out)
+lnk_cmd_switch_parse_string_copy(Arena *arena, LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8List value_strings, string *string_out)
 {
   if (lnk_cmd_switch_parse_string(obj, cmd_switch, value_strings, string_out)) {
     *string_out = push_str8_copy(arena, *string_out);
@@ -601,11 +601,11 @@ lnk_cmd_switch_parse_string_copy(Arena *arena, LNK_Obj *obj, LNK_CmdSwitchType c
 }
 
 internal B32
-lnk_parse_alt_name_directive(String8 string, LNK_Obj *obj, LNK_AltName *alt_out)
+lnk_parse_alt_name_directive(string string, LNK_Obj *obj, LNK_AltName *alt_out)
 {
   Temp scratch = scratch_begin(0,0);
   B32 is_parse_ok = 0;
-  String8List pair = str8_split_by_string_chars(scratch.arena, string, str8_lit("="), 0);
+  String8List pair = str8_split_by_string_chars(scratch.arena, string, ("="), 0);
   if (pair.node_count == 2) {
     alt_out->from = pair.first->string;
     alt_out->to   = pair.last->string;
@@ -626,18 +626,18 @@ lnk_parse_export_directive_ex(Arena *arena, String8List directive, LNK_Obj *obj,
   B32 is_parsed = 0;
 
   // parse "alias=name"
-  String8     name  = {0};
-  String8     alias = {0};
+  string     name  = {0};
+  string     alias = {0};
   String8List flags = {0};
   {
-    String8List alias_name_split = str8_split_by_string_chars(scratch.arena, directive.first->string, str8_lit("="), 0);
+    String8List alias_name_split = str8_split_by_string_chars(scratch.arena, directive.first->string, ("="), 0);
     if (alias_name_split.node_count == 2) {
       alias = alias_name_split.first->string;
       name  = alias_name_split.last->string;
     } else if (alias_name_split.node_count == 1) {
       name = alias_name_split.first->string;
     } else {
-      String8 d = str8_list_join(scratch.arena, &directive, &(StringJoin){.sep=str8_lit(",")});
+      string d = str8_list_join(scratch.arena, &directive, &(StringJoin){.sep=(",")});
       lnk_error_obj(LNK_Error_IllExport, obj, "invalid export directive \"/EXPORT:%S\"", d);
       goto exit;
     }
@@ -654,9 +654,9 @@ lnk_parse_export_directive_ex(Arena *arena, String8List directive, LNK_Obj *obj,
   // does directive have ordinal?
   COFF_ImportByType import_by = COFF_ImportBy_Name;
   U16 ordinal16 = 0;
-  String8 ordinal = {0};
-  String8 noname_flag = {0};
-  if (str8_match(str8_prefix(str8_list_first(&flags), 1), str8_lit("@"), 0)) {
+  string ordinal = {0};
+  string noname_flag = {0};
+  if (str8_match(str8_prefix(str8_list_first(&flags), 1), ("@"), 0)) {
     // parse ordinal
     ordinal = str8_skip(str8_list_pop_front(&flags)->string, 1);
     if (str8_is_integer(ordinal, 10)) {
@@ -665,25 +665,25 @@ lnk_parse_export_directive_ex(Arena *arena, String8List directive, LNK_Obj *obj,
         ordinal16 = (U16)ordinal64;
         import_by = COFF_ImportBy_Ordinal;
       } else {
-        String8 d = str8_list_join(scratch.arena, &directive, &(StringJoin){.sep=str8_lit(",")});
+        string d = str8_list_join(scratch.arena, &directive, &(StringJoin){.sep=(",")});
         lnk_error_obj(LNK_Error_IllExport, obj, "ordinal value must fit into 16-bit integer, \"/EXPORT:%S\"", d);
         goto exit;
       }
     } else {
-      String8 d = str8_list_join(scratch.arena, &directive, &(StringJoin){.sep=str8_lit(",")});
+      string d = str8_list_join(scratch.arena, &directive, &(StringJoin){.sep=(",")});
       lnk_error_obj(LNK_Error_IllExport, obj, "invalid export directive \"/EXPORT:%S\"", d);
       goto exit;
     }
 
     // detect NONAME flag
-    if (str8_match(str8_list_first(&flags), str8_lit("NONAME"), StringMatchFlag_CaseInsensitive)) {
+    if (str8_match(str8_list_first(&flags), ("NONAME"), StringMatchFlag_CaseInsensitive)) {
       noname_flag = str8_list_pop_front(&flags)->string;
     }
   }
 
   // detect PRIVATE flag
-  String8 private_flag = {0};
-  if (str8_match(str8_list_first(&flags), str8_lit("PRIVATE"), StringMatchFlag_CaseInsensitive)) {
+  string private_flag = {0};
+  if (str8_match(str8_list_first(&flags), ("PRIVATE"), StringMatchFlag_CaseInsensitive)) {
     private_flag = str8_list_pop_front(&flags)->string;
   }
 
@@ -692,7 +692,7 @@ lnk_parse_export_directive_ex(Arena *arena, String8List directive, LNK_Obj *obj,
   if (flags.node_count) {
     type = coff_import_header_type_from_string(str8_list_pop_front(&flags)->string);
     if (type == COFF_ImportType_Invalid) {
-      String8 d = str8_list_join(scratch.arena, &directive, &(StringJoin){.sep=str8_lit(",")});
+      string d = str8_list_join(scratch.arena, &directive, &(StringJoin){.sep=(",")});
       lnk_error_obj(LNK_Error_IllExport, obj, "invalid export directive \"/EXPORT:%S\"", d);
       goto exit;
     }
@@ -700,7 +700,7 @@ lnk_parse_export_directive_ex(Arena *arena, String8List directive, LNK_Obj *obj,
 
   // are there leftover nodes?
   if (flags.node_count != 0) {
-    String8 d = str8_list_join(scratch.arena, &directive, &(StringJoin){.sep=str8_lit(",")});
+    string d = str8_list_join(scratch.arena, &directive, &(StringJoin){.sep=(",")});
     lnk_error_obj(LNK_Error_IllExport, obj, "invalid export directive \"/EXPORT:%S\"", d);
     goto exit;
   }
@@ -716,7 +716,7 @@ lnk_parse_export_directive_ex(Arena *arena, String8List directive, LNK_Obj *obj,
   export_out->is_ordinal_assigned = ordinal.size > 0;
   export_out->is_noname_present   = noname_flag.size > 0;
   export_out->is_private          = private_flag.size > 0;
-  export_out->is_forwarder        = str8_find_needle(name, 0, str8_lit("."), 0) < name.size;
+  export_out->is_forwarder        = str8_find_needle(name, 0, ("."), 0) < name.size;
 
   is_parsed = 1;
   
@@ -727,10 +727,10 @@ exit:;
 }
 
 internal B32
-lnk_parse_export_directive(Arena *arena, String8 directive, LNK_Obj *obj, PE_ExportParse *export_out)
+lnk_parse_export_directive(Arena *arena, string directive, LNK_Obj *obj, PE_ExportParse *export_out)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  String8List split_directive = str8_split_by_string_chars(scratch.arena, directive, str8_lit(","), 0);
+  String8List split_directive = str8_split_by_string_chars(scratch.arena, directive, (","), 0);
   B32 is_parsed = lnk_parse_export_directive_ex(arena, split_directive, obj, export_out);
   scratch_end(scratch);
   return is_parsed;
@@ -747,11 +747,11 @@ lnk_merge_directive_list_push(Arena *arena, LNK_MergeDirectiveList *list, LNK_Me
 }
 
 internal B32
-lnk_parse_merge_directive(String8 string, LNK_Obj *obj, LNK_MergeDirective *out)
+lnk_parse_merge_directive(string string, LNK_Obj *obj, LNK_MergeDirective *out)
 {
   Temp scratch = scratch_begin(0, 0);
   B32 is_parse_ok = 0;
-  String8List list = str8_split_by_string_chars(scratch.arena, string, str8_lit("="), 0);
+  String8List list = str8_split_by_string_chars(scratch.arena, string, ("="), 0);
   if (list.node_count == 2) {
     out->src = list.first->string;
     out->dst = list.last->string;
@@ -763,10 +763,10 @@ lnk_parse_merge_directive(String8 string, LNK_Obj *obj, LNK_MergeDirective *out)
   return is_parse_ok;
 }
 
-internal String8
+internal string
 lnk_get_image_name(LNK_Config *config)
 {
-  String8 image_name = config->image_name;
+  string image_name = config->image_name;
   image_name = str8_skip_last_slash(image_name);
   image_name = str8_chop_last_dot(image_name);
   return image_name;
@@ -924,7 +924,7 @@ lnk_is_thread_pool_shared(LNK_Config *config)
 }
 
 internal B32
-lnk_is_section_removed(LNK_Config *config, String8 section_name)
+lnk_is_section_removed(LNK_Config *config, string section_name)
 {
   B32 is_removed = 0;
   for (String8Node *name_n = config->remove_sections.first; name_n != 0 && !is_removed; name_n = name_n->next) {
@@ -968,7 +968,7 @@ lnk_print_help(void)
       continue;
     }
 
-    String8 name_args = push_str8f(temp.arena, "%s%s", name, args);
+    string name_args = push_str8f(temp.arena, "%s%s", name, args);
 
     fprintf(stdout, "   /%-32.*s %s%s\n",
             str8_varg(name_args),
@@ -983,22 +983,22 @@ lnk_print_help(void)
   scratch_end(scratch);
 }
 
-internal String8
-lnk_expand_env_vars_windows(Arena *arena, HashTable *env_vars, String8 string)
+internal string
+lnk_expand_env_vars_windows(Arena *arena, HashTable *env_vars, string string)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
   String8List list = {0};
   for (U64 i = 0; i < string.size; ) {
-    U64 open  = str8_find_needle(string, i,      str8_lit("%"), 0);
-    U64 close = str8_find_needle(string, open+1, str8_lit("%"), 0);
+    U64 open  = str8_find_needle(string, i,      ("%"), 0);
+    U64 close = str8_find_needle(string, open+1, ("%"), 0);
 
-    String8 text = str8_substr(string, rng_1u64(i, open));
+    string text = str8_substr(string, rng_1u64(i, open));
     str8_list_push(scratch.arena, &list, text);
     i += text.size;
 
     if (open < close) {
-      String8       env_var_name = str8_substr(string, rng_1u64(open+1, close));
+      string       env_var_name = str8_substr(string, rng_1u64(open+1, close));
       KeyValuePair *match        = hash_table_search_path(env_vars, env_var_name);
       if (match) {
         str8_list_push(scratch.arena, &list, match->value_string);
@@ -1010,7 +1010,7 @@ lnk_expand_env_vars_windows(Arena *arena, HashTable *env_vars, String8 string)
     }
   }
 
-  String8 result = str8_list_join(arena, &list, 0);
+  string result = str8_list_join(arena, &list, 0);
 
   scratch_end(scratch);
   return result;
@@ -1027,11 +1027,11 @@ lnk_unwrap_rsp(Arena *arena, String8List arg_list)
     B32 is_rsp = str8_match_lit("@", curr->string, StringMatchFlag_RightSideSloppy);
     if (is_rsp) {
       // remove "@"
-      String8 name = str8_skip(curr->string, 1);
+      string name = str8_skip(curr->string, 1);
 
       if (os_file_path_exists(name)) {
         // read rsp from disk
-        String8 file = lnk_read_data_from_file_path(scratch.arena, 0, name);
+        string file = lnk_read_data_from_file_path(scratch.arena, 0, name);
         
         // parse rsp
         String8List rsp_args = lnk_arg_list_parse_windows_rules(scratch.arena, file);
@@ -1047,7 +1047,7 @@ lnk_unwrap_rsp(Arena *arena, String8List arg_list)
       }
     } else {
       // push regular argument
-      String8 str = push_str8_copy(arena, curr->string);
+      string str = push_str8_copy(arena, curr->string);
       str8_list_push(arena, &result, str);
     }
   }
@@ -1057,7 +1057,7 @@ lnk_unwrap_rsp(Arena *arena, String8List arg_list)
 }
 
 internal void
-lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_name, String8List value_strings, LNK_Obj *obj)
+lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, string cmd_name, String8List value_strings, LNK_Obj *obj)
 {
   Temp scratch = scratch_begin(&arena,1);
 
@@ -1065,14 +1065,14 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
 
   switch (cmd_switch) {
   case LNK_CmdSwitch_Null: {
-    String8 value = str8_list_join(scratch.arena, &value_strings, &(StringJoin){.sep=str8_lit_comp(",")});
+    string value = str8_list_join(scratch.arena, &value_strings, &(StringJoin){.sep=(",")});
     lnk_error_obj(LNK_Warning_UnknownSwitch, obj, "unknown switch: \"/%S%s%S\"", cmd_name, value.size ? ":" : "", value);
   } break;
 
   default: break;
 
   case LNK_CmdSwitch_NotImplemented: {
-    String8 value = str8_list_join(scratch.arena, &value_strings, &(StringJoin){.sep=str8_lit_comp(",")});
+    string value = str8_list_join(scratch.arena, &value_strings, &(StringJoin){.sep=(",")});
     lnk_not_implemented("switch \"%S\" is not implemented \"%S\"", cmd_name, value);
   } break;
 
@@ -1092,7 +1092,7 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
     if (value_strings.node_count == 1) {
       LNK_AltName alt_name;
       if (lnk_parse_alt_name_directive(value_strings.first->string, obj, &alt_name)) {
-        String8 to_extant = {0};
+        string to_extant = {0};
         if (hash_table_search_string_string(config->alt_name_ht, alt_name.from, &to_extant)) {
           if (str8_match(to_extant, alt_name.to, 0)) {
             // ignore, duplicate
@@ -1127,8 +1127,8 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
       //String8Node *second_node = first_node->next;
       B32 is_response_file = str8_match_lit("@", first_node->string, StringMatchFlag_RightSideSloppy);
       if (is_response_file) {
-        //String8 file_path = first_node->string;
-        //String8 tag = second_node->string;
+        //string file_path = first_node->string;
+        //string tag = second_node->string;
         lnk_not_implemented("Response files are not implemented for /BASE");
       } else {
         Rng1U64 addr_size = {0};
@@ -1183,7 +1183,7 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
     if (value_strings.node_count == 0 || value_strings.node_count > 1) {
       lnk_error_cmd_switch(LNK_Error_Cmdl, obj, cmd_switch, "invalid number of parameters");
     } else {
-      String8 value = value_strings.first->string;
+      string value = value_strings.first->string;
       if (str8_match_lit("unload", value, StringMatchFlag_CaseInsensitive)) {
         config->import_table_emit_uiat = 1;
       } else if (str8_match_lit("nobind", value, StringMatchFlag_CaseInsensitive)) {
@@ -1212,7 +1212,7 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
   } break;
 
   case LNK_CmdSwitch_Entry: {
-    String8 new_entry_point_name = {0};
+    string new_entry_point_name = {0};
     lnk_cmd_switch_parse_string_copy(arena, obj, cmd_switch, value_strings, &new_entry_point_name);
 
     if (config->entry_point_name.size) {
@@ -1227,7 +1227,7 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
     PE_ExportParse export_parse = {0};
     if (lnk_parse_export_directive_ex(arena, value_strings, obj, &export_parse)) {
       PE_ExportParseNode *exp_n = 0;
-      String8 export_name = pe_name_from_export_parse(&export_parse);
+      string export_name = pe_name_from_export_parse(&export_parse);
       hash_table_search_string_raw(config->export_ht, export_name, &exp_n);
 
       if (exp_n == 0) {
@@ -1347,7 +1347,7 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
         continue;
       }
 
-      String8 include_symbol = push_str8_copy(arena, value_n->string);
+      string include_symbol = push_str8_copy(arena, value_n->string);
       hash_table_push_string_raw(arena, config->include_symbol_ht, include_symbol, 0);
       str8_list_push(arena, &config->include_symbol_list, include_symbol);
     }
@@ -1374,7 +1374,7 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
     String8List lib_dir_list = str8_list_copy(arena, &value_strings);
     for (String8Node *dir_n = lib_dir_list.first; dir_n != 0; dir_n = dir_n->next) {
       if (!os_folder_path_exists(dir_n->string)) {
-        String8 full_path = os_full_path_from_path(scratch.arena, dir_n->string);
+        string full_path = os_full_path_from_path(scratch.arena, dir_n->string);
         lnk_error_cmd_switch(LNK_Warning_Cmdl, obj, cmd_switch, "path doesn't exist %S", full_path);
       }
     }
@@ -1396,7 +1396,7 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
 
   case LNK_CmdSwitch_Manifest: {
     if (value_strings.node_count == 1) {
-      String8List  param_list = str8_split_by_string_chars(scratch.arena, value_strings.first->string, str8_lit(","), 0);
+      String8List  param_list = str8_split_by_string_chars(scratch.arena, value_strings.first->string, (","), 0);
       String8Array param_arr  = str8_array_from_list(scratch.arena, &param_list);
       if (param_arr.count > 0) {
         if (str8_match_lit("embed", param_arr.v[0], StringMatchFlag_CaseInsensitive)) {
@@ -1406,7 +1406,7 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
           } else if (param_arr.count > 1) {
             // parse resource id
             if (str8_match_lit("id=", param_arr.v[1], StringMatchFlag_RightSideSloppy|StringMatchFlag_CaseInsensitive)) {
-              String8List  res_id_list = str8_split_by_string_chars(scratch.arena, param_arr.v[1], str8_lit("="), 0);
+              String8List  res_id_list = str8_split_by_string_chars(scratch.arena, param_arr.v[1], ("="), 0);
               String8Array res_id_arr  = str8_array_from_list(scratch.arena, &res_id_list);
               if (res_id_arr.count == 2) {
                 U64 resource_id;
@@ -1458,16 +1458,16 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
 
   case LNK_CmdSwitch_ManifestUac: {
     if (value_strings.node_count == 1) {
-      String8 uac = lnk_error_check_and_strip_quotes(LNK_Error_Cmdl, obj, cmd_switch, value_strings.first->string);
-      String8List  param_list = str8_split_by_string_chars(scratch.arena, uac, str8_lit(" "), 0);
+      string uac = lnk_error_check_and_strip_quotes(LNK_Error_Cmdl, obj, cmd_switch, value_strings.first->string);
+      String8List  param_list = str8_split_by_string_chars(scratch.arena, uac, (" "), 0);
       String8Array param_arr  = str8_array_from_list(scratch.arena, &param_list);
       if (param_arr.count > 0) {
         if (str8_match_lit("level=", param_arr.v[0], StringMatchFlag_RightSideSloppy|StringMatchFlag_CaseInsensitive)) {
-          String8 level_param = param_arr.v[0];
-          String8List level_list = str8_split_by_string_chars(scratch.arena, level_param, str8_lit("="), 0);
+          string level_param = param_arr.v[0];
+          String8List level_list = str8_split_by_string_chars(scratch.arena, level_param, ("="), 0);
           if (level_list.node_count == 2) {
             if (str8_match_lit("level", level_list.first->string, StringMatchFlag_CaseInsensitive)) {
-              String8 level = level_list.last->string;
+              string level = level_list.last->string;
               if (str8_match_lit("'asInvoker'", level, 0) ||
                   str8_match_lit("'highestAvailable'", level, 0) ||
                   str8_match_lit("'requireAdministrator'", level, 0)) {
@@ -1475,10 +1475,10 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
                 config->manifest_uac = 1;
                 config->manifest_level = push_str8_copy(arena, level);
                 if (param_arr.count > 1) {
-                  String8 ui_access_param = param_arr.v[1];
-                  String8List ui_access_list = str8_split_by_string_chars(scratch.arena, ui_access_param, str8_lit("="), 0);
+                  string ui_access_param = param_arr.v[1];
+                  String8List ui_access_list = str8_split_by_string_chars(scratch.arena, ui_access_param, ("="), 0);
                   if (ui_access_list.node_count == 2) {
-                    String8 ui_access = ui_access_list.last->string;
+                    string ui_access = ui_access_list.last->string;
                     if (str8_match_lit("'true'", ui_access, 0) ||
                         str8_match_lit("'false'", ui_access, 0)) {
                       // ui access was parsed!
@@ -1528,7 +1528,7 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
   case LNK_CmdSwitch_Natvis: {
     // warn about invalid natvis extension
     for (String8Node *node = value_strings.first; node != 0; node = node->next) {
-      String8 ext = str8_skip_last_dot(node->string);
+      string ext = str8_skip_last_dot(node->string);
       if (!str8_match_lit("natvis", ext, StringMatchFlag_CaseInsensitive)) {
         lnk_error_cmd_switch(LNK_Warning_InvalidNatvisFileExt, obj, cmd_switch, "Visual Studio expects .natvis extension: \"%S\"", node->string);
       }
@@ -1566,14 +1566,14 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
 
   case LNK_CmdSwitch_Opt: {
     for (String8Node *n = value_strings.first; n != 0; n = n->next) {
-      String8 param = n->string;
+      string param = n->string;
       if (str8_match_lit("ref", param, StringMatchFlag_CaseInsensitive)) {
         config->opt_ref = LNK_SwitchState_Yes; 
       } else if (str8_match_lit("noref", param, StringMatchFlag_CaseInsensitive)) {
         config->opt_ref = LNK_SwitchState_No;
       } else if (str8_match_lit("icf", param, StringMatchFlag_CaseInsensitive) ||
                  str8_match_lit("icf=", param, StringMatchFlag_CaseInsensitive | StringMatchFlag_RightSideSloppy)) {
-        String8List vals = str8_split_by_string_chars(scratch.arena, param, str8_lit("="), 0);
+        String8List vals = str8_split_by_string_chars(scratch.arena, param, ("="), 0);
         if (vals.node_count > 2) {
           lnk_error_cmd_switch(LNK_Error_Cmdl, obj, cmd_switch, "too many parameters for iteration");
           continue;
@@ -1849,7 +1849,7 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
   } break;
 
   case LNK_CmdSwitch_Rad_PdbHashTypeNames: {
-    String8              mode_string = str8_list_first(&value_strings);
+    string              mode_string = str8_list_first(&value_strings);
 
     LNK_TypeNameHashMode mode;
     if (mode_string.size == 0) {
@@ -1873,7 +1873,7 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
   } break;
 
   case LNK_CmdSwitch_Rad_RemoveSection: {
-    String8 sect_name = {0};
+    string sect_name = {0};
     if (lnk_cmd_switch_parse_string(obj, cmd_switch, value_strings, &sect_name)) {
       sect_name = push_str8_copy(arena, sect_name);
       str8_list_push(arena, &config->remove_sections, sect_name);
@@ -1882,7 +1882,7 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
 
   case LNK_CmdSwitch_Rad_SharedThreadPool: {
     if (value_strings.node_count == 0) {
-      config->shared_thread_pool_name = str8_lit(LNK_DEFAULT_THREAD_POOL_NAME);
+      config->shared_thread_pool_name = (LNK_DEFAULT_THREAD_POOL_NAME);
     } else {
       lnk_cmd_switch_parse_string(obj, cmd_switch, value_strings, &config->shared_thread_pool_name);
       if (config->shared_thread_pool_name.size == 0) {
@@ -1934,7 +1934,7 @@ lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, String8 cmd_nam
 
   case LNK_CmdSwitch_Rad_TargetOs: {
     if (value_strings.node_count == 1) {
-      String8 os_string = str8_list_first(&value_strings);
+      string os_string = str8_list_first(&value_strings);
       OperatingSystem target_os = operating_system_from_string(os_string);
       if (target_os != OperatingSystem_Null) {
         config->target_os = target_os;
@@ -2028,8 +2028,8 @@ lnk_config_from_cmd_line(Arena *arena, String8List raw_cmd_line, LNK_CmdLine cmd
 
   // input files
   for (String8Node *input_node = cmd_line.input_list.first; input_node != 0; input_node = input_node->next) {
-    String8 path = push_str8_copy(arena, input_node->string);
-    String8 ext = str8_skip_last_dot(path);
+    string path = push_str8_copy(arena, input_node->string);
+    string ext = str8_skip_last_dot(path);
 
     // map file extension to input type
     LNK_InputType input_type = lnk_input_type_from_string(ext);
@@ -2120,24 +2120,24 @@ lnk_config_from_cmd_line(Arena *arena, String8List raw_cmd_line, LNK_CmdLine cmd
 
   // handle empty /OUT
   if (!lnk_cmd_line_has_switch(cmd_line, LNK_CmdSwitch_Out)) {
-    String8 name      = str8_list_first(&config->input_list[LNK_Input_Obj]);
-    String8 ext       = (config->file_characteristics & PE_ImageFileCharacteristic_FILE_DLL) ? str8_lit("dll") : str8_lit("exe");
+    string name      = str8_list_first(&config->input_list[LNK_Input_Obj]);
+    string ext       = (config->file_characteristics & PE_ImageFileCharacteristic_FILE_DLL) ? ("dll") : ("exe");
     config->image_name = path_replace_file_extension(scratch.arena, name, ext);
   }
 
   // handle empty /PDB
   if (!lnk_cmd_line_has_switch(cmd_line, LNK_CmdSwitch_Pdb)) {
-    config->pdb_name = path_replace_file_extension(scratch.arena, config->image_name, str8_lit("pdb"));
+    config->pdb_name = path_replace_file_extension(scratch.arena, config->image_name, ("pdb"));
   }
 
   // handle empty /RAD_DEBUG_NAME
   if (!lnk_cmd_line_has_switch(cmd_line, LNK_CmdSwitch_Rad_DebugName)) {
-    config->rad_debug_name = path_replace_file_extension(scratch.arena, config->image_name, str8_lit("rdi"));
+    config->rad_debug_name = path_replace_file_extension(scratch.arena, config->image_name, ("rdi"));
   }
 
   // handle empty /IMPLIB
   if (!lnk_cmd_line_has_switch(cmd_line, LNK_CmdSwitch_ImpLib)) {
-    config->imp_lib_name = path_replace_file_extension(scratch.arena, config->image_name, str8_lit("lib"));
+    config->imp_lib_name = path_replace_file_extension(scratch.arena, config->image_name, ("lib"));
   }
 
   // handle empty /MANIFESTFILE
@@ -2158,14 +2158,14 @@ lnk_config_from_cmd_line(Arena *arena, String8List raw_cmd_line, LNK_CmdLine cmd
 #if OS_WINDOWS
     OS_ProcessInfo *process_info = os_get_process_info();
     for (String8Node *node = process_info->environment.first; node != 0; node = node->next) {
-      String8List list = str8_split_by_string_chars(scratch.arena, node->string, str8_lit("="), 0);
+      String8List list = str8_split_by_string_chars(scratch.arena, node->string, ("="), 0);
 
-      String8 key = list.first->string;
-      String8 val = str8_zero();
+      string key = list.first->string;
+      string val = str8_zero();
       if (list.node_count == 2) {
         val = list.last->string;
       } else if (list.node_count > 2) {
-        U64 sep_idx = str8_find_needle(node->string, node->string.size, str8_lit("="), 0);
+        U64 sep_idx = str8_find_needle(node->string, node->string.size, ("="), 0);
         val = str8_skip(node->string, sep_idx+1);
       }
 
@@ -2175,24 +2175,24 @@ lnk_config_from_cmd_line(Arena *arena, String8List raw_cmd_line, LNK_CmdLine cmd
   }
 
   // define linker env vars
-  hash_table_push_path_string(scratch.arena, env_vars, str8_lit("_pdb"),          str8_skip_last_slash(config->pdb_name));
-  hash_table_push_path_string(scratch.arena, env_vars, str8_lit("_ext"),          str8_skip_last_dot(config->image_name));
-  hash_table_push_path_string(scratch.arena, env_vars, str8_lit("_rad_pdb_path"), config->pdb_name);
-  hash_table_push_path_string(scratch.arena, env_vars, str8_lit("_rad_rdi"),      str8_skip_last_slash(config->rad_debug_name));
-  hash_table_push_path_string(scratch.arena, env_vars, str8_lit("_rad_rdi_path"), config->rad_debug_name);
+  hash_table_push_path_string(scratch.arena, env_vars, ("_pdb"),          str8_skip_last_slash(config->pdb_name));
+  hash_table_push_path_string(scratch.arena, env_vars, ("_ext"),          str8_skip_last_dot(config->image_name));
+  hash_table_push_path_string(scratch.arena, env_vars, ("_rad_pdb_path"), config->pdb_name);
+  hash_table_push_path_string(scratch.arena, env_vars, ("_rad_rdi"),      str8_skip_last_slash(config->rad_debug_name));
+  hash_table_push_path_string(scratch.arena, env_vars, ("_rad_rdi_path"), config->rad_debug_name);
 
   // collect LIB and LIBPATH
   if (config->flags & LNK_ConfigFlag_EnvLib) {
-    KeyValuePair *lib = hash_table_search_path(env_vars, str8_lit("lib"));
+    KeyValuePair *lib = hash_table_search_path(env_vars, ("lib"));
     if (lib) {
-      String8List val_list      = str8_split_by_string_chars(scratch.arena, lib->value_string, str8_lit(";"), 0);
+      String8List val_list      = str8_split_by_string_chars(scratch.arena, lib->value_string, (";"), 0);
       String8List val_list_copy = str8_list_copy(arena, &val_list);
       str8_list_concat_in_place(&config->lib_dir_list, &val_list_copy);
     }
 
-    KeyValuePair *lib_path = hash_table_search_path(env_vars, str8_lit("libpath"));
+    KeyValuePair *lib_path = hash_table_search_path(env_vars, ("libpath"));
     if (lib_path) {
-      String8List val_list      = str8_split_by_string_chars(scratch.arena, lib->value_string, str8_lit(";"), 0);
+      String8List val_list      = str8_split_by_string_chars(scratch.arena, lib->value_string, (";"), 0);
       String8List val_list_copy = str8_list_copy(arena, &val_list);
       str8_list_concat_in_place(&config->lib_dir_list, &val_list_copy);
     }

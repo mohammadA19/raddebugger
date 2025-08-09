@@ -8,63 +8,63 @@
 //~ rjf: Basic Helpers
 
 internal TXT_LangKind
-txt_lang_kind_from_extension(String8 extension)
+txt_lang_kind_from_extension(string extension)
 {
   TXT_LangKind kind = TXT_LangKind_Null;
-  if(str8_match(extension, str8_lit("c"), 0) ||
-     str8_match(extension, str8_lit("h"), 0))
+  if(str8_match(extension, ("c"), 0) ||
+     str8_match(extension, ("h"), 0))
   {
     kind = TXT_LangKind_C;
   }
-  else if(str8_match(extension, str8_lit("cpp"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("cxx"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("cc"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("c++"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("ixx"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("cxxm"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("c++m"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("ccm"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("cppm"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("mpp"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("C"), 0) ||
-          str8_match(extension, str8_lit("hpp"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("hxx"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("hh"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("h++"), StringMatchFlag_CaseInsensitive) ||
-          str8_match(extension, str8_lit("H"), 0))
+  else if(str8_match(extension, ("cpp"), StringMatchFlag_CaseInsensitive) ||
+          str8_match(extension, ("cxx"), StringMatchFlag_CaseInsensitive) ||
+          str8_match(extension, ("cc"), StringMatchFlag_CaseInsensitive) ||
+          str8_match(extension, ("c++"), StringMatchFlag_CaseInsensitive) ||
+          str8_match(extension, ("ixx"), StringMatchFlag_CaseInsensitive) ||
+          str8_match(extension, ("cxxm"), StringMatchFlag_CaseInsensitive) ||
+          str8_match(extension, ("c++m"), StringMatchFlag_CaseInsensitive) ||
+          str8_match(extension, ("ccm"), StringMatchFlag_CaseInsensitive) ||
+          str8_match(extension, ("cppm"), StringMatchFlag_CaseInsensitive) ||
+          str8_match(extension, ("mpp"), StringMatchFlag_CaseInsensitive) ||
+          str8_match(extension, ("C"), 0) ||
+          str8_match(extension, ("hpp"), StringMatchFlag_CaseInsensitive) ||
+          str8_match(extension, ("hxx"), StringMatchFlag_CaseInsensitive) ||
+          str8_match(extension, ("hh"), StringMatchFlag_CaseInsensitive) ||
+          str8_match(extension, ("h++"), StringMatchFlag_CaseInsensitive) ||
+          str8_match(extension, ("H"), 0))
   {
     kind = TXT_LangKind_CPlusPlus;
   }
-  else if(str8_match(extension, str8_lit("odin"), StringMatchFlag_CaseInsensitive))
+  else if(str8_match(extension, ("odin"), StringMatchFlag_CaseInsensitive))
   {
     kind = TXT_LangKind_Odin;
   }
-  else if(str8_match(extension, str8_lit("jai"), StringMatchFlag_CaseInsensitive))
+  else if(str8_match(extension, ("jai"), StringMatchFlag_CaseInsensitive))
   {
     kind = TXT_LangKind_Jai;
   }
-  else if(str8_match(extension, str8_lit("zig"), StringMatchFlag_CaseInsensitive))
+  else if(str8_match(extension, ("zig"), StringMatchFlag_CaseInsensitive))
   {
     kind = TXT_LangKind_Zig;
   }
   return kind;
 }
 
-internal String8
+internal string
 txt_extension_from_lang_kind(TXT_LangKind kind)
 {
-  String8 result = {0};
+  string result = {0};
   switch(kind)
   {
     case TXT_LangKind_Null:
     case TXT_LangKind_COUNT:
     case TXT_LangKind_DisasmX64Intel:
     {}break;
-    case TXT_LangKind_C:               {result = str8_lit("c");}break;
-    case TXT_LangKind_CPlusPlus:       {result = str8_lit("cpp");}break;
-    case TXT_LangKind_Odin:            {result = str8_lit("odin");}break;
-    case TXT_LangKind_Jai:             {result = str8_lit("jai");}break;
-    case TXT_LangKind_Zig:             {result = str8_lit("zig");}break;
+    case TXT_LangKind_C:               {result = ("c");}break;
+    case TXT_LangKind_CPlusPlus:       {result = ("cpp");}break;
+    case TXT_LangKind_Odin:            {result = ("odin");}break;
+    case TXT_LangKind_Jai:             {result = ("jai");}break;
+    case TXT_LangKind_Zig:             {result = ("zig");}break;
   }
   return result;
 }
@@ -161,7 +161,7 @@ txt_token_array_from_list(Arena *arena, TXT_TokenList *list)
 //~ rjf: Lexing Functions
 
 internal TXT_TokenArray
-txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, String8 string)
+txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, string string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -316,107 +316,107 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
         // rjf: identifier -> keyword in special cases
         if(token.kind == TXT_TokenKind_Identifier)
         {
-          read_only local_persist String8 cpp_keywords[] =
+          read_only local_persist string cpp_keywords[] =
           {
-            str8_lit_comp("alignas"),
-            str8_lit_comp("alignof"),
-            str8_lit_comp("and"),
-            str8_lit_comp("and_eq"),
-            str8_lit_comp("asm"),
-            str8_lit_comp("atomic_cancel"),
-            str8_lit_comp("atomic_commit"),
-            str8_lit_comp("atomic_noexcept"),
-            str8_lit_comp("auto"),
-            str8_lit_comp("bitand"),
-            str8_lit_comp("bitor"),
-            str8_lit_comp("bool"),
-            str8_lit_comp("break"),
-            str8_lit_comp("case"),
-            str8_lit_comp("catch"),
-            str8_lit_comp("char"),
-            str8_lit_comp("char8_t"),
-            str8_lit_comp("char16_t"),
-            str8_lit_comp("char32_t"),
-            str8_lit_comp("class"),
-            str8_lit_comp("compl"),
-            str8_lit_comp("concept"),
-            str8_lit_comp("const"),
-            str8_lit_comp("consteval"),
-            str8_lit_comp("constexpr"),
-            str8_lit_comp("constinit"),
-            str8_lit_comp("const_cast"),
-            str8_lit_comp("continue"),
-            str8_lit_comp("co_await"),
-            str8_lit_comp("co_return"),
-            str8_lit_comp("co_yield"),
-            str8_lit_comp("decltype"),
-            str8_lit_comp("default"),
-            str8_lit_comp("delete"),
-            str8_lit_comp("do"),
-            str8_lit_comp("double"),
-            str8_lit_comp("dynamic_cast"),
-            str8_lit_comp("else"),
-            str8_lit_comp("enum"),
-            str8_lit_comp("explicit"),
-            str8_lit_comp("export"),
-            str8_lit_comp("extern"),
-            str8_lit_comp("false"),
-            str8_lit_comp("float"),
-            str8_lit_comp("for"),
-            str8_lit_comp("friend"),
-            str8_lit_comp("goto"),
-            str8_lit_comp("if"),
-            str8_lit_comp("inline"),
-            str8_lit_comp("int"),
-            str8_lit_comp("long"),
-            str8_lit_comp("mutable"),
-            str8_lit_comp("namespace"),
-            str8_lit_comp("new"),
-            str8_lit_comp("noexcept"),
-            str8_lit_comp("not"),
-            str8_lit_comp("not_eq"),
-            str8_lit_comp("nullptr"),
-            str8_lit_comp("operator"),
-            str8_lit_comp("or"),
-            str8_lit_comp("or_eq"),
-            str8_lit_comp("private"),
-            str8_lit_comp("protected"),
-            str8_lit_comp("public"),
-            str8_lit_comp("reflexpr"),
-            str8_lit_comp("register"),
-            str8_lit_comp("reinterpret_cast"),
-            str8_lit_comp("requires"),
-            str8_lit_comp("return"),
-            str8_lit_comp("short"),
-            str8_lit_comp("signed"),
-            str8_lit_comp("sizeof"),
-            str8_lit_comp("static"),
-            str8_lit_comp("static_assert"),
-            str8_lit_comp("static_cast"),
-            str8_lit_comp("struct"),
-            str8_lit_comp("switch"),
-            str8_lit_comp("synchronized"),
-            str8_lit_comp("template"),
-            str8_lit_comp("this"),
-            str8_lit_comp("thread_local"),
-            str8_lit_comp("throw"),
-            str8_lit_comp("true"),
-            str8_lit_comp("try"),
-            str8_lit_comp("typedef"),
-            str8_lit_comp("typeid"),
-            str8_lit_comp("typename"),
-            str8_lit_comp("union"),
-            str8_lit_comp("unsigned"),
-            str8_lit_comp("using"),
-            str8_lit_comp("virtual"),
-            str8_lit_comp("void"),
-            str8_lit_comp("volatile"),
-            str8_lit_comp("wchar_t"),
-            str8_lit_comp("while"),
-            str8_lit_comp("xor"),
-            str8_lit_comp("xor_eq"),
+            ("alignas"),
+            ("alignof"),
+            ("and"),
+            ("and_eq"),
+            ("asm"),
+            ("atomic_cancel"),
+            ("atomic_commit"),
+            ("atomic_noexcept"),
+            ("auto"),
+            ("bitand"),
+            ("bitor"),
+            ("bool"),
+            ("break"),
+            ("case"),
+            ("catch"),
+            ("char"),
+            ("char8_t"),
+            ("char16_t"),
+            ("char32_t"),
+            ("class"),
+            ("compl"),
+            ("concept"),
+            ("const"),
+            ("consteval"),
+            ("constexpr"),
+            ("constinit"),
+            ("const_cast"),
+            ("continue"),
+            ("co_await"),
+            ("co_return"),
+            ("co_yield"),
+            ("decltype"),
+            ("default"),
+            ("delete"),
+            ("do"),
+            ("double"),
+            ("dynamic_cast"),
+            ("else"),
+            ("enum"),
+            ("explicit"),
+            ("export"),
+            ("extern"),
+            ("false"),
+            ("float"),
+            ("for"),
+            ("friend"),
+            ("goto"),
+            ("if"),
+            ("inline"),
+            ("int"),
+            ("long"),
+            ("mutable"),
+            ("namespace"),
+            ("new"),
+            ("noexcept"),
+            ("not"),
+            ("not_eq"),
+            ("nullptr"),
+            ("operator"),
+            ("or"),
+            ("or_eq"),
+            ("private"),
+            ("protected"),
+            ("public"),
+            ("reflexpr"),
+            ("register"),
+            ("reinterpret_cast"),
+            ("requires"),
+            ("return"),
+            ("short"),
+            ("signed"),
+            ("sizeof"),
+            ("static"),
+            ("static_assert"),
+            ("static_cast"),
+            ("struct"),
+            ("switch"),
+            ("synchronized"),
+            ("template"),
+            ("this"),
+            ("thread_local"),
+            ("throw"),
+            ("true"),
+            ("try"),
+            ("typedef"),
+            ("typeid"),
+            ("typename"),
+            ("union"),
+            ("unsigned"),
+            ("using"),
+            ("virtual"),
+            ("void"),
+            ("volatile"),
+            ("wchar_t"),
+            ("while"),
+            ("xor"),
+            ("xor_eq"),
           };
-          String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          string token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
           for(U64 keyword_idx = 0; keyword_idx < ArrayCount(cpp_keywords); keyword_idx += 1)
           {
             if(str8_match(cpp_keywords[keyword_idx], token_string, 0))
@@ -431,30 +431,30 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
         // rjf: split symbols by maximum-munch-rule
         else if(token.kind == TXT_TokenKind_Symbol)
         {
-          read_only local_persist String8 c_cpp_multichar_symbol_strings[] =
+          read_only local_persist string c_cpp_multichar_symbol_strings[] =
           {
-            str8_lit_comp("<<"),
-            str8_lit_comp(">>"),
-            str8_lit_comp("<="),
-            str8_lit_comp(">="),
-            str8_lit_comp("=="),
-            str8_lit_comp("!="),
-            str8_lit_comp("&&"),
-            str8_lit_comp("||"),
-            str8_lit_comp("|="),
-            str8_lit_comp("&="),
-            str8_lit_comp("^="),
-            str8_lit_comp("~="),
-            str8_lit_comp("+="),
-            str8_lit_comp("-="),
-            str8_lit_comp("*="),
-            str8_lit_comp("/="),
-            str8_lit_comp("%="),
-            str8_lit_comp("<<="),
-            str8_lit_comp(">>="),
-            str8_lit_comp("->"),
+            ("<<"),
+            (">>"),
+            ("<="),
+            (">="),
+            ("=="),
+            ("!="),
+            ("&&"),
+            ("||"),
+            ("|="),
+            ("&="),
+            ("^="),
+            ("~="),
+            ("+="),
+            ("-="),
+            ("*="),
+            ("/="),
+            ("%="),
+            ("<<="),
+            (">>="),
+            ("->"),
           };
-          String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          string token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
           for(U64 off = 0, next_off = token_string.size; off < token_string.size; off = next_off)
           {
             B32 found = 0;
@@ -507,7 +507,7 @@ txt_token_array_from_string__c_cpp(Arena *arena, U64 *bytes_processed_counter, S
 }
 
 internal TXT_TokenArray
-txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, String8 string)
+txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, string string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -660,50 +660,50 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
         // rjf: identifier -> keyword in special cases
         if(token.kind == TXT_TokenKind_Identifier)
         {
-          read_only local_persist String8 odin_keywords[] =
+          read_only local_persist string odin_keywords[] =
           {
-            str8_lit_comp("align_of"),
-            str8_lit_comp("asm"),
-            str8_lit_comp("auto_cast"),
-            str8_lit_comp("bit_set"),
-            str8_lit_comp("break"),
-            str8_lit_comp("case"),
-            str8_lit_comp("cast"),
-            str8_lit_comp("context"),
-            str8_lit_comp("continue"),
-            str8_lit_comp("defer"),
-            str8_lit_comp("distinct"),
-            str8_lit_comp("do"),
-            str8_lit_comp("dynamic"),
-            str8_lit_comp("else"),
-            str8_lit_comp("enum"),
-            str8_lit_comp("fallthrough"),
-            str8_lit_comp("for"),
-            str8_lit_comp("foreign"),
-            str8_lit_comp("if"),
-            str8_lit_comp("in"),
-            str8_lit_comp("map"),
-            str8_lit_comp("matrix"),
-            str8_lit_comp("not_in"),
-            str8_lit_comp("or_break"),
-            str8_lit_comp("or_continue"),
-            str8_lit_comp("or_else"),
-            str8_lit_comp("or_return"),
-            str8_lit_comp("package"),
-            str8_lit_comp("proc"),
-            str8_lit_comp("return"),
-            str8_lit_comp("size_of"),
-            str8_lit_comp("struct"),
-            str8_lit_comp("switch"),
-            str8_lit_comp("transmute"),
-            str8_lit_comp("typeid"),
-            str8_lit_comp("union"),
-            str8_lit_comp("using"),
-            str8_lit_comp("when"),
-            str8_lit_comp("where"),
-            str8_lit_comp("import"),
+            ("align_of"),
+            ("asm"),
+            ("auto_cast"),
+            ("bit_set"),
+            ("break"),
+            ("case"),
+            ("cast"),
+            ("context"),
+            ("continue"),
+            ("defer"),
+            ("distinct"),
+            ("do"),
+            ("dynamic"),
+            ("else"),
+            ("enum"),
+            ("fallthrough"),
+            ("for"),
+            ("foreign"),
+            ("if"),
+            ("in"),
+            ("map"),
+            ("matrix"),
+            ("not_in"),
+            ("or_break"),
+            ("or_continue"),
+            ("or_else"),
+            ("or_return"),
+            ("package"),
+            ("proc"),
+            ("return"),
+            ("size_of"),
+            ("struct"),
+            ("switch"),
+            ("transmute"),
+            ("typeid"),
+            ("union"),
+            ("using"),
+            ("when"),
+            ("where"),
+            ("import"),
           };
-          String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          string token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
           for(U64 keyword_idx = 0; keyword_idx < ArrayCount(odin_keywords); keyword_idx += 1)
           {
             if(str8_match(odin_keywords[keyword_idx], token_string, 0))
@@ -718,30 +718,30 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
         // rjf: split symbols by maximum-munch-rule
         else if(token.kind == TXT_TokenKind_Symbol)
         {
-          read_only local_persist String8 odin_multichar_symbol_strings[] =
+          read_only local_persist string odin_multichar_symbol_strings[] =
           {
-            str8_lit_comp("<<"),
-            str8_lit_comp(">>"),
-            str8_lit_comp("<="),
-            str8_lit_comp(">="),
-            str8_lit_comp("=="),
-            str8_lit_comp("!="),
-            str8_lit_comp("&&"),
-            str8_lit_comp("||"),
-            str8_lit_comp("|="),
-            str8_lit_comp("&="),
-            str8_lit_comp("^="),
-            str8_lit_comp("~="),
-            str8_lit_comp("+="),
-            str8_lit_comp("-="),
-            str8_lit_comp("*="),
-            str8_lit_comp("/="),
-            str8_lit_comp("%="),
-            str8_lit_comp("<<="),
-            str8_lit_comp(">>="),
-            str8_lit_comp("->"),
+            ("<<"),
+            (">>"),
+            ("<="),
+            (">="),
+            ("=="),
+            ("!="),
+            ("&&"),
+            ("||"),
+            ("|="),
+            ("&="),
+            ("^="),
+            ("~="),
+            ("+="),
+            ("-="),
+            ("*="),
+            ("/="),
+            ("%="),
+            ("<<="),
+            (">>="),
+            ("->"),
           };
-          String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          string token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
           for(U64 off = 0, next_off = token_string.size; off < token_string.size; off = next_off)
           {
             B32 found = 0;
@@ -793,7 +793,7 @@ txt_token_array_from_string__odin(Arena *arena, U64 *bytes_processed_counter, St
 }
 
 internal TXT_TokenArray
-txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, String8 string)
+txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, string string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -946,49 +946,49 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
         // rjf: identifier -> keyword in special cases
         if(token.kind == TXT_TokenKind_Identifier)
         {
-          read_only local_persist String8 jai_keywords[] =
+          read_only local_persist string jai_keywords[] =
           {
-            str8_lit_comp("bool"),
-            str8_lit_comp("true"),
-            str8_lit_comp("false"),
-            str8_lit_comp("int"),
-            str8_lit_comp("s8"),
-            str8_lit_comp("u8"),
-            str8_lit_comp("s16"),
-            str8_lit_comp("u16"),
-            str8_lit_comp("s32"),
-            str8_lit_comp("u32"),
-            str8_lit_comp("s64"),
-            str8_lit_comp("u64"),
-            str8_lit_comp("s128"),
-            str8_lit_comp("u128"),
-            str8_lit_comp("float"),
-            str8_lit_comp("float32"),
-            str8_lit_comp("float64"),
-            str8_lit_comp("void"),
-            str8_lit_comp("enum"),
-            str8_lit_comp("enum_flags"),
-            str8_lit_comp("size_of"),
-            str8_lit_comp("string"),
-            str8_lit_comp("type_of"),
-            str8_lit_comp("cast"),
-            str8_lit_comp("if"),
-            str8_lit_comp("ifs"),
-            str8_lit_comp("then"),
-            str8_lit_comp("else"),
-            str8_lit_comp("case"),
-            str8_lit_comp("for"),
-            str8_lit_comp("while"),
-            str8_lit_comp("break"),
-            str8_lit_comp("continue"),
-            str8_lit_comp("remove"),
-            str8_lit_comp("return"),
-            str8_lit_comp("inline"),
-            str8_lit_comp("null"),
-            str8_lit_comp("defer"),
-            str8_lit_comp("xx"),
+            ("bool"),
+            ("true"),
+            ("false"),
+            ("int"),
+            ("s8"),
+            ("u8"),
+            ("s16"),
+            ("u16"),
+            ("s32"),
+            ("u32"),
+            ("s64"),
+            ("u64"),
+            ("s128"),
+            ("u128"),
+            ("float"),
+            ("float32"),
+            ("float64"),
+            ("void"),
+            ("enum"),
+            ("enum_flags"),
+            ("size_of"),
+            ("string"),
+            ("type_of"),
+            ("cast"),
+            ("if"),
+            ("ifs"),
+            ("then"),
+            ("else"),
+            ("case"),
+            ("for"),
+            ("while"),
+            ("break"),
+            ("continue"),
+            ("remove"),
+            ("return"),
+            ("inline"),
+            ("null"),
+            ("defer"),
+            ("xx"),
           };
-          String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          string token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
           for(U64 keyword_idx = 0; keyword_idx < ArrayCount(jai_keywords); keyword_idx += 1)
           {
             if(str8_match(jai_keywords[keyword_idx], token_string, 0))
@@ -1003,30 +1003,30 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
         // rjf: split symbols by maximum-munch-rule
         else if(token.kind == TXT_TokenKind_Symbol)
         {
-          read_only local_persist String8 jai_multichar_symbol_strings[] =
+          read_only local_persist string jai_multichar_symbol_strings[] =
           {
-            str8_lit_comp("<<"),
-            str8_lit_comp(">>"),
-            str8_lit_comp("<="),
-            str8_lit_comp(">="),
-            str8_lit_comp("=="),
-            str8_lit_comp("!="),
-            str8_lit_comp("&&"),
-            str8_lit_comp("||"),
-            str8_lit_comp("|="),
-            str8_lit_comp("&="),
-            str8_lit_comp("^="),
-            str8_lit_comp("~="),
-            str8_lit_comp("+="),
-            str8_lit_comp("-="),
-            str8_lit_comp("*="),
-            str8_lit_comp("/="),
-            str8_lit_comp("%="),
-            str8_lit_comp("<<="),
-            str8_lit_comp(">>="),
-            str8_lit_comp("->"),
+            ("<<"),
+            (">>"),
+            ("<="),
+            (">="),
+            ("=="),
+            ("!="),
+            ("&&"),
+            ("||"),
+            ("|="),
+            ("&="),
+            ("^="),
+            ("~="),
+            ("+="),
+            ("-="),
+            ("*="),
+            ("/="),
+            ("%="),
+            ("<<="),
+            (">>="),
+            ("->"),
           };
-          String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          string token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
           for(U64 off = 0, next_off = token_string.size; off < token_string.size; off = next_off)
           {
             B32 found = 0;
@@ -1078,7 +1078,7 @@ txt_token_array_from_string__jai(Arena *arena, U64 *bytes_processed_counter, Str
 }
 
 internal TXT_TokenArray
-txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, String8 string)
+txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, string string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1227,59 +1227,59 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
         // rjf: identifier -> keyword in special cases
         if(token.kind == TXT_TokenKind_Identifier)
         {
-          read_only local_persist String8 zig_keywords[] =
+          read_only local_persist string zig_keywords[] =
           {
-            str8_lit_comp("addrspace"),
-            str8_lit_comp("align"),
-            str8_lit_comp("allowzero"),
-            str8_lit_comp("and"),
-            str8_lit_comp("anyframe"),
-            str8_lit_comp("anytype"),
-            str8_lit_comp("asm"),
-            str8_lit_comp("async"),
-            str8_lit_comp("await"),
-            str8_lit_comp("break"),
-            str8_lit_comp("callconv"),
-            str8_lit_comp("catch"),
-            str8_lit_comp("comptime"),
-            str8_lit_comp("const"),
-            str8_lit_comp("continue"),
-            str8_lit_comp("defer"),
-            str8_lit_comp("else"),
-            str8_lit_comp("enum"),
-            str8_lit_comp("errdefer"),
-            str8_lit_comp("error"),
-            str8_lit_comp("export"),
-            str8_lit_comp("extern"),
-            str8_lit_comp("fn"),
-            str8_lit_comp("for"),
-            str8_lit_comp("if"),
-            str8_lit_comp("inline"),
-            str8_lit_comp("noalias"),
-            str8_lit_comp("nosuspend"),
-            str8_lit_comp("noinline"),
-            str8_lit_comp("opaque"),
-            str8_lit_comp("or"),
-            str8_lit_comp("orelse"),
-            str8_lit_comp("packed"),
-            str8_lit_comp("pub"),
-            str8_lit_comp("resume"),
-            str8_lit_comp("return"),
-            str8_lit_comp("linksection"),
-            str8_lit_comp("struct"),
-            str8_lit_comp("suspend"),
-            str8_lit_comp("switch"),
-            str8_lit_comp("test"),
-            str8_lit_comp("threadlocal"),
-            str8_lit_comp("try"),
-            str8_lit_comp("union"),
-            str8_lit_comp("unreachable"),
-            str8_lit_comp("usingnamespace"),
-            str8_lit_comp("var"),
-            str8_lit_comp("volatile"),
-            str8_lit_comp("while"),
+            ("addrspace"),
+            ("align"),
+            ("allowzero"),
+            ("and"),
+            ("anyframe"),
+            ("anytype"),
+            ("asm"),
+            ("async"),
+            ("await"),
+            ("break"),
+            ("callconv"),
+            ("catch"),
+            ("comptime"),
+            ("const"),
+            ("continue"),
+            ("defer"),
+            ("else"),
+            ("enum"),
+            ("errdefer"),
+            ("error"),
+            ("export"),
+            ("extern"),
+            ("fn"),
+            ("for"),
+            ("if"),
+            ("inline"),
+            ("noalias"),
+            ("nosuspend"),
+            ("noinline"),
+            ("opaque"),
+            ("or"),
+            ("orelse"),
+            ("packed"),
+            ("pub"),
+            ("resume"),
+            ("return"),
+            ("linksection"),
+            ("struct"),
+            ("suspend"),
+            ("switch"),
+            ("test"),
+            ("threadlocal"),
+            ("try"),
+            ("union"),
+            ("unreachable"),
+            ("usingnamespace"),
+            ("var"),
+            ("volatile"),
+            ("while"),
           };
-          String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          string token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
           for(U64 keyword_idx = 0; keyword_idx < ArrayCount(zig_keywords); keyword_idx += 1)
           {
             if(str8_match(zig_keywords[keyword_idx], token_string, 0))
@@ -1294,30 +1294,30 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
         // rjf: split symbols by maximum-munch-rule
         else if(token.kind == TXT_TokenKind_Symbol)
         {
-          read_only local_persist String8 zig_multichar_symbol_strings[] =
+          read_only local_persist string zig_multichar_symbol_strings[] =
           {
-            str8_lit_comp("<<"),
-            str8_lit_comp(">>"),
-            str8_lit_comp("<="),
-            str8_lit_comp(">="),
-            str8_lit_comp("=="),
-            str8_lit_comp("!="),
-            str8_lit_comp("&&"),
-            str8_lit_comp("||"),
-            str8_lit_comp("|="),
-            str8_lit_comp("&="),
-            str8_lit_comp("^="),
-            str8_lit_comp("~="),
-            str8_lit_comp("+="),
-            str8_lit_comp("-="),
-            str8_lit_comp("*="),
-            str8_lit_comp("/="),
-            str8_lit_comp("%="),
-            str8_lit_comp("<<="),
-            str8_lit_comp(">>="),
-            str8_lit_comp("->"),
+            ("<<"),
+            (">>"),
+            ("<="),
+            (">="),
+            ("=="),
+            ("!="),
+            ("&&"),
+            ("||"),
+            ("|="),
+            ("&="),
+            ("^="),
+            ("~="),
+            ("+="),
+            ("-="),
+            ("*="),
+            ("/="),
+            ("%="),
+            ("<<="),
+            (">>="),
+            ("->"),
           };
-          String8 token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
+          string token_string = str8_substr(string, r1u64(active_token_start_idx, idx+ender_pad));
           for(U64 off = 0, next_off = token_string.size; off < token_string.size; off = next_off)
           {
             B32 found = 0;
@@ -1369,7 +1369,7 @@ txt_token_array_from_string__zig(Arena *arena, U64 *bytes_processed_counter, Str
 }
 
 internal TXT_TokenArray
-txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed_counter, String8 string)
+txt_token_array_from_string__disasm_x64_intel(Arena *arena, U64 *bytes_processed_counter, string string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1851,7 +1851,7 @@ txt_token_array_from_info_line_num__linear_scan(TXT_TextInfo *info, S64 line_num
 }
 
 internal Rng1U64
-txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range, String8 line_text, TXT_TokenArray *line_tokens)
+txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range, string line_text, TXT_TokenArray *line_tokens)
 {
   Rng1U64 result = {0};
   Temp scratch = scratch_begin(0, 0);
@@ -1869,14 +1869,14 @@ txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range
       if(contains_1u64(token->range, off))
       {
         Rng1U64 token_range_clamped = intersect_1u64(line_range, token->range);
-        String8 token_string = str8_substr(line_text, r1u64(token_range_clamped.max - line_range.min, token_range_clamped.max - line_range.min));
+        string token_string = str8_substr(line_text, r1u64(token_range_clamped.max - line_range.min, token_range_clamped.max - line_range.min));
         B32 token_ender = 0;
         switch(token->kind)
         {
           default:{}break;
           case TXT_TokenKind_Symbol:
           {
-            token_ender = (str8_match(token_string, str8_lit("]"), 0));
+            token_ender = (str8_match(token_string, ("]"), 0));
           }break;
           case TXT_TokenKind_Identifier:
           case TXT_TokenKind_Keyword:
@@ -1909,18 +1909,18 @@ txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range
           wb_token -= 1)
       {
         Rng1U64 wb_token_range_clamped = intersect_1u64(line_range, wb_token->range);
-        String8 wb_token_string = str8_substr(line_text, r1u64(wb_token_range_clamped.min - line_range.min, wb_token_range_clamped.max - line_range.min));
+        string wb_token_string = str8_substr(line_text, r1u64(wb_token_range_clamped.min - line_range.min, wb_token_range_clamped.max - line_range.min));
         B32 include_wb_token = 0;
         switch(wb_token->kind)
         {
           default:{}break;
           case TXT_TokenKind_Symbol:
           {
-            B32 is_scope_resolution = str8_match(wb_token_string, str8_lit("::"), 0);
-            B32 is_dot = str8_match(wb_token_string, str8_lit("."), 0);
-            B32 is_arrow = str8_match(wb_token_string, str8_lit("->"), 0);
-            B32 is_open_bracket = str8_match(wb_token_string, str8_lit("["), 0);
-            B32 is_close_bracket = str8_match(wb_token_string, str8_lit("]"), 0);
+            B32 is_scope_resolution = str8_match(wb_token_string, ("::"), 0);
+            B32 is_dot = str8_match(wb_token_string, ("."), 0);
+            B32 is_arrow = str8_match(wb_token_string, ("->"), 0);
+            B32 is_open_bracket = str8_match(wb_token_string, ("["), 0);
+            B32 is_close_bracket = str8_match(wb_token_string, ("]"), 0);
             nest -= !!(is_open_bracket);
             nest += !!(is_close_bracket);
             if(is_scope_resolution ||
@@ -1953,7 +1953,7 @@ txt_expr_off_range_from_line_off_range_string_tokens(U64 off, Rng1U64 line_range
 }
 
 internal Rng1U64
-txt_expr_off_range_from_info_data_pt(TXT_TextInfo *info, String8 data, TxtPt pt)
+txt_expr_off_range_from_info_data_pt(TXT_TextInfo *info, string data, TxtPt pt)
 {
   Rng1U64 result = {0};
   Temp scratch = scratch_begin(0, 0);
@@ -1961,7 +1961,7 @@ txt_expr_off_range_from_info_data_pt(TXT_TextInfo *info, String8 data, TxtPt pt)
   {
     // rjf: unpack line info
     Rng1U64 line_range = info->lines_ranges[pt.line-1];
-    String8 line_text = str8_substr(data, line_range);
+    string line_text = str8_substr(data, line_range);
     TXT_LineTokensSlice line_tokens_slice = txt_line_tokens_slice_from_info_data_line_range(scratch.arena, info, data, r1s64(pt.line, pt.line));
     TXT_TokenArray line_tokens = line_tokens_slice.line_tokens[0];
     TXT_Token *line_tokens_first = line_tokens.v;
@@ -1975,18 +1975,18 @@ txt_expr_off_range_from_info_data_pt(TXT_TextInfo *info, String8 data, TxtPt pt)
   return result;
 }
 
-internal String8
-txt_string_from_info_data_txt_rng(TXT_TextInfo *info, String8 data, TxtRng rng)
+internal string
+txt_string_from_info_data_txt_rng(TXT_TextInfo *info, string data, TxtRng rng)
 {
   Rng1U64 rng_off = r1u64(txt_off_from_info_pt(info, rng.min), txt_off_from_info_pt(info, rng.max));
-  String8 result = str8_substr(data, rng_off);
+  string result = str8_substr(data, rng_off);
   return result;
 }
 
-internal String8
-txt_string_from_info_data_line_num(TXT_TextInfo *info, String8 data, S64 line_num)
+internal string
+txt_string_from_info_data_line_num(TXT_TextInfo *info, string data, S64 line_num)
 {
-  String8 result = {0};
+  string result = {0};
   if(1 <= line_num && line_num <= info->lines_count)
   {
     result = str8_substr(data, info->lines_ranges[line_num-1]);
@@ -1995,7 +1995,7 @@ txt_string_from_info_data_line_num(TXT_TextInfo *info, String8 data, S64 line_nu
 }
 
 internal TXT_LineTokensSlice
-txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info, String8 data, Rng1S64 line_range)
+txt_line_tokens_slice_from_info_data_line_range(Arena *arena, TXT_TextInfo *info, string data, Rng1S64 line_range)
 {
   TXT_LineTokensSlice result = {0};
   Temp scratch = scratch_begin(&arena, 1);
@@ -2229,7 +2229,7 @@ ASYNC_WORK_DEF(txt_parse_work)
   }
   
   //- rjf: hash -> data
-  String8 data = {0};
+  string data = {0};
   if(got_task)
   {
     data = hs_data_from_hash(scope, hash);
@@ -2377,7 +2377,7 @@ ASYNC_WORK_DEF(txt_parse_work)
     {
       if(tokens.v[idx].kind == TXT_TokenKind_Symbol)
       {
-        String8 token_string = str8_substr(data, tokens.v[idx].range);
+        string token_string = str8_substr(data, tokens.v[idx].range);
         B32 is_opener = (token_string.str[0] == '{' ||
                          token_string.str[0] == '(' ||
                          token_string.str[0] == '[');
@@ -2413,7 +2413,7 @@ ASYNC_WORK_DEF(txt_parse_work)
       {
         if(tokens.v[token_idx].kind == TXT_TokenKind_Symbol)
         {
-          String8 token_string = str8_substr(data, tokens.v[token_idx].range);
+          string token_string = str8_substr(data, tokens.v[token_idx].range);
           B32 is_opener = (token_string.str[0] == '{' ||
                            token_string.str[0] == '(' ||
                            token_string.str[0] == '[');

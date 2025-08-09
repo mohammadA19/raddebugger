@@ -24,7 +24,7 @@ typedef struct UI_FocusActiveNode UI_FocusActiveNode; struct UI_FocusActiveNode{
 typedef struct UI_FastpathCodepointNode UI_FastpathCodepointNode; struct UI_FastpathCodepointNode{UI_FastpathCodepointNode *next; U32 v;};
 typedef struct UI_GroupKeyNode UI_GroupKeyNode; struct UI_GroupKeyNode{UI_GroupKeyNode *next; UI_Key v;};
 typedef struct UI_TransparencyNode UI_TransparencyNode; struct UI_TransparencyNode{UI_TransparencyNode *next; F32 v;};
-typedef struct UI_TagNode UI_TagNode; struct UI_TagNode{UI_TagNode *next; String8 v;};
+typedef struct UI_TagNode UI_TagNode; struct UI_TagNode{UI_TagNode *next; string v;};
 typedef struct UI_BackgroundColorNode UI_BackgroundColorNode; struct UI_BackgroundColorNode{UI_BackgroundColorNode *next; Vec4F32 v;};
 typedef struct UI_TextColorNode UI_TextColorNode; struct UI_TextColorNode{UI_TextColorNode *next; Vec4F32 v;};
 typedef struct UI_BorderColorNode UI_BorderColorNode; struct UI_BorderColorNode{UI_BorderColorNode *next; Vec4F32 v;};
@@ -99,7 +99,7 @@ state->focus_active_nil_stack_top.v = UI_FocusKind_Null;\
 state->fastpath_codepoint_nil_stack_top.v = 0;\
 state->group_key_nil_stack_top.v = ui_key_zero();\
 state->transparency_nil_stack_top.v = 0;\
-state->tag_nil_stack_top.v = str8_lit("");\
+state->tag_nil_stack_top.v = ("");\
 state->background_color_nil_stack_top.v = v4f32(0, 0, 0, 0);\
 state->text_color_nil_stack_top.v = v4f32(0, 0, 0, 0);\
 state->border_color_nil_stack_top.v = v4f32(0, 0, 0, 0);\
@@ -138,7 +138,7 @@ struct { UI_FocusActiveNode *top; UI_FocusKind bottom_val; UI_FocusActiveNode *f
 struct { UI_FastpathCodepointNode *top; U32 bottom_val; UI_FastpathCodepointNode *free; U64 gen; B32 auto_pop; } fastpath_codepoint_stack;\
 struct { UI_GroupKeyNode *top; UI_Key bottom_val; UI_GroupKeyNode *free; U64 gen; B32 auto_pop; } group_key_stack;\
 struct { UI_TransparencyNode *top; F32 bottom_val; UI_TransparencyNode *free; U64 gen; B32 auto_pop; } transparency_stack;\
-struct { UI_TagNode *top; String8 bottom_val; UI_TagNode *free; U64 gen; B32 auto_pop; } tag_stack;\
+struct { UI_TagNode *top; string bottom_val; UI_TagNode *free; U64 gen; B32 auto_pop; } tag_stack;\
 struct { UI_BackgroundColorNode *top; Vec4F32 bottom_val; UI_BackgroundColorNode *free; U64 gen; B32 auto_pop; } background_color_stack;\
 struct { UI_TextColorNode *top; Vec4F32 bottom_val; UI_TextColorNode *free; U64 gen; B32 auto_pop; } text_color_stack;\
 struct { UI_BorderColorNode *top; Vec4F32 bottom_val; UI_BorderColorNode *free; U64 gen; B32 auto_pop; } border_color_stack;\
@@ -175,7 +175,7 @@ state->focus_active_stack.top = &state->focus_active_nil_stack_top; state->focus
 state->fastpath_codepoint_stack.top = &state->fastpath_codepoint_nil_stack_top; state->fastpath_codepoint_stack.bottom_val = 0; state->fastpath_codepoint_stack.free = 0; state->fastpath_codepoint_stack.auto_pop = 0;\
 state->group_key_stack.top = &state->group_key_nil_stack_top; state->group_key_stack.bottom_val = ui_key_zero(); state->group_key_stack.free = 0; state->group_key_stack.auto_pop = 0;\
 state->transparency_stack.top = &state->transparency_nil_stack_top; state->transparency_stack.bottom_val = 0; state->transparency_stack.free = 0; state->transparency_stack.auto_pop = 0;\
-state->tag_stack.top = &state->tag_nil_stack_top; state->tag_stack.bottom_val = str8_lit(""); state->tag_stack.free = 0; state->tag_stack.auto_pop = 0;\
+state->tag_stack.top = &state->tag_nil_stack_top; state->tag_stack.bottom_val = (""); state->tag_stack.free = 0; state->tag_stack.auto_pop = 0;\
 state->background_color_stack.top = &state->background_color_nil_stack_top; state->background_color_stack.bottom_val = v4f32(0, 0, 0, 0); state->background_color_stack.free = 0; state->background_color_stack.auto_pop = 0;\
 state->text_color_stack.top = &state->text_color_nil_stack_top; state->text_color_stack.bottom_val = v4f32(0, 0, 0, 0); state->text_color_stack.free = 0; state->text_color_stack.auto_pop = 0;\
 state->border_color_stack.top = &state->border_color_nil_stack_top; state->border_color_stack.bottom_val = v4f32(0, 0, 0, 0); state->border_color_stack.free = 0; state->border_color_stack.auto_pop = 0;\
@@ -248,7 +248,7 @@ internal UI_FocusKind               ui_top_focus_active(void);
 internal U32                        ui_top_fastpath_codepoint(void);
 internal UI_Key                     ui_top_group_key(void);
 internal F32                        ui_top_transparency(void);
-internal String8                    ui_top_tag(void);
+internal string                    ui_top_tag(void);
 internal Vec4F32                    ui_top_background_color(void);
 internal Vec4F32                    ui_top_text_color(void);
 internal Vec4F32                    ui_top_border_color(void);
@@ -283,7 +283,7 @@ internal UI_FocusKind               ui_bottom_focus_active(void);
 internal U32                        ui_bottom_fastpath_codepoint(void);
 internal UI_Key                     ui_bottom_group_key(void);
 internal F32                        ui_bottom_transparency(void);
-internal String8                    ui_bottom_tag(void);
+internal string                    ui_bottom_tag(void);
 internal Vec4F32                    ui_bottom_background_color(void);
 internal Vec4F32                    ui_bottom_text_color(void);
 internal Vec4F32                    ui_bottom_border_color(void);
@@ -318,7 +318,7 @@ internal UI_FocusKind               ui_push_focus_active(UI_FocusKind v);
 internal U32                        ui_push_fastpath_codepoint(U32 v);
 internal UI_Key                     ui_push_group_key(UI_Key v);
 internal F32                        ui_push_transparency(F32 v);
-internal String8                    ui_push_tag(String8 v);
+internal string                    ui_push_tag(string v);
 internal Vec4F32                    ui_push_background_color(Vec4F32 v);
 internal Vec4F32                    ui_push_text_color(Vec4F32 v);
 internal Vec4F32                    ui_push_border_color(Vec4F32 v);
@@ -353,7 +353,7 @@ internal UI_FocusKind               ui_pop_focus_active(void);
 internal U32                        ui_pop_fastpath_codepoint(void);
 internal UI_Key                     ui_pop_group_key(void);
 internal F32                        ui_pop_transparency(void);
-internal String8                    ui_pop_tag(void);
+internal string                    ui_pop_tag(void);
 internal Vec4F32                    ui_pop_background_color(void);
 internal Vec4F32                    ui_pop_text_color(void);
 internal Vec4F32                    ui_pop_border_color(void);
@@ -388,7 +388,7 @@ internal UI_FocusKind               ui_set_next_focus_active(UI_FocusKind v);
 internal U32                        ui_set_next_fastpath_codepoint(U32 v);
 internal UI_Key                     ui_set_next_group_key(UI_Key v);
 internal F32                        ui_set_next_transparency(F32 v);
-internal String8                    ui_set_next_tag(String8 v);
+internal string                    ui_set_next_tag(string v);
 internal Vec4F32                    ui_set_next_background_color(Vec4F32 v);
 internal Vec4F32                    ui_set_next_text_color(Vec4F32 v);
 internal Vec4F32                    ui_set_next_border_color(Vec4F32 v);

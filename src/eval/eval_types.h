@@ -83,9 +83,9 @@ internal E_TypeKey e_type_key_cons_(E_ConsTypeParams *params);
 //- rjf: constructed type construction helpers
 internal E_TypeKey e_type_key_cons_array(E_TypeKey element_type_key, U64 count, E_TypeFlags flags);
 internal E_TypeKey e_type_key_cons_ptr(Arch arch, E_TypeKey element_type_key, U64 count, E_TypeFlags flags);
-internal E_TypeKey e_type_key_cons_meta_expr(E_TypeKey type_key, String8 expr);
-internal E_TypeKey e_type_key_cons_meta_display_name(E_TypeKey type_key, String8 name);
-internal E_TypeKey e_type_key_cons_meta_description(E_TypeKey type_key, String8 desc);
+internal E_TypeKey e_type_key_cons_meta_expr(E_TypeKey type_key, string expr);
+internal E_TypeKey e_type_key_cons_meta_display_name(E_TypeKey type_key, string name);
+internal E_TypeKey e_type_key_cons_meta_description(E_TypeKey type_key, string desc);
 internal E_TypeKey e_type_key_cons_base(Type *type);
 internal E_TypeKey e_type_key_file(void);
 internal E_TypeKey e_type_key_folder(void);
@@ -114,7 +114,7 @@ internal B32 e_type_match(E_TypeKey l, E_TypeKey r);
 //- rjf: type key -> string
 internal void e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec, B32 skip_return);
 internal void e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec);
-internal String8 e_type_string_from_key(Arena *arena, E_TypeKey key);
+internal string e_type_string_from_key(Arena *arena, E_TypeKey key);
 internal E_TypeKey e_default_expansion_type_from_key(E_TypeKey key);
 
 ////////////////////////////////
@@ -124,15 +124,15 @@ internal E_Type *e_type_from_key(E_TypeKey key);
 
 //- rjf: member lookups
 internal E_MemberCacheNode *e_member_cache_node_from_type_key(E_TypeKey key);
-internal E_MemberArray e_type_data_members_from_key_filter__cached(E_TypeKey key, String8 filter);
+internal E_MemberArray e_type_data_members_from_key_filter__cached(E_TypeKey key, string filter);
 internal E_MemberArray e_type_data_members_from_key__cached(E_TypeKey key);
-internal E_Member e_type_member_from_key_name__cached(E_TypeKey key, String8 name);
+internal E_Member e_type_member_from_key_name__cached(E_TypeKey key, string name);
 
 //- rjf: enum val lookups
 internal E_EnumValCacheNode *e_enum_val_cache_node_from_type_key(E_TypeKey key);
-internal E_EnumValArray e_type_enum_vals_from_key_filter__cached(E_TypeKey key, String8 filter);
+internal E_EnumValArray e_type_enum_vals_from_key_filter__cached(E_TypeKey key, string filter);
 internal E_EnumValArray e_type_enum_vals_from_key__cached(E_TypeKey key);
-internal E_EnumVal e_type_enum_val_from_key_name__cached(E_TypeKey key, String8 name);
+internal E_EnumVal e_type_enum_val_from_key_name__cached(E_TypeKey key, string name);
 
 ////////////////////////////////
 //~ rjf: (Built-In Type Hooks) Default Hooks

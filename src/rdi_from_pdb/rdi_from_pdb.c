@@ -10,7 +10,7 @@
 //~ rjf: Basic Helpers
 
 internal U64
-p2r_end_of_cplusplus_container_name(String8 str)
+p2r_end_of_cplusplus_container_name(string str)
 {
   // NOTE: This finds the index one past the last "::" contained in str.
   //       if no "::" is contained in str, then the returned index is 0.
@@ -505,13 +505,13 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
     String8Node **hit_path_slots = push_array(scratch.arena, String8Node *, hit_path_slots_count);
     
     //- rjf: produce obj name/path
-    String8 obj_name = pdb_unit->obj_name;
-    if(str8_match(obj_name, str8_lit("* Linker *"), 0) ||
-       str8_match(obj_name, str8_lit("Import:"), StringMatchFlag_RightSideSloppy))
+    string obj_name = pdb_unit->obj_name;
+    if(str8_match(obj_name, ("* Linker *"), 0) ||
+       str8_match(obj_name, ("Import:"), StringMatchFlag_RightSideSloppy))
     {
       MemoryZeroStruct(&obj_name);
     }
-    String8 obj_folder_path = lower_from_str8(scratch.arena, str8_chop_last_slash(obj_name));
+    string obj_folder_path = lower_from_str8(scratch.arena, str8_chop_last_slash(obj_name));
     
     //- rjf: find all files in this unit's (non-inline) line info
     ProfScope("find all files in this unit's (non-inline) line info")
@@ -526,8 +526,8 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
             lines_n = lines_n->next)
         {
           // rjf: file name -> sanitized file path
-          String8 file_path = lines_n->v.file_name;
-          String8 file_path_sanitized = str8_copy(scratch.arena, str8_skip_chop_whitespace(file_path));
+          string file_path = lines_n->v.file_name;
+          string file_path_sanitized = str8_copy(scratch.arena, str8_skip_chop_whitespace(file_path));
           {
             PathStyle file_path_sanitized_style = path_style_from_str8(file_path_sanitized);
             String8List file_path_sanitized_parts = str8_split_path(scratch.arena, file_path_sanitized);
@@ -617,7 +617,7 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
           {
             // rjf: unpack sym
             CV_SymInlineSite *sym           = (CV_SymInlineSite *)sym_header_struct_base;
-            String8           binary_annots = str8((U8 *)(sym+1), rec_range->hdr.size - sizeof(rec_range->hdr.kind) - sizeof(*sym));
+            string           binary_annots = str8((U8 *)(sym+1), rec_range->hdr.size - sizeof(rec_range->hdr.kind) - sizeof(*sym));
             
             // rjf: map inlinee -> parsed cv c13 inlinee line info
             CV_C13InlineeLinesParsed *inlinee_lines_parsed = 0;
@@ -663,7 +663,7 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
                 // rjf: file updated -> gather new file name
                 if(last_file_off != max_U32 && last_file_off != curr_file_off)
                 {
-                  String8 seq_file_name = {0};
+                  string seq_file_name = {0};
                   if(last_file_off + sizeof(CV_C13Checksum) <= file_chksms->size)
                   {
                     CV_C13Checksum *checksum = (CV_C13Checksum*)(pdb_unit_c13->data.str + file_chksms->off + last_file_off);
@@ -672,8 +672,8 @@ ASYNC_WORK_DEF(p2r_gather_unit_src_file_work)
                   }
                   
                   // rjf: file name -> normalized file path
-                  String8 file_path            = seq_file_name;
-                  String8 file_path_normalized = lower_from_str8(scratch.arena, str8_skip_chop_whitespace(file_path));
+                  string file_path            = seq_file_name;
+                  string file_path_normalized = lower_from_str8(scratch.arena, str8_skip_chop_whitespace(file_path));
                   {
                     PathStyle file_path_normalized_style = path_style_from_str8(file_path_normalized);
                     String8List file_path_normalized_parts = str8_split_path(scratch.arena, file_path_normalized);
@@ -755,10 +755,10 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
     CV_C13Parsed *pdb_unit_c13 = in->comp_unit_c13s;
     
     //- rjf: produce unit name
-    String8 unit_name = pdb_unit->obj_name;
+    string unit_name = pdb_unit->obj_name;
     if(unit_name.size != 0)
     {
-      String8 unit_name_past_last_slash = str8_skip_last_slash(unit_name);
+      string unit_name_past_last_slash = str8_skip_last_slash(unit_name);
       if(unit_name_past_last_slash.size != 0)
       {
         unit_name = unit_name_past_last_slash;
@@ -766,13 +766,13 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
     }
     
     //- rjf: produce obj name/path
-    String8 obj_name = pdb_unit->obj_name;
-    if(str8_match(obj_name, str8_lit("* Linker *"), 0) ||
-       str8_match(obj_name, str8_lit("Import:"), StringMatchFlag_RightSideSloppy))
+    string obj_name = pdb_unit->obj_name;
+    if(str8_match(obj_name, ("* Linker *"), 0) ||
+       str8_match(obj_name, ("Import:"), StringMatchFlag_RightSideSloppy))
     {
       MemoryZeroStruct(&obj_name);
     }
-    String8 obj_folder_path = lower_from_str8(scratch.arena, str8_chop_last_slash(obj_name));
+    string obj_folder_path = lower_from_str8(scratch.arena, str8_chop_last_slash(obj_name));
     
     //- rjf: build this unit's line table, fill out primary line info (inline info added after)
     RDIM_LineTable *line_table = 0;
@@ -789,8 +789,8 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
           CV_C13LinesParsed *lines = &lines_n->v;
           
           // rjf: file name -> sanitized file path
-          String8 file_path = lines->file_name;
-          String8 file_path_sanitized = str8_copy(scratch.arena, str8_skip_chop_whitespace(file_path));
+          string file_path = lines->file_name;
+          string file_path_sanitized = str8_copy(scratch.arena, str8_skip_chop_whitespace(file_path));
           {
             PathStyle file_path_sanitized_style = path_style_from_str8(file_path_sanitized);
             String8List file_path_sanitized_parts = str8_split_path(scratch.arena, file_path_sanitized);
@@ -858,13 +858,13 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
     CV_RecRange *rec_ranges_opl   = rec_ranges_first+pdb_unit_sym->sym_ranges.count;
     
     //- rjf: produce obj name/path
-    String8 obj_name = pdb_unit->obj_name;
-    if(str8_match(obj_name, str8_lit("* Linker *"), 0) ||
-       str8_match(obj_name, str8_lit("Import:"), StringMatchFlag_RightSideSloppy))
+    string obj_name = pdb_unit->obj_name;
+    if(str8_match(obj_name, ("* Linker *"), 0) ||
+       str8_match(obj_name, ("Import:"), StringMatchFlag_RightSideSloppy))
     {
       MemoryZeroStruct(&obj_name);
     }
-    String8 obj_folder_path = lower_from_str8(scratch.arena, str8_chop_last_slash(obj_name));
+    string obj_folder_path = lower_from_str8(scratch.arena, str8_chop_last_slash(obj_name));
     
     //- rjf: parse inlinee line tables
     U64 base_voff = 0;
@@ -916,7 +916,7 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
         {
           // rjf: unpack sym
           CV_SymInlineSite *sym           = (CV_SymInlineSite *)sym_header_struct_base;
-          String8           binary_annots = str8((U8 *)(sym+1), rec_range->hdr.size - sizeof(rec_range->hdr.kind) - sizeof(*sym));
+          string           binary_annots = str8((U8 *)(sym+1), rec_range->hdr.size - sizeof(rec_range->hdr.kind) - sizeof(*sym));
           
           // rjf: map inlinee -> parsed cv c13 inlinee line info
           CV_C13InlineeLinesParsed *inlinee_lines_parsed = 0;
@@ -976,7 +976,7 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
               // rjf: file updated -> push line chunks gathered for this file
               if(last_file_off != max_U32 && last_file_off != curr_file_off)
               {
-                String8 seq_file_name = {0};
+                string seq_file_name = {0};
                 if(last_file_off + sizeof(CV_C13Checksum) <= file_chksms->size)
                 {
                   CV_C13Checksum *checksum = (CV_C13Checksum*)(pdb_unit_c13->data.str + file_chksms->off + last_file_off);
@@ -985,8 +985,8 @@ ASYNC_WORK_DEF(p2r_unit_convert_work)
                 }
                 
                 // rjf: file name -> sanitized file path
-                String8 file_path            = seq_file_name;
-                String8 file_path_sanitized  = str8_copy(scratch.arena, str8_skip_chop_whitespace(file_path));
+                string file_path            = seq_file_name;
+                string file_path_sanitized  = str8_copy(scratch.arena, str8_skip_chop_whitespace(file_path));
                 {
                   PathStyle file_path_sanitized_style = path_style_from_str8(file_path_sanitized);
                   String8List file_path_sanitized_parts = str8_split_path(scratch.arena, file_path_sanitized);
@@ -1143,7 +1143,7 @@ ASYNC_WORK_DEF(p2r_link_name_map_build_work)
       {
         // rjf: unpack sym
         CV_SymPub32 *pub32 = (CV_SymPub32 *)sym_first;
-        String8 name = str8_cstring_capped(pub32+1, sym_opl);
+        string name = str8_cstring_capped(pub32+1, sym_opl);
         COFF_SectionHeader *section = (0 < pub32->sec && pub32->sec <= in->coff_sections.count) ? &in->coff_sections.v[pub32->sec-1] : 0;
         U64 voff = 0;
         if(section != 0)
@@ -1212,9 +1212,9 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
             U8 *numeric_ptr = (U8 *)(lf_struct + 1);
             CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
             U8 *name_ptr = numeric_ptr + size.encoded_size;
-            String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
+            string name = str8_cstring_capped(name_ptr, itype_leaf_opl);
             U8 *unique_name_ptr = name_ptr + name.size + 1;
-            String8 unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
+            string unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
             
             // rjf: lookup
             B32 do_unique_name_lookup = (((lf_struct->props & CV_TypeProp_Scoped) != 0) &&
@@ -1237,9 +1237,9 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
             U8 *numeric_ptr = (U8 *)(lf_struct + 1);
             CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
             U8 *name_ptr = (U8 *)numeric_ptr + size.encoded_size;
-            String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
+            string name = str8_cstring_capped(name_ptr, itype_leaf_opl);
             U8 *unique_name_ptr = name_ptr + name.size + 1;
-            String8 unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
+            string unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
             
             // rjf: lookup
             B32 do_unique_name_lookup = (((lf_struct->props & CV_TypeProp_Scoped) != 0) &&
@@ -1256,9 +1256,9 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
           U8 *numeric_ptr = (U8 *)(lf_union + 1);
           CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
           U8 *name_ptr = numeric_ptr + size.encoded_size;
-          String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
+          string name = str8_cstring_capped(name_ptr, itype_leaf_opl);
           U8 *unique_name_ptr = name_ptr + name.size + 1;
-          String8 unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
+          string unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
           
           // rjf: has fwd ref flag -> lookup itype that this itype resolves tos
           if(lf_union->props & CV_TypeProp_FwdRef)
@@ -1275,9 +1275,9 @@ ASYNC_WORK_DEF(p2r_itype_fwd_map_fill_work)
           // rjf: unpack leaf
           CV_LeafEnum *lf_enum = (CV_LeafEnum*)itype_leaf_first;
           U8 *name_ptr = (U8 *)(lf_enum + 1);
-          String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
+          string name = str8_cstring_capped(name_ptr, itype_leaf_opl);
           U8 *unique_name_ptr = name_ptr + name.size + 1;
-          String8 unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
+          string unique_name = str8_cstring_capped(unique_name_ptr, itype_leaf_opl);
           
           // rjf: has fwd ref flag -> lookup itype that this itype resolves to
           if(lf_enum->props & CV_TypeProp_FwdRef)
@@ -1791,7 +1791,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     CV_NumericParsed offset = cv_numeric_from_data_range(offset_ptr, field_leaf_opl);
                     U64 offset64 = cv_u64_from_numeric(&offset);
                     U8 *name_ptr = offset_ptr + offset.encoded_size;
-                    String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
+                    string name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
                     next_read_ptr = name.str+name.size+1;
@@ -1812,7 +1812,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     // rjf: unpack leaf
                     CV_LeafStMember *lf = (CV_LeafStMember *)field_leaf_first;
                     U8 *name_ptr = (U8 *)(lf+1);
-                    String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
+                    string name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
                     next_read_ptr = name.str+name.size+1;
@@ -1830,7 +1830,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     // rjf: unpack leaf
                     CV_LeafMethod *lf = (CV_LeafMethod *)field_leaf_first;
                     U8 *name_ptr = (U8 *)(lf+1);
-                    String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
+                    string name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
                     next_read_ptr = name.str+name.size+1;
@@ -1939,7 +1939,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                       vbaseoff_opl_ptr += sizeof(U32);
                     }
                     U8 *name_ptr = vbaseoff_opl_ptr;
-                    String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
+                    string name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     RDIM_Type *method_type = p2r_type_ptr_from_itype(lf->itype);
                     
                     // rjf: bump next read pointer past variable length parts
@@ -1983,7 +1983,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     // rjf: unpack leaf
                     CV_LeafNestType *lf = (CV_LeafNestType *)field_leaf_first;
                     U8 *name_ptr = (U8 *)(lf+1);
-                    String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
+                    string name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
                     next_read_ptr = name.str+name.size+1;
@@ -2003,7 +2003,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     // rjf: unpack leaf
                     CV_LeafNestTypeEx *lf = (CV_LeafNestTypeEx *)field_leaf_first;
                     U8 *name_ptr = (U8 *)(lf+1);
-                    String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
+                    string name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
                     next_read_ptr = name.str+name.size+1;
@@ -2209,7 +2209,7 @@ ASYNC_WORK_DEF(p2r_udt_convert_work)
                     CV_NumericParsed val = cv_numeric_from_data_range(val_ptr, field_leaf_opl);
                     U64 val64 = cv_u64_from_numeric(&val);
                     U8 *name_ptr = val_ptr + val.encoded_size;
-                    String8 name = str8_cstring_capped(name_ptr, field_leaf_opl);
+                    string name = str8_cstring_capped(name_ptr, field_leaf_opl);
                     
                     // rjf: bump next read pointer past variable length parts
                     next_read_ptr = name.str+name.size+1;
@@ -2438,7 +2438,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
         {
           // rjf: unpack sym
           CV_SymData32 *data32 = (CV_SymData32 *)sym_header_struct_base;
-          String8 name = str8_cstring_capped(data32+1, sym_data_opl);
+          string name = str8_cstring_capped(data32+1, sym_data_opl);
           COFF_SectionHeader *section = (0 < data32->sec && data32->sec <= in->coff_sections.count) ? &in->coff_sections.v[data32->sec-1] : 0;
           U64 voff = (section ? section->voff : 0) + data32->off;
           
@@ -2464,7 +2464,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
             U64 container_name_opl = p2r_end_of_cplusplus_container_name(name);
             if(container_name_opl > 2)
             {
-              String8 container_name = str8(name.str, container_name_opl - 2);
+              string container_name = str8(name.str, container_name_opl - 2);
               CV_TypeId cv_type_id = pdb_tpi_first_itype_from_name(in->tpi_hash, in->tpi_leaf, container_name, 0);
               container_type = p2r_type_ptr_from_itype(cv_type_id);
             }
@@ -2492,7 +2492,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
         if(in->parsing_global_stream && top_scope_node == 0)
         {
           CV_SymUDT *udt = (CV_SymUDT *)sym_header_struct_base;
-          String8 name = str8_cstring_capped(udt+1, sym_data_opl);
+          string name = str8_cstring_capped(udt+1, sym_data_opl);
           RDIM_Type *type   = rdim_type_chunk_list_push(arena, &typedefs, 4096);
           type->kind        = RDI_TypeKind_Alias;
           type->name        = name;
@@ -2509,7 +2509,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
         {
           // rjf: unpack sym
           CV_SymProc32 *proc32 = (CV_SymProc32 *)sym_header_struct_base;
-          String8 name = str8_cstring_capped(proc32+1, sym_data_opl);
+          string name = str8_cstring_capped(proc32+1, sym_data_opl);
           RDIM_Type *type = p2r_type_ptr_from_itype(proc32->itype);
           
           // rjf: unpack proc's container type
@@ -2517,7 +2517,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           U64 container_name_opl = p2r_end_of_cplusplus_container_name(name);
           if(container_name_opl > 2 && in->tpi_hash != 0 && in->tpi_leaf != 0)
           {
-            String8 container_name = str8(name.str, container_name_opl - 2);
+            string container_name = str8(name.str, container_name_opl - 2);
             CV_TypeId cv_type_id = pdb_tpi_first_itype_from_name(in->tpi_hash, in->tpi_leaf, container_name, 0);
             container_type = p2r_type_ptr_from_itype(cv_type_id);
           }
@@ -2550,7 +2550,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           }
           
           // rjf: root scope voff minimum range -> link name
-          String8 link_name = {0};
+          string link_name = {0};
           if(procedure_root_scope->voff_ranges.min != 0)
           {
             U64 voff = procedure_root_scope->voff_ranges.min;
@@ -2611,7 +2611,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           
           // rjf: unpack sym
           CV_SymRegrel32 *regrel32 = (CV_SymRegrel32 *)sym_header_struct_base;
-          String8 name = str8_cstring_capped(regrel32+1, sym_data_opl);
+          string name = str8_cstring_capped(regrel32+1, sym_data_opl);
           RDIM_Type *type = p2r_type_ptr_from_itype(regrel32->itype);
           CV_Reg cv_reg = regrel32->reg;
           U32 var_off = regrel32->reg_off;
@@ -2694,7 +2694,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
         {
           // rjf: unpack sym
           CV_SymThread32 *thread32 = (CV_SymThread32 *)sym_header_struct_base;
-          String8 name = str8_cstring_capped(thread32+1, sym_data_opl);
+          string name = str8_cstring_capped(thread32+1, sym_data_opl);
           U32 tls_off = thread32->tls_off;
           RDIM_Type *type = p2r_type_ptr_from_itype(thread32->itype);
           
@@ -2703,7 +2703,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           U64 container_name_opl = p2r_end_of_cplusplus_container_name(name);
           if(container_name_opl > 2)
           {
-            String8 container_name = str8(name.str, container_name_opl - 2);
+            string container_name = str8(name.str, container_name_opl - 2);
             CV_TypeId cv_type_id = pdb_tpi_first_itype_from_name(in->tpi_hash, in->tpi_leaf, container_name, 0);
             container_type = p2r_type_ptr_from_itype(cv_type_id);
           }
@@ -2737,7 +2737,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           
           // rjf: unpack sym
           CV_SymLocal *slocal = (CV_SymLocal *)sym_header_struct_base;
-          String8 name = str8_cstring_capped(slocal+1, sym_data_opl);
+          string name = str8_cstring_capped(slocal+1, sym_data_opl);
           RDIM_Type *type = p2r_type_ptr_from_itype(slocal->itype);
           
           // rjf: determine if this symbol encodes the beginning of a global modification
@@ -2959,7 +2959,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
         case CV_SymKind_FILESTATIC:
         {
           CV_SymFileStatic *file_static = (CV_SymFileStatic*)sym_header_struct_base;
-          String8 name = str8_cstring_capped(file_static+1, sym_data_opl);
+          string name = str8_cstring_capped(file_static+1, sym_data_opl);
           RDIM_Type *type = p2r_type_ptr_from_itype(file_static->itype);
           // TODO(rjf): emit a global modifier symbol
           defrange_target = 0;
@@ -2971,16 +2971,16 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
         {
           // rjf: unpack sym
           CV_SymInlineSite *sym           = (CV_SymInlineSite *)sym_header_struct_base;
-          String8           binary_annots = str8((U8 *)(sym+1), rec_range->hdr.size - sizeof(rec_range->hdr.kind) - sizeof(*sym));
+          string           binary_annots = str8((U8 *)(sym+1), rec_range->hdr.size - sizeof(rec_range->hdr.kind) - sizeof(*sym));
           
           // rjf: extract external info about inline site
-          String8    name      = str8_zero();
+          string    name      = str8_zero();
           RDIM_Type *type      = 0;
           RDIM_Type *owner     = 0;
           if(in->ipi_leaf != 0 && in->ipi_leaf->itype_first <= sym->inlinee && sym->inlinee < in->ipi_leaf->itype_opl)
           {
             CV_RecRange rec_range = in->ipi_leaf->leaf_ranges.ranges[sym->inlinee - in->ipi_leaf->itype_first];
-            String8     rec_data  = str8_substr(in->ipi_leaf->data, rng_1u64(rec_range.off, rec_range.off + rec_range.hdr.size));
+            string     rec_data  = str8_substr(in->ipi_leaf->data, rng_1u64(rec_range.off, rec_range.off + rec_range.hdr.size));
             void       *raw_leaf  = rec_data.str + sizeof(U16);
             
             // rjf: extract method inline info
@@ -3108,14 +3108,14 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
           CV_NumericParsed val = cv_numeric_from_data_range(val_ptr, sym_data_opl);
           U64 val64 = cv_u64_from_numeric(&val);
           U8 *name_ptr = val_ptr + val.encoded_size;
-          String8 name = str8_cstring_capped(name_ptr, sym_data_opl);
-          String8 val_data = str8_struct(&val64);
+          string name = str8_cstring_capped(name_ptr, sym_data_opl);
+          string val_data = str8_struct(&val64);
           U64 container_name_opl = 0;
           if(type != 0)
           {
             container_name_opl = p2r_end_of_cplusplus_container_name(type->name);
           }
-          String8 name_qualified = name;
+          string name_qualified = name;
           if(container_name_opl != 0)
           {
             name_qualified = push_str8f(arena, "%S%S", str8_prefix(type->name, container_name_opl), name);
@@ -3180,7 +3180,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   if(msf != 0) ProfScope("parse PDB auth_guid & named streams table")
   {
     Temp scratch = scratch_begin(&arena, 1);
-    String8 info_data = msf_data_from_stream(msf, PDB_FixedStream_Info);
+    string info_data = msf_data_from_stream(msf, PDB_FixedStream_Info);
     PDB_Info *info = pdb_info_from_data(scratch.arena, info_data);
     named_streams = pdb_named_stream_table_from_info(arena, info);
     MemoryCopyStruct(&auth_guid, &info->auth_guid);
@@ -3196,11 +3196,11 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   //- rjf: parse PDB strtbl
   //
   PDB_Strtbl *strtbl = 0;
-  String8 raw_strtbl = str8_zero();
+  string raw_strtbl = str8_zero();
   if(named_streams != 0) ProfScope("parse PDB strtbl")
   {
     MSF_StreamNumber strtbl_sn = named_streams->sn[PDB_NamedStream_StringTable];
-    String8 strtbl_data = msf_data_from_stream(msf, strtbl_sn);
+    string strtbl_data = msf_data_from_stream(msf, strtbl_sn);
     strtbl = pdb_strtbl_from_data(arena, strtbl_data);
     raw_strtbl = str8_substr(strtbl_data, rng_1u64(strtbl->strblock_min, strtbl->strblock_max));
   }
@@ -3211,7 +3211,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   PDB_DbiParsed *dbi = 0;
   if(msf != 0) ProfScope("parse dbi")
   {
-    String8 dbi_data = msf_data_from_stream(msf, PDB_FixedStream_Dbi);
+    string dbi_data = msf_data_from_stream(msf, PDB_FixedStream_Dbi);
     dbi = pdb_dbi_from_data(arena, dbi_data);
   }
   
@@ -3221,7 +3221,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   PDB_TpiParsed *tpi = 0;
   if(msf != 0) ProfScope("parse tpi")
   {
-    String8 tpi_data = msf_data_from_stream(msf, PDB_FixedStream_Tpi);
+    string tpi_data = msf_data_from_stream(msf, PDB_FixedStream_Tpi);
     tpi = pdb_tpi_from_data(arena, tpi_data);
   }
   
@@ -3231,7 +3231,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   PDB_TpiParsed *ipi = 0;
   if(msf != 0) ProfScope("parse ipi")
   {
-    String8 ipi_data = msf_data_from_stream(msf, PDB_FixedStream_Ipi);
+    string ipi_data = msf_data_from_stream(msf, PDB_FixedStream_Ipi);
     ipi = pdb_tpi_from_data(arena, ipi_data);
   }
   
@@ -3242,7 +3242,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   if(dbi != 0) ProfScope("parse coff sections")
   {
     MSF_StreamNumber section_stream = dbi->dbg_streams[PDB_DbiStream_SECTION_HEADER];
-    String8 section_data = msf_data_from_stream(msf, section_stream);
+    string section_data = msf_data_from_stream(msf, section_stream);
     coff_sections = pdb_coff_section_array_from_data(arena, section_data);
   }
   
@@ -3252,7 +3252,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   PDB_GsiParsed *gsi = 0;
   if(dbi != 0) ProfScope("parse gsi")
   {
-    String8 gsi_data = msf_data_from_stream(msf, dbi->gsi_sn);
+    string gsi_data = msf_data_from_stream(msf, dbi->gsi_sn);
     gsi = pdb_gsi_from_data(arena, gsi_data);
   }
   
@@ -3262,8 +3262,8 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
   PDB_GsiParsed *psi_gsi_part = 0;
   if(dbi != 0) ProfScope("parse psi")
   {
-    String8 psi_data = msf_data_from_stream(msf, dbi->psi_sn);
-    String8 psi_data_gsi_part = str8_range(psi_data.str + sizeof(PDB_PsiHeader), psi_data.str + psi_data.size);
+    string psi_data = msf_data_from_stream(msf, dbi->psi_sn);
+    string psi_data_gsi_part = str8_range(psi_data.str + sizeof(PDB_PsiHeader), psi_data.str + psi_data.size);
     psi_gsi_part = pdb_gsi_from_data(arena, psi_data_gsi_part);
   }
   
@@ -3460,7 +3460,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
     top_level_info.voff_max      = exe_voff_max;
     if(in->deterministic)
     {
-      top_level_info.producer_name = str8_lit(BUILD_TITLE_STRING_LITERAL);
+      top_level_info.producer_name = (BUILD_TITLE_STRING_LITERAL);
     }
   }
   
@@ -3518,7 +3518,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
     {
       for EachIndex(path_idx, tasks_outputs[idx].src_file_paths.count)
       {
-        String8 file_path_sanitized = tasks_outputs[idx].src_file_paths.v[path_idx];
+        string file_path_sanitized = tasks_outputs[idx].src_file_paths.v[path_idx];
         U64 file_path_sanitized_hash = rdi_hash(file_path_sanitized.str, file_path_sanitized.size);
         U64 src_file_slot = file_path_sanitized_hash%src_file_map.slots_count;
         P2R_SrcFileNode *src_file_node = 0;
@@ -4131,7 +4131,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
                 U64 size_u64 = cv_u64_from_numeric(&size);
                 U8 *name_ptr = numeric_ptr + size.encoded_size;
-                String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
+                string name = str8_cstring_capped(name_ptr, itype_leaf_opl);
                 
                 // rjf: fill type
                 dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
@@ -4160,7 +4160,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
                 U64 size_u64 = cv_u64_from_numeric(&size);
                 U8 *name_ptr = numeric_ptr + size.encoded_size;
-                String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
+                string name = str8_cstring_capped(name_ptr, itype_leaf_opl);
                 
                 // rjf: fill type
                 dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
@@ -4188,7 +4188,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 CV_NumericParsed size = cv_numeric_from_data_range(numeric_ptr, itype_leaf_opl);
                 U64 size_u64 = cv_u64_from_numeric(&size);
                 U8 *name_ptr = numeric_ptr + size.encoded_size;
-                String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
+                string name = str8_cstring_capped(name_ptr, itype_leaf_opl);
                 
                 // rjf: fill type
                 dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);
@@ -4214,7 +4214,7 @@ p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
                 CV_LeafEnum *lf = (CV_LeafEnum *)itype_leaf_first;
                 RDIM_Type *direct_type = p2r_type_ptr_from_itype(lf->base_itype);
                 U8 *name_ptr = (U8 *)(lf + 1);
-                String8 name = str8_cstring_capped(name_ptr, itype_leaf_opl);
+                string name = str8_cstring_capped(name_ptr, itype_leaf_opl);
                 
                 // rjf: fill type
                 dst_type = rdim_type_chunk_list_push(arena, &all_types, (U64)itype_opl);

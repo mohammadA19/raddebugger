@@ -21,7 +21,7 @@ struct DR_FStrParams
 typedef struct DR_FStr DR_FStr;
 struct DR_FStr
 {
-  String8 string;
+  string string;
   DR_FStrParams params;
 };
 
@@ -112,18 +112,18 @@ thread_static DR_ThreadCtx *dr_thread_ctx = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 dr_hash_from_string(String8 string);
+internal U64 dr_hash_from_string(string string);
 
 ////////////////////////////////
 //~ rjf: Fancy String Type Functions
 
 internal void dr_fstrs_push(Arena *arena, DR_FStrList *list, DR_FStr *str);
-internal void dr_fstrs_push_new_(Arena *arena, DR_FStrList *list, DR_FStrParams *params, DR_FStrParams *overrides, String8 string);
+internal void dr_fstrs_push_new_(Arena *arena, DR_FStrList *list, DR_FStrParams *params, DR_FStrParams *overrides, string string);
 #define dr_fstrs_push_new(arena, list, params, string, ...) dr_fstrs_push_new_((arena), (list), (params), &(DR_FStrParams){.size = 0, __VA_ARGS__}, (string))
 internal void dr_fstrs_concat_in_place(DR_FStrList *dst, DR_FStrList *to_push);
 internal DR_FStrList dr_fstrs_copy(Arena *arena, DR_FStrList *src);
-internal String8 dr_string_from_fstrs(Arena *arena, DR_FStrList *list);
-internal FuzzyMatchRangeList dr_fuzzy_match_find_from_fstrs(Arena *arena, DR_FStrList *fstrs, String8 needle);
+internal string dr_string_from_fstrs(Arena *arena, DR_FStrList *list);
+internal FuzzyMatchRangeList dr_fuzzy_match_find_from_fstrs(Arena *arena, DR_FStrList *fstrs, string needle);
 internal DR_FRunList dr_fruns_from_fstrs(Arena *arena, F32 tab_size_px, DR_FStrList *strs);
 internal Vec2F32 dr_dim_from_fstrs(F32 tab_size_px, DR_FStrList *fstrs);
 
@@ -199,6 +199,6 @@ internal void dr_sub_bucket(DR_Bucket *bucket);
 internal void dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run trailer_run);
 internal void dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FRunList *list, F32 max_x, FuzzyMatchRangeList *ranges, Vec4F32 color);
 internal void dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run);
-internal void dr_text(FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, String8 string);
+internal void dr_text(FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, string string);
 
 #endif // DRAW_H

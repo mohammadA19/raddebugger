@@ -54,7 +54,7 @@ lnk_array_from_lib_list(Arena *arena, LNK_LibList list)
 }
 
 internal B32
-lnk_lib_from_data(Arena *arena, String8 data, String8 path, LNK_Lib *lib_out)
+lnk_lib_from_data(Arena *arena, string data, string path, LNK_Lib *lib_out)
 {
   ProfBeginFunction();
 
@@ -70,7 +70,7 @@ lnk_lib_from_data(Arena *arena, String8 data, String8 path, LNK_Lib *lib_out)
   }
 
   U64     symbol_count;
-  String8 string_table;
+  string string_table;
   U32    *member_off_arr;
 
   // try to init library from optional second member
@@ -115,7 +115,7 @@ lnk_lib_from_data(Arena *arena, String8 data, String8 path, LNK_Lib *lib_out)
   }
   
   // parse string table
-  String8List symbol_name_list = str8_split_by_string_chars(arena, string_table, str8_lit("\0"), StringSplitFlag_KeepEmpties);
+  String8List symbol_name_list = str8_split_by_string_chars(arena, string_table, ("\0"), StringSplitFlag_KeepEmpties);
   Assert(symbol_name_list.node_count >= symbol_count);
   symbol_count = Min(symbol_count, symbol_name_list.node_count);
   

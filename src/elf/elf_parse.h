@@ -33,7 +33,7 @@ struct ELF_Bin
 typedef struct ELF_GnuDebugLink ELF_GnuDebugLink;
 struct ELF_GnuDebugLink
 {
-  String8 path;
+  string path;
   U32 checksum;
 };
 
@@ -41,12 +41,12 @@ struct ELF_GnuDebugLink
 //~ rjf: Parsing Functions
 
 //- rjf: top-level binary parsing
-internal ELF_Bin elf_bin_from_data(Arena *arena, String8 data);
+internal ELF_Bin elf_bin_from_data(Arena *arena, string data);
 
 //- rjf: extra bin info extraction
-internal B32 elf_is_dwarf_present_from_bin(String8 data, ELF_Bin *bin);
-internal String8 elf_name_from_shdr64(String8 raw_data, ELF_Bin *bin, ELF_Shdr64 *shdr);
+internal B32 elf_is_dwarf_present_from_bin(string data, ELF_Bin *bin);
+internal string elf_name_from_shdr64(string raw_data, ELF_Bin *bin, ELF_Shdr64 *shdr);
 internal U64 elf_base_addr_from_bin(ELF_Bin *bin);
-internal ELF_GnuDebugLink elf_gnu_debug_link_from_bin(String8 raw_data, ELF_Bin *bin);
+internal ELF_GnuDebugLink elf_gnu_debug_link_from_bin(string raw_data, ELF_Bin *bin);
 
 #endif // ELF_PARSE_H

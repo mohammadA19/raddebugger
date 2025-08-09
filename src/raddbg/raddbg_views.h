@@ -30,8 +30,8 @@ struct RD_CodeViewState
   B32 force_contain_only;
   B32 watch_expr_at_mouse;
   Arena *find_text_arena;
-  String8 find_text_fwd;
-  String8 find_text_bwd;
+  string find_text_fwd;
+  string find_text_bwd;
 };
 
 typedef struct RD_CodeViewBuildResult RD_CodeViewBuildResult;
@@ -92,7 +92,7 @@ struct RD_WatchRowInfo
   CTRL_Entity *module;
   B32 can_expand;
   B32 expr_is_editable;
-  String8 group_cfg_name;
+  string group_cfg_name;
   RD_Cfg *group_cfg_parent;
   RD_Cfg *group_cfg_child;
   CTRL_Entity *group_entity;
@@ -100,7 +100,7 @@ struct RD_WatchRowInfo
   U64 callstack_unwind_index;
   U64 callstack_inline_depth;
   U64 callstack_vaddr;
-  String8 cell_style_key;
+  string cell_style_key;
   RD_WatchCellList cells;
   RD_ViewUIRule *view_ui_rule;
 };
@@ -111,13 +111,13 @@ struct RD_WatchRowCellInfo
   RD_WatchCellFlags flags;
   RD_Cfg *cfg;
   CTRL_Entity *entity;
-  String8 cmd_name;
-  String8 file_path;
+  string cmd_name;
+  string file_path;
   DR_FStrList expr_fstrs;
   DR_FStrList eval_fstrs;
-  String8 description;
-  String8 error_tooltip;
-  String8 inheritance_tooltip;
+  string description;
+  string error_tooltip;
+  string inheritance_tooltip;
   RD_ViewUIRule *view_ui_rule;
 };
 
@@ -149,7 +149,7 @@ struct RD_WatchViewState
   
   // rjf: filter history
   Arena *filter_arena;
-  String8 last_filter;
+  string last_filter;
   
   // rjf; table cursor state
   RD_WatchPt cursor;
@@ -169,7 +169,7 @@ struct RD_WatchViewState
 //~ rjf: Code View Functions
 
 internal void rd_code_view_init(RD_CodeViewState *cv);
-internal RD_CodeViewBuildResult rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, String8 text_data, TXT_TextInfo *text_info, DASM_LineArray *dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key);
+internal RD_CodeViewBuildResult rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, string text_data, TXT_TextInfo *text_info, DASM_LineArray *dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key);
 
 ////////////////////////////////
 //~ rjf: Watch View Functions

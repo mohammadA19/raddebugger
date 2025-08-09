@@ -1710,7 +1710,7 @@ rdib_path_tree_init(Arena *arena, U64 list_count)
 }
 
 internal void
-rdib_path_tree_insert(Arena *arena, RDIB_PathTree *tree, String8 path, RDIB_SourceFile *src_file)
+rdib_path_tree_insert(Arena *arena, RDIB_PathTree *tree, string path, RDIB_SourceFile *src_file)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -1757,7 +1757,7 @@ rdib_path_tree_insert(Arena *arena, RDIB_PathTree *tree, String8 path, RDIB_Sour
 }
 
 internal U32
-rdib_idx_from_path_tree(RDIB_PathTree *tree, String8 path)
+rdib_idx_from_path_tree(RDIB_PathTree *tree, string path)
 {
   Temp scratch = scratch_begin(0,0);
 
@@ -1807,7 +1807,7 @@ rdib_idx_from_path_tree(RDIB_PathTree *tree, String8 path)
 ////////////////////////////////
 
 internal U64
-rdib_string_map_hash(String8 string)
+rdib_string_map_hash(string string)
 {
   XXH64_hash_t hash64 = XXH3_64bits(string.str, string.size);
   return hash64;
@@ -1823,7 +1823,7 @@ rdib_init_string_map(Arena *arena, U64 cap)
 }
 
 internal U32
-rdib_idx_from_string_map(RDIB_StringMap *string_map, String8 string)
+rdib_idx_from_string_map(RDIB_StringMap *string_map, string string)
 {
   U64 hash     = rdib_string_map_hash(string);
   U64 best_idx = hash % string_map->cap;
@@ -1922,7 +1922,7 @@ rdib_string_map_insert_or_update(RDIB_StringMapBucket **buckets, U64 cap, U64 ha
 }
 
 internal void
-rdib_string_map_insert_item(Arena *arena, RDIB_CollectStringsTask *task, U64 task_id, String8 string, void *value)
+rdib_string_map_insert_item(Arena *arena, RDIB_CollectStringsTask *task, U64 task_id, string string, void *value)
 {
   // do we have a free bucket?
   RDIB_StringMapBucket **bucket = &task->free_buckets[task_id];
@@ -2190,13 +2190,13 @@ rdib_string_map_assign_indices(RDIB_StringMapBucket **buckets, U64 bucket_count)
 // Specialized Inserts
 
 internal void
-rdib_string_map_insert_string_table_item(Arena *arena, RDIB_CollectStringsTask *task, U64 task_id, String8 string)
+rdib_string_map_insert_string_table_item(Arena *arena, RDIB_CollectStringsTask *task, U64 task_id, string string)
 {
   rdib_string_map_insert_item(arena, task, task_id, string, 0);
 }
 
 internal void
-rdib_string_map_insert_name_map_item(Arena *arena, RDIB_CollectStringsTask *task, U64 task_id, String8 string, VoidNode *node)
+rdib_string_map_insert_name_map_item(Arena *arena, RDIB_CollectStringsTask *task, U64 task_id, string string, VoidNode *node)
 {
   rdib_string_map_insert_item(arena, task, task_id, string, node);
 }
@@ -5317,7 +5317,7 @@ if (((RDIB_Type*)(t))->kind == RDI_TypeKindExt_VirtualTable) break; \
     task.element_indices        = push_array(scratch.arena, U64,                    tp->worker_count);
 
     // :string_map_null
-    rdib_string_map_insert_string_table_item(arena->v[0], &task, 0, str8_lit(""));
+    rdib_string_map_insert_string_table_item(arena->v[0], &task, 0, (""));
 
     // top level info
     rdib_string_map_insert_string_table_item(arena->v[0], &task, 0, input->top_level_info.exe_name);

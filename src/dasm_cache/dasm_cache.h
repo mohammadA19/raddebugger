@@ -36,7 +36,7 @@ struct DASM_Inst
 {
   DASM_InstFlags flags;
   U32 size;
-  String8 string;
+  string string;
   U64 jump_dest_vaddr;
 };
 
@@ -149,7 +149,7 @@ struct DASM_LineArray
 typedef struct DASM_Result DASM_Result;
 struct DASM_Result
 {
-  String8 text;
+  string text;
   DASM_LineArray lines;
 };
 
@@ -275,12 +275,12 @@ global DASM_Shared *dasm_shared = 0;
 ////////////////////////////////
 //~ rjf: Instruction Decoding/Disassembling Type Functions
 
-internal DASM_Inst dasm_inst_from_code(Arena *arena, Arch arch, U64 vaddr, String8 code, DASM_Syntax syntax);
+internal DASM_Inst dasm_inst_from_code(Arena *arena, Arch arch, U64 vaddr, string code, DASM_Syntax syntax);
 
 ////////////////////////////////
 //~ rjf: Control Flow Analysis
 
-internal DASM_CtrlFlowInfo dasm_ctrl_flow_info_from_arch_vaddr_code(Arena *arena, DASM_InstFlags exit_points_mask, Arch arch, U64 vaddr, String8 code);
+internal DASM_CtrlFlowInfo dasm_ctrl_flow_info_from_arch_vaddr_code(Arena *arena, DASM_InstFlags exit_points_mask, Arch arch, U64 vaddr, string code);
 
 ////////////////////////////////
 //~ rjf: Parameter Type Functions

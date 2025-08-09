@@ -238,7 +238,7 @@ thread_static B32 dmn_w32_ctrl_thread = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 dmn_w32_hash_from_string(String8 string);
+internal U64 dmn_w32_hash_from_string(string string);
 internal U64 dmn_w32_hash_from_id(U64 id);
 
 ////////////////////////////////
@@ -258,7 +258,7 @@ internal DMN_W32_Entity *dmn_w32_entity_from_kind_id(DMN_W32_EntityKind kind, U6
 ////////////////////////////////
 //~ rjf: Module Info Extraction
 
-internal String8 dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module);
+internal string dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module);
 
 ////////////////////////////////
 //~ rjf: Win32-Level Process/Thread Reads/Writes
@@ -266,7 +266,7 @@ internal String8 dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *mod
 //- rjf: processes
 internal U64 dmn_w32_process_read(HANDLE process, Rng1U64 range, void *dst);
 internal B32 dmn_w32_process_write(HANDLE process, Rng1U64 range, void *src);
-internal String8 dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, U64 address);
+internal string dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, U64 address);
 internal String16 dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, U64 address);
 #define dmn_w32_process_read_struct(process, vaddr, ptr) dmn_w32_process_read((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)
 #define dmn_w32_process_write_struct(process, vaddr, ptr) dmn_w32_process_write((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)

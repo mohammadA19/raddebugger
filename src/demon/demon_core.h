@@ -71,7 +71,7 @@ struct DMN_Event
   Arch arch;
   U64 address;
   U64 size;
-  String8 string;
+  string string;
   U32 code; // code gives pid & tid on CreateProcess and CreateThread (respectfully)
   U32 flags; // DMN_TrapFlags, if `DMN_EventKind_SetBreakpoint`
   S32 signo;
@@ -161,7 +161,7 @@ struct DMN_ProcessIter
 typedef struct DMN_ProcessInfo DMN_ProcessInfo;
 struct DMN_ProcessInfo
 {
-  String8 name;
+  string name;
   U32 pid;
 };
 
@@ -194,7 +194,7 @@ internal U64 dmn_rsp_from_thread(DMN_Handle thread);
 ////////////////////////////////
 //~ rjf: Process Reading Helper Functions (Helpers, Implemented Once)
 
-internal String8 dmn_process_read_cstring(Arena *arena, DMN_Handle process, U64 addr);
+internal string dmn_process_read_cstring(Arena *arena, DMN_Handle process, U64 addr);
 
 ////////////////////////////////
 //~ rjf: @dmn_os_hooks Main Layer Initialization (Implemented Per-OS)

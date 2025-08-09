@@ -1765,9 +1765,9 @@ internal B32 dw_are_attrib_class_and_form_kind_compatible(DW_Version ver, DW_Att
 
 //- Section Names
 
-internal String8 dw_name_string_from_section_kind     (DW_SectionKind k);
-internal String8 dw_mach_name_string_from_section_kind(DW_SectionKind k);
-internal String8 dw_dwo_name_string_from_section_kind (DW_SectionKind k);
+internal string dw_name_string_from_section_kind     (DW_SectionKind k);
+internal string dw_mach_name_string_from_section_kind(DW_SectionKind k);
+internal string dw_dwo_name_string_from_section_kind (DW_SectionKind k);
 
 ////////////////////////////////
 
@@ -1782,20 +1782,20 @@ internal U64 dw_pick_default_lower_bound(DW_Language lang);
 ////////////////////////////////
 //~ rjf: String <=> Enum
 
-internal String8 dw_string_from_expr_op(Arena *arena, DW_Version ver, DW_Ext ext, DW_ExprOp op);
-internal String8 dw_string_from_tag_kind(Arena *arena, DW_TagKind kind);
-internal String8 dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKind kind);
-internal String8 dw_string_from_form_kind(Arena *arena, DW_Version ver, DW_FormKind kind);
-internal String8 dw_string_from_language(Arena *arena, DW_Language kind);
-internal String8 dw_string_from_inl(Arena *arena, DW_InlKind kind);
-internal String8 dw_string_from_access_kind(Arena *arena, DW_AccessKind kind);
-internal String8 dw_string_from_calling_convetion(Arena *arena, DW_CallingConventionKind kind);
-internal String8 dw_string_from_attrib_type_encoding(Arena *arena, DW_ATE kind);
-internal String8 dw_string_from_std_opcode(Arena *arena, DW_StdOpcode kind);
-internal String8 dw_string_from_ext_opcode(Arena *arena, DW_ExtOpcode kind);
-internal String8 dw_string_from_loc_list_entry_kind(Arena *arena, DW_LLE kind);
-internal String8 dw_string_from_section_kind(Arena *arena, DW_SectionKind kind);
-internal String8 dw_string_from_rng_list_entry_kind(Arena *arena, DW_RLE kind);
-internal String8 dw_string_from_register(Arena *arena, Arch arch, U64 reg_id);
+internal string dw_string_from_expr_op(Arena *arena, DW_Version ver, DW_Ext ext, DW_ExprOp op);
+internal string dw_string_from_tag_kind(Arena *arena, DW_TagKind kind);
+internal string dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKind kind);
+internal string dw_string_from_form_kind(Arena *arena, DW_Version ver, DW_FormKind kind);
+internal string dw_string_from_language(Arena *arena, DW_Language kind);
+internal string dw_string_from_inl(Arena *arena, DW_InlKind kind);
+internal string dw_string_from_access_kind(Arena *arena, DW_AccessKind kind);
+internal string dw_string_from_calling_convetion(Arena *arena, DW_CallingConventionKind kind);
+internal string dw_string_from_attrib_type_encoding(Arena *arena, DW_ATE kind);
+internal string dw_string_from_std_opcode(Arena *arena, DW_StdOpcode kind);
+internal string dw_string_from_ext_opcode(Arena *arena, DW_ExtOpcode kind);
+internal string dw_string_from_loc_list_entry_kind(Arena *arena, DW_LLE kind);
+internal string dw_string_from_section_kind(Arena *arena, DW_SectionKind kind);
+internal string dw_string_from_rng_list_entry_kind(Arena *arena, DW_RLE kind);
+internal string dw_string_from_register(Arena *arena, Arch arch, U64 reg_id);
 
 #endif // DWARF_H

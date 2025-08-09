@@ -54,7 +54,7 @@ e_oplist_push_sconst(Arena *arena, E_OpList *list, S64 x)
 }
 
 internal void
-e_oplist_push_bytecode(Arena *arena, E_OpList *list, String8 bytecode)
+e_oplist_push_bytecode(Arena *arena, E_OpList *list, string bytecode)
 {
   E_Op *node = push_array_no_zero(arena, E_Op, 1);
   node->opcode = E_IRExtKind_Bytecode;
@@ -77,7 +77,7 @@ e_oplist_push_set_space(Arena *arena, E_OpList *list, E_Space space)
 }
 
 internal void
-e_oplist_push_string_literal(Arena *arena, E_OpList *list, String8 string)
+e_oplist_push_string_literal(Arena *arena, E_OpList *list, string string)
 {
   RDI_EvalOp opcode = RDI_EvalOp_ConstString;
   U16 ctrlbits = rdi_eval_op_ctrlbits_table[opcode];
@@ -190,7 +190,7 @@ e_irtree_conditional(Arena *arena, E_IRNode *c, E_IRNode *l, E_IRNode *r)
 }
 
 internal E_IRNode *
-e_irtree_bytecode_no_copy(Arena *arena, String8 bytecode)
+e_irtree_bytecode_no_copy(Arena *arena, string bytecode)
 {
   E_IRNode *n = e_push_irnode(arena, E_IRExtKind_Bytecode);
   n->string = bytecode;
@@ -198,7 +198,7 @@ e_irtree_bytecode_no_copy(Arena *arena, String8 bytecode)
 }
 
 internal E_IRNode *
-e_irtree_string_literal(Arena *arena, String8 string)
+e_irtree_string_literal(Arena *arena, string string)
 {
   E_IRNode *root = e_push_irnode(arena, RDI_EvalOp_ConstString);
   root->string = string;
@@ -400,7 +400,7 @@ E_TYPE_ACCESS_FUNCTION_DEF(default)
       B32 r_found = 0;
       E_TypeKey r_type = zero_struct;
       U64 r_value = 0;
-      String8 r_query_name = {0};
+      string r_query_name = {0};
       B32 r_is_constant_value = 0;
       {
         Temp scratch = scratch_begin(&arena, 1);
@@ -415,9 +415,9 @@ E_TYPE_ACCESS_FUNCTION_DEF(default)
         if(match.kind == E_MemberKind_Null)
         {
           E_Type *type = e_type_from_key(check_type_key);
-          String8 lookup_string = exprr->string;
-          String8 lookup_string_append_1 = push_str8f(scratch.arena, "%S_%S", type->name, lookup_string);
-          String8 lookup_string_append_2 = push_str8f(scratch.arena, "%S%S", type->name, lookup_string);
+          string lookup_string = exprr->string;
+          string lookup_string_append_1 = push_str8f(scratch.arena, "%S_%S", type->name, lookup_string);
+          string lookup_string_append_2 = push_str8f(scratch.arena, "%S%S", type->name, lookup_string);
           E_EnumVal enum_val = {0};
           if(enum_val.name.size == 0) { enum_val = e_type_enum_val_from_key_name__cached(check_type_key, lookup_string); }
           if(enum_val.name.size == 0) { enum_val = e_type_enum_val_from_key_name__cached(check_type_key, lookup_string_append_1); }
@@ -733,7 +733,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
                 str8_list_push_front(scratch.arena, &parts, l->first->next->string);
               }
             }
-            String8 full_qualified_name = str8_list_join(scratch.arena, &parts, &(StringJoin){.sep = str8_lit(".")});
+            string full_qualified_name = str8_list_join(scratch.arena, &parts, &(StringJoin){.sep = (".")});
             E_Expr *leaf_expr_name = e_push_expr(scratch.arena, E_ExprKind_LeafIdentifier, r1u64(0, 0));
             leaf_expr_name->string = full_qualified_name;
             E_IRTreeAndType new_result_maybe = e_push_irtree_and_type_from_expr(arena, parent, &e_default_identifier_resolution_rule, disallow_autohooks, disallow_autohooks, leaf_expr_name);
@@ -867,7 +867,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
         else if(conversion_rule != RDI_EvalConversionKind_Noop &&
                 conversion_rule != RDI_EvalConversionKind_Legal)
         {
-          String8 text = str8_lit("Unknown cast conversion rule.");
+          string text = ("Unknown cast conversion rule.");
           if(conversion_rule < RDI_EvalConversionKind_COUNT)
           {
             text.str = rdi_explanation_string_from_eval_conversion_kind(conversion_rule, &text.size);
@@ -959,7 +959,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
         E_IRTreeAndType r_tree = e_push_irtree_and_type_from_expr(arena, parent, &e_default_identifier_resolution_rule, disallow_autohooks, 1, expr->first);
         E_IRNode *r_value_tree = e_irtree_resolve_to_value(arena, r_tree.mode, r_tree.root, r_tree.type_key);
         E_OpList oplist = e_oplist_from_irtree(scratch.arena, r_value_tree);
-        String8 bytecode = e_bytecode_from_oplist(scratch.arena, &oplist);
+        string bytecode = e_bytecode_from_oplist(scratch.arena, &oplist);
         E_Interpretation interpretation = e_interpret(bytecode);
         E_Module *module = &e_module_nil;
         U32 rdi_idx = 0;
@@ -1409,7 +1409,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
         {
           E_IRNode *c_value_tree = e_irtree_resolve_to_value(arena, c_tree.mode, c_tree.root, c_type);
           E_OpList oplist = e_oplist_from_irtree(scratch.arena, c_value_tree);
-          String8 bytecode = e_bytecode_from_oplist(scratch.arena, &oplist);
+          string bytecode = e_bytecode_from_oplist(scratch.arena, &oplist);
           E_Interpretation interpretation = e_interpret(bytecode);
           if(interpretation.value.u64 != 0)
           {
@@ -1476,7 +1476,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
           else if(conversion_rule != RDI_EvalConversionKind_Noop &&
                   conversion_rule != RDI_EvalConversionKind_Legal)
           {
-            String8 text = str8_lit("Unknown cast conversion rule.");
+            string text = ("Unknown cast conversion rule.");
             if(conversion_rule < RDI_EvalConversionKind_COUNT)
             {
               text.str = rdi_explanation_string_from_eval_conversion_kind(conversion_rule, &text.size);
@@ -1523,7 +1523,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
           {
             e_expr_push_child(call, e_expr_copy(arena, arg));
           }
-          if(str8_match(callee->ref->string, str8_lit("raw"), 0))
+          if(str8_match(callee->ref->string, ("raw"), 0))
           {
             strip_lenses = 1;
             disallow_autohooks = 1;
@@ -1539,7 +1539,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
         else if(lhs_type->kind == E_TypeKind_LensSpec)
         {
           // rjf: is "raw"? -> disable hooks
-          if(str8_match(lhs_type->name, str8_lit("raw"), 0))
+          if(str8_match(lhs_type->name, ("raw"), 0))
           {
             strip_lenses = 1;
             disallow_autohooks = 1;
@@ -1624,7 +1624,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
       //- rjf: leaf string literal
       case E_ExprKind_LeafStringLiteral:
       {
-        String8 string = expr->string;
+        string string = expr->string;
         E_TypeKey type_key = e_type_key_cons_array(e_type_key_basic(E_TypeKind_UChar8), string.size, 0);
         E_IRNode *new_tree = e_irtree_string_literal(arena, string);
         result.root     = new_tree;
@@ -1671,9 +1671,9 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
       case E_ExprKind_LeafIdentifier:
       {
         Temp scratch = scratch_begin(&arena, 1);
-        String8 qualifier = expr->qualifier;
-        String8 string = expr->string;
-        String8 string__redirected = string;
+        string qualifier = expr->qualifier;
+        string string = expr->string;
+        string string__redirected = string;
         B32 string_mapped = 0;
         B32 string_is_implicit_member_name = 0;
         E_TypeKey mapped_type_key = zero_struct;
@@ -1681,7 +1681,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
         RDI_LocationBlock *mapped_location_block = 0;
         E_Mode mapped_bytecode_mode = E_Mode_Offset;
         E_Space mapped_bytecode_space = zero_struct;
-        String8 mapped_bytecode = {0};
+        string mapped_bytecode = {0};
         void *mapped_user_data = 0;
         B32 generated = 0;
         
@@ -1712,7 +1712,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
             
             //- rjf: try to map name as parent expression signifier ('$')
             case E_IdentifierResolutionPath_ParentExpr:
-            if(qualifier.size == 0 && !string_mapped && str8_match(string, str8_lit("$"), 0) && parent != 0 && (parent->root != &e_irnode_nil || parent->msgs.first != 0))
+            if(qualifier.size == 0 && !string_mapped && str8_match(string, ("$"), 0) && parent != 0 && (parent->root != &e_irnode_nil || parent->msgs.first != 0))
             {
               E_IRTreeAndType *parent_irtree = parent;
               {
@@ -1729,7 +1729,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
               generated = 1;
               disallow_autohooks = 1;
               E_OpList oplist = e_oplist_from_irtree(scratch.arena, parent_irtree->root);
-              String8 bytecode = e_bytecode_from_oplist(arena, &oplist);
+              string bytecode = e_bytecode_from_oplist(arena, &oplist);
               result.root = e_irtree_bytecode_no_copy(arena, bytecode);
               result.type_key = parent_irtree->type_key;
               result.mode = parent_irtree->mode;
@@ -1768,7 +1768,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
             //- rjf: try to map name as member of `this` - if found, string__redirected := "this", and turn
             // on later implicit-member-lookup generation
             case E_IdentifierResolutionPath_ImplicitThisMember:
-            if(!string_mapped && (qualifier.size == 0 || str8_match(qualifier, str8_lit("member"), 0)))
+            if(!string_mapped && (qualifier.size == 0 || str8_match(qualifier, ("member"), 0)))
             {
               E_Module *module = e_base_ctx->primary_module;
               U32 module_idx = (U32)(module - e_base_ctx->modules);
@@ -1781,13 +1781,13 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
               if(member.kind != E_MemberKind_Null)
               {
                 string_is_implicit_member_name = 1;
-                string__redirected = str8_lit("this");
+                string__redirected = ("this");
               }
             }break;
             
             //- rjf: try locals
             case E_IdentifierResolutionPath_Local:
-            if(!string_mapped && (qualifier.size == 0 || str8_match(qualifier, str8_lit("local"), 0)))
+            if(!string_mapped && (qualifier.size == 0 || str8_match(qualifier, ("local"), 0)))
             {
               E_Module *module = e_base_ctx->primary_module;
               U32 module_idx = (U32)(module - e_base_ctx->modules);
@@ -1821,7 +1821,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
             case E_IdentifierResolutionPath_BuiltInConstants:
             {
               // rjf: "true"
-              if(!string_mapped && str8_match(string, str8_lit("true"), 0))
+              if(!string_mapped && str8_match(string, ("true"), 0))
               {
                 string_mapped = 1;
                 E_OpList oplist = {0};
@@ -1832,7 +1832,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
               }
               
               // rjf: "false"
-              if(!string_mapped && str8_match(string, str8_lit("false"), 0))
+              if(!string_mapped && str8_match(string, ("false"), 0))
               {
                 string_mapped = 1;
                 E_OpList oplist = {0};
@@ -1853,7 +1853,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
             //- rjf: debug info matches
             case E_IdentifierResolutionPath_DebugInfoMatch:
             {
-              if(!string_mapped && e_base_ctx->dbgi_match_store != 0 && (qualifier.size == 0 || str8_match(qualifier, str8_lit("symbol"), 0)))
+              if(!string_mapped && e_base_ctx->dbgi_match_store != 0 && (qualifier.size == 0 || str8_match(qualifier, ("symbol"), 0)))
               {
                 DI_Match match = di_match_from_name(e_base_ctx->dbgi_match_store, string, 0);
                 if(match.idx == 0)
@@ -1865,19 +1865,19 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
                     RDI_Procedure *procedure = e_cache->thread_ip_procedure;
                     U64 name_size = 0;
                     U8 *name_ptr = rdi_string_from_idx(rdi, procedure->name_string_idx, &name_size);
-                    String8 containing_procedure_name = str8(name_ptr, name_size);
+                    string containing_procedure_name = str8(name_ptr, name_size);
                     U64 last_past_scope_resolution_pos = 0;
                     for(;;)
                     {
-                      U64 past_next_dbl_colon_pos = str8_find_needle(containing_procedure_name, last_past_scope_resolution_pos, str8_lit("::"), 0)+2;
-                      U64 past_next_dot_pos = str8_find_needle(containing_procedure_name, last_past_scope_resolution_pos, str8_lit("."), 0)+1;
+                      U64 past_next_dbl_colon_pos = str8_find_needle(containing_procedure_name, last_past_scope_resolution_pos, ("::"), 0)+2;
+                      U64 past_next_dot_pos = str8_find_needle(containing_procedure_name, last_past_scope_resolution_pos, ("."), 0)+1;
                       U64 past_next_scope_resolution_pos = Min(past_next_dbl_colon_pos, past_next_dot_pos);
                       if(past_next_scope_resolution_pos >= containing_procedure_name.size)
                       {
                         break;
                       }
-                      String8 new_namespace_prefix_possibility = str8_prefix(containing_procedure_name, past_next_scope_resolution_pos);
-                      String8 namespaceified_string = push_str8f(scratch.arena, "%S%S", new_namespace_prefix_possibility, string);
+                      string new_namespace_prefix_possibility = str8_prefix(containing_procedure_name, past_next_scope_resolution_pos);
+                      string namespaceified_string = push_str8f(scratch.arena, "%S%S", new_namespace_prefix_possibility, string);
                       str8_list_push_front(scratch.arena, &namespaceified_strings, namespaceified_string);
                       last_past_scope_resolution_pos = past_next_scope_resolution_pos;
                     }
@@ -1979,7 +1979,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
             
             //- rjf: try registers
             case E_IdentifierResolutionPath_Registers:
-            if(!string_mapped && (qualifier.size == 0 || str8_match(qualifier, str8_lit("reg"), 0)))
+            if(!string_mapped && (qualifier.size == 0 || str8_match(qualifier, ("reg"), 0)))
             {
               U64 reg_num = e_num_from_string(e_ir_ctx->regs_map, string);
               if(reg_num != 0)
@@ -1997,7 +1997,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
             
             //- rjf: try register aliases
             case E_IdentifierResolutionPath_RegisterAliases:
-            if(!string_mapped && (qualifier.size == 0 || str8_match(qualifier, str8_lit("reg"), 0)))
+            if(!string_mapped && (qualifier.size == 0 || str8_match(qualifier, ("reg"), 0)))
             {
               U64 alias_num = e_num_from_string(e_ir_ctx->reg_alias_map, string);
               if(alias_num != 0)
@@ -2152,7 +2152,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
         }
         
         //- rjf: error on failure-to-generate
-        if(!generated && !str8_match(string, str8_lit("$"), 0))
+        if(!generated && !str8_match(string, ("$"), 0))
         {
           e_msgf(arena, &result.msgs, E_MsgKind_ResolutionFailure, expr->range, "`%S` could not be found.", string);
         }
@@ -2186,9 +2186,9 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
       case E_ExprKind_LeafFilePath:
       {
         Temp scratch = scratch_begin(&arena, 1);
-        String8 file_path = expr->string;
+        string file_path = expr->string;
         FileProperties props = os_properties_from_file_path(file_path);
-        if(!str8_match(expr->qualifier, str8_lit("folder"), 0) && !(props.flags & FilePropertyFlag_IsFolder) && file_path.size != 0)
+        if(!str8_match(expr->qualifier, ("folder"), 0) && !(props.flags & FilePropertyFlag_IsFolder) && file_path.size != 0)
         {
           E_Space space = e_space_make(E_SpaceKind_FileSystem);
           result.root     = e_irtree_set_space(arena, space, e_irtree_const_u(arena, e_id_from_string(file_path)));
@@ -2197,9 +2197,9 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
         }
         else
         {
-          String8 folder_path = str8_chop_last_slash(file_path);
+          string folder_path = str8_chop_last_slash(file_path);
           props = os_properties_from_file_path(folder_path);
-          if(props.flags & FilePropertyFlag_IsFolder || folder_path.size == 0 || str8_match(folder_path, str8_lit("/"), StringMatchFlag_SlashInsensitive))
+          if(props.flags & FilePropertyFlag_IsFolder || folder_path.size == 0 || str8_match(folder_path, ("/"), StringMatchFlag_SlashInsensitive))
           {
             E_Space space = e_space_make(E_SpaceKind_FileSystem);
             result.root     = e_irtree_set_space(arena, space, e_irtree_const_u(arena, e_id_from_string(folder_path)));
@@ -2283,15 +2283,15 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
     {
       local_persist struct
       {
-        String8 shorthand;
-        String8 full_name;
+        string shorthand;
+        string full_name;
       }
       shorthand_lens_pair_table[] =
       {
-        {str8_lit_comp("x"), str8_lit_comp("hex")},
-        {str8_lit_comp("b"), str8_lit_comp("bin")},
-        {str8_lit_comp("o"), str8_lit_comp("oct")},
-        {str8_lit_comp("d"), str8_lit_comp("dec")},
+        {("x"), ("hex")},
+        {("b"), ("bin")},
+        {("o"), ("oct")},
+        {("d"), ("dec")},
       };
       E_Expr *first_chained = expr->next;
       for(E_Expr *chained_expr = first_chained;
@@ -2305,7 +2305,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
           {
             if(str8_match(chained_expr->string, shorthand_lens_pair_table[shorthand_idx].shorthand, 0))
             {
-              String8 full_name = shorthand_lens_pair_table[shorthand_idx].full_name;
+              string full_name = shorthand_lens_pair_table[shorthand_idx].full_name;
               result.type_key = e_type_key_cons(.kind       = E_TypeKind_Lens,
                                                 .direct_key = result.type_key,
                                                 .name       = full_name);
@@ -2320,7 +2320,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
           if(e_type_kind_is_pointer_or_ref(type_kind) ||
              type_kind == E_TypeKind_Array)
           {
-            E_Expr *lens_spec_expr = e_string2expr_map_lookup(e_ir_ctx->macro_map, str8_lit("array"));
+            E_Expr *lens_spec_expr = e_string2expr_map_lookup(e_ir_ctx->macro_map, ("array"));
             E_TypeKey lens_spec_type_key = lens_spec_expr->type_key;
             E_Type *lens_spec_type = e_type_from_key(lens_spec_type_key);
             result.type_key = e_type_key_cons(.kind       = E_TypeKind_Lens,
@@ -2388,7 +2388,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
           {
             E_IRNode *class_base_value_tree = e_irtree_resolve_to_value(scratch.arena, result.mode, result.root, result.type_key);
             E_OpList oplist = e_oplist_from_irtree(scratch.arena, class_base_value_tree);
-            String8 bytecode = e_bytecode_from_oplist(scratch.arena, &oplist);
+            string bytecode = e_bytecode_from_oplist(scratch.arena, &oplist);
             E_Interpretation interpret = e_interpret(bytecode);
             U64 class_base_vaddr = interpret.value.u64;
             U64 vtable_vaddr = 0;
@@ -2629,7 +2629,7 @@ e_oplist_from_irtree(Arena *arena, E_IRNode *root)
   return ops;
 }
 
-internal String8
+internal string
 e_bytecode_from_oplist(Arena *arena, E_OpList *oplist)
 {
   // rjf: allocate buffer
@@ -2709,7 +2709,7 @@ e_bytecode_from_oplist(Arena *arena, E_OpList *oplist)
   }
   
   // rjf: fill result
-  String8 result = {0};
+  string result = {0};
   result.size = size;
   result.str = str;
   return result;
@@ -2718,7 +2718,7 @@ e_bytecode_from_oplist(Arena *arena, E_OpList *oplist)
 //- rjf: leaf-bytecode expression extensions
 
 internal E_Expr *
-e_expr_irext_member_access(Arena *arena, E_Expr *lhs, E_IRTreeAndType *lhs_irtree, String8 member_name)
+e_expr_irext_member_access(Arena *arena, E_Expr *lhs, E_IRTreeAndType *lhs_irtree, string member_name)
 {
   E_Expr *root = e_push_expr(arena, E_ExprKind_MemberAccess, r1u64(0, 0));
   E_Expr *lhs_bytecode = e_push_expr(arena, E_ExprKind_LeafBytecode, lhs->range);

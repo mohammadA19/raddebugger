@@ -35,17 +35,17 @@ entry_point(CmdLine *cmdline)
   e_select_ir_ctx(ir_ctx);
   E_InterpretCtx *interpret_ctx = push_array(arena, E_InterpretCtx, 1);
   e_select_interpret_ctx(interpret_ctx, 0, 0);
-  String8 exprs[] =
+  string exprs[] =
   {
-    str8_lit("123"),
-    str8_lit("1 + 2"),
-    str8_lit("foo"),
-    str8_lit("foo(bar)"),
-    str8_lit("foo(bar(baz))"),
+    ("123"),
+    ("1 + 2"),
+    ("foo"),
+    ("foo(bar)"),
+    ("foo(bar(baz))"),
   };
   for EachElement(idx, exprs)
   {
-    String8 debug_string = e_debug_log_from_expr_string(arena, exprs[idx]);
+    string debug_string = e_debug_log_from_expr_string(arena, exprs[idx]);
     raddbg_log("%S", debug_string);
   }
 }

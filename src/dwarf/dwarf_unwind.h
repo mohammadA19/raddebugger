@@ -63,7 +63,7 @@ typedef struct DW_CIEUnpacked
   
   B32     has_augmentation_size;
   U64     augmentation_size;
-  String8 augmentation;
+  string augmentation;
   
   U64 code_align_factor;
   S64 data_align_factor;
@@ -181,9 +181,9 @@ global read_only DW_CFAControlBits dw_unwind__cfa_control_bits_kind2[DW_CFA_OplK
 // x64 Unwind Function
 
 internal DW_UnwindResult
-dw_unwind_x64(String8           raw_text,
-              String8           raw_eh_frame,
-              String8           raw_eh_frame_header,
+dw_unwind_x64(string           raw_text,
+              string           raw_eh_frame,
+              string           raw_eh_frame_header,
               Rng1U64           text_vrange,
               Rng1U64           eh_frame_vrange,
               Rng1U64           eh_frame_header_vrange,
@@ -194,7 +194,7 @@ dw_unwind_x64(String8           raw_text,
               DW_ReadMemorySig *read_memory,
               void             *read_memory_ud);
 
-internal DW_UnwindResult dw_unwind_x64__apply_frame_rules(String8 raw_eh_frame, DW_CFIRow *row, U64 text_base_vaddr, DW_ReadMemorySig *read_memory, void *read_memory_ud, U64 stack_pointer, DW_RegsX64 *regs);
+internal DW_UnwindResult dw_unwind_x64__apply_frame_rules(string raw_eh_frame, DW_CFIRow *row, U64 text_base_vaddr, DW_ReadMemorySig *read_memory, void *read_memory_ud, U64 stack_pointer, DW_RegsX64 *regs);
 
 ////////////////////////////////
 // x64 Unwind Helper Functions
@@ -205,8 +205,8 @@ internal U64  dw_unwind_parse_pointer_x64(void *base, Rng1U64 range, DW_EhPtrCtx
 //- eh_frame parsing
 internal void dw_unwind_parse_cie_x64(void *base,Rng1U64 range,DW_EhPtrCtx *ptr_ctx, U64 off, DW_CIEUnpacked *cie_out);
 internal void dw_unwind_parse_fde_x64(void *base,Rng1U64 range,DW_EhPtrCtx *ptr_ctx, DW_CIEUnpacked *parent_cie, U64 off, DW_FDEUnpacked *fde_out);
-internal DW_CFIRecords dw_unwind_eh_frame_cfi_from_ip_slow_x64(String8 raw_eh_frame, DW_EhPtrCtx *ptr_ctx, U64 ip_voff);
-internal DW_CFIRecords dw_unwind_eh_frame_hdr_from_ip_fast_x64(String8 raw_eh_frame, String8 raw_eh_frame_hdr, DW_EhPtrCtx *ptr_ctx, U64 ip_voff);
+internal DW_CFIRecords dw_unwind_eh_frame_cfi_from_ip_slow_x64(string raw_eh_frame, DW_EhPtrCtx *ptr_ctx, U64 ip_voff);
+internal DW_CFIRecords dw_unwind_eh_frame_hdr_from_ip_fast_x64(string raw_eh_frame, string raw_eh_frame_hdr, DW_EhPtrCtx *ptr_ctx, U64 ip_voff);
 
 //- cfi machine
 

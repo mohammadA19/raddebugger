@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal U64
-pdb_read_bit_vector_string(String8 data, U64 offset, U32Array *bits_out)
+pdb_read_bit_vector_string(string data, U64 offset, U32Array *bits_out)
 {
   U64 cursor = offset;
   
@@ -10,7 +10,7 @@ pdb_read_bit_vector_string(String8 data, U64 offset, U32Array *bits_out)
   cursor += str8_deserial_read_struct(data, cursor, &word_count);
   
   U64 word_data_read_size = word_count * sizeof(U32);
-  String8 word_data = str8(0,0);
+  string word_data = str8(0,0);
   cursor += str8_deserial_read_block(data, cursor, word_data_read_size, &word_data);
   
   if (word_data.size == word_data_read_size) {

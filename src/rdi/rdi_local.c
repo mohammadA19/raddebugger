@@ -7,10 +7,10 @@
 ////////////////////////////////
 //~ rjf: Lookup Helpers
 
-internal String8
+internal string
 str8_from_rdi_string_idx(RDI_Parsed *rdi, U32 idx)
 {
-  String8 result = {0};
+  string result = {0};
   result.str = rdi_string_from_idx(rdi, idx, &result.size);
   return result;
 }
@@ -18,56 +18,56 @@ str8_from_rdi_string_idx(RDI_Parsed *rdi, U32 idx)
 ////////////////////////////////
 //~ rjf: String <=> Enum
 
-internal String8
+internal string
 rdi_string_from_data_section_kind(Arena *arena, RDI_SectionKind v)
 {
-  String8 result = {0};
+  string result = {0};
   switch(v)
   {
     default:{result = push_str8f(arena, "<invalid RDI_SectionKind %u>", v);}break;
-#define X(name, lower, type) case RDI_SectionKind_##name:{result = str8_lit(#name);}break;
+#define X(name, lower, type) case RDI_SectionKind_##name:{result = (#name);}break;
     RDI_SectionKind_XList
 #undef X
   }
   return result;
 }
 
-internal String8
+internal string
 rdi_string_from_arch(Arena *arena, RDI_Arch v)
 {
-  String8 result = {0};
+  string result = {0};
   switch(v)
   {
     default:{result = push_str8f(arena, "<invalid RDI_Arch %u>", v);} break;
-#define X(name) case RDI_Arch_##name:{result = str8_lit(#name);} break;
+#define X(name) case RDI_Arch_##name:{result = (#name);} break;
     RDI_Arch_XList
 #undef X
   }
   return result;
 }
 
-internal String8
+internal string
 rdi_string_from_language(Arena *arena, RDI_Language v)
 {
-  String8 result = {0};
+  string result = {0};
   switch(v)
   {
     default:{result = push_str8f(arena, "<invalid RDI_Language %u>", v);}break;
-#define X(name) case RDI_Language_##name:{result = str8_lit(#name);}break;
+#define X(name) case RDI_Language_##name:{result = (#name);}break;
     RDI_Language_XList
 #undef X
   }
   return result;
 }
 
-internal String8
+internal string
 rdi_string_from_local_kind(Arena *arena, RDI_LocalKind v)
 {
-  String8 result = {0};
+  string result = {0};
   switch(v)
   {
     default:{result = push_str8f(arena, "<invalid RDI_LocalKind %u>", v);}break;
-#define X(name) case RDI_LocalKind_##name:{result = str8_lit(#name);}break;
+#define X(name) case RDI_LocalKind_##name:{result = (#name);}break;
     RDI_LocalKind_XList
 #undef X
   }
@@ -75,14 +75,14 @@ rdi_string_from_local_kind(Arena *arena, RDI_LocalKind v)
 }
 
 #if 0
-internal String8
+internal string
 rdi_string_from_type_kind(Arena *arena, RDI_TypeKind v)
 {
-  String8 result = {0};
+  string result = {0};
   switch(v)
   {
     default:{result = push_str8f(arena, "<invalid RDI_TypeKind %u>", v);}break;
-#define X(name) case RDI_TypeKind_##name:{result = str8_lit(#name);}break;
+#define X(name) case RDI_TypeKind_##name:{result = (#name);}break;
     RDI_TypeKind_XList
 #undef X
   }
@@ -90,66 +90,66 @@ rdi_string_from_type_kind(Arena *arena, RDI_TypeKind v)
 }
 #endif
 
-internal String8
+internal string
 rdi_string_from_member_kind(Arena *arena, RDI_MemberKind v)
 {
-  String8 result = {0};
+  string result = {0};
   switch(v)
   {
     default:{result = push_str8f(arena, "<invalid RDI_MemberKind %u>", v);}break;
-#define X(name) case RDI_MemberKind_##name:{result = str8_lit(#name);}break;
+#define X(name) case RDI_MemberKind_##name:{result = (#name);}break;
     RDI_MemberKind_XList
 #undef X
   }
   return result;
 }
 
-internal String8
+internal string
 rdi_string_from_name_map_kind(RDI_NameMapKind kind)
 {
-  String8 result = {0};
+  string result = {0};
   switch(kind)
   {
     default:{}break;
-#define X(name) case RDI_NameMapKind_##name:{result = str8_lit(#name);}break;
+#define X(name) case RDI_NameMapKind_##name:{result = (#name);}break;
     RDI_NameMapKind_XList
 #undef X
   }
   return result;
 }
 
-internal String8
+internal string
 rdi_string_from_reg_code_x86(U64 reg_code)
 {
-  String8 result = {0};
+  string result = {0};
   switch(reg_code)
   {
     default:{}break;
-#define X(name, value) case RDI_RegCodeX86_##name:{result = str8_lit(#name);}break;
+#define X(name, value) case RDI_RegCodeX86_##name:{result = (#name);}break;
     RDI_RegCodeX86_XList
 #undef X
   }
   return result;
 }
 
-internal String8
+internal string
 rdi_string_from_reg_code_x64(U64 reg_code)
 {
-  String8 result = {0};
+  string result = {0};
   switch(reg_code)
   {
     default:{}break;
-#define X(name, value) case RDI_RegCodeX64_##name:{result = str8_lit(#name);}break;
+#define X(name, value) case RDI_RegCodeX64_##name:{result = (#name);}break;
     RDI_RegCodeX64_XList
 #undef X
   }
   return result;
 }
 
-internal String8
+internal string
 rdi_string_from_reg_code(Arena *arena, RDI_Arch arch, U64 reg_code)
 {
-  String8 result = {0};
+  string result = {0};
   switch(arch)
   {
     default:
@@ -160,96 +160,96 @@ rdi_string_from_reg_code(Arena *arena, RDI_Arch arch, U64 reg_code)
   return result;
 }
 
-internal String8
+internal string
 rdi_string_from_eval_op(Arena *arena, RDI_EvalOp op)
 {
-  String8 result = {0};
+  string result = {0};
   switch(op)
   {
     default:{result = push_str8f(arena, "%#x", op);}break;
-#define X(name) case RDI_EvalOp_##name:{result = str8_lit("#name");}break;
+#define X(name) case RDI_EvalOp_##name:{result = ("#name");}break;
     RDI_EvalOp_XList
 #undef X
   }
   return result;
 }
 
-internal String8
+internal string
 rdi_string_from_eval_type_group(Arena *arena, RDI_EvalTypeGroup eval_type_group)
 {
-  String8 result = {0};
+  string result = {0};
   switch(eval_type_group)
   {
     default:{result = push_str8f(arena, "%#x", eval_type_group);}break;
-#define X(name) case RDI_EvalTypeGroup_##name:{result = str8_lit("#name");}break;
+#define X(name) case RDI_EvalTypeGroup_##name:{result = ("#name");}break;
     RDI_EvalTypeGroup_XList
 #undef X
   }
   return result;
 }
 
-internal String8
+internal string
 rdi_string_from_binary_section_flags(Arena *arena, RDI_BinarySectionFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
-#define X(name) if (flags & RDI_BinarySectionFlag_##name) { flags &= ~RDI_BinarySectionFlag_##name; str8_list_push(scratch.arena, &list, str8_lit(#name)); }
+#define X(name) if (flags & RDI_BinarySectionFlag_##name) { flags &= ~RDI_BinarySectionFlag_##name; str8_list_push(scratch.arena, &list, (#name)); }
   RDI_BinarySectionFlags_XList;
 #undef X
-  StringJoin join = {.sep = str8_lit("|")};
-  String8 result = str8_list_join(arena, &list, &join);
-  if(result.size == 0) { result = str8_lit("None"); }
+  StringJoin join = {.sep = ("|")};
+  string result = str8_list_join(arena, &list, &join);
+  if(result.size == 0) { result = ("None"); }
   scratch_end(scratch);
   return result;
 }
 
-internal String8
+internal string
 rdi_string_from_type_modifier_flags(Arena *arena, RDI_TypeModifierFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
-#define X(name) if(flags & RDI_TypeModifierFlag_##name) { flags &= ~RDI_TypeModifierFlag_##name; str8_list_push(scratch.arena, &list, str8_lit(#name)); }
+#define X(name) if(flags & RDI_TypeModifierFlag_##name) { flags &= ~RDI_TypeModifierFlag_##name; str8_list_push(scratch.arena, &list, (#name)); }
   RDI_TypeModifierFlags_XList;
 #undef X
-  StringJoin join = {.sep = str8_lit("|")};
-  String8 result = str8_list_join(arena, &list, &join);
-  if(result.size == 0) { result = str8_lit("None"); }
+  StringJoin join = {.sep = ("|")};
+  string result = str8_list_join(arena, &list, &join);
+  if(result.size == 0) { result = ("None"); }
   scratch_end(scratch);
   return result;
 }
 
-internal String8
+internal string
 rdi_string_from_udt_flags(Arena *arena, RDI_UDTFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
-#define X(name) if (flags & RDI_UDTFlag_##name) { flags &= ~RDI_UDTFlag_##name; str8_list_push(scratch.arena, &list, str8_lit(#name)); }
+#define X(name) if (flags & RDI_UDTFlag_##name) { flags &= ~RDI_UDTFlag_##name; str8_list_push(scratch.arena, &list, (#name)); }
   RDI_UDTFlags_XList;
 #undef X
-  StringJoin join = {.sep = str8_lit("|")};
-  String8 result = str8_list_join(arena, &list, &join);
-  if(result.size == 0) { result = str8_lit("None"); }
+  StringJoin join = {.sep = ("|")};
+  string result = str8_list_join(arena, &list, &join);
+  if(result.size == 0) { result = ("None"); }
   scratch_end(scratch);
   return result;
 }
 
-internal String8
+internal string
 rdi_string_from_link_flags(Arena *arena, RDI_LinkFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
-#define X(name) if (flags & RDI_LinkFlag_##name) { flags &= ~RDI_LinkFlag_##name; str8_list_push(scratch.arena, &list, str8_lit(#name)); }
+#define X(name) if (flags & RDI_LinkFlag_##name) { flags &= ~RDI_LinkFlag_##name; str8_list_push(scratch.arena, &list, (#name)); }
   RDI_LinkFlags_XList;
 #undef X
-  StringJoin join = {.sep = str8_lit("|")};
-  String8 result = str8_list_join(arena, &list, &join);
-  if(result.size == 0) { result = str8_lit("None"); }
+  StringJoin join = {.sep = ("|")};
+  string result = str8_list_join(arena, &list, &join);
+  if(result.size == 0) { result = ("None"); }
   scratch_end(scratch);
   return result;
 }
 
-internal String8
-rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, String8 bc)
+internal string
+rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, string bc)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List fmt = {0};
@@ -261,14 +261,14 @@ rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, String8 bc)
     U16 ctrlbits = rdi_eval_op_ctrlbits_table[op];
     U32 imm_size = RDI_DECODEN_FROM_CTRLBITS(ctrlbits);
     
-    String8 imm = {0};
+    string imm = {0};
     cursor += str8_deserial_read_block(bc, cursor, imm_size, &imm);
     if (imm.size != imm_size) {
       str8_list_pushf(scratch.arena, &fmt, "(ERROR: not enough bytes to read immediate)");
       break;
     }
     
-    String8 imm_fmt = {0};
+    string imm_fmt = {0};
     switch (op) {
       case RDI_EvalOp_Stop: goto exit;
       case RDI_EvalOp_Noop: break;
@@ -284,7 +284,7 @@ rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, String8 bc)
         RDI_RegCode reg_code  = Extract8(regread, 0);
         U8          byte_size = Extract8(regread, 1);
         U8          byte_off  = Extract8(regread, 2);
-        String8     reg_str   = rdi_string_from_reg_code(scratch.arena, arch, reg_code);
+        string     reg_str   = rdi_string_from_reg_code(scratch.arena, arch, reg_code);
         imm_fmt = push_str8f(scratch.arena, "%S+%I64u, Size: %u", reg_str, byte_off, byte_size);
       } break;
       case RDI_EvalOp_RegReadDyn: break;
@@ -314,7 +314,7 @@ rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, String8 bc)
       } break;
       case RDI_EvalOp_ConstString: {
         U8      size   = *(U8 *)imm.str;
-        String8 string = {0};
+        string string = {0};
         cursor += str8_deserial_read_block(bc, cursor, size, &string);
         
         imm_fmt = push_str8f(scratch.arena, "(%u) \"%S\"", size, string);
@@ -353,8 +353,8 @@ rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, String8 bc)
         U16 convert = *(U16 *)imm.str;
         U8 in  = Extract8(convert, 0);
         U8 out = Extract8(convert, 1);
-        String8 in_str  = rdi_string_from_eval_type_group(scratch.arena, in);
-        String8 out_str = rdi_string_from_eval_type_group(scratch.arena, out);
+        string in_str  = rdi_string_from_eval_type_group(scratch.arena, in);
+        string out_str = rdi_string_from_eval_type_group(scratch.arena, out);
         imm_fmt = push_str8f(scratch.arena, "in: %S out: %S", in_str, out_str);
       } break;
       case RDI_EvalOp_Pick: {
@@ -376,10 +376,10 @@ rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, String8 bc)
       } break;
       case RDI_EvalOp_CallSiteValue: {
         U32     call_site_bc_size = *(U32 *)imm.str;
-        String8 call_site_bc      = {0};
+        string call_site_bc      = {0};
         cursor += str8_deserial_read_block(bc, cursor, call_site_bc_size, &call_site_bc);
         
-        String8 call_site_str = rdi_string_from_bytecode(scratch.arena, arch, call_site_bc);
+        string call_site_str = rdi_string_from_bytecode(scratch.arena, arch, call_site_bc);
         imm_fmt = push_str8f(scratch.arena, "%S", call_site_str);
       } break;
       case RDI_EvalOp_PartialValue: {
@@ -394,7 +394,7 @@ rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, String8 bc)
       } break;
     }
     
-    String8 op_str = rdi_string_from_eval_op(scratch.arena, op);
+    string op_str = rdi_string_from_eval_op(scratch.arena, op);
     if (imm_fmt.size) {
       str8_list_pushf(scratch.arena, &fmt, "RDI_EvalOp_%S(%S)", op_str, imm_fmt);
     } else {
@@ -403,7 +403,7 @@ rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, String8 bc)
   }
   exit:;
   
-  String8 result = str8_list_join(arena, &fmt, &(StringJoin){.sep = str8_lit(", ")});
+  string result = str8_list_join(arena, &fmt, &(StringJoin){.sep = (", ")});
   
   scratch_end(scratch);
   return result;
@@ -424,12 +424,12 @@ rdi_strings_from_locations(Arena *arena, RDI_Parsed *rdi, RDI_Arch arch, Rng1U64
       block_idx < location_block_range_clamped.max;
       block_idx +=1)
   {
-    String8 qualifier = {0};
-    String8 location_info = {0};
+    string qualifier = {0};
+    string location_info = {0};
     RDI_LocationBlock *block_ptr = &location_block_array[block_idx];
     if(block_ptr->scope_off_first == 0 && block_ptr->scope_off_opl == max_U32)
     {
-      qualifier = str8_lit("*always*");
+      qualifier = ("*always*");
     }
     else
     {
@@ -452,14 +452,14 @@ rdi_strings_from_locations(Arena *arena, RDI_Parsed *rdi, RDI_Arch arch, Rng1U64
         }break;
         case RDI_LocationKind_AddrBytecodeStream:
         {
-          String8 bc     = str8_range(loc_base_ptr + 1, loc_data_opl);
-          String8 bc_str = rdi_string_from_bytecode(scratch.arena, arch, bc);
+          string bc     = str8_range(loc_base_ptr + 1, loc_data_opl);
+          string bc_str = rdi_string_from_bytecode(scratch.arena, arch, bc);
           location_info = push_str8f(scratch.arena, "AddrBytecodeStream(%S)", bc_str);
         }break;
         case RDI_LocationKind_ValBytecodeStream:
         {
-          String8 bc     = str8_range(loc_base_ptr + 1, loc_data_opl);
-          String8 bc_str = rdi_string_from_bytecode(scratch.arena, arch, bc);
+          string bc     = str8_range(loc_base_ptr + 1, loc_data_opl);
+          string bc_str = rdi_string_from_bytecode(scratch.arena, arch, bc);
           location_info = push_str8f(scratch.arena, "ValBytecodeStream(%S)", bc_str);
         }break;
         case RDI_LocationKind_AddrRegPlusU16:
@@ -513,10 +513,10 @@ internal String8List
 rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags flags)
 {
   String8List strings = {0};
-  String8 indent = str8_lit("                                                                                                                                ");
+  string indent = ("                                                                                                                                ");
 #define dump(str)  str8_list_push(arena, &strings, (str))
 #define dumpf(...) str8_list_pushf(arena, &strings, __VA_ARGS__)
-#define DumpSubset(name) if(flags & RDI_DumpSubsetFlag_##name) DeferLoop(dumpf("////////////////////////////////\n//~ %S\n\n%S:\n{", rdi_name_title_from_dump_subset_table[RDI_DumpSubset_##name], rdi_name_lowercase_from_dump_subset_table[RDI_DumpSubset_##name]), dump(str8_lit("}\n\n")))
+#define DumpSubset(name) if(flags & RDI_DumpSubsetFlag_##name) DeferLoop(dumpf("////////////////////////////////\n//~ %S\n\n%S:\n{", rdi_name_title_from_dump_subset_table[RDI_DumpSubset_##name], rdi_name_lowercase_from_dump_subset_table[RDI_DumpSubset_##name]), dump(("}\n\n")))
   
   //////////////////////////////
   //- rjf: dump data sections
@@ -529,7 +529,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
       Temp scratch = scratch_begin(&arena, 1);
       RDI_SectionKind  kind     = (RDI_SectionKind)idx;
       RDI_Section     *section  = &rdi->sections[idx];
-      String8          kind_str = rdi_string_from_data_section_kind(scratch.arena, kind);
+      string          kind_str = rdi_string_from_data_section_kind(scratch.arena, kind);
       dumpf("  {%#08llx  %7u  %7u  %*s} // data_section[%I64u]\n", section->off, section->encoded_size, section->unpacked_size, 24, kind_str.str, idx);
       scratch_end(scratch);
     }
@@ -562,8 +562,8 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
     {
       Temp scratch = scratch_begin(&arena, 1);
       RDI_BinarySection *bin_section = &v[idx];
-      String8 name = str8_from_rdi_string_idx(rdi, bin_section->name_string_idx);
-      String8 flags = rdi_string_from_binary_section_flags(scratch.arena, bin_section->flags);
+      string name = str8_from_rdi_string_idx(rdi, bin_section->name_string_idx);
+      string flags = rdi_string_from_binary_section_flags(scratch.arena, bin_section->flags);
       dumpf("  {  %-16S %-16S 0x%-10I64x 0x%-10I64x 0x%-10I64x 0x%-10I64x  } // binary_section[%I64u]\n", 
             push_str8f(scratch.arena, "'%S'", name),
             push_str8f(scratch.arena, "`%S`", flags),
@@ -746,7 +746,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
         {
           str8_list_pushf(temp.arena, &list, "%#llx", line_map.voffs[voff_idx]);
         }
-        String8 voffs_string = str8_list_join(temp.arena, &list, &(StringJoin){.sep = str8_lit(", ")});
+        string voffs_string = str8_list_join(temp.arena, &list, &(StringJoin){.sep = (", ")});
         dumpf("    %u: (%S)\n", line_map.nums[line_num_idx], voffs_string);
         temp_end(temp);
       }
@@ -766,7 +766,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
     {
       Temp scratch = scratch_begin(&arena, 1);
       RDI_TypeNode *type = &v[idx];
-      String8 type_kind_str = {0};
+      string type_kind_str = {0};
       type_kind_str.str = rdi_string_from_type_kind(type->kind, &type_kind_str.size);
       dumpf("\n  // type[%I64u]\n  {\n", idx);
       dumpf("    kind: %S\n", type_kind_str);
@@ -797,7 +797,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
         {
           str8_list_pushf(scratch.arena, &param_idx_strings, "%u", param_idx_array[param_idx]);
         }
-        String8 param_idx_str = str8_list_join(scratch.arena, &param_idx_strings, &(StringJoin){.pre = str8_lit("["), .sep = str8_lit(", "), .post = str8_lit("]")});
+        string param_idx_str = str8_list_join(scratch.arena, &param_idx_strings, &(StringJoin){.pre = ("["), .sep = (", "), .post = ("]")});
         dumpf("    constructed__params: %S\n", param_idx_str);
         dumpf("    return_type: %u\n", type->constructed.direct_type_idx);
       }
@@ -805,7 +805,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
       {
         U32  param_idx_count = 0;
         U32 *param_idx_array = rdi_idx_run_from_first_count(rdi, type->constructed.param_idx_run_first, type->constructed.count, &param_idx_count);
-        String8 this_type_str = str8_lit("\?\?\?");
+        string this_type_str = ("\?\?\?");
         if(param_idx_count > 0)
         {
           this_type_str = push_str8f(scratch.arena, "%u", param_idx_array[0]);
@@ -817,7 +817,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
         {
           str8_list_pushf(scratch.arena, &param_idx_strings, "%u", param_idx_array[param_idx]);
         }
-        String8 param_idx_str = str8_list_join(scratch.arena, &param_idx_strings, &(StringJoin){.pre = str8_lit("["), .sep = str8_lit(", "), .post = str8_lit("]")});
+        string param_idx_str = str8_list_join(scratch.arena, &param_idx_strings, &(StringJoin){.pre = ("["), .sep = (", "), .post = ("]")});
         dumpf("    constructed__this_type: %S\n", this_type_str);
         dumpf("    constructed__params: %S\n", param_idx_str);
         dumpf("    return_type: %u\n", type->constructed.direct_type_idx);
@@ -891,8 +891,8 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
           for(U32 member_idx = member_lo; member_idx < member_hi; member_idx += 1)
           {
             RDI_Member *member = &all_members[member_idx];
-            String8 kind_str = rdi_string_from_member_kind(scratch.arena, member->kind);
-            String8 name_str = str8_from_rdi_string_idx(rdi, member->name_string_idx);
+            string kind_str = rdi_string_from_member_kind(scratch.arena, member->kind);
+            string name_str = str8_from_rdi_string_idx(rdi, member->name_string_idx);
             dumpf("      '%S': { kind: %S, type: %u, off: %u }\n", name_str, kind_str, member->type_idx, member->off);
           }
           dumpf("    }\n");
@@ -1028,7 +1028,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
       for(RDI_Scope *scope = root, *rec_next = nil; scope != nil; scope = rec_next)
       {
         // rjf: scope list(voff_range) => string
-        String8 voff_range_list_string = {0};
+        string voff_range_list_string = {0};
         {
           U32 voff_range_lo    = ClampTop(scope->voff_range_first, scope_voffs_count);
           U32 voff_range_hi    = ClampTop(scope->voff_range_opl,   scope_voffs_count);
@@ -1040,22 +1040,22 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
           {
             str8_list_pushf(scratch.arena, &list, "[%#llx, %#llx)", voff_ptr[i+0], voff_ptr[i+1]);
           }
-          voff_range_list_string = str8_list_join(arena, &list, &(StringJoin){.sep = str8_lit(", ")});
+          voff_range_list_string = str8_list_join(arena, &list, &(StringJoin){.sep = (", ")});
           scratch_end(scratch);
         }
         
         // rjf: scope procedure -> name
-        String8 procedure_name = str8_from_rdi_string_idx(rdi, rdi_element_from_name_idx(rdi, Procedures, scope->proc_idx)->name_string_idx);
+        string procedure_name = str8_from_rdi_string_idx(rdi, rdi_element_from_name_idx(rdi, Procedures, scope->proc_idx)->name_string_idx);
         if(procedure_name.size == 0)
         {
-          procedure_name = str8_lit("???");
+          procedure_name = ("???");
         }
         
         // rjf: scope inline site -> name
-        String8 inline_site_name = str8_from_rdi_string_idx(rdi, rdi_element_from_name_idx(rdi, InlineSites, scope->inline_site_idx)->name_string_idx);
+        string inline_site_name = str8_from_rdi_string_idx(rdi, rdi_element_from_name_idx(rdi, InlineSites, scope->inline_site_idx)->name_string_idx);
         if(inline_site_name.size == 0)
         {
-          inline_site_name = str8_lit("???");
+          inline_site_name = ("???");
         }
         
         // rjf: dump
@@ -1149,11 +1149,11 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
     {
       RDI_InlineSite *inline_site = &v[idx];
       Temp scratch = scratch_begin(&arena, 1);
-      String8 inline_site_idx = push_str8f(scratch.arena, "inline_site[%u]",      idx);
-      String8 type_idx        = push_str8f(scratch.arena, "type_idx: %u,",       inline_site->type_idx);
-      String8 owner_type_idx  = push_str8f(scratch.arena, "owner_type_idx: %u,", inline_site->owner_type_idx);
-      String8 line_table_idx  = push_str8f(scratch.arena, "line_table_idx: %u,", inline_site->line_table_idx);
-      String8 name            = push_str8f(scratch.arena, "'%S'", str8_from_rdi_string_idx(rdi, inline_site->name_string_idx));
+      string inline_site_idx = push_str8f(scratch.arena, "inline_site[%u]",      idx);
+      string type_idx        = push_str8f(scratch.arena, "type_idx: %u,",       inline_site->type_idx);
+      string owner_type_idx  = push_str8f(scratch.arena, "owner_type_idx: %u,", inline_site->owner_type_idx);
+      string line_table_idx  = push_str8f(scratch.arena, "line_table_idx: %u,", inline_site->line_table_idx);
+      string name            = push_str8f(scratch.arena, "'%S'", str8_from_rdi_string_idx(rdi, inline_site->name_string_idx));
       dumpf("\n  { %-25S %-25S %-25S name: %-64S } // %S",
             type_idx,
             owner_type_idx,
@@ -1187,8 +1187,8 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
         for(;node_ptr < node_opl; node_ptr += 1)
         {
           Temp temp = temp_begin(scratch.arena);
-          String8 str = str8_from_rdi_string_idx(rdi, node_ptr->string_idx);
-          String8 indices = {0};
+          string str = str8_from_rdi_string_idx(rdi, node_ptr->string_idx);
+          string indices = {0};
           if(node_ptr->match_count == 1)
           {
             indices = push_str8f(temp.arena, "%u", node_ptr->match_idx_or_idx_run_first);
@@ -1203,7 +1203,7 @@ rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags fla
               U32 idx = idx_array[idx_i];
               str8_list_pushf(temp.arena, &idx_strings, "%u");
             }
-            indices = str8_list_join(scratch.arena, &idx_strings, &(StringJoin){.sep = str8_lit(", ")});
+            indices = str8_list_join(scratch.arena, &idx_strings, &(StringJoin){.sep = (", ")});
           }
           dumpf("      \"%S\": %S\n", str, indices);
           temp_end(temp);

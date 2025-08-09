@@ -26,7 +26,7 @@ struct LogScope
 typedef struct LogScopeResult LogScopeResult;
 struct LogScopeResult
 {
-  String8 strings[LogMsgKind_COUNT];
+  string strings[LogMsgKind_COUNT];
 };
 
 typedef struct Log Log;
@@ -46,7 +46,7 @@ internal void log_select(Log *log);
 ////////////////////////////////
 //~ rjf: Log Building
 
-internal void log_msg(LogMsgKind kind, String8 string);
+internal void log_msg(LogMsgKind kind, string string);
 internal void log_msgf(LogMsgKind kind, char *fmt, ...);
 #define log_info(s)          log_msg(LogMsgKind_Info, (s))
 #define log_infof(...)       log_msgf(LogMsgKind_Info, __VA_ARGS__)

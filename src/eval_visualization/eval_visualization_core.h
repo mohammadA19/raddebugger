@@ -87,7 +87,7 @@ struct EV_ExpandInfo
   B32 rows_default_expanded;
 };
 
-#define EV_EXPAND_RULE_INFO_FUNCTION_SIG(name) EV_ExpandInfo name(Arena *arena, EV_View *view, String8 filter, E_Expr *expr)
+#define EV_EXPAND_RULE_INFO_FUNCTION_SIG(name) EV_ExpandInfo name(Arena *arena, EV_View *view, string filter, E_Expr *expr)
 #define EV_EXPAND_RULE_INFO_FUNCTION_NAME(name) ev_expand_rule_info__##name
 #define EV_EXPAND_RULE_INFO_FUNCTION_DEF(name) internal EV_EXPAND_RULE_INFO_FUNCTION_SIG(EV_EXPAND_RULE_INFO_FUNCTION_NAME(name))
 typedef EV_EXPAND_RULE_INFO_FUNCTION_SIG(EV_ExpandRuleInfoHookFunctionType);
@@ -95,7 +95,7 @@ typedef EV_EXPAND_RULE_INFO_FUNCTION_SIG(EV_ExpandRuleInfoHookFunctionType);
 typedef struct EV_ExpandRule EV_ExpandRule;
 struct EV_ExpandRule
 {
-  String8 string;
+  string string;
   EV_ExpandRuleInfoHookFunctionType *info;
 };
 
@@ -147,9 +147,9 @@ struct EV_Block
   U64 split_relative_idx;
   
   // rjf: evaluation info
-  String8 string;
+  string string;
   E_Eval eval;
-  String8 filter;
+  string filter;
   E_TypeExpandInfo type_expand_info;
   E_TypeExpandRule *type_expand_rule;
   EV_ExpandInfo viz_expand_info;
@@ -198,7 +198,7 @@ struct EV_Row
   EV_Block *block;
   EV_Key key;
   U64 visual_size;
-  String8 edit_string;
+  string edit_string;
   E_Eval eval;
 };
 
@@ -242,7 +242,7 @@ struct EV_StringParams
   U32 radix;
   U32 min_digits;
   U8 digit_group_separator;
-  String8 filter;
+  string filter;
   B32 limit_strings;
   U64 limit_strings_size;
 };
@@ -305,7 +305,7 @@ internal EV_Key ev_key_make(U64 parent_hash, U64 child_id);
 internal EV_Key ev_key_zero(void);
 internal EV_Key ev_key_root(void);
 internal B32 ev_key_match(EV_Key a, EV_Key b);
-internal U64 ev_hash_from_seed_string(U64 seed, String8 string);
+internal U64 ev_hash_from_seed_string(U64 seed, string string);
 internal U64 ev_hash_from_key(EV_Key key);
 
 ////////////////////////////////
@@ -326,9 +326,9 @@ internal void ev_view_release(EV_View *view);
 //- rjf: lookups / mutations
 internal EV_ExpandNode *ev_expand_node_from_key(EV_View *view, EV_Key key);
 internal B32 ev_expansion_from_key(EV_View *view, EV_Key key);
-internal String8 ev_view_rule_from_key(EV_View *view, EV_Key key);
+internal string ev_view_rule_from_key(EV_View *view, EV_Key key);
 internal void ev_key_set_expansion(EV_View *view, EV_Key parent_key, EV_Key key, B32 expanded);
-internal void ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_string);
+internal void ev_key_set_view_rule(EV_View *view, EV_Key key, string view_rule_string);
 
 ////////////////////////////////
 //~ rjf: View Rule Info Table Building / Selection / Lookups
@@ -336,13 +336,13 @@ internal void ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_
 internal void ev_expand_rule_table_push(Arena *arena, EV_ExpandRuleTable *table, EV_ExpandRule *info);
 #define ev_expand_rule_table_push_new(arena, table, ...) ev_expand_rule_table_push((arena), (table), &(EV_ExpandRule){__VA_ARGS__})
 internal void ev_select_expand_rule_table(EV_ExpandRuleTable *table);
-internal EV_ExpandRule *ev_expand_rule_from_string(String8 string);
+internal EV_ExpandRule *ev_expand_rule_from_string(string string);
 internal EV_ExpandRule *ev_expand_rule_from_type_key(E_TypeKey type_key);
 
 ////////////////////////////////
 //~ rjf: Block Building
 
-internal EV_BlockTree ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root_eval);
+internal EV_BlockTree ev_block_tree_from_eval(Arena *arena, EV_View *view, string filter, E_Eval root_eval);
 internal U64 ev_depth_from_block(EV_Block *block);
 
 ////////////////////////////////
@@ -371,14 +371,14 @@ internal B32 ev_row_is_editable(EV_Row *row);
 //~ rjf: Stringification
 
 //- rjf: leaf stringification
-internal String8 ev_string_from_ascii_value(Arena *arena, U8 val);
-internal String8 ev_string_from_hresult_facility_code(U32 code);
-internal String8 ev_string_from_hresult_code(U32 code);
-internal String8 ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval eval);
-internal String8 ev_escaped_from_raw_string(Arena *arena, String8 raw);
+internal string ev_string_from_ascii_value(Arena *arena, U8 val);
+internal string ev_string_from_hresult_facility_code(U32 code);
+internal string ev_string_from_hresult_code(U32 code);
+internal string ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval eval);
+internal string ev_escaped_from_raw_string(Arena *arena, string raw);
 
 //- rjf: tree stringification iterator
 internal EV_StringIter *ev_string_iter_begin(Arena *arena, E_Eval eval, EV_StringParams *params);
-internal B32 ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string);
+internal B32 ev_string_iter_next(Arena *arena, EV_StringIter *it, string *out_string);
 
 #endif // EVAL_VISUALIZATION_CORE_H

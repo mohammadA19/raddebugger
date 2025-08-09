@@ -55,7 +55,7 @@ tp_worker_main_shared(void *raw_worker)
 }
 
 internal TP_Context * 
-tp_alloc(Arena *arena, U32 worker_count, U32 max_worker_count, String8 name)
+tp_alloc(Arena *arena, U32 worker_count, U32 max_worker_count, string name)
 {
   ProfBeginDynamic("Alloc Thread Pool [Worker Count: %u]", worker_count);
   AssertAlways(worker_count > 0);

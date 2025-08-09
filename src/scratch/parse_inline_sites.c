@@ -42,7 +42,7 @@
 #include "linker/codeview_ext/codeview.c"
 
 internal void
-print_inline_binary_annotations(String8 binary_annots)
+print_inline_binary_annotations(string binary_annots)
 {
   U32 code_offset = 0;
   S32 line_offset = 0;
@@ -102,7 +102,7 @@ print_inline_binary_annotations(String8 binary_annots)
       case CV_InlineBinaryAnnotation_ChangeRangeKind: {
         CV_InlineRangeKind range_kind = 0;
         cursor += cv_decode_inline_annot_u32(binary_annots, cursor, &range_kind);
-        String8 range_kind_str = cv_string_from_inline_range_kind(range_kind);
+        string range_kind_str = cv_string_from_inline_range_kind(range_kind);
         fprintf(stdout, "ChangeRangeKind: %.*s (%u)", str8_varg(range_kind_str), range_kind);
       } break;
       case CV_InlineBinaryAnnotation_ChangeColumnStart: {
@@ -146,8 +146,8 @@ entry_point(CmdLine *cmdl)
 {
   Arena *arena = arena_alloc();
   
-  B32 do_help = cmd_line_has_flag(cmdl, str8_lit("help")) ||
-    cmd_line_has_flag(cmdl, str8_lit("h")) ||
+  B32 do_help = cmd_line_has_flag(cmdl, ("help")) ||
+    cmd_line_has_flag(cmdl, ("h")) ||
   (cmdl->inputs.node_count == 0 && cmdl->options.count == 0);
   if (do_help) {
     fprintf(stdout, 
@@ -161,9 +161,9 @@ entry_point(CmdLine *cmdl)
   
   // -comp_unit
   U64 single_comp_unit_idx = max_U64;
-  B32 single_comp_unit_mode = cmd_line_has_argument(cmdl, str8_lit("comp_unit"));
+  B32 single_comp_unit_mode = cmd_line_has_argument(cmdl, ("comp_unit"));
   if (single_comp_unit_mode) {
-    String8 comp_unit_str = cmd_line_string(cmdl, str8_lit("comp_unit"));
+    string comp_unit_str = cmd_line_string(cmdl, ("comp_unit"));
     if (!try_u64_from_str8_c_rules(comp_unit_str, &single_comp_unit_idx)) {
       fprintf(stderr, "ERROR: unable to parse -comp_unit=%.*s\n", str8_varg(comp_unit_str));
       return;
@@ -172,13 +172,13 @@ entry_point(CmdLine *cmdl)
   
   // -base_addr
   U64 base_addr = 0;
-  String8 base_str = cmd_line_string(cmdl, str8_lit("base_addr"));
+  string base_str = cmd_line_string(cmdl, ("base_addr"));
   try_u64_from_str8_c_rules(base_str, &base_addr);
   
   // -pdb
-  String8 pdb_name;
-  if (cmd_line_has_argument(cmdl, str8_lit("pdb"))) { 
-    pdb_name = cmd_line_string(cmdl, str8_lit("pdb"));
+  string pdb_name;
+  if (cmd_line_has_argument(cmdl, ("pdb"))) { 
+    pdb_name = cmd_line_string(cmdl, ("pdb"));
     if (pdb_name.size == 0) {
       fprintf(stderr, "ERROR: missing -pdb:<path>\n");
       return;
@@ -196,7 +196,7 @@ entry_point(CmdLine *cmdl)
   }
   
   // read PDB from disk
-  String8 pdb_data = os_data_from_file_path(arena, pdb_name);
+  string pdb_data = os_data_from_file_path(arena, pdb_name);
   if (pdb_data.size == 0) {
     fprintf(stderr, "ERROR: unable to load %.*s from disk\n", str8_varg(pdb_name));
     return;
@@ -210,7 +210,7 @@ entry_point(CmdLine *cmdl)
   }
   
   // find dbi
-  String8        dbi_data = msf_data_from_stream(msf, PDB_FixedStream_Dbi);
+  string        dbi_data = msf_data_from_stream(msf, PDB_FixedStream_Dbi);
   PDB_DbiParsed *dbi      = pdb_dbi_from_data(arena, dbi_data);
   if (!dbi) {
     fprintf(stderr, "ERROR: unable to parse DBI\n");
@@ -218,7 +218,7 @@ entry_point(CmdLine *cmdl)
   }
   
   // find info stream
-  String8   info_data = msf_data_from_stream(msf, PDB_FixedStream_Info);
+  string   info_data = msf_data_from_stream(msf, PDB_FixedStream_Info);
   PDB_Info *info      = pdb_info_from_data(arena, info_data);
   if (!info) {
     fprintf(stderr, "ERROR: unable to parse INFO\n");
@@ -233,7 +233,7 @@ entry_point(CmdLine *cmdl)
   
   // find string table
   MSF_StreamNumber strtbl_sn   = named_streams->sn[PDB_NamedStream_StringTable];
-  String8          strtbl_data = msf_data_from_stream(msf, strtbl_sn);
+  string          strtbl_data = msf_data_from_stream(msf, strtbl_sn);
   PDB_Strtbl      *strtbl      = pdb_strtbl_from_data(arena, strtbl_data);
   if (!strtbl) {
     fprintf(stderr, "ERROR: unable to parse string table\n");
@@ -241,18 +241,18 @@ entry_point(CmdLine *cmdl)
   }
   
   // find IPI
-  String8        ipi_data        = msf_data_from_stream(msf, PDB_FixedStream_Ipi);
+  string        ipi_data        = msf_data_from_stream(msf, PDB_FixedStream_Ipi);
   PDB_TpiParsed *ipi             = pdb_tpi_from_data(arena, ipi_data);
-  String8        ipi_leaf_data   = pdb_leaf_data_from_tpi(ipi);
+  string        ipi_leaf_data   = pdb_leaf_data_from_tpi(ipi);
   CV_LeafParsed *ipi_leaf_parsed = cv_leaf_from_data(arena, ipi_leaf_data, ipi->itype_first);
   
   // find sections
   MSF_StreamNumber        section_stream = dbi->dbg_streams[PDB_DbiStream_SECTION_HEADER];
-  String8                 section_data   = msf_data_from_stream(msf, section_stream);
+  string                 section_data   = msf_data_from_stream(msf, section_stream);
   COFF_SectionHeaderArray sections       = pdb_coff_section_array_from_data(arena, section_data);
   
   // find comp units
-  String8            comp_units_data = pdb_data_from_dbi_range(dbi, PDB_DbiRange_ModuleInfo);
+  string            comp_units_data = pdb_data_from_dbi_range(dbi, PDB_DbiRange_ModuleInfo);
   PDB_CompUnitArray *comp_units      = pdb_comp_unit_array_from_data(arena, comp_units_data);
   
   if (single_comp_unit_mode) {
@@ -266,7 +266,7 @@ entry_point(CmdLine *cmdl)
   // print run info
   DateTime now_time_universal = os_now_universal_time();
   DateTime now_time_local     = os_local_time_from_universal_time(&now_time_universal);
-  String8  now_time_str       = push_date_time_string(arena, &now_time_local);
+  string  now_time_str       = push_date_time_string(arena, &now_time_local);
   fprintf(stdout, "Time: %.*s\n", str8_varg(now_time_str));
   fprintf(stdout, "File: %.*s\n", str8_varg(pdb_name));
   fprintf(stdout, "Size: %llu (bytes)\n", pdb_data.size);
@@ -286,14 +286,14 @@ entry_point(CmdLine *cmdl)
   
   for (; comp_unit_idx < comp_unit_count; ++comp_unit_idx) {
     PDB_CompUnit *comp_unit     = comp_units->units[comp_unit_idx];
-    String8       symbol_data   = pdb_data_from_unit_range(msf, comp_unit, PDB_DbiCompUnitRange_Symbols);
-    String8       c13_data      = pdb_data_from_unit_range(msf, comp_unit, PDB_DbiCompUnitRange_C13);
+    string       symbol_data   = pdb_data_from_unit_range(msf, comp_unit, PDB_DbiCompUnitRange_Symbols);
+    string       c13_data      = pdb_data_from_unit_range(msf, comp_unit, PDB_DbiCompUnitRange_C13);
     
     // parse $$
     CV_DebugS debug_s = cv_parse_debug_s_c13(arena, c13_data);
     
     // find $$FILE_CKSMS
-    String8 file_chksms = cv_file_chksms_from_debug_s(debug_s);
+    string file_chksms = cv_file_chksms_from_debug_s(debug_s);
     
     // parse $$INLINEE_LINES 
     String8List                  ss_inlinee_lines     = cv_sub_section_from_debug_s(debug_s, CV_C13SubSectionKind_InlineeLines);
@@ -316,7 +316,7 @@ entry_point(CmdLine *cmdl)
       
       U64 c13_lines_idx = 0;
       for (String8Node *raw_lines_node = raw_lines_list.first; raw_lines_node != 0; raw_lines_node = raw_lines_node->next) {
-        String8               raw_lines   = raw_lines_node->string;
+        string               raw_lines   = raw_lines_node->string;
         CV_C13LinesHeaderList parsed_list = cv_c13_lines_from_sub_sections(arena, raw_lines, rng_1u64(0, raw_lines.size));
         
         for(CV_C13LinesHeaderNode *header_node = parsed_list.first; header_node != 0; header_node = header_node->next) {
@@ -341,7 +341,7 @@ entry_point(CmdLine *cmdl)
     
     U64     scope_level = 0;
     U64     parent_voff = 0;
-    String8 parent_name = str8_lit("???");
+    string parent_name = ("???");
     
     CV_SymbolList symbol_list = {0};
     cv_parse_symbol_sub_section(arena, &symbol_list, 0, symbol_data, CV_SymbolAlign);
@@ -365,17 +365,17 @@ entry_point(CmdLine *cmdl)
           scope_level -= 1;
           if (scope_level == 0) {
             parent_voff = 0;
-            parent_name = str8_lit("???");
+            parent_name = ("???");
           }
         }
       } else if (symbol.kind == CV_SymKind_INLINESITE) {
         CV_SymInlineSite            *inline_site         = rec_raw;
-        String8                      binary_annots       = str8_skip(symbol.data, sizeof(*inline_site));
+        string                      binary_annots       = str8_skip(symbol.data, sizeof(*inline_site));
         CV_C13InlineeLinesParsed    *inlinee_parsed      = cv_c13_inlinee_lines_accel_find(inlinee_lines_accel, inline_site->inlinee);
         CV_InlineBinaryAnnotsParsed  binary_annots_parse = cv_c13_parse_inline_binary_annots(arena, parent_voff, inlinee_parsed, binary_annots);
         
         
-        String8 inlinee_name = str8_lit("???");
+        string inlinee_name = ("???");
         if (ipi->itype_first <= inline_site->inlinee && inline_site->inlinee < ipi->itype_opl) {
           CV_RecRange inlinee_rec = ipi_leaf_parsed->leaf_ranges.ranges[inline_site->inlinee - ipi->itype_first];
           void *leaf_raw = ipi_leaf_data.str + inlinee_rec.off + sizeof(CV_LeafKind);
@@ -390,8 +390,8 @@ entry_point(CmdLine *cmdl)
         }
         
         
-        String8 first_ln  = str8_lit("???");
-        String8 file_off  = str8_lit("???");
+        string first_ln  = ("???");
+        string file_off  = ("???");
         if (inlinee_parsed) {
           first_ln  = push_str8f(arena, "%u", inlinee_parsed->first_source_ln);
           file_off  = push_str8f(arena, "0x%X", inlinee_parsed->file_off);
@@ -417,7 +417,7 @@ entry_point(CmdLine *cmdl)
           CV_C13Checksum checksum = {0};
           str8_deserial_read_struct(file_chksms, lines.file_off, &checksum);
           
-          String8 file_name = pdb_strtbl_string_from_off(strtbl, checksum.name_off);
+          string file_name = pdb_strtbl_string_from_off(strtbl, checksum.name_off);
           
           fprintf(stdout, "\t\t%.*s\n", str8_varg(file_name));
           for (U64 line_idx = 0; line_idx < lines.line_count; ++line_idx) {

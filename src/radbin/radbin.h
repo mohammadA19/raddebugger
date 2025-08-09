@@ -23,8 +23,8 @@ struct RB_File
 {
   RB_FileFormat format;
   RB_FileFormatFlags format_flags;
-  String8 path;
-  String8 data;
+  string path;
+  string data;
 };
 
 typedef struct RB_FileNode RB_FileNode;

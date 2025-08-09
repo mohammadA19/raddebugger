@@ -44,11 +44,11 @@ typedef struct RC_Context
 {
   ExecutableImageKind        image;
   RC_Driver        driver;
-  String8          image_name;
-  String8          image_data;
-  String8          debug_name;
-  String8          debug_data;
-  String8          out_name;
+  string          image_name;
+  string          image_data;
+  string          debug_name;
+  string          debug_data;
+  string          out_name;
   RC_Flags         flags;
   Guid             guid;
   ELF_GnuDebugLink debug_link;
@@ -59,7 +59,7 @@ typedef struct RC_Context
 
 internal RC_Context  rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl);
 internal String8List rc_run(Arena *arena, RC_Context *rc);
-internal String8     rc_rdi_from_cmd_line(Arena *arena, CmdLine *cmdl);
+internal string     rc_rdi_from_cmd_line(Arena *arena, CmdLine *cmdl);
 internal void        rc_main(CmdLine *cmdl);
 
 #endif // RADCON_H

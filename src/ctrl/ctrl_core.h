@@ -38,10 +38,10 @@ struct CTRL_UserBreakpoint
   CTRL_UserBreakpointKind kind;
   CTRL_UserBreakpointFlags flags;
   U64 id;
-  String8 string;
+  string string;
   TxtPt pt;
   U64 size;
-  String8 condition;
+  string condition;
 };
 
 typedef struct CTRL_UserBreakpointNode CTRL_UserBreakpointNode;
@@ -111,7 +111,7 @@ struct CTRL_Entity
   U64 stack_base;
   U64 timestamp;
   CTRL_UserBreakpointFlags bp_flags;
-  String8 string;
+  string string;
 };
 
 typedef struct CTRL_EntityNode CTRL_EntityNode;
@@ -365,13 +365,13 @@ struct CTRL_Msg
   B32 env_inherit;
   B32 debug_subprocesses;
   U64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64];
-  String8 path;
+  string path;
   String8List entry_points;
   String8List cmd_line_string_list;
   String8List env_string_list;
-  String8 stdout_path;
-  String8 stderr_path;
-  String8 stdin_path;
+  string stdout_path;
+  string stderr_path;
+  string stdin_path;
   CTRL_TrapList traps;
   CTRL_UserBreakpointList user_bps;
 };
@@ -481,7 +481,7 @@ struct CTRL_Event
   U32 exception_code;
   U32 rgba;
   CTRL_UserBreakpointFlags bp_flags;
-  String8 string;
+  string string;
 };
 
 typedef struct CTRL_EventNode CTRL_EventNode;
@@ -566,7 +566,7 @@ struct CTRL_ProcessMemoryCache
 typedef struct CTRL_ProcessMemorySlice CTRL_ProcessMemorySlice;
 struct CTRL_ProcessMemorySlice
 {
-  String8 data;
+  string data;
   U64 *byte_bad_flags;
   U64 *byte_changed_flags;
   B32 stale;
@@ -672,9 +672,9 @@ struct CTRL_ModuleImageInfoCacheNode
   U64 pdatas_count;
   U64 entry_point_voff;
   Rng1U64 tls_vaddr_range;
-  String8 initial_debug_info_path;
+  string initial_debug_info_path;
   Rng1U64 raddbg_section_voff_range;
-  String8 raddbg_data;
+  string raddbg_data;
 };
 
 typedef struct CTRL_ModuleImageInfoCacheSlot CTRL_ModuleImageInfoCacheSlot;
@@ -711,7 +711,7 @@ struct CTRL_DbgDirNode
   CTRL_DbgDirNode *next;
   CTRL_DbgDirNode *prev;
   CTRL_DbgDirNode *parent;
-  String8 name;
+  string name;
   U64 search_count;
   U64 child_count;
   U64 module_direct_count;
@@ -816,7 +816,7 @@ struct CTRL_State
   
   // rjf: ctrl thread state
   U64 ctrl_thread_run_state;
-  String8 ctrl_thread_log_path;
+  string ctrl_thread_log_path;
   OS_Handle ctrl_thread;
   Log *ctrl_thread_log;
   OS_Handle ctrl_thread_entity_ctx_rw_mutex;
@@ -878,13 +878,13 @@ thread_static CTRL_EntityCtxLookupAccel *ctrl_entity_ctx_lookup_accel = 0;
 ////////////////////////////////
 //~ rjf: Basic Type Functions
 
-internal U64 ctrl_hash_from_string(String8 string);
+internal U64 ctrl_hash_from_string(string string);
 internal U64 ctrl_hash_from_handle(CTRL_Handle handle);
 internal CTRL_EventCause ctrl_event_cause_from_dmn_event_kind(DMN_EventKind event_kind);
 internal CTRL_ExceptionKind ctrl_exception_kind_from_dmn(DMN_ExceptionKind kind);
-internal String8 ctrl_string_from_event_kind(CTRL_EventKind kind);
-internal String8 ctrl_string_from_msg_kind(CTRL_MsgKind kind);
-internal CTRL_EntityKind ctrl_entity_kind_from_string(String8 string);
+internal string ctrl_string_from_event_kind(CTRL_EventKind kind);
+internal string ctrl_string_from_msg_kind(CTRL_MsgKind kind);
+internal CTRL_EntityKind ctrl_entity_kind_from_string(string string);
 internal DMN_TrapFlags ctrl_dmn_trap_flags_from_user_breakpoint_flags(CTRL_UserBreakpointFlags flags);
 internal CTRL_UserBreakpointFlags ctrl_user_breakpoint_flags_from_dmn_trap_flags(DMN_TrapFlags flags);
 
@@ -896,8 +896,8 @@ internal CTRL_Handle ctrl_handle_make(CTRL_MachineID machine_id, DMN_Handle dmn_
 internal B32 ctrl_handle_match(CTRL_Handle a, CTRL_Handle b);
 internal void ctrl_handle_list_push(Arena *arena, CTRL_HandleList *list, CTRL_Handle *pair);
 internal CTRL_HandleList ctrl_handle_list_copy(Arena *arena, CTRL_HandleList *src);
-internal String8 ctrl_string_from_handle(Arena *arena, CTRL_Handle handle);
-internal CTRL_Handle ctrl_handle_from_string(String8 string);
+internal string ctrl_string_from_handle(Arena *arena, CTRL_Handle handle);
+internal CTRL_Handle ctrl_handle_from_string(string string);
 
 ////////////////////////////////
 //~ rjf: Trap Type Functions
@@ -923,8 +923,8 @@ internal CTRL_MsgList ctrl_msg_list_deep_copy(Arena *arena, CTRL_MsgList *src);
 internal void ctrl_msg_list_concat_in_place(CTRL_MsgList *dst, CTRL_MsgList *src);
 
 //- rjf: serialization
-internal String8 ctrl_serialized_string_from_msg_list(Arena *arena, CTRL_MsgList *msgs);
-internal CTRL_MsgList ctrl_msg_list_from_serialized_string(Arena *arena, String8 string);
+internal string ctrl_serialized_string_from_msg_list(Arena *arena, CTRL_MsgList *msgs);
+internal CTRL_MsgList ctrl_msg_list_from_serialized_string(Arena *arena, string string);
 
 ////////////////////////////////
 //~ rjf: Event Type Functions
@@ -934,8 +934,8 @@ internal CTRL_Event *ctrl_event_list_push(Arena *arena, CTRL_EventList *list);
 internal void ctrl_event_list_concat_in_place(CTRL_EventList *dst, CTRL_EventList *to_push);
 
 //- rjf: serialization
-internal String8 ctrl_serialized_string_from_event(Arena *arena, CTRL_Event *event, U64 max);
-internal CTRL_Event ctrl_event_from_serialized_string(Arena *arena, String8 string);
+internal string ctrl_serialized_string_from_event(Arena *arena, CTRL_Event *event, U64 max);
+internal CTRL_Event ctrl_event_from_serialized_string(Arena *arena, string string);
 
 ////////////////////////////////
 //~ rjf: Entity Type Functions
@@ -974,15 +974,15 @@ internal void ctrl_entity_ctx_rw_store_release(CTRL_EntityCtxRWStore *store);
 
 //- rjf: string allocation/deletion
 internal U64 ctrl_name_bucket_num_from_string_size(U64 size);
-internal String8 ctrl_entity_string_alloc(CTRL_EntityCtxRWStore *store, String8 string);
-internal void ctrl_entity_string_release(CTRL_EntityCtxRWStore *store, String8 string);
+internal string ctrl_entity_string_alloc(CTRL_EntityCtxRWStore *store, string string);
+internal void ctrl_entity_string_release(CTRL_EntityCtxRWStore *store, string string);
 
 //- rjf: entity construction/deletion
 internal CTRL_Entity *ctrl_entity_alloc(CTRL_EntityCtxRWStore *store, CTRL_Entity *parent, CTRL_EntityKind kind, Arch arch, CTRL_Handle handle, U64 id);
 internal void ctrl_entity_release(CTRL_EntityCtxRWStore *store, CTRL_Entity *entity);
 
 //- rjf: entity equipment
-internal void ctrl_entity_equip_string(CTRL_EntityCtxRWStore *store, CTRL_Entity *entity, String8 string);
+internal void ctrl_entity_equip_string(CTRL_EntityCtxRWStore *store, CTRL_Entity *entity, string string);
 
 //- rjf: accelerated entity context lookups
 internal CTRL_EntityCtxLookupAccel *ctrl_thread_entity_ctx_lookup_accel(void);
@@ -1043,8 +1043,8 @@ internal B32 ctrl_thread_write_reg_block(CTRL_Handle thread, void *block);
 internal PE_IntelPdata *ctrl_intel_pdata_from_module_voff(Arena *arena, CTRL_Handle module_handle, U64 voff);
 internal U64 ctrl_entry_point_voff_from_module(CTRL_Handle module_handle);
 internal Rng1U64 ctrl_tls_vaddr_range_from_module(CTRL_Handle module_handle);
-internal String8 ctrl_initial_debug_info_path_from_module(Arena *arena, CTRL_Handle module_handle);
-internal String8 ctrl_raddbg_data_from_module(Arena *arena, CTRL_Handle module_handle);
+internal string ctrl_initial_debug_info_path_from_module(Arena *arena, CTRL_Handle module_handle);
+internal string ctrl_raddbg_data_from_module(Arena *arena, CTRL_Handle module_handle);
 
 ////////////////////////////////
 //~ rjf: Unwinding Functions
@@ -1110,7 +1110,7 @@ internal void ctrl_thread__append_resolved_process_user_bp_traps(Arena *arena, C
 internal void ctrl_thread__append_program_defined_bp_traps(Arena *arena, CTRL_Entity *bp, DMN_TrapChunkList *traps_out);
 
 //- rjf: module lifetime open/close work
-internal void ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_range, String8 path);
+internal void ctrl_thread__module_open(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_range, string path);
 internal void ctrl_thread__module_close(CTRL_Handle process, CTRL_Handle module, Rng1U64 vaddr_range);
 
 //- rjf: attached process running/event gathering

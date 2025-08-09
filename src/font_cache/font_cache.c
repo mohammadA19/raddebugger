@@ -11,7 +11,7 @@
 #endif
 
 internal U128
-fnt_hash_from_string(String8 string)
+fnt_hash_from_string(string string)
 {
   union
   {
@@ -24,7 +24,7 @@ fnt_hash_from_string(String8 string)
 }
 
 internal U64
-fnt_little_hash_from_string(U64 seed, String8 string)
+fnt_little_hash_from_string(U64 seed, string string)
 {
   U64 result = XXH3_64bits_withSeed(string.str, string.size, seed);
   return result;
@@ -112,7 +112,7 @@ fnt_fp_metrics_from_tag(FNT_Tag tag)
 }
 
 internal FNT_Tag
-fnt_tag_from_path(String8 path)
+fnt_tag_from_path(string path)
 {
   ProfBeginFunction();
   
@@ -165,14 +165,14 @@ fnt_tag_from_path(String8 path)
 }
 
 internal FNT_Tag
-fnt_tag_from_static_data_string(String8 *data_ptr)
+fnt_tag_from_static_data_string(string *data_ptr)
 {
   ProfBeginFunction();
   
   //- rjf: produce tag hash of ptr
   FNT_Tag result = {0};
   {
-    U128 hash = fnt_hash_from_string(str8((U8 *)&data_ptr, sizeof(String8 *)));
+    U128 hash = fnt_hash_from_string(str8((U8 *)&data_ptr, sizeof(string *)));
     MemoryCopy(&result, &hash, sizeof(result));
     result.u64[1] &= ~bit64;
   }
@@ -202,7 +202,7 @@ fnt_tag_from_static_data_string(String8 *data_ptr)
     new_node->tag = result;
     new_node->handle = fp_font_open_from_static_data_string(data_ptr);
     new_node->metrics = fp_metrics_from_font(new_node->handle);
-    new_node->path = str8_lit("");
+    new_node->path = ("");
     SLLQueuePush_N(slot->first, slot->last, new_node, hash_next);
   }
   
@@ -211,7 +211,7 @@ fnt_tag_from_static_data_string(String8 *data_ptr)
   return result;
 }
 
-internal String8
+internal string
 fnt_path_from_tag(FNT_Tag tag)
 {
   //- rjf: tag -> slot index
@@ -231,7 +231,7 @@ fnt_path_from_tag(FNT_Tag tag)
   }
   
   //- rjf: existing node -> path
-  String8 result = {0};
+  string result = {0};
   if(existing_node != 0)
   {
     result = existing_node->path;
@@ -574,7 +574,7 @@ fnt_hash2style_from_tag_size_flags(FNT_Tag tag, F32 size, FNT_RasterFlags flags)
 }
 
 internal FNT_Run
-fnt_run_from_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, String8 string)
+fnt_run_from_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, string string)
 {
   ProfBeginFunction();
   
@@ -658,7 +658,7 @@ fnt_run_from_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, F
       }
       
       //- rjf: do not need another codepoint? -> grab substring, bump piece start idx
-      String8 piece_substring = str8_substr(string, r1u64(piece_substring_start_idx, piece_substring_end_idx));
+      string piece_substring = str8_substr(string, r1u64(piece_substring_start_idx, piece_substring_end_idx));
       piece_substring_start_idx = idx;
       piece_substring_end_idx = idx;
       
@@ -667,7 +667,7 @@ fnt_run_from_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, F
       if(is_tab)
       {
         run_is_cacheable = 0;
-        piece_substring = str8_lit(" ");
+        piece_substring = (" ");
       }
       
       //- rjf: piece substring -> raster cache info
@@ -903,7 +903,7 @@ fnt_run_from_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, F
 }
 
 internal String8List
-fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, String8 string, F32 max)
+fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, string string, F32 max)
 {
   String8List list = {0};
   {
@@ -963,7 +963,7 @@ fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT_Tag font, F
       // rjf: illegal mid-word split -> wrap mid-word
       if(is_next_illegal && word_start_off_px == 0)
       {
-        String8 line = str8(string.str + line_start_off_bytes, off_bytes - line_start_off_bytes);
+        string line = str8(string.str + line_start_off_bytes, off_bytes - line_start_off_bytes);
         line = str8_skip_chop_whitespace(line);
         if(line.size != 0)
         {
@@ -981,7 +981,7 @@ fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT_Tag font, F
       // rjf: illegal word end -> wrap line
       else if(is_first_space_after_word && (is_illegal || is_end))
       {
-        String8 line = str8(string.str + line_start_off_bytes, line_end_off_bytes - line_start_off_bytes);
+        string line = str8(string.str + line_start_off_bytes, line_end_off_bytes - line_start_off_bytes);
         line = str8_skip_chop_whitespace(line);
         if(line.size != 0)
         {
@@ -1016,7 +1016,7 @@ fnt_wrapped_string_lines_from_font_size_string_max(Arena *arena, FNT_Tag font, F
 }
 
 internal Vec2F32
-fnt_dim_from_tag_size_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8 string)
+fnt_dim_from_tag_size_string(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, string string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -1046,12 +1046,12 @@ fnt_dim_from_tag_size_string_list(FNT_Tag tag, F32 size, F32 base_align_px, F32 
 internal F32
 fnt_column_size_from_tag_size(FNT_Tag tag, F32 size)
 {
-  F32 result = fnt_dim_from_tag_size_string(tag, size, 0, 0, str8_lit("H")).x;
+  F32 result = fnt_dim_from_tag_size_string(tag, size, 0, 0, ("H")).x;
   return result;
 }
 
 internal U64
-fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, String8 string, F32 p)
+fnt_char_pos_from_tag_size_string_p(FNT_Tag tag, F32 size, F32 base_align_px, F32 tab_size_px, string string, F32 p)
 {
   Temp scratch = scratch_begin(0, 0);
   U64 best_offset_bytes = 0;

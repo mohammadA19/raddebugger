@@ -5,7 +5,7 @@
 //~ rjf: MSF Parser Functions
 
 internal MSF_RawStreamTable *
-msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
+msf_raw_stream_table_from_data(Arena *arena, string msf_data)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -227,10 +227,10 @@ msf_raw_stream_table_from_data(Arena *arena, String8 msf_data)
   return result;
 }
 
-internal String8
-msf_data_from_stream_number(Arena *arena, String8 msf_data, MSF_RawStreamTable *st, MSF_StreamNumber sn)
+internal string
+msf_data_from_stream_number(Arena *arena, string msf_data, MSF_RawStreamTable *st, MSF_StreamNumber sn)
 {
-  String8 result = {0};
+  string result = {0};
   if(sn < st->stream_count)
   {
     MSF_RawStream stream = st->streams[sn];
@@ -272,7 +272,7 @@ msf_data_from_stream_number(Arena *arena, String8 msf_data, MSF_RawStreamTable *
 }
 
 internal MSF_Parsed *
-msf_parsed_from_data(Arena *arena, String8 msf_data)
+msf_parsed_from_data(Arena *arena, string msf_data)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -280,7 +280,7 @@ msf_parsed_from_data(Arena *arena, String8 msf_data)
   
   MSF_RawStreamTable *st = msf_raw_stream_table_from_data(scratch.arena, msf_data);
   if (st) {
-    String8 *streams = push_array_no_zero(arena, String8, st->stream_count);
+    string *streams = push_array_no_zero(arena, string, st->stream_count);
     for (MSF_StreamNumber sn = 0; sn < st->stream_count; ++sn) {
       streams[sn] = msf_data_from_stream_number(arena, msf_data, st, sn);
     }
@@ -296,10 +296,10 @@ msf_parsed_from_data(Arena *arena, String8 msf_data)
   return result;
 }
 
-internal String8
+internal string
 msf_data_from_stream(MSF_Parsed *msf, MSF_StreamNumber sn)
 {
-  String8 result = {0};
+  string result = {0};
   if(sn < msf->stream_count)
   {
     result = msf->streams[sn];

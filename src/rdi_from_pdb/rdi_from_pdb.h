@@ -10,10 +10,10 @@
 typedef struct P2R_ConvertParams P2R_ConvertParams;
 struct P2R_ConvertParams
 {
-  String8 input_pdb_name;
-  String8 input_pdb_data;
-  String8 input_exe_name;
-  String8 input_exe_data;
+  string input_pdb_name;
+  string input_pdb_data;
+  string input_exe_name;
+  string input_exe_data;
   RDIM_SubsetFlags subset_flags;
   B32 deterministic;
 };
@@ -28,8 +28,8 @@ struct P2R_TPIHashParseIn
 {
   PDB_Strtbl *strtbl;
   PDB_TpiParsed *tpi;
-  String8 hash_data;
-  String8 aux_data;
+  string hash_data;
+  string aux_data;
 };
 
 //- rjf: tpi leaves parsing
@@ -37,7 +37,7 @@ struct P2R_TPIHashParseIn
 typedef struct P2R_TPILeafParseIn P2R_TPILeafParseIn;
 struct P2R_TPILeafParseIn
 {
-  String8 leaf_data;
+  string leaf_data;
   CV_TypeId itype_first;
 };
 
@@ -46,7 +46,7 @@ struct P2R_TPILeafParseIn
 typedef struct P2R_EXEHashIn P2R_EXEHashIn;
 struct P2R_EXEHashIn
 {
-  String8 exe_data;
+  string exe_data;
 };
 
 //- rjf: symbol stream parsing
@@ -54,7 +54,7 @@ struct P2R_EXEHashIn
 typedef struct P2R_SymbolStreamParseIn P2R_SymbolStreamParseIn;
 struct P2R_SymbolStreamParseIn
 {
-  String8 data;
+  string data;
 };
 
 //- rjf: c13 line info stream parsing
@@ -62,8 +62,8 @@ struct P2R_SymbolStreamParseIn
 typedef struct P2R_C13StreamParseIn P2R_C13StreamParseIn;
 struct P2R_C13StreamParseIn
 {
-  String8 data;
-  String8 strtbl;
+  string data;
+  string strtbl;
   COFF_SectionHeaderArray coff_sections;
 };
 
@@ -72,7 +72,7 @@ struct P2R_C13StreamParseIn
 typedef struct P2R_CompUnitParseIn P2R_CompUnitParseIn;
 struct P2R_CompUnitParseIn
 {
-  String8 data;
+  string data;
 };
 
 //- rjf: comp unit contribution table parsing
@@ -80,7 +80,7 @@ struct P2R_CompUnitParseIn
 typedef struct P2R_CompUnitContributionsParseIn P2R_CompUnitContributionsParseIn;
 struct P2R_CompUnitContributionsParseIn
 {
-  String8 data;
+  string data;
   COFF_SectionHeaderArray coff_sections;
 };
 
@@ -109,7 +109,7 @@ struct P2R_LinkNameNode
 {
   P2R_LinkNameNode *next;
   U64 voff;
-  String8 name;
+  string name;
 };
 
 typedef struct P2R_LinkNameMap P2R_LinkNameMap;
@@ -280,7 +280,7 @@ global ASYNC_Root *p2r_async_root = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 p2r_end_of_cplusplus_container_name(String8 str);
+internal U64 p2r_end_of_cplusplus_container_name(string str);
 internal U64 p2r_hash_from_voff(U64 voff);
 
 ////////////////////////////////

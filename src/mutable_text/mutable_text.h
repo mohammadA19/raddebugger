@@ -37,7 +37,7 @@ typedef struct MTX_Op MTX_Op;
 struct MTX_Op
 {
   Rng1U64 range;
-  String8 replace;
+  string replace;
 };
 
 typedef struct MTX_MutThread MTX_MutThread;

@@ -15,15 +15,15 @@ lnk_timer_end(LNK_TimerType timer)
   g_timers[timer].end = os_now_microseconds();
 }
 
-internal String8
+internal string
 lnk_string_from_timer_type(LNK_TimerType type)
 {
   switch (type) {
-  case LNK_Timer_Image: return str8_lit("Image");
-  case LNK_Timer_Pdb:   return str8_lit("PDB");
-  case LNK_Timer_Rdi:   return str8_lit("RDI");
-  case LNK_Timer_Lib:   return str8_lit("Lib");
-  case LNK_Timer_Debug: return str8_lit("Debug");
+  case LNK_Timer_Image: return ("Image");
+  case LNK_Timer_Pdb:   return ("PDB");
+  case LNK_Timer_Rdi:   return ("RDI");
+  case LNK_Timer_Lib:   return ("Lib");
+  case LNK_Timer_Debug: return ("Debug");
   default: InvalidPath;
   }
   return str8_zero();

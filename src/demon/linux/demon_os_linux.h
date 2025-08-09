@@ -183,7 +183,7 @@ struct DEMON_LNX_MapsEntry
   U32 dev_major;
   U32 dev_minor;
   U64 inode;
-  String8 pathname;
+  string pathname;
   DEMON_LNX_MapsEntryType type;
   pid_t stack_tid;
 };
@@ -195,7 +195,7 @@ internal DEMON_LNX_ThreadExt*  demon_lnx_thread_ext(DEMON_Entity *entity);
 
 internal B32                   demon_lnx_attach_pid(Arena *arena, pid_t pid, DEMON_LNX_AttachNode **new_node);
 
-internal String8               demon_lnx_executable_path_from_pid(Arena *arena, pid_t pid);
+internal string               demon_lnx_executable_path_from_pid(Arena *arena, pid_t pid);
 internal int                   demon_lnx_open_memory_fd_for_pid(pid_t pid);
 
 internal Arch          demon_lnx_arch_from_pid(pid_t pid);
@@ -206,15 +206,15 @@ internal DEMON_LNX_ModuleNode* demon_lnx_module_list_from_process(Arena *arena, 
 
 internal U64     demon_lnx_read_memory(int memory_fd, void *dst, U64 src, U64 size);
 internal B32     demon_lnx_write_memory(int memory_fd, U64 dst, void *src, U64 size);
-internal String8 demon_lnx_read_memory_str(Arena *arena, int memory_fd, U64 address);
+internal string demon_lnx_read_memory_str(Arena *arena, int memory_fd, U64 address);
 
 internal void demon_lnx_regs_x64_from_usr_regs_x64(SYMS_RegX64 *dst, DEMON_LNX_UserRegsX64 *src);
 internal void demon_lnx_usr_regs_x64_from_regs_x64(DEMON_LNX_UserRegsX64 *dst, SYMS_RegX64 *src);
 
-internal String8 demon_lnx_read_int_string(int fd);
+internal string demon_lnx_read_int_string(int fd);
 internal B32     demon_lnx_read_expect(int fd, char expect);
 internal int     demon_lnx_read_whitespace(int fd);
-internal String8 demon_lnx_read_string(Arena *arena, int fd);
+internal string demon_lnx_read_string(Arena *arena, int fd);
 
 internal int demon_lnx_open_maps(pid_t pid);
 internal B32 demon_lnx_next_map(Arena *arena, int maps, DEMON_LNX_MapsEntry *entry_out);

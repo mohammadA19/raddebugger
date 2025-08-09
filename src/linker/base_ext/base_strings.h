@@ -13,5 +13,5 @@ internal String8Node * str8_list_push_many(Arena *arena, String8List *list, U64 
 // TODO: remove
 internal String8Node * str8_list_pop_front(String8List *list);
 
-internal U64 hash_from_str8(String8 string);
+internal U64 hash_from_str8(string string);
 

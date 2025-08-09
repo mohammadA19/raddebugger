@@ -9,7 +9,7 @@
 
 typedef struct PDB_Strtbl
 {
-  String8 data;
+  string data;
   U32 bucket_count;
   U32 strblock_min;
   U32 strblock_max;
@@ -36,7 +36,7 @@ typedef struct PDB_NamedStreamTable
 typedef struct PDB_InfoNode
 {
   struct PDB_InfoNode *next;
-  String8 string;
+  string string;
   MSF_StreamNumber sn;
 } PDB_InfoNode;
 
@@ -82,7 +82,7 @@ typedef enum
 
 typedef struct PDB_DbiParsed
 {
-  String8 data;
+  string data;
   COFF_MachineType machine_type;
   MSF_StreamNumber gsi_sn;
   MSF_StreamNumber psi_sn;
@@ -96,8 +96,8 @@ typedef struct PDB_CompUnit
   MSF_StreamNumber sn;
   U32 range_off[(U32)(PDB_DbiCompUnitRange_COUNT) + 1];
   
-  String8 obj_name;
-  String8 group_name;
+  string obj_name;
+  string group_name;
 } PDB_CompUnit;
 
 typedef struct PDB_CompUnitNode
@@ -131,7 +131,7 @@ typedef struct PDB_CompUnitContributionArray
 
 typedef struct PDB_TpiParsed
 {
-  String8 data;
+  string data;
   
   // leaf info
   U64 leaf_first;
@@ -162,8 +162,8 @@ typedef struct PDB_TpiHashBlock
 
 typedef struct PDB_TpiHashParsed
 {
-  String8 data;
-  String8 aux_data;
+  string data;
+  string aux_data;
   
   PDB_TpiHashBlock **buckets;
   U32 bucket_count;
@@ -187,66 +187,66 @@ typedef struct PDB_GsiParsed
 ////////////////////////////////
 //~ PDB Parser Functions
 
-internal PDB_Info*            pdb_info_from_data(Arena *arena, String8 pdb_info_data);
+internal PDB_Info*            pdb_info_from_data(Arena *arena, string pdb_info_data);
 internal PDB_NamedStreamTable*pdb_named_stream_table_from_info(Arena *arena, PDB_Info *info);
-internal PDB_Strtbl*          pdb_strtbl_from_data(Arena *arena, String8 strtbl_data);
+internal PDB_Strtbl*          pdb_strtbl_from_data(Arena *arena, string strtbl_data);
 
-internal PDB_DbiParsed*       pdb_dbi_from_data(Arena *arena, String8 dbi_data);
-internal PDB_TpiParsed*       pdb_tpi_from_data(Arena *arena, String8 tpi_data);
+internal PDB_DbiParsed*       pdb_dbi_from_data(Arena *arena, string dbi_data);
+internal PDB_TpiParsed*       pdb_tpi_from_data(Arena *arena, string tpi_data);
 internal PDB_TpiHashParsed*   pdb_tpi_hash_from_data(Arena *arena,
                                                      PDB_Strtbl *strtbl,
                                                      PDB_TpiParsed *tpi,
-                                                     String8 tpi_hash_data,
-                                                     String8 tpi_hash_aux_data);
-internal PDB_GsiParsed*       pdb_gsi_from_data(Arena *arena, String8 gsi_data);
-internal U64                  pdb_gsi_symbol_from_string(PDB_GsiParsed *gsi, String8 symbol_data, String8 string);
+                                                     string tpi_hash_data,
+                                                     string tpi_hash_aux_data);
+internal PDB_GsiParsed*       pdb_gsi_from_data(Arena *arena, string gsi_data);
+internal U64                  pdb_gsi_symbol_from_string(PDB_GsiParsed *gsi, string symbol_data, string string);
 
-internal COFF_SectionHeaderArray pdb_coff_section_array_from_data(Arena *arena, String8 section_data);
+internal COFF_SectionHeaderArray pdb_coff_section_array_from_data(Arena *arena, string section_data);
 
 internal PDB_CompUnitArray*   pdb_comp_unit_array_from_data(Arena *arena,
-                                                            String8 module_info_data);
+                                                            string module_info_data);
 
 internal PDB_CompUnitContributionArray*
-pdb_comp_unit_contribution_array_from_data(Arena *arena, String8 seccontrib_data,
+pdb_comp_unit_contribution_array_from_data(Arena *arena, string seccontrib_data,
                                            COFF_SectionHeaderArray sections);
 
 ////////////////////////////////
 //~ PDB Dbi Functions
 
-internal String8              pdb_data_from_dbi_range(PDB_DbiParsed *dbi, PDB_DbiRange range);
-internal String8              pdb_data_from_unit_range(MSF_Parsed *msf, PDB_CompUnit *unit,
+internal string              pdb_data_from_dbi_range(PDB_DbiParsed *dbi, PDB_DbiRange range);
+internal string              pdb_data_from_unit_range(MSF_Parsed *msf, PDB_CompUnit *unit,
                                                        PDB_DbiCompUnitRange range);
 
 ////////////////////////////////
 //~ PDB Tpi Functions
 
-internal String8              pdb_leaf_data_from_tpi(PDB_TpiParsed *tpi);
+internal string              pdb_leaf_data_from_tpi(PDB_TpiParsed *tpi);
 
 internal CV_TypeIdArray       pdb_tpi_itypes_from_name(Arena *arena,
                                                        PDB_TpiHashParsed *tpi_hash,
                                                        CV_LeafParsed *tpi_leaf,
-                                                       String8 name,
+                                                       string name,
                                                        B32 compare_unique_name,
                                                        U32 output_cap);
 
 internal CV_TypeId            pdb_tpi_first_itype_from_name(PDB_TpiHashParsed *tpi_hash,
                                                             CV_LeafParsed *tpi_leaf,
-                                                            String8 name,
+                                                            string name,
                                                             B32 compare_unique_name);
 
 ////////////////////////////////
 //~ PDB Strtbl Functions
 
-internal String8              pdb_strtbl_string_from_off(PDB_Strtbl *strtbl, U32 off);
-internal String8              pdb_strtbl_string_from_index(PDB_Strtbl *strtbl,
+internal string              pdb_strtbl_string_from_off(PDB_Strtbl *strtbl, U32 off);
+internal string              pdb_strtbl_string_from_index(PDB_Strtbl *strtbl,
                                                            PDB_StringIndex idx);
-internal U32                  pdb_strtbl_off_from_string(PDB_Strtbl *strtbl, String8 string);
+internal U32                  pdb_strtbl_off_from_string(PDB_Strtbl *strtbl, string string);
 
 ////////////////////////////////
 //~ rjf: Thin Lookup Fast Paths
 
-internal B32 pdb_has_symbol_ref(String8 msf_data, String8List symbol_list, MSF_RawStreamTable *st);
-internal B32 pdb_has_file_ref(String8 msf_data, String8List file_list, MSF_RawStreamTable *st);
-internal B32 pdb_has_symbol_or_file_ref(String8 msf_data, String8List symbol_list, String8List file_list);
+internal B32 pdb_has_symbol_ref(string msf_data, String8List symbol_list, MSF_RawStreamTable *st);
+internal B32 pdb_has_file_ref(string msf_data, String8List file_list, MSF_RawStreamTable *st);
+internal B32 pdb_has_symbol_or_file_ref(string msf_data, String8List symbol_list, String8List file_list);
 
 #endif // PDB_PARSE_H

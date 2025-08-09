@@ -16,7 +16,7 @@ typedef String8List LNK_InputLibList;
 
 typedef struct LNK_InputImport
 {
-  String8         coff_import;
+  string         coff_import;
   U64             input_idx;
   struct LNK_Lib *lib;
 } LNK_InputImport;
@@ -39,9 +39,9 @@ typedef struct LNK_InputObj
   struct LNK_InputObj *next;
   B32                  is_thin;
   B32                  has_disk_read_failed;
-  String8              dedup_id;
-  String8              path;
-  String8              data;
+  string              dedup_id;
+  string              path;
+  string              data;
   struct LNK_Lib      *lib;
   U64                  input_idx;
 } LNK_InputObj;
@@ -57,7 +57,7 @@ typedef struct LNK_InputObjList
 
 internal void lnk_error_input_obj(LNK_ErrorCode code, LNK_InputObj *input, char *fmt, ...);
 
-internal String8 lnk_string_from_input_source(LNK_InputSourceType input_source);
+internal string lnk_string_from_input_source(LNK_InputSourceType input_source);
 
 internal void             lnk_input_obj_list_push_node(LNK_InputObjList *list, LNK_InputObj *node);
 internal LNK_InputObj *   lnk_input_obj_list_push(Arena *arena, LNK_InputObjList *list);

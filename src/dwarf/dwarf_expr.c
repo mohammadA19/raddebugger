@@ -9,7 +9,7 @@ dw_expr__analyze_fast(void *base, Rng1U64 range, U64 text_section_base)
 {
   DW_SimpleLoc result = {DW_SimpleLocKind_Empty};
   
-  String8 expr_data = str8((U8*)data+range.min, (U8*)data+range.max);
+  string expr_data = str8((U8*)data+range.min, (U8*)data+range.max);
   
   U8 op = 0;
   if (str8_deserial_read_struct(expr_data, 0, &op)) {
@@ -191,7 +191,7 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
   DW_ExprAnalysisTask *finished_tasks   = 0;
   
   // convert range input to string
-  String8 in_data = str8((U8*)in_base + in_range.min, in_range.max - in_range.min);
+  string in_data = str8((U8*)in_base + in_range.min, in_range.max - in_range.min);
   
   // put input task onto the list
   {
@@ -212,7 +212,7 @@ dw_expr__analyze_details(void *in_base, Rng1U64 in_range, DW_ExprMachineCallConf
       break;
     }
     
-    String8  task_data  = task->data;
+    string  task_data  = task->data;
     U8      *task_base  = task_data.str;
     Rng1U64  task_range = rng_1u64(0, task_data.size);
     
@@ -1112,7 +1112,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
           U16 p = 0;
           step_cursor += dw_based_range_read(base, range, step_cursor, 2, &p);
           if (config->call.func != 0) {
-            String8 sub_data = config->call.func(config->call.user_ptr, p);
+            string sub_data = config->call.func(config->call.user_ptr, p);
             dw_expr__call_push(scratch.arena, &call_stack, sub_data.str, sub_data.size);
           } else {
             stashed_loc.kind = DW_SimpleLocKind_Fail;
@@ -1126,7 +1126,7 @@ dw_expr__eval(Arena *arena_optional, void *expr_base, Rng1U64 expr_range, DW_Exp
           U32 p = 0;
           step_cursor += dw_based_range_read(base, range, step_cursor, 4, &p);
           if (config->call.func != 0) {
-            String8 sub_data = config->call.func(config->call.user_ptr, p);
+            string sub_data = config->call.func(config->call.user_ptr, p);
             dw_expr__call_push(scratch.arena, &call_stack, sub_data.str, sub_data.size);
           } else {
             stashed_loc.kind = DW_SimpleLocKind_Fail;

@@ -27,27 +27,27 @@ pe_slot_count_from_unwind_op_code(PE_UnwindOpCode opcode)
 
 read_only struct
 {
-  String8             string;
+  string             string;
   PE_WindowsSubsystem type;
 } g_pe_subsystem_map[] = {
-  { str8_lit_comp(""),                         PE_WindowsSubsystem_UNKNOWN                  },
-  { str8_lit_comp("native"),                   PE_WindowsSubsystem_NATIVE                   },
-  { str8_lit_comp("windows"),                  PE_WindowsSubsystem_WINDOWS_GUI              },
-  { str8_lit_comp("console"),                  PE_WindowsSubsystem_WINDOWS_CUI              },
-  { str8_lit_comp("os2_cui"),                  PE_WindowsSubsystem_OS2_CUI                  },
-  { str8_lit_comp("posix"),                    PE_WindowsSubsystem_POSIX_CUI                },
-  { str8_lit_comp("native_windows"),           PE_WindowsSubsystem_NATIVE_WINDOWS           },
-  { str8_lit_comp("windows_ce_gui"),           PE_WindowsSubsystem_WINDOWS_CE_GUI           },
-  { str8_lit_comp("efi_application"),          PE_WindowsSubsystem_EFI_APPLICATION          },
-  { str8_lit_comp("efi_boot_service_driver"),  PE_WindowsSubsystem_EFI_BOOT_SERVICE_DRIVER  },
-  { str8_lit_comp("efi_runtime_driver"),       PE_WindowsSubsystem_EFI_RUNTIME_DRIVER       },
-  { str8_lit_comp("efi_rom"),                  PE_WindowsSubsystem_EFI_ROM                  },
-  { str8_lit_comp("xbox"),                     PE_WindowsSubsystem_XBOX                     },
-  { str8_lit_comp("windows_boot_application"), PE_WindowsSubsystem_WINDOWS_BOOT_APPLICATION },
+  { (""),                         PE_WindowsSubsystem_UNKNOWN                  },
+  { ("native"),                   PE_WindowsSubsystem_NATIVE                   },
+  { ("windows"),                  PE_WindowsSubsystem_WINDOWS_GUI              },
+  { ("console"),                  PE_WindowsSubsystem_WINDOWS_CUI              },
+  { ("os2_cui"),                  PE_WindowsSubsystem_OS2_CUI                  },
+  { ("posix"),                    PE_WindowsSubsystem_POSIX_CUI                },
+  { ("native_windows"),           PE_WindowsSubsystem_NATIVE_WINDOWS           },
+  { ("windows_ce_gui"),           PE_WindowsSubsystem_WINDOWS_CE_GUI           },
+  { ("efi_application"),          PE_WindowsSubsystem_EFI_APPLICATION          },
+  { ("efi_boot_service_driver"),  PE_WindowsSubsystem_EFI_BOOT_SERVICE_DRIVER  },
+  { ("efi_runtime_driver"),       PE_WindowsSubsystem_EFI_RUNTIME_DRIVER       },
+  { ("efi_rom"),                  PE_WindowsSubsystem_EFI_ROM                  },
+  { ("xbox"),                     PE_WindowsSubsystem_XBOX                     },
+  { ("windows_boot_application"), PE_WindowsSubsystem_WINDOWS_BOOT_APPLICATION },
 };
 StaticAssert(ArrayCount(g_pe_subsystem_map) == PE_WindowsSubsystem_COUNT, g_pe_subsystem_map_count_check);
 
-internal String8
+internal string
 pe_string_from_subsystem(PE_WindowsSubsystem subsystem)
 {
   for (U64 i = 0; i < ArrayCount(g_pe_subsystem_map); i += 1) {
@@ -58,135 +58,135 @@ pe_string_from_subsystem(PE_WindowsSubsystem subsystem)
   return str8(0,0);
 }
 
-internal String8
+internal string
 pe_string_from_unwind_gpr_x64(PE_UnwindGprRegX64 x)
 {
   switch (x) {
-    case PE_UnwindGprRegX64_RAX: return str8_lit("RCX");
-    case PE_UnwindGprRegX64_RCX: return str8_lit("RCX");
-    case PE_UnwindGprRegX64_RDX: return str8_lit("RDX");
-    case PE_UnwindGprRegX64_RBX: return str8_lit("RBX");
-    case PE_UnwindGprRegX64_RSP: return str8_lit("RSP");
-    case PE_UnwindGprRegX64_RBP: return str8_lit("RBP");
-    case PE_UnwindGprRegX64_RSI: return str8_lit("RSI");
-    case PE_UnwindGprRegX64_RDI: return str8_lit("RDI");
-    case PE_UnwindGprRegX64_R8:  return str8_lit("R8");
-    case PE_UnwindGprRegX64_R9:  return str8_lit("R9");
-    case PE_UnwindGprRegX64_R10: return str8_lit("R10");
-    case PE_UnwindGprRegX64_R11: return str8_lit("R11");
-    case PE_UnwindGprRegX64_R12: return str8_lit("R12");
-    case PE_UnwindGprRegX64_R13: return str8_lit("R13");
-    case PE_UnwindGprRegX64_R14: return str8_lit("R14");
-    case PE_UnwindGprRegX64_R15: return str8_lit("R15");
+    case PE_UnwindGprRegX64_RAX: return ("RCX");
+    case PE_UnwindGprRegX64_RCX: return ("RCX");
+    case PE_UnwindGprRegX64_RDX: return ("RDX");
+    case PE_UnwindGprRegX64_RBX: return ("RBX");
+    case PE_UnwindGprRegX64_RSP: return ("RSP");
+    case PE_UnwindGprRegX64_RBP: return ("RBP");
+    case PE_UnwindGprRegX64_RSI: return ("RSI");
+    case PE_UnwindGprRegX64_RDI: return ("RDI");
+    case PE_UnwindGprRegX64_R8:  return ("R8");
+    case PE_UnwindGprRegX64_R9:  return ("R9");
+    case PE_UnwindGprRegX64_R10: return ("R10");
+    case PE_UnwindGprRegX64_R11: return ("R11");
+    case PE_UnwindGprRegX64_R12: return ("R12");
+    case PE_UnwindGprRegX64_R13: return ("R13");
+    case PE_UnwindGprRegX64_R14: return ("R14");
+    case PE_UnwindGprRegX64_R15: return ("R15");
     default: InvalidPath;
   }
   return str8_zero();
 }
 
-internal String8
+internal string
 pe_string_from_data_directory_index(PE_DataDirectoryIndex x)
 {
   switch (x) {
-    case PE_DataDirectoryIndex_EXPORT:         return str8_lit("Export");
-    case PE_DataDirectoryIndex_IMPORT:         return str8_lit("Import");
-    case PE_DataDirectoryIndex_RESOURCES:      return str8_lit("Resources");
-    case PE_DataDirectoryIndex_EXCEPTIONS:     return str8_lit("Exceptions");
-    case PE_DataDirectoryIndex_CERT:           return str8_lit("Cert");
-    case PE_DataDirectoryIndex_BASE_RELOC:     return str8_lit("BaseReloc");
-    case PE_DataDirectoryIndex_DEBUG:          return str8_lit("Debug");
-    case PE_DataDirectoryIndex_ARCH:           return str8_lit("Arch");
-    case PE_DataDirectoryIndex_GLOBAL_PTR:     return str8_lit("GlobalPtr");
-    case PE_DataDirectoryIndex_TLS:            return str8_lit("TLS");
-    case PE_DataDirectoryIndex_LOAD_CONFIG:    return str8_lit("LoadConfig");
-    case PE_DataDirectoryIndex_BOUND_IMPORT:   return str8_lit("BoundImport");
-    case PE_DataDirectoryIndex_IMPORT_ADDR:    return str8_lit("ImportAddr");
-    case PE_DataDirectoryIndex_DELAY_IMPORT:   return str8_lit("DelayImport");
-    case PE_DataDirectoryIndex_COM_DESCRIPTOR: return str8_lit("COM Descriptor");
-    case PE_DataDirectoryIndex_RESERVED:       return str8_lit("Reserved");
+    case PE_DataDirectoryIndex_EXPORT:         return ("Export");
+    case PE_DataDirectoryIndex_IMPORT:         return ("Import");
+    case PE_DataDirectoryIndex_RESOURCES:      return ("Resources");
+    case PE_DataDirectoryIndex_EXCEPTIONS:     return ("Exceptions");
+    case PE_DataDirectoryIndex_CERT:           return ("Cert");
+    case PE_DataDirectoryIndex_BASE_RELOC:     return ("BaseReloc");
+    case PE_DataDirectoryIndex_DEBUG:          return ("Debug");
+    case PE_DataDirectoryIndex_ARCH:           return ("Arch");
+    case PE_DataDirectoryIndex_GLOBAL_PTR:     return ("GlobalPtr");
+    case PE_DataDirectoryIndex_TLS:            return ("TLS");
+    case PE_DataDirectoryIndex_LOAD_CONFIG:    return ("LoadConfig");
+    case PE_DataDirectoryIndex_BOUND_IMPORT:   return ("BoundImport");
+    case PE_DataDirectoryIndex_IMPORT_ADDR:    return ("ImportAddr");
+    case PE_DataDirectoryIndex_DELAY_IMPORT:   return ("DelayImport");
+    case PE_DataDirectoryIndex_COM_DESCRIPTOR: return ("COM Descriptor");
+    case PE_DataDirectoryIndex_RESERVED:       return ("Reserved");
     default: InvalidPath;
   }
   return str8_zero();
 }
 
-internal String8
+internal string
 pe_string_from_debug_directory_type(PE_DebugDirectoryType x)
 {
   switch (x) {
-    case PE_DebugDirectoryType_UNKNOWN:               return str8_lit("UNKNOWN");
-    case PE_DebugDirectoryType_COFF:                  return str8_lit("COFF");
-    case PE_DebugDirectoryType_CODEVIEW:              return str8_lit("CODEVIEW");
-    case PE_DebugDirectoryType_FPO:                   return str8_lit("FPO");
-    case PE_DebugDirectoryType_MISC:                  return str8_lit("MISC");
-    case PE_DebugDirectoryType_EXCEPTION:             return str8_lit("EXCEPTION");
-    case PE_DebugDirectoryType_FIXUP:                 return str8_lit("FIXUP");
-    case PE_DebugDirectoryType_OMAP_TO_SRC:           return str8_lit("OMAP_TO_SRC");
-    case PE_DebugDirectoryType_OMAP_FROM_SRC:         return str8_lit("OMAP_FROM_SRC");
-    case PE_DebugDirectoryType_BORLAND:               return str8_lit("BORLAND");
-    case PE_DebugDirectoryType_RESERVED10:            return str8_lit("RESERVED10");
-    case PE_DebugDirectoryType_CLSID:                 return str8_lit("CLSID");
-    case PE_DebugDirectoryType_VC_FEATURE:            return str8_lit("VC_FEATURE");
-    case PE_DebugDirectoryType_COFF_GROUP:            return str8_lit("COFF_GROUP");
-    case PE_DebugDirectoryType_ILTCG:                 return str8_lit("ILTCG");
-    case PE_DebugDirectoryType_MPX:                   return str8_lit("MPX");
-    case PE_DebugDirectoryType_REPRO:                 return str8_lit("REPRO");
-    case PE_DebugDirectoryType_EX_DLLCHARACTERISTICS: return str8_lit("EX_DLLCHARACTERISTICS");
-    case PE_DebugDirectoryType_COUNT:                 return str8_lit("COUNT");
+    case PE_DebugDirectoryType_UNKNOWN:               return ("UNKNOWN");
+    case PE_DebugDirectoryType_COFF:                  return ("COFF");
+    case PE_DebugDirectoryType_CODEVIEW:              return ("CODEVIEW");
+    case PE_DebugDirectoryType_FPO:                   return ("FPO");
+    case PE_DebugDirectoryType_MISC:                  return ("MISC");
+    case PE_DebugDirectoryType_EXCEPTION:             return ("EXCEPTION");
+    case PE_DebugDirectoryType_FIXUP:                 return ("FIXUP");
+    case PE_DebugDirectoryType_OMAP_TO_SRC:           return ("OMAP_TO_SRC");
+    case PE_DebugDirectoryType_OMAP_FROM_SRC:         return ("OMAP_FROM_SRC");
+    case PE_DebugDirectoryType_BORLAND:               return ("BORLAND");
+    case PE_DebugDirectoryType_RESERVED10:            return ("RESERVED10");
+    case PE_DebugDirectoryType_CLSID:                 return ("CLSID");
+    case PE_DebugDirectoryType_VC_FEATURE:            return ("VC_FEATURE");
+    case PE_DebugDirectoryType_COFF_GROUP:            return ("COFF_GROUP");
+    case PE_DebugDirectoryType_ILTCG:                 return ("ILTCG");
+    case PE_DebugDirectoryType_MPX:                   return ("MPX");
+    case PE_DebugDirectoryType_REPRO:                 return ("REPRO");
+    case PE_DebugDirectoryType_EX_DLLCHARACTERISTICS: return ("EX_DLLCHARACTERISTICS");
+    case PE_DebugDirectoryType_COUNT:                 return ("COUNT");
   }
   return str8_zero();
 }
 
-internal String8
+internal string
 pe_string_from_fpo_type(PE_FPOType x)
 {
   switch (x) {
-    case PE_FPOType_FPO:   return str8_lit("FPO");
-    case PE_FPOType_TRAP:  return str8_lit("TRAP");
-    case PE_FPOType_TSS:   return str8_lit("TSS");
-    case PE_FPOType_NOFPO: return str8_lit("NOFPO");
+    case PE_FPOType_FPO:   return ("FPO");
+    case PE_FPOType_TRAP:  return ("TRAP");
+    case PE_FPOType_TSS:   return ("TSS");
+    case PE_FPOType_NOFPO: return ("NOFPO");
   }
   return str8_zero();
 }
 
-internal String8
+internal string
 pe_string_from_misc_type(PE_DebugMiscType x)
 {
   switch (x) {
     case PE_DebugMiscType_NULL:     break;
-    case PE_DebugMiscType_EXE_NAME: return str8_lit("EXE_NAME");
+    case PE_DebugMiscType_EXE_NAME: return ("EXE_NAME");
   }
   return str8_zero();
 }
 
-internal String8
+internal string
 pe_resource_kind_to_string(PE_ResourceKind x)
 {
-  String8 result = str8_zero();
+  string result = str8_zero();
   switch (x) {
-    case PE_ResourceKind_ACCELERATOR:  result = str8_lit("Accelerator");     break;
-    case PE_ResourceKind_ANICURSOR:    result = str8_lit("Animated Cursor"); break;
-    case PE_ResourceKind_ANIICON:      result = str8_lit("Animated Icon");   break;
-    case PE_ResourceKind_BITMAP:       result = str8_lit("Bitmap");          break;
-    case PE_ResourceKind_CURSOR:       result = str8_lit("Cursor");          break;
-    case PE_ResourceKind_DIALOG:       result = str8_lit("Dialog");          break;
-    case PE_ResourceKind_FONT:         result = str8_lit("Font");            break;
-    case PE_ResourceKind_FONTDIR:      result = str8_lit("Font Directory");  break;
-    case PE_ResourceKind_GROUP_CURSOR: result = str8_lit("Cursor Group");    break;
-    case PE_ResourceKind_GROUP_ICON:   result = str8_lit("Icon Group");      break;
-    case PE_ResourceKind_HTML:         result = str8_lit("HTML");            break;
-    case PE_ResourceKind_ICON:         result = str8_lit("Icon");            break;
-    case PE_ResourceKind_MANIFEST:     result = str8_lit("Manifest");        break;
-    case PE_ResourceKind_MENU:         result = str8_lit("Menu");            break;
-    case PE_ResourceKind_MESSAGETABLE: result = str8_lit("Message Table");   break;
-    case PE_ResourceKind_PLUGPLAY:     result = str8_lit("Plug Play");       break;
-    case PE_ResourceKind_RCDATA:       result = str8_lit("RC Data");         break;
-    case PE_ResourceKind_STRING:       result = str8_lit("String");          break;
-    case PE_ResourceKind_VERSION:      result = str8_lit("Version Info");    break;
-    case PE_ResourceKind_VXD:          result = str8_lit("VXD");             break;
+    case PE_ResourceKind_ACCELERATOR:  result = ("Accelerator");     break;
+    case PE_ResourceKind_ANICURSOR:    result = ("Animated Cursor"); break;
+    case PE_ResourceKind_ANIICON:      result = ("Animated Icon");   break;
+    case PE_ResourceKind_BITMAP:       result = ("Bitmap");          break;
+    case PE_ResourceKind_CURSOR:       result = ("Cursor");          break;
+    case PE_ResourceKind_DIALOG:       result = ("Dialog");          break;
+    case PE_ResourceKind_FONT:         result = ("Font");            break;
+    case PE_ResourceKind_FONTDIR:      result = ("Font Directory");  break;
+    case PE_ResourceKind_GROUP_CURSOR: result = ("Cursor Group");    break;
+    case PE_ResourceKind_GROUP_ICON:   result = ("Icon Group");      break;
+    case PE_ResourceKind_HTML:         result = ("HTML");            break;
+    case PE_ResourceKind_ICON:         result = ("Icon");            break;
+    case PE_ResourceKind_MANIFEST:     result = ("Manifest");        break;
+    case PE_ResourceKind_MENU:         result = ("Menu");            break;
+    case PE_ResourceKind_MESSAGETABLE: result = ("Message Table");   break;
+    case PE_ResourceKind_PLUGPLAY:     result = ("Plug Play");       break;
+    case PE_ResourceKind_RCDATA:       result = ("RC Data");         break;
+    case PE_ResourceKind_STRING:       result = ("String");          break;
+    case PE_ResourceKind_VERSION:      result = ("Version Info");    break;
+    case PE_ResourceKind_VXD:          result = ("VXD");             break;
   }
   return result;
 }
 
-internal String8
+internal string
 pe_string_from_fpo_flags(Arena *arena, PE_FPOFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -200,12 +200,12 @@ pe_string_from_fpo_flags(Arena *arena, PE_FPOFlags flags)
   if (flags & PE_FPOFlags_RESERVED) {
     str8_list_pushf(scratch.arena, &l, "RESERVED");
   }
-  String8 result = str8_list_join(arena, &l, &(StringJoin){.sep=str8_lit(" ")});
+  string result = str8_list_join(arena, &l, &(StringJoin){.sep=(" ")});
   scratch_end(scratch);
   return result;
 }
 
-internal String8
+internal string
 pe_string_from_global_flags(Arena *arena, PE_GlobalFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -305,11 +305,11 @@ pe_string_from_global_flags(Arena *arena, PE_GlobalFlags flags)
     str8_list_pushf(scratch.arena, &l, "DISABLE_PROTDLLS");
   }
   
-  String8 result = str8_list_join(arena, &l, &(StringJoin){.sep=str8_lit(" ")});
+  string result = str8_list_join(arena, &l, &(StringJoin){.sep=(" ")});
   return result;
 }
 
-internal String8
+internal string
 pe_string_from_load_config_guard_flags(Arena *arena, PE_LoadConfigGuardFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -346,12 +346,12 @@ pe_string_from_load_config_guard_flags(Arena *arena, PE_LoadConfigGuardFlags fla
     str8_list_pushf(scratch.arena, &l, "EH_CONTINUATION_TABLE_PRESENT");
   }
   
-  String8 result = str8_list_join(arena, &l, &(StringJoin){.sep = str8_lit(" ")});
+  string result = str8_list_join(arena, &l, &(StringJoin){.sep = (" ")});
   scratch_end(scratch);
   return result;
 }
 
-internal String8
+internal string
 pe_string_from_dll_characteristics(Arena *arena, PE_DllCharacteristics dll_chars)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -389,13 +389,13 @@ pe_string_from_dll_characteristics(Arena *arena, PE_DllCharacteristics dll_chars
   if (dll_chars & PE_DllCharacteristic_TERMINAL_SERVER_AWARE) {
     str8_list_pushf(scratch.arena, &l, "Terminal Server Aware");
   }
-  String8 result = str8_list_join(arena, &l, &(StringJoin){.sep=str8_lit(", ")});
+  string result = str8_list_join(arena, &l, &(StringJoin){.sep=(", ")});
   scratch_end(scratch);
   return result;
 }
 
 internal PE_WindowsSubsystem
-pe_subsystem_from_string(String8 string)
+pe_subsystem_from_string(string string)
 {
   for (U64 i = 0; i < ArrayCount(g_pe_subsystem_map); i += 1) {
     if (str8_match(g_pe_subsystem_map[i].string, string, StringMatchFlag_CaseInsensitive)) {
@@ -409,7 +409,7 @@ pe_subsystem_from_string(String8 string)
 //~ rjf: Parser Functions
 
 internal B32
-pe_check_magic(String8 data)
+pe_check_magic(string data)
 {
   B32 is_pe = 0;
   PE_DosHeader dos_header = {0};
@@ -423,7 +423,7 @@ pe_check_magic(String8 data)
 }
 
 internal PE_BinInfo
-pe_bin_info_from_data(Arena *arena, String8 data)
+pe_bin_info_from_data(Arena *arena, string data)
 {
   PE_BinInfo info = {0};
   B32 valid = 1;
@@ -652,7 +652,7 @@ pe_bin_info_from_data(Arena *arena, String8 data)
 }
 
 internal PE_DataDirectory *
-pe_data_directory_from_idx(String8 file_data, PE_BinInfo pe, PE_DataDirectoryIndex dir_idx)
+pe_data_directory_from_idx(string file_data, PE_BinInfo pe, PE_DataDirectoryIndex dir_idx)
 {
   PE_DataDirectory *result = 0;
   if (dir_idx < pe.data_dir_count) {
@@ -662,7 +662,7 @@ pe_data_directory_from_idx(String8 file_data, PE_BinInfo pe, PE_DataDirectoryInd
 }
 
 internal PE_DebugInfoList
-pe_debug_info_list_from_raw_debug_dir(Arena *arena, String8 raw_image, String8 raw_debug_dir)
+pe_debug_info_list_from_raw_debug_dir(Arena *arena, string raw_image, string raw_debug_dir)
 {
   PE_DebugInfoList result = {0};
   PE_DebugDirectory *debug_entry     = str8_deserial_get_raw_ptr(raw_debug_dir, 0, sizeof(*debug_entry));
@@ -687,7 +687,7 @@ pe_debug_info_list_from_raw_debug_dir(Arena *arena, String8 raw_image, String8 r
             U64 cv_read_size = str8_deserial_read_struct(raw_image, entry->foff, &cv);
             if(cv_read_size == sizeof(cv))
             {
-              String8 path = {0};
+              string path = {0};
               str8_deserial_read_cstr(raw_image, entry->foff+sizeof(cv), &path);
               n->v.cv_pdb20_header = cv;
               n->v.path = path;
@@ -699,7 +699,7 @@ pe_debug_info_list_from_raw_debug_dir(Arena *arena, String8 raw_image, String8 r
             U64 cv_read_size = str8_deserial_read_struct(raw_image, entry->foff, &cv);
             if(cv_read_size == sizeof(cv))
             {
-              String8 path = {0};
+              string path = {0};
               str8_deserial_read_cstr(raw_image, entry->foff+sizeof(cv), &path);
               n->v.cv_pdb70_header = cv;
               n->v.path = path;
@@ -711,7 +711,7 @@ pe_debug_info_list_from_raw_debug_dir(Arena *arena, String8 raw_image, String8 r
             U64 cv_read_size = str8_deserial_read_struct(raw_image, entry->foff, &cv);
             if(cv_read_size == sizeof(cv))
             {
-              String8 path = {0};
+              string path = {0};
               str8_deserial_read_cstr(raw_image, entry->foff+sizeof(cv), &path);
               n->v.cv_rdi_header = cv;
               n->v.path = path;
@@ -729,7 +729,7 @@ pe_debug_info_list_from_raw_debug_dir(Arena *arena, String8 raw_image, String8 r
 //~ rjf: Helpers
 
 internal U64
-pe_pdata_off_from_voff__binary_search_x8664(String8 raw_pdata, U64 voff)
+pe_pdata_off_from_voff__binary_search_x8664(string raw_pdata, U64 voff)
 {
   U64 result = 0;
   
@@ -784,10 +784,10 @@ pe_pdata_off_from_voff__binary_search_x8664(String8 raw_pdata, U64 voff)
 }
 
 internal U64
-pe_foff_from_voff(String8 data, PE_BinInfo *bin, U64 voff)
+pe_foff_from_voff(string data, PE_BinInfo *bin, U64 voff)
 {
   U64                 foff              = 0;
-  String8             raw_section_table = str8_substr(data, bin->section_table_range);
+  string             raw_section_table = str8_substr(data, bin->section_table_range);
   COFF_SectionHeader *section_table     = (COFF_SectionHeader *)raw_section_table.str;
   for(U64 sect_idx = 0; sect_idx < bin->section_count; sect_idx += 1)
   {
@@ -805,7 +805,7 @@ pe_foff_from_voff(String8 data, PE_BinInfo *bin, U64 voff)
 }
 
 internal PE_BaseRelocBlockList
-pe_base_reloc_block_list_from_data(Arena *arena, String8 raw_base_relocs)
+pe_base_reloc_block_list_from_data(Arena *arena, string raw_base_relocs)
 {
   PE_BaseRelocBlockList list = {0};
   for(U64 off = 0; off < raw_base_relocs.size;)
@@ -843,7 +843,7 @@ pe_base_reloc_block_list_from_data(Arena *arena, String8 raw_base_relocs)
 }
 
 internal Rng1U64
-pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo *bin, U64 base_vaddr)
+pe_tls_rng_from_bin_base_vaddr(string data, PE_BinInfo *bin, U64 base_vaddr)
 {
   U64 result_addr = (bin->tls_header.index_address - bin->image_base);
   U64 result_size = sizeof(U32);
@@ -851,7 +851,7 @@ pe_tls_rng_from_bin_base_vaddr(String8 data, PE_BinInfo *bin, U64 base_vaddr)
   {
     U64 addr_size = bit_size_from_arch(bin->arch)/8;
     Temp scratch = scratch_begin(0, 0);
-    String8 raw_relocs = str8_substr(data, bin->data_dir_franges[PE_DataDirectoryIndex_BASE_RELOC]);
+    string raw_relocs = str8_substr(data, bin->data_dir_franges[PE_DataDirectoryIndex_BASE_RELOC]);
     PE_BaseRelocBlockList relocs = pe_base_reloc_block_list_from_data(scratch.arena, raw_relocs);
     for(PE_BaseRelocBlockNode *n = relocs.first; n != 0; n = n->next)
     {
@@ -938,15 +938,15 @@ pe_get_entry_point_names(COFF_MachineType            machine,
   
   if (file_characteristics & PE_ImageFileCharacteristic_FILE_DLL) {
     if (machine == COFF_MachineType_X86) {
-      read_only static String8 dll_entry_point_arr[] = {
-        str8_lit_comp("__DllMainCRTStartup@12"),
+      read_only static string dll_entry_point_arr[] = {
+        ("__DllMainCRTStartup@12"),
       };
       
       entry_point_names.v = &dll_entry_point_arr[0];
       entry_point_names.count = ArrayCount(dll_entry_point_arr);
     } else {
-      read_only static String8 dll_entry_point_arr[] = {
-        str8_lit_comp("_DllMainCRTStartup"),
+      read_only static string dll_entry_point_arr[] = {
+        ("_DllMainCRTStartup"),
       };
       
       entry_point_names.v = &dll_entry_point_arr[0];
@@ -956,22 +956,22 @@ pe_get_entry_point_names(COFF_MachineType            machine,
     switch (subsystem) {
       case PE_WindowsSubsystem_UNKNOWN: break;
       case PE_WindowsSubsystem_WINDOWS_GUI: {
-        read_only static String8 gui_entry_point_arr[] = {
-          str8_lit_comp("WinMain"),
-          str8_lit_comp("wWinMain"),
-          str8_lit_comp("WinMainCRTStartup"),
-          str8_lit_comp("wWinMainCRTStartup"),
+        read_only static string gui_entry_point_arr[] = {
+          ("WinMain"),
+          ("wWinMain"),
+          ("WinMainCRTStartup"),
+          ("wWinMainCRTStartup"),
         };
         
         entry_point_names.v = &gui_entry_point_arr[0];
         entry_point_names.count = ArrayCount(gui_entry_point_arr);
       } break;
       case PE_WindowsSubsystem_WINDOWS_CUI: {
-        read_only static String8 cui_entry_point_arr[] = {
-          str8_lit_comp("main"),
-          str8_lit_comp("wmain"),
-          str8_lit_comp("mainCRTStartup"),
-          str8_lit_comp("wmainCRTStartup"),
+        read_only static string cui_entry_point_arr[] = {
+          ("main"),
+          ("wmain"),
+          ("mainCRTStartup"),
+          ("wmainCRTStartup"),
         };
         
         entry_point_names.v = &cui_entry_point_arr[0];
@@ -1003,7 +1003,7 @@ pe_parsed_imports_from_data(Arena              *arena,
                             B32                 is_pe32,
                             U64                 section_count,
                             COFF_SectionHeader *sections,
-                            String8             raw_data,
+                            string             raw_data,
                             U64                 name_table_voff,
                             U64                *import_count_out)
 {
@@ -1011,7 +1011,7 @@ pe_parsed_imports_from_data(Arena              *arena,
   U64              import_count = 0;
 
   U64 name_table_foff = coff_foff_from_voff(sections, section_count, name_table_voff);
-  String8 entries = str8_substr(raw_data, rng_1u64(name_table_foff, raw_data.size));
+  string entries = str8_substr(raw_data, rng_1u64(name_table_foff, raw_data.size));
   if (is_pe32) {
     import_count = index_of_zero_u32((U32 *)entries.str, entries.size/sizeof(U32));
     if (import_count == max_U64) { import_count = 0; }
@@ -1033,7 +1033,7 @@ pe_parsed_imports_from_data(Arena              *arena,
         
         // read hint & name
         U16     hint = 0;
-        String8 name = str8_zero();
+        string name = str8_zero();
         str8_deserial_read_struct(raw_data, off, &hint);
         str8_deserial_read_cstr(raw_data, off+sizeof(hint), &name);
         
@@ -1065,7 +1065,7 @@ pe_parsed_imports_from_data(Arena              *arena,
         
         // read hint & name
         U16     hint = 0;
-        String8 name = str8_zero();
+        string name = str8_zero();
         str8_deserial_read_struct(raw_data, off, &hint);
         str8_deserial_read_cstr(raw_data, off + sizeof(hint), &name);
         
@@ -1083,7 +1083,7 @@ pe_parsed_imports_from_data(Arena              *arena,
 }
 
 internal U64 *
-pe_array_from_null_term_addr(Arena *arena, B32 is_pe32, String8 raw_data, Rng1U64 range, U64 *count_out)
+pe_array_from_null_term_addr(Arena *arena, B32 is_pe32, string raw_data, Rng1U64 range, U64 *count_out)
 {
   U64 *result = 0;
   *count_out = 0;
@@ -1128,7 +1128,7 @@ pe_static_imports_from_data(Arena              *arena,
                             B32                 is_pe32,
                             U64                 section_count,
                             COFF_SectionHeader *sections,
-                            String8             raw_data,
+                            string             raw_data,
                             Rng1U64             dir_file_range)
 {
   // count imports
@@ -1149,7 +1149,7 @@ pe_static_imports_from_data(Arena              *arena,
     
     // get name
     U64     name_off = coff_foff_from_voff(sections, section_count, raw_dll->name_voff);
-    String8 name     = str8_zero();
+    string name     = str8_zero();
     str8_deserial_read_cstr(raw_data, name_off, &name);
     
     U64              import_count = 0;
@@ -1183,7 +1183,7 @@ pe_delay_imports_from_data(Arena              *arena,
                            B32                 is_pe32,
                            U64                 section_count,
                            COFF_SectionHeader *sections,
-                           String8             raw_data,
+                           string             raw_data,
                            Rng1U64             dir_file_range)
 {
   // count imports
@@ -1202,7 +1202,7 @@ pe_delay_imports_from_data(Arena              *arena,
     PE_DelayedImportEntry *raw_dll = str8_deserial_get_raw_ptr(raw_data, dir_file_range.min+(dll_idx*sizeof(*raw_dll)), sizeof(*raw_dll));
     
     U64     name_off = coff_foff_from_voff(sections, section_count, raw_dll->name_voff);
-    String8 name     = str8_zero();
+    string name     = str8_zero();
     str8_deserial_read_cstr(raw_data, name_off, &name);
     
     // parse import table
@@ -1261,13 +1261,13 @@ pe_delay_imports_from_data(Arena              *arena,
 }
 
 internal PE_ParsedExportTable
-pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 dir_file_range, Rng1U64 dir_virt_range)
+pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sections, string raw_data, Rng1U64 dir_file_range, Rng1U64 dir_virt_range)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
   PE_ParsedExportTable exptab = {0};
   
-  String8               raw_dir = str8_substr(raw_data, dir_file_range);
+  string               raw_dir = str8_substr(raw_data, dir_file_range);
   PE_ExportTableHeader *header  = str8_deserial_get_raw_ptr(raw_dir, 0, sizeof(*header));
   if (header) {
     U64 name_table_off    = coff_foff_from_voff(sections, section_count, header->name_pointer_table_voff);
@@ -1300,7 +1300,7 @@ pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sectio
         // get name
         U32     name_voff = name_table[i];
         U64     name_foff = coff_foff_from_voff(sections, section_count, name_voff);
-        String8 name      = str8_cstring_capped(raw_data.str+name_foff, raw_data.str+raw_data.size);
+        string name      = str8_cstring_capped(raw_data.str+name_foff, raw_data.str+raw_data.size);
         
         // get ordinal
         U16 ordinal_nb = ordinal_table[i];
@@ -1318,7 +1318,7 @@ pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sectio
         // make ordinal
         U16 ordinal = header->ordinal_base + ordinal_nb;
         
-        String8 forwarder = str8_zero();
+        string forwarder = str8_zero();
         {
           B32 is_forwarder = dir_virt_range.min <= export_voff && export_voff < dir_virt_range.max;
           if (is_forwarder) {
@@ -1369,10 +1369,10 @@ pe_tls_from_data(Arena              *arena,
                  U64                 image_base,
                  U64                 section_count,
                  COFF_SectionHeader *sections,
-                 String8             raw_data,
+                 string             raw_data,
                  Rng1U64             tls_frange)
 {
-  String8 raw_tls = str8_substr(raw_data, tls_frange);
+  string raw_tls = str8_substr(raw_data, tls_frange);
   
   PE_TLSHeader64  header64       = {0};
   U64             callback_count = 0;
@@ -1434,7 +1434,7 @@ pe_tls_from_data(Arena              *arena,
 ////////////////////////////////
 
 internal B32
-pe_is_res(String8 data)
+pe_is_res(string data)
 {
   U8 magic[sizeof(PE_RES_MAGIC)]; MemoryZeroStruct(&magic);
   str8_deserial_read_struct(data, 0, &magic);
@@ -1472,7 +1472,7 @@ pe_resource_dir_push_dir_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID
 }
 
 internal PE_ResourceNode *
-pe_resource_dir_push_entry_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, String8 data)
+pe_resource_dir_push_entry_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, string data)
 {
   PE_ResourceList *list = NULL;
   switch (id.type) {
@@ -1499,7 +1499,7 @@ pe_resource_dir_push_entry_node(Arena *arena, PE_ResourceDir *dir, COFF_Resource
 }
 
 internal PE_Resource *
-pe_resource_dir_push_entry(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, String8 data)
+pe_resource_dir_push_entry(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, string data)
 {
   PE_ResourceNode *node = pe_resource_dir_push_entry_node(arena, dir, id, type, data_version, version, memory_flags, data);
   return &node->data;
@@ -1543,10 +1543,10 @@ pe_resource_list_to_array(Arena *arena, PE_ResourceList *list)
 }
 
 internal void
-pe_resource_dir_push_res_file(Arena *arena, PE_ResourceDir *root_dir, String8 res_file)
+pe_resource_dir_push_res_file(Arena *arena, PE_ResourceDir *root_dir, string res_file)
 {
   // parse file into resource list
-  String8 res_data = str8_substr(res_file, rng_1u64(sizeof(PE_RES_MAGIC), res_file.size));
+  string res_data = str8_substr(res_file, rng_1u64(sizeof(PE_RES_MAGIC), res_file.size));
   COFF_ParsedResourceList list = coff_resource_list_from_data(arena, res_data);
   
   // move resources to directories based on type
@@ -1580,7 +1580,7 @@ pe_resource_dir_push_res_file(Arena *arena, PE_ResourceDir *root_dir, String8 re
 }
 
 internal PE_ResourceDir *
-pe_resource_table_from_directory_data(Arena *arena, String8 data)
+pe_resource_table_from_directory_data(Arena *arena, string data)
 {
   struct stack_s {
     struct stack_s *next;
@@ -1638,7 +1638,7 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
       U16 name_size = 0;
       str8_deserial_read_struct(data, name_offset, &name_size);
       
-      String8 name_block;
+      string name_block;
       str8_deserial_read_block(data,  name_offset + sizeof(name_size), name_size*sizeof(U16), &name_block);
       String16 name16 = str16((U16*)name_block.str, name_size);
       
@@ -1697,8 +1697,8 @@ pe_resource_table_from_directory_data(Arena *arena, String8 data)
   return bottom_frame->table;
 }
 
-internal String8
-pe_make_manifest_resource(Arena *arena, U32 resource_id, String8 manifest_data)
+internal string
+pe_make_manifest_resource(Arena *arena, U32 resource_id, string manifest_data)
 {
   COFF_ResourceID type = {0};
   type.type            = COFF_ResourceIDType_Number;
@@ -1708,15 +1708,15 @@ pe_make_manifest_resource(Arena *arena, U32 resource_id, String8 manifest_data)
   id.type            = COFF_ResourceIDType_Number;
   id.u.number        = resource_id;
   
-  String8 res = coff_write_resource(arena, type, id, 1, 0, 1033, 0, 0, manifest_data);
+  string res = coff_write_resource(arena, type, id, 1, 0, 1033, 0, 0, manifest_data);
   return res;
 }
 
 ////////////////////////////////
 //~ Debug Directory
 
-internal String8
-pe_make_debug_header_pdb70(Arena *arena, Guid guid, U32 age, String8 pdb_path)
+internal string
+pe_make_debug_header_pdb70(Arena *arena, Guid guid, U32 age, string pdb_path)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1730,14 +1730,14 @@ pe_make_debug_header_pdb70(Arena *arena, Guid guid, U32 age, String8 pdb_path)
   str8_serial_push_struct(scratch.arena, &cv_list, &header);
   str8_serial_push_cstr(scratch.arena, &cv_list, pdb_path);
   
-  String8 cv_data = str8_serial_end(arena, &cv_list);
+  string cv_data = str8_serial_end(arena, &cv_list);
   
   scratch_end(scratch);
   return cv_data;
 }
 
-internal String8
-pe_make_debug_header_rdi(Arena *arena, Guid guid, String8 rdi_path)
+internal string
+pe_make_debug_header_rdi(Arena *arena, Guid guid, string rdi_path)
 {
   Temp scratch = scratch_begin(&arena,1);
   
@@ -1750,7 +1750,7 @@ pe_make_debug_header_rdi(Arena *arena, Guid guid, String8 rdi_path)
   str8_serial_push_struct(scratch.arena, &list, &header);
   str8_serial_push_cstr(scratch.arena, &list, rdi_path);
   
-  String8 cv_data = str8_serial_end(arena, &list);
+  string cv_data = str8_serial_end(arena, &list);
   
   scratch_end(scratch);
   return cv_data;
@@ -1802,7 +1802,7 @@ pe_pdata_is_before_x86_64(void *raw_a, void *raw_b)
 }
 
 internal void
-pe_pdata_sort(COFF_MachineType machine, String8 raw_pdata)
+pe_pdata_sort(COFF_MachineType machine, string raw_pdata)
 {
   ProfBeginFunction();
   switch (machine) {

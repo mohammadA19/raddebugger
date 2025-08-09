@@ -40,7 +40,7 @@ struct RD_KeyMapNode
   RD_KeyMapNode *name_hash_next;
   RD_KeyMapNode *binding_hash_next;
   RD_CfgID cfg_id;
-  String8 name;
+  string name;
   RD_Binding binding;
 };
 
@@ -101,7 +101,7 @@ typedef RD_VIEW_UI_FUNCTION_SIG(RD_ViewUIFunctionType);
 typedef struct RD_ViewUIRule RD_ViewUIRule;
 struct RD_ViewUIRule
 {
-  String8 name;
+  string name;
   RD_ViewUIFunctionType *ui;
 };
 
@@ -169,10 +169,10 @@ enum
 typedef struct RD_AutocompCursorInfo RD_AutocompCursorInfo;
 struct RD_AutocompCursorInfo
 {
-  String8 list_expr;
-  String8 filter;
+  string list_expr;
+  string filter;
   Rng1U64 replaced_range;
-  String8 callee_expr;
+  string callee_expr;
   MD_Node *arg_schema;
 };
 
@@ -279,7 +279,7 @@ struct RD_Cfg
   RD_Cfg *prev;
   RD_Cfg *parent;
   RD_CfgID id;
-  String8 string;
+  string string;
 };
 
 typedef struct RD_CfgNode RD_CfgNode;
@@ -326,9 +326,9 @@ struct RD_CfgRec
 typedef struct RD_Location RD_Location;
 struct RD_Location
 {
-  String8 file_path;
+  string file_path;
   TxtPt pt;
-  String8 expr;
+  string expr;
 };
 
 ////////////////////////////////
@@ -379,7 +379,7 @@ struct RD_PanelNodeRec
 typedef struct RD_Cmd RD_Cmd;
 struct RD_Cmd
 {
-  String8 name;
+  string name;
   RD_Regs *regs;
 };
 
@@ -477,7 +477,7 @@ struct RD_WindowState
   B32 hover_eval_focused;
   Arena *hover_eval_arena;
   Vec2F32 hover_eval_spawn_pos;
-  String8 hover_eval_string;
+  string hover_eval_string;
   U64 hover_eval_firstt_us;
   U64 hover_eval_lastt_us;
   
@@ -532,7 +532,7 @@ typedef struct RD_AmbiguousPathNode RD_AmbiguousPathNode;
 struct RD_AmbiguousPathNode
 {
   RD_AmbiguousPathNode *next;
-  String8 name;
+  string name;
   String8List paths;
 };
 
@@ -548,11 +548,11 @@ struct RD_State
   
   // rjf: config bucket paths
   Arena *user_path_arena;
-  String8 user_path;
+  string user_path;
   Arena *project_path_arena;
-  String8 project_path;
+  string project_path;
   Arena *theme_path_arena;
-  String8 theme_path;
+  string theme_path;
   
   // rjf: unpacked settings (cached, because they need to be used
   // earlier than setting evaluation is legal in a frame)
@@ -586,7 +586,7 @@ struct RD_State
   
   // rjf: log
   Log *log;
-  String8 log_path;
+  string log_path;
   
   // rjf: frame history info
   U64 frame_index;
@@ -643,8 +643,8 @@ struct RD_State
   F32 popup_t;
   Arena *popup_arena;
   RD_CmdList popup_cmds;
-  String8 popup_title;
-  String8 popup_desc;
+  string popup_title;
+  string popup_desc;
   
   // rjf: text editing mode state
   B32 text_edit_mode;
@@ -701,7 +701,7 @@ struct RD_State
   Arena *bind_change_arena;
   B32 bind_change_active;
   RD_CfgID bind_change_binding_id;
-  String8 bind_change_cmd_name;
+  string bind_change_cmd_name;
 };
 
 ////////////////////////////////
@@ -772,15 +772,15 @@ internal RD_Regs *rd_regs_copy(Arena *arena, RD_Regs *src);
 ////////////////////////////////
 //~ rjf: Commands Type Functions
 
-internal void rd_cmd_list_push_new(Arena *arena, RD_CmdList *cmds, String8 name, RD_Regs *regs);
+internal void rd_cmd_list_push_new(Arena *arena, RD_CmdList *cmds, string name, RD_Regs *regs);
 
 ////////////////////////////////
 //~ rjf: View UI Rule Functions
 
 internal RD_ViewUIRuleMap *rd_view_ui_rule_map_make(Arena *arena, U64 slots_count);
-internal void rd_view_ui_rule_map_insert(Arena *arena, RD_ViewUIRuleMap *map, String8 string, RD_ViewUIFunctionType *ui);
+internal void rd_view_ui_rule_map_insert(Arena *arena, RD_ViewUIRuleMap *map, string string, RD_ViewUIFunctionType *ui);
 
-internal RD_ViewUIRule *rd_view_ui_rule_from_string(String8 string);
+internal RD_ViewUIRule *rd_view_ui_rule_from_string(string string);
 
 ////////////////////////////////
 //~ rjf: Global Cross-Window UI Interaction State Functions
@@ -797,8 +797,8 @@ internal RD_Regs *rd_get_hover_regs(void);
 //~ rjf: Name Allocation
 
 internal U64 rd_name_bucket_num_from_string_size(U64 size);
-internal String8 rd_name_alloc(String8 string);
-internal void rd_name_release(String8 string);
+internal string rd_name_alloc(string string);
+internal void rd_name_release(string string);
 
 ////////////////////////////////
 //~ rjf: Config Tree Functions
@@ -807,23 +807,23 @@ internal RD_Cfg *rd_cfg_alloc(void);
 internal void rd_cfg_release(RD_Cfg *cfg);
 internal void rd_cfg_release_all_children(RD_Cfg *cfg);
 internal RD_Cfg *rd_cfg_from_id(RD_CfgID id);
-internal RD_Cfg *rd_cfg_new(RD_Cfg *parent, String8 string);
+internal RD_Cfg *rd_cfg_new(RD_Cfg *parent, string string);
 internal RD_Cfg *rd_cfg_newf(RD_Cfg *parent, char *fmt, ...);
-internal RD_Cfg *rd_cfg_new_replace(RD_Cfg *parent, String8 string);
+internal RD_Cfg *rd_cfg_new_replace(RD_Cfg *parent, string string);
 internal RD_Cfg *rd_cfg_new_replacef(RD_Cfg *parent, char *fmt, ...);
 internal RD_Cfg *rd_cfg_deep_copy(RD_Cfg *src_root);
-internal void rd_cfg_equip_string(RD_Cfg *cfg, String8 string);
+internal void rd_cfg_equip_string(RD_Cfg *cfg, string string);
 internal void rd_cfg_equip_stringf(RD_Cfg *cfg, char *fmt, ...);
 internal void rd_cfg_insert_child(RD_Cfg *parent, RD_Cfg *prev_child, RD_Cfg *new_child);
 internal void rd_cfg_unhook(RD_Cfg *parent, RD_Cfg *child);
-internal RD_Cfg *rd_cfg_child_from_string(RD_Cfg *parent, String8 string);
-internal RD_Cfg *rd_cfg_child_from_string_or_alloc(RD_Cfg *parent, String8 string);
-internal RD_Cfg *rd_cfg_child_from_string_or_parent(RD_Cfg *parent, String8 string);
-internal RD_CfgList rd_cfg_child_list_from_string(Arena *arena, RD_Cfg *parent, String8 string);
-internal RD_CfgList rd_cfg_top_level_list_from_string(Arena *arena, String8 string);
+internal RD_Cfg *rd_cfg_child_from_string(RD_Cfg *parent, string string);
+internal RD_Cfg *rd_cfg_child_from_string_or_alloc(RD_Cfg *parent, string string);
+internal RD_Cfg *rd_cfg_child_from_string_or_parent(RD_Cfg *parent, string string);
+internal RD_CfgList rd_cfg_child_list_from_string(Arena *arena, RD_Cfg *parent, string string);
+internal RD_CfgList rd_cfg_top_level_list_from_string(Arena *arena, string string);
 internal RD_CfgArray rd_cfg_array_from_list(Arena *arena, RD_CfgList *list);
-internal RD_CfgList rd_cfg_tree_list_from_string(Arena *arena, String8 root_path, String8 string);
-internal String8 rd_string_from_cfg_tree(Arena *arena, String8 root_path, RD_Cfg *cfg);
+internal RD_CfgList rd_cfg_tree_list_from_string(Arena *arena, string root_path, string string);
+internal string rd_string_from_cfg_tree(Arena *arena, string root_path, RD_Cfg *cfg);
 internal RD_CfgRec rd_cfg_rec__depth_first(RD_Cfg *root, RD_Cfg *cfg);
 internal void rd_cfg_list_push(Arena *arena, RD_CfgList *list, RD_Cfg *cfg);
 internal void rd_cfg_list_push_front(Arena *arena, RD_CfgList *list, RD_Cfg *cfg);
@@ -839,7 +839,7 @@ internal Rng2F32 rd_target_rect_from_panel_node_child(Rng2F32 parent_rect, RD_Pa
 internal Rng2F32 rd_target_rect_from_panel_node(Rng2F32 root_rect, RD_PanelNode *root, RD_PanelNode *panel);
 
 internal B32 rd_cfg_is_project_filtered(RD_Cfg *cfg);
-internal RD_KeyMapNodePtrList rd_key_map_node_ptr_list_from_name(Arena *arena, String8 string);
+internal RD_KeyMapNodePtrList rd_key_map_node_ptr_list_from_name(Arena *arena, string string);
 internal RD_KeyMapNodePtrList rd_key_map_node_ptr_list_from_binding(Arena *arena, RD_Binding binding);
 
 internal Vec4F32 rd_hsva_from_cfg(RD_Cfg *cfg);
@@ -847,30 +847,30 @@ internal Vec4F32 rd_color_from_cfg(RD_Cfg *cfg);
 
 internal B32 rd_disabled_from_cfg(RD_Cfg *cfg);
 internal RD_Location rd_location_from_cfg(RD_Cfg *cfg);
-internal String8 rd_label_from_cfg(RD_Cfg *cfg);
-internal String8 rd_expr_from_cfg(RD_Cfg *cfg);
-internal String8 rd_path_from_cfg(RD_Cfg *cfg);
+internal string rd_label_from_cfg(RD_Cfg *cfg);
+internal string rd_expr_from_cfg(RD_Cfg *cfg);
+internal string rd_path_from_cfg(RD_Cfg *cfg);
 internal D_Target rd_target_from_cfg(Arena *arena, RD_Cfg *cfg);
 
-internal MD_NodePtrList rd_schemas_from_name(String8 name);
-internal String8 rd_default_setting_from_names(String8 schema_name, String8 setting_name);
+internal MD_NodePtrList rd_schemas_from_name(string name);
+internal string rd_default_setting_from_names(string schema_name, string setting_name);
 
-internal String8 rd_setting_from_name(String8 name);
-internal B32 rd_setting_b32_from_name(String8 name);
-internal U64 rd_setting_u64_from_name(String8 name);
-internal F32 rd_setting_f32_from_name(String8 name);
+internal string rd_setting_from_name(string name);
+internal B32 rd_setting_b32_from_name(string name);
+internal U64 rd_setting_u64_from_name(string name);
+internal F32 rd_setting_f32_from_name(string name);
 
-internal RD_Cfg *rd_immediate_cfg_from_key(String8 string);
+internal RD_Cfg *rd_immediate_cfg_from_key(string string);
 internal RD_Cfg *rd_immediate_cfg_from_keyf(char *fmt, ...);
 
-internal String8 rd_mapped_from_file_path(Arena *arena, String8 file_path);
-internal String8List rd_possible_overrides_from_file_path(Arena *arena, String8 file_path);
+internal string rd_mapped_from_file_path(Arena *arena, string file_path);
+internal String8List rd_possible_overrides_from_file_path(Arena *arena, string file_path);
 
 ////////////////////////////////
 //~ rjf: Control Entity Info Extraction
 
 internal Vec4F32 rd_color_from_ctrl_entity(CTRL_Entity *entity);
-internal String8 rd_name_from_ctrl_entity(Arena *arena, CTRL_Entity *entity);
+internal string rd_name_from_ctrl_entity(Arena *arena, CTRL_Entity *entity);
 
 ////////////////////////////////
 //~ rjf: Evaluation Spaces
@@ -884,7 +884,7 @@ internal CTRL_Entity *rd_ctrl_entity_from_eval_space(E_Space space);
 internal E_Space rd_eval_space_from_ctrl_entity(CTRL_Entity *entity, E_SpaceKind kind);
 
 //- rjf: command name <-> eval space
-internal String8 rd_cmd_name_from_eval(E_Eval eval);
+internal string rd_cmd_name_from_eval(E_Eval eval);
 
 //- rjf: eval space reads/writes
 internal U64 rd_eval_space_gen(void *u, E_Space space);
@@ -901,15 +901,15 @@ internal Rng1U64 rd_whole_range_from_eval_space(E_Space space);
 //~ rjf: Evaluation Visualization
 
 //- rjf: writing values back to child processes
-internal B32 rd_commit_eval_value_string(E_Eval dst_eval, String8 string);
+internal B32 rd_commit_eval_value_string(E_Eval dst_eval, string string);
 
 //- rjf: eval <-> file path
-internal String8 rd_file_path_from_eval(Arena *arena, E_Eval eval);
-internal String8 rd_file_path_from_eval_string(Arena *arena, String8 string);
-internal String8 rd_eval_string_from_file_path(Arena *arena, String8 string);
+internal string rd_file_path_from_eval(Arena *arena, E_Eval eval);
+internal string rd_file_path_from_eval_string(Arena *arena, string string);
+internal string rd_eval_string_from_file_path(Arena *arena, string string);
 
 //- rjf: eval -> query
-internal String8 rd_query_from_eval_string(Arena *arena, String8 string);
+internal string rd_query_from_eval_string(Arena *arena, string string);
 
 ////////////////////////////////
 //~ rjf: View Functions
@@ -925,13 +925,13 @@ internal void rd_view_ui(Rng2F32 rect);
 internal Arena *rd_view_arena(void);
 internal UI_ScrollPt2 rd_view_scroll_pos(void);
 internal EV_View *rd_view_eval_view(void);
-internal String8 rd_view_query_cmd(void);
-internal String8 rd_view_query_input(void);
-internal String8 rd_view_setting_from_name(String8 string);
-internal E_Value rd_view_setting_value_from_name(String8 string);
-internal B32 rd_view_setting_b32_from_name(String8 string);
-internal U64 rd_view_setting_u64_from_name(String8 string);
-internal F32 rd_view_setting_f32_from_name(String8 string);
+internal string rd_view_query_cmd(void);
+internal string rd_view_query_input(void);
+internal string rd_view_setting_from_name(string string);
+internal E_Value rd_view_setting_value_from_name(string string);
+internal B32 rd_view_setting_b32_from_name(string string);
+internal U64 rd_view_setting_u64_from_name(string string);
+internal F32 rd_view_setting_f32_from_name(string string);
 
 //- rjf: evaluation & tag (a view's 'call') parameter extraction
 internal Rng1U64 rd_space_range_from_eval(E_Eval eval);
@@ -944,11 +944,11 @@ internal void *rd_view_state_by_size(U64 size);
 internal Arena *rd_push_view_arena(void);
 
 //- rjf: storing view-attached state
-internal void rd_store_view_expr_string(String8 string);
+internal void rd_store_view_expr_string(string string);
 internal void rd_store_view_loading_info(B32 is_loading, U64 progress_u64, U64 progress_u64_target);
 internal void rd_store_view_scroll_pos(UI_ScrollPt2 pos);
-internal void rd_store_view_param(String8 key, String8 value);
-internal void rd_store_view_paramf(String8 key, char *fmt, ...);
+internal void rd_store_view_param(string key, string value);
+internal void rd_store_view_paramf(string key, char *fmt, ...);
 #define rd_store_view_param_f32(key, f32) rd_store_view_paramf((key), "%ff", (f32))
 #define rd_store_view_param_s64(key, s64) rd_store_view_paramf((key), "%I64d", (s64))
 #define rd_store_view_param_u64(key, u64) rd_store_view_paramf((key), "0x%I64x", (u64))
@@ -956,7 +956,7 @@ internal void rd_store_view_paramf(String8 key, char *fmt, ...);
 ////////////////////////////////
 //~ rjf: Window Functions
 
-internal String8 rd_push_window_title(Arena *arena);
+internal string rd_push_window_title(Arena *arena);
 internal RD_Cfg *rd_window_from_cfg(RD_Cfg *cfg);
 internal RD_WindowState *rd_window_state_from_cfg(RD_Cfg *cfg);
 internal RD_WindowState *rd_window_state_from_os_handle(OS_Handle os);
@@ -965,12 +965,12 @@ internal void rd_window_frame(void);
 ////////////////////////////////
 //~ rjf: Eval Visualization
 
-internal String8 rd_value_string_from_eval(Arena *arena, String8 filter, EV_StringParams *params, FNT_Tag font, F32 font_size, F32 max_size, E_Eval eval);
+internal string rd_value_string_from_eval(Arena *arena, string filter, EV_StringParams *params, FNT_Tag font, F32 font_size, F32 max_size, E_Eval eval);
 
 ////////////////////////////////
 //~ rjf: Hover Eval
 
-internal void rd_set_hover_eval(Vec2F32 pos, String8 string);
+internal void rd_set_hover_eval(Vec2F32 pos, string string);
 
 ////////////////////////////////
 //~ rjf: Autocompletion Lister
@@ -982,10 +982,10 @@ internal void rd_set_autocomp_regs_(E_Eval dst_eval, RD_Regs *regs);
 //~ rjf: Colors, Fonts, Config
 
 //- rjf: colors
-internal MD_Node *rd_theme_tree_from_name(Arena *arena, HS_Scope *scope, String8 theme_name);
+internal MD_Node *rd_theme_tree_from_name(Arena *arena, HS_Scope *scope, string theme_name);
 internal Vec4F32 rd_rgba_from_code_color_slot(RD_CodeColorSlot slot);
 internal RD_CodeColorSlot rd_code_color_slot_from_txt_token_kind(TXT_TokenKind kind);
-internal RD_CodeColorSlot rd_code_color_slot_from_txt_token_kind_lookup_string(TXT_TokenKind kind, String8 string);
+internal RD_CodeColorSlot rd_code_color_slot_from_txt_token_kind_lookup_string(TXT_TokenKind kind, string string);
 
 //- rjf: fonts
 internal F32 rd_font_size(void);
@@ -995,14 +995,14 @@ internal FNT_RasterFlags rd_raster_flags_from_slot(RD_FontSlot slot);
 ////////////////////////////////
 //~ rjf: Process Control Info Stringification
 
-internal String8 rd_string_from_exception_code(U32 code);
+internal string rd_string_from_exception_code(U32 code);
 internal DR_FStrList rd_stop_explanation_fstrs_from_ctrl_event(Arena *arena, CTRL_Event *event);
 
 ////////////////////////////////
 //~ rjf: Vocab Info Lookups
 
-internal RD_VocabInfo *rd_vocab_info_from_code_name(String8 code_name);
-internal RD_VocabInfo *rd_vocab_info_from_code_name_plural(String8 code_name_plural);
+internal RD_VocabInfo *rd_vocab_info_from_code_name(string code_name);
+internal RD_VocabInfo *rd_vocab_info_from_code_name_plural(string code_name_plural);
 #define rd_plural_from_code_name(code_name) (rd_vocab_info_from_code_name(code_name)->code_name_plural)
 #define rd_display_from_code_name(code_name) (rd_vocab_info_from_code_name(code_name)->display_name)
 #define rd_display_plural_from_code_name(code_name) (rd_vocab_info_from_code_name(code_name)->display_name_plural)
@@ -1029,17 +1029,17 @@ internal RD_Regs *rd_push_regs_(RD_Regs *regs);
 #define rd_push_regs(...) rd_push_regs_(&(RD_Regs){rd_regs_lit_init_top __VA_ARGS__})
 internal RD_Regs *rd_pop_regs(void);
 #define RD_RegsScope(...) DeferLoop(rd_push_regs(__VA_ARGS__), rd_pop_regs())
-internal void rd_regs_fill_slot_from_string(RD_RegSlot slot, String8 query_expr, String8 string);
+internal void rd_regs_fill_slot_from_string(RD_RegSlot slot, string query_expr, string string);
 
 ////////////////////////////////
 //~ rjf: Commands
 
 //- rjf: name -> info
-internal RD_CmdKind rd_cmd_kind_from_string(String8 string);
-internal RD_CmdKindInfo *rd_cmd_kind_info_from_string(String8 string);
+internal RD_CmdKind rd_cmd_kind_from_string(string string);
+internal RD_CmdKindInfo *rd_cmd_kind_info_from_string(string string);
 
 //- rjf: pushing
-internal void rd_push_cmd(String8 name, RD_Regs *regs);
+internal void rd_push_cmd(string name, RD_Regs *regs);
 #define rd_cmd(kind, ...) rd_push_cmd(rd_cmd_kind_info_table[kind].string, &(RD_Regs){rd_regs_lit_init_top __VA_ARGS__})
 
 //- rjf: iterating

@@ -2,14 +2,14 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal B32
-dw_is_dwarf_present_from_elf_bin(String8 data, ELF_Bin *bin)
+dw_is_dwarf_present_from_elf_bin(string data, ELF_Bin *bin)
 {
   B32 is_dwarf_present = 0;
   for EachIndex(idx, bin->shdrs.count)
   {
     ELF_Shdr64 *shdr = &bin->shdrs.v[idx];
     if(shdr->sh_type != ELF_SectionCode_ProgBits) { continue; }
-    String8 name = elf_name_from_shdr64(data, bin, shdr);
+    string name = elf_name_from_shdr64(data, bin, shdr);
     DW_SectionKind s = dw_section_kind_from_string(name);
     if(s == DW_Section_Null)
     {
@@ -28,7 +28,7 @@ dw_is_dwarf_present_from_elf_bin(String8 data, ELF_Bin *bin)
 #include "third_party/sinfl/sinfl.h"
 
 internal DW_Input
-dw_input_from_elf_bin(Arena *arena, String8 data, ELF_Bin *bin)
+dw_input_from_elf_bin(Arena *arena, string data, ELF_Bin *bin)
 {
   DW_Input result = {0};
   B32 is_section_present[ArrayCount(result.sec)] = {0};
@@ -39,9 +39,9 @@ dw_input_from_elf_bin(Arena *arena, String8 data, ELF_Bin *bin)
     if(shdr->sh_type != ELF_SectionCode_ProgBits) { continue; } // skip BSS sections
     
     //- rjf: unpack section
-    String8 section_name = elf_name_from_shdr64(data, bin, shdr);
+    string section_name = elf_name_from_shdr64(data, bin, shdr);
     DW_SectionKind section_kind = dw_section_kind_from_string(section_name);
-    String8 section_data__maybe_compressed = str8_substr(data, r1u64(shdr->sh_offset, shdr->sh_offset + shdr->sh_size));
+    string section_data__maybe_compressed = str8_substr(data, r1u64(shdr->sh_offset, shdr->sh_offset + shdr->sh_size));
     B32 is_dwo = 0;
     if(section_kind == DW_Section_Null)
     {
@@ -50,7 +50,7 @@ dw_input_from_elf_bin(Arena *arena, String8 data, ELF_Bin *bin)
     }
     
     //- rjf: decompress section data if needed
-    String8 section_data__uncompressed = {0};
+    string section_data__uncompressed = {0};
     if(section_kind != DW_Section_Null)
     {
       if(!(shdr->sh_flags & ELF_Shf_Compressed))
@@ -78,7 +78,7 @@ dw_input_from_elf_bin(Arena *arena, String8 data, ELF_Bin *bin)
         
         // rjf: decompress
         {
-          String8 section_data__compressed_contents = str8_skip(section_data__maybe_compressed, chdr_size);
+          string section_data__compressed_contents = str8_skip(section_data__maybe_compressed, chdr_size);
           switch(chdr64.ch_type)
           {
             default:

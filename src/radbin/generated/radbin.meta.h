@@ -22,7 +22,7 @@ RB_FileFormat_COUNT,
 } RB_FileFormat;
 
 C_LINKAGE_BEGIN
-extern String8 rb_file_format_display_name_table[10];
+extern string rb_file_format_display_name_table[10];
 
 C_LINKAGE_END
 

@@ -5,7 +5,7 @@
 //~ rjf: Basic Helpers
 
 internal U64
-dmn_w32_hash_from_string(String8 string)
+dmn_w32_hash_from_string(string string)
 {
   U64 result = 5381;
   for(U64 i = 0; i < string.size; i += 1)
@@ -208,14 +208,14 @@ dmn_w32_entity_from_kind_id(DMN_W32_EntityKind kind, U64 id)
 ////////////////////////////////
 //~ rjf: Module Info Extraction
 
-internal String8
+internal string
 dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
   //- rjf: extract path from module
   String16 path16 = {0};
-  String8 path8 = {0};
+  string path8 = {0};
   {
     // rjf: handle -> full path
     if(module->handle != 0)
@@ -262,7 +262,7 @@ dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module)
   }
   
   // rjf: produce finalized result
-  String8 result = {0};
+  string result = {0};
   {
     if(path16.size > 0)
     {
@@ -355,7 +355,7 @@ dmn_w32_process_write(HANDLE process, Rng1U64 range, void *src)
   return result;
 }
 
-internal String8
+internal string
 dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, U64 address)
 {
   // TODO(rjf): @rewrite
@@ -399,7 +399,7 @@ dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, U64 address)
   }
   
   // assemble results
-  String8 result = str8_list_join(arena, &list, 0);
+  string result = str8_list_join(arena, &list, 0);
   scratch_end(scratch);
   return(result);
 }
@@ -450,7 +450,7 @@ dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, U64 address)
   }
   
   // assemble results
-  String8 joined = str8_list_join(arena, &list, 0);
+  string joined = str8_list_join(arena, &list, 0);
   String16 result = {(U16*)joined.str, joined.size/2};
   scratch_end(scratch);
   return(result);
@@ -1169,7 +1169,7 @@ dmn_init(void)
         else
         {
           String16 string16 = str16((U16 *)this_proc_env + start_idx, idx - start_idx);
-          String8 string = str8_from_16(dmn_w32_shared->arena, string16);
+          string string = str8_from_16(dmn_w32_shared->arena, string16);
           str8_list_push(dmn_w32_shared->arena, &dmn_w32_shared->env_strings, string);
           start_idx = idx+1;
         }
@@ -1215,31 +1215,31 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
   DMN_AccessScope
   {
     //- rjf: produce exe / arguments string
-    String8 cmd = {0};
+    string cmd = {0};
     if(params->cmd_line.first != 0)
     {
       String8List args = {0};
-      String8 exe_path = params->cmd_line.first->string;
+      string exe_path = params->cmd_line.first->string;
       String8List exe_path_parts = str8_split_path(scratch.arena, exe_path);
-      exe_path = str8_list_join(scratch.arena, &exe_path_parts, &(StringJoin){.sep = str8_lit("\\")});
+      exe_path = str8_list_join(scratch.arena, &exe_path_parts, &(StringJoin){.sep = ("\\")});
       str8_list_pushf(scratch.arena, &args, "\"%S\"", exe_path);
       for(String8Node *n = params->cmd_line.first->next; n != 0; n = n->next)
       {
         str8_list_push(scratch.arena, &args, n->string);
       }
       StringJoin join_params = {0};
-      join_params.sep = str8_lit(" ");
+      join_params.sep = (" ");
       cmd = str8_list_join(scratch.arena, &args, &join_params);
     }
     
     //- rjf: produce environment strings
-    String8 env = {0};
+    string env = {0};
     {
       String8List all_opts = params->env;
       if(params->inherit_env != 0)
       {
         MemoryZeroStruct(&all_opts);
-        str8_list_push(scratch.arena, &all_opts, str8_lit("_NO_DEBUG_HEAP=1"));
+        str8_list_push(scratch.arena, &all_opts, ("_NO_DEBUG_HEAP=1"));
         for(String8Node *n = params->env.first; n != 0; n = n->next)
         {
           str8_list_push(scratch.arena, &all_opts, n->string);
@@ -1250,8 +1250,8 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
         }
       }
       StringJoin join_params2 = {0};
-      join_params2.sep = str8_lit("\0");
-      join_params2.post = str8_lit("\0");
+      join_params2.sep = ("\0");
+      join_params2.post = ("\0");
       env = str8_list_join(scratch.arena, &all_opts, &join_params2);
     }
     
@@ -1318,7 +1318,7 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
       DWORD error = GetLastError();
       LPWSTR message = 0;
       FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, 0, error, MAKELANGID(LANG_NEUTRAL,SUBLANG_NEUTRAL), (LPWSTR)&message, 0, 0);
-      String8 message8 = message ? str8_from_16(scratch.arena, str16_cstring(message)) : str8_lit("unknown error");
+      string message8 = message ? str8_from_16(scratch.arena, str16_cstring(message)) : ("unknown error");
       LocalFree(message);
       
       log_user_errorf("There was an error starting %S: %S", params->cmd_line.first->string, message8);
@@ -2093,7 +2093,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
               (void)sus_result;
               
               // rjf: unpack thread name
-              String8 thread_name = {0};
+              string thread_name = {0};
               if(dmn_w32_GetThreadDescription != 0)
               {
                 WCHAR *thread_name_w = 0;
@@ -2539,7 +2539,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
                               break;
                             }
                           }
-                          String8 string_part = str8(buffer, size);
+                          string string_part = str8(buffer, size);
                           str8_list_push(scratch.arena, &thread_name_strings, string_part);
                           total_string_size += size;
                           read_addr += size;
@@ -2629,7 +2629,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
               buffer[string_size] = 0;
               
               // rjf: extract into string
-              String8 debug_string = str8(buffer, string_size);
+              string debug_string = str8(buffer, string_size);
               if(debug_string.size != 0 && buffer[string_size-1] == 0)
               {
                 debug_string.size -= 1;
@@ -2687,7 +2687,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
       //
       if(debug_strings.total_size != 0 && debug_strings_event != 0)
       {
-        String8 debug_strings_joined = str8_list_join(arena, &debug_strings, 0);
+        string debug_strings_joined = str8_list_join(arena, &debug_strings, 0);
         debug_strings_event->string = debug_strings_joined;
       }
       
@@ -2749,7 +2749,7 @@ dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
             if(thread->thread.last_name_hash == 0 ||
                thread->thread.name_gather_time_us+1000000 <= os_now_microseconds())
             {
-              String8 name = {0};
+              string name = {0};
               {
                 WCHAR *thread_name_w = 0;
                 HRESULT hr = dmn_w32_GetThreadDescription(thread->handle, &thread_name_w);

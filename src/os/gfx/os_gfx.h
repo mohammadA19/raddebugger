@@ -110,9 +110,9 @@ internal B32 frame(void);
 ////////////////////////////////
 //~ rjf: Event Functions (Helpers, Implemented Once)
 
-internal String8 os_string_from_event_kind(OS_EventKind kind);
+internal string os_string_from_event_kind(OS_EventKind kind);
 internal String8List os_string_list_from_modifiers(Arena *arena, OS_Modifiers flags);
-internal String8 os_string_from_modifiers_key(Arena *arena, OS_Modifiers modifiers, OS_Key key);
+internal string os_string_from_modifiers_key(Arena *arena, OS_Modifiers modifiers, OS_Key key);
 internal U32 os_codepoint_from_modifiers_and_key(OS_Modifiers flags, OS_Key key);
 internal void os_eat_event(OS_EventList *events, OS_Event *event);
 internal B32  os_key_press(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key);
@@ -135,15 +135,15 @@ internal OS_GfxInfo *os_get_gfx_info(void);
 ////////////////////////////////
 //~ rjf: @os_hooks Clipboards (Implemented Per-OS)
 
-internal void    os_set_clipboard_text(String8 string);
-internal String8 os_get_clipboard_text(Arena *arena);
+internal void    os_set_clipboard_text(string string);
+internal string os_get_clipboard_text(Arena *arena);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Windows (Implemented Per-OS)
 
-internal OS_Handle      os_window_open(Rng2F32 rect, OS_WindowFlags flags, String8 title);
+internal OS_Handle      os_window_open(Rng2F32 rect, OS_WindowFlags flags, string title);
 internal void           os_window_close(OS_Handle window);
-internal void           os_window_set_title(OS_Handle window, String8 title);
+internal void           os_window_set_title(OS_Handle window, string title);
 internal void           os_window_first_paint(OS_Handle window);
 internal void           os_window_focus(OS_Handle window);
 internal B32            os_window_is_focused(OS_Handle window);
@@ -169,7 +169,7 @@ internal F32            os_dpi_from_window(OS_Handle window);
 internal OS_HandleArray os_push_monitors_array(Arena *arena);
 internal OS_Handle      os_primary_monitor(void);
 internal OS_Handle      os_monitor_from_window(OS_Handle window);
-internal String8        os_name_from_monitor(Arena *arena, OS_Handle monitor);
+internal string        os_name_from_monitor(Arena *arena, OS_Handle monitor);
 internal Vec2F32        os_dim_from_monitor(OS_Handle monitor);
 internal F32            os_dpi_from_monitor(OS_Handle monitor);
 
@@ -190,13 +190,13 @@ internal void           os_set_cursor(OS_Cursor cursor);
 ////////////////////////////////
 //~ rjf: @os_hooks Native User-Facing Graphical Messages (Implemented Per-OS)
 
-internal void           os_graphical_message(B32 error, String8 title, String8 message);
-internal String8        os_graphical_pick_file(Arena *arena, String8 initial_path);
+internal void           os_graphical_message(B32 error, string title, string message);
+internal string        os_graphical_pick_file(Arena *arena, string initial_path);
 
 ////////////////////////////////
 //~ rjf: @os_hooks Shell Operations
 
-internal void           os_show_in_filesystem_ui(String8 path);
-internal void           os_open_in_browser(String8 url);
+internal void           os_show_in_filesystem_ui(string path);
+internal void           os_open_in_browser(string url);
 
 #endif // OS_GFX_H

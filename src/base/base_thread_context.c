@@ -64,7 +64,7 @@ tctx_get_scratch(Arena **conflicts, U64 count)
 }
 
 internal void
-tctx_set_thread_name(String8 string)
+tctx_set_thread_name(string string)
 {
   TCTX *tctx = tctx_get_equipped();
   U64 size = ClampTop(string.size, sizeof(tctx->thread_name));
@@ -72,11 +72,11 @@ tctx_set_thread_name(String8 string)
   tctx->thread_name_size = size;
 }
 
-internal String8
+internal string
 tctx_get_thread_name(void)
 {
   TCTX *tctx = tctx_get_equipped();
-  String8 result = str8(tctx->thread_name, tctx->thread_name_size);
+  string result = str8(tctx->thread_name, tctx->thread_name_size);
   return result;
 }
 

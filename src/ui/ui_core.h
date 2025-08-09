@@ -28,7 +28,7 @@ typedef struct UI_IconInfo UI_IconInfo;
 struct UI_IconInfo
 {
   FNT_Tag icon_font;
-  String8 icon_kind_text_map[UI_IconKind_COUNT];
+  string icon_kind_text_map[UI_IconKind_COUNT];
 };
 
 ////////////////////////////////
@@ -143,7 +143,7 @@ struct UI_Event
   UI_EventDeltaUnit delta_unit;
   OS_Key key;
   OS_Modifiers modifiers;
-  String8 string;
+  string string;
   String8List paths;
   Vec2F32 pos;
   Vec2F32 delta_2f32;
@@ -181,8 +181,8 @@ typedef struct UI_TxtOp UI_TxtOp;
 struct UI_TxtOp
 {
   UI_TxtOpFlags flags;
-  String8 replace;
-  String8 copy;
+  string replace;
+  string copy;
   TxtRng range;
   TxtPt cursor;
   TxtPt mark;
@@ -381,7 +381,7 @@ struct UI_Box
   UI_Key key;
   UI_BoxFlags flags;
   UI_Key tags_key;
-  String8 string;
+  string string;
   UI_TextAlign text_align;
   Vec2F32 fixed_position;
   Vec2F32 fixed_size;
@@ -673,7 +673,7 @@ struct UI_State
   
   //- rjf: build state machine state
   B32 is_in_open_ctx_menu;
-  String8 autocomplete_string;
+  string autocomplete_string;
   B32 tooltip_can_overflow_window;
   UI_Key tooltip_anchor_key;
   String8Array current_gen_tags;
@@ -720,9 +720,9 @@ struct UI_State
   Vec2F32 press_pos_history[UI_MouseButtonKind_COUNT][3];
   Vec2F32 drag_start_mouse;
   Arena *drag_state_arena;
-  String8 drag_state_data;
+  string drag_state_data;
   Arena *string_hover_arena;
-  String8 string_hover_string;
+  string string_hover_string;
   F32 string_hover_size;
   DR_FStrList string_hover_fstrs;
   U64 string_hover_begin_us;
@@ -752,11 +752,11 @@ struct UI_State
 ////////////////////////////////
 //~ rjf: Basic Type Functions
 
-internal String8 ui_hash_part_from_key_string(String8 string);
-internal String8 ui_display_part_from_key_string(String8 string);
+internal string ui_hash_part_from_key_string(string string);
+internal string ui_display_part_from_key_string(string string);
 internal UI_Key  ui_key_zero(void);
 internal UI_Key  ui_key_make(U64 v);
-internal UI_Key  ui_key_from_string(UI_Key seed_key, String8 string);
+internal UI_Key  ui_key_from_string(UI_Key seed_key, string string);
 internal UI_Key  ui_key_from_stringf(UI_Key seed_key, char *fmt, ...);
 internal B32     ui_key_match(UI_Key a, UI_Key b);
 
@@ -770,9 +770,9 @@ internal void ui_eat_event_node(UI_EventList *list, UI_EventNode *node);
 //~ rjf: Text Operation Functions
 
 internal B32 ui_char_is_scan_boundary(U8 c);
-internal S64 ui_scanned_column_from_column(String8 string, S64 start_column, Side side);
-internal UI_TxtOp ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, TxtPt cursor, TxtPt mark);
-internal String8 ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 range, String8 replace);
+internal S64 ui_scanned_column_from_column(string string, S64 start_column, Side side);
+internal UI_TxtOp ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, string string, TxtPt cursor, TxtPt mark);
+internal string ui_push_string_replace_range(Arena *arena, string string, Rng1S64 range, string replace);
 
 ////////////////////////////////
 //~ rjf: Size Type Functions
@@ -828,7 +828,7 @@ internal Arena *           ui_build_arena(void);
 internal OS_Handle         ui_window(void);
 internal Vec2F32           ui_mouse(void);
 internal FNT_Tag           ui_icon_font(void);
-internal String8           ui_icon_string_from_kind(UI_IconKind icon_kind);
+internal string           ui_icon_string_from_kind(UI_IconKind icon_kind);
 internal F32               ui_dt(void);
 
 //- rjf: event pumping
@@ -842,15 +842,15 @@ internal B32 ui_text(U32 character);
 internal B32 ui_slot_press(UI_EventActionSlot slot);
 
 //- rjf: autocomplete info
-internal void ui_set_autocomplete_string(String8 string);
-internal String8 ui_autocomplete_string(void);
-internal String8 ui_autocomplete(void);
+internal void ui_set_autocomplete_string(string string);
+internal string ui_autocomplete_string(void);
+internal string ui_autocomplete(void);
 
 //- rjf: drag data
 internal Vec2F32           ui_drag_start_mouse(void);
 internal Vec2F32           ui_drag_delta(void);
-internal void              ui_store_drag_data(String8 string);
-internal String8           ui_get_drag_data(U64 min_required_size);
+internal void              ui_store_drag_data(string string);
+internal string           ui_get_drag_data(U64 min_required_size);
 #define ui_store_drag_struct(ptr) ui_store_drag_data(str8_struct(ptr))
 #define ui_get_drag_struct(type) ((type *)ui_get_drag_data(sizeof(type)).str)
 
@@ -915,25 +915,25 @@ internal void              ui_set_auto_focus_hot_key(UI_Key key);
 internal UI_Key            ui_top_tags_key(void);
 
 //- rjf: theme color lookups
-internal Vec4F32           ui_color_from_name(String8 name);
+internal Vec4F32           ui_color_from_name(string name);
 internal Vec4F32           ui_color_from_tags_key_extras(UI_Key key, String8Array extras);
-internal Vec4F32           ui_color_from_tags_key_name(UI_Key key, String8 name);
+internal Vec4F32           ui_color_from_tags_key_name(UI_Key key, string name);
 
 //- rjf: box node construction
 internal UI_Box *          ui_build_box_from_key(UI_BoxFlags flags, UI_Key key);
 internal UI_Key            ui_active_seed_key(void);
-internal UI_Box *          ui_build_box_from_string(UI_BoxFlags flags, String8 string);
+internal UI_Box *          ui_build_box_from_string(UI_BoxFlags flags, string string);
 internal UI_Box *          ui_build_box_from_stringf(UI_BoxFlags flags, char *fmt, ...);
 
 //- rjf: box node equipment
-internal inline void       ui_box_equip_display_string(UI_Box *box, String8 string);
+internal inline void       ui_box_equip_display_string(UI_Box *box, string string);
 internal inline void       ui_box_equip_display_fstrs(UI_Box *box, DR_FStrList *strings);
 internal inline void       ui_box_equip_fuzzy_match_ranges(UI_Box *box, FuzzyMatchRangeList *matches);
 internal inline void       ui_box_equip_draw_bucket(UI_Box *box, DR_Bucket *bucket);
 internal inline void       ui_box_equip_custom_draw(UI_Box *box, UI_BoxCustomDrawFunctionType *custom_draw, void *user_data);
 
 //- rjf: box accessors / queries
-internal String8           ui_box_display_string(UI_Box *box);
+internal string           ui_box_display_string(UI_Box *box);
 internal Vec2F32           ui_box_text_position(UI_Box *box);
 internal U64               ui_box_char_pos_from_xy(UI_Box *box, Vec2F32 xy);
 
@@ -957,7 +957,7 @@ internal F32 ui_anim_(UI_Key key, UI_AnimParams *params);
 ////////////////////////////////
 //~ rjf: Stacks
 
-internal void ui__push_tags_key_from_appended_string(String8 string);
+internal void ui__push_tags_key_from_appended_string(string string);
 internal void ui__pop_tags_key(void);
 
 //- rjf: base
@@ -979,7 +979,7 @@ internal UI_FocusKind               ui_top_focus_active(void);
 internal U32                        ui_top_fastpath_codepoint(void);
 internal UI_Key                     ui_top_group_key(void);
 internal F32                        ui_top_transparency(void);
-internal String8                    ui_top_tag(void);
+internal string                    ui_top_tag(void);
 internal Vec4F32                    ui_top_background_color(void);
 internal Vec4F32                    ui_top_text_color(void);
 internal Vec4F32                    ui_top_border_color(void);
@@ -1014,7 +1014,7 @@ internal UI_FocusKind               ui_bottom_focus_active(void);
 internal U32                        ui_bottom_fastpath_codepoint(void);
 internal UI_Key                     ui_bottom_group_key(void);
 internal F32                        ui_bottom_transparency(void);
-internal String8                    ui_bottom_tag(void);
+internal string                    ui_bottom_tag(void);
 internal Vec4F32                    ui_bottom_background_color(void);
 internal Vec4F32                    ui_bottom_text_color(void);
 internal Vec4F32                    ui_bottom_border_color(void);
@@ -1049,7 +1049,7 @@ internal UI_FocusKind               ui_push_focus_active(UI_FocusKind v);
 internal U32                        ui_push_fastpath_codepoint(U32 v);
 internal UI_Key                     ui_push_group_key(UI_Key v);
 internal F32                        ui_push_transparency(F32 v);
-internal String8                    ui_push_tag(String8 v);
+internal string                    ui_push_tag(string v);
 internal Vec4F32                    ui_push_background_color(Vec4F32 v);
 internal Vec4F32                    ui_push_text_color(Vec4F32 v);
 internal Vec4F32                    ui_push_border_color(Vec4F32 v);
@@ -1084,7 +1084,7 @@ internal UI_FocusKind               ui_pop_focus_active(void);
 internal U32                        ui_pop_fastpath_codepoint(void);
 internal UI_Key                     ui_pop_group_key(void);
 internal F32                        ui_pop_transparency(void);
-internal String8                    ui_pop_tag(void);
+internal string                    ui_pop_tag(void);
 internal Vec4F32                    ui_pop_background_color(void);
 internal Vec4F32                    ui_pop_text_color(void);
 internal Vec4F32                    ui_pop_border_color(void);
@@ -1119,7 +1119,7 @@ internal UI_FocusKind               ui_set_next_focus_active(UI_FocusKind v);
 internal U32                        ui_set_next_fastpath_codepoint(U32 v);
 internal UI_Key                     ui_set_next_group_key(UI_Key v);
 internal F32                        ui_set_next_transparency(F32 v);
-internal String8                    ui_set_next_tag(String8 v);
+internal string                    ui_set_next_tag(string v);
 internal Vec4F32                    ui_set_next_background_color(Vec4F32 v);
 internal Vec4F32                    ui_set_next_text_color(Vec4F32 v);
 internal Vec4F32                    ui_set_next_border_color(Vec4F32 v);

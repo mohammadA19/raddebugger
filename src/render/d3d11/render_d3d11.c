@@ -165,14 +165,14 @@ r_init(CmdLine *cmdln)
   ProfBegin("create base device");
   UINT creation_flags = D3D11_CREATE_DEVICE_BGRA_SUPPORT;
 #if BUILD_DEBUG
-  if(cmd_line_has_flag(cmdln, str8_lit("d3d11_debug")))
+  if(cmd_line_has_flag(cmdln, ("d3d11_debug")))
   {
     creation_flags |= D3D11_CREATE_DEVICE_DEBUG;
   }
 #endif
   D3D_FEATURE_LEVEL feature_levels[] = { D3D_FEATURE_LEVEL_11_0 };
   D3D_DRIVER_TYPE driver_type = D3D_DRIVER_TYPE_HARDWARE;
-  if(cmd_line_has_flag(cmdln, str8_lit("force_d3d11_software")))
+  if(cmd_line_has_flag(cmdln, ("force_d3d11_software")))
   {
     driver_type = D3D_DRIVER_TYPE_WARP;
   }
@@ -198,14 +198,14 @@ r_init(CmdLine *cmdln)
   {
     char buffer[256] = {0};
     raddbg_snprintf(buffer, sizeof(buffer), "D3D11 device creation failure (%lx). The process is terminating.", error);
-    os_graphical_message(1, str8_lit("Fatal Error"), str8_cstring(buffer));
+    os_graphical_message(1, ("Fatal Error"), str8_cstring(buffer));
     os_abort(1);
   }
   ProfEnd();
   
   //- rjf: enable break-on-error
 #if BUILD_DEBUG
-  if(cmd_line_has_flag(cmdln, str8_lit("d3d11_debug"))) ProfScope("enable break-on-error")
+  if(cmd_line_has_flag(cmdln, ("d3d11_debug"))) ProfScope("enable break-on-error")
   {
     ID3D11InfoQueue *info = 0;
     error = r_d3d11_state->base_device->lpVtbl->QueryInterface(r_d3d11_state->base_device, &IID_ID3D11InfoQueue, (void **)(&info));
@@ -343,8 +343,8 @@ r_init(CmdLine *cmdln)
         kind < R_D3D11_VShadKind_COUNT;
         kind = (R_D3D11_VShadKind)(kind+1))
   {
-    String8 source = *r_d3d11_g_vshad_kind_source_table[kind];
-    String8 source_name = r_d3d11_g_vshad_kind_source_name_table[kind];
+    string source = *r_d3d11_g_vshad_kind_source_table[kind];
+    string source_name = r_d3d11_g_vshad_kind_source_name_table[kind];
     D3D11_INPUT_ELEMENT_DESC *ilay_elements = r_d3d11_g_vshad_kind_elements_ptr_table[kind];
     U64 ilay_elements_count = r_d3d11_g_vshad_kind_elements_count_table[kind];
     
@@ -365,12 +365,12 @@ r_init(CmdLine *cmdln)
                          0,
                          &vshad_source_blob,
                          &vshad_source_errors);
-      String8 errors = {0};
+      string errors = {0};
       if(FAILED(error))
       {
         errors = str8((U8 *)vshad_source_errors->lpVtbl->GetBufferPointer(vshad_source_errors),
                       (U64)vshad_source_errors->lpVtbl->GetBufferSize(vshad_source_errors));
-        os_graphical_message(1, str8_lit("Vertex Shader Compilation Failure"), errors);
+        os_graphical_message(1, ("Vertex Shader Compilation Failure"), errors);
       }
       else
       {
@@ -400,8 +400,8 @@ r_init(CmdLine *cmdln)
       kind < R_D3D11_PShadKind_COUNT;
       kind = (R_D3D11_PShadKind)(kind+1))
   {
-    String8 source = *r_d3d11_g_pshad_kind_source_table[kind];
-    String8 source_name = r_d3d11_g_pshad_kind_source_name_table[kind];
+    string source = *r_d3d11_g_pshad_kind_source_table[kind];
+    string source_name = r_d3d11_g_pshad_kind_source_name_table[kind];
     
     // rjf: compile pixel shader
     ID3DBlob *pshad_source_blob = 0;
@@ -420,12 +420,12 @@ r_init(CmdLine *cmdln)
                          0,
                          &pshad_source_blob,
                          &pshad_source_errors);
-      String8 errors = {0};
+      string errors = {0};
       if(FAILED(error))
       {
         errors = str8((U8 *)pshad_source_errors->lpVtbl->GetBufferPointer(pshad_source_errors),
                       (U64)pshad_source_errors->lpVtbl->GetBufferSize(pshad_source_errors));
-        os_graphical_message(1, str8_lit("Pixel Shader Compilation Failure"), errors);
+        os_graphical_message(1, ("Pixel Shader Compilation Failure"), errors);
       }
       else
       {
@@ -534,7 +534,7 @@ r_window_equip(OS_Handle handle)
     {
       char buffer[256] = {0};
       raddbg_snprintf(buffer, sizeof(buffer), "DXGI swap chain creation failure (%lx). The process is terminating.", error);
-      os_graphical_message(1, str8_lit("Fatal Error"), str8_cstring(buffer));
+      os_graphical_message(1, ("Fatal Error"), str8_cstring(buffer));
       os_abort(1);
     }
     
@@ -1046,7 +1046,7 @@ r_window_end_frame(OS_Handle window, R_Handle window_equip)
     {
       char buffer[256] = {0};
       raddbg_snprintf(buffer, sizeof(buffer), "D3D11 present failure (%lx). The process is terminating.", error);
-      os_graphical_message(1, str8_lit("Fatal Error"), str8_cstring(buffer));
+      os_graphical_message(1, ("Fatal Error"), str8_cstring(buffer));
       os_abort(1);
     }
     d_ctx->lpVtbl->ClearState(d_ctx);

@@ -16,7 +16,7 @@ typedef struct LNK_CodeViewSymbolsInput
 {
   U64            obj_idx;
   CV_SymbolList *symbol_list;
-  String8        raw_symbols;
+  string        raw_symbols;
 } LNK_CodeViewSymbolsInput;
 
 typedef struct LNK_CodeViewInput
@@ -25,8 +25,8 @@ typedef struct LNK_CodeViewInput
   U64             internal_count;
   U64             external_count;
   U64             type_server_count;
-  String8        *type_server_path_arr; // [type_server_count]
-  String8        *type_server_data_arr; // [type_server_count]
+  string        *type_server_path_arr; // [type_server_count]
+  string        *type_server_data_arr; // [type_server_count]
   U64List        *ts_to_obj_arr;        // [type_server_count]
   LNK_Obj        *obj_arr;              // [count]
   LNK_PchInfo    *pch_arr;              // [count]
@@ -315,7 +315,7 @@ typedef struct
   LNK_Obj                    *obj_arr;
   PDB_DbiModule             **mod_arr;
   PDB_DbiSectionContribList  *sc_list;
-  String8                     image_data;
+  string                     image_data;
   Rng1U64Array                image_section_file_ranges;
   Rng1U64Array                image_section_virt_ranges;
 } LNK_PushDbiSecContribTaskData;
@@ -382,7 +382,7 @@ typedef struct
 
 typedef struct
 {
-  String8 name;
+  string name;
   U64     leaf_idx;
 } LNK_UDTNameBucket;
 
@@ -447,7 +447,7 @@ typedef struct
 {
   CV_Arch     arch;
   CV_Language language;
-  String8     compiler_name;
+  string     compiler_name;
 } LNK_CodeViewCompilerInfo;
 
 typedef struct
@@ -509,14 +509,14 @@ internal LNK_LeafLocType  lnk_loc_type_from_obj_idx(LNK_CodeViewInput *input, U6
 internal U64              lnk_loc_idx_from_obj_idx(LNK_CodeViewInput *input, U64 obj_idx);
 internal CV_TypeIndex     lnk_ti_lo_from_loc(LNK_CodeViewInput *input, LNK_LeafLocType loc_type, U64 loc_idx, CV_TypeIndexSource ti_source);
 internal CV_TypeIndex     lnk_ti_lo_from_leaf_ref(LNK_CodeViewInput *input, LNK_LeafRef leaf_ref);
-internal String8          lnk_data_from_leaf_ref(LNK_CodeViewInput *input, LNK_LeafRef leaf_ref);
+internal string          lnk_data_from_leaf_ref(LNK_CodeViewInput *input, LNK_LeafRef leaf_ref);
 internal CV_Leaf          lnk_cv_leaf_from_leaf_ref(LNK_CodeViewInput *input, LNK_LeafRef leaf_ref);
 internal U128             lnk_hash_from_leaf_ref(LNK_LeafHashes *hashes, LNK_LeafRef leaf_ref);
 internal LNK_LeafRef      lnk_leaf_ref_from_loc_idx_and_ti(LNK_CodeViewInput *input, LNK_LeafLocType loc_type, CV_TypeIndexSource ti_source, U64 loc_idx, CV_TypeIndex obj_ti);
 internal B32              lnk_match_leaf_ref(LNK_CodeViewInput *input, LNK_LeafHashes *hashes, LNK_LeafRef a, LNK_LeafRef b);
 internal B32              lnk_match_leaf_ref_deep(Arena *arena, LNK_CodeViewInput *input, LNK_LeafHashes *hashes, LNK_LeafRef a, LNK_LeafRef b);
 internal U128             lnk_hash_cv_leaf(Arena *arena, LNK_CodeViewInput *input, LNK_LeafHashes *hashes, LNK_LeafLocType loc_type, U32 loc_idx, Rng1U64 *ti_ranges, CV_TypeIndex curr_ti, CV_Leaf leaf, CV_TypeIndexInfoList ti_info_list);
-internal void             lnk_hash_cv_leaf_deep(Arena *arena, LNK_CodeViewInput *input, Rng1U64 *ti_ranges, CV_DebugT *leaves, LNK_LeafHashes *hashes, LNK_LeafLocType loc_type, U32 loc_idx, CV_TypeIndexInfoList ti_info_list, String8 data);
+internal void             lnk_hash_cv_leaf_deep(Arena *arena, LNK_CodeViewInput *input, Rng1U64 *ti_ranges, CV_DebugT *leaves, LNK_LeafHashes *hashes, LNK_LeafLocType loc_type, U32 loc_idx, CV_TypeIndexInfoList ti_info_list, string data);
 internal LNK_LeafBucket * lnk_leaf_hash_table_insert_or_update(LNK_LeafHashTable *leaf_ht, LNK_CodeViewInput *input, LNK_LeafHashes *hashes, U128 hash, LNK_LeafBucket *new_bucket);
 internal LNK_LeafBucket * lnk_leaf_hash_table_search(LNK_LeafHashTable *ht, LNK_CodeViewInput *input, LNK_LeafHashes *hashes, LNK_LeafRef leaf_ref);
 
@@ -532,26 +532,26 @@ internal void                lnk_patch_leaves(TP_Context *tp, LNK_CodeViewInput 
 internal String8Node *       lnk_copy_raw_leaf_arr_to_type_server(TP_Context *tp, CV_DebugT types, PDB_TypeServer *type_server);
 internal CV_DebugT *         lnk_import_types(TP_Context *tp, TP_Arena *tp_temp, LNK_CodeViewInput *input);
 
-internal void lnk_replace_type_names_with_hashes(TP_Context *tp, TP_Arena *arena, CV_DebugT debug_t, LNK_TypeNameHashMode mode, U64 hash_length, String8 map_name);
+internal void lnk_replace_type_names_with_hashes(TP_Context *tp, TP_Arena *arena, CV_DebugT debug_t, LNK_TypeNameHashMode mode, U64 hash_length, string map_name);
 
 // --- RAD Debug info ----------------------------------------------------------
 
-internal U64                  lnk_udt_name_hash_table_hash(String8 string);
+internal U64                  lnk_udt_name_hash_table_hash(string string);
 internal LNK_UDTNameBucket ** lnk_udt_name_hash_table_from_debug_t(TP_Context *tp, TP_Arena *arena, CV_DebugT debug_t, U64 *buckets_cap_out);
-internal LNK_UDTNameBucket *  lnk_udt_name_hash_table_lookup(LNK_UDTNameBucket **buckets, U64 cap, String8 name);
+internal LNK_UDTNameBucket *  lnk_udt_name_hash_table_lookup(LNK_UDTNameBucket **buckets, U64 cap, string name);
 internal CV_TypeIndex *       lnk_build_udt_fwdmap(TP_Context *tp, Arena *arena, CV_DebugT debug_t, CV_TypeIndex ti_lo, LNK_UDTNameBucket **udt_name_buckets, U64 udt_name_buckets_cap);
 
 internal RDIB_TypeRef           lnk_rdib_type_from_itype(LNK_ConvertTypesToRDI *task, CV_TypeIndex itype);
 internal RDI_MemberKind         lnk_rdib_method_kind_from_cv_prop(CV_MethodProp prop);
-internal LNK_SourceFileBucket * lnk_src_file_hash_table_hash(String8 file_path, CV_C13ChecksumKind checksum_kind, String8 checksum_bytes);
-internal LNK_SourceFileBucket * lnk_src_file_hash_table_lookup_slot(LNK_SourceFileBucket **src_file_buckets, U64 src_file_buckets_cap, U64 hash, String8 file_path, CV_C13ChecksumKind checksum_kind, String8 checksum_bytes);
+internal LNK_SourceFileBucket * lnk_src_file_hash_table_hash(string file_path, CV_C13ChecksumKind checksum_kind, string checksum_bytes);
+internal LNK_SourceFileBucket * lnk_src_file_hash_table_lookup_slot(LNK_SourceFileBucket **src_file_buckets, U64 src_file_buckets_cap, U64 hash, string file_path, CV_C13ChecksumKind checksum_kind, string checksum_bytes);
 
 internal String8List lnk_build_rad_debug_info(TP_Context               *tp,
                                               TP_Arena                 *tp_arena,
                                               OperatingSystem           os,
                                               RDI_Arch                  arch,
-                                              String8                   image_name,
-                                              String8                   image_data,
+                                              string                   image_name,
+                                              string                   image_data,
                                               U64                       obj_count,
                                               LNK_Obj                  *obj_arr,
                                               CV_DebugS                *debug_s_arr,
@@ -571,7 +571,7 @@ internal void lnk_build_pdb_public_symbols(TP_Context *tp, TP_Arena *arena, LNK_
 
 internal String8List lnk_build_pdb(TP_Context               *tp,
                                    TP_Arena                 *tp_arena,
-                                   String8                   image_data,
+                                   string                   image_data,
                                    LNK_Config               *config,
                                    LNK_SymbolTable          *symtab,
                                    U64                       obj_count,
@@ -584,9 +584,9 @@ internal String8List lnk_build_pdb(TP_Context               *tp,
 
 // --- RAD Debug Info ----------------------------------------------------------
 
-internal U64                  lnk_udt_name_hash_table_hash(String8 string);
+internal U64                  lnk_udt_name_hash_table_hash(string string);
 internal LNK_UDTNameBucket ** lnk_udt_name_hash_table_from_debug_t(TP_Context *tp, TP_Arena *arena, CV_DebugT debug_t, U64 *buckets_cap_out);
-internal LNK_UDTNameBucket *  lnk_udt_name_hash_table_lookup(LNK_UDTNameBucket **buckets, U64 cap, String8 name);
+internal LNK_UDTNameBucket *  lnk_udt_name_hash_table_lookup(LNK_UDTNameBucket **buckets, U64 cap, string name);
 
 internal CV_TypeIndex * lnk_build_udt_fwdmap(TP_Context         *tp,
                                              Arena              *arena,

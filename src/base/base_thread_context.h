@@ -28,8 +28,8 @@ internal TCTX*     tctx_get_equipped(void);
 
 internal Arena*    tctx_get_scratch(Arena **conflicts, U64 count);
 
-internal void      tctx_set_thread_name(String8 name);
-internal String8   tctx_get_thread_name(void);
+internal void      tctx_set_thread_name(string name);
+internal string   tctx_get_thread_name(void);
 
 internal void      tctx_write_srcloc(char *file_name, U64 line_number);
 internal void      tctx_read_srcloc(char **file_name, U64 *line_number);
