@@ -14,7 +14,7 @@ r_ogl_os_init(CmdLine *cmdln)
   //- rjf: require GLX 1.3+
   int glx_version_major = 0;
   int glx_version_minor = 0;
-  if(!glXQueryVersion(os_lnx_gfx_state->display, &glx_version_major, &glx_version_minor) ||
+  if (!glXQueryVersion(os_lnx_gfx_state->display, &glx_version_major, &glx_version_minor) ||
      (glx_version_major == 1 && glx_version_minor < 3) ||
      glx_version_major < 1)
   {
@@ -43,7 +43,7 @@ r_ogl_os_init(CmdLine *cmdln)
   };
   int framebuffer_configs_count = 0;
   GLXFBConfig *framebuffer_configs = glXChooseFBConfig(os_lnx_gfx_state->display, DefaultScreen(os_lnx_gfx_state->display), framebuffer_config_options, &framebuffer_configs_count);
-  if(framebuffer_configs == 0)
+  if (framebuffer_configs == 0)
   {
     os_graphical_message(1, ("Fatal Error"), ("Could not find a suitable framebuffer configuration."));
     os_abort(1);

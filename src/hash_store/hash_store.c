@@ -72,7 +72,7 @@ hs_init(void)
   hs_shared->slots = push_array(arena, HS_Slot, hs_shared->slots_count);
   hs_shared->stripes = push_array(arena, HS_Stripe, hs_shared->stripes_count);
   hs_shared->stripes_free_nodes = push_array(arena, HS_Node *, hs_shared->stripes_count);
-  for(U64 idx = 0; idx < hs_shared->stripes_count; idx += 1)
+  for (U64 idx = 0; idx < hs_shared->stripes_count; idx += 1)
   {
     HS_Stripe *stripe = &hs_shared->stripes[idx];
     stripe->arena = arena_alloc();
@@ -84,7 +84,7 @@ hs_init(void)
   hs_shared->key_slots = push_array(arena, HS_KeySlot, hs_shared->key_slots_count);
   hs_shared->key_stripes = push_array(arena, HS_Stripe, hs_shared->key_stripes_count);
   hs_shared->key_stripes_free_nodes = push_array(arena, HS_KeyNode *, hs_shared->key_stripes_count);
-  for(U64 idx = 0; idx < hs_shared->key_stripes_count; idx += 1)
+  for (U64 idx = 0; idx < hs_shared->key_stripes_count; idx += 1)
   {
     HS_Stripe *stripe = &hs_shared->key_stripes[idx];
     stripe->arena = arena_alloc();
@@ -96,7 +96,7 @@ hs_init(void)
   hs_shared->root_slots = push_array(arena, HS_RootSlot, hs_shared->root_slots_count);
   hs_shared->root_stripes = push_array(arena, HS_Stripe, hs_shared->root_stripes_count);
   hs_shared->root_stripes_free_nodes = push_array(arena, HS_RootNode *, hs_shared->root_stripes_count);
-  for(U64 idx = 0; idx < hs_shared->root_stripes_count; idx += 1)
+  for (U64 idx = 0; idx < hs_shared->root_stripes_count; idx += 1)
   {
     HS_Stripe *stripe = &hs_shared->root_stripes[idx];
     stripe->arena = arena_alloc();
@@ -121,7 +121,7 @@ hs_root_alloc(void)
   OS_MutexScopeW(stripe->rw_mutex)
   {
     HS_RootNode *node = hs_shared->root_stripes_free_nodes[stripe_idx];
-    if(node != 0)
+    if (node != 0)
     {
       SLLStackPop(hs_shared->root_stripes_free_nodes[stripe_idx]);
     }
@@ -150,9 +150,9 @@ hs_root_release(HS_Root root)
   HS_RootIDChunkList root_ids = {0};
   OS_MutexScopeW(stripe->rw_mutex)
   {
-    for(HS_RootNode *n = slot->first; n != 0; n = n->next)
+    for (HS_RootNode *n = slot->first; n != 0; n = n->next)
     {
-      if(MemoryMatchStruct(&root, &n->root))
+      if (MemoryMatchStruct(&root, &n->root))
       {
         DLLRemove(slot->first, slot->last, n);
         root_arena = n->arena;
@@ -164,7 +164,7 @@ hs_root_release(HS_Root root)
   }
   
   //- rjf: release all IDs
-  for(HS_RootIDChunkNode *id_chunk_n = root_ids.first; id_chunk_n != 0; id_chunk_n = id_chunk_n->next)
+  for (HS_RootIDChunkNode *id_chunk_n = root_ids.first; id_chunk_n != 0; id_chunk_n = id_chunk_n->next)
   {
     for EachIndex(chunk_idx, id_chunk_n->count)
     {
@@ -177,12 +177,12 @@ hs_root_release(HS_Root root)
       HS_Stripe *key_stripe = &hs_shared->key_stripes[key_stripe_idx];
       OS_MutexScopeW(key_stripe->rw_mutex)
       {
-        for(HS_KeyNode *n = key_slot->first; n != 0; n = n->next)
+        for (HS_KeyNode *n = key_slot->first; n != 0; n = n->next)
         {
-          if(hs_key_match(n->key, key))
+          if (hs_key_match(n->key, key))
           {
             // rjf: release reference to all hashes
-            for(U64 history_idx = 0; history_idx < HS_KEY_HASH_HISTORY_STRONG_REF_COUNT && history_idx < n->hash_history_gen; history_idx += 1)
+            for (U64 history_idx = 0; history_idx < HS_KEY_HASH_HISTORY_STRONG_REF_COUNT && history_idx < n->hash_history_gen; history_idx += 1)
             {
               U128 hash = n->hash_history[(n->hash_history_gen+history_idx)%ArrayCount(n->hash_history)];
               U64 hash_slot_idx = hash.u64[1]%hs_shared->slots_count;
@@ -191,9 +191,9 @@ hs_root_release(HS_Root root)
               HS_Stripe *hash_stripe = &hs_shared->stripes[hash_stripe_idx];
               OS_MutexScopeR(hash_stripe->rw_mutex)
               {
-                for(HS_Node *n = hash_slot->first; n != 0; n = n->next)
+                for (HS_Node *n = hash_slot->first; n != 0; n = n->next)
                 {
-                  if(u128_match(n->hash, hash))
+                  if (u128_match(n->hash, hash))
                   {
                     ins_atomic_u64_dec_eval(&n->key_ref_count);
                     break;
@@ -234,18 +234,18 @@ hs_submit_data(HS_Key key, Arena **data_arena, string data)
   ProfScope("commit data to cache - if already there, just bump key refcount") OS_MutexScopeW(stripe->rw_mutex)
   {
     HS_Node *existing_node = 0;
-    for(HS_Node *n = slot->first; n != 0; n = n->next)
+    for (HS_Node *n = slot->first; n != 0; n = n->next)
     {
-      if(u128_match(n->hash, hash))
+      if (u128_match(n->hash, hash))
       {
         existing_node = n;
         break;
       }
     }
-    if(existing_node == 0)
+    if (existing_node == 0)
     {
       HS_Node *node = hs_shared->stripes_free_nodes[stripe_idx];
-      if(node)
+      if (node)
       {
         SLLStackPop(hs_shared->stripes_free_nodes[stripe_idx]);
       }
@@ -254,7 +254,7 @@ hs_submit_data(HS_Key key, Arena **data_arena, string data)
         node = push_array(stripe->arena, HS_Node, 1);
       }
       node->hash = hash;
-      if(data_arena != 0)
+      if (data_arena != 0)
       {
         node->arena = *data_arena;
       }
@@ -266,12 +266,12 @@ hs_submit_data(HS_Key key, Arena **data_arena, string data)
     else
     {
       existing_node->key_ref_count += 1;
-      if(data_arena != 0)
+      if (data_arena != 0)
       {
         arena_release(*data_arena);
       }
     }
-    if(data_arena != 0)
+    if (data_arena != 0)
     {
       *data_arena = 0;
     }
@@ -284,9 +284,9 @@ hs_submit_data(HS_Key key, Arena **data_arena, string data)
     // rjf: find existing key
     B32 key_is_new = 0;
     HS_KeyNode *key_node = 0;
-    for(HS_KeyNode *n = key_slot->first; n != 0; n = n->next)
+    for (HS_KeyNode *n = key_slot->first; n != 0; n = n->next)
     {
-      if(hs_key_match(n->key, key))
+      if (hs_key_match(n->key, key))
       {
         key_node = n;
         break;
@@ -294,11 +294,11 @@ hs_submit_data(HS_Key key, Arena **data_arena, string data)
     }
     
     // rjf: create key node if it doesn't exist
-    if(!key_node)
+    if (!key_node)
     {
       key_is_new = 1;
       key_node = hs_shared->key_stripes_free_nodes[key_stripe_idx];
-      if(key_node)
+      if (key_node)
       {
         SLLStackPop(hs_shared->key_stripes_free_nodes[key_stripe_idx]);
       }
@@ -311,9 +311,9 @@ hs_submit_data(HS_Key key, Arena **data_arena, string data)
     }
     
     // rjf: push hash into key's history
-    if(key_node)
+    if (key_node)
     {
-      if(key_node->hash_history_gen >= HS_KEY_HASH_HISTORY_STRONG_REF_COUNT)
+      if (key_node->hash_history_gen >= HS_KEY_HASH_HISTORY_STRONG_REF_COUNT)
       {
         key_expired_hash = key_node->hash_history[(key_node->hash_history_gen-HS_KEY_HASH_HISTORY_STRONG_REF_COUNT)%ArrayCount(key_node->hash_history)];
       }
@@ -322,7 +322,7 @@ hs_submit_data(HS_Key key, Arena **data_arena, string data)
     }
     
     // rjf: key is new -> add this key to the associated root
-    if(key_is_new)
+    if (key_is_new)
     {
       U64 root_hash = hs_little_hash_from_data(str8_struct(&key.root));
       U64 root_slot_idx = root_hash%hs_shared->root_slots_count;
@@ -331,12 +331,12 @@ hs_submit_data(HS_Key key, Arena **data_arena, string data)
       HS_Stripe *root_stripe = &hs_shared->root_stripes[root_stripe_idx];
       OS_MutexScopeW(root_stripe->rw_mutex)
       {
-        for(HS_RootNode *n = root_slot->first; n != 0; n = n->next)
+        for (HS_RootNode *n = root_slot->first; n != 0; n = n->next)
         {
-          if(MemoryMatchStruct(&n->root, &key.root))
+          if (MemoryMatchStruct(&n->root, &key.root))
           {
             HS_RootIDChunkNode *chunk = n->ids.last;
-            if(chunk == 0 || chunk->count >= chunk->cap)
+            if (chunk == 0 || chunk->count >= chunk->cap)
             {
               chunk = push_array(n->arena, HS_RootIDChunkNode, 1);
               SLLQueuePush(n->ids.first, n->ids.last, chunk);
@@ -356,7 +356,7 @@ hs_submit_data(HS_Key key, Arena **data_arena, string data)
   
   //- rjf: decrement key ref count of expired hash
   ProfScope("decrement key ref count of expired hash")
-    if(!u128_match(key_expired_hash, u128_zero()))
+    if (!u128_match(key_expired_hash, u128_zero()))
   {
     U64 old_hash_slot_idx = key_expired_hash.u64[1]%hs_shared->slots_count;
     U64 old_hash_stripe_idx = old_hash_slot_idx%hs_shared->stripes_count;
@@ -364,9 +364,9 @@ hs_submit_data(HS_Key key, Arena **data_arena, string data)
     HS_Stripe *old_hash_stripe = &hs_shared->stripes[old_hash_stripe_idx];
     OS_MutexScopeR(old_hash_stripe->rw_mutex)
     {
-      for(HS_Node *n = old_hash_slot->first; n != 0; n = n->next)
+      for (HS_Node *n = old_hash_slot->first; n != 0; n = n->next)
       {
-        if(u128_match(n->hash, key_expired_hash))
+        if (u128_match(n->hash, key_expired_hash))
         {
           ins_atomic_u64_dec_eval(&n->key_ref_count);
           break;
@@ -384,14 +384,14 @@ hs_submit_data(HS_Key key, Arena **data_arena, string data)
 internal HS_Scope *
 hs_scope_open(void)
 {
-  if(hs_tctx == 0)
+  if (hs_tctx == 0)
   {
     Arena *arena = arena_alloc();
     hs_tctx = push_array(arena, HS_TCTX, 1);
     hs_tctx->arena = arena;
   }
   HS_Scope *scope = hs_tctx->free_scope;
-  if(scope)
+  if (scope)
   {
     SLLStackPop(hs_tctx->free_scope);
   }
@@ -406,7 +406,7 @@ hs_scope_open(void)
 internal void
 hs_scope_close(HS_Scope *scope)
 {
-  for(HS_Touch *touch = scope->top_touch, *next = 0; touch != 0; touch = next)
+  for (HS_Touch *touch = scope->top_touch, *next = 0; touch != 0; touch = next)
   {
     U128 hash = touch->hash;
     next = touch->next;
@@ -416,9 +416,9 @@ hs_scope_close(HS_Scope *scope)
     HS_Stripe *stripe = &hs_shared->stripes[stripe_idx];
     OS_MutexScopeR(stripe->rw_mutex)
     {
-      for(HS_Node *n = slot->first; n != 0; n = n->next)
+      for (HS_Node *n = slot->first; n != 0; n = n->next)
       {
-        if(u128_match(hash, n->hash))
+        if (u128_match(hash, n->hash))
         {
           ins_atomic_u64_dec_eval(&n->scope_ref_count);
           break;
@@ -435,7 +435,7 @@ hs_scope_touch_node__stripe_r_guarded(HS_Scope *scope, HS_Node *node)
 {
   HS_Touch *touch = hs_tctx->free_touch;
   ins_atomic_u64_inc_eval(&node->scope_ref_count);
-  if(touch != 0)
+  if (touch != 0)
   {
     SLLStackPop(hs_tctx->free_touch);
   }
@@ -460,9 +460,9 @@ hs_hash_downstream_inc(U128 hash)
   HS_Stripe *stripe = &hs_shared->stripes[stripe_idx];
   OS_MutexScopeR(stripe->rw_mutex)
   {
-    for(HS_Node *n = slot->first; n != 0; n = n->next)
+    for (HS_Node *n = slot->first; n != 0; n = n->next)
     {
-      if(u128_match(hash, n->hash))
+      if (u128_match(hash, n->hash))
       {
         ins_atomic_u64_inc_eval(&n->downstream_ref_count);
         break;
@@ -480,9 +480,9 @@ hs_hash_downstream_dec(U128 hash)
   HS_Stripe *stripe = &hs_shared->stripes[stripe_idx];
   OS_MutexScopeR(stripe->rw_mutex)
   {
-    for(HS_Node *n = slot->first; n != 0; n = n->next)
+    for (HS_Node *n = slot->first; n != 0; n = n->next)
     {
-      if(u128_match(hash, n->hash))
+      if (u128_match(hash, n->hash))
       {
         ins_atomic_u64_dec_eval(&n->downstream_ref_count);
         break;
@@ -505,9 +505,9 @@ hs_hash_from_key(HS_Key key, U64 rewind_count)
   HS_Stripe *key_stripe = &hs_shared->key_stripes[key_stripe_idx];
   OS_MutexScopeR(key_stripe->rw_mutex)
   {
-    for(HS_KeyNode *n = key_slot->first; n != 0; n = n->next)
+    for (HS_KeyNode *n = key_slot->first; n != 0; n = n->next)
     {
-      if(hs_key_match(n->key, key) && n->hash_history_gen > 0 && n->hash_history_gen-1 >= rewind_count)
+      if (hs_key_match(n->key, key) && n->hash_history_gen > 0 && n->hash_history_gen-1 >= rewind_count)
       {
         result = n->hash_history[(n->hash_history_gen-1-rewind_count)%ArrayCount(n->hash_history)];
         break;
@@ -528,9 +528,9 @@ hs_data_from_hash(HS_Scope *scope, U128 hash)
   HS_Stripe *stripe = &hs_shared->stripes[stripe_idx];
   OS_MutexScopeR(stripe->rw_mutex)
   {
-    for(HS_Node *n = slot->first; n != 0; n = n->next)
+    for (HS_Node *n = slot->first; n != 0; n = n->next)
     {
-      if(u128_match(n->hash, hash))
+      if (u128_match(n->hash, hash))
       {
         result = n->data;
         hs_scope_touch_node__stripe_r_guarded(scope, n);
@@ -549,9 +549,9 @@ internal void
 hs_evictor_thread__entry_point(void *p)
 {
   ThreadNameF("[hs] evictor thread");
-  for(;;)
+  for (;;)
   {
-    for(U64 slot_idx = 0; slot_idx < hs_shared->slots_count; slot_idx += 1)
+    for (U64 slot_idx = 0; slot_idx < hs_shared->slots_count; slot_idx += 1)
     {
       U64 stripe_idx = slot_idx%hs_shared->stripes_count;
       HS_Slot *slot = &hs_shared->slots[slot_idx];
@@ -559,31 +559,31 @@ hs_evictor_thread__entry_point(void *p)
       B32 slot_has_work = 0;
       OS_MutexScopeR(stripe->rw_mutex)
       {
-        for(HS_Node *n = slot->first; n != 0; n = n->next)
+        for (HS_Node *n = slot->first; n != 0; n = n->next)
         {
           U64 key_ref_count = ins_atomic_u64_eval(&n->key_ref_count);
           U64 scope_ref_count = ins_atomic_u64_eval(&n->scope_ref_count);
           U64 downstream_ref_count = ins_atomic_u64_eval(&n->downstream_ref_count);
-          if(key_ref_count == 0 && scope_ref_count == 0 && downstream_ref_count == 0)
+          if (key_ref_count == 0 && scope_ref_count == 0 && downstream_ref_count == 0)
           {
             slot_has_work = 1;
             break;
           }
         }
       }
-      if(slot_has_work) OS_MutexScopeW(stripe->rw_mutex)
+      if (slot_has_work) OS_MutexScopeW(stripe->rw_mutex)
       {
-        for(HS_Node *n = slot->first, *next = 0; n != 0; n = next)
+        for (HS_Node *n = slot->first, *next = 0; n != 0; n = next)
         {
           next = n->next;
           U64 key_ref_count = ins_atomic_u64_eval(&n->key_ref_count);
           U64 scope_ref_count = ins_atomic_u64_eval(&n->scope_ref_count);
           U64 downstream_ref_count = ins_atomic_u64_eval(&n->downstream_ref_count);
-          if(key_ref_count == 0 && scope_ref_count == 0 && downstream_ref_count == 0)
+          if (key_ref_count == 0 && scope_ref_count == 0 && downstream_ref_count == 0)
           {
             DLLRemove(slot->first, slot->last, n);
             SLLStackPush(hs_shared->stripes_free_nodes[stripe_idx], n);
-            if(n->arena != 0)
+            if (n->arena != 0)
             {
               arena_release(n->arena);
             }

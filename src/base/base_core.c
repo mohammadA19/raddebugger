@@ -255,7 +255,7 @@ memory_is_zero(void *ptr, U64 size){
   
   // check with 8-byte stride
   U64 *p64 = (U64*)ptr;
-  if(result)
+  if (result)
   {
     for (U64 i = 0; i < count8; i += 1, p64 += 1){
       if (*p64 != 0){
@@ -266,7 +266,7 @@ memory_is_zero(void *ptr, U64 size){
   }
   
   // check extra
-  if(result)
+  if (result)
   {
     U8 *p8 = (U8*)p64;
     for (U64 i = 0; i < extra; i += 1, p8 += 1){
@@ -303,11 +303,11 @@ internal B32
 txt_pt_less_than(TxtPt a, TxtPt b)
 {
   B32 result = 0;
-  if(a.line < b.line)
+  if (a.line < b.line)
   {
     result = 1;
   }
-  else if(a.line == b.line)
+  else if (a.line == b.line)
   {
     result = a.column < b.column;
   }
@@ -318,7 +318,7 @@ internal TxtPt
 txt_pt_min(TxtPt a, TxtPt b)
 {
   TxtPt result = b;
-  if(txt_pt_less_than(a, b))
+  if (txt_pt_less_than(a, b))
   {
     result = a;
   }
@@ -329,7 +329,7 @@ internal TxtPt
 txt_pt_max(TxtPt a, TxtPt b)
 {
   TxtPt result = a;
-  if(txt_pt_less_than(a, b))
+  if (txt_pt_less_than(a, b))
   {
     result = b;
   }
@@ -340,7 +340,7 @@ internal TxtRng
 txt_rng(TxtPt min, TxtPt max)
 {
   TxtRng range = {0};
-  if(txt_pt_less_than(min, max))
+  if (txt_pt_less_than(min, max))
   {
     range.min = min;
     range.max = max;
@@ -359,7 +359,7 @@ txt_rng_intersect(TxtRng a, TxtRng b)
   TxtRng result = {0};
   result.min = txt_pt_max(a.min, b.min);
   result.max = txt_pt_min(a.max, b.max);
-  if(txt_pt_less_than(result.max, result.min))
+  if (txt_pt_less_than(result.max, result.min))
   {
     MemoryZeroStruct(&result);
   }
@@ -391,7 +391,7 @@ bit_size_from_arch(Arch arch)
 {
   // TODO(rjf): metacode
   U64 arch_bitsize = 0;
-  switch(arch)
+  switch (arch)
   {
     case Arch_x64:   arch_bitsize = 64; break;
     case Arch_x86:   arch_bitsize = 32; break;
@@ -524,17 +524,17 @@ date_time_from_unix_time(U64 unix_time)
   date.min      = (U32)(unix_time / 60) % 60;
   date.hour     = (U32)(unix_time / 3600) % 24;
   
-  for(;;)
+  for (;;)
   {
-    for(date.month = 0; date.month < 12; ++date.month)
+    for (date.month = 0; date.month < 12; ++date.month)
     {
       U64 c = 0;
-      switch(date.month)
+      switch (date.month)
       {
         case Month_Jan: c = 31; break;
         case Month_Feb:
         {
-          if((date.year % 4 == 0) && ((date.year % 100) != 0 || (date.year % 400) == 0))
+          if ((date.year % 4 == 0) && ((date.year % 100) != 0 || (date.year % 400) == 0))
           {
             c = 29;
           }
@@ -555,7 +555,7 @@ date_time_from_unix_time(U64 unix_time)
         case Month_Dec: c = 31; break;
         default: InvalidPath;
       }
-      if(date.day <= c)
+      if (date.day <= c)
       {
         goto exit;
       }
@@ -608,18 +608,18 @@ ring_read(U8 *ring_base, U64 ring_size, U64 ring_pos, void *dst_data, U64 read_s
 internal U64
 u64_array_bsearch(U64 *arr, U64 count, U64 value)
 {
-  if(count > 1 && arr[0] <= value && value < arr[count-1])
+  if (count > 1 && arr[0] <= value && value < arr[count-1])
   {
     U64 l = 0;
     U64 r = count - 1;
-    for(; l <= r; )
+    for (; l <= r; )
     {
       U64 m = l + (r - l) / 2;
-      if(arr[m] == value)
+      if (arr[m] == value)
       {
         return m;
       }
-      else if(arr[m] < value)
+      else if (arr[m] < value)
       {
         l = m + 1;
       }

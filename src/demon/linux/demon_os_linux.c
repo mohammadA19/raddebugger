@@ -786,7 +786,7 @@ demon_lnx_next_map(Arena *arena, int maps, DEMON_LNX_MapsEntry *entry_out){
     }
     
     is_parsed = true;
-  }while(0);
+  }while (0);
   return(is_parsed);
 }
 

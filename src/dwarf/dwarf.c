@@ -305,9 +305,9 @@ dw_pick_attrib_value_class(DW_Version ver, DW_Ext ext, B32 relaxed, DW_AttribKin
   DW_AttribClass attrib_class = dw_attrib_class_from_attrib(ver, ext, attrib_kind);
   DW_AttribClass form_class   = dw_attrib_class_from_form_kind(ver, form_kind);
   
-  if(relaxed)
+  if (relaxed)
   {
-    if(attrib_class == DW_AttribClass_Null || form_class == DW_AttribClass_Null)
+    if (attrib_class == DW_AttribClass_Null || form_class == DW_AttribClass_Null)
     {
       attrib_class = dw_attrib_class_from_attrib(DW_Version_Last, ext, attrib_kind);
       form_class   = dw_attrib_class_from_form_kind(DW_Version_Last, form_kind);
@@ -315,14 +315,14 @@ dw_pick_attrib_value_class(DW_Version ver, DW_Ext ext, B32 relaxed, DW_AttribKin
   }
   
   DW_AttribClass result = DW_AttribClass_Null;
-  if(attrib_class != DW_AttribClass_Null && form_class != DW_AttribClass_Null)
+  if (attrib_class != DW_AttribClass_Null && form_class != DW_AttribClass_Null)
   {
     result = DW_AttribClass_Undefined;
     
-    for(U32 i = 0; i < 32; ++i)
+    for (U32 i = 0; i < 32; ++i)
     {
       U32 n = 1u << i;
-      if((attrib_class & n) != 0 && (form_class & n) != 0)
+      if ((attrib_class & n) != 0 && (form_class & n) != 0)
       {
         result = ((DW_AttribClass) n);
         break;
@@ -451,18 +451,18 @@ dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKi
   string result = {0};
   
   //- rjf: try extensions
-  if(result.size != 0)
+  if (result.size != 0)
   {
-    while(ext)
+    while (ext)
     {
       U64 z = 64-clz64(ext);
-      if(z == 0)
+      if (z == 0)
       {
         break;
       }
       U64 flag = 1 << (z-1);
       ext &= ~flag;
-      switch(flag)
+      switch (flag)
       {
         default:{}break;
         case DW_Ext_Null:  break;
@@ -475,17 +475,17 @@ dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKi
   }
   
   //- rjf: try version
-  if(result.size == 0)
+  if (result.size == 0)
   {
-    for(U64 retry = 0; retry < 2; retry += 1)
+    for (U64 retry = 0; retry < 2; retry += 1)
     {
       DW_Version version = retry ? DW_Version_5 : ver;
-      switch(version)
+      switch (version)
       {
-        case DW_Version_5: { switch(kind) { DW_AttribKind_V5_XList(X) } } // fall-through
-        case DW_Version_4: { switch(kind) { DW_AttribKind_V4_XList(X) } } // fall-through
-        case DW_Version_3: { switch(kind) { DW_AttribKind_V3_XList(X) } } // fall-through
-        case DW_Version_2: { switch(kind) { DW_AttribKind_V2_XList(X) } } // fall-through
+        case DW_Version_5: { switch (kind) { DW_AttribKind_V5_XList(X) } } // fall-through
+        case DW_Version_4: { switch (kind) { DW_AttribKind_V4_XList(X) } } // fall-through
+        case DW_Version_3: { switch (kind) { DW_AttribKind_V3_XList(X) } } // fall-through
+        case DW_Version_2: { switch (kind) { DW_AttribKind_V2_XList(X) } } // fall-through
         case DW_Version_1: {}break;
         case DW_Version_Null:{}break;
         default:{}break;
@@ -494,7 +494,7 @@ dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKi
   }
   
   //- rjf: fallback
-  if(result.size == 0)
+  if (result.size == 0)
   {
     result = push_str8f(arena, "#%u", kind);
   }

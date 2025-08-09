@@ -179,7 +179,7 @@ rdi_hash(RDI_U8 *ptr, RDI_U64 size)
 {
   RDI_U64 result = 5381;
   RDI_U8 *opl = ptr + size;
-  for(;ptr < opl; ptr += 1)
+  for (;ptr < opl; ptr += 1)
   {
     result = ((result << 5) + result) + *ptr;
   }
@@ -258,7 +258,7 @@ RDI_PROC RDI_U32
 rdi_size_from_basic_type_kind(RDI_TypeKind kind)
 {
 RDI_U32 result = 0;
-switch(kind)
+switch (kind)
 {
 default:{}break;
 case RDI_TypeKind_Handle:{result = 0xFFFFFFFF;}break;
@@ -303,7 +303,7 @@ RDI_PROC RDI_U32
 rdi_addr_size_from_arch(RDI_Arch arch)
 {
 RDI_U32 result = 0;
-switch(arch)
+switch (arch)
 {
 default:{}break;
 case RDI_Arch_X86:{result = 4;}break;
@@ -323,7 +323,7 @@ RDI_PROC RDI_S32
 rdi_eval_op_typegroup_are_compatible(RDI_EvalOp op, RDI_EvalTypeGroup group)
 {
   RDI_S32 result = 0;
-  switch(op)
+  switch (op)
   {
     case RDI_EvalOp_Neg: case RDI_EvalOp_Add: case RDI_EvalOp_Sub:
     case RDI_EvalOp_Mul: case RDI_EvalOp_Div:
@@ -331,7 +331,7 @@ rdi_eval_op_typegroup_are_compatible(RDI_EvalOp op, RDI_EvalTypeGroup group)
     case RDI_EvalOp_LsEq:case RDI_EvalOp_GrEq:
     case RDI_EvalOp_Less:case RDI_EvalOp_Grtr:
     {
-      if(group != RDI_EvalTypeGroup_Other)
+      if (group != RDI_EvalTypeGroup_Other)
       {
         result = 1;
       }
@@ -341,7 +341,7 @@ rdi_eval_op_typegroup_are_compatible(RDI_EvalOp op, RDI_EvalTypeGroup group)
     case RDI_EvalOp_BitOr:case RDI_EvalOp_LogNot:case RDI_EvalOp_LogAnd:
     case RDI_EvalOp_LogOr: 
     {
-      if(group == RDI_EvalTypeGroup_S || group == RDI_EvalTypeGroup_U)
+      if (group == RDI_EvalTypeGroup_S || group == RDI_EvalTypeGroup_U)
       {
         result = 1;
       }

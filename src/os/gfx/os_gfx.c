@@ -13,7 +13,7 @@ internal string
 os_string_from_event_kind(OS_EventKind kind)
 {
   string result = {0};
-  switch(kind)
+  switch (kind)
   {
     case OS_EventKind_Null:
     case OS_EventKind_COUNT:
@@ -49,7 +49,7 @@ internal string
 os_string_from_modifiers_key(Arena *arena, OS_Modifiers modifiers, OS_Key key)
 {
   string result = {0};
-  if(key != OS_Key_Null)
+  if (key != OS_Key_Null)
   {
     Temp scratch = scratch_begin(&arena, 1);
     String8List mods = os_string_list_from_modifiers(scratch.arena, modifiers);
@@ -160,15 +160,15 @@ os_codepoint_from_modifiers_and_key(OS_Modifiers modifiers, OS_Key key)
   };
   
   // rjf: check numeric
-  if(OS_Key_0 <= key && key <= OS_Key_9)
+  if (OS_Key_0 <= key && key <= OS_Key_9)
   {
     result = '0' + (key - OS_Key_0);
   }
   
   // rjf: check special-case map
-  for(U64 idx = 0; idx < ArrayCount(map); idx += 1)
+  for (U64 idx = 0; idx < ArrayCount(map); idx += 1)
   {
-    if(map[idx].key == key && map[idx].modifiers == modifiers)
+    if (map[idx].key == key && map[idx].modifiers == modifiers)
     {
       result = map[idx].character;
       break;
@@ -189,9 +189,9 @@ internal B32
 os_key_press(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key)
 {
   B32 result = 0;
-  for(OS_Event *event = events->first; event != 0; event = event->next)
+  for (OS_Event *event = events->first; event != 0; event = event->next)
   {
-    if((os_handle_match(event->window, window) || os_handle_match(window, os_handle_zero())) &&
+    if ((os_handle_match(event->window, window) || os_handle_match(window, os_handle_zero())) &&
        event->kind == OS_EventKind_Press && event->key == key && event->modifiers == modifiers)
     {
       result = 1;
@@ -206,9 +206,9 @@ internal B32
 os_key_release(OS_EventList *events, OS_Handle window, OS_Modifiers modifiers, OS_Key key)
 {
   B32 result = 0;
-  for(OS_Event *event = events->first; event != 0; event = event->next)
+  for (OS_Event *event = events->first; event != 0; event = event->next)
   {
-    if((os_handle_match(event->window, window) || os_handle_match(window, os_handle_zero())) &&
+    if ((os_handle_match(event->window, window) || os_handle_match(window, os_handle_zero())) &&
        event->kind == OS_EventKind_Release && event->key == key && event->modifiers == modifiers)
     {
       result = 1;
@@ -223,9 +223,9 @@ internal B32
 os_text(OS_EventList *events, OS_Handle window, U32 character)
 {
   B32 result = 0;
-  for(OS_Event *event = events->first; event != 0; event = event->next)
+  for (OS_Event *event = events->first; event != 0; event = event->next)
   {
-    if((os_handle_match(event->window, window) || os_handle_match(window, os_handle_zero())) &&
+    if ((os_handle_match(event->window, window) || os_handle_match(window, os_handle_zero())) &&
        event->kind == OS_EventKind_Text && event->character == character)
     {
       result = 1;
@@ -240,7 +240,7 @@ internal OS_EventList
 os_event_list_copy(Arena *arena, OS_EventList *src)
 {
   OS_EventList dst = {0};
-  for(OS_Event *s = src->first; s != 0; s = s->next)
+  for (OS_Event *s = src->first; s != 0; s = s->next)
   {
     OS_Event *d = push_array(arena, OS_Event, 1);
     MemoryCopyStruct(d, s);
@@ -254,14 +254,14 @@ os_event_list_copy(Arena *arena, OS_EventList *src)
 internal void
 os_event_list_concat_in_place(OS_EventList *dst, OS_EventList *to_push)
 {
-  if(dst->last && to_push->first)
+  if (dst->last && to_push->first)
   {
     dst->last->next = to_push->first;
     to_push->first->prev = dst->last;
     dst->last = to_push->last;
     dst->count += to_push->count;
   }
-  else if(!dst->last && to_push->first)
+  else if (!dst->last && to_push->first)
   {
     MemoryCopyStruct(dst, to_push);
   }

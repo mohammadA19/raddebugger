@@ -27,7 +27,7 @@
 # define raddbg_thread_id_color_u32(id, u32)          raddbg_thread_color__impl((id), (u32))
 # define raddbg_thread_id_color_rgba(id, r, g, b, a)  raddbg_thread_color__impl((id), ((unsigned int)((r)*255) << 24) | ((unsigned int)((g)*255) << 16) | ((unsigned int)((b)*255) << 8) | ((unsigned int)(a)*255))
 # define raddbg_break(...)                            raddbg_break__impl()
-# define raddbg_break_if(expr, ...)                   ((expr) ? raddbg_break__impl() : (void)0)
+# define raddbg_break_if (expr, ...)                   ((expr) ? raddbg_break__impl() : (void)0)
 # define raddbg_watch(fmt, ...)                       raddbg_watch__impl((fmt), __VA_ARGS__)
 # define raddbg_pin(expr, ...)                        /* NOTE(rjf): inspected by debugger ui - does not change program execution */
 # define raddbg_log(fmt, ...)                         raddbg_log__impl((fmt), __VA_ARGS__)
@@ -46,7 +46,7 @@
 # define raddbg_thread_id_color_u32(id, u32)          ((void)0)
 # define raddbg_thread_id_color_rgba(id, r, g, b, a)  ((void)0)
 # define raddbg_break(...)                            ((void)0)
-# define raddbg_break_if(expr, ...)                   ((void)expr)
+# define raddbg_break_if (expr, ...)                   ((void)expr)
 # define raddbg_watch(fmt, ...)                       ((void)0)
 # define raddbg_pin(expr, ...)
 # define raddbg_log(fmt, ...)                         ((void)0)
@@ -158,17 +158,17 @@ raddbg_decode_utf8(char *str, unsigned __int64 max)
   RADDBG_MARKUP_UnicodeDecode result = {1, 0xffffffff};
   unsigned __int8 byte = str[0];
   unsigned __int8 byte_class = raddbg_utf8_class[byte >> 3];
-  switch(byte_class)
+  switch (byte_class)
   {
     case 1:
     {
       result.codepoint = byte;
     }break;
     case 2:
-    if(2 < max)
+    if (2 < max)
     {
       char cont_byte = str[1];
-      if(raddbg_utf8_class[cont_byte >> 3] == 0)
+      if (raddbg_utf8_class[cont_byte >> 3] == 0)
       {
         result.codepoint = (byte & 0x0000001f) << 6;
         result.codepoint |= (cont_byte & 0x0000003f);
@@ -176,10 +176,10 @@ raddbg_decode_utf8(char *str, unsigned __int64 max)
       }
     }break;
     case 3:
-    if(2 < max)
+    if (2 < max)
     {
       char cont_byte[2] = {str[1], str[2]};
-      if(raddbg_utf8_class[cont_byte[0] >> 3] == 0 &&
+      if (raddbg_utf8_class[cont_byte[0] >> 3] == 0 &&
          raddbg_utf8_class[cont_byte[1] >> 3] == 0)
       {
         result.codepoint = (byte & 0x0000000f) << 12;
@@ -189,10 +189,10 @@ raddbg_decode_utf8(char *str, unsigned __int64 max)
       }
     }break;
     case 4:
-    if(3 < max)
+    if (3 < max)
     {
       char cont_byte[3] = {str[1], str[2], str[3]};
-      if(raddbg_utf8_class[cont_byte[0] >> 3] == 0 &&
+      if (raddbg_utf8_class[cont_byte[0] >> 3] == 0 &&
          raddbg_utf8_class[cont_byte[1] >> 3] == 0 &&
          raddbg_utf8_class[cont_byte[2] >> 3] == 0)
       {
@@ -211,11 +211,11 @@ static unsigned __int32
 raddbg_encode_utf16(wchar_t *str, unsigned __int32 codepoint)
 {
   unsigned __int32 inc = 1;
-  if(codepoint == 0xffffffff)
+  if (codepoint == 0xffffffff)
   {
     str[0] = (wchar_t)'?';
   }
-  else if(codepoint < 0x10000)
+  else if (codepoint < 0x10000)
   {
     str[0] = (wchar_t)codepoint;
   }
@@ -264,14 +264,14 @@ raddbg_thread_name__impl(int id, char *fmt, ...)
     static volatile __int64 global_SetThreadDescription_init_started;
     static volatile __int64 global_SetThreadDescription_init_done;
     __int64 do_init = !_InterlockedCompareExchange64(&global_SetThreadDescription_init_started, 1, 0);
-    if(do_init)
+    if (do_init)
     {
       HMODULE module = LoadLibraryA("kernel32.dll");
       global_SetThreadDescription_function = (HRESULT (*)(HANDLE, PCWSTR))GetProcAddress(module, "SetThreadDescription");
       FreeLibrary(module);
       _InterlockedExchangeAdd64(&global_SetThreadDescription_init_done, 1);
     }
-    for(;_InterlockedExchangeAdd64(&global_SetThreadDescription_init_done, 0) == 0;)
+    for (;_InterlockedExchangeAdd64(&global_SetThreadDescription_init_done, 0) == 0;)
     {
       // NOTE(rjf): busy-loop, until init is done
     }
@@ -279,13 +279,13 @@ raddbg_thread_name__impl(int id, char *fmt, ...)
   }
   
   // rjf: set thread name, windows 10 style
-  if(SetThreadDescription_function && id == GetCurrentThreadId())
+  if (SetThreadDescription_function && id == GetCurrentThreadId())
   {
     WCHAR buffer16[1024] = {0};
     int name_length = 0;
-    for(;name[name_length]; name_length += 1);
+    for (;name[name_length]; name_length += 1);
     int write_offset = 0;
-    for(int idx = 0; idx < name_length;)
+    for (int idx = 0; idx < name_length;)
     {
       RADDBG_MARKUP_UnicodeDecode decode = raddbg_decode_utf8(name+idx, name_length-idx);
       write_offset += raddbg_encode_utf16(buffer16 + write_offset, decode.codepoint);
@@ -327,7 +327,7 @@ raddbg_thread_name__impl(int id, char *fmt, ...)
 void
 raddbg_thread_color__impl(int id, unsigned int hexcode)
 {
-  if(raddbg_is_attached())
+  if (raddbg_is_attached())
   {
 #pragma pack(push, 8)
     typedef struct RADDBG_ThreadColorInfo RADDBG_ThreadColorInfo;
@@ -382,7 +382,7 @@ raddbg_log__impl(char *fmt, ...)
 void
 raddbg_add_or_remove_breakpoint__impl(void *ptr, int set, int size, int r, int w, int x)
 {
-  if(raddbg_is_attached())
+  if (raddbg_is_attached())
   {
 #pragma pack(push, 8)
     typedef struct RADDBG_AddBreakpointInfo RADDBG_AddBreakpointInfo;
@@ -419,7 +419,7 @@ raddbg_add_or_remove_breakpoint__impl(void *ptr, int set, int size, int r, int w
 void
 raddbg_annotate_vaddr_range__impl(void *ptr, unsigned __int64 size, char *fmt, ...)
 {
-  if(raddbg_is_attached())
+  if (raddbg_is_attached())
   {
     // rjf: resolve variadic arguments
     char buffer[4096];

@@ -7,7 +7,7 @@ internal string
 cv_string_from_numeric_kind(CV_NumericKind v)
 {
 string result = ("<Unknown CV_NumericKind>");
-switch(v)
+switch (v)
 {
 default:{}break;
 case CV_NumericKind_CHAR:{result = ("CHAR");}break;
@@ -41,7 +41,7 @@ internal string
 cv_string_from_arch(CV_Arch v)
 {
 string result = ("<Unknown CV_Arch>");
-switch(v)
+switch (v)
 {
 default:{}break;
 case CV_Arch_8080:{result = ("8080");}break;
@@ -112,7 +112,7 @@ internal string
 cv_string_from_sym_kind(CV_SymKind v)
 {
 string result = ("<Unknown CV_SymKind>");
-switch(v)
+switch (v)
 {
 default:{}break;
 case CV_SymKind_COMPILE:{result = ("COMPILE");}break;
@@ -316,7 +316,7 @@ internal string
 cv_string_from_basic_type(CV_BasicType v)
 {
 string result = ("<Unknown CV_BasicType>");
-switch(v)
+switch (v)
 {
 default:{}break;
 case CV_BasicType_NOTYPE:{result = ("NOTYPE");}break;
@@ -380,7 +380,7 @@ internal string
 cv_type_name_from_basic_type(CV_BasicType v)
 {
 string result = ("<Unknown CV_BasicType>");
-switch(v)
+switch (v)
 {
 default:{}break;
 case CV_BasicType_NOTYPE:{result = ("");}break;
@@ -444,7 +444,7 @@ internal string
 cv_string_from_leaf_kind(CV_LeafKind v)
 {
 string result = ("<Unknown CV_LeafKind>");
-switch(v)
+switch (v)
 {
 default:{}break;
 case CV_LeafKind_NOTYPE:{result = ("NOTYPE");}break;
@@ -589,7 +589,7 @@ internal U64
 cv_header_struct_size_from_sym_kind(CV_SymKind v)
 {
 U64 result = 0;
-switch(v)
+switch (v)
 {
 default:{}break;
 case CV_SymKind_COMPILE:{result = sizeof(CV_SymCompile);}break;
@@ -668,7 +668,7 @@ internal U64
 cv_header_struct_size_from_leaf_kind(CV_LeafKind v)
 {
 U64 result = 0;
-switch(v)
+switch (v)
 {
 default:{}break;
 case CV_LeafKind_VTSHAPE:{result = sizeof(CV_LeafVTShape);}break;

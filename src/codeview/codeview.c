@@ -12,7 +12,7 @@ internal CV_Arch
 cv_arch_from_coff_machine(COFF_MachineType machine)
 {
   CV_Arch arch = 0;
-  switch(machine)
+  switch (machine)
   {
     case COFF_MachineType_X64:       arch = CV_Arch_X64;    break;
     case COFF_MachineType_X86:       arch = CV_Arch_8086;   break;
@@ -45,7 +45,7 @@ cv_arch_from_coff_machine(COFF_MachineType machine)
 internal U64
 cv_size_from_reg(CV_Arch arch, CV_Reg reg)
 {
-  switch(arch)
+  switch (arch)
   {
     case CV_Arch_8086: return cv_size_from_reg_x86(reg);
     case CV_Arch_X64 : return cv_size_from_reg_x64(reg);
@@ -57,7 +57,7 @@ cv_size_from_reg(CV_Arch arch, CV_Reg reg)
 internal B32
 cv_is_reg_sp(CV_Arch arch, CV_Reg reg)
 {
-  switch(arch)
+  switch (arch)
   {
     case CV_Arch_8086: return reg == CV_Regx86_ESP;
     case CV_Arch_X64:  return reg == CV_Regx64_RSP;
@@ -69,7 +69,7 @@ cv_is_reg_sp(CV_Arch arch, CV_Reg reg)
 internal U64
 cv_size_from_reg_x86(CV_Reg reg)
 {
-  switch(reg)
+  switch (reg)
   {
 #define X(NAME, CODE, RDI_NAME, BYTE_POS, BYTE_SIZE) case CV_Regx86_##NAME: return BYTE_SIZE;
     CV_Reg_X86_XList(X)
@@ -81,7 +81,7 @@ cv_size_from_reg_x86(CV_Reg reg)
 internal U64
 cv_size_from_reg_x64(CV_Reg reg)
 {
-  switch(reg)
+  switch (reg)
   {
 #define X(NAME, CODE, RDI_NAME, BYTE_POS, BYTE_SIZE) case CV_Regx64_##NAME: return BYTE_SIZE;
     CV_Reg_X64_XList(X)
@@ -94,7 +94,7 @@ internal CV_EncodedFramePtrReg
 cv_pick_fp_encoding(CV_SymFrameproc *frameproc, B32 is_local_param)
 {
   CV_EncodedFramePtrReg fp_reg = 0;
-  if(is_local_param)
+  if (is_local_param)
   {
     fp_reg = CV_FrameprocFlags_Extract_ParamBasePointer(frameproc->flags);
   }

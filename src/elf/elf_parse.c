@@ -7,13 +7,13 @@ internal ELF_Bin
 elf_bin_from_data(Arena *arena, string data)
 {
   ELF_Bin bin = {0};
-  if(str8_match(str8_prefix(data, elf_magic_string.size), elf_magic_string, 0) &&
+  if (str8_match(str8_prefix(data, elf_magic_string.size), elf_magic_string, 0) &&
      data.size >= ELF_Identifier_Max)
   {
     //- rjf: parse sig/header
     U8 sig[ELF_Identifier_Max] = {0};
     str8_deserial_read(data, 0, &sig[0], sizeof(sig), 1);
-    switch(sig[ELF_Identifier_Class])
+    switch (sig[ELF_Identifier_Class])
     {
       default:
       case ELF_Class_None:{}break;
@@ -21,13 +21,13 @@ elf_bin_from_data(Arena *arena, string data)
       {
         ELF_Hdr32 hdr32 = {0};
         U64 hdr_size = str8_deserial_read_struct(data, 0, &hdr32);
-        if(hdr_size == sizeof(hdr32))
+        if (hdr_size == sizeof(hdr32))
         {
           bin.hdr = elf_hdr64_from_hdr32(hdr32);
           U64 shstr_off = hdr32.e_shoff + hdr32.e_shentsize*hdr32.e_shstrndx;
           ELF_Shdr32 shdr = {0};
           U64 shdr_size = str8_deserial_read_struct(data, shstr_off, &shdr);
-          if(shdr_size == sizeof(shdr))
+          if (shdr_size == sizeof(shdr))
           {
             bin.sh_name_range = rng_1u64(shdr.sh_offset, shdr.sh_offset + shdr.sh_size);
           }
@@ -37,13 +37,13 @@ elf_bin_from_data(Arena *arena, string data)
       {
         ELF_Hdr64 hdr64 = {0};
         U64 hdr_size = str8_deserial_read_struct(data, 0, &hdr64);
-        if(hdr_size == sizeof(hdr64))
+        if (hdr_size == sizeof(hdr64))
         {
           bin.hdr = hdr64;
           U64 shstr_off = hdr64.e_shoff + hdr64.e_shentsize*hdr64.e_shstrndx;
           ELF_Shdr64 shdr = {0};
           U64 shdr_size = str8_deserial_read_struct(data, shstr_off, &shdr);
-          if(shdr_size == sizeof(shdr))
+          if (shdr_size == sizeof(shdr))
           {
             bin.sh_name_range = rng_1u64(shdr.sh_offset, shdr.sh_offset + shdr.sh_size);
           }
@@ -60,7 +60,7 @@ elf_bin_from_data(Arena *arena, string data)
       string shdr_data = str8_substr(data, shdr_range);
       for EachIndex(shdr_idx, hdr->e_shnum)
       {
-        switch(hdr->e_ident[ELF_Identifier_Class])
+        switch (hdr->e_ident[ELF_Identifier_Class])
         {
           default:
           case ELF_Class_None:
@@ -88,7 +88,7 @@ elf_bin_from_data(Arena *arena, string data)
       string phdr_data = str8_substr(data, phdr_range);
       for EachIndex(phdr_idx, hdr->e_phnum)
       {
-        switch(hdr->e_ident[ELF_Identifier_Class])
+        switch (hdr->e_ident[ELF_Identifier_Class])
         {
           default:
           case ELF_Class_None:
@@ -128,7 +128,7 @@ elf_base_addr_from_bin(ELF_Bin *bin)
   for EachIndex(phdr_idx, bin->phdrs.count)
   {
     ELF_Phdr64 *phdr = &bin->phdrs.v[phdr_idx];
-    if(phdr->p_type == ELF_PType_Load &&
+    if (phdr->p_type == ELF_PType_Load &&
        (base_vaddr == 0 || phdr->p_vaddr < base_vaddr))
     {
       base_vaddr = phdr->p_vaddr;
@@ -145,7 +145,7 @@ elf_gnu_debug_link_from_bin(string raw_data, ELF_Bin *bin)
   {
     ELF_Shdr64 *shdr = &bin->shdrs.v[idx];
     string name = elf_name_from_shdr64(raw_data, bin, shdr);
-    if(str8_match(name, (".gnu_debuglink"), 0))
+    if (str8_match(name, (".gnu_debuglink"), 0))
     {
       Rng1U64 raw_data_range = rng_1u64(shdr->sh_offset, shdr->sh_offset + shdr->sh_size);
       string data = str8_substr(raw_data, raw_data_range);

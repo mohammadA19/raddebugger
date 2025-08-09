@@ -1657,7 +1657,7 @@ msf_open(string data, MSF_Context **msf_out)
       msf_check_fpm_bits_for_page_list(page_data_list, msf->page_size, msf->active_fpm, stream_node->data.page_list, MSF_PAGE_STATE_ALLOC);
     }
 #endif
-  } while(0);
+  } while (0);
   
 exit:;
   if (error != MSF_Error_OK) {

@@ -14,7 +14,7 @@ internal RDI_Language
 d2r_rdi_language_from_dw_language(DW_Language v)
 {
   RDI_Language result = RDI_Language_NULL;
-  switch(v)
+  switch (v)
   {
     default:{}break;
     
@@ -41,7 +41,7 @@ internal RDI_RegCodeX86
 d2r_rdi_reg_code_from_dw_reg_x86(DW_RegX86 v)
 {
   RDI_RegCodeX86 result = RDI_RegCode_nil;
-  switch(v)
+  switch (v)
   {
     default:{}break;
 #define X(reg_dw, val_dw, reg_rdi, ...) case DW_RegX86_##reg_dw: result = RDI_RegCodeX86_##reg_rdi; break;
@@ -55,7 +55,7 @@ internal RDI_RegCodeX64
 d2r_rdi_reg_code_from_dw_reg_x64(DW_RegX64 v)
 {
   RDI_RegCodeX64 result = RDI_RegCode_nil;
-  switch(v)
+  switch (v)
   {
     default:{}break;
 #define X(reg_dw, val_dw, reg_rdi, off, size) case DW_RegX64_##reg_dw:{result = RDI_RegCodeX64_##reg_rdi;}break;
@@ -69,7 +69,7 @@ internal RDI_RegCode
 d2r_rdi_reg_code_from_dw_reg(Arch arch, DW_Reg v)
 {
   RDI_RegCode result = RDI_RegCode_nil;
-  switch(arch)
+  switch (arch)
   {
     default:
     case Arch_Null:
@@ -1140,7 +1140,7 @@ d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
   RDIM_BinarySectionList binary_sections = {0};
   DW_Input               input           = {0};
   
-  switch(params->exe_kind)
+  switch (params->exe_kind)
   {
     default:{}break;
     case ExecutableImageKind_CoffPe:

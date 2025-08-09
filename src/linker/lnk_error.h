@@ -125,5 +125,5 @@ typedef enum
 
 #define lnk_invalid_path(...)      lnk_internal_error(LNK_InternalError_InvalidPath, __FILE__, __LINE__, __VA_ARGS__)
 #define lnk_not_implemented(...)   lnk_internal_error(LNK_InternalError_NotImplemented, __FILE__, __LINE__, __VA_ARGS__)
-#define lnk_incomplete_switch(...) lnk_internal_error(LNK_InternalError_IncompleteSwitch, __FILE__, __LINE__, __VA_ARGS__)
+#define lnk_incomplete_switch (...) lnk_internal_error(LNK_InternalError_IncompleteSwitch, __FILE__, __LINE__, __VA_ARGS__)
 

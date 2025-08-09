@@ -5,7 +5,7 @@ internal VoidProc *
 r_ogl_os_load_procedure(char *name)
 {
   VoidProc *p = (VoidProc*)wglGetProcAddress(name);
-  if(p == (VoidProc*)1 || p == (VoidProc*)2 || p == (VoidProc*)3 || p == (VoidProc*)-1)
+  if (p == (VoidProc*)1 || p == (VoidProc*)2 || p == (VoidProc*)3 || p == (VoidProc*)-1)
   {
     p = 0;
   }
@@ -76,7 +76,7 @@ r_ogl_os_init(CmdLine *cmdline)
   
   //- rjf: make real gl ctx
   HGLRC real_ctx = 0;
-  if(pf)
+  if (pf)
   {
     B32 debug_mode = cmd_line_has_flag(cmdline, ("opengl_debug"));
 #if BUILD_DEBUG
@@ -163,7 +163,7 @@ internal void
 r_ogl_os_select_window(OS_Handle os, R_Handle r)
 {
   OS_W32_Window *w = os_w32_window_from_handle(os);
-  if(w != 0)
+  if (w != 0)
   {
     HWND hwnd = w->hwnd;
     HDC hdc = w->hdc;
@@ -175,7 +175,7 @@ internal void
 r_ogl_os_window_swap(OS_Handle os, R_Handle r)
 {
   OS_W32_Window *w = os_w32_window_from_handle(os);
-  if(w != 0)
+  if (w != 0)
   {
     HDC dc = w->hdc;
     SwapBuffers(dc);

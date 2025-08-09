@@ -197,7 +197,7 @@ struct RDIM_Temp
 # define RDIM_ProfEnd() ((void)0)
 #endif
 
-#define RDIM_ProfScope(...) for(int _i_ = ((RDIM_ProfBegin(__VA_ARGS__)), 0); !_i_; _i_ += 1, (RDIM_ProfEnd()))
+#define RDIM_ProfScope(...) for (int _i_ = ((RDIM_ProfBegin(__VA_ARGS__)), 0); !_i_; _i_ += 1, (RDIM_ProfEnd()))
 
 ////////////////////////////////
 //~ rjf: Alignment Macros
@@ -294,7 +294,7 @@ RDIM_CheckNil(nil,p) ? \
 # error "rdim_trap not defined for this compiler."
 #endif
 
-#define rdim_assert_always(x) do{if(!(x)) {rdim_trap();}}while(0)
+#define rdim_assert_always(x) do{if (!(x)) {rdim_trap();}}while (0)
 #if !defined(NDEBUG)
 # define rdim_assert(x) rdim_assert_always(x)
 #else

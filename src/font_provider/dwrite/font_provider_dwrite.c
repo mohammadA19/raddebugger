@@ -53,18 +53,18 @@ internal FP_DWrite_FontFileStreamNode *
 fp_dwrite_font_file_stream_node_alloc(string *data_ptr)
 {
   FP_DWrite_FontFileStreamNode *node = 0;
-  for(FP_DWrite_FontFileStreamNode *n = fp_dwrite_state->first_stream_node; n != 0; n = n->next)
+  for (FP_DWrite_FontFileStreamNode *n = fp_dwrite_state->first_stream_node; n != 0; n = n->next)
   {
-    if(n->stream.data == data_ptr)
+    if (n->stream.data == data_ptr)
     {
       node = n;
       break;
     }
   }
-  if(node == 0)
+  if (node == 0)
   {
     node = fp_dwrite_state->free_stream_node;
-    if(node != 0)
+    if (node != 0)
     {
       SLLStackPop(fp_dwrite_state->free_stream_node);
     }
@@ -173,7 +173,7 @@ fp_init(void)
   
   //- rjf: make dwrite factory
   error = DWriteCreateFactory(DWRITE_FACTORY_TYPE_SHARED, &IID_IDWriteFactory2, (void **)&fp_dwrite_state->factory);
-  if(error == S_OK)
+  if (error == S_OK)
   {
     fp_dwrite_state->dwrite2_is_supported = 1;
   }
@@ -193,7 +193,7 @@ fp_init(void)
     FLOAT gamma = IDWriteRenderingParams_GetGamma(fp_dwrite_state->base_rendering_params);
     gamma = 1.f;
     FLOAT enhanced_contrast = IDWriteRenderingParams_GetEnhancedContrast(fp_dwrite_state->base_rendering_params);
-    if(fp_dwrite_state->dwrite2_is_supported)
+    if (fp_dwrite_state->dwrite2_is_supported)
     {
       error = IDWriteFactory2_CreateCustomRenderingParams2((IDWriteFactory2 *)fp_dwrite_state->factory,
                                                            gamma,
@@ -222,7 +222,7 @@ fp_init(void)
     FLOAT gamma = IDWriteRenderingParams_GetGamma(fp_dwrite_state->base_rendering_params);
     gamma = 1.f;
     FLOAT enhanced_contrast = IDWriteRenderingParams_GetEnhancedContrast(fp_dwrite_state->base_rendering_params);
-    if(fp_dwrite_state->dwrite2_is_supported)
+    if (fp_dwrite_state->dwrite2_is_supported)
     {
       error = IDWriteFactory2_CreateCustomRenderingParams2((IDWriteFactory2 *)fp_dwrite_state->factory,
                                                            gamma,
@@ -251,7 +251,7 @@ fp_init(void)
     FLOAT gamma = IDWriteRenderingParams_GetGamma(fp_dwrite_state->base_rendering_params);
     gamma = 1.f;
     FLOAT enhanced_contrast = IDWriteRenderingParams_GetEnhancedContrast(fp_dwrite_state->base_rendering_params);
-    if(fp_dwrite_state->dwrite2_is_supported)
+    if (fp_dwrite_state->dwrite2_is_supported)
     {
       error = IDWriteFactory2_CreateCustomRenderingParams2((IDWriteFactory2 *)fp_dwrite_state->factory,
                                                            gamma,
@@ -279,7 +279,7 @@ fp_init(void)
   {
     FLOAT gamma = 1.f;
     FLOAT enhanced_contrast = 0.f;
-    if(fp_dwrite_state->dwrite2_is_supported)
+    if (fp_dwrite_state->dwrite2_is_supported)
     {
       error = IDWriteFactory2_CreateCustomRenderingParams2((IDWriteFactory2 *)fp_dwrite_state->factory,
                                                            gamma,
@@ -333,21 +333,21 @@ fp_font_open(string path)
   PathTask *last_task = first_task;
   
   //- rjf: try to open font
-  for(PathTask *t = first_task; t != 0 && font.file == 0; t = t->next)
+  for (PathTask *t = first_task; t != 0 && font.file == 0; t = t->next)
   {
     B32 file_exists = (os_properties_from_file_path(t->path).created != 0);
     String16 path16 = str16_from_8(scratch.arena, t->path);
-    if(file_exists)
+    if (file_exists)
     {
       error = IDWriteFactory_CreateFontFileReference(fp_dwrite_state->factory, (WCHAR *)path16.str, 0, &font.file);
     }
-    if(font.file != 0)
+    if (font.file != 0)
     {
       error = IDWriteFactory_CreateFontFace(fp_dwrite_state->factory, DWRITE_FONT_FACE_TYPE_TRUETYPE, 1, &font.file, 0, DWRITE_FONT_SIMULATIONS_NONE, &font.face);
     }
     
     // rjf: failure trying just the normal path? -> generate new tasks that search in system folders
-    if(t == first_task && font.file == 0 && t->path.size != 0)
+    if (t == first_task && font.file == 0 && t->path.size != 0)
     {
       // rjf: generate task for user-installed fonts
       {
@@ -379,7 +379,7 @@ fp_font_open(string path)
   
   //- rjf: handlify & return
   FP_Handle handle = {0};
-  if(font.file != 0)
+  if (font.file != 0)
   {
     handle = fp_dwrite_handle_from_font(font);
   }
@@ -414,11 +414,11 @@ fp_font_close(FP_Handle handle)
 {
   ProfBeginFunction();
   FP_DWrite_Font font = fp_dwrite_font_from_handle(handle);
-  if(font.face != 0)
+  if (font.face != 0)
   {
     IDWriteFontFace_Release(font.face);
   }
-  if(font.file != 0)
+  if (font.file != 0)
   {
     IDWriteFontFile_Release(font.file);
   }
@@ -431,7 +431,7 @@ fp_metrics_from_font(FP_Handle handle)
   ProfBeginFunction();
   FP_DWrite_Font font = fp_dwrite_font_from_handle(handle);
   DWRITE_FONT_METRICS metrics = {0};
-  if(font.face != 0)
+  if (font.face != 0)
   {
     IDWriteFontFace_GetMetrics(font.face, &metrics);
   }
@@ -460,7 +460,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, s
   
   //- rjf: get font metrics
   DWRITE_FONT_METRICS font_metrics = {0};
-  if(font.face != 0)
+  if (font.face != 0)
   {
     IDWriteFontFace_GetMetrics(font.face, &font_metrics);
   }
@@ -468,7 +468,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, s
   
   //- rjf: get glyph indices
   U16 *glyph_indices = push_array_no_zero(scratch.arena, U16, string32.size);
-  if(font.face != 0)
+  if (font.face != 0)
   {
     error = IDWriteFontFace_GetGlyphIndices(font.face, string32.str, string32.size, glyph_indices);
   }
@@ -476,7 +476,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, s
   //- rjf: get metrics info
   U64 glyphs_count = string32.size;
   DWRITE_GLYPH_METRICS *glyphs_metrics = push_array_no_zero(scratch.arena, DWRITE_GLYPH_METRICS, glyphs_count);
-  if(font.face != 0)
+  if (font.face != 0)
   {
     error = IDWriteFontFace_GetGdiCompatibleGlyphMetrics(font.face, (96.f/72.f)*size, 1.f, 0, 1, glyph_indices, glyphs_count, glyphs_metrics, 0);
   }
@@ -486,20 +486,20 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, s
   Vec2S16 atlas_dim = {0};
   F32 left_side_bearing = 0;
   F32 right_side_bearing = 0;
-  if(font.face != 0)
+  if (font.face != 0)
   {
     atlas_dim.y = (S16)round_f32((96.f/72.f) * size * (font_metrics.ascent + font_metrics.descent + font_metrics.lineGap) / design_units_per_em) + 1;
-    for(U64 idx = 0; idx < glyphs_count; idx += 1)
+    for (U64 idx = 0; idx < glyphs_count; idx += 1)
     {
       DWRITE_GLYPH_METRICS *glyph_metrics = glyphs_metrics + idx;
       F32 glyph_advance_width         = (96.f/72.f) * size * glyph_metrics->advanceWidth       / design_units_per_em;
       advance += glyph_advance_width;
       atlas_dim.x = Max(atlas_dim.x, (S16)(advance+1));
-      if(idx == 0)
+      if (idx == 0)
       {
         left_side_bearing = (96.f/72.f) * size * glyph_metrics->leftSideBearing    / design_units_per_em;
       }
-      if(idx+1 == glyphs_count)
+      if (idx+1 == glyphs_count)
       {
         right_side_bearing = (96.f/72.f) * size * glyph_metrics->rightSideBearing   / design_units_per_em;
       }
@@ -512,7 +512,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, s
   
   //- rjf: make dwrite bitmap for rendering
   IDWriteBitmapRenderTarget *render_target = 0;
-  if(font.face != 0)
+  if (font.face != 0)
   {
     error = IDWriteGdiInterop_CreateBitmapRenderTarget(fp_dwrite_state->gdi_interop, 0, atlas_dim.x, atlas_dim.y, &render_target);
     IDWriteBitmapRenderTarget_SetPixelsPerDip(render_target, 1.f);
@@ -520,7 +520,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, s
   
   //- rjf: get bitmap & clear
   HDC dc = 0;
-  if(font.face != 0)
+  if (font.face != 0)
   {
     dc = IDWriteBitmapRenderTarget_GetMemoryDC(render_target);
     HGDIOBJ original = SelectObject(dc, GetStockObject(DC_PEN));
@@ -533,7 +533,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, s
   
   //- rjf: draw glyph run
   Vec2F32 draw_p = {0, (F32)atlas_dim.y};
-  if(font.face != 0)
+  if (font.face != 0)
   {
     F32 descent = round_f32((96.f/72.f)*size * font_metrics.descent / design_units_per_em);
     F32 line_gap = round_f32((96.f/72.f)*size * font_metrics.lineGap / design_units_per_em);
@@ -541,7 +541,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, s
     draw_p.y -= line_gap;
   }
   DWRITE_GLYPH_RUN glyph_run = {0};
-  if(font.face != 0)
+  if (font.face != 0)
   {
     glyph_run.fontFace = font.face;
     glyph_run.fontEmSize = size * 96.f/72.f;
@@ -549,10 +549,10 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, s
     glyph_run.glyphIndices = glyph_indices;
   }
   RECT bounding_box = {0};
-  if(font.face != 0)
+  if (font.face != 0)
   {
     IDWriteRenderingParams *rendering_params = fp_dwrite_state->rendering_params_sharp_hinted;
-    switch(flags)
+    switch (flags)
     {
       default:{}break;
       case 0:{rendering_params = fp_dwrite_state->rendering_params_sharp_unhinted;}break;
@@ -570,7 +570,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, s
   
   //- rjf: get bitmap
   DIBSECTION dib = {0};
-  if(font.face != 0)
+  if (font.face != 0)
   {
     HBITMAP bitmap = (HBITMAP)GetCurrentObject(dc, OBJ_BITMAP);
     GetObject(bitmap, sizeof(dib), &dib);
@@ -578,7 +578,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, s
   
   //- rjf: fill & return
   FP_RasterResult result = {0};
-  if(font.face != 0)
+  if (font.face != 0)
   {
     // rjf: fill basics
     result.atlas_dim    = atlas_dim;
@@ -594,11 +594,11 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, s
       U64 color_sum = 0;
       U8 *in_line = (U8 *)in_data;
       U8 *out_line = out_data;
-      for(U64 y = 0; y < atlas_dim.y; y += 1)
+      for (U64 y = 0; y < atlas_dim.y; y += 1)
       {
         U8 *in_pixel = in_line;
         U8 *out_pixel = out_line;
-        for(U64 x = 0; x < atlas_dim.x; x += 1)
+        for (U64 x = 0; x < atlas_dim.x; x += 1)
         {
           U8 in_pixel_byte = in_pixel[0];
           out_pixel[0] = 255;
@@ -612,7 +612,7 @@ fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, s
         in_line += in_pitch;
         out_line += out_pitch;
       }
-      if(color_sum == 0)
+      if (color_sum == 0)
       {
         result.atlas_dim = v2s16(0, 0);
       }

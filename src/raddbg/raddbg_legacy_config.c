@@ -13,7 +13,7 @@ rd_cfg_tree_list_from_string__pre_0_9_16(Arena *arena, string file_path, string 
       for MD_EachNode(tln, src_root->first)
       {
         //- rjf: targets
-        if(str8_match(tln->string, ("target"), 0))
+        if (str8_match(tln->string, ("target"), 0))
         {
           string disabled_string   = md_child_from_string(tln, ("disabled"), 0)->first->string;
           string executable        = md_child_from_string(tln, ("executable"), 0)->first->string;
@@ -27,15 +27,15 @@ rd_cfg_tree_list_from_string__pre_0_9_16(Arena *arena, string file_path, string 
           RD_Cfg *dst_root = rd_cfg_new(&rd_nil_cfg, ("target"));
           rd_cfg_list_push(arena, &result, dst_root);
           {
-            if(executable.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, ("executable")), path_absolute_dst_from_relative_dst_src(scratch.arena, executable, folder_path)); }
-            if(arguments.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, ("arguments")), raw_from_escaped_str8(scratch.arena, arguments)); }
-            if(working_directory.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, ("working_directory")), path_absolute_dst_from_relative_dst_src(scratch.arena, working_directory, folder_path)); }
-            if(entry_point.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, ("entry_point")), raw_from_escaped_str8(scratch.arena, entry_point)); }
-            if(stdout_path.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, ("stdout_path")), path_absolute_dst_from_relative_dst_src(scratch.arena, stdout_path, folder_path)); }
-            if(stderr_path.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, ("stderr_path")), path_absolute_dst_from_relative_dst_src(scratch.arena, stderr_path, folder_path)); }
-            if(stdin_path.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, ("stdin_path")), path_absolute_dst_from_relative_dst_src(scratch.arena, stdin_path, folder_path)); }
-            if(debug_subprocesses.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, ("debug_subprocesses")), raw_from_escaped_str8(scratch.arena, debug_subprocesses)); }
-            if(!str8_match(disabled_string, ("1"), 0))
+            if (executable.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, ("executable")), path_absolute_dst_from_relative_dst_src(scratch.arena, executable, folder_path)); }
+            if (arguments.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, ("arguments")), raw_from_escaped_str8(scratch.arena, arguments)); }
+            if (working_directory.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, ("working_directory")), path_absolute_dst_from_relative_dst_src(scratch.arena, working_directory, folder_path)); }
+            if (entry_point.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, ("entry_point")), raw_from_escaped_str8(scratch.arena, entry_point)); }
+            if (stdout_path.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, ("stdout_path")), path_absolute_dst_from_relative_dst_src(scratch.arena, stdout_path, folder_path)); }
+            if (stderr_path.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, ("stderr_path")), path_absolute_dst_from_relative_dst_src(scratch.arena, stderr_path, folder_path)); }
+            if (stdin_path.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, ("stdin_path")), path_absolute_dst_from_relative_dst_src(scratch.arena, stdin_path, folder_path)); }
+            if (debug_subprocesses.size != 0) { rd_cfg_new(rd_cfg_new(dst_root, ("debug_subprocesses")), raw_from_escaped_str8(scratch.arena, debug_subprocesses)); }
+            if (!str8_match(disabled_string, ("1"), 0))
             {
               rd_cfg_new(rd_cfg_new(dst_root, ("enabled")), ("1"));
             }
@@ -43,7 +43,7 @@ rd_cfg_tree_list_from_string__pre_0_9_16(Arena *arena, string file_path, string 
         }
         
         //- rjf: recent files / projects
-        if(str8_match(tln->string, ("recent_file"), 0) ||
+        if (str8_match(tln->string, ("recent_file"), 0) ||
            str8_match(tln->string, ("recent_project"), 0))
         {
           RD_Cfg *dst_root = rd_cfg_new(&rd_nil_cfg, tln->string);
@@ -52,7 +52,7 @@ rd_cfg_tree_list_from_string__pre_0_9_16(Arena *arena, string file_path, string 
         }
         
         //- rjf: file path maps
-        if(str8_match(tln->string, ("file_path_map"), 0))
+        if (str8_match(tln->string, ("file_path_map"), 0))
         {
           string source = md_child_from_string(tln, ("source"), 0)->first->string;
           string dest = md_child_from_string(tln, ("dest"), 0)->first->string;

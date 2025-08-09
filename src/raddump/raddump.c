@@ -121,7 +121,7 @@ rd_path_from_file_path_node_idx(Arena *arena, RDI_Parsed *rdi, U32 file_path_nod
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List parts = {0};
-  for(RDI_FilePathNode *fpn = rdi_element_from_name_idx(rdi, FilePathNodes, file_path_node_idx);
+  for (RDI_FilePathNode *fpn = rdi_element_from_name_idx(rdi, FilePathNodes, file_path_node_idx);
       fpn != rdi_element_from_name_idx(rdi, FilePathNodes, 0);
       fpn = rdi_element_from_name_idx(rdi, FilePathNodes, fpn->parent_path_node)) {
     string p;

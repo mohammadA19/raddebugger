@@ -69,7 +69,7 @@ internal GLuint
 r_ogl_instance_buffer_from_size(U64 size)
 {
   GLuint buffer = r_ogl_state->scratch_buffer_64kb;
-  if(size > KB(64))
+  if (size > KB(64))
   {
     // rjf: build buffer
     U64 flushed_buffer_size = size;
@@ -135,7 +135,7 @@ r_init(CmdLine *cmdln)
       GLint status = 0;
       glGetShaderiv(stages[idx].out, GL_COMPILE_STATUS, &status);
       glGetShaderiv(stages[idx].out, GL_INFO_LOG_LENGTH, &info_log_length);
-      if(info_log_length != 0)
+      if (info_log_length != 0)
       {
         stages[idx].errors.str = push_array(r_ogl_state->arena, U8, info_log_length+1);
         stages[idx].errors.size = info_log_length;
@@ -191,7 +191,7 @@ r_init(CmdLine *cmdln)
 #if BUILD_DEBUG
   debug_mode = 1;
 #endif
-  if(debug_mode)
+  if (debug_mode)
   {
     glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
     glDebugMessageCallback(r_ogl_debug_message_callback, 0);
@@ -220,7 +220,7 @@ r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void *dat
 {
   //- rjf: allocate texture record
   R_OGL_Tex2D *tex2d = r_ogl_state->free_tex2d;
-  if(tex2d)
+  if (tex2d)
   {
     SLLStackPop(r_ogl_state->free_tex2d);
   }
@@ -254,7 +254,7 @@ r_hook void
 r_tex2d_release(R_Handle texture)
 {
   R_OGL_Tex2D *t = r_ogl_tex2d_from_handle(texture);
-  if(t != 0)
+  if (t != 0)
   {
     glDeleteTextures(1, &t->id);
     SLLStackPush(r_ogl_state->free_tex2d, t);
@@ -266,7 +266,7 @@ r_kind_from_tex2d(R_Handle texture)
 {
   R_ResourceKind result = R_ResourceKind_Static;
   R_OGL_Tex2D *t = r_ogl_tex2d_from_handle(texture);
-  if(t)
+  if (t)
   {
     result = t->resource_kind;
   }
@@ -278,7 +278,7 @@ r_size_from_tex2d(R_Handle texture)
 {
   Vec2S32 result = {0, 0};
   R_OGL_Tex2D *t = r_ogl_tex2d_from_handle(texture);
-  if(t)
+  if (t)
   {
     result = t->size;
   }
@@ -290,7 +290,7 @@ r_format_from_tex2d(R_Handle texture)
 {
   R_Tex2DFormat result = R_Tex2DFormat_RGBA8;
   R_OGL_Tex2D *t = r_ogl_tex2d_from_handle(texture);
-  if(t)
+  if (t)
   {
     result = t->fmt;
   }
@@ -301,7 +301,7 @@ r_hook void
 r_fill_tex2d_region(R_Handle texture, Rng2S32 subrect, void *data)
 {
   R_OGL_Tex2D *t = r_ogl_tex2d_from_handle(texture);
-  if(t)
+  if (t)
   {
     R_OGL_FormatInfo fmt_info = r_ogl_format_info_from_tex2dformat(t->fmt);
     glBindTexture(GL_TEXTURE_2D, t->id);
@@ -360,7 +360,7 @@ r_window_begin_frame(OS_Handle os, R_Handle r)
 r_hook void
 r_window_end_frame(OS_Handle os, R_Handle r)
 {
-  for(R_OGL_FlushBuffer *flush_buffer = r_ogl_state->first_buffer_to_flush; flush_buffer != 0; flush_buffer = flush_buffer->next)
+  for (R_OGL_FlushBuffer *flush_buffer = r_ogl_state->first_buffer_to_flush; flush_buffer != 0; flush_buffer = flush_buffer->next)
   {
     glDeleteBuffers(1, &flush_buffer->id);
   }
@@ -376,10 +376,10 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
 {
   Rng2F32 viewport_rect = os_client_rect_from_window(window);
   Vec2F32 viewport_dim = dim_2f32(viewport_rect);
-  for(R_PassNode *pass_n = passes->first; pass_n != 0; pass_n = pass_n->next)
+  for (R_PassNode *pass_n = passes->first; pass_n != 0; pass_n = pass_n->next)
   {
     R_Pass *pass = &pass_n->v;
-    switch(pass->kind)
+    switch (pass->kind)
     {
       default:{}break;
       
@@ -396,7 +396,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
         GLuint shader = r_ogl_state->shaders[R_OGL_ShaderKind_Rect];
         glBindVertexArrayScope(r_ogl_state->all_purpose_vao) glUseProgramScope(shader)
         {
-          for(R_BatchGroup2DNode *group_n = rect_batch_groups->first; group_n != 0; group_n = group_n->next)
+          for (R_BatchGroup2DNode *group_n = rect_batch_groups->first; group_n != 0; group_n = group_n->next)
           {
             R_BatchList *batches = &group_n->batches;
             R_BatchGroup2DParams *group_params = &group_n->params;
@@ -406,7 +406,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
             GLuint texture_id = r_ogl_state->white_texture;
             {
               R_OGL_Tex2D *tex = r_ogl_tex2d_from_handle(group_params->tex);
-              if(tex != 0)
+              if (tex != 0)
               {
                 texture_id = tex->id;
                 texture_fmt = tex->fmt;
@@ -418,7 +418,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
             {
               glBindBuffer(GL_ARRAY_BUFFER, buffer);
               U64 off = 0;
-              for(R_BatchNode *batch_n = batches->first; batch_n != 0; batch_n = batch_n->next)
+              for (R_BatchNode *batch_n = batches->first; batch_n != 0; batch_n = batch_n->next)
               {
                 glBufferSubData(GL_ARRAY_BUFFER, off, batch_n->v.byte_count, batch_n->v.v);
                 off += batch_n->v.byte_count;
@@ -445,7 +445,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
               glBindTexture(GL_TEXTURE_2D, texture_id);
               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
               glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-              switch(group_params->tex_sample_kind)
+              switch (group_params->tex_sample_kind)
               {
                 default:
                 case R_Tex2DSampleKind_Nearest:
@@ -472,7 +472,7 @@ r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
             }
             
             //- rjf: set up scissor
-            if(group_params->clip.x0 != 0 ||
+            if (group_params->clip.x0 != 0 ||
                group_params->clip.x1 != 0 ||
                group_params->clip.y0 != 0 ||
                group_params->clip.y1 != 0)

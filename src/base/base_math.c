@@ -154,9 +154,9 @@ internal Mat3x3F32
 mul_3x3f32(Mat3x3F32 a, Mat3x3F32 b)
 {
   Mat3x3F32 c = {0};
-  for(int j = 0; j < 3; j += 1)
+  for (int j = 0; j < 3; j += 1)
   {
-    for(int i = 0; i < 3; i += 1)
+    for (int i = 0; i < 3; i += 1)
     {
       c.v[i][j] = (a.v[0][j]*b.v[i][0] +
                    a.v[1][j]*b.v[i][1] +
@@ -278,9 +278,9 @@ internal Mat4x4F32
 mul_4x4f32(Mat4x4F32 a, Mat4x4F32 b)
 {
   Mat4x4F32 c = {0};
-  for(int j = 0; j < 4; j += 1)
+  for (int j = 0; j < 4; j += 1)
   {
-    for(int i = 0; i < 4; i += 1)
+    for (int i = 0; i < 4; i += 1)
     {
       c.v[i][j] = (a.v[0][j]*b.v[i][0] +
                    a.v[1][j]*b.v[i][1] +
@@ -294,9 +294,9 @@ mul_4x4f32(Mat4x4F32 a, Mat4x4F32 b)
 internal Mat4x4F32
 scale_4x4f32(Mat4x4F32 m, F32 scale)
 {
-  for(int j = 0; j < 4; j += 1)
+  for (int j = 0; j < 4; j += 1)
   {
-    for(int i = 0; i < 4; i += 1)
+    for (int i = 0; i < 4; i += 1)
     {
       m.v[i][j] *= scale;
     }
@@ -347,7 +347,7 @@ inverse_4x4f32(Mat4x4F32 m)
   Vec4F32 sign_b = { -1, +1, -1, +1 };
   
   Mat4x4F32 inverse;
-  for(U32 i = 0; i < 4; i += 1)
+  for (U32 i = 0; i < 4; i += 1)
   {
     inverse.v[0][i] = inv0.v[i] * sign_a.v[i];
     inverse.v[1][i] = inv1.v[i] * sign_b.v[i];
@@ -404,7 +404,7 @@ transpose_4x4f32(Mat4x4F32 mat)
 ////////////////////////////////
 //~ rjf: Range Ops
 
-internal Rng1U32 rng_1u32(U32 min, U32 max)                     {Rng1U32 r = {min, max}; if(r.min > r.max) { Swap(U32, r.min, r.max); } return r;}
+internal Rng1U32 rng_1u32(U32 min, U32 max)                     {Rng1U32 r = {min, max}; if (r.min > r.max) { Swap(U32, r.min, r.max); } return r;}
 internal Rng1U32 shift_1u32(Rng1U32 r, U32 x)                   {r.min += x; r.max += x; return r;}
 internal Rng1U32 pad_1u32(Rng1U32 r, U32 x)                     {r.min -= x; r.max += x; return r;}
 internal U32 center_1u32(Rng1U32 r)                             {U32 c = (r.min+r.max)/2; return c;}
@@ -414,7 +414,7 @@ internal Rng1U32 union_1u32(Rng1U32 a, Rng1U32 b)               {Rng1U32 c = {Mi
 internal Rng1U32 intersect_1u32(Rng1U32 a, Rng1U32 b)           {Rng1U32 c = {Max(a.min, b.min), Min(a.max, b.max)}; return c;}
 internal U32 clamp_1u32(Rng1U32 r, U32 v)                       {v = Clamp(r.min, v, r.max); return v;}
 
-internal Rng1S32 rng_1s32(S32 min, S32 max)                     {Rng1S32 r = {min, max}; if(r.min > r.max) { Swap(S32, r.min, r.max); } return r;}
+internal Rng1S32 rng_1s32(S32 min, S32 max)                     {Rng1S32 r = {min, max}; if (r.min > r.max) { Swap(S32, r.min, r.max); } return r;}
 internal Rng1S32 shift_1s32(Rng1S32 r, S32 x)                   {r.min += x; r.max += x; return r;}
 internal Rng1S32 pad_1s32(Rng1S32 r, S32 x)                     {r.min -= x; r.max += x; return r;}
 internal S32 center_1s32(Rng1S32 r)                             {S32 c = (r.min+r.max)/2; return c;}
@@ -424,7 +424,7 @@ internal Rng1S32 union_1s32(Rng1S32 a, Rng1S32 b)               {Rng1S32 c = {Mi
 internal Rng1S32 intersect_1s32(Rng1S32 a, Rng1S32 b)           {Rng1S32 c = {Max(a.min, b.min), Min(a.max, b.max)}; return c;}
 internal S32 clamp_1s32(Rng1S32 r, S32 v)                       {v = Clamp(r.min, v, r.max); return v;}
 
-internal Rng1U64 rng_1u64(U64 min, U64 max)                     {Rng1U64 r = {min, max}; if(r.min > r.max) { Swap(U64, r.min, r.max); } return r;}
+internal Rng1U64 rng_1u64(U64 min, U64 max)                     {Rng1U64 r = {min, max}; if (r.min > r.max) { Swap(U64, r.min, r.max); } return r;}
 internal Rng1U64 shift_1u64(Rng1U64 r, U64 x)                   {r.min += x; r.max += x; return r;}
 internal Rng1U64 pad_1u64(Rng1U64 r, U64 x)                     {r.min -= x; r.max += x; return r;}
 internal U64 center_1u64(Rng1U64 r)                             {U64 c = (r.min+r.max)/2; return c;}
@@ -434,7 +434,7 @@ internal Rng1U64 union_1u64(Rng1U64 a, Rng1U64 b)               {Rng1U64 c = {Mi
 internal Rng1U64 intersect_1u64(Rng1U64 a, Rng1U64 b)           {Rng1U64 c = {Max(a.min, b.min), Min(a.max, b.max)}; return c;}
 internal U64 clamp_1u64(Rng1U64 r, U64 v)                       {v = Clamp(r.min, v, r.max); return v;}
 
-internal Rng1S64 rng_1s64(S64 min, S64 max)                     {Rng1S64 r = {min, max}; if(r.min > r.max) { Swap(S64, r.min, r.max); } return r;}
+internal Rng1S64 rng_1s64(S64 min, S64 max)                     {Rng1S64 r = {min, max}; if (r.min > r.max) { Swap(S64, r.min, r.max); } return r;}
 internal Rng1S64 shift_1s64(Rng1S64 r, S64 x)                   {r.min += x; r.max += x; return r;}
 internal Rng1S64 pad_1s64(Rng1S64 r, S64 x)                     {r.min -= x; r.max += x; return r;}
 internal S64 center_1s64(Rng1S64 r)                             {S64 c = (r.min+r.max)/2; return c;}
@@ -444,7 +444,7 @@ internal Rng1S64 union_1s64(Rng1S64 a, Rng1S64 b)               {Rng1S64 c = {Mi
 internal Rng1S64 intersect_1s64(Rng1S64 a, Rng1S64 b)           {Rng1S64 c = {Max(a.min, b.min), Min(a.max, b.max)}; return c;}
 internal S64 clamp_1s64(Rng1S64 r, S64 v)                       {v = Clamp(r.min, v, r.max); return v;}
 
-internal Rng1F32 rng_1f32(F32 min, F32 max)                     {Rng1F32 r = {min, max}; if(r.min > r.max) { Swap(F32, r.min, r.max); } return r;}
+internal Rng1F32 rng_1f32(F32 min, F32 max)                     {Rng1F32 r = {min, max}; if (r.min > r.max) { Swap(F32, r.min, r.max); } return r;}
 internal Rng1F32 shift_1f32(Rng1F32 r, F32 x)                   {r.min += x; r.max += x; return r;}
 internal Rng1F32 pad_1f32(Rng1F32 r, F32 x)                     {r.min -= x; r.max += x; return r;}
 internal F32 center_1f32(Rng1F32 r)                             {F32 c = (r.min+r.max)/2; return c;}
@@ -716,9 +716,9 @@ rng1u64_list_push(Arena *arena, Rng1U64List *list, Rng1U64 rng)
 internal void
 rng1u64_list_concat(Rng1U64List *list, Rng1U64List *to_concat)
 {
-  if(to_concat->first)
+  if (to_concat->first)
   {
-    if(list->first)
+    if (list->first)
     {
       list->last->next = to_concat->first;
       list->last       = to_concat->last;
@@ -739,7 +739,7 @@ rng1u64_array_from_list(Arena *arena, Rng1U64List *list)
   arr.count        = list->count;
   arr.v            = push_array_no_zero(arena, Rng1U64, arr.count);
   U64 idx = 0;
-  for(Rng1U64Node *n = list->first; n != 0; n = n->next)
+  for (Rng1U64Node *n = list->first; n != 0; n = n->next)
   {
     arr.v[idx] = n->v;
     idx += 1;
@@ -750,18 +750,18 @@ rng1u64_array_from_list(Arena *arena, Rng1U64List *list)
 internal U64
 rng_1u64_array_bsearch(Rng1U64Array arr, U64 value)
 {
-  if(arr.count > 0 && arr.v[0].min < value && value < arr.v[arr.count-1].max)
+  if (arr.count > 0 && arr.v[0].min < value && value < arr.v[arr.count-1].max)
   {
     U64 l = 0;
     U64 r = arr.count - 1;
-    for(; l <= r; )
+    for (; l <= r; )
     {
       U64 m = l + (r - l) / 2;
-      if(contains_1u64(arr.v[m], value))
+      if (contains_1u64(arr.v[m], value))
       {
         return m;
       }
-      else if(arr.v[m].min < value)
+      else if (arr.v[m].min < value)
       {
         l = m + 1;
       }
@@ -771,7 +771,7 @@ rng_1u64_array_bsearch(Rng1U64Array arr, U64 value)
       }
     }
   }
-  else if(arr.count == 1 && contains_1u64(arr.v[0], value))
+  else if (arr.count == 1 && contains_1u64(arr.v[0], value))
   {
     return 0;
   }
@@ -794,7 +794,7 @@ rng1s64_array_from_list(Arena *arena, Rng1S64List *list)
   arr.count = list->count;
   arr.v = push_array_no_zero(arena, Rng1S64, arr.count);
   U64 idx = 0;
-  for(Rng1S64Node *n = list->first; n != 0; n = n->next)
+  for (Rng1S64Node *n = list->first; n != 0; n = n->next)
   {
     arr.v[idx] = n->v;
     idx += 1;

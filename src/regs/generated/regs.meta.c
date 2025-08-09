@@ -6,7 +6,7 @@
 internal U64 regs_block_size_from_arch(Arch arch)
 {
 U64 result = 8;
-switch(arch)
+switch (arch)
 {
 default:{}break;
 case Arch_x64:{result = sizeof(REGS_RegBlockX64);}break;
@@ -17,7 +17,7 @@ return result;
 internal U64 regs_reg_code_count_from_arch(Arch arch)
 {
 U64 result = 0;
-switch(arch)
+switch (arch)
 {
 default:{}break;
 case Arch_x64:{result = REGS_RegCodeX64_COUNT;}break;
@@ -28,7 +28,7 @@ return result;
 internal U64 regs_alias_code_count_from_arch(Arch arch)
 {
 U64 result = 0;
-switch(arch)
+switch (arch)
 {
 default:{}break;
 case Arch_x64:{result = REGS_AliasCodeX64_COUNT;}break;
@@ -39,7 +39,7 @@ return result;
 internal string *regs_reg_code_string_table_from_arch(Arch arch)
 {
 string *result = 0;
-switch(arch)
+switch (arch)
 {
 default:{}break;
 case Arch_x64:{result = regs_g_reg_code_x64_string_table;}break;
@@ -50,7 +50,7 @@ return result;
 internal string *regs_alias_code_string_table_from_arch(Arch arch)
 {
 string *result = 0;
-switch(arch)
+switch (arch)
 {
 default:{}break;
 case Arch_x64:{result = regs_g_alias_code_x64_string_table;}break;
@@ -61,7 +61,7 @@ return result;
 internal REGS_Rng *regs_reg_code_rng_table_from_arch(Arch arch)
 {
 REGS_Rng *result = 0;
-switch(arch)
+switch (arch)
 {
 default:{}break;
 case Arch_x64:{result = regs_g_reg_code_x64_rng_table;}break;
@@ -72,7 +72,7 @@ return result;
 internal REGS_Slice *regs_alias_code_slice_table_from_arch(Arch arch)
 {
 REGS_Slice *result = 0;
-switch(arch)
+switch (arch)
 {
 default:{}break;
 case Arch_x64:{result = regs_g_alias_code_x64_slice_table;}break;
@@ -83,7 +83,7 @@ return result;
 internal REGS_UsageKind *regs_reg_code_usage_kind_table_from_arch(Arch arch)
 {
 REGS_UsageKind *result = 0;
-switch(arch)
+switch (arch)
 {
 default:{}break;
 case Arch_x64:{result = regs_g_reg_code_x64_usage_kind_table;}break;
@@ -94,7 +94,7 @@ return result;
 internal REGS_UsageKind *regs_alias_code_usage_kind_table_from_arch(Arch arch)
 {
 REGS_UsageKind *result = 0;
-switch(arch)
+switch (arch)
 {
 default:{}break;
 case Arch_x64:{result = regs_g_alias_code_x64_usage_kind_table;}break;

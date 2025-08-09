@@ -31,7 +31,7 @@ tex_init(void)
   tex_shared->slots = push_array(arena, TEX_Slot, tex_shared->slots_count);
   tex_shared->stripes = push_array(arena, TEX_Stripe, tex_shared->stripes_count);
   tex_shared->stripes_free_nodes = push_array(arena, TEX_Node *, tex_shared->stripes_count);
-  for(U64 idx = 0; idx < tex_shared->stripes_count; idx += 1)
+  for (U64 idx = 0; idx < tex_shared->stripes_count; idx += 1)
   {
     tex_shared->stripes[idx].arena = arena_alloc();
     tex_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
@@ -50,7 +50,7 @@ tex_init(void)
 internal void
 tex_tctx_ensure_inited(void)
 {
-  if(tex_tctx == 0)
+  if (tex_tctx == 0)
   {
     Arena *arena = arena_alloc();
     tex_tctx = push_array(arena, TEX_TCTX, 1);
@@ -66,7 +66,7 @@ tex_scope_open(void)
 {
   tex_tctx_ensure_inited();
   TEX_Scope *scope = tex_tctx->free_scope;
-  if(scope)
+  if (scope)
   {
     SLLStackPop(tex_tctx->free_scope);
   }
@@ -81,7 +81,7 @@ tex_scope_open(void)
 internal void
 tex_scope_close(TEX_Scope *scope)
 {
-  for(TEX_Touch *touch = scope->top_touch, *next = 0; touch != 0; touch = next)
+  for (TEX_Touch *touch = scope->top_touch, *next = 0; touch != 0; touch = next)
   {
     U128 hash = touch->hash;
     next = touch->next;
@@ -91,9 +91,9 @@ tex_scope_close(TEX_Scope *scope)
     TEX_Stripe *stripe = &tex_shared->stripes[stripe_idx];
     OS_MutexScopeR(stripe->rw_mutex)
     {
-      for(TEX_Node *n = slot->first; n != 0; n = n->next)
+      for (TEX_Node *n = slot->first; n != 0; n = n->next)
       {
-        if(u128_match(hash, n->hash) && MemoryMatchStruct(&touch->topology, &n->topology))
+        if (u128_match(hash, n->hash) && MemoryMatchStruct(&touch->topology, &n->topology))
         {
           ins_atomic_u64_dec_eval(&n->scope_ref_count);
           break;
@@ -112,7 +112,7 @@ tex_scope_touch_node__stripe_r_guarded(TEX_Scope *scope, TEX_Node *node)
   ins_atomic_u64_inc_eval(&node->scope_ref_count);
   ins_atomic_u64_eval_assign(&node->last_time_touched_us, os_now_microseconds());
   ins_atomic_u64_eval_assign(&node->last_user_clock_idx_touched, update_tick_idx());
-  if(touch != 0)
+  if (touch != 0)
   {
     SLLStackPop(tex_tctx->free_touch);
   }
@@ -142,9 +142,9 @@ tex_texture_from_hash_topology(TEX_Scope *scope, U128 hash, TEX_Topology topolog
     B32 stale = 0;
     OS_MutexScopeR(stripe->rw_mutex)
     {
-      for(TEX_Node *n = slot->first; n != 0; n = n->next)
+      for (TEX_Node *n = slot->first; n != 0; n = n->next)
       {
-        if(u128_match(hash, n->hash) && MemoryMatchStruct(&topology, &n->topology))
+        if (u128_match(hash, n->hash) && MemoryMatchStruct(&topology, &n->topology))
         {
           handle = n->texture;
           found = !r_handle_match(r_handle_zero(), handle);
@@ -154,23 +154,23 @@ tex_texture_from_hash_topology(TEX_Scope *scope, U128 hash, TEX_Topology topolog
       }
     }
     B32 node_is_new = 0;
-    if(!found)
+    if (!found)
     {
       OS_MutexScopeW(stripe->rw_mutex)
       {
         TEX_Node *node = 0;
-        for(TEX_Node *n = slot->first; n != 0; n = n->next)
+        for (TEX_Node *n = slot->first; n != 0; n = n->next)
         {
-          if(u128_match(hash, n->hash) && MemoryMatchStruct(&topology, &n->topology))
+          if (u128_match(hash, n->hash) && MemoryMatchStruct(&topology, &n->topology))
           {
             node = n;
             break;
           }
         }
-        if(node == 0)
+        if (node == 0)
         {
           node = tex_shared->stripes_free_nodes[stripe_idx];
-          if(node)
+          if (node)
           {
             SLLStackPop(tex_shared->stripes_free_nodes[stripe_idx]);
           }
@@ -186,7 +186,7 @@ tex_texture_from_hash_topology(TEX_Scope *scope, U128 hash, TEX_Topology topolog
         }
       }
     }
-    if(node_is_new)
+    if (node_is_new)
     {
       tex_u2x_enqueue_req(hash, topology, max_U64);
       async_push_work(tex_xfer_work);
@@ -199,13 +199,13 @@ internal R_Handle
 tex_texture_from_key_topology(TEX_Scope *scope, HS_Key key, TEX_Topology topology, U128 *hash_out)
 {
   R_Handle handle = {0};
-  for(U64 rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
+  for (U64 rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
   {
     U128 hash = hs_hash_from_key(key, rewind_idx);
     handle = tex_texture_from_hash_topology(scope, hash, topology);
-    if(!r_handle_match(handle, r_handle_zero()))
+    if (!r_handle_match(handle, r_handle_zero()))
     {
-      if(hash_out)
+      if (hash_out)
       {
         *hash_out = hash;
       }
@@ -222,24 +222,24 @@ internal B32
 tex_u2x_enqueue_req(U128 hash, TEX_Topology top, U64 endt_us)
 {
   B32 good = 0;
-  OS_MutexScope(tex_shared->u2x_ring_mutex) for(;;)
+  OS_MutexScope(tex_shared->u2x_ring_mutex) for (;;)
   {
     U64 unconsumed_size = tex_shared->u2x_ring_write_pos-tex_shared->u2x_ring_read_pos;
     U64 available_size = tex_shared->u2x_ring_size-unconsumed_size;
-    if(available_size >= sizeof(hash)+sizeof(top))
+    if (available_size >= sizeof(hash)+sizeof(top))
     {
       good = 1;
       tex_shared->u2x_ring_write_pos += ring_write_struct(tex_shared->u2x_ring_base, tex_shared->u2x_ring_size, tex_shared->u2x_ring_write_pos, &hash);
       tex_shared->u2x_ring_write_pos += ring_write_struct(tex_shared->u2x_ring_base, tex_shared->u2x_ring_size, tex_shared->u2x_ring_write_pos, &top);
       break;
     }
-    if(os_now_microseconds() >= endt_us)
+    if (os_now_microseconds() >= endt_us)
     {
       break;
     }
     os_condition_variable_wait(tex_shared->u2x_ring_cv, tex_shared->u2x_ring_mutex, endt_us);
   }
-  if(good)
+  if (good)
   {
     os_condition_variable_broadcast(tex_shared->u2x_ring_cv);
   }
@@ -249,10 +249,10 @@ tex_u2x_enqueue_req(U128 hash, TEX_Topology top, U64 endt_us)
 internal void
 tex_u2x_dequeue_req(U128 *hash_out, TEX_Topology *top_out)
 {
-  OS_MutexScope(tex_shared->u2x_ring_mutex) for(;;)
+  OS_MutexScope(tex_shared->u2x_ring_mutex) for (;;)
   {
     U64 unconsumed_size = tex_shared->u2x_ring_write_pos-tex_shared->u2x_ring_read_pos;
-    if(unconsumed_size >= sizeof(*hash_out)+sizeof(*top_out))
+    if (unconsumed_size >= sizeof(*hash_out)+sizeof(*top_out))
     {
       tex_shared->u2x_ring_read_pos += ring_read_struct(tex_shared->u2x_ring_base, tex_shared->u2x_ring_size, tex_shared->u2x_ring_read_pos, hash_out);
       tex_shared->u2x_ring_read_pos += ring_read_struct(tex_shared->u2x_ring_base, tex_shared->u2x_ring_size, tex_shared->u2x_ring_read_pos, top_out);
@@ -283,9 +283,9 @@ ASYNC_WORK_DEF(tex_xfer_work)
   B32 got_task = 0;
   OS_MutexScopeR(stripe->rw_mutex)
   {
-    for(TEX_Node *n = slot->first; n != 0; n = n->next)
+    for (TEX_Node *n = slot->first; n != 0; n = n->next)
     {
-      if(u128_match(n->hash, hash) && MemoryMatchStruct(&top, &n->topology))
+      if (u128_match(n->hash, hash) && MemoryMatchStruct(&top, &n->topology))
       {
         got_task = !ins_atomic_u32_eval_cond_assign(&n->is_working, 1, 0);
         break;
@@ -295,24 +295,24 @@ ASYNC_WORK_DEF(tex_xfer_work)
   
   //- rjf: hash -> data
   string data = {0};
-  if(got_task)
+  if (got_task)
   {
     data = hs_data_from_hash(scope, hash);
   }
   
   //- rjf: data * topology -> texture
   R_Handle texture = {0};
-  if(got_task && top.dim.x > 0 && top.dim.y > 0 && data.size >= (U64)top.dim.x*(U64)top.dim.y*(U64)r_tex2d_format_bytes_per_pixel_table[top.fmt])
+  if (got_task && top.dim.x > 0 && top.dim.y > 0 && data.size >= (U64)top.dim.x*(U64)top.dim.y*(U64)r_tex2d_format_bytes_per_pixel_table[top.fmt])
   {
     texture = r_tex2d_alloc(R_ResourceKind_Static, v2s32(top.dim.x, top.dim.y), top.fmt, data.str);
   }
   
   //- rjf: commit results to cache
-  if(got_task) OS_MutexScopeW(stripe->rw_mutex)
+  if (got_task) OS_MutexScopeW(stripe->rw_mutex)
   {
-    for(TEX_Node *n = slot->first; n != 0; n = n->next)
+    for (TEX_Node *n = slot->first; n != 0; n = n->next)
     {
-      if(u128_match(n->hash, hash) && MemoryMatchStruct(&top, &n->topology))
+      if (u128_match(n->hash, hash) && MemoryMatchStruct(&top, &n->topology))
       {
         n->texture = texture;
         ins_atomic_u32_eval_assign(&n->is_working, 0);
@@ -334,13 +334,13 @@ internal void
 tex_evictor_thread__entry_point(void *p)
 {
   ThreadNameF("[tex] evictor thread");
-  for(;;)
+  for (;;)
   {
     U64 check_time_us = os_now_microseconds();
     U64 check_time_user_clocks = update_tick_idx();
     U64 evict_threshold_us = 10*1000000;
     U64 evict_threshold_user_clocks = 10;
-    for(U64 slot_idx = 0; slot_idx < tex_shared->slots_count; slot_idx += 1)
+    for (U64 slot_idx = 0; slot_idx < tex_shared->slots_count; slot_idx += 1)
     {
       U64 stripe_idx = slot_idx%tex_shared->stripes_count;
       TEX_Slot *slot = &tex_shared->slots[slot_idx];
@@ -348,9 +348,9 @@ tex_evictor_thread__entry_point(void *p)
       B32 slot_has_work = 0;
       OS_MutexScopeR(stripe->rw_mutex)
       {
-        for(TEX_Node *n = slot->first; n != 0; n = n->next)
+        for (TEX_Node *n = slot->first; n != 0; n = n->next)
         {
-          if(n->scope_ref_count == 0 &&
+          if (n->scope_ref_count == 0 &&
              n->last_time_touched_us+evict_threshold_us <= check_time_us &&
              n->last_user_clock_idx_touched+evict_threshold_user_clocks <= check_time_user_clocks &&
              n->load_count != 0 &&
@@ -361,19 +361,19 @@ tex_evictor_thread__entry_point(void *p)
           }
         }
       }
-      if(slot_has_work) OS_MutexScopeW(stripe->rw_mutex)
+      if (slot_has_work) OS_MutexScopeW(stripe->rw_mutex)
       {
-        for(TEX_Node *n = slot->first, *next = 0; n != 0; n = next)
+        for (TEX_Node *n = slot->first, *next = 0; n != 0; n = next)
         {
           next = n->next;
-          if(n->scope_ref_count == 0 &&
+          if (n->scope_ref_count == 0 &&
              n->last_time_touched_us+evict_threshold_us <= check_time_us &&
              n->last_user_clock_idx_touched+evict_threshold_user_clocks <= check_time_user_clocks &&
              n->load_count != 0 &&
              n->is_working == 0)
           {
             DLLRemove(slot->first, slot->last, n);
-            if(!r_handle_match(n->texture, r_handle_zero()))
+            if (!r_handle_match(n->texture, r_handle_zero()))
             {
               r_tex2d_release(n->texture);
             }
