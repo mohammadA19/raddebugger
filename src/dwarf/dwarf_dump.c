@@ -352,7 +352,7 @@ dw_string_from_cfi_program(Arena *arena, String8List *out, string indent, string
       case DW_CFA_SetLoc: {
         U64 address = 0;
         switch (arch) {
-          case Arch_x64: cursor += dw_unwind_parse_pointer_x64(raw_data.str, rng_1u64(0,raw_data.size), ptr_ctx, cie->addr_encoding, cursor, &address); break;
+          case Arch_x64: cursor += dw_unwind_parse_pointer_x64(raw_data.str, rng_1u64(0,raw_data.size), ptr_ctx, cie.addr_encoding, cursor, &address); break;
           
           default: NotImplemented; break;
         }
@@ -362,19 +362,19 @@ dw_string_from_cfi_program(Arena *arena, String8List *out, string indent, string
         U8 delta = 0;
         cursor += str8_deserial_read_struct(raw_data, cursor, &delta);
         
-        rd_printf("DW_CFA_advance_loc1: %+u", delta * cie->code_align_factor);
+        rd_printf("DW_CFA_advance_loc1: %+u", delta * cie.code_align_factor);
       } break;
       case DW_CFA_AdvanceLoc2: {
         U16 delta = 0;
         cursor += str8_deserial_read_struct(raw_data, cursor, &delta);
         
-        rd_printf("DW_CFA_advance_loc2: %+u", delta * cie->code_align_factor);
+        rd_printf("DW_CFA_advance_loc2: %+u", delta * cie.code_align_factor);
       } break;
       case DW_CFA_AdvanceLoc4: {
         U32 delta = 0;
         cursor += str8_deserial_read_struct(raw_data, cursor, &delta);
         
-        rd_printf("DW_CFA_advance_loc4: %+u", delta * cie->code_align_factor);
+        rd_printf("DW_CFA_advance_loc4: %+u", delta * cie.code_align_factor);
       } break;
       case DW_CFA_OffsetExt: {
         U64 reg_idx = 0, reg_off = 0;
@@ -382,7 +382,7 @@ dw_string_from_cfi_program(Arena *arena, String8List *out, string indent, string
         cursor += str8_deserial_read_uleb128(raw_data, cursor, &reg_off);
         
         rd_printf("DW_CFA_offset_extended: %S register %llu (%S), offset %+llu", 
-                  dw_string_from_reg_off(scratch.arena, arch, reg_idx, (S64)reg_off * cie->data_align_factor));
+                  dw_string_from_reg_off(scratch.arena, arch, reg_idx, (S64)reg_off * cie.data_align_factor));
       } break;
       case DW_CFA_RestoreExt: {
         rd_printf("DW_CFA_restore_extended");
@@ -459,7 +459,7 @@ dw_string_from_cfi_program(Arena *arena, String8List *out, string indent, string
         cursor += str8_deserial_read_uleb128(raw_data, cursor, &reg_idx);
         cursor += str8_deserial_read_sleb128(raw_data, cursor, &reg_off);
         
-        rd_printf("DW_CFA_offset_ext_sf: %S", dw_string_from_reg_off(scratch.arena, arch, reg_idx, reg_off * cie->data_align_factor));
+        rd_printf("DW_CFA_offset_ext_sf: %S", dw_string_from_reg_off(scratch.arena, arch, reg_idx, reg_off * cie.data_align_factor));
       } break;
       case DW_CFA_DefCfaSf: {
         U64 reg_idx = 0;
@@ -467,7 +467,7 @@ dw_string_from_cfi_program(Arena *arena, String8List *out, string indent, string
         cursor += str8_deserial_read_uleb128(raw_data, cursor, &reg_idx);
         cursor += str8_deserial_read_sleb128(raw_data, cursor, &reg_off);
         
-        rd_printf("DW_CFA_def_cfa_sf: %S", dw_string_from_reg_off(scratch.arena, arch, reg_idx, reg_off * cie->data_align_factor));
+        rd_printf("DW_CFA_def_cfa_sf: %S", dw_string_from_reg_off(scratch.arena, arch, reg_idx, reg_off * cie.data_align_factor));
       } break;
       case DW_CFA_ValOffset: {
         U64 val = 0, offset = 0;
@@ -502,7 +502,7 @@ dw_string_from_cfi_program(Arena *arena, String8List *out, string indent, string
       case DW_CFA_Offset: {
         U64 offset = 0;
         cursor += str8_deserial_read_uleb128(raw_data, cursor, &offset);
-        S64 v = (S64)offset * cie->data_align_factor;
+        S64 v = (S64)offset * cie.data_align_factor;
         
         rd_printf("DW_CFA_offset: %S", dw_string_from_reg_off(scratch.arena, arch, operand, v));
       } break;
@@ -634,8 +634,8 @@ internal void
 dw_print_debug_loc(Arena *arena, String8List *out, string indent, DW_Input *input, Arch arch, ExecutableImageKind image_type, B32 relaxed)
 {
 #if 0
-  DW_Section info = input->sec[DW_Section_Info];
-  DW_Section loc  = input->sec[DW_Section_Loc];
+  DW_Section info = input.sec[DW_Section_Info];
+  DW_Section loc  = input.sec[DW_Section_Loc];
   
   if (loc.data.size == 0) {
     return;
@@ -643,7 +643,7 @@ dw_print_debug_loc(Arena *arena, String8List *out, string indent, DW_Input *inpu
   
   Temp scratch = scratch_begin(&arena, 1);
   
-  rd_printf("# %S", input->sec[DW_Section_Loc].name);
+  rd_printf("# %S", input.sec[DW_Section_Loc].name);
   rd_indent();
   
   // TODO: warn about overlaps in ranges
@@ -659,17 +659,17 @@ dw_print_debug_loc(Arena *arena, String8List *out, string indent, DW_Input *inpu
   DW_Ext     *ext_arr       = push_array(scratch.arena, DW_Ext,     cu_range_list.count);
   
   U64 comp_idx = 0;
-  for (Rng1U64Node *cu_range_n = cu_range_list.first; cu_range_n != 0; cu_range_n = cu_range_n->next, ++comp_idx) {
+  for (Rng1U64Node *cu_range_n = cu_range_list.first; cu_range_n != 0; cu_range_n = cu_range_n.next, ++comp_idx) {
     Temp comp_temp = temp_begin(arena);
     
-    Rng1U64     cu_range = cu_range_n->v;
+    Rng1U64     cu_range = cu_range_n.v;
     DW_CompUnit cu       = dw_comp_unit_from_info_off(comp_temp.arena, input, cu_range.min, relaxed);
     
     // store info about comp unit
     address_sizes[comp_idx] = cu.address_size;
     address_bases[comp_idx] = cu.base_addr;
     ver_arr[comp_idx]       = cu.version;
-    cu_bases[comp_idx]      = cu_range_n->v.min;
+    cu_bases[comp_idx]      = cu_range_n.v.min;
     
     // parse tags
     for (U64 info_off = cu.tags_range.min; info_off < cu.tags_range.max; /* empty */) {
@@ -678,12 +678,12 @@ dw_print_debug_loc(Arena *arena, String8List *out, string indent, DW_Input *inpu
       DW_Tag tag = dw_tag_from_info_offset_cu(tag_temp.arena, input, &cu, ext_arr[comp_idx], info_off);
       
       // parse attribs
-      for (DW_AttribNode *attrib_node = tag.attribs.first; attrib_node != 0; attrib_node = attrib_node->next) {
-        DW_Attrib *attrib         = &attrib_node->v;
-        B32        is_sect_offset = attrib->value_class == DW_AttribClass_LocListPtr || (attrib->value_class == DW_AttribClass_LocList && attrib->form_kind == DW_Form_SecOffset);
-        B32        is_sect_index  = attrib->value_class == DW_AttribClass_LocList && attrib->form_kind == DW_Form_LocListx;
+      for (DW_AttribNode *attrib_node = tag.attribs.first; attrib_node != 0; attrib_node = attrib_node.next) {
+        DW_Attrib *attrib         = &attrib_node.v;
+        B32        is_sect_offset = attrib.value_class == DW_AttribClass_LocListPtr || (attrib.value_class == DW_AttribClass_LocList && attrib.form_kind == DW_Form_SecOffset);
+        B32        is_sect_index  = attrib.value_class == DW_AttribClass_LocList && attrib.form_kind == DW_Form_LocListx;
         if (is_sect_offset) {
-          u64_list_push(scratch.arena, &loc_lists[comp_idx], attrib->value.v[0]);
+          u64_list_push(scratch.arena, &loc_lists[comp_idx], attrib.value.v[0]);
         } else if (is_sect_index) {
           // TODO: support for section indexing
         }
@@ -746,7 +746,7 @@ dw_print_debug_loc(Arena *arena, String8List *out, string indent, DW_Input *inpu
           // format dwarf expression
           B32     is_dwarf64 = (address_size == 8);
           string raw_expr   = str8((U8*)base+expr_range.min, dim_1u64(expr_range));
-          string expression = dw_single_line_string_from_expression(range_temp.arena, raw_expr, cu_bases[comp_idx], address_size, arch, ver, ext, input->sec[DW_Section_Loc].mode);
+          string expression = dw_single_line_string_from_expression(range_temp.arena, raw_expr, cu_bases[comp_idx], address_size, arch, ver, ext, input.sec[DW_Section_Loc].mode);
           
           // push entry
           U64 min = base_address + v0;
@@ -782,7 +782,7 @@ dw_print_debug_ranges(Arena *arena, String8List *out, string indent, DW_Input *i
 {
   NotImplemented;
 #if 0
-  DW_Section  ranges = input->sec[DW_Section_Ranges];
+  DW_Section  ranges = input.sec[DW_Section_Ranges];
   void       *base   = dw_base_from_sec(input, DW_Section_Ranges);
   Rng1U64     range  = dw_range_from_sec(input, DW_Section_Ranges);
   
@@ -792,7 +792,7 @@ dw_print_debug_ranges(Arena *arena, String8List *out, string indent, DW_Input *i
   
   Temp scratch = scratch_begin(&arena, 1);
   
-  Rng1U64List  cu_range_list = dw_comp_unit_ranges_from_info(scratch.arena, sections->v[DW_Section_Info]);
+  Rng1U64List  cu_range_list = dw_comp_unit_ranges_from_info(scratch.arena, sections.v[DW_Section_Info]);
   
   // parse debug_info for attributes with LOCLIST and store .debug_loc offsets 
   U64List *loc_lists     = push_array(scratch.arena, U64List, cu_range_list.count);
@@ -801,8 +801,8 @@ dw_print_debug_ranges(Arena *arena, String8List *out, string indent, DW_Input *i
   
   {
     U64 comp_idx = 0;
-    for (Rng1U64Node *cu_range_n = cu_range_list.first; cu_range_n != 0; cu_range_n = cu_range_n->next, ++comp_idx) {
-      Rng1U64     cu_range = cu_range_n->v;
+    for (Rng1U64Node *cu_range_n = cu_range_list.first; cu_range_n != 0; cu_range_n = cu_range_n.next, ++comp_idx) {
+      Rng1U64     cu_range = cu_range_n.v;
       DW_CompUnit cu       = dw_comp_unit_from_info_offset(scratch.arena, sections, cu_range.min, relaxed);
       
       // store info about comp unit
@@ -814,12 +814,12 @@ dw_print_debug_ranges(Arena *arena, String8List *out, string indent, DW_Input *i
         DW_Tag tag = dw_tag_from_info_offset_cu(scratch.arena, sections, &cu, info_off);
         
         // parse attribs
-        for (DW_AttribNode *attrib_node = tag.attribs.first; attrib_node != 0; attrib_node = attrib_node->next) {
-          DW_Attrib *attrib         = &attrib_node->v;
-          B32        is_sect_offset = attrib->value_class == DW_AttribClass_RngListPtr || (attrib->value_class == DW_AttribClass_RngList && attrib->form_kind == DW_Form_SecOffset);
-          B32        is_sect_index  = attrib->value_class == DW_AttribClass_RngList && attrib->form_kind == DW_Form_RngListx;
+        for (DW_AttribNode *attrib_node = tag.attribs.first; attrib_node != 0; attrib_node = attrib_node.next) {
+          DW_Attrib *attrib         = &attrib_node.v;
+          B32        is_sect_offset = attrib.value_class == DW_AttribClass_RngListPtr || (attrib.value_class == DW_AttribClass_RngList && attrib.form_kind == DW_Form_SecOffset);
+          B32        is_sect_index  = attrib.value_class == DW_AttribClass_RngList && attrib.form_kind == DW_Form_RngListx;
           if (is_sect_offset) {
-            u64_list_push(scratch.arena, &loc_lists[comp_idx], attrib->value.v[0]);
+            u64_list_push(scratch.arena, &loc_lists[comp_idx], attrib.value.v[0]);
           } else if (is_sect_index) {
             // TODO: support for section indexing
           }
@@ -830,7 +830,7 @@ dw_print_debug_ranges(Arena *arena, String8List *out, string indent, DW_Input *i
     }
   }
   
-  rd_printf("# %S", sections->v[DW_Section_Ranges].name);
+  rd_printf("# %S", sections.v[DW_Section_Ranges].name);
   rd_indent();
   rd_printf("%-8s %-8s %-8s", "Offset", "Min", "Max");
   for (U32 comp_idx = 0; comp_idx < cu_range_list.count; ++comp_idx) {
@@ -897,7 +897,7 @@ dw_print_debug_aranges(Arena *arena, String8List *out, string indent, DW_Input *
   
   Temp scratch = scratch_begin(&arena, 1);
   
-  rd_printf("# %S", sections->v[DW_Section_ARanges].name);
+  rd_printf("# %S", sections.v[DW_Section_ARanges].name);
   rd_indent();
   for (U64 cursor = 0; cursor < dim_1u64(range); ) {
     U64        unit_length           = 0;
@@ -986,7 +986,7 @@ dw_print_debug_addr(Arena *arena, String8List *out, string indent, DW_Input *inp
   
   Temp scratch = scratch_begin(&arena, 1);
   
-  rd_printf("# %S", sections->v[DW_Section_Addr].name);
+  rd_printf("# %S", sections.v[DW_Section_Addr].name);
   rd_indent();
   for (U64 cursor = 0; cursor < dim_1u64(range); ) {
     U64        unit_length           = 0;
@@ -1095,7 +1095,7 @@ dw_print_debug_loclists(Arena *arena, String8List *out, string indent, DW_Input 
   
   Temp scratch = scratch_begin(&arena, 1);
   
-  rd_printf("# %S", sections->v[DW_Section_LocLists].name);
+  rd_printf("# %S", sections.v[DW_Section_LocLists].name);
   rd_indent();
   for (U64 cursor = 0; cursor < dim_1u64(range); ) {
     U64 unit_offset = cursor;
@@ -1248,7 +1248,7 @@ dw_print_debug_rnglists(Arena *arena, String8List *out, string indent, DW_Input 
   
   Temp scratch = scratch_begin(&arena, 1);
   
-  rd_printf("# %S", sections->v[DW_Section_RngLists].name);
+  rd_printf("# %S", sections.v[DW_Section_RngLists].name);
   rd_indent();
   for (U64 cursor = 0; cursor < dim_1u64(range); ) {
     U64 unit_offset = cursor;
@@ -1387,7 +1387,7 @@ dw_format_string_table(Arena *arena, String8List *out, string indent, DW_Input *
   
   Temp scratch = scratch_begin(&arena, 1);
   
-  rd_printf("# %S", sections->v[sec].name);
+  rd_printf("# %S", sections.v[sec].name);
   rd_indent();
   for (U64 cursor = 0; cursor < dim_1u64(range); ) {
     U64 unit_offset = cursor;
@@ -1461,7 +1461,7 @@ dw_print_debug_line_str(Arena *arena, String8List *out, string indent, DW_Input 
   
   Temp scratch = scratch_begin(&arena, 1);
   
-  rd_printf("# %S", sections->v[DW_Section_LineStr].name);
+  rd_printf("# %S", sections.v[DW_Section_LineStr].name);
   rd_indent();
   
   rd_printf("%-8s %-8s", "Offset", "String");
@@ -1494,7 +1494,7 @@ dw_print_debug_str_offsets(Arena *arena, String8List *out, string indent, DW_Inp
   
   Temp scratch = scratch_begin(&arena, 1);
   
-  rd_printf("# %S", sections->v[DW_Section_StrOffsets].name);
+  rd_printf("# %S", sections.v[DW_Section_StrOffsets].name);
   rd_indent();
   for (U64 cursor = 0; cursor < dim_1u64(range); ) {
     U64 unit_offset = cursor;
@@ -1559,7 +1559,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
   Temp scratch = scratch_begin(&arena, 1);
   Rng1U64Array segment_vranges = {0};
   DW_ListUnitInput lu_input = dw_list_unit_input_from_input(scratch.arena, input);
-  Rng1U64List unit_ranges_list = dw_unit_ranges_from_data(scratch.arena, input->sec[DW_Section_Info].data);
+  Rng1U64List unit_ranges_list = dw_unit_ranges_from_data(scratch.arena, input.sec[DW_Section_Info].data);
   Rng1U64Array unit_ranges = rng1u64_array_from_list(scratch.arena, &unit_ranges_list);
   B32 relaxed  = 1;
   
@@ -1610,18 +1610,18 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
         // rjf: log attribs
         for (DW_AttribNode *attrib_n = tag.attribs.first;
             attrib_n != 0;
-            attrib_n = attrib_n->next)
+            attrib_n = attrib_n.next)
         {
           Temp attrib_temp = temp_begin(tag_temp.arena);
-          DW_Attrib *attrib = &attrib_n->v;
+          DW_Attrib *attrib = &attrib_n.v;
           
           // rjf: log attrib begin
           dumpf("%S  attrib: {");
           
           // rjf: log basic info
-          dumpf(" off: 0x%I64x", attrib->info_off);
-          dumpf(", kind: %S", dw_string_from_attrib_kind(attrib_temp.arena, unit.version, unit.ext, attrib->attrib_kind));
-          dumpf(", form_kind: %S", dw_string_from_form_kind(attrib_temp.arena, unit.version, attrib->form_kind));
+          dumpf(" off: 0x%I64x", attrib.info_off);
+          dumpf(", kind: %S", dw_string_from_attrib_kind(attrib_temp.arena, unit.version, unit.ext, attrib.attrib_kind));
+          dumpf(", form_kind: %S", dw_string_from_form_kind(attrib_temp.arena, unit.version, attrib.form_kind));
           
           // rjf: log attrib's value based on vlass
           dumpf(", ");
@@ -1658,40 +1658,40 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
             case DW_AttribClass_StrOffsetsPtr:
             case DW_AttribClass_AddrPtr:
             {
-              if (attrib->form_kind == DW_Form_SecOffset)
+              if (attrib.form_kind == DW_Form_SecOffset)
               {
-                dumpf("0x%I64x", attrib->form.sec_offset);
+                dumpf("0x%I64x", attrib.form.sec_offset);
               }
               else
               {
-                dumpf("`unexpected form kind %S`", dw_string_from_form_kind(attrib_temp.arena, unit.version, attrib->form_kind));
+                dumpf("`unexpected form kind %S`", dw_string_from_form_kind(attrib_temp.arena, unit.version, attrib.form_kind));
               }
             }break;
             case DW_AttribClass_Reference:
             {
-              if (attrib->form_kind == DW_Form_Ref1 ||
-                 attrib->form_kind == DW_Form_Ref2 ||
-                 attrib->form_kind == DW_Form_Ref4 ||
-                 attrib->form_kind == DW_Form_Ref8 ||
-                 attrib->form_kind == DW_Form_RefUData)
+              if (attrib.form_kind == DW_Form_Ref1 ||
+                 attrib.form_kind == DW_Form_Ref2 ||
+                 attrib.form_kind == DW_Form_Ref4 ||
+                 attrib.form_kind == DW_Form_Ref8 ||
+                 attrib.form_kind == DW_Form_RefUData)
               {
-                U64 info_off = unit.info_range.min + attrib->form.ref;
+                U64 info_off = unit.info_range.min + attrib.form.ref;
                 dumpf("0x%I64x", info_off);
-                if (!contains_1u64(unit.info_range, attrib->form.ref))
+                if (!contains_1u64(unit.info_range, attrib.form.ref))
                 {
                   dumpf(": `(out of this unit's bounds)`");
                 }
               }
               else
               {
-                dumpf("0x%I64x", attrib->form.ref);
+                dumpf("0x%I64x", attrib.form.ref);
               }
             }break;
             case DW_AttribClass_String:
             {
-              if (attrib->form_kind == DW_Form_Strp)
+              if (attrib.form_kind == DW_Form_Strp)
               {
-                dumpf("0x%I64x", attrib->form.sec_offset);
+                dumpf("0x%I64x", attrib.form.sec_offset);
               }
               string string = dw_string_from_attrib(input, &unit, attrib);
               dumpf(": \"%S\"", string);
@@ -1699,7 +1699,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
           }
           
           // rjf: extend attrib's value with enum info
-          switch (attrib->attrib_kind)
+          switch (attrib.attrib_kind)
           {
             case DW_AttribKind_Language:
             {
@@ -1776,7 +1776,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
   DumpSubset(DebugAbbrev)
   {
     Temp scratch = scratch_begin(&arena, 1);
-    DW_Section abbrev = input->sec[DW_Section_Abbrev];
+    DW_Section abbrev = input.sec[DW_Section_Abbrev];
     S64 depth = 0;
     U64 idx = 0;
     for (U64 cursor = 0; cursor < abbrev.data.size; idx += 1)
@@ -1827,7 +1827,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
       Temp unit_temp = temp_begin(scratch.arena);
       
       // rjf: unpack unit
-      string         unit_data      = str8_substr(input->sec[DW_Section_Line].data, unit_ranges.v[unit_idx]);
+      string         unit_data      = str8_substr(input.sec[DW_Section_Line].data, unit_ranges.v[unit_idx]);
       string         cu_dir         = {0};
       string         cu_name        = {0};
       DW_ListUnit     cu_str_offsets = {0};
@@ -1880,12 +1880,12 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
           DW_LineFile *file = &line_vm.file_table.v[file_idx];
           dumpf("  {  %-4llu %-8llu %-8llu %016llx-%016llx %-8llu %S  }\n",
                 file_idx,
-                file->dir_idx,
-                file->modify_time,
-                file->md5_digest.u64[1],
-                file->md5_digest.u64[0],
-                file->file_size,
-                file->file_name);
+                file.dir_idx,
+                file.modify_time,
+                file.md5_digest.u64[1],
+                file.md5_digest.u64[0],
+                file.file_size,
+                file.file_name);
         }
       }
       
@@ -2092,7 +2092,7 @@ dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubs
   //
   DumpSubset(DebugStr) DeferLoop(dumpf("strings:\n{\n"), dumpf("}\n\n"))
   {
-    string data = input->sec[DW_Section_Str].data;
+    string data = input.sec[DW_Section_Str].data;
     for (U64 cursor = 0, read_size = 0; cursor < data.size; cursor += read_size)
     {
       string string = {0};

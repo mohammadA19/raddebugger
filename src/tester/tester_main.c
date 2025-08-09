@@ -53,7 +53,7 @@ entry_point(CmdLine *cmdline)
   string test_data_folder_path = cmd_line_string(cmdline, ("test_data"));
   if (test_data_folder_path.size == 0)
   {
-    fprintf(stderr, "error(input): The test data folder path was not specified. Specify the path when running the program, like: %.*s --test_data:C:/foo/bar/baz\n", str8_varg(cmdline->exe_name));
+    fprintf(stderr, "error(input): The test data folder path was not specified. Specify the path when running the program, like: %.*s --test_data:C:/foo/bar/baz\n", str8_varg(cmdline.exe_name));
     os_abort(1);
   }
   
@@ -78,8 +78,8 @@ entry_point(CmdLine *cmdline)
   Test *last_test = 0;
 #define Test(name_identifier) \
 Test *test_##name_identifier = push_array(arena, Test, 1);\
-test_##name_identifier->name = (#name_identifier);\
-test_##name_identifier->good = 1;\
+test_##name_identifier.name = (#name_identifier);\
+test_##name_identifier.good = 1;\
 SLLQueuePush(first_test, last_test, test_##name_identifier);\
 for (Test *test = test_##name_identifier; test != 0; test = 0)
   
@@ -98,7 +98,7 @@ for (Test *test = test_##name_identifier; test != 0; test = 0)
     {
       // rjf: unpack paths, make output directory
       string pdb_path = path_normalized_from_string(arena, pdb_paths[pdb_idx]);
-      string repeat_folder = push_str8f(arena, "%S/%S", artifacts_path, test->name);
+      string repeat_folder = push_str8f(arena, "%S/%S", artifacts_path, test.name);
       os_make_directory(repeat_folder);
       
       // rjf: generate all RDIs
@@ -112,25 +112,25 @@ for (Test *test = test_##name_identifier; test != 0; test = 0)
           str8_list_push(arena, &rdi_paths, rdi_path);
           os_handle_list_push(arena, &processes, os_cmd_line_launchf("rdi_from_pdb --deterministic --pdb:%S --out:%S", pdb_path, rdi_path));
         }
-        for (OS_HandleNode *n = processes.first; n != 0; n = n->next)
+        for (OS_HandleNode *n = processes.first; n != 0; n = n.next)
         {
-          os_process_join(n->v, max_U64);
+          os_process_join(n.v, max_U64);
         }
       }
       
       // rjf: generate all dumps
       {
         OS_HandleList processes = {0};
-        for (String8Node *n = rdi_paths.first; n != 0; n = n->next)
+        for (String8Node *n = rdi_paths.first; n != 0; n = n.next)
         {
-          string rdi_path = n->string;
+          string rdi_path = n.string;
           string dump_path = push_str8f(arena, "%S.dump", rdi_path);
           str8_list_push(arena, &dump_paths, dump_path);
           os_handle_list_push(arena, &processes, os_cmd_line_launchf("rdi_dump %S > %S", rdi_path, dump_path));
         }
-        for (OS_HandleNode *n = processes.first; n != 0; n = n->next)
+        for (OS_HandleNode *n = processes.first; n != 0; n = n.next)
         {
-          os_process_join(n->v, max_U64);
+          os_process_join(n.v, max_U64);
         }
       }
       
@@ -143,10 +143,10 @@ for (Test *test = test_##name_identifier; test != 0; test = 0)
       string *dump_paths_array = push_array(arena, string, dump_hashes_count);
       {
         U64 idx = 0;
-        for (String8Node *n = rdi_paths.first; n != 0; n = n->next, idx += 1)
+        for (String8Node *n = rdi_paths.first; n != 0; n = n.next, idx += 1)
         {
           Temp scratch = scratch_begin(0, 0);
-          string path = n->string;
+          string path = n.string;
           string data = os_data_from_file_path(scratch.arena, path);
           rdi_hashes[idx] = hs_hash_from_data(data);
           rdi_paths_array[idx] = path;
@@ -155,10 +155,10 @@ for (Test *test = test_##name_identifier; test != 0; test = 0)
       }
       {
         U64 idx = 0;
-        for (String8Node *n = dump_paths.first; n != 0; n = n->next, idx += 1)
+        for (String8Node *n = dump_paths.first; n != 0; n = n.next, idx += 1)
         {
           Temp scratch = scratch_begin(0, 0);
-          string path = n->string;
+          string path = n.string;
           string data = os_data_from_file_path(scratch.arena, path);
           dump_hashes[idx] = hs_hash_from_data(data);
           dump_paths_array[idx] = path;
@@ -188,15 +188,15 @@ for (Test *test = test_##name_identifier; test != 0; test = 0)
       // rjf: output bad case info
       if (!matches)
       {
-        test->good = 0;
-        str8_list_pushf(arena, &test->out, "  pdb[%I64u] \"%S\"\n", pdb_idx, pdb_path);
+        test.good = 0;
+        str8_list_pushf(arena, &test.out, "  pdb[%I64u] \"%S\"\n", pdb_idx, pdb_path);
         for EachIndex(idx, rdi_hashes_count)
         {
-          str8_list_pushf(arena, &test->out, "    rdi[%I64u] \"%S\": 0x%I64x:%I64x\n", idx, rdi_paths_array[idx], rdi_hashes[idx].u64[0], rdi_hashes[idx].u64[1]);
+          str8_list_pushf(arena, &test.out, "    rdi[%I64u] \"%S\": 0x%I64x:%I64x\n", idx, rdi_paths_array[idx], rdi_hashes[idx].u64[0], rdi_hashes[idx].u64[1]);
         }
         for EachIndex(idx, dump_hashes_count)
         {
-          str8_list_pushf(arena, &test->out, "    dump[%I64u] \"%S\": 0x%I64x:%I64x\n", idx, dump_paths_array[idx], dump_hashes[idx].u64[0], dump_hashes[idx].u64[1]);
+          str8_list_pushf(arena, &test.out, "    dump[%I64u] \"%S\": 0x%I64x:%I64x\n", idx, dump_paths_array[idx], dump_hashes[idx].u64[0], dump_hashes[idx].u64[1]);
         }
       }
     }
@@ -222,37 +222,37 @@ for (Test *test = test_##name_identifier; test != 0; test = 0)
       str8_list_push(arena, &logs, log);
     }
     string log = str8_list_join(arena, &logs, 0);
-    string test_artifacts_path = push_str8f(arena, "%S/%S", artifacts_path, test->name);
+    string test_artifacts_path = push_str8f(arena, "%S/%S", artifacts_path, test.name);
     os_make_directory(test_artifacts_path);
     string current_file_path = push_str8f(arena, "%S/current.txt", test_artifacts_path);
-    string correct_file_path = push_str8f(arena, "%S/%S/correct.txt", test_data_folder_path, test->name);
+    string correct_file_path = push_str8f(arena, "%S/%S/correct.txt", test_data_folder_path, test.name);
     os_write_data_to_file_path(current_file_path, log);
     string current_file_data = log;
     string correct_file_data = os_data_from_file_path(arena, correct_file_path);
-    test->good = str8_match(correct_file_data, current_file_data, 0);
+    test.good = str8_match(correct_file_data, current_file_data, 0);
   }
   
   //////////////////////////////
   //- rjf: dump results
   //
   B32 all_good = 1;
-  for (Test *t = first_test; t != 0; t = t->next)
+  for (Test *t = first_test; t != 0; t = t.next)
   {
-    if (!t->good)
+    if (!t.good)
     {
       all_good = 0;
       break;
     }
   }
   fprintf(stderr, "[%s]\n", all_good ? "." : "X");
-  for (Test *t = first_test; t != 0; t = t->next)
+  for (Test *t = first_test; t != 0; t = t.next)
   {
-    fprintf(stderr, "    [%s] \"%.*s\"\n", t->good ? "." : "X", str8_varg(t->name));
-    if (!t->good)
+    fprintf(stderr, "    [%s] \"%.*s\"\n", t.good ? "." : "X", str8_varg(t.name));
+    if (!t.good)
     {
-      for (String8Node *n = t->out.first; n != 0; n = n->next)
+      for (String8Node *n = t.out.first; n != 0; n = n.next)
       {
-        fprintf(stderr, "        %.*s", str8_varg(n->string));
+        fprintf(stderr, "        %.*s", str8_varg(n.string));
       }
     }
   }

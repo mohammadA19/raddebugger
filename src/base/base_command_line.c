@@ -8,11 +8,11 @@ internal CmdLineOpt **
 cmd_line_slot_from_string(CmdLine *cmd_line, string string)
 {
   CmdLineOpt **slot = 0;
-  if (cmd_line->option_table_size != 0)
+  if (cmd_line.option_table_size != 0)
   {
     U64 hash = u64_hash_from_str8(string);
-    U64 bucket = hash % cmd_line->option_table_size;
-    slot = &cmd_line->option_table[bucket];
+    U64 bucket = hash % cmd_line.option_table_size;
+    slot = &cmd_line.option_table[bucket];
   }
   return slot;
 }
@@ -21,9 +21,9 @@ internal CmdLineOpt *
 cmd_line_opt_from_slot(CmdLineOpt **slot, string string)
 {
   CmdLineOpt *result = 0;
-  for (CmdLineOpt *var = *slot; var; var = var->hash_next)
+  for (CmdLineOpt *var = *slot; var; var = var.hash_next)
   {
-    if (str8_match(string, var->string, 0))
+    if (str8_match(string, var.string, 0))
     {
       result = var;
       break;
@@ -35,8 +35,8 @@ cmd_line_opt_from_slot(CmdLineOpt **slot, string string)
 internal void
 cmd_line_push_opt(CmdLineOptList *list, CmdLineOpt *var)
 {
-  SLLQueuePush(list->first, list->last, var);
-  list->count += 1;
+  SLLQueuePush(list.first, list.last, var);
+  list.count += 1;
 }
 
 internal CmdLineOpt *
@@ -52,17 +52,17 @@ cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line, string string, String8List 
   else
   {
     var = push_array(arena, CmdLineOpt, 1);
-    var->hash_next = *slot;
-    var->hash = u64_hash_from_str8(string);
-    var->string = push_str8_copy(arena, string);
-    var->value_strings = values;
+    var.hash_next = *slot;
+    var.hash = u64_hash_from_str8(string);
+    var.string = push_str8_copy(arena, string);
+    var.value_strings = values;
     StringJoin join = {0};
     join.pre = ("");
     join.sep = (",");
     join.post = ("");
-    var->value_string = str8_list_join(arena, &var->value_strings, &join);
+    var.value_string = str8_list_join(arena, &var.value_strings, &join);
     *slot = var;
-    cmd_line_push_opt(&cmd_line->options, var);
+    cmd_line_push_opt(&cmd_line.options, var);
   }
   return var;
 }
@@ -71,41 +71,41 @@ internal CmdLine
 cmd_line_from_string_list(Arena *arena, String8List command_line)
 {
   CmdLine parsed = {0};
-  parsed.exe_name = command_line.first->string;
+  parsed.exe_name = command_line.first.string;
   parsed.option_table_size = 64;
   parsed.option_table = push_array(arena, CmdLineOpt *, parsed.option_table_size);
   
   //- rjf: parse options / inputs
   B32 after_passthrough_option = 0;
   B32 first_passthrough = 1;
-  for (String8Node *node = command_line.first->next, *next = 0; node != 0; node = next)
+  for (String8Node *node = command_line.first.next, *next = 0; node != 0; node = next)
   {
-    next = node->next;
+    next = node.next;
     
     //- rjf: look at --, -, or / (only on Windows) at the start of an
     // argument to determine if it's a flag option. all arguments after a
     // single "--" (with no trailing string on the command line will be
     // considered as passthrough input strings.
     B32 is_option = 0;
-    string option_name = node->string;
+    string option_name = node.string;
     if (!after_passthrough_option)
     {
       is_option = 1;
-      if (str8_match(node->string, ("--"), 0))
+      if (str8_match(node.string, ("--"), 0))
       {
         after_passthrough_option = 1;
         is_option = 0;
       }
-      else if (str8_match(str8_prefix(node->string, 2), ("--"), 0))
+      else if (str8_match(str8_prefix(node.string, 2), ("--"), 0))
       {
         option_name = str8_skip(option_name, 2);
       }
-      else if (str8_match(str8_prefix(node->string, 1), ("-"), 0))
+      else if (str8_match(str8_prefix(node.string, 1), ("-"), 0))
       {
         option_name = str8_skip(option_name, 1);
       }
       else if (operating_system_from_context() == OperatingSystem_Windows &&
-              str8_match(str8_prefix(node->string, 1), ("/"), 0))
+              str8_match(str8_prefix(node.string, 1), ("/"), 0))
       {
         option_name = str8_skip(option_name, 1);
       }
@@ -134,21 +134,21 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
       String8List values = {0};
       if (has_values)
       {
-        for (String8Node *n = node; n; n = n->next)
+        for (String8Node *n = node; n; n = n.next)
         {
-          next = n->next;
-          string string = n->string;
+          next = n.next;
+          string string = n.string;
           if (n == node)
           {
             string = value_portion_this_string;
           }
           U8 splits[] = { ',' };
           String8List values_in_this_string = str8_split(arena, string, splits, ArrayCount(splits), 0);
-          for (String8Node *sub_val = values_in_this_string.first; sub_val; sub_val = sub_val->next)
+          for (String8Node *sub_val = values_in_this_string.first; sub_val; sub_val = sub_val.next)
           {
-            str8_list_push(arena, &values, sub_val->string);
+            str8_list_push(arena, &values, sub_val.string);
           }
-          if (!str8_match(str8_postfix(n->string, 1), (","), 0) &&
+          if (!str8_match(str8_postfix(n.string, 1), (","), 0) &&
              (n != node || value_portion_this_string.size != 0))
           {
             break;
@@ -161,9 +161,9 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
     }
     
     //- rjf: default path - treat as a passthrough input
-    else if (!str8_match(node->string, ("--"), 0) || !first_passthrough)
+    else if (!str8_match(node.string, ("--"), 0) || !first_passthrough)
     {
-      str8_list_push(arena, &parsed.inputs, node->string);
+      str8_list_push(arena, &parsed.inputs, node.string);
       first_passthrough = 0;
     }
   }
@@ -173,9 +173,9 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
   parsed.argv = push_array(arena, char *, parsed.argc);
   {
     U64 idx = 0;
-    for (String8Node *n = command_line.first; n != 0; n = n->next)
+    for (String8Node *n = command_line.first; n != 0; n = n.next)
     {
-      parsed.argv[idx] = (char *)push_str8_copy(arena, n->string).str;
+      parsed.argv[idx] = (char *)push_str8_copy(arena, n.string).str;
       idx += 1;
     }
   }
@@ -196,7 +196,7 @@ cmd_line_strings(CmdLine *cmd_line, string name)
   CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
   if (var != 0)
   {
-    result = var->value_strings;
+    result = var.value_strings;
   }
   return result;
 }
@@ -208,7 +208,7 @@ cmd_line_string(CmdLine *cmd_line, string name)
   CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
   if (var != 0)
   {
-    result = var->value_string;
+    result = var.value_string;
   }
   return result;
 }
@@ -224,5 +224,5 @@ internal B32
 cmd_line_has_argument(CmdLine *cmd_line, string name)
 {
   CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
-  return (var != 0 && var->value_strings.node_count > 0);
+  return (var != 0 && var.value_strings.node_count > 0);
 }

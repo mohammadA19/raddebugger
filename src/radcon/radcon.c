@@ -14,7 +14,7 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
-  if (cmdl->inputs.node_count > 2) {
+  if (cmdl.inputs.node_count > 2) {
     fprintf(stderr, "error: too many input files on the command line.\n");
     os_abort(1);
   }
@@ -91,11 +91,11 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
   //
   // Load inputs
   //
-  for (String8Node *input_n = cmdl->inputs.first; input_n != 0; input_n = input_n->next) {
-    string input_data = os_data_from_file_path(arena, input_n->string);
+  for (String8Node *input_n = cmdl.inputs.first; input_n != 0; input_n = input_n.next) {
+    string input_data = os_data_from_file_path(arena, input_n.string);
     
     if (input_data.size == 0) {
-      fprintf(stderr, "unable to read input %.*s\n", str8_varg(input_n->string));
+      fprintf(stderr, "unable to read input %.*s\n", str8_varg(input_n.string));
       os_abort(1);
     }
     
@@ -103,11 +103,11 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
       if (is_pe_present) {
         fprintf(stderr, "error: too many PE files are specified on the command line\n");
         fprintf(stderr, "       selected: %.*s\n", str8_varg(pe_name));
-        fprintf(stderr, "       current:  %.*s\n", str8_varg(input_n->string));
+        fprintf(stderr, "       current:  %.*s\n", str8_varg(input_n.string));
         os_abort(1);
       }
       pe_data       = input_data;
-      pe_name       = input_n->string;
+      pe_name       = input_n.string;
       is_pe_present = 1;
     } else if (elf_check_magic(input_data)) {
       ELF_Bin elf              = elf_bin_from_data(input_data);
@@ -117,11 +117,11 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
           fprintf(stderr, "error: ambiguous input, both ELFs have DWARF debug sections, please use --elf:<path> --elf_debug:<path> to clarify inputs.\n");
           os_abort(1);
         }
-        elf_debug_name       = input_n->string;
+        elf_debug_name       = input_n.string;
         elf_debug_data       = input_data;
         is_elf_debug_present = 1;
       } else {
-        elf_name       = input_n->string;
+        elf_name       = input_n.string;
         elf_data       = input_data;
         is_elf_present = 1;
       }
@@ -129,14 +129,14 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
       if (is_pdb_present) {
         fprintf(stderr, "error: too many PDB files are specified on the command line\n");
         fprintf(stderr, "       selected: %.*s\n", str8_varg(pdb_name));
-        fprintf(stderr, "       current:  %.*s\n", str8_varg(input_n->string));
+        fprintf(stderr, "       current:  %.*s\n", str8_varg(input_n.string));
         continue;
       }
-      pdb_name       = input_n->string;
+      pdb_name       = input_n.string;
       pdb_data       = input_data;
       is_pdb_present = 1;
     } else {
-      fprintf(stderr, "error: unknown file format %.*s\n", str8_varg(input_n->string));
+      fprintf(stderr, "error: unknown file format %.*s\n", str8_varg(input_n.string));
     }
   }
   
@@ -189,15 +189,15 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
     PE_BinInfo       pe            = pe_bin_info_from_data(scratch.arena, pe_data);
     string          raw_debug_dir = str8_substr(pe_data, pe.data_dir_franges[PE_DataDirectoryIndex_DEBUG]);
     PE_DebugInfoList debug_dir     = pe_debug_info_list_from_raw_debug_dir(scratch.arena, pe_data, raw_debug_dir);
-    for (PE_DebugInfoNode *debug_n = debug_dir.first; debug_n != 0; debug_n = debug_n->next) {
-      PE_DebugInfo *debug = &debug_n->v;
-      if (debug->header.type == PE_DebugDirectoryType_CODEVIEW) {
-        if (debug->u.codeview.magic == PE_CODEVIEW_PDB70_MAGIC) {
+    for (PE_DebugInfoNode *debug_n = debug_dir.first; debug_n != 0; debug_n = debug_n.next) {
+      PE_DebugInfo *debug = &debug_n.v;
+      if (debug.header.type == PE_DebugDirectoryType_CODEVIEW) {
+        if (debug.u.codeview.magic == PE_CODEVIEW_PDB70_MAGIC) {
           check_guid  = 1;
-          pe_pdb_guid = debug->u.codeview.pdb70.header.guid;
+          pe_pdb_guid = debug.u.codeview.pdb70.header.guid;
           
           if (!is_pdb_present) {
-            pdb_name       = debug->u.codeview.pdb70.path;
+            pdb_name       = debug.u.codeview.pdb70.path;
             pdb_data       = rc_data_from_file_path(arena, pdb_name);
             is_pdb_present = 1;
           }
@@ -391,14 +391,14 @@ rc_run(Arena *arena, RC_Context *rc)
   ProfBegin("Convert");
   RDIM_LocalState *local_state  = rdim_local_init();
   RDIM_BakeParams *convert2bake = 0;
-  switch (rc->driver) {
+  switch (rc.driver) {
     case RC_Driver_Null: break;
     case RC_Driver_Dwarf: convert2bake = d2r_convert(scratch.arena, local_state, rc); break;
     case RC_Driver_Pdb:   convert2bake = p2r_convert(scratch.arena, local_state, rc); break;
   }
   ProfEnd();
   
-  if (rc->errors.node_count) {
+  if (rc.errors.node_count) {
     NotImplemented;
   }
   
@@ -411,7 +411,7 @@ rc_run(Arena *arena, RC_Context *rc)
   ProfEnd();
   
   RDIM_SerializedSectionBundle srlz2file_compressed = srlz2file;
-  if (rc->flags & RC_Flag_Compress) {
+  if (rc.flags & RC_Flag_Compress) {
     ProfBegin("Compress");
     srlz2file_compressed = rdim_compress(scratch.arena, &srlz2file);
     ProfEnd();
@@ -442,7 +442,7 @@ rc_main(CmdLine *cmdl)
   B32 do_help = (cmd_line_has_flag(cmdl, ("help")) ||
                  cmd_line_has_flag(cmdl, ("h")) ||
                  cmd_line_has_flag(cmdl, ("?")) ||
-                 cmdl->argc == 1);
+                 cmdl.argc == 1);
   if (do_help) {
     fprintf(stderr, "--- Help ---------------------------------------------------------------------\n");
     fprintf(stderr, " %s\n\n", BUILD_TITLE_STRING_LITERAL);
@@ -471,8 +471,8 @@ rc_main(CmdLine *cmdl)
     }
     
     // report any errors
-    for (String8Node *error_n = rc.errors.first; error_n != 0; error_n = error_n->next) {
-      fprintf(stderr, "error: %.*s\n", str8_varg(error_n->string));
+    for (String8Node *error_n = rc.errors.first; error_n != 0; error_n = error_n.next) {
+      fprintf(stderr, "error: %.*s\n", str8_varg(error_n.string));
     }
     
     scratch_end(scratch);

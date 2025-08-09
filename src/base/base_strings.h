@@ -187,7 +187,7 @@ internal string push_cstr(Arena *arena, string str); // TODO(rjf): this is unnec
 ////////////////////////////////
 //~ rjf: String List Construction Functions
 
-#define str8_list_first(list) ((list)->first ? (list)->first->string : str8_zero())
+#define str8_list_first(list) ((list)->first ? (list)->first.string : str8_zero())
 
 ////////////////////////////////
 //~ rjf: String Splitting & Joining

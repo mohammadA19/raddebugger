@@ -54,7 +54,7 @@ coff_section_flag_from_align_size(U64 align)
 internal string
 coff_name_from_section_header(string string_table, COFF_SectionHeader *header)
 {
-  string name = str8_cstring_capped(header->name, header->name + sizeof(header->name));
+  string name = str8_cstring_capped(header.name, header.name + sizeof(header.name));
   if (name.str[0] == '/') {
     string name_off_str = str8_skip(name, 1);
     U64     name_off     = u64_from_str8(name_off_str, 10);
@@ -89,16 +89,16 @@ internal string
 coff_read_symbol_name(string string_table, COFF_SymbolName *name)
 {
   string name_str = ("");
-  if (name->long_name.zeroes == 0) {
-    str8_deserial_read_cstr(string_table, name->long_name.string_table_offset, &name_str);
+  if (name.long_name.zeroes == 0) {
+    str8_deserial_read_cstr(string_table, name.long_name.string_table_offset, &name_str);
   } else {
     U32 i;
-    for (i = 0; i < sizeof(name->short_name); ++i) {
-      if (name->short_name[i] == '\0') {
+    for (i = 0; i < sizeof(name.short_name); ++i) {
+      if (name.short_name[i] == '\0') {
         break;
       }
     }
-    name_str = str8(name->short_name, i);
+    name_str = str8(name.short_name, i);
   }
   return name_str;
 }
@@ -447,11 +447,11 @@ coff_foff_from_voff(COFF_SectionHeader *sections, U64 section_count, U64 voff)
   for (U64 sect_idx = 0; sect_idx < section_count; sect_idx += 1)
   {
     COFF_SectionHeader *sect = &sections[sect_idx];
-    if (sect->voff <= voff && voff < sect->voff+sect->vsize)
+    if (sect.voff <= voff && voff < sect.voff+sect.vsize)
     {
-      if (!(sect->flags & COFF_SectionFlag_CntUninitializedData))
+      if (!(sect.flags & COFF_SectionFlag_CntUninitializedData))
       {
-        foff = sect->foff + (voff - sect->voff);
+        foff = sect.foff + (voff - sect.voff);
       }
       break;
     }

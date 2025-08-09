@@ -746,8 +746,8 @@ global RD_CfgID rd_last_drag_drop_prev_tab = 0;
 ////////////////////////////////
 //~ rjf: Config Tree Functions
 
-#define rd_cfg_list_first(list) ((list)->count ? (list)->first->v : &rd_nil_cfg)
-#define rd_cfg_list_last(list)  ((list)->count ? (list)->last->v  : &rd_nil_cfg)
+#define rd_cfg_list_first(list) ((list)->count ? (list)->first.v : &rd_nil_cfg)
+#define rd_cfg_list_last(list)  ((list)->count ? (list)->last.v  : &rd_nil_cfg)
 
 #define rd_panel_node_rec__depth_first_pre(root, p)     rd_panel_node_rec__depth_first((root), (p), OffsetOf(RD_PanelNode, next), OffsetOf(RD_PanelNode, first))
 #define rd_panel_node_rec__depth_first_pre_rev(root, p) rd_panel_node_rec__depth_first((root), (p), OffsetOf(RD_PanelNode, prev), OffsetOf(RD_PanelNode, last))
@@ -855,8 +855,8 @@ global RD_CfgID rd_last_drag_drop_prev_tab = 0;
 ////////////////////////////////
 //~ rjf: Registers
 
-#define rd_regs() (&rd_state->top_regs->v)
-#define rd_base_regs() (&rd_state->base_regs.v)
+#define rd_regs() (&rd_state.top_regs.v)
+#define rd_base_regs() (&rd_state.base_regs.v)
 #define rd_push_regs(...) rd_push_regs_(&(RD_Regs){rd_regs_lit_init_top __VA_ARGS__})
 #define RD_RegsScope(...) DeferLoop(rd_push_regs(__VA_ARGS__), rd_pop_regs())
 

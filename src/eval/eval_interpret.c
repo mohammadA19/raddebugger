@@ -15,18 +15,18 @@ e_select_interpret_ctx(E_InterpretCtx *ctx, RDI_Parsed *primary_rdi, U64 ip_voff
     E_Interpretation frame_base = { .code = ~0 };
     
     RDI_Procedure *proc = rdi_procedure_from_voff(primary_rdi, ip_voff);
-    for (U64 loc_block_idx = proc->frame_base_location_first; loc_block_idx < proc->frame_base_location_opl; loc_block_idx += 1)
+    for (U64 loc_block_idx = proc.frame_base_location_first; loc_block_idx < proc.frame_base_location_opl; loc_block_idx += 1)
     {
       RDI_LocationBlock *block = rdi_element_from_name_idx(primary_rdi, LocationBlocks, loc_block_idx);
-      if (block->scope_off_first <= ip_voff && ip_voff < block->scope_off_opl) {
+      if (block.scope_off_first <= ip_voff && ip_voff < block.scope_off_opl) {
         U64  all_location_data_size = 0;
         U8  *all_location_data      = rdi_table_from_name(primary_rdi, LocationData, &all_location_data_size);
-        if (block->location_data_off + sizeof(RDI_LocationKind) <= all_location_data_size)
+        if (block.location_data_off + sizeof(RDI_LocationKind) <= all_location_data_size)
         {
-          RDI_LocationKind loc_kind = *(RDI_LocationKind *)(all_location_data + block->location_data_off);
+          RDI_LocationKind loc_kind = *(RDI_LocationKind *)(all_location_data + block.location_data_off);
           if (loc_kind == RDI_LocationKind_ValBytecodeStream || loc_kind == RDI_LocationKind_AddrBytecodeStream)
           {
-            U8      *bytecode_ptr  = all_location_data + block->location_data_off + sizeof(RDI_LocationKind);
+            U8      *bytecode_ptr  = all_location_data + block.location_data_off + sizeof(RDI_LocationKind);
             U8      *bytecode_opl  = all_location_data + all_location_data_size;
             U64      bytecode_size = rdi_size_from_bytecode_stream(bytecode_ptr, bytecode_opl);
             string  bytecode      = str8(bytecode_ptr, bytecode_size);
@@ -43,11 +43,11 @@ e_select_interpret_ctx(E_InterpretCtx *ctx, RDI_Parsed *primary_rdi, U64 ip_voff
     
     if (frame_base.code == E_InterpretationCode_Good)
     {
-      *ctx->frame_base = frame_base.value.u64;
+      *ctx.frame_base = frame_base.value.u64;
     }
     else
     {
-      ctx->frame_base = 0;
+      ctx.frame_base = 0;
     }
   }
 }
@@ -59,9 +59,9 @@ internal U64
 e_space_gen(E_Space space)
 {
   U64 result = 0;
-  if (e_base_ctx->space_gen != 0)
+  if (e_base_ctx.space_gen != 0)
   {
-    result = e_base_ctx->space_gen(e_base_ctx->space_rw_user_data, space);
+    result = e_base_ctx.space_gen(e_base_ctx.space_rw_user_data, space);
   }
   return result;
 }
@@ -71,9 +71,9 @@ e_space_read(E_Space space, void *out, Rng1U64 range)
 {
   ProfBeginFunction();
   B32 result = 0;
-  if (e_interpret_ctx->space_read != 0)
+  if (e_interpret_ctx.space_read != 0)
   {
-    result = e_interpret_ctx->space_read(e_interpret_ctx->space_rw_user_data, space, out, range);
+    result = e_interpret_ctx.space_read(e_interpret_ctx.space_rw_user_data, space, out, range);
   }
   ProfEnd();
   return result;
@@ -84,9 +84,9 @@ e_space_write(E_Space space, void *in, Rng1U64 range)
 {
   ProfBeginFunction();
   B32 result = 0;
-  if (e_interpret_ctx->space_write != 0)
+  if (e_interpret_ctx.space_write != 0)
   {
-    result = e_interpret_ctx->space_write(e_interpret_ctx->space_rw_user_data, space, in, range);
+    result = e_interpret_ctx.space_write(e_interpret_ctx.space_rw_user_data, space, in, range);
   }
   ProfEnd();
   return result;
@@ -108,7 +108,7 @@ e_interpret(string bytecode)
   E_Space selected_space = {0};
   if (bytecode.size != 0)
   {
-    selected_space = e_interpret_ctx->primary_space;
+    selected_space = e_interpret_ctx.primary_space;
   }
   
   //- rjf: iterate bytecode & perform ops
@@ -206,9 +206,9 @@ e_interpret(string bytecode)
           result.code = E_InterpretationCode_BadMemRead;
           goto done;
         }
-        if (e_space_match(selected_space, e_interpret_ctx->reg_space))
+        if (e_space_match(selected_space, e_interpret_ctx.reg_space))
         {
-          selected_space = e_interpret_ctx->primary_space;
+          selected_space = e_interpret_ctx.primary_space;
         }
       }break;
       
@@ -217,11 +217,11 @@ e_interpret(string bytecode)
         U8 rdi_reg_code     = (imm.u64&0x0000FF)>>0;
         U8 byte_size        = (imm.u64&0x00FF00)>>8;
         U8 byte_off         = (imm.u64&0xFF0000)>>16;
-        REGS_RegCode base_reg_code = regs_reg_code_from_arch_rdi_code(e_interpret_ctx->reg_arch, rdi_reg_code);
-        REGS_Rng rng = regs_reg_code_rng_table_from_arch(e_interpret_ctx->reg_arch)[base_reg_code];
+        REGS_RegCode base_reg_code = regs_reg_code_from_arch_rdi_code(e_interpret_ctx.reg_arch, rdi_reg_code);
+        REGS_Rng rng = regs_reg_code_rng_table_from_arch(e_interpret_ctx.reg_arch)[base_reg_code];
         U64 off = (U64)rng.byte_off + byte_off;
         U64 size = (U64)byte_size;
-        B32 good_read = e_space_read(e_interpret_ctx->reg_space, &nval, r1u64(off, off+size));
+        B32 good_read = e_space_read(e_interpret_ctx.reg_space, &nval, r1u64(off, off+size));
         if (!good_read)
         {
           result.code = E_InterpretationCode_BadRegRead;
@@ -232,8 +232,8 @@ e_interpret(string bytecode)
       case RDI_EvalOp_RegReadDyn:
       {
         U64 off  = svals[0].u64;
-        U64 size = bit_size_from_arch(e_interpret_ctx->reg_arch)/8;
-        B32 good_read = e_space_read(e_interpret_ctx->reg_space, &nval, r1u64(off, off+size));
+        U64 size = bit_size_from_arch(e_interpret_ctx.reg_arch)/8;
+        B32 good_read = e_space_read(e_interpret_ctx.reg_space, &nval, r1u64(off, off+size));
         if (!good_read)
         {
           result.code = E_InterpretationCode_BadRegRead;
@@ -243,9 +243,9 @@ e_interpret(string bytecode)
       
       case RDI_EvalOp_FrameOff:
       {
-        if (e_interpret_ctx->frame_base != 0)
+        if (e_interpret_ctx.frame_base != 0)
         {
-          nval.u64 = *e_interpret_ctx->frame_base + imm.u64;
+          nval.u64 = *e_interpret_ctx.frame_base + imm.u64;
         }
         else
         {
@@ -256,9 +256,9 @@ e_interpret(string bytecode)
       
       case RDI_EvalOp_ModuleOff:
       {
-        if (e_interpret_ctx->module_base != 0)
+        if (e_interpret_ctx.module_base != 0)
         {
-          nval.u64 = *e_interpret_ctx->module_base + imm.u64;
+          nval.u64 = *e_interpret_ctx.module_base + imm.u64;
         }
         else
         {
@@ -269,9 +269,9 @@ e_interpret(string bytecode)
       
       case RDI_EvalOp_TLSOff:
       {
-        if (e_interpret_ctx->tls_base != 0)
+        if (e_interpret_ctx.tls_base != 0)
         {
-          nval.u64 = *e_interpret_ctx->tls_base + imm.u64;
+          nval.u64 = *e_interpret_ctx.tls_base + imm.u64;
         }
         else
         {

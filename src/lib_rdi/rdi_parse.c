@@ -171,12 +171,12 @@ rdi_parse(RDI_U8 *data, RDI_U64 size, RDI_Parsed *out)
     {
       hdr = (RDI_Header*)data;
     }
-    if (hdr == 0 || hdr->magic != RDI_MAGIC_CONSTANT)
+    if (hdr == 0 || hdr.magic != RDI_MAGIC_CONSTANT)
     {
       hdr = 0;
       result = RDI_ParseStatus_HeaderDoesNotMatch;
     }
-    if (hdr != 0 && hdr->encoding_version != RDI_ENCODING_VERSION)
+    if (hdr != 0 && hdr.encoding_version != RDI_ENCODING_VERSION)
     {
       hdr = 0;
       result = RDI_ParseStatus_UnsupportedVersionNumber;
@@ -190,11 +190,11 @@ rdi_parse(RDI_U8 *data, RDI_U64 size, RDI_Parsed *out)
   RDI_U32 dsec_count = 0;
   if (result == RDI_ParseStatus_Good)
   {
-    RDI_U64 opl = (RDI_U64)hdr->data_section_off + (RDI_U64)hdr->data_section_count*sizeof(*dsecs);
+    RDI_U64 opl = (RDI_U64)hdr.data_section_off + (RDI_U64)hdr.data_section_count*sizeof(*dsecs);
     if (opl <= size)
     {
-      dsecs = (RDI_Section*)(data + hdr->data_section_off);
-      dsec_count = hdr->data_section_count;
+      dsecs = (RDI_Section*)(data + hdr.data_section_off);
+      dsec_count = hdr.data_section_count;
     }
     if (dsecs == 0)
     {
@@ -207,10 +207,10 @@ rdi_parse(RDI_U8 *data, RDI_U64 size, RDI_Parsed *out)
   //
   if (result == RDI_ParseStatus_Good)
   {
-    out->raw_data = data;
-    out->raw_data_size = size;
-    out->sections = dsecs;
-    out->sections_count = dsec_count;
+    out.raw_data = data;
+    out.raw_data_size = size;
+    out.sections = dsecs;
+    out.sections_count = dsec_count;
   }
   
   //////////////////////////////
@@ -250,12 +250,12 @@ rdi_section_raw_data_from_kind(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_Sectio
   result = &rdi_nil_element_union;
   *size_out = rdi_section_element_size_table[kind];
 #endif
-  if (0 <= kind && kind < rdi->sections_count &&
-     rdi->sections[kind].off < rdi->raw_data_size)
+  if (0 <= kind && kind < rdi.sections_count &&
+     rdi.sections[kind].off < rdi.raw_data_size)
   {
-    result = rdi->raw_data+rdi->sections[kind].off;
-    *size_out = rdi->sections[kind].encoded_size;
-    *encoding_out = rdi->sections[kind].encoding;
+    result = rdi.raw_data+rdi.sections[kind].off;
+    *size_out = rdi.sections[kind].encoded_size;
+    *encoding_out = rdi.sections[kind].encoding;
   }
   return result;
 }
@@ -296,10 +296,10 @@ rdi_section_raw_element_from_kind_idx(RDI_Parsed *rdi, RDI_SectionKind kind, RDI
 RDI_PROC RDI_U64
 rdi_decompressed_size_from_parsed(RDI_Parsed *rdi)
 {
-  RDI_U64 decompressed_size = rdi->raw_data_size;
-  for (RDI_U64 section_idx = 0; section_idx < rdi->sections_count; section_idx += 1)
+  RDI_U64 decompressed_size = rdi.raw_data_size;
+  for (RDI_U64 section_idx = 0; section_idx < rdi.sections_count; section_idx += 1)
   {
-    decompressed_size += (rdi->sections[section_idx].unpacked_size - rdi->sections[section_idx].encoded_size);
+    decompressed_size += (rdi.sections[section_idx].unpacked_size - rdi.sections[section_idx].encoded_size);
   }
   return decompressed_size;
 }
@@ -310,21 +310,21 @@ internal void
 rdi_decompress_parsed(U8 *decompressed_data, U64 decompressed_size, RDI_Parsed *og_rdi)
 {
   // rjf: copy header
-  RDI_Header *src_header = (RDI_Header *)og_rdi->raw_data;
+  RDI_Header *src_header = (RDI_Header *)og_rdi.raw_data;
   RDI_Header *dst_header = (RDI_Header *)decompressed_data;
   {
     MemoryCopy(dst_header, src_header, sizeof(RDI_Header));
   }
   
   // rjf: copy & adjust sections for decompressed version
-  if (og_rdi->sections_count != 0)
+  if (og_rdi.sections_count != 0)
   {
-    RDI_Section *dsec_base = (RDI_Section *)(decompressed_data + dst_header->data_section_off);
-    MemoryCopy(dsec_base, (U8 *)og_rdi->raw_data + src_header->data_section_off, sizeof(RDI_Section) * og_rdi->sections_count);
-    U64 off = dst_header->data_section_off + sizeof(RDI_Section) * og_rdi->sections_count;
+    RDI_Section *dsec_base = (RDI_Section *)(decompressed_data + dst_header.data_section_off);
+    MemoryCopy(dsec_base, (U8 *)og_rdi.raw_data + src_header.data_section_off, sizeof(RDI_Section) * og_rdi.sections_count);
+    U64 off = dst_header.data_section_off + sizeof(RDI_Section) * og_rdi.sections_count;
     off += 7;
     off -= off%8;
-    for (U64 idx = 0; idx < og_rdi->sections_count; idx += 1)
+    for (U64 idx = 0; idx < og_rdi.sections_count; idx += 1)
     {
       dsec_base[idx].encoding = RDI_SectionEncoding_Unpacked;
       dsec_base[idx].off = off;
@@ -336,18 +336,18 @@ rdi_decompress_parsed(U8 *decompressed_data, U64 decompressed_size, RDI_Parsed *
   }
   
   // rjf: decompress sections into new decompressed file buffer
-  if (og_rdi->sections_count != 0)
+  if (og_rdi.sections_count != 0)
   {
-    RDI_Section *src_first = og_rdi->sections;
-    RDI_Section *dst_first = (RDI_Section *)(decompressed_data + dst_header->data_section_off);
-    RDI_Section *src_opl = src_first + og_rdi->sections_count;
-    RDI_Section *dst_opl = dst_first + og_rdi->sections_count;
+    RDI_Section *src_first = og_rdi.sections;
+    RDI_Section *dst_first = (RDI_Section *)(decompressed_data + dst_header.data_section_off);
+    RDI_Section *src_opl = src_first + og_rdi.sections_count;
+    RDI_Section *dst_opl = dst_first + og_rdi.sections_count;
     for (RDI_Section *src = src_first, *dst = dst_first;
         src < src_opl && dst < dst_opl;
         src += 1, dst += 1)
     {
-      rr_lzb_simple_decode((U8*)og_rdi->raw_data + src->off, src->encoded_size,
-                           decompressed_data     + dst->off, dst->unpacked_size);
+      rr_lzb_simple_decode((U8*)og_rdi.raw_data + src.off, src.encoded_size,
+                           decompressed_data     + dst.off, dst.unpacked_size);
     }
   }
 }
@@ -414,21 +414,21 @@ rdi_parsed_from_line_table(RDI_Parsed *rdi, RDI_LineTable *line_table, RDI_Parse
   RDI_Column *all_cols_opl = all_cols + all_cols_count;
   
   //- rjf: extract ranges of top-level tables belonging to this line table
-  RDI_U64    *lt_voffs = all_voffs + line_table->voffs_base_idx;
-  RDI_Line   *lt_lines = all_lines + line_table->lines_base_idx;
-  RDI_Column *lt_cols  = all_cols  + line_table->cols_base_idx;
-  RDI_U64 lines_count = line_table->lines_count;
-  RDI_U64 cols_count  = line_table->cols_count;
+  RDI_U64    *lt_voffs = all_voffs + line_table.voffs_base_idx;
+  RDI_Line   *lt_lines = all_lines + line_table.lines_base_idx;
+  RDI_Column *lt_cols  = all_cols  + line_table.cols_base_idx;
+  RDI_U64 lines_count = line_table.lines_count;
+  RDI_U64 cols_count  = line_table.cols_count;
   if (lt_voffs >= all_voffs_opl) {lt_voffs = all_voffs; lines_count = 0;}
   if (lt_lines >= all_lines_opl) {lt_lines = all_lines; lines_count = 0;}
   if (lt_cols  >= all_cols_opl)  {lt_cols  = all_cols;  cols_count = 0;}
   
   //- rjf: fill result
-  out->voffs     = lt_voffs;
-  out->lines     = lt_lines;
-  out->cols      = lt_cols;
-  out->count     = lines_count;
-  out->col_count = cols_count;
+  out.voffs     = lt_voffs;
+  out.lines     = lt_lines;
+  out.cols      = lt_cols;
+  out.count     = lines_count;
+  out.col_count = cols_count;
 }
 
 RDI_PROC RDI_U64
@@ -436,20 +436,20 @@ rdi_line_info_idx_range_from_voff(RDI_ParsedLineTable *line_info, RDI_U64 voff, 
 {
   RDI_U64 result = 0;
   RDI_U64 n = 0;
-  if (line_info->count > 0 && line_info->voffs[0] <= voff && voff < line_info->voffs[line_info->count - 1])
+  if (line_info.count > 0 && line_info.voffs[0] <= voff && voff < line_info.voffs[line_info.count - 1])
   {
     //- rjf: find i such that: (vmap[i].voff <= voff) && (voff < vmap[i + 1].voff)
     // assuming: (i < j) -> (vmap[i].voff < vmap[j].voff)
     RDI_U32 first = 0;
-    RDI_U32 opl   = line_info->count;
+    RDI_U32 opl   = line_info.count;
     for (;;)
     {
       RDI_U32 mid = (first + opl)/2;
-      if (line_info->voffs[mid] < voff)
+      if (line_info.voffs[mid] < voff)
       {
         first = mid;
       }
-      else if (line_info->voffs[mid] > voff)
+      else if (line_info.voffs[mid] > voff)
       {
         opl = mid;
       }
@@ -468,7 +468,7 @@ rdi_line_info_idx_range_from_voff(RDI_ParsedLineTable *line_info, RDI_U64 voff, 
     //- rjf: scan leftward, to find shallowest line info matching this voff
     for (;result != 0;)
     {
-      if (line_info->voffs[result-1] == voff)
+      if (line_info.voffs[result-1] == voff)
       {
         result -= 1;
       }
@@ -479,9 +479,9 @@ rdi_line_info_idx_range_from_voff(RDI_ParsedLineTable *line_info, RDI_U64 voff, 
     }
     
     //- rjf: scan rightward, to count # of line info with this voff
-    for (RDI_U64 idx = result; idx < line_info->count; idx += 1)
+    for (RDI_U64 idx = result; idx < line_info.count; idx += 1)
     {
-      if (line_info->voffs[idx] == voff)
+      if (line_info.voffs[idx] == voff)
       {
         n += 1;
       }
@@ -505,7 +505,7 @@ rdi_line_info_idx_from_voff(RDI_ParsedLineTable *line_info, RDI_U64 voff)
   RDI_U64 result = rdi_line_info_idx_range_from_voff(line_info, voff, &count);
   for (RDI_S64 idx = count-1; idx >= 0; idx -= 1)
   {
-    if (result + idx < line_info->count && line_info->lines[result+idx].file_idx != 0)
+    if (result + idx < line_info.count && line_info.lines[result+idx].file_idx != 0)
     {
       result += idx;
       break;
@@ -529,21 +529,21 @@ rdi_parsed_from_source_line_map(RDI_Parsed *rdi, RDI_SourceLineMap *map, RDI_Par
   RDI_U64 *all_voffs_opl = all_voffs + all_voffs_count;
   
   //- rjf: extract ranges of top-level tables belonging to this line map
-  RDI_U32 *map_nums = all_nums + map->line_map_nums_base_idx;
-  RDI_U32 *map_rngs = all_rngs + map->line_map_range_base_idx;
-  RDI_U64 *map_voffs= all_voffs+ map->line_map_voff_base_idx;
-  RDI_U64 lines_count = (RDI_U64)map->line_count;
-  RDI_U64 voffs_count = (RDI_U64)map->voff_count;
+  RDI_U32 *map_nums = all_nums + map.line_map_nums_base_idx;
+  RDI_U32 *map_rngs = all_rngs + map.line_map_range_base_idx;
+  RDI_U64 *map_voffs= all_voffs+ map.line_map_voff_base_idx;
+  RDI_U64 lines_count = (RDI_U64)map.line_count;
+  RDI_U64 voffs_count = (RDI_U64)map.voff_count;
   if (map_nums >= all_nums_opl) {map_nums = all_nums; lines_count = 0;}
   if (map_rngs >= all_rngs_opl) {map_rngs = all_rngs; lines_count = 0;}
   if (map_voffs>= all_voffs_opl){map_voffs= all_voffs;voffs_count = 0;}
   
   //- rjf: fill result
-  out->nums       = map_nums;
-  out->ranges     = map_rngs;
-  out->voffs      = map_voffs;
-  out->count      = lines_count;
-  out->voff_count = voffs_count;
+  out.nums       = map_nums;
+  out.ranges     = map_rngs;
+  out.voffs      = map_voffs;
+  out.count      = lines_count;
+  out.voff_count = voffs_count;
 }
 
 RDI_PROC RDI_U64 *
@@ -552,13 +552,13 @@ rdi_line_voffs_from_num(RDI_ParsedSourceLineMap *map, RDI_U32 linenum, RDI_U32 *
   RDI_U64 *result = 0;
   *n_out = 0;
   RDI_U32 closest_i = 0;
-  if (map->count > 0 && map->nums[0] <= linenum)
+  if (map.count > 0 && map.nums[0] <= linenum)
   {
     // assuming: (i < j) -> (nums[i] < nums[j])
     // find i such that: (nums[i] <= linenum) && (linenum < nums[i + 1])
-    RDI_U32 *nums = map->nums;
+    RDI_U32 *nums = map.nums;
     RDI_U32 first = 0;
-    RDI_U32 opl   = map->count;
+    RDI_U32 opl   = map.count;
     for (;;)
     {
       RDI_U32 mid = (first + opl)/2;
@@ -584,19 +584,19 @@ rdi_line_voffs_from_num(RDI_ParsedSourceLineMap *map, RDI_U32 linenum, RDI_U32 *
   }
   
   // round up instead of down if possible
-  if (closest_i + 1 < map->count && map->nums[closest_i] < linenum)
+  if (closest_i + 1 < map.count && map.nums[closest_i] < linenum)
   {
     closest_i += 1;
   }
   
   // set result if possible
-  if (closest_i < map->count)
+  if (closest_i < map.count)
   {
-    RDI_U32 first = map->ranges[closest_i];
-    RDI_U32 opl   = map->ranges[closest_i + 1];
-    if (opl <= map->voff_count)
+    RDI_U32 first = map.ranges[closest_i];
+    RDI_U32 opl   = map.ranges[closest_i + 1];
+    if (opl <= map.voff_count)
     {
-      result = map->voffs + first;
+      result = map.voffs + first;
       *n_out = opl - first;
     }
   }
@@ -656,27 +656,27 @@ rdi_vmap_idx_from_section_kind_voff(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_U
 RDI_PROC void
 rdi_parsed_from_name_map(RDI_Parsed *rdi, RDI_NameMap *mapptr, RDI_ParsedNameMap *out)
 {
-  out->buckets = 0;
-  out->bucket_count = 0;
+  out.buckets = 0;
+  out.bucket_count = 0;
   if (mapptr != 0)
   {
     RDI_U64 all_buckets_count = 0;
     RDI_NameMapBucket *all_buckets = rdi_table_from_name(rdi, NameMapBuckets, &all_buckets_count);
     RDI_U64 all_nodes_count = 0;
     RDI_NameMapNode *all_nodes = rdi_table_from_name(rdi, NameMapNodes, &all_nodes_count);
-    out->buckets = all_buckets+mapptr->bucket_base_idx;
-    out->nodes = all_nodes+mapptr->node_base_idx;
-    out->bucket_count = mapptr->bucket_count;
-    out->node_count = mapptr->node_count;
-    if (mapptr->bucket_base_idx > all_buckets_count)
+    out.buckets = all_buckets+mapptr.bucket_base_idx;
+    out.nodes = all_nodes+mapptr.node_base_idx;
+    out.bucket_count = mapptr.bucket_count;
+    out.node_count = mapptr.node_count;
+    if (mapptr.bucket_base_idx > all_buckets_count)
     {
-      out->buckets = 0;
-      out->bucket_count = 0;
+      out.buckets = 0;
+      out.bucket_count = 0;
     }
-    if (mapptr->node_base_idx > all_nodes_count)
+    if (mapptr.node_base_idx > all_nodes_count)
     {
-      out->nodes = 0;
-      out->node_count = 0;
+      out.nodes = 0;
+      out.node_count = 0;
     }
   }
 }
@@ -685,20 +685,20 @@ RDI_PROC RDI_NameMapNode*
 rdi_name_map_lookup(RDI_Parsed *p, RDI_ParsedNameMap *map, RDI_U8 *str, RDI_U64 len)
 {
   RDI_NameMapNode *result = 0;
-  if (map->bucket_count > 0)
+  if (map.bucket_count > 0)
   {
-    RDI_NameMapBucket *buckets = map->buckets;
-    RDI_U64 bucket_count = map->bucket_count;
+    RDI_NameMapBucket *buckets = map.buckets;
+    RDI_U64 bucket_count = map.bucket_count;
     RDI_U64 hash = rdi_hash(str, len);
     RDI_U64 bucket_index = hash%bucket_count;
-    RDI_NameMapBucket *bucket = map->buckets + bucket_index;
-    RDI_NameMapNode *node = map->nodes + bucket->first_node;
-    RDI_NameMapNode *node_opl = node + bucket->node_count;
+    RDI_NameMapBucket *bucket = map.buckets + bucket_index;
+    RDI_NameMapNode *node = map.nodes + bucket.first_node;
+    RDI_NameMapNode *node_opl = node + bucket.node_count;
     for (;node < node_opl; node += 1)
     {
       // extract a string from this node
       RDI_U64 nlen = 0;
-      RDI_U8 *nstr = rdi_string_from_idx(p, node->string_idx, &nlen);
+      RDI_U8 *nstr = rdi_string_from_idx(p, node.string_idx, &nlen);
       
       // compare this to the needle string
       RDI_S32 match = 0;
@@ -730,14 +730,14 @@ rdi_matches_from_map_node(RDI_Parsed *p, RDI_NameMapNode *node, RDI_U32 *n_out)
   *n_out = 0;
   if (node != 0)
   {
-    if (node->match_count == 1)
+    if (node.match_count == 1)
     {
-      result = &node->match_idx_or_idx_run_first;
+      result = &node.match_idx_or_idx_run_first;
       *n_out = 1;
     }
     else
     {
-      result = rdi_idx_run_from_first_count(p, node->match_idx_or_idx_run_first, node->match_count, n_out);
+      result = rdi_idx_run_from_first_count(p, node.match_idx_or_idx_run_first, node.match_count, n_out);
     }
   }
   return result;
@@ -776,13 +776,13 @@ rdi_procedure_from_name_cstr(RDI_Parsed *rdi, char *cstr)
 RDI_PROC RDI_U8 *
 rdi_name_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure, RDI_U64 *len_out)
 {
-  return rdi_string_from_idx(rdi, procedure->name_string_idx, len_out);
+  return rdi_string_from_idx(rdi, procedure.name_string_idx, len_out);
 }
 
 RDI_PROC RDI_Scope *
 rdi_root_scope_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
 {
-  RDI_Scope *scope = rdi_element_from_name_idx(rdi, Scopes, procedure->root_scope_idx);
+  RDI_Scope *scope = rdi_element_from_name_idx(rdi, Scopes, procedure.root_scope_idx);
   return scope;
 }
 
@@ -790,9 +790,9 @@ RDI_PROC RDI_UDT *
 rdi_container_udt_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
 {
   RDI_U64 idx = 0;
-  if (procedure->link_flags & RDI_LinkFlag_TypeScoped)
+  if (procedure.link_flags & RDI_LinkFlag_TypeScoped)
   {
-    idx = procedure->container_idx;
+    idx = procedure.container_idx;
   }
   RDI_UDT *udt = rdi_element_from_name_idx(rdi, UDTs, idx);
   return udt;
@@ -802,9 +802,9 @@ RDI_PROC RDI_Procedure *
 rdi_container_procedure_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
 {
   RDI_U64 idx = 0;
-  if (procedure->link_flags & RDI_LinkFlag_ProcScoped)
+  if (procedure.link_flags & RDI_LinkFlag_ProcScoped)
   {
-    idx = procedure->container_idx;
+    idx = procedure.container_idx;
   }
   RDI_Procedure *container_procedure = rdi_element_from_name_idx(rdi, Procedures, idx);
   return container_procedure;
@@ -839,7 +839,7 @@ rdi_procedure_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
 RDI_PROC RDI_U64
 rdi_first_voff_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
 {
-  RDI_U64 *voffs = rdi_element_from_name_idx(rdi, ScopeVOffData, scope->voff_range_first);
+  RDI_U64 *voffs = rdi_element_from_name_idx(rdi, ScopeVOffData, scope.voff_range_first);
   RDI_U64 result = *voffs;
   return result;
 }
@@ -848,9 +848,9 @@ RDI_PROC RDI_U64
 rdi_opl_voff_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
 {
   RDI_U64 result = 0;
-  if (scope->voff_range_opl != 0)
+  if (scope.voff_range_opl != 0)
   {
-    RDI_U64 *voffs = rdi_element_from_name_idx(rdi, ScopeVOffData, scope->voff_range_opl-1);
+    RDI_U64 *voffs = rdi_element_from_name_idx(rdi, ScopeVOffData, scope.voff_range_opl-1);
     result = *voffs;
   }
   return result;
@@ -867,21 +867,21 @@ rdi_scope_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
 RDI_PROC RDI_Scope *
 rdi_parent_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
 {
-  RDI_Scope *parent = rdi_element_from_name_idx(rdi, Scopes, scope->parent_scope_idx);
+  RDI_Scope *parent = rdi_element_from_name_idx(rdi, Scopes, scope.parent_scope_idx);
   return parent;
 }
 
 RDI_PROC RDI_Procedure *
 rdi_procedure_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
 {
-  RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, scope->proc_idx);
+  RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, scope.proc_idx);
   return procedure;
 }
 
 RDI_PROC RDI_InlineSite *
 rdi_inline_site_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
 {
-  RDI_InlineSite *inline_site = rdi_element_from_name_idx(rdi, InlineSites, scope->inline_site_idx);
+  RDI_InlineSite *inline_site = rdi_element_from_name_idx(rdi, InlineSites, scope.inline_site_idx);
   return inline_site;
 }
 
@@ -908,7 +908,7 @@ rdi_unit_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
 RDI_PROC RDI_LineTable *
 rdi_line_table_from_unit(RDI_Parsed *rdi, RDI_Unit *unit)
 {
-  RDI_LineTable *line_table = rdi_element_from_name_idx(rdi, LineTables, unit->line_table_idx);
+  RDI_LineTable *line_table = rdi_element_from_name_idx(rdi, LineTables, unit.line_table_idx);
   return line_table;
 }
 
@@ -940,7 +940,7 @@ rdi_line_from_line_table_voff(RDI_Parsed *rdi, RDI_LineTable *line_table, RDI_U6
 RDI_PROC RDI_SourceFile *
 rdi_source_file_from_line(RDI_Parsed *rdi, RDI_Line *line)
 {
-  RDI_SourceFile *result = rdi_element_from_name_idx(rdi, SourceFiles, line->file_idx);
+  RDI_SourceFile *result = rdi_element_from_name_idx(rdi, SourceFiles, line.file_idx);
   return result;
 }
 
@@ -974,20 +974,20 @@ rdi_source_file_from_normal_path_cstr(RDI_Parsed *rdi, char *cstr)
 RDI_PROC RDI_U8 *
 rdi_normal_path_from_source_file(RDI_Parsed *rdi, RDI_SourceFile *src_file, RDI_U64 *len_out)
 {
-  return rdi_string_from_idx(rdi, src_file->normal_full_path_string_idx, len_out);
+  return rdi_string_from_idx(rdi, src_file.normal_full_path_string_idx, len_out);
 }
 
 RDI_PROC RDI_FilePathNode *
 rdi_file_path_node_from_source_file(RDI_Parsed *rdi, RDI_SourceFile *src_file)
 {
-  RDI_FilePathNode *result = rdi_element_from_name_idx(rdi, FilePathNodes, src_file->file_path_node_idx);
+  RDI_FilePathNode *result = rdi_element_from_name_idx(rdi, FilePathNodes, src_file.file_path_node_idx);
   return result;
 }
 
 RDI_PROC RDI_SourceLineMap *
 rdi_source_line_map_from_source_file(RDI_Parsed *rdi, RDI_SourceFile *src_file)
 {
-  RDI_SourceLineMap *result = rdi_element_from_name_idx(rdi, SourceLineMaps, src_file->source_line_map_idx);
+  RDI_SourceLineMap *result = rdi_element_from_name_idx(rdi, SourceLineMaps, src_file.source_line_map_idx);
   return result;
 }
 
@@ -1021,14 +1021,14 @@ rdi_first_voff_from_source_line_map_num(RDI_Parsed *rdi, RDI_SourceLineMap *map,
 RDI_PROC RDI_FilePathNode *
 rdi_parent_from_file_path_node(RDI_Parsed *rdi, RDI_FilePathNode *node)
 {
-  RDI_FilePathNode *result = rdi_element_from_name_idx(rdi, FilePathNodes, node->parent_path_node);
+  RDI_FilePathNode *result = rdi_element_from_name_idx(rdi, FilePathNodes, node.parent_path_node);
   return result;
 }
 
 RDI_PROC RDI_U8 *
 rdi_name_from_file_path_node(RDI_Parsed *rdi, RDI_FilePathNode *node, RDI_U64 *len_out)
 {
-  return rdi_string_from_idx(rdi, node->name_string_idx, len_out);
+  return rdi_string_from_idx(rdi, node.name_string_idx, len_out);
 }
 
 ////////////////////////////////
@@ -1705,8 +1705,8 @@ static RADINLINE U8 * LZB_OutputLast(U8 * cp, S32 lrl, const U8 * literals )
 
 static void rr_lzb_simple_context_init(rr_lzb_simple_context * ctx) //, const void * base)
 {
-	RR_ASSERT( ctx->m_tableSizeBits >= 12 && ctx->m_tableSizeBits <= 24 );
-	memset(ctx->m_hashTable,0,sizeof(U16)*((SINTa)1<<ctx->m_tableSizeBits));
+	RR_ASSERT( ctx.m_tableSizeBits >= 12 && ctx.m_tableSizeBits <= 24 );
+	memset(ctx.m_hashTable,0,sizeof(U16)*((SINTa)1<<ctx.m_tableSizeBits));
 }
 
 //===============================================================
@@ -1793,9 +1793,9 @@ static SINTa rr_lzb_simple_encode_fast_sub(rr_lzb_simple_context * fh,
 	int hashCycle = 0;
 #endif
   
-	U16 * hashTable16 = fh->m_hashTable;
+	U16 * hashTable16 = fh.m_hashTable;
 	
-	int hashTableSizeBits = fh->m_tableSizeBits;
+	int hashTableSizeBits = fh.m_tableSizeBits;
 	U32 hash_table_mask = (U32)((1UL<<(hashTableSizeBits - FAST_HASH_DEPTH_SHIFT)) - 1);
 	
 	const U8 * zeroPosPtr = (const U8 *)raw;
@@ -2261,8 +2261,8 @@ static SINTa rr_lzb_simple_encode_veryfast_sub(rr_lzb_simple_context * fh,
 	
 	const U8 * literals_start = rp;
   
-	U16 * hashTable16 = fh->m_hashTable;
-	int hashTableSizeBits = fh->m_tableSizeBits;
+	U16 * hashTable16 = fh.m_hashTable;
+	int hashTableSizeBits = fh.m_tableSizeBits;
 	U32 hash_table_mask = (U32)((1UL<<(hashTableSizeBits)) - 1);
   
 	const U8 * zeroPosPtr = (const U8 *)raw;

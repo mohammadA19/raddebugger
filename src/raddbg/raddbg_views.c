@@ -8,12 +8,12 @@ internal void
 rd_code_view_init(RD_CodeViewState *cv)
 {
   ProfBeginFunction();
-  if (cv->initialized == 0)
+  if (cv.initialized == 0)
   {
-    cv->initialized = 1;
-    cv->preferred_column = 1;
-    cv->find_text_arena = rd_push_view_arena();
-    cv->center_cursor = 1;
+    cv.initialized = 1;
+    cv.preferred_column = 1;
+    cv.find_text_arena = rd_push_view_arena();
+    cv.center_cursor = 1;
     rd_store_view_loading_info(1, 0, 0);
   }
   ProfEnd();
@@ -44,7 +44,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   F32 scroll_bar_dim = floor_f32(main_font_size*1.5f);
   Vec2F32 code_area_dim = v2f32(panel_box_dim.x - scroll_bar_dim, panel_box_dim.y - scroll_bar_dim);
   S64 num_possible_visible_lines = (S64)(code_area_dim.y/code_line_height)+1;
-  CTRL_Entity *thread = ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, rd_regs()->thread);
+  CTRL_Entity *thread = ctrl_entity_from_handle(&d_state.ctrl_entity_store.ctx, rd_regs()->thread);
   CTRL_Entity *process = ctrl_entity_ancestor_from_kind(thread, CTRL_EntityKind_Process);
   B32 do_line_numbers = rd_setting_b32_from_name(("show_line_numbers"));
   
@@ -59,47 +59,47 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //
   for (RD_Cmd *cmd = 0; rd_next_view_cmd(&cmd);)
   {
-    RD_CmdKind kind = rd_cmd_kind_from_string(cmd->name);
+    RD_CmdKind kind = rd_cmd_kind_from_string(cmd.name);
     switch (kind)
     {
       default: break;
       case RD_CmdKind_GoToLine:
       {
-        cv->goto_line_num = cmd->regs->cursor.line;
+        cv.goto_line_num = cmd.regs.cursor.line;
       }break;
       case RD_CmdKind_CenterCursor:
       {
-        cv->center_cursor = 1;
+        cv.center_cursor = 1;
       }break;
       case RD_CmdKind_ContainCursor:
       {
-        cv->contain_cursor = 1;
+        cv.contain_cursor = 1;
       }break;
       case RD_CmdKind_Search:
       {
-        arena_clear(cv->find_text_arena);
-        cv->find_text_fwd = push_str8_copy(cv->find_text_arena, cmd->regs->string);
+        arena_clear(cv.find_text_arena);
+        cv.find_text_fwd = push_str8_copy(cv.find_text_arena, cmd.regs.string);
       }break;
       case RD_CmdKind_SearchBackwards:
       {
-        arena_clear(cv->find_text_arena);
-        cv->find_text_bwd = push_str8_copy(cv->find_text_arena, cmd->regs->string);
+        arena_clear(cv.find_text_arena);
+        cv.find_text_bwd = push_str8_copy(cv.find_text_arena, cmd.regs.string);
       }break;
       case RD_CmdKind_FindNext:
       {
         string string = rd_view_query_input();
-        arena_clear(cv->find_text_arena);
-        cv->find_text_fwd = push_str8_copy(cv->find_text_arena, string);
+        arena_clear(cv.find_text_arena);
+        cv.find_text_fwd = push_str8_copy(cv.find_text_arena, string);
       }break;
       case RD_CmdKind_FindPrev:
       {
         string string = rd_view_query_input();
-        arena_clear(cv->find_text_arena);
-        cv->find_text_bwd = push_str8_copy(cv->find_text_arena, string);
+        arena_clear(cv.find_text_arena);
+        cv.find_text_bwd = push_str8_copy(cv.find_text_arena, string);
       }break;
       case RD_CmdKind_ToggleWatchExpressionAtMouse:
       {
-        cv->watch_expr_at_mouse = 1;
+        cv.watch_expr_at_mouse = 1;
       }break;
     }
   }
@@ -113,12 +113,12 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
                                                 scroll_pos.y.idx + 1 + num_possible_visible_lines);
   U64 visible_line_count = 0;
   {
-    visible_line_num_range.min = Clamp(1, visible_line_num_range.min, (S64)text_info->lines_count);
-    visible_line_num_range.max = Clamp(1, visible_line_num_range.max, (S64)text_info->lines_count);
+    visible_line_num_range.min = Clamp(1, visible_line_num_range.min, (S64)text_info.lines_count);
+    visible_line_num_range.max = Clamp(1, visible_line_num_range.max, (S64)text_info.lines_count);
     visible_line_num_range.min = Max(1, visible_line_num_range.min);
     visible_line_num_range.max = Max(1, visible_line_num_range.max);
-    target_visible_line_num_range.min = Clamp(1, target_visible_line_num_range.min, (S64)text_info->lines_count);
-    target_visible_line_num_range.max = Clamp(1, target_visible_line_num_range.max, (S64)text_info->lines_count);
+    target_visible_line_num_range.min = Clamp(1, target_visible_line_num_range.min, (S64)text_info.lines_count);
+    target_visible_line_num_range.max = Clamp(1, target_visible_line_num_range.max, (S64)text_info.lines_count);
     target_visible_line_num_range.min = Max(1, target_visible_line_num_range.min);
     target_visible_line_num_range.max = Max(1, target_visible_line_num_range.max);
     visible_line_count = (U64)dim_1s64(visible_line_num_range)+1;
@@ -130,11 +130,11 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   S64 line_size_x = 0;
   Rng1S64 scroll_idx_rng[Axis2_COUNT] = {0};
   {
-    line_size_x = (text_info->lines_max_size*big_glyph_advance*3)/2;
+    line_size_x = (text_info.lines_max_size*big_glyph_advance*3)/2;
     line_size_x = ClampBot(line_size_x, (S64)big_glyph_advance*120);
     line_size_x = ClampBot(line_size_x, (S64)code_area_dim.x);
     scroll_idx_rng[Axis2_X] = r1s64(0, line_size_x-(S64)code_area_dim.x);
-    scroll_idx_rng[Axis2_Y] = r1s64(0, (S64)text_info->lines_count-1);
+    scroll_idx_rng[Axis2_Y] = r1s64(0, (S64)text_info.lines_count-1);
   }
   
   //////////////////////////////
@@ -161,7 +161,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   {
     RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
     RD_ViewState *vs = rd_view_state_from_cfg(view);
-    if (!vs->query_is_open)
+    if (!vs.query_is_open)
     {
       RD_Cfg *query = rd_cfg_child_from_string_or_alloc(view, ("query"));
       RD_Cfg *input = rd_cfg_child_from_string_or_alloc(query, ("input"));
@@ -224,11 +224,11 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
       S64 line_num = visible_line_num_range.min;
       U64 line_idx = visible_line_num_range.min-1;
       for (U64 visible_line_idx = 0;
-          visible_line_idx < visible_line_count && line_idx < text_info->lines_count;
+          visible_line_idx < visible_line_count && line_idx < text_info.lines_count;
           visible_line_idx += 1, line_idx += 1, line_num += 1)
       {
-        code_slice_params.line_text[visible_line_idx]   = str8_substr(text_data, text_info->lines_ranges[line_idx]);
-        code_slice_params.line_ranges[visible_line_idx] = text_info->lines_ranges[line_idx];
+        code_slice_params.line_text[visible_line_idx]   = str8_substr(text_data, text_info.lines_ranges[line_idx]);
+        code_slice_params.line_ranges[visible_line_idx] = text_info.lines_ranges[line_idx];
         code_slice_params.line_tokens[visible_line_idx] = slice.line_tokens[visible_line_idx];
       }
     }
@@ -237,17 +237,17 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     if (!dasm_lines) ProfScope("find visible breakpoints for source code")
     {
       RD_CfgList bps = rd_cfg_top_level_list_from_string(scratch.arena, ("breakpoint"));
-      for (RD_CfgNode *n = bps.first; n != 0; n = n->next)
+      for (RD_CfgNode *n = bps.first; n != 0; n = n.next)
       {
-        RD_Cfg *bp = n->v;
+        RD_Cfg *bp = n.v;
         RD_Location loc = rd_location_from_cfg(bp);
         if (visible_line_num_range.min <= loc.pt.line && loc.pt.line <= visible_line_num_range.max)
         {
           for (String8Node *override_n = file_path_possible_overrides.first;
               override_n != 0;
-              override_n = override_n->next)
+              override_n = override_n.next)
           {
-            if (path_match_normalized(loc.file_path, override_n->string))
+            if (path_match_normalized(loc.file_path, override_n.string))
             {
               U64 slice_line_idx = (U64)(loc.pt.line-visible_line_num_range.min);
               rd_cfg_list_push(scratch.arena, &code_slice_params.line_bps[slice_line_idx], bp);
@@ -261,8 +261,8 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     // rjf: find live threads mapping to source code
     if (!dasm_lines) ProfScope("find live threads mapping to this file")
     {
-      CTRL_Entity *selected_thread = ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, rd_regs()->thread);
-      CTRL_EntityArray threads = ctrl_entity_array_from_kind(&d_state->ctrl_entity_store->ctx, CTRL_EntityKind_Thread);
+      CTRL_Entity *selected_thread = ctrl_entity_from_handle(&d_state.ctrl_entity_store.ctx, rd_regs()->thread);
+      CTRL_EntityArray threads = ctrl_entity_array_from_kind(&d_state.ctrl_entity_store.ctx, CTRL_EntityKind_Thread);
       for EachIndex(idx, threads.count)
       {
         CTRL_Entity *thread = threads.v[idx];
@@ -275,17 +275,17 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         U64 rip_voff = ctrl_voff_from_vaddr(module, last_inst_on_unwound_rip_vaddr);
         DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
         D_LineList lines = d_lines_from_dbgi_key_voff(scratch.arena, &dbgi_key, rip_voff);
-        for (D_LineNode *n = lines.first; n != 0; n = n->next)
+        for (D_LineNode *n = lines.first; n != 0; n = n.next)
         {
-          if (visible_line_num_range.min <= n->v.pt.line && n->v.pt.line <= visible_line_num_range.max)
+          if (visible_line_num_range.min <= n.v.pt.line && n.v.pt.line <= visible_line_num_range.max)
           {
             for (String8Node *override_n = file_path_possible_overrides.first;
                 override_n != 0;
-                override_n = override_n->next)
+                override_n = override_n.next)
             {
-              if (path_match_normalized(n->v.file_path, override_n->string))
+              if (path_match_normalized(n.v.file_path, override_n.string))
               {
-                U64 slice_line_idx = n->v.pt.line-visible_line_num_range.min;
+                U64 slice_line_idx = n.v.pt.line-visible_line_num_range.min;
                 ctrl_entity_list_push(scratch.arena, &code_slice_params.line_ips[slice_line_idx], thread);
                 break;
               }
@@ -299,17 +299,17 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     if (!dasm_lines) ProfScope("find visible watch pins for source code")
     {
       RD_CfgList wps = rd_cfg_top_level_list_from_string(scratch.arena, ("watch_pin"));
-      for (RD_CfgNode *n = wps.first; n != 0; n = n->next)
+      for (RD_CfgNode *n = wps.first; n != 0; n = n.next)
       {
-        RD_Cfg *wp = n->v;
+        RD_Cfg *wp = n.v;
         RD_Location loc = rd_location_from_cfg(wp);
         if (visible_line_num_range.min <= loc.pt.line && loc.pt.line <= visible_line_num_range.max)
         {
           for (String8Node *override_n = file_path_possible_overrides.first;
               override_n != 0;
-              override_n = override_n->next)
+              override_n = override_n.next)
           {
-            if (path_match_normalized(loc.file_path, override_n->string))
+            if (path_match_normalized(loc.file_path, override_n.string))
             {
               U64 slice_line_idx = (loc.pt.line-visible_line_num_range.min);
               rd_cfg_list_push(scratch.arena, &code_slice_params.line_pins[slice_line_idx], wp);
@@ -324,7 +324,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     if (!dasm_lines) ProfScope("find all src -> dasm info for source code")
     {
       string file_path = rd_regs()->file_path;
-      CTRL_Entity *module = ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, rd_regs()->module);
+      CTRL_Entity *module = ctrl_entity_from_handle(&d_state.ctrl_entity_store.ctx, rd_regs()->module);
       DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
       D_LineListArray lines_array = d_lines_array_from_dbgi_key_file_path_line_range(scratch.arena, dbgi_key, file_path, visible_line_num_range);
       if (lines_array.count != 0)
@@ -337,8 +337,8 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     // rjf: find live threads mapping to disasm
     if (dasm_lines) ProfScope("find live threads mapping to this disassembly")
     {
-      CTRL_Entity *selected_thread = ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, rd_regs()->thread);
-      CTRL_EntityArray threads = ctrl_entity_array_from_kind(&d_state->ctrl_entity_store->ctx, CTRL_EntityKind_Thread);
+      CTRL_Entity *selected_thread = ctrl_entity_from_handle(&d_state.ctrl_entity_store.ctx, rd_regs()->thread);
+      CTRL_EntityArray threads = ctrl_entity_array_from_kind(&d_state.ctrl_entity_store.ctx, CTRL_EntityKind_Thread);
       for EachIndex(idx, threads.count)
       {
         CTRL_Entity *thread = threads.v[idx];
@@ -361,9 +361,9 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     if (dasm_lines) ProfScope("find breakpoints mapping to this disassembly")
     {
       RD_CfgList bps = rd_cfg_top_level_list_from_string(scratch.arena, ("breakpoint"));
-      for (RD_CfgNode *n = bps.first; n != 0; n = n->next)
+      for (RD_CfgNode *n = bps.first; n != 0; n = n.next)
       {
-        RD_Cfg *bp = n->v;
+        RD_Cfg *bp = n.v;
         RD_Location loc = rd_location_from_cfg(bp);
         E_Value loc_value = e_value_from_string(loc.expr);
         if (contains_1u64(dasm_vaddr_range, loc_value.u64))
@@ -384,9 +384,9 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     if (dasm_lines) ProfScope("find watch pins mapping to this disassembly")
     {
       RD_CfgList wps = rd_cfg_top_level_list_from_string(scratch.arena, ("watch_pin"));
-      for (RD_CfgNode *n = wps.first; n != 0; n = n->next)
+      for (RD_CfgNode *n = wps.first; n != 0; n = n.next)
       {
-        RD_Cfg *wp = n->v;
+        RD_Cfg *wp = n.v;
         RD_Location loc = rd_location_from_cfg(wp);
         E_Value loc_value = e_value_from_string(loc.expr);
         if (contains_1u64(dasm_vaddr_range, loc_value.u64))
@@ -443,10 +443,10 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //////////////////////////////
   //- rjf: cancelled search query -> center cursor
   //
-  if (!search_query_is_active && cv->drifted_for_search)
+  if (!search_query_is_active && cv.drifted_for_search)
   {
-    cv->drifted_for_search = 0;
-    cv->center_cursor = 1;
+    cv.drifted_for_search = 0;
+    cv.center_cursor = 1;
   }
   
   //////////////////////////////
@@ -454,16 +454,16 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //
   {
     //- rjf: find text (forward)
-    if (cv->find_text_fwd.size != 0)
+    if (cv.find_text_fwd.size != 0)
     {
       B32 found = 0;
       B32 first = 1;
       S64 line_num_start = rd_regs()->cursor.line;
-      S64 line_num_last = (S64)text_info->lines_count;
+      S64 line_num_last = (S64)text_info.lines_count;
       for (S64 line_num = line_num_start; 1 <= line_num && line_num <= line_num_last; first = 0)
       {
         // rjf: gather line info
-        string line_string = str8_substr(text_data, text_info->lines_ranges[line_num-1]);
+        string line_string = str8_substr(text_data, text_info.lines_ranges[line_num-1]);
         U64 search_start = 0;
         if (rd_regs()->cursor.line == line_num && first)
         {
@@ -471,13 +471,13 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         }
         
         // rjf: search string
-        U64 needle_pos = str8_find_needle(line_string, search_start, cv->find_text_fwd, StringMatchFlag_CaseInsensitive);
+        U64 needle_pos = str8_find_needle(line_string, search_start, cv.find_text_fwd, StringMatchFlag_CaseInsensitive);
         if (needle_pos < line_string.size)
         {
           rd_regs()->mark.line = line_num;
           rd_regs()->mark.column = needle_pos+1;
           rd_regs()->cursor = rd_regs()->mark;
-          rd_regs()->cursor.column += cv->find_text_fwd.size;
+          rd_regs()->cursor.column += cv.find_text_fwd.size;
           found = 1;
           break;
         }
@@ -495,25 +495,25 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
           line_num = 1;
         }
       }
-      cv->center_cursor = found;
+      cv.center_cursor = found;
       if (found == 0)
       {
-        log_user_errorf("Could not find `%S`", cv->find_text_fwd);
+        log_user_errorf("Could not find `%S`", cv.find_text_fwd);
       }
     }
     
     //- rjf: find text (backward)
-    if (cv->find_text_bwd.size != 0)
+    if (cv.find_text_bwd.size != 0)
     {
       B32 found = 0;
       B32 first = 1;
       TxtRng rng = txt_rng(rd_regs()->cursor, rd_regs()->mark);
       S64 line_num_start = rng.min.line;
-      S64 line_num_last = (S64)text_info->lines_count;
+      S64 line_num_last = (S64)text_info.lines_count;
       for (S64 line_num = line_num_start; 1 <= line_num && line_num <= line_num_last; first = 0)
       {
         // rjf: gather line info
-        string line_string = str8_substr(text_data, text_info->lines_ranges[line_num-1]);
+        string line_string = str8_substr(text_data, text_info.lines_ranges[line_num-1]);
         if (rng.min.line == line_num && first)
         {
           line_string = str8_prefix(line_string, rng.min.column-1);
@@ -523,7 +523,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
         U64 next_needle_pos = line_string.size;
         for (U64 needle_pos = 0; needle_pos < line_string.size;)
         {
-          needle_pos = str8_find_needle(line_string, needle_pos, cv->find_text_bwd, StringMatchFlag_CaseInsensitive);
+          needle_pos = str8_find_needle(line_string, needle_pos, cv.find_text_bwd, StringMatchFlag_CaseInsensitive);
           if (needle_pos < line_string.size)
           {
             next_needle_pos = needle_pos;
@@ -535,7 +535,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
           rd_regs()->mark.line = line_num;
           rd_regs()->mark.column = next_needle_pos+1;
           rd_regs()->cursor = rd_regs()->mark;
-          rd_regs()->cursor.column += cv->find_text_bwd.size;
+          rd_regs()->cursor.column += cv.find_text_bwd.size;
           found = 1;
           break;
         }
@@ -553,28 +553,28 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
           line_num = line_num_last;
         }
       }
-      cv->center_cursor = found;
+      cv.center_cursor = found;
       if (found == 0)
       {
-        log_user_errorf("Could not find `%S`", cv->find_text_bwd);
+        log_user_errorf("Could not find `%S`", cv.find_text_bwd);
       }
     }
     
-    MemoryZeroStruct(&cv->find_text_fwd);
-    MemoryZeroStruct(&cv->find_text_bwd);
-    arena_clear(cv->find_text_arena);
+    MemoryZeroStruct(&cv.find_text_fwd);
+    MemoryZeroStruct(&cv.find_text_bwd);
+    arena_clear(cv.find_text_arena);
   }
   
   //////////////////////////////
   //- rjf: do goto line
   //
-  if (cv->goto_line_num != 0 && text_info->lines_count != 0)
+  if (cv.goto_line_num != 0 && text_info.lines_count != 0)
   {
-    S64 line_num = cv->goto_line_num;
-    cv->goto_line_num = 0;
-    line_num = Clamp(1, line_num, text_info->lines_count);
+    S64 line_num = cv.goto_line_num;
+    cv.goto_line_num = 0;
+    line_num = Clamp(1, line_num, text_info.lines_count);
     rd_regs()->cursor = rd_regs()->mark = txt_pt(line_num, 1);
-    cv->center_cursor = !cv->force_contain_only && (!cv->contain_cursor || (line_num < target_visible_line_num_range.min+4 || target_visible_line_num_range.max-4 < line_num));
+    cv.center_cursor = !cv.force_contain_only && (!cv.contain_cursor || (line_num < target_visible_line_num_range.min+4 || target_visible_line_num_range.max-4 < line_num));
   }
   
   //////////////////////////////
@@ -585,7 +585,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   {
     if (ui_is_focus_active() && visible_line_num_range.max >= visible_line_num_range.min)
     {
-      snap[Axis2_X] = snap[Axis2_Y] = rd_do_txt_controls(text_info, text_data, ClampBot(num_possible_visible_lines, 10) - 10, &rd_regs()->cursor, &rd_regs()->mark, &cv->preferred_column);
+      snap[Axis2_X] = snap[Axis2_Y] = rd_do_txt_controls(text_info, text_data, ClampBot(num_possible_visible_lines, 10) - 10, &rd_regs()->cursor, &rd_regs()->mark, &cv.preferred_column);
     }
   }
   
@@ -595,14 +595,14 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   UI_Parent(container_box)
   {
     //- rjf: build fractional space
-    container_box->view_off.x = container_box->view_off_target.x = scroll_pos.x.idx + scroll_pos.x.off;
-    container_box->view_off.y = container_box->view_off_target.y = code_line_height*mod_f32(scroll_pos.y.off, 1.f) + code_line_height*(scroll_pos.y.off < 0) - code_line_height*(scroll_pos.y.off == -1.f && scroll_pos.y.idx == 1);
+    container_box.view_off.x = container_box.view_off_target.x = scroll_pos.x.idx + scroll_pos.x.off;
+    container_box.view_off.y = container_box.view_off_target.y = code_line_height*mod_f32(scroll_pos.y.off, 1.f) + code_line_height*(scroll_pos.y.off < 0) - code_line_height*(scroll_pos.y.off == -1.f && scroll_pos.y.idx == 1);
     
     //- rjf: build code slice
     RD_CodeSliceSignal sig = {0};
     UI_Focus(UI_FocusKind_On)
     {
-      sig = rd_code_slicef(&code_slice_params, &rd_regs()->cursor, &rd_regs()->mark, &cv->preferred_column, "code_slice");
+      sig = rd_code_slicef(&code_slice_params, &rd_regs()->cursor, &rd_regs()->mark, &cv.preferred_column, "code_slice");
     }
     
     //- rjf: press code slice? -> focus panel
@@ -614,9 +614,9 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     //- rjf: dragging & outside region? -> contain cursor
     if (ui_dragging(sig.base) && sig.base.event_flags == 0)
     {
-      if (!contains_2f32(sig.base.box->rect, ui_mouse()))
+      if (!contains_2f32(sig.base.box.rect, ui_mouse()))
       {
-        cv->contain_cursor = 1;
+        cv.contain_cursor = 1;
       }
       else
       {
@@ -632,9 +632,9 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     }
     
     //- rjf: watch expr at mouse
-    if (cv->watch_expr_at_mouse)
+    if (cv.watch_expr_at_mouse)
     {
-      cv->watch_expr_at_mouse = 0;
+      cv.watch_expr_at_mouse = 0;
       rd_cmd(RD_CmdKind_ToggleWatchExpression, .string = txt_string_from_info_data_txt_rng(text_info, text_data, sig.mouse_expr_rng));
     }
   }
@@ -642,26 +642,26 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //////////////////////////////
   //- rjf: apply post-build view snapping rules
   //
-  if (text_info->lines_count != 0)
+  if (text_info.lines_count != 0)
   {
     TxtPt cursor = rd_regs()->cursor;
-    B32 cursor_in_range = (1 <= cursor.line && cursor.line <= text_info->lines_count);
+    B32 cursor_in_range = (1 <= cursor.line && cursor.line <= text_info.lines_count);
     
     // rjf: contain => snap
-    if (cv->contain_cursor && text_info->lines_count != 0)
+    if (cv.contain_cursor && text_info.lines_count != 0)
     {
-      cv->contain_cursor = 0;
+      cv.contain_cursor = 0;
       snap[Axis2_X] = 1;
       snap[Axis2_Y] = 1;
     }
     
     // rjf: center cursor
-    if (cv->center_cursor && text_info->lines_count != 0)
+    if (cv.center_cursor && text_info.lines_count != 0)
     {
-      cv->center_cursor = 0;
+      cv.center_cursor = 0;
       if (cursor_in_range)
       {
-        string cursor_line = str8_substr(text_data, text_info->lines_ranges[cursor.line-1]);
+        string cursor_line = str8_substr(text_data, text_info.lines_ranges[cursor.line-1]);
         F32 cursor_advance = fnt_dim_from_tag_size_string(code_font, code_font_size, 0, code_tab_size, str8_prefix(cursor_line, cursor.column-1)).x;
         
         // rjf: scroll x
@@ -685,7 +685,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     // rjf: snap in X
     if (snap[Axis2_X] && cursor_in_range)
     {
-      string cursor_line = str8_substr(text_data, text_info->lines_ranges[cursor.line-1]);
+      string cursor_line = str8_substr(text_data, text_info.lines_ranges[cursor.line-1]);
       S64 cursor_off = (S64)(fnt_dim_from_tag_size_string(code_font, code_font_size, 0, code_tab_size, str8_prefix(cursor_line, cursor.column-1)).x + priority_margin_width_px + catchall_margin_width_px + line_num_width_px);
       Rng1S64 visible_pixel_range =
       {
@@ -713,7 +713,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
       S64 min_delta = Min(0, cursor_visibility_range.min-(target_visible_line_num_range.min));
       S64 max_delta = Max(0, cursor_visibility_range.max-(target_visible_line_num_range.min+num_possible_visible_lines));
       S64 new_idx = scroll_pos.y.idx+min_delta+max_delta;
-      new_idx = Clamp(0, new_idx, (S64)text_info->lines_count-1);
+      new_idx = Clamp(0, new_idx, (S64)text_info.lines_count-1);
       ui_scroll_pt_target_idx(&scroll_pos.y, new_idx);
     }
   }
@@ -755,7 +755,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //////////////////////////////
   //- rjf: top-level container interaction (scrolling)
   //
-  if (text_info->lines_count != 0)
+  if (text_info.lines_count != 0)
   {
     UI_Signal sig = ui_signal_from_box(container_box);
     if (sig.scroll.x != 0)
@@ -776,14 +776,14 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
     {
       for (UI_Event *evt = 0; ui_next_event(&evt);)
       {
-        if (evt->kind == UI_EventKind_Scroll && evt->modifiers & OS_Modifier_Ctrl && evt->modifiers & OS_Modifier_Shift)
+        if (evt.kind == UI_EventKind_Scroll && evt.modifiers & OS_Modifier_Ctrl && evt.modifiers & OS_Modifier_Shift)
         {
           ui_eat_event(evt);
-          if (evt->delta_2f32.y < 0)
+          if (evt.delta_2f32.y < 0)
           {
             rd_cmd(RD_CmdKind_IncViewFontSize);
           }
-          else if (evt->delta_2f32.y > 0)
+          else if (evt.delta_2f32.y > 0)
           {
             rd_cmd(RD_CmdKind_DecViewFontSize);
           }
@@ -797,9 +797,9 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //
   RD_CodeViewBuildResult result = {0};
   {
-    for (DI_KeyNode *n = code_slice_params.relevant_dbgi_keys.first; n != 0; n = n->next)
+    for (DI_KeyNode *n = code_slice_params.relevant_dbgi_keys.first; n != 0; n = n.next)
     {
-      DI_Key copy = di_key_copy(arena, &n->v);
+      DI_Key copy = di_key_copy(arena, &n.v);
       di_key_list_push(arena, &result.dbgi_keys, &copy);
     }
   }
@@ -808,7 +808,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
   //- rjf: store state
   //
   rd_store_view_scroll_pos(scroll_pos);
-  cv->force_contain_only = 0;
+  cv.force_contain_only = 0;
   
   scratch_end(scratch);
   ProfEnd();
@@ -824,11 +824,11 @@ internal U64
 rd_id_from_watch_cell(RD_WatchCell *cell)
 {
   U64 result = 5381;
-  result = e_hash_from_string(result, str8_struct(&cell->kind));
-  result = e_hash_from_string(result, str8_struct(&cell->index));
-  if (cell->index != 0)
+  result = e_hash_from_string(result, str8_struct(&cell.kind));
+  result = e_hash_from_string(result, str8_struct(&cell.index));
+  if (cell.index != 0)
   {
-    result = e_hash_from_string(result, str8_struct(&cell->default_pct));
+    result = e_hash_from_string(result, str8_struct(&cell.default_pct));
   }
   return result;
 }
@@ -837,9 +837,9 @@ internal RD_WatchCell *
 rd_watch_cell_list_push(Arena *arena, RD_WatchCellList *list)
 {
   RD_WatchCell *cell = push_array(arena, RD_WatchCell, 1);
-  cell->index = list->count;
-  SLLQueuePush(list->first, list->last, cell);
-  list->count += 1;
+  cell.index = list.count;
+  SLLQueuePush(list.first, list.last, cell);
+  list.count += 1;
   return cell;
 }
 
@@ -847,14 +847,14 @@ internal RD_WatchCell *
 rd_watch_cell_list_push_new_(Arena *arena, RD_WatchCellList *list, RD_WatchCell *params)
 {
   RD_WatchCell *cell = rd_watch_cell_list_push(arena, list);
-  U64 index = cell->index;
+  U64 index = cell.index;
   MemoryCopyStruct(cell, params);
-  cell->index = index;
-  if (cell->pct == 0)
+  cell.index = index;
+  if (cell.pct == 0)
   {
-    cell->pct = cell->default_pct;
+    cell.pct = cell.default_pct;
   }
-  cell->next = 0;
+  cell.next = 0;
   return cell;
 }
 
@@ -878,7 +878,7 @@ rd_watch_pt_from_tbl(EV_BlockRangeList *block_ranges, Vec2S64 tbl)
     RD_WatchRowInfo row_info = rd_watch_row_info_from_row(scratch.arena, row);
     {
       S64 x = 0;
-      for (RD_WatchCell *cell = row_info.cells.first; cell != 0; cell = cell->next, x += 1)
+      for (RD_WatchCell *cell = row_info.cells.first; cell != 0; cell = cell.next, x += 1)
       {
         if (x == tbl.x)
         {
@@ -887,8 +887,8 @@ rd_watch_pt_from_tbl(EV_BlockRangeList *block_ranges, Vec2S64 tbl)
         }
       }
     }
-    pt.key         = row->key;
-    pt.parent_key  = row->block->key;
+    pt.key         = row.key;
+    pt.parent_key  = row.block.key;
     scratch_end(scratch);
   }
   return pt;
@@ -906,7 +906,7 @@ rd_tbl_from_watch_pt(EV_BlockRangeList *block_ranges, RD_WatchPt pt)
     tbl.x = 0;
     {
       S64 x = 0;
-      for (RD_WatchCell *cell = row_info.cells.first; cell != 0; cell = cell->next, x += 1)
+      for (RD_WatchCell *cell = row_info.cells.first; cell != 0; cell = cell.next, x += 1)
       {
         U64 cell_id = rd_id_from_watch_cell(cell);
         if (cell_id == pt.cell_id)
@@ -943,16 +943,16 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     ////////////////////////////
     //- rjf: unpack row's evaluation, key, & block info
     //
-    E_Type *row_type = e_type_from_key(row->eval.irtree.type_key);
-    EV_Key key = row->key;
-    EV_Block *block = row->block;
-    B32 block_is_root = (block->parent == &ev_nil_block);
-    E_Eval block_eval = e_eval_from_key(row->block->eval.key);
+    E_Type *row_type = e_type_from_key(row.eval.irtree.type_key);
+    EV_Key key = row.key;
+    EV_Block *block = row.block;
+    B32 block_is_root = (block.parent == &ev_nil_block);
+    E_Eval block_eval = e_eval_from_key(row.block.eval.key);
     E_TypeKey block_type_key = e_type_key_unwrap(block_eval.irtree.type_key, E_TypeUnwrapFlag_Meta);
     E_TypeKind block_type_kind = e_type_kind_from_key(block_type_key);
     E_Type *block_type = e_type_from_key(block_type_key);
-    RD_Cfg *evalled_cfg = rd_cfg_from_eval_space(row->eval.space);
-    CTRL_Entity *evalled_entity = (row->eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity ? rd_ctrl_entity_from_eval_space(row->eval.space) : &ctrl_entity_nil);
+    RD_Cfg *evalled_cfg = rd_cfg_from_eval_space(row.eval.space);
+    CTRL_Entity *evalled_entity = (row.eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity ? rd_ctrl_entity_from_eval_space(row.eval.space) : &ctrl_entity_nil);
     
     ////////////////////////////
     //- rjf: determine if this cfg/entity evaluation is top-level - e.g. if we
@@ -961,20 +961,20 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     B32 is_top_level = 0;
     if (evalled_cfg != &rd_nil_cfg)
     {
-      E_TypeKey top_level_type_key = e_string2typekey_map_lookup(rd_state->meta_name2type_map, evalled_cfg->string);
-      is_top_level = (row->eval.value.u64 == 0 && e_type_key_match(top_level_type_key, row->eval.irtree.type_key));
+      E_TypeKey top_level_type_key = e_string2typekey_map_lookup(rd_state.meta_name2type_map, evalled_cfg.string);
+      is_top_level = (row.eval.value.u64 == 0 && e_type_key_match(top_level_type_key, row.eval.irtree.type_key));
     }
     if (evalled_entity != &ctrl_entity_nil)
     {
-      string top_level_name = ctrl_entity_kind_code_name_table[evalled_entity->kind];
-      E_TypeKey top_level_type_key = e_string2typekey_map_lookup(rd_state->meta_name2type_map, top_level_name);
-      is_top_level = (row->eval.value.u64 == 0 && e_type_key_match(top_level_type_key, row->eval.irtree.type_key));
+      string top_level_name = ctrl_entity_kind_code_name_table[evalled_entity.kind];
+      E_TypeKey top_level_type_key = e_string2typekey_map_lookup(rd_state.meta_name2type_map, top_level_name);
+      is_top_level = (row.eval.value.u64 == 0 && e_type_key_match(top_level_type_key, row.eval.irtree.type_key));
     }
     
     ////////////////////////////
     //- rjf: fill if row's expression is editable
     //
-    if (block_type->flags & E_TypeFlag_EditableChildren || (e_key_match(row->eval.key, e_key_zero()) && row->eval.expr == &e_expr_nil))
+    if (block_type.flags & E_TypeFlag_EditableChildren || (e_key_match(row.eval.key, e_key_zero()) && row.eval.expr == &e_expr_nil))
     {
       info.expr_is_editable = 1;
     }
@@ -982,19 +982,19 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     ////////////////////////////
     //- rjf: fill row's module
     //
-    if (row->eval.space.kind == RD_EvalSpaceKind_CtrlEntity)
+    if (row.eval.space.kind == RD_EvalSpaceKind_CtrlEntity)
     {
-      CTRL_Entity *row_ctrl_entity = rd_ctrl_entity_from_eval_space(row->eval.space);
-      switch (row_ctrl_entity->kind)
+      CTRL_Entity *row_ctrl_entity = rd_ctrl_entity_from_eval_space(row.eval.space);
+      switch (row_ctrl_entity.kind)
       {
         default:
         case CTRL_EntityKind_Process:
-        if (row->eval.irtree.mode == E_Mode_Offset)
+        if (row.eval.irtree.mode == E_Mode_Offset)
         {
-          info.module = ctrl_module_from_process_vaddr(row_ctrl_entity, row->eval.value.u64);
+          info.module = ctrl_module_from_process_vaddr(row_ctrl_entity, row.eval.value.u64);
         }break;
         case CTRL_EntityKind_Thread:
-        if (row->eval.irtree.mode == E_Mode_Value)
+        if (row.eval.irtree.mode == E_Mode_Value)
         {
           CTRL_Entity *process = ctrl_process_from_entity(row_ctrl_entity);
           info.module = ctrl_module_from_process_vaddr(process, d_query_cached_rip_from_thread(row_ctrl_entity));
@@ -1005,22 +1005,22 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     ////////////////////////////
     //- rjf: fill row's call stack info
     //
-    if (block_eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity && str8_match(("call_stack"), block_type->name, 0))
+    if (block_eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity && str8_match(("call_stack"), block_type.name, 0))
     {
       CTRL_Entity *entity = rd_ctrl_entity_from_eval_space(block_eval.space);
-      if (entity->kind == CTRL_EntityKind_Thread)
+      if (entity.kind == CTRL_EntityKind_Thread)
       {
         CTRL_Scope *ctrl_scope = ctrl_scope_open();
         info.callstack_thread = entity;
         U64 frame_num = ev_block_num_from_id(block, key.child_id);
-        B32 call_stack_high_priority = ctrl_handle_match(entity->handle, rd_base_regs()->thread);
-        CTRL_CallStack call_stack = ctrl_call_stack_from_thread(ctrl_scope, &d_state->ctrl_entity_store->ctx, entity, call_stack_high_priority, call_stack_high_priority ? rd_state->frame_eval_memread_endt_us : 0);
+        B32 call_stack_high_priority = ctrl_handle_match(entity.handle, rd_base_regs()->thread);
+        CTRL_CallStack call_stack = ctrl_call_stack_from_thread(ctrl_scope, &d_state.ctrl_entity_store.ctx, entity, call_stack_high_priority, call_stack_high_priority ? rd_state.frame_eval_memread_endt_us : 0);
         if (1 <= frame_num && frame_num <= call_stack.frames_count)
         {
           CTRL_CallStackFrame *f = &call_stack.frames[frame_num-1];
-          info.callstack_unwind_index = f->unwind_count;
-          info.callstack_inline_depth = f->inline_depth;
-          info.callstack_vaddr = regs_rip_from_arch_block(entity->arch, f->regs);
+          info.callstack_unwind_index = f.unwind_count;
+          info.callstack_inline_depth = f.inline_depth;
+          info.callstack_vaddr = regs_rip_from_arch_block(entity.arch, f.regs);
         }
         ctrl_scope_close(ctrl_scope);
       }
@@ -1034,7 +1034,7 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
       if (block_type_kind == E_TypeKind_Set && (block_eval.space.kind == RD_EvalSpaceKind_MetaQuery ||
                                                block_eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity))
       {
-        info.group_entity = rd_ctrl_entity_from_eval_space(row->eval.space);
+        info.group_entity = rd_ctrl_entity_from_eval_space(row.eval.space);
       }
     }
     
@@ -1057,14 +1057,14 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     {
       if (block_type_kind == E_TypeKind_Set)
       {
-        string singular_name = rd_singular_from_code_name_plural(block_type->name);
+        string singular_name = rd_singular_from_code_name_plural(block_type.name);
         if (singular_name.size != 0)
         {
           info.group_cfg_name = singular_name;
         }
         else
         {
-          info.group_cfg_name = block_type->name;
+          info.group_cfg_name = block_type.name;
         }
       }
     }
@@ -1074,11 +1074,11 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     //
     if (!block_is_root)
     {
-      if (info.group_cfg_name.size != 0 && (block_type->expand.id_from_num == E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_NAME(cfgs_slice) ||
-                                           block_type->expand.id_from_num == E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_NAME(watches) ||
-                                           block_type->expand.id_from_num == E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_NAME(environment)))
+      if (info.group_cfg_name.size != 0 && (block_type.expand.id_from_num == E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_NAME(cfgs_slice) ||
+                                           block_type.expand.id_from_num == E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_NAME(watches) ||
+                                           block_type.expand.id_from_num == E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_NAME(environment)))
       {
-        RD_CfgID id = row->key.child_id;
+        RD_CfgID id = row.key.child_id;
         info.group_cfg_child = rd_cfg_from_id(id);
       }
     }
@@ -1086,7 +1086,7 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     ////////////////////////////
     //- rjf: fill row's view ui rule
     //
-    info.view_ui_rule = rd_view_ui_rule_from_string(row->block->viz_expand_rule->string);
+    info.view_ui_rule = rd_view_ui_rule_from_string(row.block.viz_expand_rule.string);
     
     ////////////////////////////
     //- rjf: find possible "columns" type
@@ -1094,14 +1094,14 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     E_Type *maybe_table_type = block_type;
     for (;;)
     {
-      if (maybe_table_type->kind == E_TypeKind_Lens &&
-         str8_match(maybe_table_type->name, ("columns"), 0))
+      if (maybe_table_type.kind == E_TypeKind_Lens &&
+         str8_match(maybe_table_type.name, ("columns"), 0))
       {
         break;
       }
-      else if (maybe_table_type->kind == E_TypeKind_Lens)
+      else if (maybe_table_type.kind == E_TypeKind_Lens)
       {
-        maybe_table_type = e_type_from_key(maybe_table_type->direct_type_key);
+        maybe_table_type = e_type_from_key(maybe_table_type.direct_type_key);
         continue;
       }
       else
@@ -1114,21 +1114,21 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     //- rjf: @watch_row_build_cells table rows
     //
     if (0){}
-    else if (block->parent != &ev_nil_block && maybe_table_type->kind == E_TypeKind_Lens && str8_match(maybe_table_type->name, ("columns"), 0) && maybe_table_type->count >= 1)
+    else if (block.parent != &ev_nil_block && maybe_table_type.kind == E_TypeKind_Lens && str8_match(maybe_table_type.name, ("columns"), 0) && maybe_table_type.count >= 1)
     {
-      U64 column_count = maybe_table_type->count;
+      U64 column_count = maybe_table_type.count;
       info.cell_style_key = push_str8f(arena, "table_%I64u_cols", column_count);
       RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
       RD_Cfg *style = rd_cfg_child_from_string(view, info.cell_style_key);
-      RD_Cfg *w_cfg = style->first;
+      RD_Cfg *w_cfg = style.first;
       F32 next_pct = 0;
-#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg->string), w_cfg = w_cfg->next, next_pct)
-      E_ParentKey(row->eval.key)
+#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg.string), w_cfg = w_cfg.next, next_pct)
+      E_ParentKey(row.eval.key)
       {
-        for (U64 idx = 0; idx < maybe_table_type->count; idx += 1)
+        for (U64 idx = 0; idx < maybe_table_type.count; idx += 1)
         {
-          E_Eval cell_eval = e_eval_from_expr(maybe_table_type->args[idx]);
-          rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, cell_eval, .default_pct = 1.f/maybe_table_type->count, .pct = take_pct());
+          E_Eval cell_eval = e_eval_from_expr(maybe_table_type.args[idx]);
+          rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, cell_eval, .default_pct = 1.f/maybe_table_type.count, .pct = take_pct());
         }
       }
       info.can_expand = 0;
@@ -1138,14 +1138,14 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     ////////////////////////////
     //- rjf: @watch_row_build_cells files / folders
     //
-    else if (row->eval.space.kind == E_SpaceKind_FileSystem)
+    else if (row.eval.space.kind == E_SpaceKind_FileSystem)
     {
-      E_Type *type = e_type_from_key(row->eval.irtree.type_key);
-      if (type->kind == E_TypeKind_Set)
+      E_Type *type = e_type_from_key(row.eval.irtree.type_key);
+      if (type.kind == E_TypeKind_Set)
       {
-        string file_path = e_string_from_id(row->eval.value.u64);
-        rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval, .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented|RD_WatchCellFlag_Button|RD_WatchCellFlag_IsNonCode, .pct = 1.f);
-        if (str8_match(type->name, ("file"), 0))
+        string file_path = e_string_from_id(row.eval.value.u64);
+        rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval, .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented|RD_WatchCellFlag_Button|RD_WatchCellFlag_IsNonCode, .pct = 1.f);
+        if (str8_match(type.name, ("file"), 0))
         {
           info.can_expand = 0;
         }
@@ -1155,11 +1155,11 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
         info.cell_style_key = ("expr_and_eval");
         RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
         RD_Cfg *style = rd_cfg_child_from_string(view, info.cell_style_key);
-        RD_Cfg *w_cfg = style->first;
+        RD_Cfg *w_cfg = style.first;
         F32 next_pct = 0;
-#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg->string), w_cfg = w_cfg->next, next_pct)
-        rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval, .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented, .default_pct = 0.35f, .pct = take_pct());
-        rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval, .default_pct = 0.65f, .pct = take_pct());
+#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg.string), w_cfg = w_cfg.next, next_pct)
+        rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval, .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented, .default_pct = 0.35f, .pct = take_pct());
+        rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval, .default_pct = 0.65f, .pct = take_pct());
 #undef take_pct
       }
     }
@@ -1167,10 +1167,10 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     ////////////////////////////
     //- rjf: @watch_row_build_cells unattached processes
     //
-    else if (row->eval.space.kind == RD_EvalSpaceKind_MetaUnattachedProcess &&
-            str8_match(row_type->name, ("unattached_process"), 0))
+    else if (row.eval.space.kind == RD_EvalSpaceKind_MetaUnattachedProcess &&
+            str8_match(row_type.name, ("unattached_process"), 0))
     {
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval,
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval,
                                   .flags = RD_WatchCellFlag_Button|RD_WatchCellFlag_Indented,
                                   .pct = 1.f);
     }
@@ -1181,7 +1181,7 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     else if (rd_cfg_child_from_string(rd_cfg_from_id(rd_regs()->view), ("autocomplete")) != &rd_nil_cfg)
     {
       info.can_expand = 0;
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval, .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Button|RD_WatchCellFlag_Indented, .pct = 1.f);
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval, .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Button|RD_WatchCellFlag_Indented, .pct = 1.f);
     }
     
     ////////////////////////////
@@ -1191,15 +1191,15 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     {
       info.can_expand = 0;
       RD_WatchCellFlags extra_flags = RD_WatchCellFlag_Expr;
-      if (e_type_kind_from_key(e_type_key_unwrap(row->eval.irtree.type_key, E_TypeUnwrapFlag_AllDecorative)) == E_TypeKind_Function)
+      if (e_type_kind_from_key(e_type_key_unwrap(row.eval.irtree.type_key, E_TypeUnwrapFlag_AllDecorative)) == E_TypeKind_Function)
       {
         extra_flags &= ~RD_WatchCellFlag_Expr;
       }
-      if (row->eval.msgs.max_kind != E_MsgKind_Null)
+      if (row.eval.msgs.max_kind != E_MsgKind_Null)
       {
         extra_flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval;
       }
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval, .flags = extra_flags|RD_WatchCellFlag_Button|RD_WatchCellFlag_Indented, .pct = 1.f);
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval, .flags = extra_flags|RD_WatchCellFlag_Button|RD_WatchCellFlag_Indented, .pct = 1.f);
     }
     
     ////////////////////////////
@@ -1208,13 +1208,13 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     else if (is_top_level && evalled_cfg != &rd_nil_cfg)
     {
       RD_Cfg *cfg = evalled_cfg;
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval, .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Button|RD_WatchCellFlag_Indented, .pct = 1.f);
-      MD_NodePtrList schemas = rd_schemas_from_name(cfg->string);
-      for (MD_NodePtrNode *n = schemas.first; n != 0; n = n->next)
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval, .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Button|RD_WatchCellFlag_Indented, .pct = 1.f);
+      MD_NodePtrList schemas = rd_schemas_from_name(cfg.string);
+      for (MD_NodePtrNode *n = schemas.first; n != 0; n = n.next)
       {
-        MD_Node *schema = n->v;
+        MD_Node *schema = n.v;
         MD_Node *cmds_root = md_tag_from_string(schema, ("row_commands"), 0);
-        for MD_EachNode(cmd, cmds_root->first)
+        for MD_EachNode(cmd, cmds_root.first)
         {
           B32 is_file_only = md_node_has_tag(cmd, ("file"), 0);
           B32 is_cmd_line_only = md_node_has_tag(cmd, ("cmd_line"), 0);
@@ -1225,8 +1225,8 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
           if (is_cmd_line_only)
           {
             B32 is_cmd_line = 0;
-            RD_Cfg *cmd_line = rd_cfg_child_from_string(rd_state->root_cfg, ("command_line"));
-            for (RD_Cfg *p = evalled_cfg->parent; p != &rd_nil_cfg; p = p->parent)
+            RD_Cfg *cmd_line = rd_cfg_child_from_string(rd_state.root_cfg, ("command_line"));
+            for (RD_Cfg *p = evalled_cfg.parent; p != &rd_nil_cfg; p = p.parent)
             {
               if (p == cmd_line)
               {
@@ -1239,7 +1239,7 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
               continue;
             }
           }
-          string cmd_name = cmd->string;
+          string cmd_name = cmd.string;
           RD_CmdKind cmd_kind = rd_cmd_kind_from_string(cmd_name);
           switch (cmd_kind)
           {
@@ -1279,7 +1279,7 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
           }
           if (cmd_kind == RD_CmdKind_EnableCfg || cmd_kind == RD_CmdKind_DisableCfg)
           {
-            rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row->eval, "enabled"),
+            rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row.eval, "enabled"),
                                         .flags = RD_WatchCellFlag_Background,
                                         .px = floor_f32(ui_top_font_size()*5.5f));
           }
@@ -1301,20 +1301,20 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     else if (is_top_level && evalled_entity != &ctrl_entity_nil)
     {
       CTRL_Entity *entity = evalled_entity;
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval,
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval,
                                   .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented|RD_WatchCellFlag_Button,
                                   .pct = 1.f);
-      if (entity->kind == CTRL_EntityKind_Machine ||
-         entity->kind == CTRL_EntityKind_Process ||
-         entity->kind == CTRL_EntityKind_Thread)
+      if (entity.kind == CTRL_EntityKind_Machine ||
+         entity.kind == CTRL_EntityKind_Process ||
+         entity.kind == CTRL_EntityKind_Thread)
       {
-        rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row->eval, "active"),
+        rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row.eval, "active"),
                                     .px = floor_f32(ui_top_font_size()*5.5f));
       }
-      if (entity->kind == CTRL_EntityKind_Thread)
+      if (entity.kind == CTRL_EntityKind_Thread)
       {
         RD_CmdKind cmd_kind = RD_CmdKind_SelectEntity;
-        if (ctrl_handle_match(entity->handle, rd_base_regs()->thread))
+        if (ctrl_handle_match(entity.handle, rd_base_regs()->thread))
         {
           cmd_kind = RD_CmdKind_DeselectEntity;
         }
@@ -1328,27 +1328,27 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     ////////////////////////////
     //- rjf: @watch_row_build_cells queries
     //
-    else if (row->eval.space.kind == RD_EvalSpaceKind_MetaQuery ||
-            (row->eval.space.kind == RD_EvalSpaceKind_MetaCfg &&
-             e_type_kind_from_key(e_type_key_unwrap(row->eval.irtree.type_key, E_TypeUnwrapFlag_Meta)) == E_TypeKind_Set))
+    else if (row.eval.space.kind == RD_EvalSpaceKind_MetaQuery ||
+            (row.eval.space.kind == RD_EvalSpaceKind_MetaCfg &&
+             e_type_kind_from_key(e_type_key_unwrap(row.eval.irtree.type_key, E_TypeUnwrapFlag_Meta)) == E_TypeKind_Set))
     {
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval, .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented, .pct = 1.f);
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval, .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented, .pct = 1.f);
     }
     
     ////////////////////////////
     //- rjf: @watch_row_build_cells commands
     //
-    else if (row->eval.space.kind == RD_EvalSpaceKind_MetaCmd)
+    else if (row.eval.space.kind == RD_EvalSpaceKind_MetaCmd)
     {
-      E_Type *type = e_type_from_key(row->eval.irtree.type_key);
-      if (type->kind == E_TypeKind_Set)
+      E_Type *type = e_type_from_key(row.eval.irtree.type_key);
+      if (type.kind == E_TypeKind_Set)
       {
-        rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval,
+        rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval,
                                     .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented, .pct = 1.f);
       }
       else
       {
-        rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval,
+        rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval,
                                     .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented|RD_WatchCellFlag_Button|RD_WatchCellFlag_ActivateWithSingleClick,
                                     .pct = 1.f);
       }
@@ -1359,15 +1359,15 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     //
     else if (info.view_ui_rule != &rd_nil_view_ui_rule)
     {
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_ViewUI, row->eval, .pct = 1.f);
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_ViewUI, row.eval, .pct = 1.f);
     }
     
     ////////////////////////////
     //- rjf: @watch_row_build_cells "add new" expression rows
     //
-    else if (row->eval.expr == &e_expr_nil && info.group_cfg_name.size != 0 && info.group_cfg_child == &rd_nil_cfg)
+    else if (row.eval.expr == &e_expr_nil && info.group_cfg_name.size != 0 && info.group_cfg_child == &rd_nil_cfg)
     {
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval,
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval,
                                   .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented, .pct = 1.f);
     }
     
@@ -1375,24 +1375,24 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     //- rjf: @watch_row_build_cells meta-evaluation booleans
     //
     else if (info.group_cfg_child == &rd_nil_cfg &&
-            e_type_kind_from_key(e_type_key_unwrap(row->eval.irtree.type_key, E_TypeUnwrapFlag_AllDecorative)) == E_TypeKind_Bool &&
-            (row->eval.space.kind == RD_EvalSpaceKind_MetaCfg ||
-             row->eval.space.kind == RD_EvalSpaceKind_MetaCmd ||
-             row->eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity))
+            e_type_kind_from_key(e_type_key_unwrap(row.eval.irtree.type_key, E_TypeUnwrapFlag_AllDecorative)) == E_TypeKind_Bool &&
+            (row.eval.space.kind == RD_EvalSpaceKind_MetaCfg ||
+             row.eval.space.kind == RD_EvalSpaceKind_MetaCmd ||
+             row.eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity))
     {
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval,
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval,
                                   .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_Indented, .pct = 1.f);
     }
     
     ////////////////////////////
     //- rjf: @watch_row_build_cells meta-evaluation catch-all: expression / value
     //
-    else if (row->eval.space.kind == RD_EvalSpaceKind_MetaCfg ||
-            row->eval.space.kind == RD_EvalSpaceKind_MetaCmd ||
-            row->eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity ||
-            row->eval.space.kind == E_SpaceKind_File)
+    else if (row.eval.space.kind == RD_EvalSpaceKind_MetaCfg ||
+            row.eval.space.kind == RD_EvalSpaceKind_MetaCmd ||
+            row.eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity ||
+            row.eval.space.kind == E_SpaceKind_File)
     {
-      E_TypeKey substantive_row_eval_type = e_type_key_unwrap(row->eval.irtree.type_key, E_TypeUnwrapFlag_Meta);
+      E_TypeKey substantive_row_eval_type = e_type_key_unwrap(row.eval.irtree.type_key, E_TypeUnwrapFlag_Meta);
       if (e_type_kind_from_key(substantive_row_eval_type) == E_TypeKind_Array &&
          e_type_kind_from_key(e_type_key_direct(substantive_row_eval_type)) == E_TypeKind_U8)
       {
@@ -1401,12 +1401,12 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
       info.cell_style_key = ("expr_and_eval");
       RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
       RD_Cfg *style = rd_cfg_child_from_string(view, info.cell_style_key);
-      RD_Cfg *w_cfg = style->first;
+      RD_Cfg *w_cfg = style.first;
       F32 next_pct = 0;
-#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg->string), w_cfg = w_cfg->next, next_pct)
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval,
+#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg.string), w_cfg = w_cfg.next, next_pct)
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval,
                                   .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented, .default_pct = 0.35f, .pct = take_pct());
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval,
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval,
                                   .default_pct = 0.65f, .pct = take_pct());
 #undef take_pct
     }
@@ -1414,19 +1414,19 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     ////////////////////////////
     //- rjf: @watch_row_build_cells procedures (expr & eval, mostly expr)
     //
-    else if (block_type->kind == E_TypeKind_Set && str8_match(block_type->name, ("procedures"), 0))
+    else if (block_type.kind == E_TypeKind_Set && str8_match(block_type.name, ("procedures"), 0))
     {
       info.cell_style_key = ("procedure_expr_eval");
       RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
       RD_Cfg *style = rd_cfg_child_from_string(view, info.cell_style_key);
-      RD_Cfg *w_cfg = style->first;
+      RD_Cfg *w_cfg = style.first;
       F32 next_pct = 0;
-#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg->string), w_cfg = w_cfg->next, next_pct)
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval,
+#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg.string), w_cfg = w_cfg.next, next_pct)
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval,
                                   .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented,
                                   .default_pct = 0.75f,
                                   .pct = take_pct());
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row->eval, "lens:hex((uint64)$)"), .default_pct = 0.25f, .pct = take_pct());
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row.eval, "lens:hex((uint64)$)"), .default_pct = 0.25f, .pct = take_pct());
 #undef take_pct
     }
     
@@ -1438,15 +1438,15 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
       info.cell_style_key = ("call_stack_frame");
       CTRL_Entity *process = ctrl_process_from_entity(info.callstack_thread);
       CTRL_Entity *module = ctrl_module_from_process_vaddr(process, info.callstack_vaddr);
-      E_Eval module_eval = e_eval_from_stringf("query:control.%S", ctrl_string_from_handle(scratch.arena, module->handle));
+      E_Eval module_eval = e_eval_from_stringf("query:control.%S", ctrl_string_from_handle(scratch.arena, module.handle));
       RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
       RD_Cfg *style = rd_cfg_child_from_string(view, info.cell_style_key);
-      RD_Cfg *w_cfg = style->first;
+      RD_Cfg *w_cfg = style.first;
       F32 next_pct = 0;
-#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg->string), w_cfg = w_cfg->next, next_pct)
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_CallStackFrame, row->eval,                                 .default_pct = 0.05f, .pct = take_pct());
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval,           row->eval,                                 .default_pct = 0.55f, .pct = take_pct());
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval,           e_eval_wrapf(row->eval, "hex((uint64)$)"), .default_pct = 0.20f, .pct = take_pct());
+#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg.string), w_cfg = w_cfg.next, next_pct)
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_CallStackFrame, row.eval,                                 .default_pct = 0.05f, .pct = take_pct());
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval,           row.eval,                                 .default_pct = 0.55f, .pct = take_pct());
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval,           e_eval_wrapf(row.eval, "hex((uint64)$)"), .default_pct = 0.20f, .pct = take_pct());
       rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval,           (module == &ctrl_entity_nil ? (E_Eval)zero_struct : module_eval),
                                   .default_pct = 0.20f, .pct = take_pct());
 #undef take_pct
@@ -1455,60 +1455,60 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
     ////////////////////////////
     //- rjf: @watch_row_build_cells error rows
     //
-    else if (row->eval.irtree.mode == E_Mode_Null && row->eval.msgs.max_kind > E_MsgKind_Null)
+    else if (row.eval.irtree.mode == E_Mode_Null && row.eval.msgs.max_kind > E_MsgKind_Null)
     {
       info.cell_style_key = ("expr_and_error");
       RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
       RD_Cfg *style = rd_cfg_child_from_string(view, info.cell_style_key);
-      RD_Cfg *w_cfg = style->first;
+      RD_Cfg *w_cfg = style.first;
       F32 next_pct = 0;
-#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg->string), w_cfg = w_cfg->next, next_pct)
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval,
+#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg.string), w_cfg = w_cfg.next, next_pct)
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval,
                                   .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented,
                                   .default_pct = 0.60f,
                                   .pct = take_pct());
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval, .default_pct = 0.40f, .pct = take_pct());
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval, .default_pct = 0.40f, .pct = take_pct());
 #undef take_pct
     }
     
     ////////////////////////////
     //- rjf: @watch_row_build_cells root-level type rows
     //
-    else if (row->eval.irtree.mode == E_Mode_Null && (row->block->eval.irtree.mode != E_Mode_Null || row->block->parent == &ev_nil_block))
+    else if (row.eval.irtree.mode == E_Mode_Null && (row.block.eval.irtree.mode != E_Mode_Null || row.block.parent == &ev_nil_block))
     {
       info.cell_style_key = ("root_type");
       RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
       RD_Cfg *style = rd_cfg_child_from_string(view, info.cell_style_key);
-      RD_Cfg *w_cfg = style->first;
+      RD_Cfg *w_cfg = style.first;
       F32 next_pct = 0;
-#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg->string), w_cfg = w_cfg->next, next_pct)
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval,
+#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg.string), w_cfg = w_cfg.next, next_pct)
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval,
                                   .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented,
                                   .default_pct = 0.50f,
                                   .pct = take_pct());
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row->eval, "typeof($)"),    .default_pct = 0.35f, .pct = take_pct());
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row->eval, "sizeof($)"),    .default_pct = 0.15f, .pct = take_pct());
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row.eval, "typeof($)"),    .default_pct = 0.35f, .pct = take_pct());
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row.eval, "sizeof($)"),    .default_pct = 0.15f, .pct = take_pct());
 #undef take_pct
     }
     
     ////////////////////////////
     //- rjf: @watch_row_build_cells sub-type rows
     //
-    else if (row->eval.irtree.mode == E_Mode_Null)
+    else if (row.eval.irtree.mode == E_Mode_Null)
     {
       info.cell_style_key = ("sub_type");
       RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
       RD_Cfg *style = rd_cfg_child_from_string(view, info.cell_style_key);
-      RD_Cfg *w_cfg = style->first;
+      RD_Cfg *w_cfg = style.first;
       F32 next_pct = 0;
-#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg->string), w_cfg = w_cfg->next, next_pct)
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval,
+#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg.string), w_cfg = w_cfg.next, next_pct)
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval,
                                   .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented,
                                   .default_pct = 0.35f,
                                   .pct = take_pct());
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row->eval, "typeof($)"),    .default_pct = 0.35f, .pct = take_pct());
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row->eval, "sizeof($)"),    .default_pct = 0.15f, .pct = take_pct());
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row->eval, "(uint64)(&$)"), .default_pct = 0.15f, .pct = take_pct());
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row.eval, "typeof($)"),    .default_pct = 0.35f, .pct = take_pct());
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row.eval, "sizeof($)"),    .default_pct = 0.15f, .pct = take_pct());
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row.eval, "(uint64)(&$)"), .default_pct = 0.15f, .pct = take_pct());
 #undef take_pct
     }
     
@@ -1520,15 +1520,15 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
       info.cell_style_key = ("normal");
       RD_Cfg *view = rd_cfg_from_id(rd_regs()->view);
       RD_Cfg *style = rd_cfg_child_from_string(view, info.cell_style_key);
-      RD_Cfg *w_cfg = style->first;
+      RD_Cfg *w_cfg = style.first;
       F32 next_pct = 0;
-#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg->string), w_cfg = w_cfg->next, next_pct)
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval,
+#define take_pct() (next_pct = (F32)f64_from_str8(w_cfg.string), w_cfg = w_cfg.next, next_pct)
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval,
                                   .flags = RD_WatchCellFlag_Expr|RD_WatchCellFlag_NoEval|RD_WatchCellFlag_Indented,
                                   .default_pct = 0.35f,
                                   .pct = take_pct());
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row->eval,                            .default_pct = 0.40f, .pct = take_pct());
-      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row->eval, "typeof($)"), .default_pct = 0.25f, .pct = take_pct());
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, row.eval,                            .default_pct = 0.40f, .pct = take_pct());
+      rd_watch_cell_list_push_new(arena, &info.cells, RD_WatchCellKind_Eval, e_eval_wrapf(row.eval, "typeof($)"), .default_pct = 0.25f, .pct = take_pct());
 #undef take_pct
     }
     
@@ -1545,7 +1545,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
   Temp scratch = scratch_begin(&arena ,1);
   RD_WatchRowCellInfo result =
   {
-    .flags        = cell->flags,
+    .flags        = cell.flags,
     .view_ui_rule = &rd_nil_view_ui_rule,
     .cfg          = &rd_nil_cfg,
     .entity       = &ctrl_entity_nil,
@@ -1554,24 +1554,24 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
   //////////////////////////////
   //- rjf: unpack evaluation
   //
-  E_Type *block_type = e_type_from_key(row->block->eval.irtree.type_key);
-  E_Type *cell_type = e_type_from_key(cell->eval.irtree.type_key);
-  MD_NodePtrList cell_schemas = rd_schemas_from_name(cell_type->name);
-  if (cell->eval.space.u64s[1] == 0 && cell_schemas.count != 0)
+  E_Type *block_type = e_type_from_key(row.block.eval.irtree.type_key);
+  E_Type *cell_type = e_type_from_key(cell.eval.irtree.type_key);
+  MD_NodePtrList cell_schemas = rd_schemas_from_name(cell_type.name);
+  if (cell.eval.space.u64s[1] == 0 && cell_schemas.count != 0)
   {
-    result.cfg = rd_cfg_from_eval_space(cell->eval.space);
+    result.cfg = rd_cfg_from_eval_space(cell.eval.space);
   }
-  if (cell->eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity && cell->eval.space.u64s[2] == 0)
+  if (cell.eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity && cell.eval.space.u64s[2] == 0)
   {
-    result.entity = rd_ctrl_entity_from_eval_space(cell->eval.space);
+    result.entity = rd_ctrl_entity_from_eval_space(cell.eval.space);
   }
-  result.cmd_name = rd_cmd_name_from_eval(cell->eval);
-  result.file_path = rd_file_path_from_eval(arena, cell->eval);
+  result.cmd_name = rd_cmd_name_from_eval(cell.eval);
+  result.file_path = rd_file_path_from_eval(arena, cell.eval);
   for (E_Type *type = cell_type;
-      type->kind == E_TypeKind_Lens;
-      type = e_type_from_key(type->direct_type_key))
+      type.kind == E_TypeKind_Lens;
+      type = e_type_from_key(type.direct_type_key))
   {
-    RD_ViewUIRule *view_ui_rule = rd_view_ui_rule_from_string(type->name);
+    RD_ViewUIRule *view_ui_rule = rd_view_ui_rule_from_string(type.name);
     if (view_ui_rule != &rd_nil_view_ui_rule)
     {
       result.view_ui_rule = view_ui_rule;
@@ -1583,12 +1583,12 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
   //- rjf: determine cell description
   //
   for (E_Type *type = cell_type;
-      type->kind != E_TypeKind_Null;
-      type = e_type_from_key(type->direct_type_key))
+      type.kind != E_TypeKind_Null;
+      type = e_type_from_key(type.direct_type_key))
   {
-    if (type->kind == E_TypeKind_MetaDescription)
+    if (type.kind == E_TypeKind_MetaDescription)
     {
-      result.description = type->name;
+      result.description = type.name;
       break;
     }
   }
@@ -1596,18 +1596,18 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
   //////////////////////////////
   //- rjf: determine cell editability
   //
-  if (cell->kind == RD_WatchCellKind_Eval)
+  if (cell.kind == RD_WatchCellKind_Eval)
   {
-    if (cell->flags & RD_WatchCellFlag_Expr && cell->flags & RD_WatchCellFlag_NoEval)
+    if (cell.flags & RD_WatchCellFlag_Expr && cell.flags & RD_WatchCellFlag_NoEval)
     {
-      if (row_info->expr_is_editable)
+      if (row_info.expr_is_editable)
       {
         result.flags |= RD_WatchCellFlag_CanEdit;
       }
     }
     else
     {
-      if (ev_type_key_is_editable(cell->eval.irtree.type_key) && cell->eval.irtree.mode == E_Mode_Offset)
+      if (ev_type_key_is_editable(cell.eval.irtree.type_key) && cell.eval.irtree.mode == E_Mode_Offset)
       {
         result.flags |= RD_WatchCellFlag_CanEdit;
       }
@@ -1617,7 +1617,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
   //////////////////////////////
   //- rjf: build cell's visual appearance info
   //
-  switch (cell->eval.space.kind)
+  switch (cell.eval.space.kind)
   {
     //- rjf: default case: depending on cell info, generate string
     default:
@@ -1625,7 +1625,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
       if (0){}
       
       //- rjf: errors
-      else if (cell->eval.msgs.max_kind > E_MsgKind_Null && !(cell->flags & RD_WatchCellFlag_NoEval))
+      else if (cell.eval.msgs.max_kind > E_MsgKind_Null && !(cell.flags & RD_WatchCellFlag_NoEval))
       {
         RD_Font(RD_FontSlot_Main)
         {
@@ -1639,11 +1639,11 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
                               .raster_flags = rd_raster_flags_from_slot(RD_FontSlot_Icons),
                               .color = ui_color_from_name(("text")));
             dr_fstrs_push_new(arena, &fstrs, &params, ("  "));
-            for (E_Msg *msg = cell->eval.msgs.first; msg != 0; msg = msg->next)
+            for (E_Msg *msg = cell.eval.msgs.first; msg != 0; msg = msg.next)
             {
-              DR_FStrList msg_fstrs = rd_fstrs_from_rich_string(arena, msg->text);
+              DR_FStrList msg_fstrs = rd_fstrs_from_rich_string(arena, msg.text);
               dr_fstrs_concat_in_place(&fstrs, &msg_fstrs);
-              if (msg->next)
+              if (msg.next)
               {
                 dr_fstrs_push_new(arena, &fstrs, &params, (" "));
               }
@@ -1670,7 +1670,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
       //- rjf: buttons -> button for command
       else if (result.cmd_name.size != 0)
       {
-        if (cell->px != 0)
+        if (cell.px != 0)
         {
           DR_FStrParams params = {rd_font_from_slot(RD_FontSlot_Main), rd_raster_flags_from_slot(RD_FontSlot_Main), ui_color_from_name(("text")), ui_top_font_size()};
           DR_FStrList fstrs = {0};
@@ -1703,7 +1703,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
       {
         //- rjf: build left-hand-side strings
         DR_FStrList expr_fstrs = {0};
-        if (cell->flags & RD_WatchCellFlag_Expr)
+        if (cell.flags & RD_WatchCellFlag_Expr)
         {
           B32 is_non_code = 0;
           string expr_string = {0};
@@ -1711,14 +1711,14 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
           // rjf: if this cell has a meta-display-name, then use that
           if (expr_string.size == 0)
           {
-            for (E_Type *t = e_type_from_key(cell->eval.irtree.type_key);
+            for (E_Type *t = e_type_from_key(cell.eval.irtree.type_key);
                 t != &e_type_nil;
-                t = e_type_from_key(t->direct_type_key))
+                t = e_type_from_key(t.direct_type_key))
             {
-              if (t->kind == E_TypeKind_MetaDisplayName)
+              if (t.kind == E_TypeKind_MetaDisplayName)
               {
                 is_non_code = 1;
-                expr_string = t->name;
+                expr_string = t.name;
                 break;
               }
             }
@@ -1728,38 +1728,38 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
           if (expr_string.size == 0)
           {
             // rjf: defaultly fill the cell's expression string, before trying other things
-            expr_string = cell->eval.string;
+            expr_string = cell.eval.string;
             
             // rjf: try to form a simpler expression string out of the expression tree itself, *if* this
             // is not an editable expression, and if this evaluation was successful, and if this evaluation
             // has a parent
-            if (!e_key_match(cell->eval.parent_key, e_key_zero()) &&
-               !(block_type->flags & E_TypeFlag_EditableChildren) &&
-               cell->eval.msgs.max_kind == E_MsgKind_Null)
+            if (!e_key_match(cell.eval.parent_key, e_key_zero()) &&
+               !(block_type.flags & E_TypeFlag_EditableChildren) &&
+               cell.eval.msgs.max_kind == E_MsgKind_Null)
             {
               // rjf: first, locate a notable expression - we special-case things like member accesses
               // or array indices, so we should grab those if possible
-              E_Expr *notable_expr = cell->eval.expr;
+              E_Expr *notable_expr = cell.eval.expr;
               for (B32 good = 0; !good;)
               {
-                switch (notable_expr->kind)
+                switch (notable_expr.kind)
                 {
                   default:{good = 1;}break;
                   case E_ExprKind_Address:
                   case E_ExprKind_Deref:
                   case E_ExprKind_Cast:
                   {
-                    notable_expr = notable_expr->last;
+                    notable_expr = notable_expr.last;
                   }break;
                   case E_ExprKind_Ref:
                   {
-                    notable_expr = notable_expr->ref;
+                    notable_expr = notable_expr.ref;
                   }break;
                 }
               }
               
               // rjf: generate expression extension string based on our notable expression
-              switch (notable_expr->kind)
+              switch (notable_expr.kind)
               {
                 // rjf: default case -> just take whatever string was directly passed via the evaluation
                 default:{}break;
@@ -1767,7 +1767,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
                 // rjf: array indices -> fast path to [index]
                 case E_ExprKind_ArrayIndex:
                 {
-                  expr_string = push_str8f(arena, "[%S]", e_string_from_expr(arena, notable_expr->last, str8_zero()));
+                  expr_string = push_str8f(arena, "[%S]", e_string_from_expr(arena, notable_expr.last, str8_zero()));
                 }break;
                 
                 // rjf: member accesses -> fast-path to .name
@@ -1780,9 +1780,9 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
                   if (member.inheritance_key_chain.count != 0)
                   {
                     String8List strings = {0};
-                    for (E_TypeKeyNode *n = member.inheritance_key_chain.first; n != 0; n = n->next)
+                    for (E_TypeKeyNode *n = member.inheritance_key_chain.first; n != 0; n = n.next)
                     {
-                      string base_class_name = e_type_string_from_key(scratch.arena, n->v);
+                      string base_class_name = e_type_string_from_key(scratch.arena, n.v);
                       str8_list_push(scratch.arena, &strings, base_class_name);
                     }
                     result.inheritance_tooltip = str8_list_join(arena, &strings, &(StringJoin){.sep = ("::")});
@@ -1792,12 +1792,12 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
                   // rjf: in meta-evaluation spaces, we will try to look up into our vocabulary map
                   // to see if we have a fancy display string for this member. otherwise, we will just
                   // do a code-string of ".member_name"
-                  string member_name = notable_expr->first->next->string;
+                  string member_name = notable_expr.first.next.string;
                   string fancy_name = {0};
-                  if (cell->eval.space.kind == RD_EvalSpaceKind_MetaCfg ||
-                     cell->eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity ||
-                     cell->eval.space.kind == E_SpaceKind_File ||
-                     cell->eval.space.kind == E_SpaceKind_FileSystem)
+                  if (cell.eval.space.kind == RD_EvalSpaceKind_MetaCfg ||
+                     cell.eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity ||
+                     cell.eval.space.kind == E_SpaceKind_File ||
+                     cell.eval.space.kind == E_SpaceKind_FileSystem)
                   {
                     fancy_name = rd_display_from_code_name(member_name);
                   }
@@ -1830,23 +1830,23 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
         
         //- rjf: evaluation -> need to form value string
         DR_FStrList eval_fstrs = {0};
-        if (!(cell->flags & RD_WatchCellFlag_NoEval))
+        if (!(cell.flags & RD_WatchCellFlag_NoEval))
         {
           // rjf: determine string generation parameters based on evaluation
           EV_StringParams string_params = {string_flags, 10};
           {
-            if (cell->eval.space.kind == RD_EvalSpaceKind_MetaCfg ||
-               cell->eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity)
+            if (cell.eval.space.kind == RD_EvalSpaceKind_MetaCfg ||
+               cell.eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity)
             {
               string_params.flags |= EV_StringFlag_DisableStringQuotes|EV_StringFlag_DisableAddresses;
             }
-            if (cell->eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity &&
-               rd_ctrl_entity_from_eval_space(cell->eval.space)->kind == CTRL_EntityKind_Module)
+            if (cell.eval.space.kind == RD_EvalSpaceKind_MetaCtrlEntity &&
+               rd_ctrl_entity_from_eval_space(cell.eval.space)->kind == CTRL_EntityKind_Module)
             {
               string_params.radix = 16;
             }
-            if (cell->eval.space.kind == RD_EvalSpaceKind_CtrlEntity &&
-               rd_ctrl_entity_from_eval_space(cell->eval.space)->kind == CTRL_EntityKind_Thread)
+            if (cell.eval.space.kind == RD_EvalSpaceKind_CtrlEntity &&
+               rd_ctrl_entity_from_eval_space(cell.eval.space)->kind == CTRL_EntityKind_Thread)
             {
               string_params.radix = 16;
             }
@@ -1855,15 +1855,15 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
           // rjf: determine if code
           B32 is_code = 1;
           {
-            E_Type *type = e_type_from_key(e_type_key_unwrap(cell->eval.irtree.type_key, E_TypeUnwrapFlag_Meta));
-            if (type->flags & (E_TypeFlag_IsPlainText|E_TypeFlag_IsPathText))
+            E_Type *type = e_type_from_key(e_type_key_unwrap(cell.eval.irtree.type_key, E_TypeUnwrapFlag_Meta));
+            if (type.flags & (E_TypeFlag_IsPlainText|E_TypeFlag_IsPathText))
             {
               is_code = 0;
             }
           }
           
           // rjf: generate string based on that expression & fill
-          string string = rd_value_string_from_eval(arena, rd_view_query_input(), &string_params, font, font_size, max_size_px, cell->eval);
+          string string = rd_value_string_from_eval(arena, rd_view_query_input(), &string_params, font, font_size, max_size_px, cell.eval);
           if (is_code)
           {
             eval_fstrs = rd_fstrs_from_code_string(arena, 1, 0, ui_color_from_name(("text")), string);
@@ -1877,7 +1877,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
         }
         
         //- rjf: if we have only the expression, then use the expression as the value
-        if (cell->flags & RD_WatchCellFlag_NoEval)
+        if (cell.flags & RD_WatchCellFlag_NoEval)
         {
           result.eval_fstrs = expr_fstrs;
         }
@@ -1892,8 +1892,8 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
     //- rjf: unattached processes
     case RD_EvalSpaceKind_MetaUnattachedProcess:
     {
-      U64 pid = cell->eval.value.u128.u64[0];
-      string name = e_string_from_id(cell->eval.value.u128.u64[1]);
+      U64 pid = cell.eval.value.u128.u64[0];
+      string name = e_string_from_id(cell.eval.value.u128.u64[1]);
       DR_FStrParams params = {rd_font_from_slot(RD_FontSlot_Main), rd_raster_flags_from_slot(RD_FontSlot_Main), ui_color_from_name(("text")), ui_top_font_size()};
       DR_FStrList fstrs = {0};
       UI_TagF("weak")
@@ -1914,7 +1914,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
     //- rjf: unattached processes
     case RD_EvalSpaceKind_MetaTheme:
     {
-      string name = e_string_from_id(cell->eval.value.u64);
+      string name = e_string_from_id(cell.eval.value.u64);
       DR_FStrParams params = {rd_font_from_slot(RD_FontSlot_Main), rd_raster_flags_from_slot(RD_FontSlot_Main), ui_color_from_name(("text")), ui_top_font_size()};
       DR_FStrList fstrs = {0};
       UI_TagF("weak")
@@ -1933,9 +1933,9 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
         U64 color_idx = 0;
         for (MD_Node *n = theme_tree; color_idx < 4 && !md_node_is_nil(n); n = md_node_rec_depth_first_pre(n, theme_tree).next)
         {
-          if (str8_match(n->string, ("theme_color"), 0))
+          if (str8_match(n.string, ("theme_color"), 0))
           {
-            string tags = md_child_from_string(n, ("tags"), 0)->first->string;
+            string tags = md_child_from_string(n, ("tags"), 0)->first.string;
             if (str8_match(tags, ("background"), 0) ||
                str8_match(tags, ("text"), 0) ||
                str8_match(tags, ("focus border"), 0) ||
@@ -1944,7 +1944,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
                str8_match(tags, ("code_default"), 0))
             {
               U64 color = 0;
-              if (try_u64_from_str8_c_rules(md_child_from_string(n, ("value"), 0)->first->string, &color))
+              if (try_u64_from_str8_c_rules(md_child_from_string(n, ("value"), 0)->first.string, &color))
               {
                 dr_fstrs_push_new(arena, &fstrs, &params, ("  "));
                 dr_fstrs_push_new(arena, &fstrs, &params,
@@ -1971,14 +1971,14 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
 internal RD_WatchViewTextEditState *
 rd_watch_view_text_edit_state_from_pt(RD_WatchViewState *wv, RD_WatchPt pt)
 {
-  RD_WatchViewTextEditState *result = &wv->dummy_text_edit_state;
-  if (wv->text_edit_state_slots_count != 0 && wv->text_editing != 0)
+  RD_WatchViewTextEditState *result = &wv.dummy_text_edit_state;
+  if (wv.text_edit_state_slots_count != 0 && wv.text_editing != 0)
   {
     U64 hash = ev_hash_from_key(pt.key);
-    U64 slot_idx = hash%wv->text_edit_state_slots_count;
-    for (RD_WatchViewTextEditState *s = wv->text_edit_state_slots[slot_idx]; s != 0; s = s->pt_hash_next)
+    U64 slot_idx = hash%wv.text_edit_state_slots_count;
+    for (RD_WatchViewTextEditState *s = wv.text_edit_state_slots[slot_idx]; s != 0; s = s.pt_hash_next)
     {
-      if (rd_watch_pt_match(pt, s->pt))
+      if (rd_watch_pt_match(pt, s.pt))
       {
         result = s;
         break;
@@ -2025,7 +2025,7 @@ RD_VIEW_UI_FUNCTION_DEF(text)
   //
   ProfScope("process code-file commands") for (RD_Cmd *cmd = 0; rd_next_view_cmd(&cmd);)
   {
-    RD_CmdKind kind = rd_cmd_kind_from_string(cmd->name);
+    RD_CmdKind kind = rd_cmd_kind_from_string(cmd.name);
     switch (kind)
     {
       default:{}break;
@@ -2034,7 +2034,7 @@ RD_VIEW_UI_FUNCTION_DEF(text)
       case RD_CmdKind_PickFile:
       {
         string src = rd_regs()->file_path;
-        string dst = cmd->regs->file_path;
+        string dst = cmd.regs.file_path;
         if (src.size != 0 && dst.size != 0)
         {
           // rjf: record src -> dst mapping
@@ -2083,13 +2083,13 @@ RD_VIEW_UI_FUNCTION_DEF(text)
   //////////////////////////////
   //- rjf: update last hash - scroll-to-bottom if needed
   //
-  if (rd_setting_b32_from_name(("scroll_to_bottom_on_change")) && !u128_match(hash, cv->last_hash) && !u128_match(cv->last_hash, u128_zero()))
+  if (rd_setting_b32_from_name(("scroll_to_bottom_on_change")) && !u128_match(hash, cv.last_hash) && !u128_match(cv.last_hash, u128_zero()))
   {
-    cv->goto_line_num = info.lines_count;
-    cv->contain_cursor = 1;
-    cv->force_contain_only = 1;
+    cv.goto_line_num = info.lines_count;
+    cv.contain_cursor = 1;
+    cv.force_contain_only = 1;
   }
-  cv->last_hash = hash;
+  cv.last_hash = hash;
   
   //////////////////////////////
   //- rjf: build missing file interface
@@ -2151,7 +2151,7 @@ RD_VIEW_UI_FUNCTION_DEF(text)
   //
   if (rd_regs()->file_path.size != 0)
   {
-    CTRL_Entity *module = ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, rd_regs()->module);
+    CTRL_Entity *module = ctrl_entity_from_handle(&d_state.ctrl_entity_store.ctx, rd_regs()->module);
     DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
     rd_regs()->lines = d_lines_from_dbgi_key_file_path_line_num(rd_frame_arena(), dbgi_key, rd_regs()->file_path, rd_regs()->cursor.line);
   }
@@ -2165,9 +2165,9 @@ RD_VIEW_UI_FUNCTION_DEF(text)
     U64 file_timestamp = fs_properties_from_path(rd_regs()->file_path).modified;
     if (file_timestamp != 0)
     {
-      for (DI_KeyNode *n = dbgi_keys.first; n != 0; n = n->next)
+      for (DI_KeyNode *n = dbgi_keys.first; n != 0; n = n.next)
       {
-        DI_Key key = n->v;
+        DI_Key key = n.v;
         if (key.min_timestamp < file_timestamp && key.min_timestamp != 0 && key.path.size != 0)
         {
           file_is_out_of_date = 1;
@@ -2265,14 +2265,14 @@ EV_EXPAND_RULE_INFO_FUNCTION_DEF(disasm)
 RD_VIEW_UI_FUNCTION_DEF(disasm)
 {
   RD_DisasmViewState *dv = rd_view_state(RD_DisasmViewState);
-  if (dv->initialized == 0)
+  if (dv.initialized == 0)
   {
-    dv->initialized = 1;
-    dv->cursor = txt_pt(1, 1);
-    dv->mark = txt_pt(1, 1);
-    rd_code_view_init(&dv->cv);
+    dv.initialized = 1;
+    dv.cursor = txt_pt(1, 1);
+    dv.mark = txt_pt(1, 1);
+    rd_code_view_init(&dv.cv);
   }
-  RD_CodeViewState *cv = &dv->cv;
+  RD_CodeViewState *cv = &dv.cv;
   Temp scratch = scratch_begin(0, 0);
   HS_Scope *hs_scope = hs_scope_open();
   DASM_Scope *dasm_scope = dasm_scope_open();
@@ -2288,16 +2288,16 @@ RD_VIEW_UI_FUNCTION_DEF(disasm)
   E_Space auto_space = {0};
   if (eval.expr == &e_expr_nil)
   {
-    if (dv->temp_look_vaddr != 0 && dv->temp_look_run_gen == ctrl_run_gen())
+    if (dv.temp_look_vaddr != 0 && dv.temp_look_run_gen == ctrl_run_gen())
     {
       auto_selected = 1;
-      auto_space = rd_eval_space_from_ctrl_entity(ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, dv->temp_look_process), RD_EvalSpaceKind_CtrlEntity);
-      eval = e_eval_from_stringf("(0x%I64x & (~(0x4000 - 1)))", dv->temp_look_vaddr);
+      auto_space = rd_eval_space_from_ctrl_entity(ctrl_entity_from_handle(&d_state.ctrl_entity_store.ctx, dv.temp_look_process), RD_EvalSpaceKind_CtrlEntity);
+      eval = e_eval_from_stringf("(0x%I64x & (~(0x4000 - 1)))", dv.temp_look_vaddr);
     }
     else
     {
       auto_selected = 1;
-      auto_space = rd_eval_space_from_ctrl_entity(ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, rd_regs()->process), RD_EvalSpaceKind_CtrlEntity);
+      auto_space = rd_eval_space_from_ctrl_entity(ctrl_entity_from_handle(&d_state.ctrl_entity_store.ctx, rd_regs()->process), RD_EvalSpaceKind_CtrlEntity);
       eval = e_eval_from_stringf("(rip.u64 & (~(0x4000 - 1)))");
     }
   }
@@ -2310,24 +2310,24 @@ RD_VIEW_UI_FUNCTION_DEF(disasm)
   Rng2F32 code_area_rect = r2f32p(rect.x0, rect.y0, rect.x1, rect.y1 - bottom_bar_height);
   Rng2F32 bottom_bar_rect = r2f32p(rect.x0, rect.y1 - bottom_bar_height, rect.x1, rect.y1);
   rd_regs()->file_path = str8_zero();
-  rd_regs()->cursor = dv->cursor;
-  rd_regs()->mark = dv->mark;
+  rd_regs()->cursor = dv.cursor;
+  rd_regs()->mark = dv.mark;
   
   //////////////////////////////
   //- rjf: process disassembly-specific commands
   //
   for (RD_Cmd *cmd = 0; rd_next_view_cmd(&cmd);)
   {
-    RD_CmdKind kind = rd_cmd_kind_from_string(cmd->name);
+    RD_CmdKind kind = rd_cmd_kind_from_string(cmd.name);
     switch (kind)
     {
       default: break;
       case RD_CmdKind_GoToAddress:
       {
-        dv->temp_look_process = cmd->regs->process;
-        dv->temp_look_vaddr   = cmd->regs->vaddr;
-        dv->temp_look_run_gen = ctrl_run_gen();
-        dv->goto_vaddr        = cmd->regs->vaddr;
+        dv.temp_look_process = cmd.regs.process;
+        dv.temp_look_vaddr   = cmd.regs.vaddr;
+        dv.temp_look_run_gen = ctrl_run_gen();
+        dv.goto_vaddr        = cmd.regs.vaddr;
       }break;
     }
   }
@@ -2346,15 +2346,15 @@ RD_VIEW_UI_FUNCTION_DEF(disasm)
   CTRL_Entity *dasm_module = &ctrl_entity_nil;
   DI_Key dbgi_key = {0};
   U64 base_vaddr = 0;
-  switch (space_entity->kind)
+  switch (space_entity.kind)
   {
     default:{}break;
     case CTRL_EntityKind_Process:
     {
-      if (arch == Arch_Null) { arch = space_entity->arch; }
+      if (arch == Arch_Null) { arch = space_entity.arch; }
       dasm_module = ctrl_module_from_process_vaddr(space_entity, range.min);
       dbgi_key    = ctrl_dbgi_key_from_module(dasm_module);
-      base_vaddr  = dasm_module->vaddr_range.min;
+      base_vaddr  = dasm_module.vaddr_range.min;
     }break;
   }
   DASM_StyleFlags style_flags = 0;
@@ -2413,15 +2413,15 @@ RD_VIEW_UI_FUNCTION_DEF(disasm)
   //////////////////////////////
   //- rjf: do goto vaddr
   //
-  if (!is_loading && has_disasm && dv->goto_vaddr != 0 && contains_1u64(range, dv->goto_vaddr))
+  if (!is_loading && has_disasm && dv.goto_vaddr != 0 && contains_1u64(range, dv.goto_vaddr))
   {
-    U64 vaddr = dv->goto_vaddr;
+    U64 vaddr = dv.goto_vaddr;
     U64 line_idx = dasm_line_array_idx_from_code_off__linear_scan(&dasm_info.lines, vaddr-range.min);
     if (line_idx < dasm_info.lines.count)
     {
       S64 line_num = (S64)(line_idx+1);
-      dv->goto_vaddr = 0;
-      cv->goto_line_num = line_num;
+      dv.goto_vaddr = 0;
+      cv.goto_line_num = line_num;
     }
   }
   
@@ -2462,7 +2462,7 @@ RD_VIEW_UI_FUNCTION_DEF(disasm)
       U64 cursor_vaddr = (1 <= rd_regs()->cursor.line && rd_regs()->cursor.line <= dasm_info.lines.count) ? (range.min+dasm_info.lines.v[rd_regs()->cursor.line-1].code_off) : 0;
       if (dasm_module != &ctrl_entity_nil)
       {
-        ui_labelf("%S", dasm_module->string);
+        ui_labelf("%S", dasm_module.string);
         ui_spacer(ui_em(1.5f, 1));
       }
       ui_labelf("Address: 0x%I64x, Line: %I64d, Column: %I64d", cursor_vaddr, rd_regs()->cursor.line, rd_regs()->cursor.column);
@@ -2475,8 +2475,8 @@ RD_VIEW_UI_FUNCTION_DEF(disasm)
   //////////////////////////////
   //- rjf: commit storage
   //
-  dv->cursor = rd_regs()->cursor;
-  dv->mark = rd_regs()->mark;
+  dv.cursor = rd_regs()->cursor;
+  dv.mark = rd_regs()->mark;
   
   txt_scope_close(txt_scope);
   dasm_scope_close(dasm_scope);
@@ -2525,7 +2525,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
   Rng1U64 view_range = rd_space_range_from_eval(eval);
   if (eval.space.kind == 0)
   {
-    eval.space = rd_eval_space_from_ctrl_entity(ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, rd_regs()->process), RD_EvalSpaceKind_CtrlEntity);
+    eval.space = rd_eval_space_from_ctrl_entity(ctrl_entity_from_handle(&d_state.ctrl_entity_store.ctx, rd_regs()->process), RD_EvalSpaceKind_CtrlEntity);
     view_range = rd_whole_range_from_eval_space(eval.space);
   }
   U64 cursor_base_vaddr = rd_view_setting_u64_from_name(("cursor"));
@@ -2550,7 +2550,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
   //
   UI_Key memory_rich_hover_key = ui_key_from_string(ui_active_seed_key(), ("###rich_hover"));
   Rng1U64 rich_hover_range = {0};
-  if (rd_state->hover_regs_slot == RD_RegSlot_VaddrRange &&
+  if (rd_state.hover_regs_slot == RD_RegSlot_VaddrRange &&
      e_space_match(eval.space, rd_get_hover_regs()->eval_space) &&
      !ui_key_match(rd_get_hover_regs()->src_ui_key, memory_rich_hover_key))
   {
@@ -2562,22 +2562,22 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
   //
   for (RD_Cmd *cmd = 0; rd_next_view_cmd(&cmd);)
   {
-    RD_CmdKind kind = rd_cmd_kind_from_string(cmd->name);
+    RD_CmdKind kind = rd_cmd_kind_from_string(cmd.name);
     switch (kind)
     {
       default: break;
       case RD_CmdKind_CenterCursor:
       {
-        mv->center_cursor = 1;
+        mv.center_cursor = 1;
       }break;
       case RD_CmdKind_ContainCursor:
       {
-        mv->contain_cursor = 1;
+        mv.contain_cursor = 1;
       }break;
       case RD_CmdKind_GoToAddress:
       {
-        cursor_base_vaddr = mark_base_vaddr = cmd->regs->vaddr;
-        mv->center_cursor = 1;
+        cursor_base_vaddr = mark_base_vaddr = cmd.regs.vaddr;
+        mv.center_cursor = 1;
       }break;
     }
   }
@@ -2623,11 +2623,11 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
   //
   {
     Rng1U64 cursor_range = r1u64(cursor_base_vaddr, cursor_base_vaddr+cursor_size);
-    if (mv->last_cursor_range_inited &&
-       (mv->last_cursor_range.min != cursor_range.min ||
-        mv->last_cursor_range.max != cursor_range.max))
+    if (mv.last_cursor_range_inited &&
+       (mv.last_cursor_range.min != cursor_range.min ||
+        mv.last_cursor_range.max != cursor_range.max))
     {
-      mv->contain_cursor = 1;
+      mv.contain_cursor = 1;
       if (track_mark_to_cursor)
       {
         mark_base_vaddr = cursor_base_vaddr;
@@ -2638,13 +2638,13 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
   //////////////////////////////
   //- rjf: on num of columns rugpull -> update scroll position
   //
-  if (mv->last_num_of_columns != num_columns && mv->last_num_of_columns_inited)
+  if (mv.last_num_of_columns != num_columns && mv.last_num_of_columns_inited)
   {
-    mv->center_cursor = 1;
-    mv->snap_scroll = 1;
+    mv.center_cursor = 1;
+    mv.snap_scroll = 1;
   }
-  mv->last_num_of_columns_inited = 1;
-  mv->last_num_of_columns = num_columns;
+  mv.last_num_of_columns_inited = 1;
+  mv.last_num_of_columns = num_columns;
   
   //////////////////////////////
   //- rjf: loop: compute boundaries, take events, repeat
@@ -2668,41 +2668,41 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
       for (UI_Event *evt = 0; ui_next_event(&evt);)
       {
         Vec2S64 cell_delta = {0};
-        switch (evt->delta_unit)
+        switch (evt.delta_unit)
         {
           default:{}break;
           case UI_EventDeltaUnit_Char:
           {
-            cell_delta.x = (S64)evt->delta_2s32.x;
-            cell_delta.y = (S64)evt->delta_2s32.y;
+            cell_delta.x = (S64)evt.delta_2s32.x;
+            cell_delta.y = (S64)evt.delta_2s32.y;
           }break;
           case UI_EventDeltaUnit_Word:
           case UI_EventDeltaUnit_Page:
           {
-            if (evt->delta_2s32.x < 0)
+            if (evt.delta_2s32.x < 0)
             {
               cell_delta.x = -(S64)(cursor_base_vaddr%num_columns);
             }
-            else if (evt->delta_2s32.x > 0)
+            else if (evt.delta_2s32.x > 0)
             {
               cell_delta.x = (num_columns-1) - (S64)(cursor_base_vaddr%num_columns);
             }
-            if (evt->delta_2s32.y < 0)
+            if (evt.delta_2s32.y < 0)
             {
               cell_delta.y = -4;
             }
-            else if (evt->delta_2s32.y > 0)
+            else if (evt.delta_2s32.y > 0)
             {
               cell_delta.y = +4;
             }
           }break;
         }
         B32 good_action = 0;
-        if (evt->delta_2s32.x != 0 || evt->delta_2s32.y != 0)
+        if (evt.delta_2s32.x != 0 || evt.delta_2s32.y != 0)
         {
           good_action = 1;
         }
-        if (good_action && evt->flags & UI_EventFlag_ZeroDeltaOnSelect && cursor_base_vaddr != mark_base_vaddr)
+        if (good_action && evt.flags & UI_EventFlag_ZeroDeltaOnSelect && cursor_base_vaddr != mark_base_vaddr)
         {
           MemoryZeroStruct(&cell_delta);
         }
@@ -2713,9 +2713,9 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
           next_cursor_base_vaddr += cell_delta.x;
           next_cursor_base_vaddr += cell_delta.y*num_columns;
         }
-        if (good_action && evt->flags & UI_EventFlag_PickSelectSide && cursor_base_vaddr != mark_base_vaddr)
+        if (good_action && evt.flags & UI_EventFlag_PickSelectSide && cursor_base_vaddr != mark_base_vaddr)
         {
-          if (evt->delta_2s32.x < 0 || evt->delta_2s32.y < 0)
+          if (evt.delta_2s32.x < 0 || evt.delta_2s32.y < 0)
           {
             next_cursor_base_vaddr = Min(cursor_base_vaddr, mark_base_vaddr);
           }
@@ -2724,14 +2724,14 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
             next_cursor_base_vaddr = Max(cursor_base_vaddr, mark_base_vaddr);
           }
         }
-        if (good_action && !(evt->flags & UI_EventFlag_KeepMark))
+        if (good_action && !(evt.flags & UI_EventFlag_KeepMark))
         {
           next_mark_base_vaddr = next_cursor_base_vaddr;
         }
         if (good_action)
         {
           need_update = 1;
-          mv->contain_cursor = 1;
+          mv.contain_cursor = 1;
           ui_eat_event(evt);
         }
       }
@@ -2755,19 +2755,19 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
     }
     
     //- rjf: center cursor if range has changed
-    if (mv->last_view_range_inited &&
-       (mv->last_view_range.max != view_range.max ||
-        mv->last_view_range.min != view_range.min))
+    if (mv.last_view_range_inited &&
+       (mv.last_view_range.max != view_range.max ||
+        mv.last_view_range.min != view_range.min))
     {
-      mv->center_cursor = 1;
+      mv.center_cursor = 1;
     }
-    mv->last_view_range_inited = 1;
-    mv->last_view_range = view_range;
+    mv.last_view_range_inited = 1;
+    mv.last_view_range = view_range;
     
     //- rjf: center cursor
-    if (mv->center_cursor && contains_1u64(view_range, cursor_base_vaddr))
+    if (mv.center_cursor && contains_1u64(view_range, cursor_base_vaddr))
     {
-      mv->center_cursor = 0;
+      mv.center_cursor = 0;
       S64 cursor_row_idx = (cursor_base_vaddr - view_range.min) / num_columns;
       S64 new_idx = (cursor_row_idx-num_possible_nonoccluded_visible_rows/2+1);
       new_idx = clamp_1s64(scroll_idx_rng, new_idx);
@@ -2775,9 +2775,9 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
     }
     
     //- rjf: contain cursor
-    if (mv->contain_cursor && contains_1u64(view_range, cursor_base_vaddr))
+    if (mv.contain_cursor && contains_1u64(view_range, cursor_base_vaddr))
     {
-      mv->contain_cursor = 0;
+      mv.contain_cursor = 0;
       Rng1S64 viz_range_nonoccluded_rows = {0};
       viz_range_nonoccluded_rows.min = scroll_pos.y.idx + (S64)(content_rect.y0 / row_height_px);
       viz_range_nonoccluded_rows.max = viz_range_nonoccluded_rows.min + num_possible_nonoccluded_visible_rows;
@@ -2793,9 +2793,9 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
     }
     
     //- rjf: snap scroll
-    if (mv->snap_scroll)
+    if (mv.snap_scroll)
     {
-      mv->snap_scroll = 0;
+      mv.snap_scroll = 0;
       scroll_pos.y.off = 0;
     }
   }
@@ -2884,9 +2884,9 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
   if (eval.space.kind == RD_EvalSpaceKind_CtrlEntity)
   {
     CTRL_Entity *entity = rd_ctrl_entity_from_eval_space(eval.space);
-    if (entity->kind == CTRL_EntityKind_Process)
+    if (entity.kind == CTRL_EntityKind_Process)
     {
-      CTRL_ProcessMemorySlice slice = ctrl_process_memory_slice_from_vaddr_range(scratch.arena, entity->handle, viz_range_bytes, 0);
+      CTRL_ProcessMemorySlice slice = ctrl_process_memory_slice_from_vaddr_range(scratch.arena, entity.handle, viz_range_bytes, 0);
       visible_memory_change_flags = slice.byte_changed_flags;
       visible_memory_bad_flags = slice.byte_bad_flags;
     }
@@ -2919,9 +2919,9 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
   AnnotationList *visible_memory_annotations = push_array(scratch.arena, AnnotationList, visible_memory_size);
   {
     CTRL_Scope *ctrl_scope = ctrl_scope_open();
-    CTRL_Entity *selected_thread = ctrl_entity_from_handle(&d_state->ctrl_entity_store->ctx, rd_regs()->thread);
+    CTRL_Entity *selected_thread = ctrl_entity_from_handle(&d_state.ctrl_entity_store.ctx, rd_regs()->thread);
     CTRL_Entity *selected_process = ctrl_entity_ancestor_from_kind(selected_thread, CTRL_EntityKind_Process);
-    CTRL_CallStack selected_call_stack = ctrl_call_stack_from_thread(ctrl_scope, &d_state->ctrl_entity_store->ctx, selected_thread, 1, 0);
+    CTRL_CallStack selected_call_stack = ctrl_call_stack_from_thread(ctrl_scope, &d_state.ctrl_entity_store.ctx, selected_thread, 1, 0);
     CTRL_Entity *eval_process = &ctrl_entity_nil;
     if (eval.space.kind == RD_EvalSpaceKind_CtrlEntity)
     {
@@ -2931,38 +2931,38 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
     //- rjf: fill unwind frame annotations
     if (selected_call_stack.concrete_frames_count != 0) UI_Tag(("weak"))
     {
-      U64 last_stack_top = regs_rsp_from_arch_block(selected_thread->arch, selected_call_stack.concrete_frames[0]->regs);
+      U64 last_stack_top = regs_rsp_from_arch_block(selected_thread.arch, selected_call_stack.concrete_frames[0]->regs);
       for (U64 idx = 1; idx < selected_call_stack.concrete_frames_count; idx += 1)
       {
         CTRL_CallStackFrame *f = selected_call_stack.concrete_frames[idx];
-        U64 f_stack_top = regs_rsp_from_arch_block(selected_thread->arch, f->regs);
+        U64 f_stack_top = regs_rsp_from_arch_block(selected_thread.arch, f.regs);
         Rng1U64 frame_vaddr_range = r1u64(last_stack_top, f_stack_top);
         Rng1U64 frame_vaddr_range_in_viz = intersect_1u64(frame_vaddr_range, viz_range_bytes);
         last_stack_top = f_stack_top;
         if (dim_1u64(frame_vaddr_range_in_viz) != 0)
         {
           DI_Scope *scope = di_scope_open();
-          U64 f_rip_vaddr = regs_rip_from_arch_block(selected_thread->arch, f->regs);
+          U64 f_rip_vaddr = regs_rip_from_arch_block(selected_thread.arch, f.regs);
           CTRL_Entity *module = ctrl_module_from_process_vaddr(selected_process, f_rip_vaddr);
           U64 f_rip_voff = ctrl_voff_from_vaddr(module, f_rip_vaddr);
           DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
           RDI_Parsed *rdi = di_rdi_from_key(scope, &dbgi_key, 1, 0);
           RDI_Procedure *procedure = rdi_procedure_from_voff(rdi, f_rip_voff);
           string procedure_name = {0};
-          procedure_name.str = rdi_string_from_idx(rdi, procedure->name_string_idx, &procedure_name.size);
+          procedure_name.str = rdi_string_from_idx(rdi, procedure.name_string_idx, &procedure_name.size);
           di_scope_close(scope);
           if (procedure_name.size != 0)
           {
             Annotation *annotation = push_array(scratch.arena, Annotation, 1);
-            annotation->name_string = push_str8_copy(scratch.arena, procedure_name);
-            annotation->kind_string = ("Call Stack Frame");
-            annotation->color = v4f32(0, 0, 0, 0);
-            annotation->vaddr_range = frame_vaddr_range;
+            annotation.name_string = push_str8_copy(scratch.arena, procedure_name);
+            annotation.kind_string = ("Call Stack Frame");
+            annotation.color = v4f32(0, 0, 0, 0);
+            annotation.vaddr_range = frame_vaddr_range;
             for (U64 vaddr = frame_vaddr_range_in_viz.min; vaddr < frame_vaddr_range_in_viz.max; vaddr += 1)
             {
               U64 visible_byte_idx = vaddr - viz_range_bytes.min;
               AnnotationNode *n = push_array(scratch.arena, AnnotationNode, 1);
-              n->v = annotation;
+              n.v = annotation;
               SLLQueuePush(visible_memory_annotations[visible_byte_idx].first, visible_memory_annotations[visible_byte_idx].last, n);
             }
           }
@@ -2973,22 +2973,22 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
     //- rjf: fill selected thread stack range annotation
     if (selected_call_stack.concrete_frames_count > 0)
     {
-      U64 stack_base_vaddr = selected_thread->stack_base;
-      U64 stack_top_vaddr = regs_rsp_from_arch_block(selected_thread->arch, selected_call_stack.concrete_frames[0]->regs);
+      U64 stack_base_vaddr = selected_thread.stack_base;
+      U64 stack_top_vaddr = regs_rsp_from_arch_block(selected_thread.arch, selected_call_stack.concrete_frames[0]->regs);
       Rng1U64 stack_vaddr_range = r1u64(stack_base_vaddr, stack_top_vaddr);
       Rng1U64 stack_vaddr_range_in_viz = intersect_1u64(stack_vaddr_range, viz_range_bytes);
       if (dim_1u64(stack_vaddr_range_in_viz) != 0)
       {
         Annotation *annotation = push_array(scratch.arena, Annotation, 1);
-        annotation->name_string = selected_thread->string.size ? selected_thread->string : push_str8f(scratch.arena, "TID: %I64u", selected_thread->id);
-        annotation->kind_string = ("Stack");
-        annotation->color = rd_color_from_ctrl_entity(selected_thread);
-        annotation->vaddr_range = stack_vaddr_range;
+        annotation.name_string = selected_thread.string.size ? selected_thread.string : push_str8f(scratch.arena, "TID: %I64u", selected_thread.id);
+        annotation.kind_string = ("Stack");
+        annotation.color = rd_color_from_ctrl_entity(selected_thread);
+        annotation.vaddr_range = stack_vaddr_range;
         for (U64 vaddr = stack_vaddr_range_in_viz.min; vaddr < stack_vaddr_range_in_viz.max; vaddr += 1)
         {
           U64 visible_byte_idx = vaddr - viz_range_bytes.min;
           AnnotationNode *n = push_array(scratch.arena, AnnotationNode, 1);
-          n->v = annotation;
+          n.v = annotation;
           SLLQueuePush(visible_memory_annotations[visible_byte_idx].first, visible_memory_annotations[visible_byte_idx].last, n);
         }
       }
@@ -3007,9 +3007,9 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
         mix_4f32(local_color, v4f32(0, 0, 0, 1), 0.8f),
       };
       U64 thread_rip_vaddr = d_query_cached_rip_from_thread_unwind(selected_thread, rd_regs()->unwind_count);
-      for (E_String2NumMapNode *n = e_ir_ctx->locals_map->first; n != 0; n = n->order_next)
+      for (E_String2NumMapNode *n = e_ir_ctx.locals_map.first; n != 0; n = n.order_next)
       {
-        string local_name = n->string;
+        string local_name = n.string;
         E_Eval local_eval = e_eval_from_string(local_name);
         if (local_eval.irtree.mode == E_Mode_Offset)
         {
@@ -3021,16 +3021,16 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
           {
             Annotation *annotation = push_array(scratch.arena, Annotation, 1);
             {
-              annotation->name_string = push_str8_copy(scratch.arena, local_name);
-              annotation->kind_string = ("Local");
-              annotation->type_string = e_type_string_from_key(scratch.arena, local_eval.irtree.type_key);
-              annotation->color = color_gen_table[(vaddr_rng.min/7)%ArrayCount(color_gen_table)];
-              annotation->vaddr_range = vaddr_rng;
+              annotation.name_string = push_str8_copy(scratch.arena, local_name);
+              annotation.kind_string = ("Local");
+              annotation.type_string = e_type_string_from_key(scratch.arena, local_eval.irtree.type_key);
+              annotation.color = color_gen_table[(vaddr_rng.min/7)%ArrayCount(color_gen_table)];
+              annotation.vaddr_range = vaddr_rng;
             }
             for (U64 vaddr = vaddr_rng_in_visible.min; vaddr < vaddr_rng_in_visible.max; vaddr += 1)
             {
               AnnotationNode *n = push_array(scratch.arena, AnnotationNode, 1);
-              n->v = annotation;
+              n.v = annotation;
               SLLQueuePushFront(visible_memory_annotations[vaddr-viz_range_bytes.min].first, visible_memory_annotations[vaddr-viz_range_bytes.min].last, n);
             }
           }
@@ -3063,8 +3063,8 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
           DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
           RDI_Parsed *rdi = di_rdi_from_key(scope, &dbgi_key, 1, 0);
           RDI_Procedure *procedure = rdi_procedure_from_voff(rdi, voff);
-          RDI_Scope *root_scope = rdi_element_from_name_idx(rdi, Scopes, procedure->root_scope_idx);
-          if (procedure->root_scope_idx != 0)
+          RDI_Scope *root_scope = rdi_element_from_name_idx(rdi, Scopes, procedure.root_scope_idx);
+          if (procedure.root_scope_idx != 0)
           {
             Rng1U64 voff_range = r1u64(rdi_first_voff_from_scope(rdi, root_scope),
                                        rdi_opl_voff_from_scope(rdi, root_scope));
@@ -3075,18 +3075,18 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
             if (vaddr_range_in_visible.min < vaddr_range_in_visible.max)
             {
               string procedure_name = {0};
-              procedure_name.str = rdi_string_from_idx(rdi, procedure->name_string_idx, &procedure_name.size);
+              procedure_name.str = rdi_string_from_idx(rdi, procedure.name_string_idx, &procedure_name.size);
               Annotation *annotation = push_array(scratch.arena, Annotation, 1);
               {
-                annotation->name_string = push_str8_copy(scratch.arena, procedure_name);
-                annotation->kind_string = ("Procedure");
-                annotation->color = color_gen_table[(vaddr_range.min/7)%ArrayCount(color_gen_table)];
-                annotation->vaddr_range = vaddr_range;
+                annotation.name_string = push_str8_copy(scratch.arena, procedure_name);
+                annotation.kind_string = ("Procedure");
+                annotation.color = color_gen_table[(vaddr_range.min/7)%ArrayCount(color_gen_table)];
+                annotation.vaddr_range = vaddr_range;
               }
               for (U64 vaddr = vaddr_range_in_visible.min; vaddr < vaddr_range_in_visible.max; vaddr += 1)
               {
                 AnnotationNode *n = push_array(scratch.arena, AnnotationNode, 1);
-                n->v = annotation;
+                n.v = annotation;
                 SLLQueuePushFront(visible_memory_annotations[vaddr-viz_range_bytes.min].first, visible_memory_annotations[vaddr-viz_range_bytes.min].last, n);
               }
             }
@@ -3120,10 +3120,10 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
           DI_Key dbgi_key = ctrl_dbgi_key_from_module(module);
           RDI_Parsed *rdi = di_rdi_from_key(scope, &dbgi_key, 1, 0);
           RDI_GlobalVariable *gvar = rdi_global_variable_from_voff(rdi, voff);
-          if (gvar->voff != 0)
+          if (gvar.voff != 0)
           {
-            RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, gvar->type_idx);
-            Rng1U64 voff_range = r1u64(gvar->voff, gvar->voff + type_node->byte_size);
+            RDI_TypeNode *type_node = rdi_element_from_name_idx(rdi, TypeNodes, gvar.type_idx);
+            Rng1U64 voff_range = r1u64(gvar.voff, gvar.voff + type_node.byte_size);
             Rng1U64 vaddr_range = ctrl_vaddr_range_from_voff_range(module, voff_range);
             next_vaddr = vaddr_range.max;
             next_vaddr = Max(next_vaddr, vaddr+1);
@@ -3131,18 +3131,18 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
             if (vaddr_range_in_visible.min < vaddr_range_in_visible.max)
             {
               string gvar_name = {0};
-              gvar_name.str = rdi_string_from_idx(rdi, gvar->name_string_idx, &gvar_name.size);
+              gvar_name.str = rdi_string_from_idx(rdi, gvar.name_string_idx, &gvar_name.size);
               Annotation *annotation = push_array(scratch.arena, Annotation, 1);
               {
-                annotation->name_string = push_str8_copy(scratch.arena, gvar_name);
-                annotation->kind_string = ("Global");
-                annotation->color = color_gen_table[(vaddr_range.min/7)%ArrayCount(color_gen_table)];
-                annotation->vaddr_range = vaddr_range;
+                annotation.name_string = push_str8_copy(scratch.arena, gvar_name);
+                annotation.kind_string = ("Global");
+                annotation.color = color_gen_table[(vaddr_range.min/7)%ArrayCount(color_gen_table)];
+                annotation.vaddr_range = vaddr_range;
               }
               for (U64 vaddr = vaddr_range_in_visible.min; vaddr < vaddr_range_in_visible.max; vaddr += 1)
               {
                 AnnotationNode *n = push_array(scratch.arena, AnnotationNode, 1);
-                n->v = annotation;
+                n.v = annotation;
                 SLLQueuePushFront(visible_memory_annotations[vaddr-viz_range_bytes.min].first, visible_memory_annotations[vaddr-viz_range_bytes.min].last, n);
               }
             }
@@ -3163,28 +3163,28 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
         mix_4f32(symbol_color, v4f32(0, 0, 0, 1), 0.10f),
         mix_4f32(symbol_color, v4f32(0, 0, 0, 1), 0.15f),
       };
-      for (CTRL_Entity *child = eval_process->first; child != &ctrl_entity_nil; child = child->next)
+      for (CTRL_Entity *child = eval_process.first; child != &ctrl_entity_nil; child = child.next)
       {
-        if (child->kind != CTRL_EntityKind_AddressRangeAnnotation)
+        if (child.kind != CTRL_EntityKind_AddressRangeAnnotation)
         {
           continue;
         }
-        string name = child->string;
-        Rng1U64 vaddr_range = child->vaddr_range;
+        string name = child.string;
+        Rng1U64 vaddr_range = child.vaddr_range;
         Rng1U64 vaddr_range_in_visible = intersect_1u64(vaddr_range, viz_range_bytes);
         if (vaddr_range_in_visible.max > vaddr_range_in_visible.min)
         {
           Annotation *annotation = push_array(scratch.arena, Annotation, 1);
           {
-            annotation->name_string = push_str8_copy(scratch.arena, name);
-            annotation->kind_string = ("Annotation");
-            annotation->color = color_gen_table[(vaddr_range.min/7)%ArrayCount(color_gen_table)];
-            annotation->vaddr_range = vaddr_range;
+            annotation.name_string = push_str8_copy(scratch.arena, name);
+            annotation.kind_string = ("Annotation");
+            annotation.color = color_gen_table[(vaddr_range.min/7)%ArrayCount(color_gen_table)];
+            annotation.vaddr_range = vaddr_range;
           }
           for (U64 vaddr = vaddr_range_in_visible.min; vaddr < vaddr_range_in_visible.max; vaddr += 1)
           {
             AnnotationNode *n = push_array(scratch.arena, AnnotationNode, 1);
-            n->v = annotation;
+            n.v = annotation;
             SLLQueuePushFront(visible_memory_annotations[vaddr-viz_range_bytes.min].first, visible_memory_annotations[vaddr-viz_range_bytes.min].last, n);
           }
         }
@@ -3314,8 +3314,8 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
                                                UI_BoxFlag_Scroll|
                                                UI_BoxFlag_AllowOverflowY,
                                                "scrollable_box");
-    container_box->view_off.x = container_box->view_off_target.x = scroll_pos.x.idx + scroll_pos.x.off;
-    scrollable_box->view_off.y = scrollable_box->view_off_target.y = floor_f32(row_height_px*mod_f32(scroll_pos.y.off, 1.f) + row_height_px*(scroll_pos.y.off < 0));
+    container_box.view_off.x = container_box.view_off_target.x = scroll_pos.x.idx + scroll_pos.x.off;
+    scrollable_box.view_off.y = scrollable_box.view_off_target.y = floor_f32(row_height_px*mod_f32(scroll_pos.y.off, 1.f) + row_height_px*(scroll_pos.y.off < 0));
   }
   
   //////////////////////////////
@@ -3343,7 +3343,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
     // rjf: calculate hovered byte
     if (ui_hovering(sig) || ui_dragging(sig))
     {
-      Vec2F32 mouse_rel = sub_2f32(ui_mouse(), row_container_box->rect.p0);
+      Vec2F32 mouse_rel = sub_2f32(ui_mouse(), row_container_box.rect.p0);
       U64 row_idx = ClampBot(0, mouse_rel.y) / row_height_px;
       
       // rjf: try from cells
@@ -3376,9 +3376,9 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
     // rjf: click & drag -> select
     if (ui_dragging(sig) && mouse_hover_byte_num != 0)
     {
-      if (!contains_2f32(sig.box->rect, ui_mouse()))
+      if (!contains_2f32(sig.box.rect, ui_mouse()))
       {
-        mv->contain_cursor = 1;
+        mv.contain_cursor = 1;
       }
       cursor_base_vaddr = mouse_hover_byte_num-1;
       if (ui_pressed(sig))
@@ -3392,14 +3392,14 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
     {
       for (UI_Event *evt = 0; ui_next_event(&evt);)
       {
-        if (evt->kind == UI_EventKind_Scroll && evt->modifiers & OS_Modifier_Ctrl)
+        if (evt.kind == UI_EventKind_Scroll && evt.modifiers & OS_Modifier_Ctrl)
         {
           ui_eat_event(evt);
-          if (evt->delta_2f32.y < 0)
+          if (evt.delta_2f32.y < 0)
           {
             rd_cmd(RD_CmdKind_IncViewFontSize);
           }
-          else if (evt->delta_2f32.y > 0)
+          else if (evt.delta_2f32.y > 0)
           {
             rd_cmd(RD_CmdKind_DecViewFontSize);
           }
@@ -3484,7 +3484,7 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
               if (annotation_node != 0)
               {
                 cell_flags |= UI_BoxFlag_DrawBackground;
-                Vec4F32 cell_bg_color_rgba = annotation_node->v->color;
+                Vec4F32 cell_bg_color_rgba = annotation_node.v.color;
                 Vec4F32 cell_bg_color_hsva = hsva_from_rgba(cell_bg_color_rgba);
                 cell_bg_rgba = mix_4f32(cell_bg_color_rgba, main_bg_color_rgba, clamp_1f32(r1f32(0, 1), 1.f - abs_f32(cell_bg_color_hsva.z - main_tx_color_hsva.z)*0.5f));
               }
@@ -3533,14 +3533,14 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
                 ui_box_equip_display_fstrs(cell_box, &byte_fstrs[byte_value]);
               }
               {
-                for (AnnotationNode *a_n = annotation_node; a_n != 0; a_n = a_n->next)
+                for (AnnotationNode *a_n = annotation_node; a_n != 0; a_n = a_n.next)
                 {
-                  Annotation *a = a_n->v;
-                  if (global_byte_idx == a->vaddr_range.min) UI_Parent(row_overlay_box)
+                  Annotation *a = a_n.v;
+                  if (global_byte_idx == a.vaddr_range.min) UI_Parent(row_overlay_box)
                   {
-                    F32 size = cell_width_px/4.f + cell_width_px/8.f*ui_anim(ui_key_from_stringf(ui_active_seed_key(), "###annotation_hovered_%I64x_%I64x", a->vaddr_range.min, a->vaddr_range.max),
-                                                                             (F32)!!(a->vaddr_range.min+1 <= mouse_hover_byte_num && mouse_hover_byte_num <= a->vaddr_range.max));
-                    ui_set_next_border_color(a->color);
+                    F32 size = cell_width_px/4.f + cell_width_px/8.f*ui_anim(ui_key_from_stringf(ui_active_seed_key(), "###annotation_hovered_%I64x_%I64x", a.vaddr_range.min, a.vaddr_range.max),
+                                                                             (F32)!!(a.vaddr_range.min+1 <= mouse_hover_byte_num && mouse_hover_byte_num <= a.vaddr_range.max));
+                    ui_set_next_border_color(a.color);
                     ui_set_next_fixed_x(big_glyph_advance*20.f + col_idx*cell_width_px + -size*0.5f);
                     ui_set_next_fixed_y((row_idx-viz_range_rows.min)*row_height_px + -size*0.5f);
                     ui_set_next_fixed_width(size);
@@ -3551,11 +3551,11 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
                     ui_set_next_corner_radius_11(cell_width_px/8.f);
                     ui_build_box_from_key(UI_BoxFlag_Floating|UI_BoxFlag_DrawSideLeft|UI_BoxFlag_DrawSideTop|UI_BoxFlag_DrawDropShadow, ui_key_zero());
                   }
-                  if (global_byte_idx+1 == a->vaddr_range.max) UI_Parent(row_overlay_box)
+                  if (global_byte_idx+1 == a.vaddr_range.max) UI_Parent(row_overlay_box)
                   {
-                    F32 size = cell_width_px/4.f + cell_width_px/8.f*ui_anim(ui_key_from_stringf(ui_active_seed_key(), "###annotation_hovered_%I64x_%I64x", a->vaddr_range.min, a->vaddr_range.max),
-                                                                             (F32)!!(a->vaddr_range.min+1 <= mouse_hover_byte_num && mouse_hover_byte_num <= a->vaddr_range.max));
-                    ui_set_next_border_color(a->color);
+                    F32 size = cell_width_px/4.f + cell_width_px/8.f*ui_anim(ui_key_from_stringf(ui_active_seed_key(), "###annotation_hovered_%I64x_%I64x", a.vaddr_range.min, a.vaddr_range.max),
+                                                                             (F32)!!(a.vaddr_range.min+1 <= mouse_hover_byte_num && mouse_hover_byte_num <= a.vaddr_range.max));
+                    ui_set_next_border_color(a.color);
                     ui_set_next_fixed_x(big_glyph_advance*20.f + (col_idx+1)*cell_width_px + -size*0.5f);
                     ui_set_next_fixed_y((row_idx-viz_range_rows.min)*row_height_px + row_height_px + -size*0.5f);
                     ui_set_next_fixed_width(size);
@@ -3572,20 +3572,20 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
               {
                 UI_Tooltip UI_FontSize(ui_top_font_size()) UI_PrefHeight(ui_px(ui_top_font_size()*1.75f, 1.f))
                 {
-                  for (AnnotationNode *a_n = annotation_node; a_n != 0; a_n = a_n->next)
+                  for (AnnotationNode *a_n = annotation_node; a_n != 0; a_n = a_n.next)
                   {
-                    Annotation *a = a_n->v;
+                    Annotation *a = a_n.v;
                     UI_PrefWidth(ui_children_sum(1)) UI_Row UI_PrefWidth(ui_text_dim(10, 1))
                     {
-                      RD_Font(RD_FontSlot_Code) rd_code_label(1.f, 0, ui_color_from_name(("code_default")), a->name_string);
-                      UI_TagF("weak") RD_Font(RD_FontSlot_Main) ui_label(a->kind_string);
+                      RD_Font(RD_FontSlot_Code) rd_code_label(1.f, 0, ui_color_from_name(("code_default")), a.name_string);
+                      UI_TagF("weak") RD_Font(RD_FontSlot_Main) ui_label(a.kind_string);
                     }
-                    if (a->type_string.size != 0)
+                    if (a.type_string.size != 0)
                     {
-                      rd_code_label(1.f, 1, ui_color_from_name(("code_type")), a->type_string);
+                      rd_code_label(1.f, 1, ui_color_from_name(("code_type")), a.type_string);
                     }
-                    UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) ui_label(str8_from_memory_size(scratch.arena, dim_1u64(a->vaddr_range)));
-                    if (a_n->next != 0)
+                    UI_FlagsAdd(UI_BoxFlag_DrawTextWeak) ui_label(str8_from_memory_size(scratch.arena, dim_1u64(a.vaddr_range)));
+                    if (a_n.next != 0)
                     {
                       ui_spacer(ui_em(1.5f, 1.f));
                     }
@@ -3625,9 +3625,9 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
               Vec2F32 text_pos = ui_box_text_position(ascii_box);
               Vec4F32 color = selection_color;
               dr_rect(r2f32p(text_pos.x + fnt_dim_from_tag_size_string(font, font_size, 0, 0, str8_prefix(ascii_text, selection_in_row.min+0-row_range_bytes.min)).x - font_size/8.f,
-                             ascii_box->rect.y0,
+                             ascii_box.rect.y0,
                              text_pos.x + fnt_dim_from_tag_size_string(font, font_size, 0, 0, str8_prefix(ascii_text, selection_in_row.max+1-row_range_bytes.min)).x + font_size/4.f,
-                             ascii_box->rect.y1),
+                             ascii_box.rect.y1),
                       color,
                       0, 0, 1.f);
             }
@@ -3641,9 +3641,9 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
               Vec2F32 text_pos = ui_box_text_position(ascii_box);
               Vec4F32 color = border_color;
               dr_rect(r2f32p(text_pos.x + fnt_dim_from_tag_size_string(font, font_size, 0, 0, str8_prefix(ascii_text, mouse_hover_byte_num-1-row_range_bytes.min)).x - font_size/8.f,
-                             ascii_box->rect.y0,
+                             ascii_box.rect.y0,
                              text_pos.x + fnt_dim_from_tag_size_string(font, font_size, 0, 0, str8_prefix(ascii_text, mouse_hover_byte_num+0-row_range_bytes.min)).x + font_size/4.f,
-                             ascii_box->rect.y1),
+                             ascii_box.rect.y1),
                       color,
                       1.f, 3.f, 1.f);
             }
@@ -3682,8 +3682,8 @@ RD_VIEW_UI_FUNCTION_DEF(memory)
   //////////////////////////////
   //- rjf: save parameters
   //
-  mv->last_cursor_range = r1u64(cursor_base_vaddr, cursor_base_vaddr + cursor_size);
-  mv->last_cursor_range_inited = 1;
+  mv.last_cursor_range = r1u64(cursor_base_vaddr, cursor_base_vaddr + cursor_size);
+  mv.last_cursor_range_inited = 1;
   if (cursor_base_vaddr != initial_cursor_base_vaddr)
   {
     rd_store_view_param_u64(("cursor"), cursor_base_vaddr);
@@ -3767,10 +3767,10 @@ rd_bitmap_canvas_from_screen_rect(Vec2F32 view_center_pos, F32 zoom, Rng2F32 rec
 internal UI_BOX_CUSTOM_DRAW(rd_bitmap_view_canvas_box_draw)
 {
   RD_BitmapCanvasBoxDrawData *draw_data = (RD_BitmapCanvasBoxDrawData *)user_data;
-  Rng2F32 rect_scrn = box->rect;
-  Rng2F32 rect_cvs = rd_bitmap_canvas_from_screen_rect(draw_data->view_center_pos, draw_data->zoom, rect_scrn, rect_scrn);
-  F32 grid_cell_size_cvs = box->font_size*10.f;
-  F32 grid_line_thickness_px = Max(2.f, box->font_size*0.1f);
+  Rng2F32 rect_scrn = box.rect;
+  Rng2F32 rect_cvs = rd_bitmap_canvas_from_screen_rect(draw_data.view_center_pos, draw_data.zoom, rect_scrn, rect_scrn);
+  F32 grid_cell_size_cvs = box.font_size*10.f;
+  F32 grid_line_thickness_px = Max(2.f, box.font_size*0.1f);
   Vec4F32 grid_line_color = {0};
   UI_TagF("weak")
   {
@@ -3784,12 +3784,12 @@ internal UI_BOX_CUSTOM_DRAW(rd_bitmap_view_canvas_box_draw)
     {
       Vec2F32 p_cvs = {0};
       p_cvs.v[axis] = v;
-      Vec2F32 p_scr = rd_bitmap_screen_from_canvas_pos(draw_data->view_center_pos, draw_data->zoom, rect_scrn, p_cvs);
+      Vec2F32 p_scr = rd_bitmap_screen_from_canvas_pos(draw_data.view_center_pos, draw_data.zoom, rect_scrn, p_cvs);
       Rng2F32 rect = {0};
       rect.p0.v[axis] = p_scr.v[axis] - grid_line_thickness_px/2;
       rect.p1.v[axis] = p_scr.v[axis] + grid_line_thickness_px/2;
-      rect.p0.v[axis2_flip(axis)] = box->rect.p0.v[axis2_flip(axis)];
-      rect.p1.v[axis2_flip(axis)] = box->rect.p1.v[axis2_flip(axis)];
+      rect.p0.v[axis2_flip(axis)] = box.rect.p0.v[axis2_flip(axis)];
+      rect.p1.v[axis2_flip(axis)] = box.rect.p1.v[axis2_flip(axis)];
       dr_rect(rect, grid_line_color, 0, 0, 1.f);
     }
   }
@@ -3926,8 +3926,8 @@ RD_VIEW_UI_FUNCTION_DEF(bitmap)
   //
   {
     RD_BitmapCanvasBoxDrawData *draw_data = push_array(ui_build_arena(), RD_BitmapCanvasBoxDrawData, 1);
-    draw_data->view_center_pos = view_center_pos;
-    draw_data->zoom = zoom;
+    draw_data.view_center_pos = view_center_pos;
+    draw_data.zoom = zoom;
     ui_box_equip_custom_draw(canvas_box, rd_bitmap_view_canvas_box_draw, draw_data);
   }
   
@@ -4043,10 +4043,10 @@ rd_eval_color_from_eval(E_Eval eval)
     LeafTask start_task = {0, eval};
     LeafTask *first_task = &start_task;
     LeafTask *last_task = first_task;
-    for (LeafTask *t = first_task; t != 0 && num_components_left > 0; t = t->next)
+    for (LeafTask *t = first_task; t != 0 && num_components_left > 0; t = t.next)
     {
-      E_Type *type = e_type_from_key(e_type_key_unwrap(t->eval.irtree.type_key, E_TypeUnwrapFlag_AllDecorative));
-      switch (type->kind)
+      E_Type *type = e_type_from_key(e_type_key_unwrap(t.eval.irtree.type_key, E_TypeUnwrapFlag_AllDecorative));
+      switch (type.kind)
       {
         default:{}break;
         
@@ -4056,20 +4056,20 @@ rd_eval_color_from_eval(E_Eval eval)
         case E_TypeKind_U64:
         case E_TypeKind_S64:
         {
-          component_evals[0] = e_value_eval_from_eval(e_eval_wrapf(t->eval, "(float32)(($ & 0xff000000) >> 24) / 255.f"));
-          component_evals[1] = e_value_eval_from_eval(e_eval_wrapf(t->eval, "(float32)(($ & 0x00ff0000) >> 16) / 255.f"));
-          component_evals[2] = e_value_eval_from_eval(e_eval_wrapf(t->eval, "(float32)(($ & 0x0000ff00) >> 8) / 255.f"));
-          component_evals[3] = e_value_eval_from_eval(e_eval_wrapf(t->eval, "(float32)(($ & 0x000000ff) >> 0) / 255.f"));
+          component_evals[0] = e_value_eval_from_eval(e_eval_wrapf(t.eval, "(float32)(($ & 0xff000000) >> 24) / 255.f"));
+          component_evals[1] = e_value_eval_from_eval(e_eval_wrapf(t.eval, "(float32)(($ & 0x00ff0000) >> 16) / 255.f"));
+          component_evals[2] = e_value_eval_from_eval(e_eval_wrapf(t.eval, "(float32)(($ & 0x0000ff00) >> 8) / 255.f"));
+          component_evals[3] = e_value_eval_from_eval(e_eval_wrapf(t.eval, "(float32)(($ & 0x000000ff) >> 0) / 255.f"));
           num_components_left -= 4;
         }break;
         
         //- rjf: array -> generate tasks for first four elements
         case E_TypeKind_Array:
         {
-          component_evals[0] = e_value_eval_from_eval(e_eval_wrapf(t->eval, "(float32)($[0])"));
-          component_evals[1] = e_value_eval_from_eval(e_eval_wrapf(t->eval, "(float32)($[1])"));
-          component_evals[2] = e_value_eval_from_eval(e_eval_wrapf(t->eval, "(float32)($[2])"));
-          component_evals[3] = e_value_eval_from_eval(e_eval_wrapf(t->eval, "(float32)($[3])"));
+          component_evals[0] = e_value_eval_from_eval(e_eval_wrapf(t.eval, "(float32)($[0])"));
+          component_evals[1] = e_value_eval_from_eval(e_eval_wrapf(t.eval, "(float32)($[1])"));
+          component_evals[2] = e_value_eval_from_eval(e_eval_wrapf(t.eval, "(float32)($[2])"));
+          component_evals[3] = e_value_eval_from_eval(e_eval_wrapf(t.eval, "(float32)($[3])"));
           num_components_left -= 4;
         }break;
       }
@@ -4081,18 +4081,18 @@ rd_eval_color_from_eval(E_Eval eval)
   RD_EvalColor result = {0};
   {
     E_Type *lens_type = e_type_from_key(eval.irtree.type_key);
-    for (E_Type *t = lens_type; t->kind == E_TypeKind_Lens; t = e_type_from_key(t->direct_type_key))
+    for (E_Type *t = lens_type; t.kind == E_TypeKind_Lens; t = e_type_from_key(t.direct_type_key))
     {
-      if (str8_match(t->name, ("color"), 0))
+      if (str8_match(t.name, ("color"), 0))
       {
         lens_type = t;
         break;
       }
     }
     string format_string = ("rgba");
-    if (lens_type->kind == E_TypeKind_Lens && lens_type->count > 0)
+    if (lens_type.kind == E_TypeKind_Lens && lens_type.count > 0)
     {
-      format_string = lens_type->args[0]->string;
+      format_string = lens_type.args[0]->string;
     }
     if (str8_match(format_string, ("rgba"), 0))
     {
@@ -4157,15 +4157,15 @@ RD_VIEW_UI_FUNCTION_DEF(color)
   RD_ColorViewState *state = rd_view_state(RD_ColorViewState);
   RD_EvalColor eval_color = rd_eval_color_from_eval(eval);
   U32 rgba_u32 = u32_from_rgba(eval_color.rgba);
-  if (!state->initialized || rgba_u32 != state->start_rgba_u32)
+  if (!state.initialized || rgba_u32 != state.start_rgba_u32)
   {
     Vec4F32 rgba = eval_color.rgba;
     Vec4F32 hsva = hsva_from_rgba(rgba);
-    state->initialized = 1;
-    state->start_rgba_u32 = rgba_u32;
-    state->hsva = hsva;
+    state.initialized = 1;
+    state.start_rgba_u32 = rgba_u32;
+    state.hsva = hsva;
   }
-  Vec4F32 hsva = state->hsva;
+  Vec4F32 hsva = state.hsva;
   Vec4F32 rgba = rgba_from_hsva(hsva);
   
   //////////////////////////////
@@ -4242,18 +4242,18 @@ RD_VIEW_UI_FUNCTION_DEF(color)
       {
         // TODO(rjf): hard-coding U32 committing for now
         E_Type *type = e_type_from_key(e_type_key_unwrap(eval.irtree.type_key, E_TypeUnwrapFlag_AllDecorative));
-        if (type->kind == E_TypeKind_U32 ||
-           type->kind == E_TypeKind_S32 ||
-           type->kind == E_TypeKind_U64 ||
-           type->kind == E_TypeKind_S64)
+        if (type.kind == E_TypeKind_U32 ||
+           type.kind == E_TypeKind_S32 ||
+           type.kind == E_TypeKind_U64 ||
+           type.kind == E_TypeKind_S64)
         {
           Vec4F32 new_rgba = rgba_from_hsva(hsva);
           U32 u32 = u32_from_rgba(new_rgba);
           string string = push_str8f(scratch.arena, "0x%x", u32);
           if (rd_commit_eval_value_string(eval, string))
           {
-            state->start_rgba_u32 = u32;
-            state->hsva = hsva;
+            state.start_rgba_u32 = u32;
+            state.hsva = hsva;
           }
         }
       }
@@ -4286,28 +4286,28 @@ internal UI_BOX_CUSTOM_DRAW(rd_geo3d_box_draw)
   RD_Geo3DBoxDrawData *draw_data = (RD_Geo3DBoxDrawData *)user_data;
   
   // rjf: get clip
-  Rng2F32 clip = box->rect;
-  for (UI_Box *b = box->parent; !ui_box_is_nil(b); b = b->parent)
+  Rng2F32 clip = box.rect;
+  for (UI_Box *b = box.parent; !ui_box_is_nil(b); b = b.parent)
   {
-    if (b->flags & UI_BoxFlag_Clip)
+    if (b.flags & UI_BoxFlag_Clip)
     {
-      clip = intersect_2f32(b->rect, clip);
+      clip = intersect_2f32(b.rect, clip);
     }
   }
   
   // rjf: calculate eye/target
   Vec3F32 target = {0};
-  Vec3F32 eye = v3f32(draw_data->zoom*cos_f32(draw_data->yaw)*sin_f32(draw_data->pitch),
-                      draw_data->zoom*sin_f32(draw_data->yaw)*sin_f32(draw_data->pitch),
-                      draw_data->zoom*cos_f32(draw_data->pitch));
+  Vec3F32 eye = v3f32(draw_data.zoom*cos_f32(draw_data.yaw)*sin_f32(draw_data.pitch),
+                      draw_data.zoom*sin_f32(draw_data.yaw)*sin_f32(draw_data.pitch),
+                      draw_data.zoom*cos_f32(draw_data.pitch));
   
   // rjf: mesh
-  Vec2F32 box_dim = dim_2f32(box->rect);
-  R_PassParams_Geo3D *pass = dr_geo3d_begin(box->rect,
+  Vec2F32 box_dim = dim_2f32(box.rect);
+  R_PassParams_Geo3D *pass = dr_geo3d_begin(box.rect,
                                             make_look_at_4x4f32(eye, target, v3f32(0, 0, 1)),
                                             make_perspective_4x4f32(0.25f, box_dim.x/box_dim.y, 0.1f, 500.f));
-  pass->clip = clip;
-  dr_mesh(draw_data->vertex_buffer, draw_data->index_buffer, R_GeoTopologyKind_Triangles, R_GeoVertexFlag_TexCoord|R_GeoVertexFlag_Normals|R_GeoVertexFlag_RGB, r_handle_zero(), mat_4x4f32(1.f));
+  pass.clip = clip;
+  dr_mesh(draw_data.vertex_buffer, draw_data.index_buffer, R_GeoTopologyKind_Triangles, R_GeoVertexFlag_TexCoord|R_GeoVertexFlag_Normals|R_GeoVertexFlag_RGB, r_handle_zero(), mat_4x4f32(1.f));
 }
 
 EV_EXPAND_RULE_INFO_FUNCTION_DEF(geo3d)
@@ -4371,14 +4371,14 @@ RD_VIEW_UI_FUNCTION_DEF(geo3d)
   //- rjf: animate camera
   //
   {
-    F32 fast_rate = 1 - pow_f32(2, (-60.f * rd_state->frame_dt));
-    F32 slow_rate = 1 - pow_f32(2, (-30.f * rd_state->frame_dt));
-    state->zoom  += (zoom_target - state->zoom) * slow_rate;
-    state->yaw   += (yaw_target - state->yaw) * fast_rate;
-    state->pitch += (pitch_target - state->pitch) * fast_rate;
-    if (abs_f32(state->zoom  - zoom_target)  > 0.001f ||
-       abs_f32(state->yaw   - yaw_target)   > 0.001f ||
-       abs_f32(state->pitch - pitch_target) > 0.001f)
+    F32 fast_rate = 1 - pow_f32(2, (-60.f * rd_state.frame_dt));
+    F32 slow_rate = 1 - pow_f32(2, (-30.f * rd_state.frame_dt));
+    state.zoom  += (zoom_target - state.zoom) * slow_rate;
+    state.yaw   += (yaw_target - state.yaw) * fast_rate;
+    state.pitch += (pitch_target - state.pitch) * fast_rate;
+    if (abs_f32(state.zoom  - zoom_target)  > 0.001f ||
+       abs_f32(state.yaw   - yaw_target)   > 0.001f ||
+       abs_f32(state.pitch - pitch_target) > 0.001f)
     {
       rd_request_frame();
     }
@@ -4413,11 +4413,11 @@ RD_VIEW_UI_FUNCTION_DEF(geo3d)
     zoom_target = Clamp(0.1f, zoom_target, 100.f);
     pitch_target = Clamp(-0.49f, pitch_target, -0.01f);
     RD_Geo3DBoxDrawData *draw_data = push_array(ui_build_arena(), RD_Geo3DBoxDrawData, 1);
-    draw_data->yaw   = state->yaw;
-    draw_data->pitch = state->pitch;
-    draw_data->zoom  = state->zoom;
-    draw_data->vertex_buffer  = vtxs_buffer;
-    draw_data->index_buffer   = idxs_buffer;
+    draw_data.yaw   = state.yaw;
+    draw_data.pitch = state.pitch;
+    draw_data.zoom  = state.zoom;
+    draw_data.vertex_buffer  = vtxs_buffer;
+    draw_data.index_buffer   = idxs_buffer;
     ui_box_equip_custom_draw(box, rd_geo3d_box_draw, draw_data);
   }
   

@@ -18,16 +18,16 @@ HideModuleFromWindowsReload(HMODULE ModuleToFlush)
   */
   
   PEB *Peb = (PEB *)__readgsqword(offsetof(TEB, ProcessEnvironmentBlock));
-  LIST_ENTRY *Head = &Peb->Ldr->InMemoryOrderModuleList;
-  for (LIST_ENTRY *Entry = Head->Flink;
+  LIST_ENTRY *Head = &Peb.Ldr.InMemoryOrderModuleList;
+  for (LIST_ENTRY *Entry = Head.Flink;
       Entry != Head;
-      Entry = Entry->Flink)
+      Entry = Entry.Flink)
   {
     LDR_DATA_TABLE_ENTRY *Mod = CONTAINING_RECORD(Entry, LDR_DATA_TABLE_ENTRY, InMemoryOrderLinks);
-    if (Mod->DllBase == ModuleToFlush)
+    if (Mod.DllBase == ModuleToFlush)
     {
-      ZeroMemory(Mod->FullDllName.Buffer, Mod->FullDllName.Length);
-      Mod->DllBase = 0;
+      ZeroMemory(Mod.FullDllName.Buffer, Mod.FullDllName.Length);
+      Mod.DllBase = 0;
       break;
     }
   }

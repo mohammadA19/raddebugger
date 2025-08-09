@@ -244,15 +244,15 @@ CheckNil(nil,p) ? \
 ((n)->next = (f), (f)->prev = (n), (f) = (n), SetNil(nil,(n)->prev)) :\
 ((p)==(l)) ? \
 ((l)->next = (n), (n)->prev = (l), (l) = (n), SetNil(nil, (n)->next)) :\
-(((!CheckNil(nil,p) && CheckNil(nil,(p)->next)) ? (0) : ((p)->next->prev = (n))), ((n)->next = (p)->next), ((p)->next = (n)), ((n)->prev = (p))))
+(((!CheckNil(nil,p) && CheckNil(nil,(p)->next)) ? (0) : ((p)->next.prev = (n))), ((n)->next = (p)->next), ((p)->next = (n)), ((n)->prev = (p))))
 #define DLLPushBack_NPZ(nil,f,l,n,next,prev) DLLInsert_NPZ(nil,f,l,l,n,next,prev)
 #define DLLPushFront_NPZ(nil,f,l,n,next,prev) DLLInsert_NPZ(nil,l,f,f,n,prev,next)
 #define DLLRemove_NPZ(nil,f,l,n,next,prev) (((n) == (f) ? (f) = (n)->next : (0)),\
 ((n) == (l) ? (l) = (l)->prev : (0)),\
 (CheckNil(nil,(n)->prev) ? (0) :\
-((n)->prev->next = (n)->next)),\
+((n)->prev.next = (n)->next)),\
 (CheckNil(nil,(n)->next) ? (0) :\
-((n)->next->prev = (n)->prev)))
+((n)->next.prev = (n)->prev)))
 
 //- rjf: singly-linked, doubly-headed lists (queues)
 #define SLLQueuePush_NZ(nil,f,l,n,next) (CheckNil(nil,f)?\

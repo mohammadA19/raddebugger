@@ -5,7 +5,7 @@ internal U64
 void_list_count_nodes(VoidNode *head)
 {
   U64 node_count = 0;
-  for (VoidNode *curr = head; curr != 0; curr = curr->next) {
+  for (VoidNode *curr = head; curr != 0; curr = curr.next) {
     ++node_count;
   }
   return node_count;
@@ -15,7 +15,7 @@ internal void
 void_node_concat(VoidNode **head, VoidNode *node)
 {
   Assert(*head != node);
-  node->next = *head;
+  node.next = *head;
   *head = node;
 }
 
@@ -23,18 +23,18 @@ internal void
 void_node_concat_atomic(VoidNode **head, VoidNode *node)
 {
   Assert(*head != node);
-  node->next = ins_atomic_ptr_eval_assign(head, node);
+  node.next = ins_atomic_ptr_eval_assign(head, node);
 }
 
 internal U64Node *
 u64_list_push(Arena *arena, U64List *list, U64 data)
 {
   U64Node *n = push_array(arena, U64Node, 1);
-  n->next = 0;
-  n->data = data;
+  n.next = 0;
+  n.data = data;
   
-  SLLQueuePush(list->first, list->last, n);
-  ++list->count;
+  SLLQueuePush(list.first, list.last, n);
+  ++list.count;
   
   return n;
 }
@@ -50,9 +50,9 @@ u64_array_from_list(Arena *arena, U64List *list)
 {
   U64Array result;
   result.count = 0;
-  result.v = push_array(arena, U64, list->count);
-  for (U64Node *n = list->first; n != NULL; n = n->next) {
-    result.v[result.count++] = n->data;
+  result.v = push_array(arena, U64, list.count);
+  for (U64Node *n = list.first; n != NULL; n = n.next) {
+    result.v[result.count++] = n.data;
   }
   return result;
 }

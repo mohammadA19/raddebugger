@@ -28,15 +28,15 @@ msf_raw_stream_table_from_data(Arena *arena, string msf_data)
     
     if (index_size == 2) {
       MSF_Header20 *header      = (MSF_Header20 *) msf_data.str;
-      page_size_raw             = header->page_size;
-      whole_file_page_count_raw = header->page_count;
-      directory_size_raw        = header->stream_table_size;
+      page_size_raw             = header.page_size;
+      whole_file_page_count_raw = header.page_count;
+      directory_size_raw        = header.stream_table_size;
     } else if (index_size == 4) {
       MSF_Header70 *header      = (MSF_Header70 *) msf_data.str;
-      page_size_raw             = header->page_size;
-      whole_file_page_count_raw = header->page_count;
-      directory_size_raw        = header->stream_table_size;
-      directory_super_map_raw   = header->root_pn;
+      page_size_raw             = header.page_size;
+      whole_file_page_count_raw = header.page_count;
+      directory_size_raw        = header.stream_table_size;
+      directory_super_map_raw   = header.root_pn;
     }
     
     //- setup important sizes & counts
@@ -198,12 +198,12 @@ msf_raw_stream_table_from_data(Arena *arena, string msf_data)
         U32 stream_size           = ClampTop(stream_size_raw, stream_page_count*page_size);
         
         // copy stream data
-        stream_ptr->size       = stream_size;
-        stream_ptr->page_count = stream_page_count;
+        stream_ptr.size       = stream_size;
+        stream_ptr.page_count = stream_page_count;
         if (index_size == 4) {
-          stream_ptr->u.page_indices_u32 = (U32 *)(directory_buf + index_cursor);
+          stream_ptr.u.page_indices_u32 = (U32 *)(directory_buf + index_cursor);
         } else {
-          stream_ptr->u.page_indices_u16 = (U16 *)(directory_buf + index_cursor);
+          stream_ptr.u.page_indices_u16 = (U16 *)(directory_buf + index_cursor);
         }
         
         // advance cursors
@@ -215,11 +215,11 @@ msf_raw_stream_table_from_data(Arena *arena, string msf_data)
     
     if (got_streams) {
       result                   = push_array(arena, MSF_RawStreamTable, 1);
-      result->total_page_count = whole_file_page_count;
-      result->index_size       = index_size;
-      result->page_size        = page_size;
-      result->stream_count     = stream_count;
-      result->streams          = streams;
+      result.total_page_count = whole_file_page_count;
+      result.index_size       = index_size;
+      result.page_size        = page_size;
+      result.stream_count     = stream_count;
+      result.streams          = streams;
     }
   }
   
@@ -231,21 +231,21 @@ internal string
 msf_data_from_stream_number(Arena *arena, string msf_data, MSF_RawStreamTable *st, MSF_StreamNumber sn)
 {
   string result = {0};
-  if (sn < st->stream_count)
+  if (sn < st.stream_count)
   {
-    MSF_RawStream stream = st->streams[sn];
+    MSF_RawStream stream = st.streams[sn];
     U8 *stream_buf     = push_array_no_zero(arena, U8, stream.size);
     U8 *stream_out_ptr = stream_buf;
     for (U32 i = 0; i < stream.page_count; ++i) {
       U64 page_idx;
-      if (st->index_size == 4) {
+      if (st.index_size == 4) {
         page_idx = stream.u.page_indices_u32[i];
       } else {
         page_idx = stream.u.page_indices_u16[i];
       }
       
-      U64 stream_page_off = (U64)page_idx * st->page_size;
-      if (stream_page_off + st->page_size > msf_data.size) {
+      U64 stream_page_off = (U64)page_idx * st.page_size;
+      if (stream_page_off + st.page_size > msf_data.size) {
         break;
       }
       
@@ -254,7 +254,7 @@ msf_data_from_stream_number(Arena *arena, string msf_data, MSF_RawStreamTable *s
       // clamp copy size by end of stream
       U32 stream_pos     = (U32) (stream_out_ptr - stream_buf);
       U32 remaining_size = stream.size - stream_pos;
-      U32 copy_size      = ClampTop(st->page_size, remaining_size);
+      U32 copy_size      = ClampTop(st.page_size, remaining_size);
       
       // copy page data
       MemoryCopy(stream_out_ptr, stream_page_base, copy_size);
@@ -280,16 +280,16 @@ msf_parsed_from_data(Arena *arena, string msf_data)
   
   MSF_RawStreamTable *st = msf_raw_stream_table_from_data(scratch.arena, msf_data);
   if (st) {
-    string *streams = push_array_no_zero(arena, string, st->stream_count);
-    for (MSF_StreamNumber sn = 0; sn < st->stream_count; ++sn) {
+    string *streams = push_array_no_zero(arena, string, st.stream_count);
+    for (MSF_StreamNumber sn = 0; sn < st.stream_count; ++sn) {
       streams[sn] = msf_data_from_stream_number(arena, msf_data, st, sn);
     }
     
     result               = push_array_no_zero(arena, MSF_Parsed, 1);
-    result->streams      = streams;
-    result->stream_count = st->stream_count;
-    result->page_size   = st->page_size;
-    result->page_count  = st->total_page_count;
+    result.streams      = streams;
+    result.stream_count = st.stream_count;
+    result.page_size   = st.page_size;
+    result.page_count  = st.total_page_count;
   }
   
   scratch_end(scratch);
@@ -300,9 +300,9 @@ internal string
 msf_data_from_stream(MSF_Parsed *msf, MSF_StreamNumber sn)
 {
   string result = {0};
-  if (sn < msf->stream_count)
+  if (sn < msf.stream_count)
   {
-    result = msf->streams[sn];
+    result = msf.streams[sn];
   }
   return(result);
 }

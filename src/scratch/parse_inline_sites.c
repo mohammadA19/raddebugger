@@ -148,7 +148,7 @@ entry_point(CmdLine *cmdl)
   
   B32 do_help = cmd_line_has_flag(cmdl, ("help")) ||
     cmd_line_has_flag(cmdl, ("h")) ||
-  (cmdl->inputs.node_count == 0 && cmdl->options.count == 0);
+  (cmdl.inputs.node_count == 0 && cmdl.options.count == 0);
   if (do_help) {
     fprintf(stdout, 
             "Parse Inline Sites\n"
@@ -184,12 +184,12 @@ entry_point(CmdLine *cmdl)
       return;
     }
   } else {
-    if (cmdl->inputs.node_count == 1) {
-      pdb_name = cmdl->inputs.first->string;
-    } else if (cmdl->inputs.node_count == 0) {
+    if (cmdl.inputs.node_count == 1) {
+      pdb_name = cmdl.inputs.first.string;
+    } else if (cmdl.inputs.node_count == 0) {
       fprintf(stderr, "ERROR: no input PDB!\n");
       return;
-    } else if (cmdl->inputs.node_count > 1) {
+    } else if (cmdl.inputs.node_count > 1) {
       fprintf(stderr, "ERROR: too many inputs\n");
       return;
     }
@@ -232,7 +232,7 @@ entry_point(CmdLine *cmdl)
   }
   
   // find string table
-  MSF_StreamNumber strtbl_sn   = named_streams->sn[PDB_NamedStream_StringTable];
+  MSF_StreamNumber strtbl_sn   = named_streams.sn[PDB_NamedStream_StringTable];
   string          strtbl_data = msf_data_from_stream(msf, strtbl_sn);
   PDB_Strtbl      *strtbl      = pdb_strtbl_from_data(arena, strtbl_data);
   if (!strtbl) {
@@ -244,10 +244,10 @@ entry_point(CmdLine *cmdl)
   string        ipi_data        = msf_data_from_stream(msf, PDB_FixedStream_Ipi);
   PDB_TpiParsed *ipi             = pdb_tpi_from_data(arena, ipi_data);
   string        ipi_leaf_data   = pdb_leaf_data_from_tpi(ipi);
-  CV_LeafParsed *ipi_leaf_parsed = cv_leaf_from_data(arena, ipi_leaf_data, ipi->itype_first);
+  CV_LeafParsed *ipi_leaf_parsed = cv_leaf_from_data(arena, ipi_leaf_data, ipi.itype_first);
   
   // find sections
-  MSF_StreamNumber        section_stream = dbi->dbg_streams[PDB_DbiStream_SECTION_HEADER];
+  MSF_StreamNumber        section_stream = dbi.dbg_streams[PDB_DbiStream_SECTION_HEADER];
   string                 section_data   = msf_data_from_stream(msf, section_stream);
   COFF_SectionHeaderArray sections       = pdb_coff_section_array_from_data(arena, section_data);
   
@@ -256,8 +256,8 @@ entry_point(CmdLine *cmdl)
   PDB_CompUnitArray *comp_units      = pdb_comp_unit_array_from_data(arena, comp_units_data);
   
   if (single_comp_unit_mode) {
-    if (single_comp_unit_idx >= comp_units->count) {
-      fprintf(stderr, "comp unit idx %llu is out of bounds, PDB has %llu comp unit(s)\n", single_comp_unit_idx, comp_units->count);
+    if (single_comp_unit_idx >= comp_units.count) {
+      fprintf(stderr, "comp unit idx %llu is out of bounds, PDB has %llu comp unit(s)\n", single_comp_unit_idx, comp_units.count);
       return;
     }
   }
@@ -281,11 +281,11 @@ entry_point(CmdLine *cmdl)
     comp_unit_count = single_comp_unit_idx + 1;
   } else {
     comp_unit_idx   = 0;
-    comp_unit_count = comp_units->count;
+    comp_unit_count = comp_units.count;
   }
   
   for (; comp_unit_idx < comp_unit_count; ++comp_unit_idx) {
-    PDB_CompUnit *comp_unit     = comp_units->units[comp_unit_idx];
+    PDB_CompUnit *comp_unit     = comp_units.units[comp_unit_idx];
     string       symbol_data   = pdb_data_from_unit_range(msf, comp_unit, PDB_DbiCompUnitRange_Symbols);
     string       c13_data      = pdb_data_from_unit_range(msf, comp_unit, PDB_DbiCompUnitRange_C13);
     
@@ -305,9 +305,9 @@ entry_point(CmdLine *cmdl)
     {
       String8List raw_lines_list = cv_sub_section_from_debug_s(debug_s, CV_C13SubSectionKind_Lines);
       
-      for (String8Node *raw_lines_node = raw_lines_list.first; raw_lines_node != 0; raw_lines_node = raw_lines_node->next) {
+      for (String8Node *raw_lines_node = raw_lines_list.first; raw_lines_node != 0; raw_lines_node = raw_lines_node.next) {
         Temp temp = temp_begin(arena);
-        CV_C13LinesHeaderList parsed_list = cv_c13_lines_from_sub_sections(temp.arena, raw_lines_node->string, rng_1u64(0, raw_lines_node->string.size));
+        CV_C13LinesHeaderList parsed_list = cv_c13_lines_from_sub_sections(temp.arena, raw_lines_node.string, rng_1u64(0, raw_lines_node.string.size));
         c13_lines_count += parsed_list.count;
         temp_end(temp);
       }
@@ -315,15 +315,15 @@ entry_point(CmdLine *cmdl)
       c13_lines = push_array_no_zero(arena, CV_LineArray, c13_lines_count);
       
       U64 c13_lines_idx = 0;
-      for (String8Node *raw_lines_node = raw_lines_list.first; raw_lines_node != 0; raw_lines_node = raw_lines_node->next) {
-        string               raw_lines   = raw_lines_node->string;
+      for (String8Node *raw_lines_node = raw_lines_list.first; raw_lines_node != 0; raw_lines_node = raw_lines_node.next) {
+        string               raw_lines   = raw_lines_node.string;
         CV_C13LinesHeaderList parsed_list = cv_c13_lines_from_sub_sections(arena, raw_lines, rng_1u64(0, raw_lines.size));
         
-        for (CV_C13LinesHeaderNode *header_node = parsed_list.first; header_node != 0; header_node = header_node->next) {
-          if (0 < header_node->v.sec_idx && header_node->v.sec_idx <= sections.count) {
+        for (CV_C13LinesHeaderNode *header_node = parsed_list.first; header_node != 0; header_node = header_node.next) {
+          if (0 < header_node.v.sec_idx && header_node.v.sec_idx <= sections.count) {
             Assert(c13_lines_idx < c13_lines_count);
-            U64 sec_voff = sections.v[header_node->v.sec_idx - 1].voff;
-            c13_lines[c13_lines_idx++] = cv_c13_line_array_from_data(arena, raw_lines, sec_voff, header_node->v);
+            U64 sec_voff = sections.v[header_node.v.sec_idx - 1].voff;
+            c13_lines[c13_lines_idx++] = cv_c13_line_array_from_data(arena, raw_lines, sec_voff, header_node.v);
           } else {
             Assert(!"error: out of bounds section index"); 
           }
@@ -337,7 +337,7 @@ entry_point(CmdLine *cmdl)
     CV_InlineeLinesAccel *inlinee_lines_accel = cv_c13_make_inlinee_lines_accel(arena, inlinee_lines);
     CV_LinesAccel        *lines_accel         = cv_c13_make_lines_accel(arena, c13_lines_count, c13_lines);
     
-    fprintf(stdout, "[%llu] %.*s\n", comp_unit_idx, str8_varg(comp_unit->obj_name));
+    fprintf(stdout, "[%llu] %.*s\n", comp_unit_idx, str8_varg(comp_unit.obj_name));
     
     U64     scope_level = 0;
     U64     parent_voff = 0;
@@ -346,14 +346,14 @@ entry_point(CmdLine *cmdl)
     CV_SymbolList symbol_list = {0};
     cv_parse_symbol_sub_section(arena, &symbol_list, 0, symbol_data, CV_SymbolAlign);
     
-    for (CV_SymbolNode *symbol_n = symbol_list.first; symbol_n != 0; symbol_n = symbol_n->next) {
-      CV_Symbol  symbol  = symbol_n->data;
+    for (CV_SymbolNode *symbol_n = symbol_list.first; symbol_n != 0; symbol_n = symbol_n.next) {
+      CV_Symbol  symbol  = symbol_n.data;
       void      *rec_raw = symbol.data.str;
       void      *rec_opl = symbol.data.str + symbol.data.size;
       
       if (symbol.kind == CV_SymKind_LPROC32 || symbol.kind == CV_SymKind_GPROC32) {
         CV_SymProc32 *proc32 = rec_raw;
-        parent_voff = sections.v[proc32->sec-1].voff + proc32->off;
+        parent_voff = sections.v[proc32.sec-1].voff + proc32.off;
         parent_name = str8_cstring_capped(proc32+1, rec_opl);
         
         scope_level += 1;
@@ -371,13 +371,13 @@ entry_point(CmdLine *cmdl)
       } else if (symbol.kind == CV_SymKind_INLINESITE) {
         CV_SymInlineSite            *inline_site         = rec_raw;
         string                      binary_annots       = str8_skip(symbol.data, sizeof(*inline_site));
-        CV_C13InlineeLinesParsed    *inlinee_parsed      = cv_c13_inlinee_lines_accel_find(inlinee_lines_accel, inline_site->inlinee);
+        CV_C13InlineeLinesParsed    *inlinee_parsed      = cv_c13_inlinee_lines_accel_find(inlinee_lines_accel, inline_site.inlinee);
         CV_InlineBinaryAnnotsParsed  binary_annots_parse = cv_c13_parse_inline_binary_annots(arena, parent_voff, inlinee_parsed, binary_annots);
         
         
         string inlinee_name = ("???");
-        if (ipi->itype_first <= inline_site->inlinee && inline_site->inlinee < ipi->itype_opl) {
-          CV_RecRange inlinee_rec = ipi_leaf_parsed->leaf_ranges.ranges[inline_site->inlinee - ipi->itype_first];
+        if (ipi.itype_first <= inline_site.inlinee && inline_site.inlinee < ipi.itype_opl) {
+          CV_RecRange inlinee_rec = ipi_leaf_parsed.leaf_ranges.ranges[inline_site.inlinee - ipi.itype_first];
           void *leaf_raw = ipi_leaf_data.str + inlinee_rec.off + sizeof(CV_LeafKind);
           void *leaf_opl = ipi_leaf_data.str + inlinee_rec.off + sizeof(CV_LeafKind) + inlinee_rec.hdr.size;
           if (inlinee_rec.hdr.kind == CV_LeafKind_MFUNC_ID) {
@@ -393,15 +393,15 @@ entry_point(CmdLine *cmdl)
         string first_ln  = ("???");
         string file_off  = ("???");
         if (inlinee_parsed) {
-          first_ln  = push_str8f(arena, "%u", inlinee_parsed->first_source_ln);
-          file_off  = push_str8f(arena, "0x%X", inlinee_parsed->file_off);
+          first_ln  = push_str8f(arena, "%u", inlinee_parsed.first_source_ln);
+          file_off  = push_str8f(arena, "0x%X", inlinee_parsed.file_off);
         }
         
         fprintf(stdout, "\tInline site @ %06llX, Parent VOFF: 0x%llX (%.*s), Inlinee: 0x%X (%.*s), First LN: %.*s, File Off: %.*s\n",
                 (symbol.offset + sizeof(symbol.kind)),
                 parent_voff,
                 str8_varg(parent_name),
-                inline_site->inlinee,
+                inline_site.inlinee,
                 str8_varg(inlinee_name),
                 str8_varg(first_ln),
                 str8_varg(file_off));
@@ -430,10 +430,10 @@ entry_point(CmdLine *cmdl)
         
         fprintf(stdout, "\t\tCode Ranges:\n");
         U64 range_idx = 0;
-        for (Rng1U64Node *range_n = binary_annots_parse.code_ranges.first; range_n != 0; range_n = range_n->next, ++range_idx) {
+        for (Rng1U64Node *range_n = binary_annots_parse.code_ranges.first; range_n != 0; range_n = range_n.next, ++range_idx) {
           char *pre  = (range_idx % 4) == 0 ? "\t\t\t" : "\t";
           char *post = (range_idx % 4) == 3 || ((range_idx + 1) == binary_annots_parse.code_ranges.count) ? "\n" : "";
-          fprintf(stdout, "%s%08llX-%08llX%s", pre, base_addr + range_n->v.min, base_addr + range_n->v.max, post);
+          fprintf(stdout, "%s%08llX-%08llX%s", pre, base_addr + range_n.v.min, base_addr + range_n.v.max, post);
         }
         fprintf(stdout, "\n");
       }

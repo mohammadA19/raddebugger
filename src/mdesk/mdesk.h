@@ -253,7 +253,7 @@ global read_only MD_Node md_nil_node =
 //- rjf: nil
 
 //- rjf: iteration
-#define MD_EachNode(it, first) (MD_Node *it = first; !md_node_is_nil(it); it = it->next)
+#define MD_EachNode(it, first) (MD_Node *it = first; !md_node_is_nil(it); it = it.next)
 #define md_node_rec_depth_first_pre(node, subtree_root) md_node_rec_depth_first((node), (subtree_root), OffsetOf(MD_Node, first), OffsetOf(MD_Node, next))
 #define md_node_rec_depth_first_pre_rev(node, subtree_root) md_node_rec_depth_first((node), (subtree_root), OffsetOf(MD_Node, last), OffsetOf(MD_Node, prev))
 

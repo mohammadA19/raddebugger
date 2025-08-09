@@ -38,7 +38,7 @@ struct RB_FileList
 };
 
 read_only global RB_File rb_file_nil = {0};
-#define rb_file_list_first(list) ((list)->first ? (list)->first->v : &rb_file_nil)
+#define rb_file_list_first(list) ((list)->first ? (list)->first.v : &rb_file_nil)
 
 ////////////////////////////////
 //~ rjf: Top-Level Entry Point

@@ -5,10 +5,10 @@ internal COFF_LibWriterSymbolNode *
 coff_lib_writer_symbol_list_push(Arena *arena, COFF_LibWriterSymbolList *list, COFF_LibWriterSymbol symbol)
 {
   COFF_LibWriterSymbolNode *node = push_array_no_zero(arena, COFF_LibWriterSymbolNode, 1);
-  node->next = 0;
-  node->data = symbol;
-  SLLQueuePush(list->first, list->last, node);
-  list->count += 1;
+  node.next = 0;
+  node.data = symbol;
+  SLLQueuePush(list.first, list.last, node);
+  list.count += 1;
   return node;
 }
 
@@ -16,10 +16,10 @@ internal COFF_LibWriterMemberNode *
 coff_lib_writer_member_list_push(Arena *arena, COFF_LibWriterMemberList *list, COFF_LibWriterMember member)
 {
   COFF_LibWriterMemberNode *node = push_array_no_zero(arena, COFF_LibWriterMemberNode, 1);
-  node->next = 0;
-  node->data = member;
-  SLLQueuePush(list->first, list->last, node);
-  list->count += 1;
+  node.next = 0;
+  node.data = member;
+  SLLQueuePush(list.first, list.last, node);
+  list.count += 1;
   return node;
 }
 
@@ -28,9 +28,9 @@ coff_lib_writer_symbol_array_from_list(Arena *arena, COFF_LibWriterSymbolList li
 {
   COFF_LibWriterSymbol *arr = push_array_no_zero(arena, COFF_LibWriterSymbol, list.count + 2);
   COFF_LibWriterSymbol *ptr = arr + 1;
-  for (COFF_LibWriterSymbolNode *i = list.first; i != 0; i = i->next, ptr += 1) {
-    ptr->name       = push_str8_copy(arena, i->data.name);
-    ptr->member_idx = i->data.member_idx;
+  for (COFF_LibWriterSymbolNode *i = list.first; i != 0; i = i.next, ptr += 1) {
+    ptr.name       = push_str8_copy(arena, i.data.name);
+    ptr.member_idx = i.data.member_idx;
   }
   MemoryZeroStruct(&arr[0]);
   MemoryZeroStruct(&arr[list.count+1]);
@@ -42,9 +42,9 @@ coff_lib_writer_member_array_from_list(Arena *arena, COFF_LibWriterMemberList li
 {
   COFF_LibWriterMember *arr = push_array_no_zero(arena, COFF_LibWriterMember, list.count);
   COFF_LibWriterMember *ptr = arr;
-  for (COFF_LibWriterMemberNode *i = list.first; i != 0; i = i->next, ptr += 1) {
-    ptr->name = push_str8_copy(arena, i->data.name);
-    ptr->data = push_str8_copy(arena, i->data.data); 
+  for (COFF_LibWriterMemberNode *i = list.first; i != 0; i = i.next, ptr += 1) {
+    ptr.name = push_str8_copy(arena, i.data.name);
+    ptr.data = push_str8_copy(arena, i.data.data); 
   }
   return arr;
 }
@@ -54,7 +54,7 @@ coff_lib_writer_symbol_name_compar(const void *raw_a, const void *raw_b)
 {
   const COFF_LibWriterSymbol *sa = raw_a;
   const COFF_LibWriterSymbol *sb = raw_b;
-  return str8_compar_case_sensitive(&sa->name, &sb->name);
+  return str8_compar_case_sensitive(&sa.name, &sb.name);
 }
 
 internal int
@@ -76,7 +76,7 @@ coff_lib_writer_alloc(void)
 {
   Arena *arena = arena_alloc();
   COFF_LibWriter *writer = push_array(arena, COFF_LibWriter, 1);
-  writer->arena = arena;
+  writer.arena = arena;
   return writer;
 }
 
@@ -90,13 +90,13 @@ coff_lib_writer_release(COFF_LibWriter **writer_ptr)
 internal U64
 coff_lib_writer_push_obj(COFF_LibWriter *writer, string obj_path, string obj_data)
 {
-  U64 member_idx = writer->member_list.count;
+  U64 member_idx = writer.member_list.count;
   
   // push obj member
   COFF_LibWriterMember member = {0};
   member.name          = obj_path;
   member.data          = obj_data;
-  coff_lib_writer_member_list_push(writer->arena, &writer->member_list, member);
+  coff_lib_writer_member_list_push(writer.arena, &writer.member_list, member);
   
   // push external symbols
   {
@@ -121,7 +121,7 @@ coff_lib_writer_push_obj(COFF_LibWriter *writer, string obj_path, string obj_dat
           COFF_LibWriterSymbol lib_symbol = {0};
           lib_symbol.name          = symbol.name;
           lib_symbol.member_idx    = member_idx;
-          coff_lib_writer_symbol_list_push(writer->arena, &writer->symbol_list, lib_symbol);
+          coff_lib_writer_symbol_list_push(writer.arena, &writer.symbol_list, lib_symbol);
         }
       }
     }
@@ -134,30 +134,30 @@ internal void
 coff_lib_writer_push_import(COFF_LibWriter *lib_writer, COFF_MachineType machine, COFF_TimeStamp time_stamp, string dll_name, COFF_ImportByType import_by, string name, U16 hint_or_ordinal, COFF_ImportType import_type)
 {
   // push import member
-  U64 member_idx = lib_writer->member_list.count;
+  U64 member_idx = lib_writer.member_list.count;
   COFF_LibWriterMember member = {0};
   member.name = dll_name;
-  member.data = coff_make_import_header(lib_writer->arena, machine, time_stamp, dll_name, import_by, name, hint_or_ordinal, import_type);
-  coff_lib_writer_member_list_push(lib_writer->arena, &lib_writer->member_list, member);
+  member.data = coff_make_import_header(lib_writer.arena, machine, time_stamp, dll_name, import_by, name, hint_or_ordinal, import_type);
+  coff_lib_writer_member_list_push(lib_writer.arena, &lib_writer.member_list, member);
   
   if (name.size) {
     switch (import_type) {
     case COFF_ImportHeader_Code: {
       COFF_LibWriterSymbol thunk_symbol = {0};
-      thunk_symbol.name = push_str8_copy(lib_writer->arena, name);
+      thunk_symbol.name = push_str8_copy(lib_writer.arena, name);
       thunk_symbol.member_idx = member_idx;
-      coff_lib_writer_symbol_list_push(lib_writer->arena, &lib_writer->symbol_list, thunk_symbol);
+      coff_lib_writer_symbol_list_push(lib_writer.arena, &lib_writer.symbol_list, thunk_symbol);
 
       COFF_LibWriterSymbol imp_symbol = {0};
-      imp_symbol.name = push_str8f(lib_writer->arena, "__imp_%S", name);
+      imp_symbol.name = push_str8f(lib_writer.arena, "__imp_%S", name);
       imp_symbol.member_idx = member_idx;
-      coff_lib_writer_symbol_list_push(lib_writer->arena, &lib_writer->symbol_list, imp_symbol);
+      coff_lib_writer_symbol_list_push(lib_writer.arena, &lib_writer.symbol_list, imp_symbol);
     } break;
     case COFF_ImportHeader_Data: {
       COFF_LibWriterSymbol imp_symbol = {0};
-      imp_symbol.name = push_str8f(lib_writer->arena, "__imp_%S", name);
+      imp_symbol.name = push_str8f(lib_writer.arena, "__imp_%S", name);
       imp_symbol.member_idx = member_idx;
-      coff_lib_writer_symbol_list_push(lib_writer->arena, &lib_writer->symbol_list, imp_symbol);
+      coff_lib_writer_symbol_list_push(lib_writer.arena, &lib_writer.symbol_list, imp_symbol);
     } break;
     case COFF_ImportHeader_Const: { NotImplemented; } break;
     default: { InvalidPath; } break;
@@ -176,14 +176,14 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
   U64                   member_count;
   COFF_LibWriterMember *member_array;
   {
-    U64                   symbols_count_with_null = lib_writer->symbol_list.count + 2;
-    COFF_LibWriterSymbol *symbols_with_null       = coff_lib_writer_symbol_array_from_list(scratch.arena, lib_writer->symbol_list);
+    U64                   symbols_count_with_null = lib_writer.symbol_list.count + 2;
+    COFF_LibWriterSymbol *symbols_with_null       = coff_lib_writer_symbol_array_from_list(scratch.arena, lib_writer.symbol_list);
     coff_lib_writer_symbol_array_sort(symbols_with_null, symbols_count_with_null);
     symbols_count = symbols_count_with_null - 2;
     symbols       = symbols_with_null + 1;
 
-    member_count = lib_writer->member_list.count;
-    member_array = coff_lib_writer_member_array_from_list(scratch.arena, lib_writer->member_list);
+    member_count = lib_writer.member_list.count;
+    member_array = coff_lib_writer_member_array_from_list(scratch.arena, lib_writer.member_list);
   }
 
   // serialize members
@@ -197,24 +197,24 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
 
       // make member name
       string name;
-      U64 name_with_slash_size = member->name.size + 1;
+      U64 name_with_slash_size = member.name.size + 1;
       if (name_with_slash_size > COFF_Archive_MaxShortNameSize) {
         // have we seen this member name before?
-        KeyValuePair *is_present = hash_table_search_string(name_ht, member->name);
+        KeyValuePair *is_present = hash_table_search_string(name_ht, member.name);
         if (is_present) {
-          name = is_present->value_string;
+          name = is_present.value_string;
         } else {
           name = push_str8f(scratch.arena, "/%u", long_names_list.total_size);
-          str8_list_pushf(scratch.arena, &long_names_list, "%S/\n", member->name);
-          hash_table_push_string_string(scratch.arena, name_ht, member->name, name);
+          str8_list_pushf(scratch.arena, &long_names_list, "%S/\n", member.name);
+          hash_table_push_string_string(scratch.arena, name_ht, member.name, name);
         }
       } else {
-        name = push_str8f(scratch.arena, "%S/", member->name);
+        name = push_str8f(scratch.arena, "%S/", member.name);
       }
 
       member_offsets[member_idx] = member_data_list.total_size;
 
-      string member_data   = member->data;
+      string member_data   = member.data;
       string member_header = coff_make_lib_member_header(arena, name, time_stamp, 0, 0, mode, member_data.size);
 
       str8_list_push(arena, &member_data_list, member_header);
@@ -244,7 +244,7 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
   // compute size for symbol string table
   U32 name_buffer_size = 0;
   for (COFF_LibWriterSymbol *ptr = &symbols[0], *opl = ptr + symbols_count; ptr < opl; ptr += 1) {
-    name_buffer_size += ptr->name.size;
+    name_buffer_size += ptr.name.size;
     name_buffer_size += 1; // null
   }
 
@@ -253,9 +253,9 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
   {
     U64 name_cursor = 0;
     for (COFF_LibWriterSymbol *ptr = &symbols[0], *opl = ptr + symbols_count; ptr < opl; ptr += 1) {
-      MemoryCopy(name_buffer + name_cursor, ptr->name.str, ptr->name.size);
-      name_buffer[name_cursor + ptr->name.size] = '\0';
-      name_cursor += ptr->name.size + 1;
+      MemoryCopy(name_buffer + name_cursor, ptr.name.str, ptr.name.size);
+      name_buffer[name_cursor + ptr.name.size] = '\0';
+      name_cursor += ptr.name.size + 1;
     }
   }
   
@@ -332,7 +332,7 @@ coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeSta
       COFF_LibWriterSymbol *symbol = &symbols[symbol_idx];
 
       // write big endian member offset
-      U64 member_offset = members_base_offset + member_offsets[symbol->member_idx];
+      U64 member_offset = members_base_offset + member_offsets[symbol.member_idx];
       U32 member_off32 = from_be_u32(safe_cast_u32(member_offset));
       member_off32_arr[symbol_idx] = member_off32;
     }

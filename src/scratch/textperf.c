@@ -42,9 +42,9 @@ frame(void)
   B32 quit = 0;
   Temp scratch = scratch_begin(0, 0);
   OS_EventList events = os_get_events(scratch.arena, 0);
-  for (OS_Event *evt = events.first; evt != 0; evt = evt->next)
+  for (OS_Event *evt = events.first; evt != 0; evt = evt.next)
   {
-    if (evt->kind == OS_EventKind_WindowClose)
+    if (evt.kind == OS_EventKind_WindowClose)
     {
       quit = 1;
       break;
@@ -66,7 +66,7 @@ frame(void)
       }
     }
   }
-  r_window_submit(os_window, r_window, &bucket->passes);
+  r_window_submit(os_window, r_window, &bucket.passes);
   r_window_end_frame(os_window, r_window);
   r_end_frame();
   scratch_end(scratch);

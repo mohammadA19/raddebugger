@@ -14,11 +14,11 @@ pdb_read_bit_vector_string(string data, U64 offset, U32Array *bits_out)
   cursor += str8_deserial_read_block(data, cursor, word_data_read_size, &word_data);
   
   if (word_data.size == word_data_read_size) {
-    bits_out->count = word_count;
-    bits_out->v = (U32*)word_data.str;
+    bits_out.count = word_count;
+    bits_out.v = (U32*)word_data.str;
   } else {
-    bits_out->count = 0;
-    bits_out->v = 0;
+    bits_out.count = 0;
+    bits_out.v = 0;
   }
   
   U64 read_size = cursor - offset;

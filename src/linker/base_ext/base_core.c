@@ -152,7 +152,7 @@ pair_u32_is_before_v0(void *raw_a, void *raw_b)
 {
   PairU32 *a = raw_a;
   PairU32 *b = raw_b;
-  return a->v0 < b->v0;
+  return a.v0 < b.v0;
 }
 
 internal int
@@ -160,7 +160,7 @@ pair_u32_is_before(void *raw_a, void *raw_b)
 {
   PairU32 *a = raw_a;
   PairU32 *b = raw_b;
-  return a->v1 < b->v1;
+  return a.v1 < b.v1;
 }
 
 internal int
@@ -168,7 +168,7 @@ pair_u64_is_before_v0(void *raw_a, void *raw_b)
 {
   PairU64 *a = raw_a;
   PairU64 *b = raw_b;
-  return a->v0 < b->v0;
+  return a.v0 < b.v0;
 }
 
 internal int
@@ -176,7 +176,7 @@ pair_u64_is_before_v1(void *raw_a, void *raw_b)
 {
   PairU64 *a = raw_a;
   PairU64 *b = raw_b;
-  return a->v1 < b->v1;
+  return a.v1 < b.v1;
 }
 
 internal int
@@ -184,7 +184,7 @@ pair_u32_compar_v0(const void *raw_a, const void *raw_b)
 {
   const PairU32 *a = raw_a;
   const PairU32 *b = raw_b;
-  return u32_compar(&a->v0, &b->v0);
+  return u32_compar(&a.v0, &b.v0);
 }
 
 internal int
@@ -192,7 +192,7 @@ pair_u64_compar_v0(const void *raw_a, const void *raw_b)
 {
   const PairU64 *a = raw_a;
   const PairU64 *b = raw_b;
-  return u64_compar(&a->v0, &b->v0);
+  return u64_compar(&a.v0, &b.v0);
 }
 
 internal int
@@ -200,7 +200,7 @@ pair_u64_compar_v1(const void *raw_a, const void *raw_b)
 {
   const PairU64 *a = raw_a;
   const PairU64 *b = raw_b;
-  return u64_compar(&a->v1, &b->v1);
+  return u64_compar(&a.v1, &b.v1);
 }
 
 internal U64

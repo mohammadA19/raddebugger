@@ -827,7 +827,7 @@ read_only global UI_AnimNode ui_nil_anim_node =
   &ui_nil_anim_node,
 };
 
-#define ui_anim(key, target_val, ...) ui_anim_((key), &(UI_AnimParams){.target = (target_val), .rate = (ui_state->default_animation_rate), __VA_ARGS__})
+#define ui_anim(key, target_val, ...) ui_anim_((key), &(UI_AnimParams){.target = (target_val), .rate = (ui_state.default_animation_rate), __VA_ARGS__})
 
 ////////////////////////////////
 //~ rjf: Stacks

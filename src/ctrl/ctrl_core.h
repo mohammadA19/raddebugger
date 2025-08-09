@@ -849,7 +849,7 @@ thread_static CTRL_EntityCtxLookupAccel *ctrl_entity_ctx_lookup_accel = 0;
 //~ rjf: Entity Type Functions
 
 //- rjf: entity list data structures
-#define ctrl_entity_list_first(list) ((list)->first ? (list)->first->v : &ctrl_entity_nil)
+#define ctrl_entity_list_first(list) ((list)->first ? (list)->first.v : &ctrl_entity_nil)
 
 //- rjf: entity array data structure
 #define ctrl_entity_array_first(array) ((array)->count != 0 ? (array)->v[0] : &ctrl_entity_nil)

@@ -29,8 +29,8 @@
 #define DLLConcatInPlace(list, to_concat) do { \
   if ((to_concat)->count) {                    \
     if ((list)->count) {                       \
-      (list)->last->next = (to_concat)->first; \
-      (to_concat)->first->prev = (list)->last; \
+      (list)->last.next = (to_concat)->first; \
+      (to_concat)->first.prev = (list)->last; \
       (list)->last = (to_concat)->last;        \
     } else {                                   \
       (list)->first = (to_concat)->first;      \
@@ -50,7 +50,7 @@
 #define SLLConcatInPlaceNoCount(list, to_concat) do { \
   if ((to_concat)->first) {                           \
     if ((list)->first) {                              \
-      (list)->last->next = (to_concat)->first;        \
+      (list)->last.next = (to_concat)->first;        \
       (list)->last = (to_concat)->last;               \
     } else {                                          \
       (list)->first = (to_concat)->first;             \
@@ -63,7 +63,7 @@
 #define SLLConcatInPlace(list, to_concat) do { \
   if ((to_concat)->count) {                    \
     if ((list)->count) {                       \
-      (list)->last->next = (to_concat)->first; \
+      (list)->last.next = (to_concat)->first; \
       (list)->last = (to_concat)->last;        \
     } else {                                   \
       (list)->first = (to_concat)->first;      \
@@ -77,10 +77,10 @@
 
 #define SLLConcatInPlaceChunkList(list, to_concat, chunk_type) do {   \
     if ((list)->last != 0) {                                          \
-      U64 base_cursor = (list)->last->base + (list)->last->count;     \
-      for (chunk_type *c = (to_concat)->first; c != 0; c = c->next) { \
-        c->base = base_cursor;                                        \
-        base_cursor += c->count;                                      \
+      U64 base_cursor = (list)->last.base + (list)->last.count;     \
+      for (chunk_type *c = (to_concat)->first; c != 0; c = c.next) { \
+        c.base = base_cursor;                                        \
+        base_cursor += c.count;                                      \
       }                                                               \
     }                                                                 \
     SLLConcatInPlace(list, to_concat);                                \
@@ -89,15 +89,15 @@
 #define SLLConcatInPlaceChunkListArray(list, to_concat_arr, type, count) for (U64 i = 0; i < (count); ++i) { SLLConcatInPlaceChunkList(list, &(to_concat_arr)[i], type); }
 
 #define SLLChunkListPush(_arena, _list, _cap, _value_type) do {                      \
-  if ((_list)->last == 0 || (_list)->last->count >= (_list)->last->cap) {            \
+  if ((_list)->last == 0 || (_list)->last.count >= (_list)->last.cap) {            \
     _value_type##Chunk *new_chunk = push_array(_arena, _value_type##Chunk, 1);       \
-    new_chunk->v     = push_array(_arena, _value_type, _cap);                \
-    new_chunk->cap   = _cap;                                                         \
-    new_chunk->base  = (_list)->last ? (_list)->last->base + (_list)->last->cap : 0; \
+    new_chunk.v     = push_array(_arena, _value_type, _cap);                \
+    new_chunk.cap   = _cap;                                                         \
+    new_chunk.base  = (_list)->last ? (_list)->last.base + (_list)->last.cap : 0; \
     SLLQueuePushCount(_list, new_chunk);                                             \
   }                                                                                  \
-  _value_type *v = &(_list)->last->v[(_list)->last->count++];                        \
-  v->chunk = (_list)->last;                                                          \
+  _value_type *v = &(_list)->last.v[(_list)->last.count++];                        \
+  v.chunk = (_list)->last;                                                          \
 } while (0)
 
 #define SLLChunkListPushZero(_arena, _list, _cap, _value_type) do { \
@@ -106,7 +106,7 @@
   SLLChunkListLastItem(_list)->chunk = (_list)->last;               \
 } while (0)
 
-#define SLLChunkListLastItem(_list) (&(_list)->last->v[(_list)->last->count - 1])
+#define SLLChunkListLastItem(_list) (&(_list)->last.v[(_list)->last.count - 1])
 
 ////////////////////////////////
 
