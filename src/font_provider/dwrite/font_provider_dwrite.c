@@ -50,7 +50,7 @@ fp_dwrite_handle_from_font(FP_DWrite_Font font)
 //- rjf: file stream allocator
 
 internal FP_DWrite_FontFileStreamNode *
-fp_dwrite_font_file_stream_node_alloc(string *data_ptr)
+fp_dwrite_font_file_stream_node_alloc(string* data_ptr)
 {
   FP_DWrite_FontFileStreamNode *node = 0;
   for (FP_DWrite_FontFileStreamNode *n = fp_dwrite_state.first_stream_node; n != 0; n = n.next)
@@ -81,7 +81,7 @@ fp_dwrite_font_file_stream_node_alloc(string *data_ptr)
 }
 
 internal void
-fp_dwrite_font_file_stream_node_release(FP_DWrite_FontFileStreamNode *node)
+fp_dwrite_font_file_stream_node_release(FP_DWrite_FontFileStreamNode* node)
 {
   DLLPushBack(fp_dwrite_state.first_stream_node, fp_dwrite_state.last_stream_node, node);
   SLLStackPush(fp_dwrite_state.free_stream_node, node);
@@ -90,20 +90,20 @@ fp_dwrite_font_file_stream_node_release(FP_DWrite_FontFileStreamNode *node)
 //- rjf: iunknown no-op helpers
 
 internal HRESULT
-fp_dwrite_iunknown_noop__query_interface(void *obj, REFIID riid, void *ptr_to_object)
+fp_dwrite_iunknown_noop__query_interface(void* obj, REFIID riid, void* ptr_to_object)
 {
   return E_NOINTERFACE;
 }
 
 internal ULONG
-fp_dwrite_iunknown_noop__add_ref(void *obj)
+fp_dwrite_iunknown_noop__add_ref(void* obj)
 {
   ULONG result = 1;
   return result;
 }
 
 internal ULONG
-fp_dwrite_iunknown_noop__release(void *obj)
+fp_dwrite_iunknown_noop__release(void* obj)
 {
   ULONG result = 1;
   return result;
@@ -112,7 +112,7 @@ fp_dwrite_iunknown_noop__release(void *obj)
 //- rjf: font file loader interface function implementations
 
 internal HRESULT
-fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader *obj, void const *font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream **stream_out)
+fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader* obj, void const* font_file_ref_key, UINT32 font_file_ref_key_size, IDWriteFontFileStream** stream_out)
 {
   HRESULT result = S_OK;
   string *key = *(string **)font_file_ref_key;
@@ -124,7 +124,7 @@ fp_dwrite_static_font_file_loader__stream_from_key(FP_DWrite_FontFileLoader *obj
 //- rjf: font file stream  interface function implementations
 
 internal HRESULT
-fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream *obj, void const **fragment_start, UINT64 file_offset, UINT64 fragment_size, void **fragment_context)
+fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream* obj, void const** fragment_start, UINT64 file_offset, UINT64 fragment_size, void** fragment_context)
 {
   HRESULT result = S_OK;
   *fragment_start = obj.data->str + file_offset;
@@ -133,14 +133,14 @@ fp_dwrite_static_font_file_stream__read_file_fragment(FP_DWrite_FontFileStream *
 }
 
 internal HRESULT
-fp_dwrite_static_font_file_stream__release_file_fragment(FP_DWrite_FontFileStream *obj, void *fragment_context)
+fp_dwrite_static_font_file_stream__release_file_fragment(FP_DWrite_FontFileStream* obj, void* fragment_context)
 {
   HRESULT result = S_OK;
   return result;
 }
 
 internal HRESULT
-fp_dwrite_static_font_file_stream__get_file_size(FP_DWrite_FontFileStream *obj, UINT64 *size_out)
+fp_dwrite_static_font_file_stream__get_file_size(FP_DWrite_FontFileStream* obj, UINT64* size_out)
 {
   HRESULT result = S_OK;
   *size_out = obj.data->size;
@@ -148,7 +148,7 @@ fp_dwrite_static_font_file_stream__get_file_size(FP_DWrite_FontFileStream *obj, 
 }
 
 internal HRESULT
-fp_dwrite_static_font_file_stream__get_last_write_time(FP_DWrite_FontFileStream *obj, UINT64 *time_out)
+fp_dwrite_static_font_file_stream__get_last_write_time(FP_DWrite_FontFileStream* obj, UINT64* time_out)
 {
   HRESULT result = S_OK;
   *time_out = 0;
@@ -389,7 +389,7 @@ fp_font_open(string path)
 }
 
 fp_hook FP_Handle
-fp_font_open_from_static_data_string(string *data_ptr)
+fp_font_open_from_static_data_string(string* data_ptr)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -448,7 +448,7 @@ fp_metrics_from_font(FP_Handle handle)
 }
 
 fp_hook NO_ASAN FP_RasterResult
-fp_raster(Arena *arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, string string)
+fp_raster(Arena* arena, FP_Handle font_handle, F32 size, FP_RasterFlags flags, string string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);

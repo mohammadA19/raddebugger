@@ -49,7 +49,7 @@ mtx_push_op(HS_Key buffer_key, MTX_Op op)
 //~ rjf: Mutation Threads
 
 internal void
-mtx_enqueue_op(MTX_MutThread *thread, HS_Key buffer_key, MTX_Op op)
+mtx_enqueue_op(MTX_MutThread* thread, HS_Key buffer_key, MTX_Op op)
 {
   // TODO(rjf): if op.replace is too big, need to split into multiple edits
   OS_MutexScope(thread.mutex) for (;;)
@@ -71,7 +71,7 @@ mtx_enqueue_op(MTX_MutThread *thread, HS_Key buffer_key, MTX_Op op)
 }
 
 internal void
-mtx_dequeue_op(Arena *arena, MTX_MutThread *thread, HS_Key *buffer_key_out, MTX_Op *op_out)
+mtx_dequeue_op(Arena* arena, MTX_MutThread* thread, HS_Key* buffer_key_out, MTX_Op* op_out)
 {
   OS_MutexScope(thread.mutex) for (;;)
   {
@@ -91,7 +91,7 @@ mtx_dequeue_op(Arena *arena, MTX_MutThread *thread, HS_Key *buffer_key_out, MTX_
 }
 
 internal void
-mtx_mut_thread__entry_point(void *p)
+mtx_mut_thread__entry_point(void* p)
 {
   MTX_MutThread *mut_thread = (MTX_MutThread *)p;
   ThreadNameF("[mtx] mut thread #%I64u", (U64)(mut_thread - mtx_shared.mut_threads));

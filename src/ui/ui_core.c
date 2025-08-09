@@ -68,7 +68,7 @@ ui_key_from_string(UI_Key seed_key, string string)
 }
 
 internal UI_Key
-ui_key_from_stringf(UI_Key seed_key, char *fmt, ...)
+ui_key_from_stringf(UI_Key seed_key, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -90,7 +90,7 @@ ui_key_match(UI_Key a, UI_Key b)
 //~ rjf: Event Type Functions
 
 internal UI_EventNode *
-ui_event_list_push(Arena *arena, UI_EventList *list, UI_Event *v)
+ui_event_list_push(Arena* arena, UI_EventList* list, UI_Event* v)
 {
   UI_EventNode *n = push_array(arena, UI_EventNode, 1);
   MemoryCopyStruct(&n.v, v);
@@ -101,7 +101,7 @@ ui_event_list_push(Arena *arena, UI_EventList *list, UI_Event *v)
 }
 
 internal void
-ui_eat_event_node(UI_EventList *list, UI_EventNode *node)
+ui_eat_event_node(UI_EventList* list, UI_EventNode* node)
 {
   DLLRemove(list.first, list.last, node);
   list.count -= 1;
@@ -150,7 +150,7 @@ ui_scanned_column_from_column(string string, S64 start_column, Side side)
 }
 
 internal UI_TxtOp
-ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, string string, TxtPt cursor, TxtPt mark)
+ui_single_line_txt_op_from_event(Arena* arena, UI_Event* event, string string, TxtPt cursor, TxtPt mark)
 {
   TxtPt next_cursor = cursor;
   TxtPt next_mark = mark;
@@ -292,7 +292,7 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, string string, T
 }
 
 internal string
-ui_push_string_replace_range(Arena *arena, string string, Rng1S64 col_range, string replace)
+ui_push_string_replace_range(Arena* arena, string string, Rng1S64 col_range, string replace)
 {
   //- rjf: convert to offset range
   Rng1U64 range =
@@ -351,14 +351,14 @@ ui_scroll_pt(S64 idx, F32 off)
 }
 
 internal void
-ui_scroll_pt_target_idx(UI_ScrollPt *v, S64 idx)
+ui_scroll_pt_target_idx(UI_ScrollPt* v, S64 idx)
 {
   v.off = mod_f32(v.off, 1.f) + (F32)(v.idx+(S64)v.off - idx);
   v.idx = idx;
 }
 
 internal void
-ui_scroll_pt_clamp_idx(UI_ScrollPt *v, Rng1S64 range)
+ui_scroll_pt_clamp_idx(UI_ScrollPt* v, Rng1S64 range)
 {
   if (v.idx < range.min || range.max < v.idx)
   {
@@ -371,13 +371,13 @@ ui_scroll_pt_clamp_idx(UI_ScrollPt *v, Rng1S64 range)
 //~ rjf: Boxes
 
 internal B32
-ui_box_is_nil(UI_Box *box)
+ui_box_is_nil(UI_Box* box)
 {
   return box == 0 || box == &ui_nil_box;
 }
 
 internal UI_BoxRec
-ui_box_rec_df(UI_Box *box, UI_Box *root, U64 sib_member_off, U64 child_member_off)
+ui_box_rec_df(UI_Box* box, UI_Box* root, U64 sib_member_off, U64 child_member_off)
 {
   UI_BoxRec result = {0};
   result.next = &ui_nil_box;
@@ -399,7 +399,7 @@ ui_box_rec_df(UI_Box *box, UI_Box *root, U64 sib_member_off, U64 child_member_of
 }
 
 internal void
-ui_box_list_push(Arena *arena, UI_BoxList *list, UI_Box *box)
+ui_box_list_push(Arena* arena, UI_BoxList* list, UI_Box* box)
 {
   UI_BoxNode *n = push_array(arena, UI_BoxNode, 1);
   n.box = box;
@@ -432,7 +432,7 @@ ui_state_alloc(void)
 }
 
 internal void
-ui_state_release(UI_State *state)
+ui_state_release(UI_State* state)
 {
   arena_release(state.string_hover_arena);
   arena_release(state.drag_state_arena);
@@ -444,19 +444,19 @@ ui_state_release(UI_State *state)
 }
 
 internal UI_Box *
-ui_root_from_state(UI_State *state)
+ui_root_from_state(UI_State* state)
 {
   return state.root;
 }
 
 internal B32
-ui_animating_from_state(UI_State *state)
+ui_animating_from_state(UI_State* state)
 {
   return state.is_animating;
 }
 
 internal void
-ui_select_state(UI_State *state)
+ui_select_state(UI_State* state)
 {
   ui_state = state;
 }
@@ -512,7 +512,7 @@ ui_dt(void)
 //- rjf: event pumping
 
 internal B32
-ui_next_event(UI_Event **ev)
+ui_next_event(UI_Event** ev)
 {
   UI_EventList *events = ui_state.events;
   UI_EventNode *start_node = events.first;
@@ -590,7 +590,7 @@ ui_next_event(UI_Event **ev)
 }
 
 internal void
-ui_eat_event(UI_Event *ev)
+ui_eat_event(UI_Event* ev)
 {
   if (ev != 0)
   {
@@ -740,7 +740,7 @@ ui_string_hover_begin_time_us(void)
 }
 
 internal DR_FStrList
-ui_string_hover_fstrs(Arena *arena)
+ui_string_hover_fstrs(Arena* arena)
 {
   DR_FStrList result = dr_fstrs_copy(arena, &ui_state.string_hover_fstrs);
   return result;
@@ -804,7 +804,7 @@ ui_box_from_key(UI_Key key)
 //~ rjf: Top-Level Building API
 
 internal void
-ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, UI_Theme *theme, UI_AnimationInfo *animation_info, F32 real_dt, F32 animation_dt)
+ui_begin_build(OS_Handle window, UI_EventList* events, UI_IconInfo* icon_info, UI_Theme* theme, UI_AnimationInfo* animation_info, F32 real_dt, F32 animation_dt)
 {
   //- rjf: reset per-build ui state
   {
@@ -1688,7 +1688,7 @@ ui_end_build(void)
 }
 
 internal void
-ui_calc_sizes_standalone__in_place(UI_Box *root, Axis2 axis)
+ui_calc_sizes_standalone__in_place(UI_Box* root, Axis2 axis)
 {
   ProfBeginFunction();
   for (UI_Box *b = root; !ui_box_is_nil(b); b = ui_box_rec_df_pre(b, root).next)
@@ -1712,7 +1712,7 @@ ui_calc_sizes_standalone__in_place(UI_Box *root, Axis2 axis)
 }
 
 internal void
-ui_calc_sizes_upwards_dependent__in_place(UI_Box *root, Axis2 axis)
+ui_calc_sizes_upwards_dependent__in_place(UI_Box* root, Axis2 axis)
 {
   ProfBeginFunction();
   for (UI_Box *b = root; !ui_box_is_nil(b); b = ui_box_rec_df_pre(b, root).next)
@@ -1748,7 +1748,7 @@ ui_calc_sizes_upwards_dependent__in_place(UI_Box *root, Axis2 axis)
 }
 
 internal void
-ui_calc_sizes_downwards_dependent__in_place(UI_Box *root, Axis2 axis)
+ui_calc_sizes_downwards_dependent__in_place(UI_Box* root, Axis2 axis)
 {
   ProfBeginFunction();
   UI_BoxRec rec = {0};
@@ -1785,7 +1785,7 @@ ui_calc_sizes_downwards_dependent__in_place(UI_Box *root, Axis2 axis)
 }
 
 internal void
-ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
+ui_layout_enforce_constraints__in_place(UI_Box* root, Axis2 axis)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -1891,7 +1891,7 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
 }
 
 internal void
-ui_layout_position__in_place(UI_Box *root, Axis2 axis)
+ui_layout_position__in_place(UI_Box* root, Axis2 axis)
 {
   ProfBeginFunction();
   for (UI_Box *box = root; !ui_box_is_nil(box); box = ui_box_rec_df_pre(box, root).next)
@@ -1955,7 +1955,7 @@ ui_layout_position__in_place(UI_Box *root, Axis2 axis)
 }
 
 internal void
-ui_layout_root(UI_Box *root, Axis2 axis)
+ui_layout_root(UI_Box* root, Axis2 axis)
 {
   ProfBegin("ui layout pass (%s)", axis == Axis2_X ? "x" : "y");
   ui_calc_sizes_standalone__in_place(root, axis);
@@ -2667,7 +2667,7 @@ ui_build_box_from_string(UI_BoxFlags flags, string string)
 }
 
 internal UI_Box *
-ui_build_box_from_stringf(UI_BoxFlags flags, char *fmt, ...)
+ui_build_box_from_stringf(UI_BoxFlags flags, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -2682,7 +2682,7 @@ ui_build_box_from_stringf(UI_BoxFlags flags, char *fmt, ...)
 //- rjf: box node equipment
 
 internal void
-ui_box_equip_display_string(UI_Box *box, string string)
+ui_box_equip_display_string(UI_Box* box, string string)
 {
   ProfBeginFunction();
   box.string = push_str8_copy(ui_build_arena(), string);
@@ -2725,7 +2725,7 @@ ui_box_equip_display_string(UI_Box *box, string string)
 }
 
 internal void
-ui_box_equip_display_fstrs(UI_Box *box, DR_FStrList *strings)
+ui_box_equip_display_fstrs(UI_Box* box, DR_FStrList* strings)
 {
   box.flags |= UI_BoxFlag_HasDisplayString;
   box.string = dr_string_from_fstrs(ui_build_arena(), strings);
@@ -2734,14 +2734,14 @@ ui_box_equip_display_fstrs(UI_Box *box, DR_FStrList *strings)
 }
 
 internal inline void
-ui_box_equip_fuzzy_match_ranges(UI_Box *box, FuzzyMatchRangeList *matches)
+ui_box_equip_fuzzy_match_ranges(UI_Box* box, FuzzyMatchRangeList* matches)
 {
   box.flags |= UI_BoxFlag_HasFuzzyMatchRanges;
   box.fuzzy_match_ranges = fuzzy_match_range_list_copy(ui_build_arena(), matches);
 }
 
 internal void
-ui_box_equip_draw_bucket(UI_Box *box, DR_Bucket *bucket)
+ui_box_equip_draw_bucket(UI_Box* box, DR_Bucket* bucket)
 {
   box.flags |= UI_BoxFlag_DrawBucket;
   if (box.draw_bucket != 0)
@@ -2755,7 +2755,7 @@ ui_box_equip_draw_bucket(UI_Box *box, DR_Bucket *bucket)
 }
 
 internal void
-ui_box_equip_custom_draw(UI_Box *box, UI_BoxCustomDrawFunctionType *custom_draw, void *user_data)
+ui_box_equip_custom_draw(UI_Box* box, UI_BoxCustomDrawFunctionType* custom_draw, void* user_data)
 {
   box.custom_draw = custom_draw;
   box.custom_draw_user_data = user_data;
@@ -2764,7 +2764,7 @@ ui_box_equip_custom_draw(UI_Box *box, UI_BoxCustomDrawFunctionType *custom_draw,
 //- rjf: box accessors / queries
 
 internal string
-ui_box_display_string(UI_Box *box)
+ui_box_display_string(UI_Box* box)
 {
   string result = box.string;
   if (!(box.flags & UI_BoxFlag_DisableIDString))
@@ -2775,7 +2775,7 @@ ui_box_display_string(UI_Box *box)
 }
 
 internal Vec2F32
-ui_box_text_position(UI_Box *box)
+ui_box_text_position(UI_Box* box)
 {
   Vec2F32 result = {0};
   FNT_Tag font = box.font;
@@ -2807,7 +2807,7 @@ ui_box_text_position(UI_Box *box)
 }
 
 internal U64
-ui_box_char_pos_from_xy(UI_Box *box, Vec2F32 xy)
+ui_box_char_pos_from_xy(UI_Box* box, Vec2F32 xy)
 {
   FNT_Tag font = box.font;
   F32 font_size = box.font_size;
@@ -2820,7 +2820,7 @@ ui_box_char_pos_from_xy(UI_Box *box, Vec2F32 xy)
 //~ rjf: Box Interaction
 
 internal UI_Signal
-ui_signal_from_box(UI_Box *box)
+ui_signal_from_box(UI_Box* box)
 {
   ProfBeginFunction();
   B32 is_focus_hot = box.flags & UI_BoxFlag_FocusHot && !(box.flags & UI_BoxFlag_FocusHotDisabled);
@@ -3238,7 +3238,7 @@ ui_signal_from_box(UI_Box *box)
 //~ rjf: Animation Cache Interaction API
 
 internal F32
-ui_anim_(UI_Key key, UI_AnimParams *params)
+ui_anim_(UI_Key key, UI_AnimParams* params)
 {
   // rjf: get animation cache node
   UI_AnimNode *node = &ui_nil_anim_node;
@@ -3552,7 +3552,7 @@ ui_pop_corner_radius(void)
 }
 
 internal void
-ui_push_tagf(char *fmt, ...)
+ui_push_tagf(char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;

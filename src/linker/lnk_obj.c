@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal void
-lnk_error_obj(LNK_ErrorCode code, LNK_Obj *obj, char *fmt, ...)
+lnk_error_obj(LNK_ErrorCode code, LNK_Obj* obj, char* fmt, ...)
 {
   va_list args; va_start(args, fmt);
   string obj_path = obj ? obj.path : ("RADLINK");
@@ -12,7 +12,7 @@ lnk_error_obj(LNK_ErrorCode code, LNK_Obj *obj, char *fmt, ...)
 }
 
 internal LNK_Obj **
-lnk_array_from_obj_list(Arena *arena, LNK_ObjList list)
+lnk_array_from_obj_list(Arena* arena, LNK_ObjList list)
 {
   LNK_Obj **arr = push_array_no_zero(arena, LNK_Obj *, list.count);
   U64 idx = 0;
@@ -399,7 +399,7 @@ THREAD_POOL_TASK_FUNC(lnk_input_coff_symbol_table)
 }
 
 internal LNK_SymbolHashTrie **
-lnk_symlinks_from_obj(Arena *arena, LNK_SymbolTable *symtab, LNK_Obj *obj)
+lnk_symlinks_from_obj(Arena* arena, LNK_SymbolTable* symtab, LNK_Obj* obj)
 {
   LNK_SymbolHashTrie **symlinks = push_array(arena, LNK_SymbolHashTrie *, obj.header.section_count_no_null+1);
   COFF_ParsedSymbol symbol;
@@ -427,7 +427,7 @@ THREAD_POOL_TASK_FUNC(lnk_assign_comdat_symlinks_task)
 }
 
 internal LNK_SymbolInputResult
-lnk_input_obj_symbols(TP_Context *tp, TP_Arena *arena, LNK_SymbolTable *symtab, LNK_ObjNodeArray objs)
+lnk_input_obj_symbols(TP_Context* tp, TP_Arena* arena, LNK_SymbolTable* symtab, LNK_ObjNodeArray objs)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(arena.v, arena.count);
@@ -450,7 +450,7 @@ lnk_input_obj_symbols(TP_Context *tp, TP_Arena *arena, LNK_SymbolTable *symtab, 
 }
 
 internal COFF_ParsedSymbol
-lnk_obj_match_symbol(LNK_Obj *obj, string match_name)
+lnk_obj_match_symbol(LNK_Obj* obj, string match_name)
 {
   COFF_ParsedSymbol result = {0};
 
@@ -482,25 +482,25 @@ lnk_obj_match_symbol(LNK_Obj *obj, string match_name)
 }
 
 internal MSCRT_FeatFlags
-lnk_obj_get_features(LNK_Obj *obj)
+lnk_obj_get_features(LNK_Obj* obj)
 {
   return lnk_obj_match_symbol(obj, ("@feat.00")).value;
 }
 
 internal U32
-lnk_obj_get_comp_id(LNK_Obj *obj)
+lnk_obj_get_comp_id(LNK_Obj* obj)
 {
   return lnk_obj_match_symbol(obj, ("@comp.id")).value;
 }
 
 internal U32
-lnk_obj_get_vol_md(LNK_Obj *obj)
+lnk_obj_get_vol_md(LNK_Obj* obj)
 {
   return lnk_obj_match_symbol(obj, ("@vol.md")).value;
 }
 
 internal string
-lnk_obj_get_lib_path(LNK_Obj *obj)
+lnk_obj_get_lib_path(LNK_Obj* obj)
 {
   string lib_path = {0};
   if (obj && obj.lib) {
@@ -510,20 +510,20 @@ lnk_obj_get_lib_path(LNK_Obj *obj)
 }
 
 internal U32
-lnk_obj_get_removed_section_number(LNK_Obj *obj)
+lnk_obj_get_removed_section_number(LNK_Obj* obj)
 {
   return obj.header.is_big_obj ? LNK_REMOVED_SECTION_NUMBER_32 : LNK_REMOVED_SECTION_NUMBER_16;
 }
 
 internal LNK_Symbol *
-lnk_obj_get_comdat_symlink(LNK_Obj *obj, U64 section_number)
+lnk_obj_get_comdat_symlink(LNK_Obj* obj, U64 section_number)
 {
   LNK_SymbolHashTrie *symlink = obj.symlinks[section_number];
   return symlink ? symlink.symbol : 0;
 }
 
 internal COFF_SectionHeader *
-lnk_coff_section_header_from_section_number(LNK_Obj *obj, U64 section_number)
+lnk_coff_section_header_from_section_number(LNK_Obj* obj, U64 section_number)
 {
   COFF_SectionHeader *section_table  = (COFF_SectionHeader *)str8_substr(obj.data, obj.header.section_table_range).str;
   COFF_SectionHeader *section_header = &section_table[section_number-1];
@@ -531,13 +531,13 @@ lnk_coff_section_header_from_section_number(LNK_Obj *obj, U64 section_number)
 }
 
 internal COFF_SectionHeader *
-lnk_coff_section_table_from_obj(LNK_Obj *obj)
+lnk_coff_section_table_from_obj(LNK_Obj* obj)
 {
   return (COFF_SectionHeader *)str8_substr(obj.data, obj.header.section_table_range).str;
 }
 
 internal COFF_RelocArray
-lnk_coff_reloc_info_from_section_number(LNK_Obj *obj, U64 section_number)
+lnk_coff_reloc_info_from_section_number(LNK_Obj* obj, U64 section_number)
 {
   COFF_SectionHeader *section_header = lnk_coff_section_header_from_section_number(obj, section_number);
   COFF_RelocInfo      reloc_info     = coff_reloc_info_from_section_header(obj.data, section_header);
@@ -547,7 +547,7 @@ lnk_coff_reloc_info_from_section_number(LNK_Obj *obj, U64 section_number)
 }
 
 internal B32
-lnk_try_comdat_props_from_section_number(LNK_Obj *obj, U32 section_number, COFF_ComdatSelectType *select_out, U32 *section_number_out, U32 *section_length_out, U32 *check_sum_out)
+lnk_try_comdat_props_from_section_number(LNK_Obj* obj, U32 section_number, COFF_ComdatSelectType* select_out, U32* section_number_out, U32* section_length_out, U32* check_sum_out)
 {
   Assert(section_number > 0);
   U32 symbol_idx = obj.comdats[section_number-1];
@@ -560,7 +560,7 @@ lnk_try_comdat_props_from_section_number(LNK_Obj *obj, U32 section_number, COFF_
 }
 
 internal B32
-lnk_is_coff_section_debug(LNK_Obj *obj, U64 sect_idx)
+lnk_is_coff_section_debug(LNK_Obj* obj, U64 sect_idx)
 {
   string string_table = str8_substr(obj.data, obj.header.string_table_range);
   COFF_SectionHeader *section_header = lnk_coff_section_header_from_section_number(obj, sect_idx+1);
@@ -574,7 +574,7 @@ lnk_is_coff_section_debug(LNK_Obj *obj, U64 sect_idx)
 }
 
 internal COFF_ParsedSymbol
-lnk_parsed_symbol_from_coff_symbol_idx(LNK_Obj *obj, U64 symbol_idx)
+lnk_parsed_symbol_from_coff_symbol_idx(LNK_Obj* obj, U64 symbol_idx)
 {
   string string_table = str8_substr(obj.data, obj.header.string_table_range);
   string symbol_table = str8_substr(obj.data, obj.header.symbol_table_range);
@@ -615,7 +615,7 @@ THREAD_POOL_TASK_FUNC(lnk_collect_obj_chunks_task)
 }
 
 internal String8List *
-lnk_collect_obj_sections(TP_Context *tp, TP_Arena *arena, U64 objs_count, LNK_Obj **objs, string name, B32 collect_discarded)
+lnk_collect_obj_sections(TP_Context* tp, TP_Arena* arena, U64 objs_count, LNK_Obj** objs, string name, B32 collect_discarded)
 {
   LNK_SectionCollector task = {0};
   task.objs              = objs;
@@ -627,14 +627,14 @@ lnk_collect_obj_sections(TP_Context *tp, TP_Arena *arena, U64 objs_count, LNK_Ob
 }
 
 internal B32
-lnk_obj_is_before(void *raw_a, void *raw_b)
+lnk_obj_is_before(void* raw_a, void* raw_b)
 {
   LNK_Obj *a = raw_a, *b = raw_b;
   return a.input_idx < b.input_idx;
 }
 
 internal void
-lnk_parse_msvc_linker_directive(Arena *arena, LNK_Obj *obj, LNK_DirectiveInfo *directive_info, string buffer)
+lnk_parse_msvc_linker_directive(Arena* arena, LNK_Obj* obj, LNK_DirectiveInfo* directive_info, string buffer)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -681,7 +681,7 @@ lnk_parse_msvc_linker_directive(Arena *arena, LNK_Obj *obj, LNK_DirectiveInfo *d
 }
 
 internal String8List
-lnk_raw_directives_from_obj(Arena *arena, LNK_Obj *obj)
+lnk_raw_directives_from_obj(Arena* arena, LNK_Obj* obj)
 {
   COFF_SectionHeader *section_table = lnk_coff_section_table_from_obj(obj);
   String8List drectve_data = {0};
@@ -711,7 +711,7 @@ lnk_raw_directives_from_obj(Arena *arena, LNK_Obj *obj)
 }
 
 internal LNK_DirectiveInfo
-lnk_directive_info_from_raw_directives(Arena *arena, LNK_Obj *obj, String8List raw_directives)
+lnk_directive_info_from_raw_directives(Arena* arena, LNK_Obj* obj, String8List raw_directives)
 {
   LNK_DirectiveInfo directive_info = {0};
   for (String8Node *drectve_n = raw_directives.first; drectve_n != 0; drectve_n = drectve_n.next) {

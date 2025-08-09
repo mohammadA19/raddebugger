@@ -21,7 +21,7 @@
 #include "coff/coff_parse.c"
 
 internal void
-sld_main(CmdLine *cmdl)
+sld_main(CmdLine* cmdl)
 {
   B32 do_help = cmd_line_has_flag(cmdl, ("help")) ||
                 cmd_line_has_flag(cmdl, ("h"))    ||
@@ -109,7 +109,7 @@ sld_main(CmdLine *cmdl)
 }
 
 internal void
-entry_point(CmdLine *cmdl)
+entry_point(CmdLine* cmdl)
 {
   sld_main(cmdl);
 }

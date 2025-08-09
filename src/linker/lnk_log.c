@@ -15,7 +15,7 @@ lnk_get_log_status(LNK_LogType type)
 }
 
 internal void
-lnk_log(LNK_LogType type, char *fmt, ...)
+lnk_log(LNK_LogType type, char* fmt, ...)
 {
   B32 is_log_enabled = g_log_status[type];
   if (is_log_enabled) {

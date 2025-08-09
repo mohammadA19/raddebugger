@@ -55,7 +55,7 @@ os_lnx_dense_time_from_timespec(timespec in)
 }
 
 internal FileProperties
-os_lnx_file_properties_from_stat(struct stat *s)
+os_lnx_file_properties_from_stat(struct stat* s)
 {
   FileProperties props = {0};
   props.size     = s.st_size;
@@ -105,7 +105,7 @@ os_lnx_entity_alloc(OS_LNX_EntityKind kind)
 }
 
 internal void
-os_lnx_entity_release(OS_LNX_Entity *entity)
+os_lnx_entity_release(OS_LNX_Entity* entity)
 {
   DeferLoop(pthread_mutex_lock(&os_lnx_state.entity_mutex),
             pthread_mutex_unlock(&os_lnx_state.entity_mutex))
@@ -118,7 +118,7 @@ os_lnx_entity_release(OS_LNX_Entity *entity)
 //~ rjf: Thread Entry Point
 
 internal void *
-os_lnx_thread_entry_point(void *ptr)
+os_lnx_thread_entry_point(void* ptr)
 {
   OS_LNX_Entity *entity = (OS_LNX_Entity *)ptr;
   OS_ThreadFunctionType *func = entity.thread.func;
@@ -146,7 +146,7 @@ os_get_process_info(void)
 }
 
 internal string
-os_get_current_path(Arena *arena)
+os_get_current_path(Arena* arena)
 {
   char *cwdir = getcwd(0, 0);
   string string = push_str8_copy(arena, str8_cstring(cwdir));
@@ -188,21 +188,21 @@ os_reserve(U64 size)
 }
 
 internal B32
-os_commit(void *ptr, U64 size)
+os_commit(void* ptr, U64 size)
 {
   mprotect(ptr, size, PROT_READ|PROT_WRITE);
   return 1;
 }
 
 internal void
-os_decommit(void *ptr, U64 size)
+os_decommit(void* ptr, U64 size)
 {
   madvise(ptr, size, MADV_DONTNEED);
   mprotect(ptr, size, PROT_NONE);
 }
 
 internal void
-os_release(void *ptr, U64 size)
+os_release(void* ptr, U64 size)
 {
   munmap(ptr, size);
 }
@@ -221,7 +221,7 @@ os_reserve_large(U64 size)
 }
 
 internal B32
-os_commit_large(void *ptr, U64 size)
+os_commit_large(void* ptr, U64 size)
 {
   mprotect(ptr, size, PROT_READ|PROT_WRITE);
   return 1;
@@ -306,7 +306,7 @@ os_file_close(OS_Handle file)
 }
 
 internal U64
-os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
+os_file_read(OS_Handle file, Rng1U64 rng, void* out_data)
 {
   if (os_handle_match(file, os_handle_zero())) { return 0; }
   int fd = (int)file.u64[0];
@@ -330,7 +330,7 @@ os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
 }
 
 internal U64
-os_file_write(OS_Handle file, Rng1U64 rng, void *data)
+os_file_write(OS_Handle file, Rng1U64 rng, void* data)
 {
   if (os_handle_match(file, os_handle_zero())) { return 0; }
   int fd = (int)file.u64[0];
@@ -459,7 +459,7 @@ os_move_file_path(string dst, string src)
 }
 
 internal string
-os_full_path_from_path(Arena *arena, string path)
+os_full_path_from_path(Arena* arena, string path)
 {
   Temp scratch = scratch_begin(&arena, 1);
   string path_copy = push_str8_copy(scratch.arena, path);
@@ -551,7 +551,7 @@ os_file_map_view_open(OS_Handle map, OS_AccessFlags flags, Rng1U64 range)
 }
 
 internal void
-os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range)
+os_file_map_view_close(OS_Handle map, void* ptr, Rng1U64 range)
 {
   munmap(ptr, dim_1u64(range));
 }
@@ -559,7 +559,7 @@ os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range)
 //- rjf: directory iteration
 
 internal OS_FileIter *
-os_file_iter_begin(Arena *arena, string path, OS_FileIterFlags flags)
+os_file_iter_begin(Arena* arena, string path, OS_FileIterFlags flags)
 {
   OS_FileIter *base_iter = push_array(arena, OS_FileIter, 1);
   base_iter.flags = flags;
@@ -573,7 +573,7 @@ os_file_iter_begin(Arena *arena, string path, OS_FileIterFlags flags)
 }
 
 internal B32
-os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
+os_file_iter_next(Arena* arena, OS_FileIter* iter, OS_FileInfo* info_out)
 {
   B32 good = 0;
   OS_LNX_FileIter *lnx_iter = (OS_LNX_FileIter *)iter.memory;
@@ -625,7 +625,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
 }
 
 internal void
-os_file_iter_end(OS_FileIter *iter)
+os_file_iter_end(OS_FileIter* iter)
 {
   OS_LNX_FileIter *lnx_iter = (OS_LNX_FileIter *)iter.memory;
   closedir(lnx_iter.dir);
@@ -695,7 +695,7 @@ os_shared_memory_view_open(OS_Handle handle, Rng1U64 range)
 }
 
 internal void
-os_shared_memory_view_close(OS_Handle handle, void *ptr, Rng1U64 range)
+os_shared_memory_view_close(OS_Handle handle, void* ptr, Rng1U64 range)
 {
   if (os_handle_match(handle, os_handle_zero())){return;}
   munmap(ptr, dim_1u64(range));
@@ -732,7 +732,7 @@ os_now_universal_time(void)
 }
 
 internal DateTime
-os_universal_time_from_local(DateTime *date_time)
+os_universal_time_from_local(DateTime* date_time)
 {
   // rjf: local DateTime -> universal time_t
   tm local_tm = os_lnx_tm_from_date_time(*date_time);
@@ -747,7 +747,7 @@ os_universal_time_from_local(DateTime *date_time)
 }
 
 internal DateTime
-os_local_time_from_universal(DateTime *date_time)
+os_local_time_from_universal(DateTime* date_time)
 {
   // rjf: universal DateTime -> local time_t
   tm universal_tm = os_lnx_tm_from_date_time(*date_time);
@@ -771,7 +771,7 @@ os_sleep_milliseconds(U32 msec)
 //~ rjf: @os_hooks Child Processes (Implemented Per-OS)
 
 internal OS_Handle
-os_process_launch(OS_ProcessLaunchParams *params)
+os_process_launch(OS_ProcessLaunchParams* params)
 {
   NotImplemented;
 }
@@ -783,7 +783,7 @@ os_process_join(OS_Handle handle, U64 endt_us)
 }
 
 internal B32
-os_process_join_exit_code(OS_Handle handle, U64 endt_us, int *exit_code_out)
+os_process_join_exit_code(OS_Handle handle, U64 endt_us, int* exit_code_out)
 {
   NotImplemented;
 }
@@ -804,7 +804,7 @@ os_process_kill(OS_Handle handle)
 //~ rjf: @os_hooks Threads (Implemented Per-OS)
 
 internal OS_Handle
-os_thread_launch(OS_ThreadFunctionType *func, void *ptr, void *params)
+os_thread_launch(OS_ThreadFunctionType* func, void* ptr, void* params)
 {
   OS_LNX_Entity *entity = os_lnx_entity_alloc(OS_LNX_EntityKind_Thread);
   entity.thread.func = func;
@@ -1196,7 +1196,7 @@ os_library_close(OS_Handle lib)
 //~ rjf: @os_hooks Safe Calls (Implemented Per-OS)
 
 internal void
-os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, void *ptr)
+os_safe_call(OS_ThreadFunctionType* func, OS_ThreadFunctionType* fail_handler, void* ptr)
 {
   // rjf: push handler to chain
   OS_LNX_SafeCallChain chain = {0};
@@ -1248,7 +1248,7 @@ os_make_guid(void)
 //~ rjf: @os_hooks Entry Points (Implemented Per-OS)
 
 int
-main(int argc, char **argv)
+main(int argc, char** argv)
 {
   //- rjf: set up OS layer
   {

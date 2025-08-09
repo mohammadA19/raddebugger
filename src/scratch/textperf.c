@@ -75,7 +75,7 @@ frame(void)
 }
 
 internal void
-entry_point(CmdLine *cmdline)
+entry_point(CmdLine* cmdline)
 {
   os_window = os_window_open(r2f32p(0, 0, 1600, 900), OS_WindowFlag_UseDefaultPosition, ("textperf"));
   r_window = r_window_equip(os_window);

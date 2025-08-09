@@ -187,7 +187,7 @@ pe_resource_kind_to_string(PE_ResourceKind x)
 }
 
 internal string
-pe_string_from_fpo_flags(Arena *arena, PE_FPOFlags flags)
+pe_string_from_fpo_flags(Arena* arena, PE_FPOFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List l = {0};
@@ -206,7 +206,7 @@ pe_string_from_fpo_flags(Arena *arena, PE_FPOFlags flags)
 }
 
 internal string
-pe_string_from_global_flags(Arena *arena, PE_GlobalFlags flags)
+pe_string_from_global_flags(Arena* arena, PE_GlobalFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -310,7 +310,7 @@ pe_string_from_global_flags(Arena *arena, PE_GlobalFlags flags)
 }
 
 internal string
-pe_string_from_load_config_guard_flags(Arena *arena, PE_LoadConfigGuardFlags flags)
+pe_string_from_load_config_guard_flags(Arena* arena, PE_LoadConfigGuardFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -352,7 +352,7 @@ pe_string_from_load_config_guard_flags(Arena *arena, PE_LoadConfigGuardFlags fla
 }
 
 internal string
-pe_string_from_dll_characteristics(Arena *arena, PE_DllCharacteristics dll_chars)
+pe_string_from_dll_characteristics(Arena* arena, PE_DllCharacteristics dll_chars)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List l = {0};
@@ -423,7 +423,7 @@ pe_check_magic(string data)
 }
 
 internal PE_BinInfo
-pe_bin_info_from_data(Arena *arena, string data)
+pe_bin_info_from_data(Arena* arena, string data)
 {
   PE_BinInfo info = {0};
   B32 valid = 1;
@@ -662,7 +662,7 @@ pe_data_directory_from_idx(string file_data, PE_BinInfo pe, PE_DataDirectoryInde
 }
 
 internal PE_DebugInfoList
-pe_debug_info_list_from_raw_debug_dir(Arena *arena, string raw_image, string raw_debug_dir)
+pe_debug_info_list_from_raw_debug_dir(Arena* arena, string raw_image, string raw_debug_dir)
 {
   PE_DebugInfoList result = {0};
   PE_DebugDirectory *debug_entry     = str8_deserial_get_raw_ptr(raw_debug_dir, 0, sizeof(*debug_entry));
@@ -784,7 +784,7 @@ pe_pdata_off_from_voff__binary_search_x8664(string raw_pdata, U64 voff)
 }
 
 internal U64
-pe_foff_from_voff(string data, PE_BinInfo *bin, U64 voff)
+pe_foff_from_voff(string data, PE_BinInfo* bin, U64 voff)
 {
   U64                 foff              = 0;
   string             raw_section_table = str8_substr(data, bin.section_table_range);
@@ -805,7 +805,7 @@ pe_foff_from_voff(string data, PE_BinInfo *bin, U64 voff)
 }
 
 internal PE_BaseRelocBlockList
-pe_base_reloc_block_list_from_data(Arena *arena, string raw_base_relocs)
+pe_base_reloc_block_list_from_data(Arena* arena, string raw_base_relocs)
 {
   PE_BaseRelocBlockList list = {0};
   for (U64 off = 0; off < raw_base_relocs.size;)
@@ -843,7 +843,7 @@ pe_base_reloc_block_list_from_data(Arena *arena, string raw_base_relocs)
 }
 
 internal Rng1U64
-pe_tls_rng_from_bin_base_vaddr(string data, PE_BinInfo *bin, U64 base_vaddr)
+pe_tls_rng_from_bin_base_vaddr(string data, PE_BinInfo* bin, U64 base_vaddr)
 {
   U64 result_addr = (bin.tls_header.index_address - bin.image_base);
   U64 result_size = sizeof(U32);
@@ -1002,7 +1002,7 @@ internal PE_ParsedImport *
 pe_parsed_imports_from_data(Arena              *arena,
                             B32                 is_pe32,
                             U64                 section_count,
-                            COFF_SectionHeader *sections,
+                            COFF_SectionHeader* sections,
                             string             raw_data,
                             U64                 name_table_voff,
                             U64                *import_count_out)
@@ -1083,7 +1083,7 @@ pe_parsed_imports_from_data(Arena              *arena,
 }
 
 internal U64 *
-pe_array_from_null_term_addr(Arena *arena, B32 is_pe32, string raw_data, Rng1U64 range, U64 *count_out)
+pe_array_from_null_term_addr(Arena* arena, B32 is_pe32, string raw_data, Rng1U64 range, U64* count_out)
 {
   U64 *result = 0;
   *count_out = 0;
@@ -1127,7 +1127,7 @@ internal PE_ParsedStaticImportTable
 pe_static_imports_from_data(Arena              *arena,
                             B32                 is_pe32,
                             U64                 section_count,
-                            COFF_SectionHeader *sections,
+                            COFF_SectionHeader* sections,
                             string             raw_data,
                             Rng1U64             dir_file_range)
 {
@@ -1182,7 +1182,7 @@ internal PE_ParsedDelayImportTable
 pe_delay_imports_from_data(Arena              *arena,
                            B32                 is_pe32,
                            U64                 section_count,
-                           COFF_SectionHeader *sections,
+                           COFF_SectionHeader* sections,
                            string             raw_data,
                            Rng1U64             dir_file_range)
 {
@@ -1261,7 +1261,7 @@ pe_delay_imports_from_data(Arena              *arena,
 }
 
 internal PE_ParsedExportTable
-pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sections, string raw_data, Rng1U64 dir_file_range, Rng1U64 dir_virt_range)
+pe_exports_from_data(Arena* arena, U64 section_count, COFF_SectionHeader* sections, string raw_data, Rng1U64 dir_file_range, Rng1U64 dir_virt_range)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1368,7 +1368,7 @@ pe_tls_from_data(Arena              *arena,
                  COFF_MachineType    machine,
                  U64                 image_base,
                  U64                 section_count,
-                 COFF_SectionHeader *sections,
+                 COFF_SectionHeader* sections,
                  string             raw_data,
                  Rng1U64             tls_frange)
 {
@@ -1443,7 +1443,7 @@ pe_is_res(string data)
 }
 
 internal PE_ResourceNode *
-pe_resource_dir_push_dir_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version)
+pe_resource_dir_push_dir_node(Arena* arena, PE_ResourceDir* dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version)
 {
   PE_ResourceList *list = 0;
   switch (id.type) {
@@ -1472,7 +1472,7 @@ pe_resource_dir_push_dir_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID
 }
 
 internal PE_ResourceNode *
-pe_resource_dir_push_entry_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, string data)
+pe_resource_dir_push_entry_node(Arena* arena, PE_ResourceDir* dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, string data)
 {
   PE_ResourceList *list = NULL;
   switch (id.type) {
@@ -1499,21 +1499,21 @@ pe_resource_dir_push_entry_node(Arena *arena, PE_ResourceDir *dir, COFF_Resource
 }
 
 internal PE_Resource *
-pe_resource_dir_push_entry(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, string data)
+pe_resource_dir_push_entry(Arena* arena, PE_ResourceDir* dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, string data)
 {
   PE_ResourceNode *node = pe_resource_dir_push_entry_node(arena, dir, id, type, data_version, version, memory_flags, data);
   return &node.data;
 }
 
 internal PE_Resource *
-pe_resource_dir_push_dir(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version)
+pe_resource_dir_push_dir(Arena* arena, PE_ResourceDir* dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version)
 {
   PE_ResourceNode *dir_node = pe_resource_dir_push_dir_node(arena, dir, id, characteristics, time_stamp, major_version, minor_version); 
   return &dir_node.data;
 }
 
 internal PE_ResourceNode *
-pe_resource_dir_search_node(PE_ResourceDir *dir, COFF_ResourceID id)
+pe_resource_dir_search_node(PE_ResourceDir* dir, COFF_ResourceID id)
 {
   for (PE_ResourceNode *i = dir.id_list.first; i != 0; i = i.next) {
     if (coff_resource_id_compar(&i.data.id, &id) == 0) {
@@ -1524,14 +1524,14 @@ pe_resource_dir_search_node(PE_ResourceDir *dir, COFF_ResourceID id)
 }
 
 internal PE_Resource *
-pe_resource_dir_search(PE_ResourceDir *dir, COFF_ResourceID id)
+pe_resource_dir_search(PE_ResourceDir* dir, COFF_ResourceID id)
 {
   PE_ResourceNode *node = pe_resource_dir_search_node(dir, id);
   return node ? &node.data : NULL;
 }
 
 internal PE_ResourceArray
-pe_resource_list_to_array(Arena *arena, PE_ResourceList *list)
+pe_resource_list_to_array(Arena* arena, PE_ResourceList* list)
 {
   PE_ResourceArray result;
   result.count = 0;
@@ -1543,7 +1543,7 @@ pe_resource_list_to_array(Arena *arena, PE_ResourceList *list)
 }
 
 internal void
-pe_resource_dir_push_res_file(Arena *arena, PE_ResourceDir *root_dir, string res_file)
+pe_resource_dir_push_res_file(Arena* arena, PE_ResourceDir* root_dir, string res_file)
 {
   // parse file into resource list
   string res_data = str8_substr(res_file, rng_1u64(sizeof(PE_RES_MAGIC), res_file.size));
@@ -1580,7 +1580,7 @@ pe_resource_dir_push_res_file(Arena *arena, PE_ResourceDir *root_dir, string res
 }
 
 internal PE_ResourceDir *
-pe_resource_table_from_directory_data(Arena *arena, string data)
+pe_resource_table_from_directory_data(Arena* arena, string data)
 {
   struct stack_s {
     struct stack_s *next;
@@ -1698,7 +1698,7 @@ pe_resource_table_from_directory_data(Arena *arena, string data)
 }
 
 internal string
-pe_make_manifest_resource(Arena *arena, U32 resource_id, string manifest_data)
+pe_make_manifest_resource(Arena* arena, U32 resource_id, string manifest_data)
 {
   COFF_ResourceID type = {0};
   type.type            = COFF_ResourceIDType_Number;
@@ -1716,7 +1716,7 @@ pe_make_manifest_resource(Arena *arena, U32 resource_id, string manifest_data)
 //~ Debug Directory
 
 internal string
-pe_make_debug_header_pdb70(Arena *arena, Guid guid, U32 age, string pdb_path)
+pe_make_debug_header_pdb70(Arena* arena, Guid guid, U32 age, string pdb_path)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1737,7 +1737,7 @@ pe_make_debug_header_pdb70(Arena *arena, Guid guid, U32 age, string pdb_path)
 }
 
 internal string
-pe_make_debug_header_rdi(Arena *arena, Guid guid, string rdi_path)
+pe_make_debug_header_rdi(Arena* arena, Guid guid, string rdi_path)
 {
   Temp scratch = scratch_begin(&arena,1);
   
@@ -1760,7 +1760,7 @@ pe_make_debug_header_rdi(Arena *arena, Guid guid, string rdi_path)
 //~ Image Checksum
 
 internal U32 
-pe_compute_checksum(U8 *buffer, U64 buffer_size)
+pe_compute_checksum(U8* buffer, U64 buffer_size)
 {
   // https://bytepointer.com/resources/microsoft_pe_checksum_algo_distilled.htm
   U32 hash = 0;
@@ -1795,7 +1795,7 @@ pe_has_plus_header(COFF_MachineType machine)
 ////////////////////////////////
 
 internal int
-pe_pdata_is_before_x86_64(void *raw_a, void *raw_b)
+pe_pdata_is_before_x86_64(void* raw_a, void* raw_b)
 {
   PE_IntelPdata *a = raw_a, *b = raw_b;
   return a.voff_first < b.voff_first;

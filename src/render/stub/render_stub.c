@@ -4,7 +4,7 @@
 //- rjf: top-level layer initialization
 
 r_hook void
-r_init(CmdLine *cmdln)
+r_init(CmdLine* cmdln)
 {
 }
 
@@ -26,7 +26,7 @@ r_window_unequip(OS_Handle window, R_Handle window_equip)
 //- rjf: textures
 
 r_hook R_Handle
-r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void *data)
+r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void* data)
 {
   R_Handle handle = {0};
   handle.u64[0] = 1;
@@ -57,14 +57,14 @@ r_format_from_tex2d(R_Handle texture)
 }
 
 r_hook void
-r_fill_tex2d_region(R_Handle texture, Rng2S32 subrect, void *data)
+r_fill_tex2d_region(R_Handle texture, Rng2S32 subrect, void* data)
 {
 }
 
 //- rjf: buffers
 
 r_hook R_Handle
-r_buffer_alloc(R_ResourceKind kind, U64 size, void *data)
+r_buffer_alloc(R_ResourceKind kind, U64 size, void* data)
 {
   R_Handle handle = {0};
   handle.u64[0] = 1;
@@ -101,6 +101,6 @@ r_window_end_frame(OS_Handle window, R_Handle window_equip)
 //- rjf: render pass submission
 
 r_hook void
-r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
+r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList* passes)
 {
 }

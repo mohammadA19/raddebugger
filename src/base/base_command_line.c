@@ -5,7 +5,7 @@
 //~ rjf: Command Line Parsing Functions
 
 internal CmdLineOpt **
-cmd_line_slot_from_string(CmdLine *cmd_line, string string)
+cmd_line_slot_from_string(CmdLine* cmd_line, string string)
 {
   CmdLineOpt **slot = 0;
   if (cmd_line.option_table_size != 0)
@@ -18,7 +18,7 @@ cmd_line_slot_from_string(CmdLine *cmd_line, string string)
 }
 
 internal CmdLineOpt *
-cmd_line_opt_from_slot(CmdLineOpt **slot, string string)
+cmd_line_opt_from_slot(CmdLineOpt** slot, string string)
 {
   CmdLineOpt *result = 0;
   for (CmdLineOpt *var = *slot; var; var = var.hash_next)
@@ -33,14 +33,14 @@ cmd_line_opt_from_slot(CmdLineOpt **slot, string string)
 }
 
 internal void
-cmd_line_push_opt(CmdLineOptList *list, CmdLineOpt *var)
+cmd_line_push_opt(CmdLineOptList* list, CmdLineOpt* var)
 {
   SLLQueuePush(list.first, list.last, var);
   list.count += 1;
 }
 
 internal CmdLineOpt *
-cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line, string string, String8List values)
+cmd_line_insert_opt(Arena* arena, CmdLine* cmd_line, string string, String8List values)
 {
   CmdLineOpt *var = 0;
   CmdLineOpt **slot = cmd_line_slot_from_string(cmd_line, string);
@@ -68,7 +68,7 @@ cmd_line_insert_opt(Arena *arena, CmdLine *cmd_line, string string, String8List 
 }
 
 internal CmdLine
-cmd_line_from_string_list(Arena *arena, String8List command_line)
+cmd_line_from_string_list(Arena* arena, String8List command_line)
 {
   CmdLine parsed = {0};
   parsed.exe_name = command_line.first.string;
@@ -184,13 +184,13 @@ cmd_line_from_string_list(Arena *arena, String8List command_line)
 }
 
 internal CmdLineOpt *
-cmd_line_opt_from_string(CmdLine *cmd_line, string name)
+cmd_line_opt_from_string(CmdLine* cmd_line, string name)
 {
   return cmd_line_opt_from_slot(cmd_line_slot_from_string(cmd_line, name), name);
 }
 
 internal String8List 
-cmd_line_strings(CmdLine *cmd_line, string name)
+cmd_line_strings(CmdLine* cmd_line, string name)
 {
   String8List result = {0};
   CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
@@ -202,7 +202,7 @@ cmd_line_strings(CmdLine *cmd_line, string name)
 }
 
 internal string     
-cmd_line_string(CmdLine *cmd_line, string name)
+cmd_line_string(CmdLine* cmd_line, string name)
 {
   string result = {0};
   CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
@@ -214,14 +214,14 @@ cmd_line_string(CmdLine *cmd_line, string name)
 }
 
 internal B32
-cmd_line_has_flag(CmdLine *cmd_line, string name)
+cmd_line_has_flag(CmdLine* cmd_line, string name)
 {
   CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
   return (var != 0);
 }
 
 internal B32
-cmd_line_has_argument(CmdLine *cmd_line, string name)
+cmd_line_has_argument(CmdLine* cmd_line, string name)
 {
   CmdLineOpt *var = cmd_line_opt_from_string(cmd_line, name);
   return (var != 0 && var.value_strings.node_count > 0);

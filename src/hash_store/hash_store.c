@@ -217,7 +217,7 @@ hs_root_release(HS_Root root)
 //~ rjf: Cache Submission
 
 internal U128
-hs_submit_data(HS_Key key, Arena **data_arena, string data)
+hs_submit_data(HS_Key key, Arena** data_arena, string data)
 {
   U64 key_hash = hs_little_hash_from_data(str8_struct(&key));
   U64 key_slot_idx = key_hash%hs_shared.key_slots_count;
@@ -404,7 +404,7 @@ hs_scope_open(void)
 }
 
 internal void
-hs_scope_close(HS_Scope *scope)
+hs_scope_close(HS_Scope* scope)
 {
   for (HS_Touch *touch = scope.top_touch, *next = 0; touch != 0; touch = next)
   {
@@ -431,7 +431,7 @@ hs_scope_close(HS_Scope *scope)
 }
 
 internal void
-hs_scope_touch_node__stripe_r_guarded(HS_Scope *scope, HS_Node *node)
+hs_scope_touch_node__stripe_r_guarded(HS_Scope* scope, HS_Node* node)
 {
   HS_Touch *touch = hs_tctx.free_touch;
   ins_atomic_u64_inc_eval(&node.scope_ref_count);
@@ -518,7 +518,7 @@ hs_hash_from_key(HS_Key key, U64 rewind_count)
 }
 
 internal string
-hs_data_from_hash(HS_Scope *scope, U128 hash)
+hs_data_from_hash(HS_Scope* scope, U128 hash)
 {
   ProfBeginFunction();
   string result = {0};
@@ -546,7 +546,7 @@ hs_data_from_hash(HS_Scope *scope, U128 hash)
 //~ rjf: Evictor Thread
 
 internal void
-hs_evictor_thread__entry_point(void *p)
+hs_evictor_thread__entry_point(void* p)
 {
   ThreadNameF("[hs] evictor thread");
   for (;;)

@@ -28,7 +28,7 @@ ui_label(string string)
 }
 
 internal UI_Signal
-ui_labelf(char *fmt, ...)
+ui_labelf(char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -56,7 +56,7 @@ ui_label_multiline(F32 max, string string)
 }
 
 internal void
-ui_label_multilinef(F32 max, char *fmt, ...)
+ui_label_multilinef(F32 max, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -82,7 +82,7 @@ ui_button(string string)
 }
 
 internal UI_Signal
-ui_buttonf(char *fmt, ...)
+ui_buttonf(char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -107,7 +107,7 @@ ui_hover_label(string string)
 }
 
 internal UI_Signal
-ui_hover_labelf(char *fmt, ...)
+ui_hover_labelf(char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -163,7 +163,7 @@ internal UI_BOX_CUSTOM_DRAW(ui_line_edit_draw)
 }
 
 internal UI_Signal
-ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, string pre_edit_value, string string)
+ui_line_edit(TxtPt* cursor, TxtPt* mark, U8* edit_buffer, U64 edit_buffer_size, U64* edit_string_size_out, string pre_edit_value, string string)
 {
   //- rjf: make key
   UI_Key key = ui_key_from_string(ui_active_seed_key(), string);
@@ -315,7 +315,7 @@ ui_line_edit(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, 
 }
 
 internal UI_Signal
-ui_line_editf(TxtPt *cursor, TxtPt *mark, U8 *edit_buffer, U64 edit_buffer_size, U64 *edit_string_size_out, string pre_edit_value, char *fmt, ...)
+ui_line_editf(TxtPt* cursor, TxtPt* mark, U8* edit_buffer, U64 edit_buffer_size, U64* edit_string_size_out, string pre_edit_value, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -383,7 +383,7 @@ ui_image(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F3
 }
 
 internal UI_Signal
-ui_imagef(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, F32 blur, char *fmt, ...)
+ui_imagef(R_Handle texture, R_Tex2DSampleKind sample_kind, Rng2F32 region, Vec4F32 tint, F32 blur, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -411,7 +411,7 @@ ui_expander(B32 is_expanded, string string)
 }
 
 internal UI_Signal
-ui_expanderf(B32 is_expanded, char *fmt, ...)
+ui_expanderf(B32 is_expanded, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -452,7 +452,7 @@ ui_sort_header(B32 sorting, B32 ascending, string string)
 }
 
 internal UI_Signal
-ui_sort_headerf(B32 sorting, B32 ascending, char *fmt, ...)
+ui_sort_headerf(B32 sorting, B32 ascending, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -610,7 +610,7 @@ internal UI_BOX_CUSTOM_DRAW(ui_sat_val_picker_draw)
 }
 
 internal UI_Signal
-ui_sat_val_picker(F32 hue, F32 *out_sat, F32 *out_val, string string)
+ui_sat_val_picker(F32 hue, F32* out_sat, F32* out_val, string string)
 {
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
@@ -653,7 +653,7 @@ ui_sat_val_picker(F32 hue, F32 *out_sat, F32 *out_val, string string)
 }
 
 internal UI_Signal
-ui_sat_val_pickerf(F32 hue, F32 *out_sat, F32 *out_val, char *fmt, ...)
+ui_sat_val_pickerf(F32 hue, F32* out_sat, F32* out_val, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -718,7 +718,7 @@ internal UI_BOX_CUSTOM_DRAW(ui_hue_picker_draw)
 }
 
 internal UI_Signal
-ui_hue_picker(F32 *out_hue, F32 sat, F32 val, string string)
+ui_hue_picker(F32* out_hue, F32 sat, F32 val, string string)
 {
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
@@ -756,7 +756,7 @@ ui_hue_picker(F32 *out_hue, F32 sat, F32 val, string string)
 }
 
 internal UI_Signal
-ui_hue_pickerf(F32 *out_hue, F32 sat, F32 val, char *fmt, ...)
+ui_hue_pickerf(F32* out_hue, F32 sat, F32 val, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -804,7 +804,7 @@ internal UI_BOX_CUSTOM_DRAW(ui_alpha_picker_draw)
 }
 
 internal UI_Signal
-ui_alpha_picker(F32 *out_alpha, string string)
+ui_alpha_picker(F32* out_alpha, string string)
 {
   // rjf: build & interact
   ui_set_next_hover_cursor(OS_Cursor_HandPoint);
@@ -840,7 +840,7 @@ ui_alpha_picker(F32 *out_alpha, string string)
 }
 
 internal UI_Signal
-ui_alpha_pickerf(F32 *out_alpha, char *fmt, ...)
+ui_alpha_pickerf(F32* out_alpha, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -910,7 +910,7 @@ ui_pane_begin(Rng2F32 rect, string string)
 }
 
 internal UI_Box *
-ui_pane_beginf(Rng2F32 rect, char *fmt, ...)
+ui_pane_beginf(Rng2F32 rect, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -940,7 +940,7 @@ thread_static U64 ui_ts_vector_idx = 0;
 thread_static U64 ui_ts_cell_idx = 0;
 
 internal void
-ui_table_begin(U64 column_pct_count, F32 **column_pcts, string string)
+ui_table_begin(U64 column_pct_count, F32** column_pcts, string string)
 {
   //- rjf: store off persistent, user-provided column info
   ui_ts_col_pct_count = column_pct_count;
@@ -1054,7 +1054,7 @@ ui_table_begin(U64 column_pct_count, F32 **column_pcts, string string)
 }
 
 internal void
-ui_table_beginf(U64 column_pct_count, F32 **column_pcts, char *fmt, ...)
+ui_table_beginf(U64 column_pct_count, F32** column_pcts, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -1084,7 +1084,7 @@ ui_named_table_vector_begin(string string)
 }
 
 internal UI_Box *
-ui_named_table_vector_beginf(char *fmt, ...)
+ui_named_table_vector_beginf(char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -1143,7 +1143,7 @@ ui_table_cell_sized_begin(UI_Size size)
 //~ rjf: Scroll Regions
 
 internal void
-ui_scroll_list_row_block_chunk_list_push(Arena *arena, UI_ScrollListRowBlockChunkList *list, U64 cap, UI_ScrollListRowBlock *block)
+ui_scroll_list_row_block_chunk_list_push(Arena* arena, UI_ScrollListRowBlockChunkList* list, U64 cap, UI_ScrollListRowBlock* block)
 {
   UI_ScrollListRowBlockChunkNode *n = list.last;
   if (n == 0 || n.count >= n.cap)
@@ -1160,7 +1160,7 @@ ui_scroll_list_row_block_chunk_list_push(Arena *arena, UI_ScrollListRowBlockChun
 }
 
 internal UI_ScrollListRowBlockArray
-ui_scroll_list_row_block_array_from_chunk_list(Arena *arena, UI_ScrollListRowBlockChunkList *list)
+ui_scroll_list_row_block_array_from_chunk_list(Arena* arena, UI_ScrollListRowBlockChunkList* list)
 {
   UI_ScrollListRowBlockArray array = {0};
   array.count = list.total_count;
@@ -1175,7 +1175,7 @@ ui_scroll_list_row_block_array_from_chunk_list(Arena *arena, UI_ScrollListRowBlo
 }
 
 internal U64
-ui_scroll_list_row_from_item(UI_ScrollListRowBlockArray *blocks, U64 item)
+ui_scroll_list_row_from_item(UI_ScrollListRowBlockArray* blocks, U64 item)
 {
   U64 result = 0;
   {
@@ -1200,7 +1200,7 @@ ui_scroll_list_row_from_item(UI_ScrollListRowBlockArray *blocks, U64 item)
 }
 
 internal U64
-ui_scroll_list_item_from_row(UI_ScrollListRowBlockArray *blocks, U64 row)
+ui_scroll_list_item_from_row(UI_ScrollListRowBlockArray* blocks, U64 row)
 {
   U64 result = 0;
   {
@@ -1356,7 +1356,7 @@ thread_static Vec2F32 ui_scroll_list_dim_px = {0};
 thread_static Rng1S64 ui_scroll_list_scroll_idx_rng = {0};
 
 internal void
-ui_scroll_list_begin(UI_ScrollListParams *params, UI_ScrollPt *scroll_pt, Vec2S64 *cursor_out, Vec2S64 *mark_out, Rng1S64 *visible_row_range_out, UI_ScrollListSignal *signal_out)
+ui_scroll_list_begin(UI_ScrollListParams* params, UI_ScrollPt* scroll_pt, Vec2S64* cursor_out, Vec2S64* mark_out, Rng1S64* visible_row_range_out, UI_ScrollListSignal* signal_out)
 {
   //- rjf: unpack arguments
   Rng1S64 scroll_row_idx_range = r1s64(params.item_range.min, ClampBot(params.item_range.min, params.item_range.max-1));

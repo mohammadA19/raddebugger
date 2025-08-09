@@ -5,7 +5,7 @@
 //~ PDB Parser Functions
 
 internal PDB_Info*
-pdb_info_from_data(Arena *arena, string data){
+pdb_info_from_data(Arena* arena, string data){
   ProfBegin("pdb_info_from_data");
   
   // get header
@@ -127,7 +127,7 @@ pdb_info_from_data(Arena *arena, string data){
 }
 
 internal PDB_NamedStreamTable*
-pdb_named_stream_table_from_info(Arena *arena, PDB_Info *info){
+pdb_named_stream_table_from_info(Arena* arena, PDB_Info* info){
   ProfBegin("pdb_named_stream_table_from_info");
   
   // mapping "NamedStream" indexes to strings
@@ -173,7 +173,7 @@ pdb_named_stream_table_from_info(Arena *arena, PDB_Info *info){
 }
 
 internal PDB_Strtbl*
-pdb_strtbl_from_data(Arena *arena, string data){
+pdb_strtbl_from_data(Arena* arena, string data){
   ProfBegin("pdb_strtbl_from_data");
   
   // get header
@@ -216,7 +216,7 @@ pdb_strtbl_from_data(Arena *arena, string data){
 }
 
 internal PDB_DbiParsed*
-pdb_dbi_from_data(Arena *arena, string data){
+pdb_dbi_from_data(Arena* arena, string data){
   ProfBegin("pdb_dbi_from_data");
   
   // get header
@@ -276,7 +276,7 @@ pdb_dbi_from_data(Arena *arena, string data){
 }
 
 internal PDB_TpiParsed*
-pdb_tpi_from_data(Arena *arena, string data){
+pdb_tpi_from_data(Arena* arena, string data){
   ProfBegin("pdb_tpi_from_data");
   
   // get header
@@ -318,7 +318,7 @@ pdb_tpi_from_data(Arena *arena, string data){
 }
 
 internal PDB_TpiHashParsed*
-pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, string data, string aux_data){
+pdb_tpi_hash_from_data(Arena* arena, PDB_Strtbl* strtbl, PDB_TpiParsed* tpi, string data, string aux_data){
   ProfBegin("pdb_tpi_hash_from_data");
   
   PDB_TpiHashParsed *result = 0;
@@ -450,7 +450,7 @@ pdb_tpi_hash_from_data(Arena *arena, PDB_Strtbl *strtbl, PDB_TpiParsed *tpi, str
 }
 
 internal PDB_GsiParsed*
-pdb_gsi_from_data(Arena *arena, string data){
+pdb_gsi_from_data(Arena* arena, string data){
   ProfBegin("pdb_gsi_from_data");
   
   // get header
@@ -578,7 +578,7 @@ pdb_gsi_from_data(Arena *arena, string data){
 }
 
 internal U64
-pdb_gsi_symbol_from_string(PDB_GsiParsed *gsi, string symbol_data, string string)
+pdb_gsi_symbol_from_string(PDB_GsiParsed* gsi, string symbol_data, string string)
 {
   U64 result = max_U64;
   
@@ -620,7 +620,7 @@ pdb_gsi_symbol_from_string(PDB_GsiParsed *gsi, string symbol_data, string string
 }
 
 internal COFF_SectionHeaderArray
-pdb_coff_section_array_from_data(Arena *arena, string data){
+pdb_coff_section_array_from_data(Arena* arena, string data){
   COFF_SectionHeaderArray result = {0};
   result.count = data.size/sizeof(COFF_SectionHeader);
   result.v = (COFF_SectionHeader*)data.str;
@@ -628,7 +628,7 @@ pdb_coff_section_array_from_data(Arena *arena, string data){
 }
 
 internal PDB_CompUnitArray*
-pdb_comp_unit_array_from_data(Arena *arena, string data){
+pdb_comp_unit_array_from_data(Arena* arena, string data){
   PDB_CompUnitNode *first = 0;
   PDB_CompUnitNode *last = 0;
   U64 count = 0;
@@ -704,7 +704,7 @@ pdb_comp_unit_array_from_data(Arena *arena, string data){
 }
 
 internal PDB_CompUnitContributionArray*
-pdb_comp_unit_contribution_array_from_data(Arena *arena, string data, COFF_SectionHeaderArray sections)
+pdb_comp_unit_contribution_array_from_data(Arena* arena, string data, COFF_SectionHeaderArray sections)
 {
   PDB_CompUnitContribution *contributions = 0;
   U64 count = 0;
@@ -769,7 +769,7 @@ pdb_comp_unit_contribution_array_from_data(Arena *arena, string data, COFF_Secti
 //~ PDB Dbi Functions
 
 internal string
-pdb_data_from_dbi_range(PDB_DbiParsed *dbi, PDB_DbiRange range){
+pdb_data_from_dbi_range(PDB_DbiParsed* dbi, PDB_DbiRange range){
   string result = {0};
   if (range < PDB_DbiRange_COUNT){
     U64 first = dbi.range_off[range];
@@ -781,7 +781,7 @@ pdb_data_from_dbi_range(PDB_DbiParsed *dbi, PDB_DbiRange range){
 }
 
 internal string
-pdb_data_from_unit_range(MSF_Parsed *msf, PDB_CompUnit *unit, PDB_DbiCompUnitRange range){
+pdb_data_from_unit_range(MSF_Parsed* msf, PDB_CompUnit* unit, PDB_DbiCompUnitRange range){
   string result = {0};
   if (range < PDB_DbiCompUnitRange_COUNT){
     string full_stream_data = msf_data_from_stream(msf, unit.sn);
@@ -801,7 +801,7 @@ pdb_data_from_unit_range(MSF_Parsed *msf, PDB_CompUnit *unit, PDB_DbiCompUnitRan
 //~ PDB Tpi Functions
 
 internal string
-pdb_leaf_data_from_tpi(PDB_TpiParsed *tpi){
+pdb_leaf_data_from_tpi(PDB_TpiParsed* tpi){
   string data = tpi.data;
   U8 *first = data.str + tpi.leaf_first;
   U8 *opl   = data.str + tpi.leaf_opl;
@@ -810,7 +810,7 @@ pdb_leaf_data_from_tpi(PDB_TpiParsed *tpi){
 }
 
 internal CV_TypeIdArray
-pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParsed *leaf,
+pdb_tpi_itypes_from_name(Arena* arena, PDB_TpiHashParsed* tpi_hash, CV_LeafParsed* leaf,
                          string name, B32 compare_unique_name, U32 output_cap){
   U32 hash = pdb_hash_v1(name);
   U32 bucket_idx = ((tpi_hash.bucket_mask != 0) ?
@@ -1001,7 +1001,7 @@ pdb_tpi_itypes_from_name(Arena *arena, PDB_TpiHashParsed *tpi_hash, CV_LeafParse
 }
 
 internal CV_TypeId
-pdb_tpi_first_itype_from_name(PDB_TpiHashParsed *tpi_hash, CV_LeafParsed *tpi_leaf,
+pdb_tpi_first_itype_from_name(PDB_TpiHashParsed* tpi_hash, CV_LeafParsed* tpi_leaf,
                               string name, B32 compare_unique_name){
   Temp scratch = scratch_begin(0, 0);
   CV_TypeIdArray array = pdb_tpi_itypes_from_name(scratch.arena, tpi_hash, tpi_leaf,
@@ -1019,7 +1019,7 @@ pdb_tpi_first_itype_from_name(PDB_TpiHashParsed *tpi_hash, CV_LeafParsed *tpi_le
 //~ PDB Strtbl Functions
 
 internal string
-pdb_strtbl_string_from_off(PDB_Strtbl *strtbl, U32 off){
+pdb_strtbl_string_from_off(PDB_Strtbl* strtbl, U32 off){
   U32 strblock_max = strtbl.strblock_max;
   U32 full_off_raw = strtbl.strblock_min + off;
   U32 full_off = ClampTop(full_off_raw, strblock_max);
@@ -1029,7 +1029,7 @@ pdb_strtbl_string_from_off(PDB_Strtbl *strtbl, U32 off){
 }
 
 internal string
-pdb_strtbl_string_from_index(PDB_Strtbl *strtbl, PDB_StringIndex idx){
+pdb_strtbl_string_from_index(PDB_Strtbl* strtbl, PDB_StringIndex idx){
   string result = {0};
   if (idx < strtbl.bucket_count){
     U32 off = *(U32*)(strtbl.data.str + strtbl.buckets_min + idx*4);
@@ -1039,7 +1039,7 @@ pdb_strtbl_string_from_index(PDB_Strtbl *strtbl, PDB_StringIndex idx){
 }
 
 internal U32
-pdb_strtbl_off_from_string(PDB_Strtbl *strtbl, string string)
+pdb_strtbl_off_from_string(PDB_Strtbl* strtbl, string string)
 {
   U32 result = max_U32;
   
@@ -1072,7 +1072,7 @@ pdb_strtbl_off_from_string(PDB_Strtbl *strtbl, string string)
 //~ rjf: Thin Lookup Fast Paths
 
 internal B32
-pdb_has_symbol_ref(string msf_data, String8List symbol_list, MSF_RawStreamTable *st)
+pdb_has_symbol_ref(string msf_data, String8List symbol_list, MSF_RawStreamTable* st)
 {
   Temp scratch = scratch_begin(0,0);
   
@@ -1105,7 +1105,7 @@ pdb_has_symbol_ref(string msf_data, String8List symbol_list, MSF_RawStreamTable 
 }
 
 internal B32
-pdb_has_file_ref(string msf_data, String8List file_list, MSF_RawStreamTable *st)
+pdb_has_file_ref(string msf_data, String8List file_list, MSF_RawStreamTable* st)
 {
   Temp scratch = scratch_begin(0,0);
   

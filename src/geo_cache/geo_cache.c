@@ -66,7 +66,7 @@ geo_scope_open(void)
 }
 
 internal void
-geo_scope_close(GEO_Scope *scope)
+geo_scope_close(GEO_Scope* scope)
 {
   for (GEO_Touch *touch = scope.top_touch, *next = 0; touch != 0; touch = next)
   {
@@ -93,7 +93,7 @@ geo_scope_close(GEO_Scope *scope)
 }
 
 internal void
-geo_scope_touch_node__stripe_r_guarded(GEO_Scope *scope, GEO_Node *node)
+geo_scope_touch_node__stripe_r_guarded(GEO_Scope* scope, GEO_Node* node)
 {
   GEO_Touch *touch = geo_tctx.free_touch;
   ins_atomic_u64_inc_eval(&node.scope_ref_count);
@@ -116,7 +116,7 @@ geo_scope_touch_node__stripe_r_guarded(GEO_Scope *scope, GEO_Node *node)
 //~ rjf: Cache Lookups
 
 internal R_Handle
-geo_buffer_from_hash(GEO_Scope *scope, U128 hash)
+geo_buffer_from_hash(GEO_Scope* scope, U128 hash)
 {
   R_Handle handle = {0};
   if (!u128_match(hash, u128_zero()))
@@ -181,7 +181,7 @@ geo_buffer_from_hash(GEO_Scope *scope, U128 hash)
 }
 
 internal R_Handle
-geo_buffer_from_key(GEO_Scope *scope, HS_Key key)
+geo_buffer_from_key(GEO_Scope* scope, HS_Key key)
 {
   R_Handle handle = {0};
   for (U64 rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
@@ -227,7 +227,7 @@ geo_u2x_enqueue_req(U128 hash, U64 endt_us)
 }
 
 internal void
-geo_u2x_dequeue_req(U128 *hash_out)
+geo_u2x_dequeue_req(U128* hash_out)
 {
   OS_MutexScope(geo_shared.u2x_ring_mutex) for (;;)
   {
@@ -309,7 +309,7 @@ ASYNC_WORK_DEF(geo_xfer_work)
 //~ rjf: Evictor Threads
 
 internal void
-geo_evictor_thread__entry_point(void *p)
+geo_evictor_thread__entry_point(void* p)
 {
   ThreadNameF("[geo] evictor thread");
   for (;;)

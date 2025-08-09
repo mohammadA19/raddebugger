@@ -5,7 +5,7 @@
 //~ rjf: MSF Parser Functions
 
 internal MSF_RawStreamTable *
-msf_raw_stream_table_from_data(Arena *arena, string msf_data)
+msf_raw_stream_table_from_data(Arena* arena, string msf_data)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -228,7 +228,7 @@ msf_raw_stream_table_from_data(Arena *arena, string msf_data)
 }
 
 internal string
-msf_data_from_stream_number(Arena *arena, string msf_data, MSF_RawStreamTable *st, MSF_StreamNumber sn)
+msf_data_from_stream_number(Arena* arena, string msf_data, MSF_RawStreamTable* st, MSF_StreamNumber sn)
 {
   string result = {0};
   if (sn < st.stream_count)
@@ -272,7 +272,7 @@ msf_data_from_stream_number(Arena *arena, string msf_data, MSF_RawStreamTable *s
 }
 
 internal MSF_Parsed *
-msf_parsed_from_data(Arena *arena, string msf_data)
+msf_parsed_from_data(Arena* arena, string msf_data)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -297,7 +297,7 @@ msf_parsed_from_data(Arena *arena, string msf_data)
 }
 
 internal string
-msf_data_from_stream(MSF_Parsed *msf, MSF_StreamNumber sn)
+msf_data_from_stream(MSF_Parsed* msf, MSF_StreamNumber sn)
 {
   string result = {0};
   if (sn < msf.stream_count)

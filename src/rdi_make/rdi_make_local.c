@@ -457,7 +457,7 @@ rdim_local_hash(RDIM_String8 string)
 }
 
 internal void
-rdim_local_resolve_incomplete_types(RDIM_TypeChunkList *types, RDIM_UDTChunkList *udts)
+rdim_local_resolve_incomplete_types(RDIM_TypeChunkList* types, RDIM_UDTChunkList* udts)
 {
   ProfBeginFunction();
   
@@ -624,7 +624,7 @@ rdim_local_resolve_incomplete_types(RDIM_TypeChunkList *types, RDIM_UDTChunkList
 }
 
 internal RDIM_BakeResults
-rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
+rdim_bake(Arena* arena, ASYNC_Root* async_root, RDIM_BakeParams* in_params)
 {
   Temp scratch = scratch_begin(0,0);
   RDIM_BakeResults out = {0};
@@ -1134,7 +1134,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
 }
 
 internal RDIM_SerializedSectionBundle
-rdim_compress(Arena *arena, RDIM_SerializedSectionBundle *in)
+rdim_compress(Arena* arena, RDIM_SerializedSectionBundle* in)
 {
   RDIM_SerializedSectionBundle out = {0};
   

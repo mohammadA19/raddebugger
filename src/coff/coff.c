@@ -52,7 +52,7 @@ coff_section_flag_from_align_size(U64 align)
 }
 
 internal string
-coff_name_from_section_header(string string_table, COFF_SectionHeader *header)
+coff_name_from_section_header(string string_table, COFF_SectionHeader* header)
 {
   string name = str8_cstring_capped(header.name, header.name + sizeof(header.name));
   if (name.str[0] == '/') {
@@ -64,7 +64,7 @@ coff_name_from_section_header(string string_table, COFF_SectionHeader *header)
 }
 
 internal void
-coff_parse_section_name(string full_name, string *name_out, string *postfix_out)
+coff_parse_section_name(string full_name, string* name_out, string* postfix_out)
 {
   // dollar sign has multiple interpretations that depend on the type of the section.
   // 1. when section contains code/data it indicates section precedence
@@ -86,7 +86,7 @@ coff_parse_section_name(string full_name, string *name_out, string *postfix_out)
 }
 
 internal string
-coff_read_symbol_name(string string_table, COFF_SymbolName *name)
+coff_read_symbol_name(string string_table, COFF_SymbolName* name)
 {
   string name_str = ("");
   if (name.long_name.zeroes == 0) {
@@ -247,7 +247,7 @@ coff_pick_reloc_value_x64(COFF_Reloc_X64 type,
 }
 
 internal string
-coff_make_lib_member_header(Arena *arena, string name, COFF_TimeStamp time_stamp, U16 user_id, U16 group_id, U16 mode, U32 size)
+coff_make_lib_member_header(Arena* arena, string name, COFF_TimeStamp time_stamp, U16 user_id, U16 group_id, U16 mode, U32 size)
 {
   Assert(name.size < 16);
   Assert(user_id < 10000);
@@ -272,7 +272,7 @@ coff_make_lib_member_header(Arena *arena, string name, COFF_TimeStamp time_stamp
 }
 
 internal string
-coff_make_import_lookup(Arena *arena, U16 hint, string name)
+coff_make_import_lookup(Arena* arena, U16 hint, string name)
 {
   U64 buffer_size = sizeof(hint) + (name.size + 1);
   U8 *buffer = push_array(arena, U8, buffer_size);
@@ -298,7 +298,7 @@ coff_make_ordinal64(U16 hint)
 }
 
 internal string
-coff_ordinal_data_from_hint(Arena *arena, COFF_MachineType machine, U16 hint)
+coff_ordinal_data_from_hint(Arena* arena, COFF_MachineType machine, U16 hint)
 {
   string ordinal_data = {0}; 
   switch (machine) {
@@ -441,7 +441,7 @@ arch_from_coff_machine(COFF_MachineType machine)
 }
 
 internal U64
-coff_foff_from_voff(COFF_SectionHeader *sections, U64 section_count, U64 voff)
+coff_foff_from_voff(COFF_SectionHeader* sections, U64 section_count, U64 voff)
 {
   U64 foff = 0;
   for (U64 sect_idx = 0; sect_idx < section_count; sect_idx += 1)
@@ -463,7 +463,7 @@ coff_foff_from_voff(COFF_SectionHeader *sections, U64 section_count, U64 voff)
 //~ rjf: Enum -> String
 
 internal string
-coff_string_from_time_stamp(Arena *arena, COFF_TimeStamp time_stamp)
+coff_string_from_time_stamp(Arena* arena, COFF_TimeStamp time_stamp)
 {
   string result;
   if (time_stamp == 0) {
@@ -546,7 +546,7 @@ coff_string_from_machine_type(COFF_MachineType machine)
 }
 
 internal string
-coff_string_from_flags(Arena *arena, COFF_FileHeaderFlags flags)
+coff_string_from_flags(Arena* arena, COFF_FileHeaderFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -595,7 +595,7 @@ coff_string_from_flags(Arena *arena, COFF_FileHeaderFlags flags)
 }
 
 internal string
-coff_string_from_section_flags(Arena *arena, COFF_SectionFlags flags)
+coff_string_from_section_flags(Arena* arena, COFF_SectionFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -676,7 +676,7 @@ coff_string_from_section_flags(Arena *arena, COFF_SectionFlags flags)
 }
 
 internal string
-coff_string_from_resource_memory_flags(Arena *arena, COFF_ResourceMemoryFlags flags)
+coff_string_from_resource_memory_flags(Arena* arena, COFF_ResourceMemoryFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   

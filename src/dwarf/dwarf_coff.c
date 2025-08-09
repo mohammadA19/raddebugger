@@ -5,7 +5,7 @@ internal B32
 dw_is_dwarf_present_coff_section_table(string             raw_image,
                                        string             string_table,
                                        U64                 section_count,
-                                       COFF_SectionHeader *section_table)
+                                       COFF_SectionHeader* section_table)
 {
   B32 is_dwarf_present = 0;
   
@@ -32,7 +32,7 @@ dw_input_from_coff_section_table(Arena              *arena,
                                  string             raw_image,
                                  string             string_table,
                                  U64                 section_count,
-                                 COFF_SectionHeader *section_table)
+                                 COFF_SectionHeader* section_table)
 {
   DW_Input input                              = {0};
   B32      sect_status[ArrayCount(input.sec)] = {0};

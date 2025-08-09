@@ -44,7 +44,7 @@ r_d3d11_window_from_handle(R_Handle handle)
 }
 
 internal R_Handle
-r_d3d11_handle_from_window(R_D3D11_Window *window)
+r_d3d11_handle_from_window(R_D3D11_Window* window)
 {
   R_Handle handle = {0};
   handle.u64[0] = (U64)window;
@@ -63,7 +63,7 @@ r_d3d11_tex2d_from_handle(R_Handle handle)
 }
 
 internal R_Handle
-r_d3d11_handle_from_tex2d(R_D3D11_Tex2D *texture)
+r_d3d11_handle_from_tex2d(R_D3D11_Tex2D* texture)
 {
   R_Handle handle = {0};
   handle.u64[0] = (U64)texture;
@@ -82,7 +82,7 @@ r_d3d11_buffer_from_handle(R_Handle handle)
 }
 
 internal R_Handle
-r_d3d11_handle_from_buffer(R_D3D11_Buffer *buffer)
+r_d3d11_handle_from_buffer(R_D3D11_Buffer* buffer)
 {
   R_Handle handle = {0};
   handle.u64[0] = (U64)buffer;
@@ -120,7 +120,7 @@ r_d3d11_instance_buffer_from_size(U64 size)
 }
 
 internal void
-r_usage_access_flags_from_resource_kind(R_ResourceKind kind, D3D11_USAGE *out_d3d11_usage, UINT *out_cpu_access_flags)
+r_usage_access_flags_from_resource_kind(R_ResourceKind kind, D3D11_USAGE* out_d3d11_usage, UINT* out_cpu_access_flags)
 {
   switch (kind)
   {
@@ -152,7 +152,7 @@ r_usage_access_flags_from_resource_kind(R_ResourceKind kind, D3D11_USAGE *out_d3
 //- rjf: top-level layer initialization
 
 r_hook void
-r_init(CmdLine *cmdln)
+r_init(CmdLine* cmdln)
 {
   ProfBeginFunction();
   HRESULT error = 0;
@@ -582,7 +582,7 @@ r_window_unequip(OS_Handle handle, R_Handle equip_handle)
 //- rjf: textures
 
 r_hook R_Handle
-r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void *data)
+r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void* data)
 {
   ProfBeginFunction();
   
@@ -708,7 +708,7 @@ r_format_from_tex2d(R_Handle handle)
 }
 
 r_hook void
-r_fill_tex2d_region(R_Handle handle, Rng2S32 subrect, void *data)
+r_fill_tex2d_region(R_Handle handle, Rng2S32 subrect, void* data)
 {
   ProfBeginFunction();
   OS_MutexScopeW(r_d3d11_state.device_rw_mutex)
@@ -733,7 +733,7 @@ r_fill_tex2d_region(R_Handle handle, Rng2S32 subrect, void *data)
 //- rjf: buffers
 
 r_hook R_Handle
-r_buffer_alloc(R_ResourceKind kind, U64 size, void *data)
+r_buffer_alloc(R_ResourceKind kind, U64 size, void* data)
 {
   ProfBeginFunction();
   
@@ -1057,7 +1057,7 @@ r_window_end_frame(OS_Handle window, R_Handle window_equip)
 //- rjf: render pass submission
 
 r_hook void
-r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
+r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList* passes)
 {
   ProfBeginFunction();
   OS_MutexScopeW(r_d3d11_state.device_rw_mutex)

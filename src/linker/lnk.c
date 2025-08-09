@@ -126,7 +126,7 @@
 // -----------------------------------------------------------------------------
 
 internal LNK_Config *
-lnk_config_from_argcv(Arena *arena, int argc, char **argv)
+lnk_config_from_argcv(Arena* arena, int argc, char** argv)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -234,7 +234,7 @@ lnk_config_from_argcv(Arena *arena, int argc, char **argv)
 }
 
 internal string
-lnk_make_full_path(Arena *arena, PathStyle system_path_style, string work_dir, string path)
+lnk_make_full_path(Arena* arena, PathStyle system_path_style, string work_dir, string path)
 {
   ProfBeginFunction();
   string result = str8(0,0);
@@ -270,7 +270,7 @@ THREAD_POOL_TASK_FUNC(lnk_blake3_hasher_task)
 }
 
 internal U128
-lnk_blake3_hash_parallel(TP_Context *tp, U64 chunk_count, string data)
+lnk_blake3_hash_parallel(TP_Context* tp, U64 chunk_count, string data)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -458,7 +458,7 @@ lnk_manifest_from_inputs(Arena       *arena,
 }
 
 internal string
-lnk_make_null_obj(Arena *arena)
+lnk_make_null_obj(Arena* arena)
 {
   COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0,COFF_MachineType_Unknown);
 
@@ -487,7 +487,7 @@ lnk_make_null_obj(Arena *arena)
 }
 
 internal int
-lnk_res_string_id_is_before(void *raw_a, void *raw_b)
+lnk_res_string_id_is_before(void* raw_a, void* raw_b)
 {
   PE_Resource *a = raw_a;
   PE_Resource *b = raw_b;
@@ -498,7 +498,7 @@ lnk_res_string_id_is_before(void *raw_a, void *raw_b)
 }
 
 internal int
-lnk_res_number_id_is_before(void *raw_a, void *raw_b)
+lnk_res_number_id_is_before(void* raw_a, void* raw_b)
 {
   PE_Resource *a = raw_a;
   PE_Resource *b = raw_b;
@@ -509,7 +509,7 @@ lnk_res_number_id_is_before(void *raw_a, void *raw_b)
 }
 
 internal void
-lnk_serialize_pe_resource_tree(COFF_ObjWriter *obj_writer, PE_ResourceDir *root_dir)
+lnk_serialize_pe_resource_tree(COFF_ObjWriter* obj_writer, PE_ResourceDir* root_dir)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -654,7 +654,7 @@ lnk_serialize_pe_resource_tree(COFF_ObjWriter *obj_writer, PE_ResourceDir *root_
 }
 
 internal void
-lnk_add_resource_debug_s(COFF_ObjWriter *obj_writer,
+lnk_add_resource_debug_s(COFF_ObjWriter* obj_writer,
                          string         obj_path,
                          string         cwd_path,
                          string         exe_path,
@@ -890,28 +890,28 @@ lnk_get_lib_name(string path)
 }
 
 internal B32
-lnk_is_lib_disallowed(HashTable *disallow_lib_ht, string path)
+lnk_is_lib_disallowed(HashTable* disallow_lib_ht, string path)
 {
   string lib_name = lnk_get_lib_name(path);
   return hash_table_search_path(disallow_lib_ht, lib_name) != 0;
 }
 
 internal B32
-lnk_is_lib_loaded(HashTable *loaded_lib_ht, string path)
+lnk_is_lib_loaded(HashTable* loaded_lib_ht, string path)
 {
   KeyValuePair *is_loaded = hash_table_search_path(loaded_lib_ht, path);
   return is_loaded != 0;
 }
 
 internal void
-lnk_push_disallow_lib(Arena *arena, HashTable *disallow_lib_ht, string path)
+lnk_push_disallow_lib(Arena* arena, HashTable* disallow_lib_ht, string path)
 {
   string lib_name = lnk_get_lib_name(path);
   hash_table_push_path_u64(arena, disallow_lib_ht, lib_name, 0);
 }
 
 internal void
-lnk_push_loaded_lib(Arena *arena, HashTable *loaded_lib_ht, string path)
+lnk_push_loaded_lib(Arena* arena, HashTable* loaded_lib_ht, string path)
 {
   if (!hash_table_search_path(loaded_lib_ht, path)) {
     string path_copy = push_str8_copy(arena, path);
@@ -920,7 +920,7 @@ lnk_push_loaded_lib(Arena *arena, HashTable *loaded_lib_ht, string path)
 }
 
 internal string
-lnk_make_linker_obj(Arena *arena, LNK_Config *config)
+lnk_make_linker_obj(Arena* arena, LNK_Config* config)
 {
   ProfBeginFunction();
 
@@ -966,7 +966,7 @@ internal void
 lnk_queue_lib_member_input(Arena               *arena,
                            PathStyle            path_style,
                            LNK_SymbolLib       *symbol,
-                           LNK_InputImportList *input_import_list,
+                           LNK_InputImportList* input_import_list,
                            LNK_InputObjList    *input_obj_list)
 {
   LNK_Lib *lib = symbol.lib;
@@ -1114,7 +1114,7 @@ internal LNK_SymbolFinderResult
 lnk_run_symbol_finder(TP_Context      *tp,
                       TP_Arena        *arena,
                       LNK_Config      *config,
-                      LNK_SymbolTable *symtab,
+                      LNK_SymbolTable* symtab,
                       LNK_SymbolList   lookup_list,
                       TP_TaskFunc     *task_func)
 {
@@ -1165,7 +1165,7 @@ lnk_run_symbol_finder(TP_Context      *tp,
 }
 
 internal LNK_LinkContext
-lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
+lnk_build_link_context(TP_Context* tp, TP_Arena* tp_arena, LNK_Config* config)
 {
   enum State {
     State_Null,
@@ -2105,7 +2105,7 @@ lnk_build_link_context(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config)
 }
 
 internal B32
-lnk_resolve_symbol(LNK_SymbolTable *symtab, LNK_SymbolDefined symbol, LNK_SymbolDefined *symbol_out)
+lnk_resolve_symbol(LNK_SymbolTable* symtab, LNK_SymbolDefined symbol, LNK_SymbolDefined* symbol_out)
 {
   B32                        is_resolved   = 1;
   COFF_ParsedSymbol          symbol_parsed = lnk_parsed_symbol_from_coff_symbol_idx(symbol.obj, symbol.symbol_idx);
@@ -2151,7 +2151,7 @@ lnk_resolve_symbol(LNK_SymbolTable *symtab, LNK_SymbolDefined symbol, LNK_Symbol
 }
 
 internal void
-lnk_gc_comdats(TP_Context *tp, LNK_SymbolTable *symtab, U64 objs_count, LNK_Obj **objs, LNK_Config *config)
+lnk_gc_comdats(TP_Context* tp, LNK_SymbolTable* symtab, U64 objs_count, LNK_Obj** objs, LNK_Config* config)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -2504,7 +2504,7 @@ THREAD_POOL_TASK_FUNC(lnk_patch_comdat_leaders_task)
 }
 
 internal int
-lnk_section_contrib_ptr_is_before(void *raw_a, void *raw_b)
+lnk_section_contrib_ptr_is_before(void* raw_a, void* raw_b)
 {
   LNK_SectionContrib **a = raw_a, **b = raw_b;
   U64 input_idx_a = Compose64Bit((*a)->u.obj_idx, (*a)->u.obj_sect_idx);
@@ -2523,7 +2523,7 @@ THREAD_POOL_TASK_FUNC(lnk_sort_contribs_task)
 }
 
 internal int
-lnk_common_block_contrib_is_before(void *raw_a, void *raw_b)
+lnk_common_block_contrib_is_before(void* raw_a, void* raw_b)
 {
   LNK_CommonBlockContrib *a = raw_a;
   LNK_CommonBlockContrib *b = raw_b;
@@ -2656,7 +2656,7 @@ THREAD_POOL_TASK_FUNC(lnk_patch_regular_symbols_task)
 }
 
 internal void
-lnk_patch_obj_symtab(LNK_SymbolTable *symtab, LNK_Obj *obj, B8 *was_symbol_patched, COFF_SymbolValueInterpType fixup_type)
+lnk_patch_obj_symtab(LNK_SymbolTable* symtab, LNK_Obj* obj, B8* was_symbol_patched, COFF_SymbolValueInterpType fixup_type)
 {
   ProfBeginV("%S\n", obj.path);
 
@@ -2728,7 +2728,7 @@ THREAD_POOL_TASK_FUNC(lnk_patch_weak_symbols_task)
 }
 
 internal U64
-lnk_compute_win32_image_header_size(LNK_Config *config, U64 sect_count)
+lnk_compute_win32_image_header_size(LNK_Config* config, U64 sect_count)
 {
   U64 image_header_size = 0;
   image_header_size += sizeof(PE_DosHeader) + pe_dos_program.size;
@@ -2845,7 +2845,7 @@ THREAD_POOL_TASK_FUNC(lnk_obj_reloc_patcher)
 }
 
 internal int
-lnk_section_definition_is_before(void *raw_a, void *raw_b)
+lnk_section_definition_is_before(void* raw_a, void* raw_b)
 {
   LNK_SectionDefinition **a = raw_a, **b = raw_b;
   U64 input_idx_a = Compose64Bit((*a)->obj.input_idx, (*a)->obj_sect_idx);
@@ -2914,7 +2914,7 @@ THREAD_POOL_TASK_FUNC(lnk_flag_hotpatch_contribs_task)
 }
 
 internal void
-lnk_push_coff_symbols_from_data(Arena *arena, LNK_SymbolList *symbol_list, string data, LNK_SymbolArray obj_symbols)
+lnk_push_coff_symbols_from_data(Arena* arena, LNK_SymbolList* symbol_list, string data, LNK_SymbolArray obj_symbols)
 {
   if (data.size % sizeof(U32)) {
     // TODO: report invalid data size
@@ -2933,7 +2933,7 @@ lnk_push_coff_symbols_from_data(Arena *arena, LNK_SymbolList *symbol_list, strin
 }
 
 internal string
-lnk_build_guard_data(Arena *arena, U64Array voff_arr, U64 stride)
+lnk_build_guard_data(Arena* arena, U64Array voff_arr, U64 stride)
 {
   Assert(stride >= sizeof(U32));
   
@@ -2957,7 +2957,7 @@ lnk_build_guard_data(Arena *arena, U64Array voff_arr, U64 stride)
 
 internal String8List
 lnk_build_guard_tables(TP_Context       *tp,
-                       LNK_SectionTable *sectab,
+                       LNK_SectionTable* sectab,
                        LNK_SymbolTable  *symtab,
                        U64               objs_count,
                        LNK_Obj         **objs,
@@ -3431,14 +3431,14 @@ THREAD_POOL_TASK_FUNC(lnk_patch_section_symbols_task)
 }
 
 int
-lnk_base_reloc_page_compar(const void *raw_a, const void *raw_b)
+lnk_base_reloc_page_compar(const void* raw_a, const void* raw_b)
 {
   const LNK_BaseRelocPage *a = raw_a, *b = raw_b;
   return u64_compar(&a.voff, &b.voff);
 }
 
 int
-lnk_base_reloc_page_is_before(void *raw_a, void *raw_b)
+lnk_base_reloc_page_is_before(void* raw_a, void* raw_b)
 {
   LNK_BaseRelocPage* a = raw_a;
   LNK_BaseRelocPage* b = raw_b;
@@ -3446,7 +3446,7 @@ lnk_base_reloc_page_is_before(void *raw_a, void *raw_b)
 }
 
 internal String8List
-lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, U64 objs_count, LNK_Obj **objs)
+lnk_build_base_relocs(TP_Context* tp, TP_Arena* tp_arena, LNK_Config* config, U64 objs_count, LNK_Obj** objs)
 {
   ProfBeginFunction();
 
@@ -3604,7 +3604,7 @@ lnk_build_base_relocs(TP_Context *tp, TP_Arena *tp_arena, LNK_Config *config, U6
 }
 
 internal String8List
-lnk_build_win32_header(Arena *arena, LNK_SymbolTable *symtab, LNK_Config *config, LNK_SectionArray sects, U64 expected_image_header_size)
+lnk_build_win32_header(Arena* arena, LNK_SymbolTable* symtab, LNK_Config* config, LNK_SectionArray sects, U64 expected_image_header_size)
 {
   ProfBeginFunction();
 
@@ -4474,7 +4474,7 @@ lnk_build_image(TP_Arena            *arena,
 }
 
 internal PairU32 *
-lnk_obj_sect_idx_from_section(Arena *arena, U64 objs_count, LNK_Obj **objs, LNK_Section *sect, LNK_Config *config, U64 *obj_sect_idxs_count_out)
+lnk_obj_sect_idx_from_section(Arena* arena, U64 objs_count, LNK_Obj** objs, LNK_Section* sect, LNK_Config* config, U64* obj_sect_idxs_count_out)
 {
   U64 max_contribs = 0;
   for (LNK_SectionContribChunk *chunk = sect.contribs.first; chunk != 0; chunk = chunk.next) {
@@ -4515,7 +4515,7 @@ lnk_obj_sect_idx_from_section(Arena *arena, U64 objs_count, LNK_Obj **objs, LNK_
 }
 
 internal COFF_SectionHeader *
-lnk_coff_section_header_from_obj_sect_idx_pair(LNK_Obj **objs, PairU32 p)
+lnk_coff_section_header_from_obj_sect_idx_pair(LNK_Obj** objs, PairU32 p)
 {
   LNK_Obj            *obj           = objs[p.v0];
   COFF_SectionHeader *section_table = str8_deserial_get_raw_ptr(obj.data, obj.header.section_table_range.min, 0);
@@ -4525,7 +4525,7 @@ lnk_coff_section_header_from_obj_sect_idx_pair(LNK_Obj **objs, PairU32 p)
 global LNK_Obj **g_rad_map_objs;
 
 internal int
-lnk_obj_sect_idx_is_before(void *raw_a, void *raw_b)
+lnk_obj_sect_idx_is_before(void* raw_a, void* raw_b)
 {
   PairU32 *a = raw_a, *b = raw_b;
   COFF_SectionHeader *section_header_a = lnk_coff_section_header_from_obj_sect_idx_pair(g_rad_map_objs, *a);
@@ -4534,7 +4534,7 @@ lnk_obj_sect_idx_is_before(void *raw_a, void *raw_b)
 }
 
 internal U64
-lnk_pair_u32_nearest_section(PairU32 *arr, U64 count, LNK_Obj **objs, U32 voff)
+lnk_pair_u32_nearest_section(PairU32* arr, U64 count, LNK_Obj** objs, U32 voff)
 {
   U64 result = max_U64;
 
@@ -4571,7 +4571,7 @@ lnk_pair_u32_nearest_section(PairU32 *arr, U64 count, LNK_Obj **objs, U32 voff)
 }
 
 internal String8List
-lnk_build_rad_map(Arena *arena, string image_data, LNK_Config *config, U64 objs_count, LNK_Obj **objs, LNK_LibList lib_index[LNK_InputSource_Count], LNK_SectionTable *sectab)
+lnk_build_rad_map(Arena* arena, string image_data, LNK_Config* config, U64 objs_count, LNK_Obj** objs, LNK_LibList lib_index[LNK_InputSource_Count], LNK_SectionTable* sectab)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -4697,7 +4697,7 @@ lnk_build_rad_map(Arena *arena, string image_data, LNK_Config *config, U64 objs_
 }
 
 internal void
-lnk_write_thread(void *raw_ctx)
+lnk_write_thread(void* raw_ctx)
 {
   ProfBeginFunction();
   LNK_WriteThreadContext *ctx = raw_ctx;
@@ -4739,7 +4739,7 @@ lnk_log_timers(void)
 }
 
 internal void
-lnk_run(TP_Context *tp, TP_Arena *arena, LNK_Config *config)
+lnk_run(TP_Context* tp, TP_Arena* arena, LNK_Config* config)
 {
   ProfBeginFunction();
 
@@ -4869,7 +4869,7 @@ lnk_run(TP_Context *tp, TP_Arena *arena, LNK_Config *config)
 }
 
 internal void
-entry_point(CmdLine *cmdline)
+entry_point(CmdLine* cmdline)
 {
   Temp scratch = scratch_begin(0,0);
   lnk_init_error_handler();

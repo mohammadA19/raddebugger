@@ -41,7 +41,7 @@ global read_only R_OGL_Attribute r_ogl_single_color_output_attributes[] =
 //~ rjf: Helpers
 
 internal R_Handle
-r_ogl_handle_from_tex2d(R_OGL_Tex2D *t)
+r_ogl_handle_from_tex2d(R_OGL_Tex2D* t)
 {
   R_Handle h = {(U64)t};
   return h;
@@ -89,7 +89,7 @@ r_ogl_instance_buffer_from_size(U64 size)
 }
 
 internal void
-r_ogl_debug_message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar *message, const void *userParam)
+r_ogl_debug_message_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
   raddbg_log("[OpenGL] %.*s\n", (int)length, message);
   fprintf(stderr, "[OpenGL] %.*s\n", (int)length, message);
@@ -101,7 +101,7 @@ r_ogl_debug_message_callback(GLenum source, GLenum type, GLuint id, GLenum sever
 //- rjf: top-level layer initialization
 
 r_hook void
-r_init(CmdLine *cmdln)
+r_init(CmdLine* cmdln)
 {
   //- rjf: do os-specific portion of work
   r_ogl_os_init(cmdln);
@@ -216,7 +216,7 @@ r_window_unequip(OS_Handle window, R_Handle window_equip)
 //- rjf: textures
 
 r_hook R_Handle
-r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void *data)
+r_tex2d_alloc(R_ResourceKind kind, Vec2S32 size, R_Tex2DFormat format, void* data)
 {
   //- rjf: allocate texture record
   R_OGL_Tex2D *tex2d = r_ogl_state.free_tex2d;
@@ -298,7 +298,7 @@ r_format_from_tex2d(R_Handle texture)
 }
 
 r_hook void
-r_fill_tex2d_region(R_Handle texture, Rng2S32 subrect, void *data)
+r_fill_tex2d_region(R_Handle texture, Rng2S32 subrect, void* data)
 {
   R_OGL_Tex2D *t = r_ogl_tex2d_from_handle(texture);
   if (t)
@@ -314,7 +314,7 @@ r_fill_tex2d_region(R_Handle texture, Rng2S32 subrect, void *data)
 //- rjf: buffers
 
 r_hook R_Handle
-r_buffer_alloc(R_ResourceKind kind, U64 size, void *data)
+r_buffer_alloc(R_ResourceKind kind, U64 size, void* data)
 {
   R_Handle result = {0};
   return result;
@@ -372,7 +372,7 @@ r_window_end_frame(OS_Handle os, R_Handle r)
 //- rjf: render pass submission
 
 r_hook void
-r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList *passes)
+r_window_submit(OS_Handle window, R_Handle window_equip, R_PassList* passes)
 {
   Rng2F32 viewport_rect = os_client_rect_from_window(window);
   Vec2F32 viewport_dim = dim_2f32(viewport_rect);

@@ -1,5 +1,5 @@
 internal string
-rc_data_from_file_path(Arena *arena, string path)
+rc_data_from_file_path(Arena* arena, string path)
 {
   string data = os_data_from_file_path(arena, path);
   if (data.size == 0) {
@@ -10,7 +10,7 @@ rc_data_from_file_path(Arena *arena, string path)
 }
 
 internal RC_Context
-rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
+rc_context_from_cmd_line(Arena* arena, CmdLine* cmdl)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -384,7 +384,7 @@ rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl)
 }
 
 internal String8List
-rc_run(Arena *arena, RC_Context *rc)
+rc_run(Arena* arena, RC_Context* rc)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -426,7 +426,7 @@ rc_run(Arena *arena, RC_Context *rc)
 }
 
 internal string
-rc_rdi_from_cmd_line(Arena *arena, CmdLine *cmdl)
+rc_rdi_from_cmd_line(Arena* arena, CmdLine* cmdl)
 {
   Temp scratch = scratch_begin(&arena, 1);
   RC_Context  rc      = rc_context_from_cmd_line(scratch.arena, cmdl);
@@ -437,7 +437,7 @@ rc_rdi_from_cmd_line(Arena *arena, CmdLine *cmdl)
 }
 
 internal void
-rc_main(CmdLine *cmdl)
+rc_main(CmdLine* cmdl)
 {
   B32 do_help = (cmd_line_has_flag(cmdl, ("help")) ||
                  cmd_line_has_flag(cmdl, ("h")) ||

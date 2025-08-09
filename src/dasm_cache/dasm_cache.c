@@ -13,7 +13,7 @@
 #endif
 
 internal DASM_Inst
-dasm_inst_from_code(Arena *arena, Arch arch, U64 vaddr, string code, DASM_Syntax syntax)
+dasm_inst_from_code(Arena* arena, Arch arch, U64 vaddr, string code, DASM_Syntax syntax)
 {
   DASM_Inst inst = {0};
   switch (arch)
@@ -148,7 +148,7 @@ dasm_inst_from_code(Arena *arena, Arch arch, U64 vaddr, string code, DASM_Syntax
 //~ rjf: Control Flow Analysis
 
 internal DASM_CtrlFlowInfo
-dasm_ctrl_flow_info_from_arch_vaddr_code(Arena *arena, DASM_InstFlags exit_points_mask, Arch arch, U64 vaddr, string code)
+dasm_ctrl_flow_info_from_arch_vaddr_code(Arena* arena, DASM_InstFlags exit_points_mask, Arch arch, U64 vaddr, string code)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DASM_CtrlFlowInfo info = {0};
@@ -178,7 +178,7 @@ dasm_ctrl_flow_info_from_arch_vaddr_code(Arena *arena, DASM_InstFlags exit_point
 //~ rjf: Parameter Type Functions
 
 internal B32
-dasm_params_match(DASM_Params *a, DASM_Params *b)
+dasm_params_match(DASM_Params* a, DASM_Params* b)
 {
   B32 result = (a.vaddr == b.vaddr &&
                 a.arch == b.arch &&
@@ -193,7 +193,7 @@ dasm_params_match(DASM_Params *a, DASM_Params *b)
 //~ rjf: Line Type Functions
 
 internal void
-dasm_line_chunk_list_push(Arena *arena, DASM_LineChunkList *list, U64 cap, DASM_Line *inst)
+dasm_line_chunk_list_push(Arena* arena, DASM_LineChunkList* list, U64 cap, DASM_Line* inst)
 {
   DASM_LineChunkNode *node = list.last;
   if (node == 0 || node.count >= node.cap)
@@ -210,7 +210,7 @@ dasm_line_chunk_list_push(Arena *arena, DASM_LineChunkList *list, U64 cap, DASM_
 }
 
 internal DASM_LineArray
-dasm_line_array_from_chunk_list(Arena *arena, DASM_LineChunkList *list)
+dasm_line_array_from_chunk_list(Arena* arena, DASM_LineChunkList* list)
 {
   DASM_LineArray array = {0};
   array.count = list.line_count;
@@ -225,7 +225,7 @@ dasm_line_array_from_chunk_list(Arena *arena, DASM_LineChunkList *list)
 }
 
 internal U64
-dasm_line_array_idx_from_code_off__linear_scan(DASM_LineArray *array, U64 off)
+dasm_line_array_idx_from_code_off__linear_scan(DASM_LineArray* array, U64 off)
 {
   U64 result = 0;
   for (U64 idx = 0; idx < array.count; idx += 1)
@@ -244,7 +244,7 @@ dasm_line_array_idx_from_code_off__linear_scan(DASM_LineArray *array, U64 off)
 }
 
 internal U64
-dasm_line_array_code_off_from_idx(DASM_LineArray *array, U64 idx)
+dasm_line_array_code_off_from_idx(DASM_LineArray* array, U64 idx)
 {
   U64 off = 0;
   if (idx < array.count)
@@ -299,7 +299,7 @@ dasm_scope_open(void)
 }
 
 internal void
-dasm_scope_close(DASM_Scope *scope)
+dasm_scope_close(DASM_Scope* scope)
 {
   for (DASM_Touch *t = scope.top_touch, *next = 0; t != 0; t = next)
   {
@@ -324,7 +324,7 @@ dasm_scope_close(DASM_Scope *scope)
 }
 
 internal void
-dasm_scope_touch_node__stripe_r_guarded(DASM_Scope *scope, DASM_Node *node)
+dasm_scope_touch_node__stripe_r_guarded(DASM_Scope* scope, DASM_Node* node)
 {
   DASM_Touch *touch = push_array(dasm_tctx.arena, DASM_Touch, 1);
   ins_atomic_u64_inc_eval(&node.scope_ref_count);
@@ -340,7 +340,7 @@ dasm_scope_touch_node__stripe_r_guarded(DASM_Scope *scope, DASM_Node *node)
 //~ rjf: Cache Lookups
 
 internal DASM_Info
-dasm_info_from_hash_params(DASM_Scope *scope, U128 hash, DASM_Params *params)
+dasm_info_from_hash_params(DASM_Scope* scope, U128 hash, DASM_Params* params)
 {
   DASM_Info info = {0};
   if (!u128_match(hash, u128_zero()))
@@ -424,7 +424,7 @@ dasm_info_from_hash_params(DASM_Scope *scope, U128 hash, DASM_Params *params)
 }
 
 internal DASM_Info
-dasm_info_from_key_params(DASM_Scope *scope, HS_Key key, DASM_Params *params, U128 *hash_out)
+dasm_info_from_key_params(DASM_Scope* scope, HS_Key key, DASM_Params* params, U128* hash_out)
 {
   DASM_Info result = {0};
   for (U64 rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
@@ -447,7 +447,7 @@ dasm_info_from_key_params(DASM_Scope *scope, HS_Key key, DASM_Params *params, U1
 //~ rjf: Parse Threads
 
 internal B32
-dasm_u2p_enqueue_req(HS_Root root, U128 hash, DASM_Params *params, U64 endt_us)
+dasm_u2p_enqueue_req(HS_Root root, U128 hash, DASM_Params* params, U64 endt_us)
 {
   B32 good = 0;
   OS_MutexScope(dasm_shared.u2p_ring_mutex) for (;;)
@@ -483,7 +483,7 @@ dasm_u2p_enqueue_req(HS_Root root, U128 hash, DASM_Params *params, U64 endt_us)
 }
 
 internal void
-dasm_u2p_dequeue_req(Arena *arena, HS_Root *root_out, U128 *hash_out, DASM_Params *params_out)
+dasm_u2p_dequeue_req(Arena* arena, HS_Root* root_out, U128* hash_out, DASM_Params* params_out)
 {
   OS_MutexScope(dasm_shared.u2p_ring_mutex) for (;;)
   {
@@ -755,7 +755,7 @@ ASYNC_WORK_DEF(dasm_parse_work)
 //~ rjf: Evictor/Detector Thread
 
 internal void
-dasm_evictor_detector_thread__entry_point(void *p)
+dasm_evictor_detector_thread__entry_point(void* p)
 {
   ThreadNameF("[dasm] evictor/detector thread");
   for (;;)

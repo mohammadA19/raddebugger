@@ -246,7 +246,7 @@ sign_from_side_F32(Side side){
 //~ rjf: Memory Functions
 
 internal B32
-memory_is_zero(void *ptr, U64 size){
+memory_is_zero(void* ptr, U64 size){
   B32 result = 1;
   
   // break down size
@@ -572,7 +572,7 @@ date_time_from_unix_time(U64 unix_time)
 //~ rjf: Non-Fancy Ring Buffer Reads/Writes
 
 internal U64
-ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_data_size)
+ring_write(U8* ring_base, U64 ring_size, U64 ring_pos, void* src_data, U64 src_data_size)
 {
   Assert(src_data_size <= ring_size);
   {
@@ -589,7 +589,7 @@ ring_write(U8 *ring_base, U64 ring_size, U64 ring_pos, void *src_data, U64 src_d
 }
 
 internal U64
-ring_read(U8 *ring_base, U64 ring_size, U64 ring_pos, void *dst_data, U64 read_size)
+ring_read(U8* ring_base, U64 ring_size, U64 ring_pos, void* dst_data, U64 read_size)
 {
   Assert(read_size <= ring_size);
   {
@@ -606,7 +606,7 @@ ring_read(U8 *ring_base, U64 ring_size, U64 ring_pos, void *dst_data, U64 read_s
 ////////////////////////////////
 
 internal U64
-u64_array_bsearch(U64 *arr, U64 count, U64 value)
+u64_array_bsearch(U64* arr, U64 count, U64 value)
 {
   if (count > 1 && arr[0] <= value && value < arr[count-1])
   {
@@ -639,7 +639,7 @@ u64_array_bsearch(U64 *arr, U64 count, U64 value)
 ////////////////////////////////
 
 internal U64
-index_of_zero_u32(U32 *ptr, U64 count)
+index_of_zero_u32(U32* ptr, U64 count)
 {
   for (U64 i = 0; i < count; i += 1) {
     if (ptr[i] == 0) {
@@ -650,7 +650,7 @@ index_of_zero_u32(U32 *ptr, U64 count)
 }
 
 internal U64
-index_of_zero_u64(U64 *ptr, U64 count)
+index_of_zero_u64(U64* ptr, U64 count)
 {
   for (U64 i = 0; i < count; i += 1) {
     if (ptr[i] == 0) {

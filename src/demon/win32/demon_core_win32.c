@@ -27,7 +27,7 @@ dmn_w32_hash_from_id(U64 id)
 //- rjf: entity <-> handle
 
 internal DMN_Handle
-dmn_w32_handle_from_entity(DMN_W32_Entity *entity)
+dmn_w32_handle_from_entity(DMN_W32_Entity* entity)
 {
   U32 idx = (U32)(entity - dmn_w32_shared.entities_base);
   U32 gen = entity.gen;
@@ -51,7 +51,7 @@ dmn_w32_entity_from_handle(DMN_Handle handle)
 //- rjf: entity allocation/deallocation
 
 internal DMN_W32_Entity *
-dmn_w32_entity_alloc(DMN_W32_Entity *parent, DMN_W32_EntityKind kind, U64 id)
+dmn_w32_entity_alloc(DMN_W32_Entity* parent, DMN_W32_EntityKind kind, U64 id)
 {
   // rjf: allocate
   DMN_W32_Entity *e = dmn_w32_shared.entities_first_free;
@@ -119,7 +119,7 @@ dmn_w32_entity_alloc(DMN_W32_Entity *parent, DMN_W32_EntityKind kind, U64 id)
 }
 
 internal void
-dmn_w32_entity_release(DMN_W32_Entity *entity)
+dmn_w32_entity_release(DMN_W32_Entity* entity)
 {
   // rjf: unhook root
   if (entity.parent != &dmn_w32_entity_nil)
@@ -209,7 +209,7 @@ dmn_w32_entity_from_kind_id(DMN_W32_EntityKind kind, U64 id)
 //~ rjf: Module Info Extraction
 
 internal string
-dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module)
+dmn_w32_full_path_from_module(Arena* arena, DMN_W32_Entity* module)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -308,7 +308,7 @@ dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module)
 //- rjf: processes
 
 internal U64
-dmn_w32_process_read(HANDLE process, Rng1U64 range, void *dst)
+dmn_w32_process_read(HANDLE process, Rng1U64 range, void* dst)
 {
   U64 bytes_read = 0;
   U8 *ptr = (U8*)dst;
@@ -334,7 +334,7 @@ dmn_w32_process_read(HANDLE process, Rng1U64 range, void *dst)
 }
 
 internal B32
-dmn_w32_process_write(HANDLE process, Rng1U64 range, void *src)
+dmn_w32_process_write(HANDLE process, Rng1U64 range, void* src)
 {
   B32 result = 1;
   U8 *ptr = (U8*)src;
@@ -356,7 +356,7 @@ dmn_w32_process_write(HANDLE process, Rng1U64 range, void *src)
 }
 
 internal string
-dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, U64 address)
+dmn_w32_read_memory_str(Arena* arena, HANDLE process_handle, U64 address)
 {
   // TODO(rjf): @rewrite
   //
@@ -405,7 +405,7 @@ dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, U64 address)
 }
 
 internal String16
-dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, U64 address)
+dmn_w32_read_memory_str16(Arena* arena, HANDLE process_handle, U64 address)
 {
   // TODO(rjf): @rewrite
   //
@@ -530,7 +530,7 @@ dmn_w32_image_info_from_process_base_vaddr(HANDLE process, U64 base_vaddr)
 //- rjf: threads
 
 internal U16
-dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT *fxsave)
+dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT* fxsave)
 {
   U16 result = 0;
   U32 top = (fxsave.StatusWord >> 11) & 7;
@@ -581,7 +581,7 @@ dmn_w32_xsave_tag_word_from_real_tag_word(U16 ftw)
 }
 
 internal B32
-dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
+dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void* reg_block)
 {
   B32 result = 0;
   ProfBeginFunction();
@@ -875,7 +875,7 @@ dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block)
 }
 
 internal B32
-dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block)
+dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void* reg_block)
 {
   B32 result = 0;
   ProfBeginFunction();
@@ -1208,7 +1208,7 @@ dmn_ctrl_exclusive_access_end(void)
 }
 
 internal U32
-dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
+dmn_ctrl_launch(DMN_CtrlCtx* ctx, OS_ProcessLaunchParams* params)
 {
   Temp scratch = scratch_begin(0, 0);
   U32 result = 0;
@@ -1329,7 +1329,7 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
 }
 
 internal B32
-dmn_ctrl_attach(DMN_CtrlCtx *ctx, U32 pid)
+dmn_ctrl_attach(DMN_CtrlCtx* ctx, U32 pid)
 {
   B32 result = 0;
   DMN_AccessScope if (DebugActiveProcess((DWORD)pid))
@@ -1358,7 +1358,7 @@ dmn_ctrl_attach(DMN_CtrlCtx *ctx, U32 pid)
 }
 
 internal B32
-dmn_ctrl_kill(DMN_CtrlCtx *ctx, DMN_Handle process, U32 exit_code)
+dmn_ctrl_kill(DMN_CtrlCtx* ctx, DMN_Handle process, U32 exit_code)
 {
   B32 result = 0;
   DMN_AccessScope
@@ -1373,7 +1373,7 @@ dmn_ctrl_kill(DMN_CtrlCtx *ctx, DMN_Handle process, U32 exit_code)
 }
 
 internal B32
-dmn_ctrl_detach(DMN_CtrlCtx *ctx, DMN_Handle process)
+dmn_ctrl_detach(DMN_CtrlCtx* ctx, DMN_Handle process)
 {
   B32 result = 0;
   DMN_AccessScope
@@ -1411,7 +1411,7 @@ dmn_ctrl_detach(DMN_CtrlCtx *ctx, DMN_Handle process)
 }
 
 internal DMN_EventList
-dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
+dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
 {
   DMN_EventList events = {0};
   dmn_access_open();
@@ -3061,7 +3061,7 @@ dmn_process_memory_protect(DMN_Handle process, U64 vaddr, U64 size, OS_AccessFla
 }
 
 internal U64
-dmn_process_read(DMN_Handle process, Rng1U64 range, void *dst)
+dmn_process_read(DMN_Handle process, Rng1U64 range, void* dst)
 {
   U64 result = 0;
   DMN_AccessScope
@@ -3073,7 +3073,7 @@ dmn_process_read(DMN_Handle process, Rng1U64 range, void *dst)
 }
 
 internal B32
-dmn_process_write(DMN_Handle process, Rng1U64 range, void *src)
+dmn_process_write(DMN_Handle process, Rng1U64 range, void* src)
 {
   B32 result = 0;
   DMN_AccessScope
@@ -3166,7 +3166,7 @@ dmn_tls_root_vaddr_from_thread(DMN_Handle handle)
 }
 
 internal B32
-dmn_thread_read_reg_block(DMN_Handle handle, void *reg_block)
+dmn_thread_read_reg_block(DMN_Handle handle, void* reg_block)
 {
   B32 result = 0;
   DMN_AccessScope
@@ -3178,7 +3178,7 @@ dmn_thread_read_reg_block(DMN_Handle handle, void *reg_block)
 }
 
 internal B32
-dmn_thread_write_reg_block(DMN_Handle handle, void *reg_block)
+dmn_thread_write_reg_block(DMN_Handle handle, void* reg_block)
 {
   B32 result = 0;
   DMN_AccessScope
@@ -3192,14 +3192,14 @@ dmn_thread_write_reg_block(DMN_Handle handle, void *reg_block)
 //- rjf: system process listing
 
 internal void
-dmn_process_iter_begin(DMN_ProcessIter *iter)
+dmn_process_iter_begin(DMN_ProcessIter* iter)
 {
   MemoryZeroStruct(iter);
   iter.v[0] = (U64)CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 }
 
 internal B32
-dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info_out)
+dmn_process_iter_next(Arena* arena, DMN_ProcessIter* iter, DMN_ProcessInfo* info_out)
 {
   B32 result = 0;
   
@@ -3235,7 +3235,7 @@ dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info
 }
 
 internal void
-dmn_process_iter_end(DMN_ProcessIter *iter)
+dmn_process_iter_end(DMN_ProcessIter* iter)
 {
   CloseHandle((HANDLE)iter.v[0]);
   MemoryZeroStruct(iter);

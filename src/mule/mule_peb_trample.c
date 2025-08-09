@@ -33,7 +33,7 @@ HideModuleFromWindowsReload(HMODULE ModuleToFlush)
   }
 }
 
-int main(int argument_count, char **arguments)
+int main(int argument_count, char** arguments)
 {
   char *exe_name = arguments[0];
   HANDLE last_module = GetModuleHandle(0);

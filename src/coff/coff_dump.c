@@ -3,7 +3,7 @@
 
 #if 0
 internal void
-coff_print_archive_member_header(Arena *arena, String8List *out, string indent, COFF_ParsedArchiveMemberHeader header, string long_names)
+coff_print_archive_member_header(Arena* arena, String8List* out, string indent, COFF_ParsedArchiveMemberHeader header, string long_names)
 {
   Temp scratch = scratch_begin(&arena, 1);
   string time_stamp = coff_string_from_time_stamp(scratch.arena, header.time_stamp);
@@ -25,7 +25,7 @@ coff_print_section_table(Arena               *arena,
                          string             string_table,
                          COFF_Symbol32Array  symbol_table,
                          U64                 section_count,
-                         COFF_SectionHeader *section_table)
+                         COFF_SectionHeader* section_table)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -222,7 +222,7 @@ coff_disasm_sections(Arena              *arena,
                      B32                 is_obj,
                      RD_MarkerArray     *section_markers,
                      U64                 section_count,
-                     COFF_SectionHeader *sections)
+                     COFF_SectionHeader* sections)
 {
   if (section_count) {
     for (U64 sect_idx = 0; sect_idx < section_count; ++sect_idx) {
@@ -251,7 +251,7 @@ coff_raw_data_sections(Arena              *arena,
                        B32                 is_obj,
                        RD_MarkerArray     *section_markers,
                        U64                 section_count,
-                       COFF_SectionHeader *section_table)
+                       COFF_SectionHeader* section_table)
 {
   if (section_count) {
     for (U64 sect_idx = 0; sect_idx < section_count; ++sect_idx) {
@@ -279,7 +279,7 @@ coff_print_relocs(Arena              *arena,
                   string             string_table,
                   COFF_MachineType    machine,
                   U64                 sect_count,
-                  COFF_SectionHeader *sect_headers,
+                  COFF_SectionHeader* sect_headers,
                   COFF_Symbol32Array  symbols)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -450,7 +450,7 @@ coff_print_symbol_table(Arena              *arena,
 }
 
 internal void
-coff_print_big_obj_header(Arena *arena, String8List *out, string indent, COFF_BigObjHeader *header)
+coff_print_big_obj_header(Arena* arena, String8List* out, string indent, COFF_BigObjHeader* header)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -470,7 +470,7 @@ coff_print_big_obj_header(Arena *arena, String8List *out, string indent, COFF_Bi
 }
 
 internal void
-coff_print_file_header(Arena *arena, String8List *out, string indent, COFF_FileHeader *header)
+coff_print_file_header(Arena* arena, String8List* out, string indent, COFF_FileHeader* header)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -493,7 +493,7 @@ coff_print_file_header(Arena *arena, String8List *out, string indent, COFF_FileH
 }
 
 internal void
-coff_print_import(Arena *arena, String8List *out, string indent, COFF_ParsedArchiveImportHeader *header)
+coff_print_import(Arena* arena, String8List* out, string indent, COFF_ParsedArchiveImportHeader* header)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -517,7 +517,7 @@ coff_print_import(Arena *arena, String8List *out, string indent, COFF_ParsedArch
 }
 
 internal void
-coff_print_big_obj(Arena *arena, String8List *out, string indent, string raw_data, RD_Option opts)
+coff_print_big_obj(Arena* arena, String8List* out, string indent, string raw_data, RD_Option opts)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -575,7 +575,7 @@ coff_print_big_obj(Arena *arena, String8List *out, string indent, string raw_dat
 }
 
 internal void
-coff_print_obj(Arena *arena, String8List *out, string indent, string raw_data, RD_Option opts)
+coff_print_obj(Arena* arena, String8List* out, string indent, string raw_data, RD_Option opts)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -657,7 +657,7 @@ coff_print_obj(Arena *arena, String8List *out, string indent, string raw_data, R
 }
 
 internal void
-coff_print_archive(Arena *arena, String8List *out, string indent, string raw_archive, RD_Option opts)
+coff_print_archive(Arena* arena, String8List* out, string indent, string raw_archive, RD_Option opts)
 {
   Temp scratch = scratch_begin(&arena, 1);
   

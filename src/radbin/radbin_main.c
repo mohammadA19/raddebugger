@@ -66,7 +66,7 @@
 //~ rjf: Entry Point
 
 internal void
-entry_point(CmdLine *cmdline)
+entry_point(CmdLine* cmdline)
 {
   rb_entry_point(cmdline);
 }

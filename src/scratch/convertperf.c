@@ -31,7 +31,7 @@
 //~ rjf: Entry Points
 
 internal void
-entry_point(CmdLine *cmdline)
+entry_point(CmdLine* cmdline)
 {
   Arena *arena = arena_alloc();
   string list_path = str8_list_first(&cmdline.inputs);

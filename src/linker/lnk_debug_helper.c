@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal string
-lnk_make_linker_compile3(Arena *arena, COFF_MachineType machine)
+lnk_make_linker_compile3(Arena* arena, COFF_MachineType machine)
 {
   string comp3_data = cv_make_comp3(arena,
                                      0,
@@ -21,7 +21,7 @@ lnk_make_linker_compile3(Arena *arena, COFF_MachineType machine)
 }
 
 internal string
-lnk_make_debug_s(Arena *arena, CV_SymbolList symbol_list)
+lnk_make_debug_s(Arena* arena, CV_SymbolList symbol_list)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -37,7 +37,7 @@ lnk_make_debug_s(Arena *arena, CV_SymbolList symbol_list)
 }
 
 internal string
-lnk_make_linker_debug_symbols(Arena *arena, COFF_MachineType machine)
+lnk_make_linker_debug_symbols(Arena* arena, COFF_MachineType machine)
 {
   Temp scratch = scratch_begin(&arena, 1);
   CV_SymbolList symbol_list = { .signature = CV_Signature_C13 };
@@ -49,7 +49,7 @@ lnk_make_linker_debug_symbols(Arena *arena, COFF_MachineType machine)
 }
 
 internal string
-lnk_make_dll_import_debug_symbols(Arena *arena, COFF_MachineType machine, string dll_name)
+lnk_make_dll_import_debug_symbols(Arena* arena, COFF_MachineType machine, string dll_name)
 {
   Temp scratch = scratch_begin(&arena,1);
 

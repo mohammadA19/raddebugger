@@ -198,7 +198,7 @@ e_type_kind_is_pointer_or_ref(E_TypeKind kind)
 //~ rjf: Member Functions
 
 internal void
-e_member_list_push(Arena *arena, E_MemberList *list, E_Member *member)
+e_member_list_push(Arena* arena, E_MemberList* list, E_Member* member)
 {
   E_MemberNode *n = push_array(arena, E_MemberNode, 1);
   MemoryCopyStruct(&n.v, member);
@@ -207,7 +207,7 @@ e_member_list_push(Arena *arena, E_MemberList *list, E_Member *member)
 }
 
 internal E_MemberArray
-e_member_array_from_list(Arena *arena, E_MemberList *list)
+e_member_array_from_list(Arena* arena, E_MemberList* list)
 {
   E_MemberArray array = {0};
   array.count = list.count;
@@ -226,7 +226,7 @@ e_member_array_from_list(Arena *arena, E_MemberList *list)
 //~ rjf: Enum Value Functions
 
 internal void
-e_enum_val_list_push(Arena *arena, E_EnumValList *list, E_EnumVal *enum_val)
+e_enum_val_list_push(Arena* arena, E_EnumValList* list, E_EnumVal* enum_val)
 {
   E_EnumValNode *n = push_array(arena, E_EnumValNode, 1);
   MemoryCopyStruct(&n.v, enum_val);
@@ -235,7 +235,7 @@ e_enum_val_list_push(Arena *arena, E_EnumValList *list, E_EnumVal *enum_val)
 }
 
 internal E_EnumValArray
-e_enum_val_array_from_list(Arena *arena, E_EnumValList *list)
+e_enum_val_array_from_list(Arena* arena, E_EnumValList* list)
 {
   E_EnumValArray array = {0};
   array.count = list.count;
@@ -308,7 +308,7 @@ e_type_key_reg_alias(Arch arch, REGS_AliasCode code)
 //- rjf: constructed type construction
 
 internal U64
-e_hash_from_cons_type_params(E_ConsTypeParams *params)
+e_hash_from_cons_type_params(E_ConsTypeParams* params)
 {
   U32 buffer[] =
   {
@@ -328,7 +328,7 @@ e_hash_from_cons_type_params(E_ConsTypeParams *params)
 }
 
 internal B32
-e_cons_type_params_match(E_ConsTypeParams *l, E_ConsTypeParams *r)
+e_cons_type_params_match(E_ConsTypeParams* l, E_ConsTypeParams* r)
 {
   B32 result = (l.kind != E_TypeKind_Lens &&
                 l.kind == r.kind &&
@@ -367,7 +367,7 @@ e_cons_type_params_match(E_ConsTypeParams *l, E_ConsTypeParams *r)
 }
 
 internal E_TypeKey
-e_type_key_cons_(E_ConsTypeParams *params)
+e_type_key_cons_(E_ConsTypeParams* params)
 {
   U64 content_hash = e_hash_from_cons_type_params(params);
   U64 content_slot_idx = content_hash%e_cache.cons_content_slots_count;
@@ -496,7 +496,7 @@ e_type_key_cons_meta_description(E_TypeKey type_key, string desc)
 }
 
 internal E_TypeKey
-e_type_key_cons_base(Type *type)
+e_type_key_cons_base(Type* type)
 {
   E_TypeKey result = e_type_key_zero();
   switch (type.kind)
@@ -568,7 +568,7 @@ e_type_key_match(E_TypeKey l, E_TypeKey r)
 //- rjf: type key -> info extraction
 
 internal U64
-e_hash_from_type(E_Type *type)
+e_hash_from_type(E_Type* type)
 {
   U64 hash = 0;
   if (type != &e_type_nil)
@@ -673,7 +673,7 @@ e_type_byte_size_from_key(E_TypeKey key)
 }
 
 internal E_Type *
-e_push_type_from_key(Arena *arena, E_TypeKey key)
+e_push_type_from_key(Arena* arena, E_TypeKey key)
 {
   ProfBeginFunction();
   E_Type *type = &e_type_nil;
@@ -1247,7 +1247,7 @@ e_push_type_from_key(Arena *arena, E_TypeKey key)
 }
 
 internal int
-e_type_qsort_compare_members_offset(E_Member *a, E_Member *b)
+e_type_qsort_compare_members_offset(E_Member* a, E_Member* b)
 {
   int result = 0;
   if (a.kind < b.kind)
@@ -1270,7 +1270,7 @@ e_type_qsort_compare_members_offset(E_Member *a, E_Member *b)
 }
 
 internal E_MemberArray
-e_type_data_members_from_key(Arena *arena, E_TypeKey key)
+e_type_data_members_from_key(Arena* arena, E_TypeKey key)
 {
   Temp scratch = scratch_begin(&arena, 1);
   E_TypeKind root_type_kind = e_type_kind_from_key(key);
@@ -1647,7 +1647,7 @@ e_type_match(E_TypeKey l, E_TypeKey r)
 //- rjf: key -> string
 
 internal void
-e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec, B32 skip_return)
+e_type_lhs_string_from_key(Arena* arena, E_TypeKey key, String8List* out, U32 prec, B32 skip_return)
 {
   string keyword = {0};
   E_TypeKind kind = e_type_kind_from_key(key);
@@ -1801,7 +1801,7 @@ e_type_lhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
 }
 
 internal void
-e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 prec)
+e_type_rhs_string_from_key(Arena* arena, E_TypeKey key, String8List* out, U32 prec)
 {
   E_TypeKind kind = e_type_kind_from_key(key);
   switch (kind)
@@ -1881,7 +1881,7 @@ e_type_rhs_string_from_key(Arena *arena, E_TypeKey key, String8List *out, U32 pr
 }
 
 internal string
-e_type_string_from_key(Arena *arena, E_TypeKey key)
+e_type_string_from_key(Arena* arena, E_TypeKey key)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};

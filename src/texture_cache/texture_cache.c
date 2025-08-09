@@ -79,7 +79,7 @@ tex_scope_open(void)
 }
 
 internal void
-tex_scope_close(TEX_Scope *scope)
+tex_scope_close(TEX_Scope* scope)
 {
   for (TEX_Touch *touch = scope.top_touch, *next = 0; touch != 0; touch = next)
   {
@@ -106,7 +106,7 @@ tex_scope_close(TEX_Scope *scope)
 }
 
 internal void
-tex_scope_touch_node__stripe_r_guarded(TEX_Scope *scope, TEX_Node *node)
+tex_scope_touch_node__stripe_r_guarded(TEX_Scope* scope, TEX_Node* node)
 {
   TEX_Touch *touch = tex_tctx.free_touch;
   ins_atomic_u64_inc_eval(&node.scope_ref_count);
@@ -130,7 +130,7 @@ tex_scope_touch_node__stripe_r_guarded(TEX_Scope *scope, TEX_Node *node)
 //~ rjf: Cache Lookups
 
 internal R_Handle
-tex_texture_from_hash_topology(TEX_Scope *scope, U128 hash, TEX_Topology topology)
+tex_texture_from_hash_topology(TEX_Scope* scope, U128 hash, TEX_Topology topology)
 {
   R_Handle handle = {0};
   {
@@ -196,7 +196,7 @@ tex_texture_from_hash_topology(TEX_Scope *scope, U128 hash, TEX_Topology topolog
 }
 
 internal R_Handle
-tex_texture_from_key_topology(TEX_Scope *scope, HS_Key key, TEX_Topology topology, U128 *hash_out)
+tex_texture_from_key_topology(TEX_Scope* scope, HS_Key key, TEX_Topology topology, U128* hash_out)
 {
   R_Handle handle = {0};
   for (U64 rewind_idx = 0; rewind_idx < HS_KEY_HASH_HISTORY_COUNT; rewind_idx += 1)
@@ -247,7 +247,7 @@ tex_u2x_enqueue_req(U128 hash, TEX_Topology top, U64 endt_us)
 }
 
 internal void
-tex_u2x_dequeue_req(U128 *hash_out, TEX_Topology *top_out)
+tex_u2x_dequeue_req(U128* hash_out, TEX_Topology* top_out)
 {
   OS_MutexScope(tex_shared.u2x_ring_mutex) for (;;)
   {
@@ -331,7 +331,7 @@ ASYNC_WORK_DEF(tex_xfer_work)
 //~ rjf: Evictor Threads
 
 internal void
-tex_evictor_thread__entry_point(void *p)
+tex_evictor_thread__entry_point(void* p)
 {
   ThreadNameF("[tex] evictor thread");
   for (;;)

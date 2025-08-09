@@ -7,7 +7,7 @@
 //- rjf: file descriptor memory reading/writing helpers
 
 internal U64
-dmn_lnx_read(int memory_fd, Rng1U64 range, void *dst)
+dmn_lnx_read(int memory_fd, Rng1U64 range, void* dst)
 {
   U64 bytes_read = 0;
   U8 *ptr = (U8 *)dst;
@@ -29,7 +29,7 @@ dmn_lnx_read(int memory_fd, Rng1U64 range, void *dst)
 }
 
 internal B32
-dmn_lnx_write(int memory_fd, Rng1U64 range, void *src)
+dmn_lnx_write(int memory_fd, Rng1U64 range, void* src)
 {
   B32 result = 1;
   U8 *ptr = (U8 *)src;
@@ -51,7 +51,7 @@ dmn_lnx_write(int memory_fd, Rng1U64 range, void *src)
 }
 
 internal string
-dmn_lnx_read_string(Arena *arena, int memory_fd, U64 base_vaddr)
+dmn_lnx_read_string(Arena* arena, int memory_fd, U64 base_vaddr)
 {
   string result = {0};
   U64 string_size = 0;
@@ -80,7 +80,7 @@ dmn_lnx_read_string(Arena *arena, int memory_fd, U64 base_vaddr)
 //- rjf: pid => info extraction
 
 internal string
-dmn_lnx_exe_path_from_pid(Arena *arena, pid_t pid)
+dmn_lnx_exe_path_from_pid(Arena* arena, pid_t pid)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -301,7 +301,7 @@ dmn_lnx_phdr_info_from_memory(int memory_fd, B32 is_32bit, U64 phvaddr, U64 phsi
 //- rjf: process entity => info extraction
 
 internal DMN_LNX_ModuleInfoList
-dmn_lnx_module_info_list_from_process(Arena *arena, DMN_LNX_Entity *process)
+dmn_lnx_module_info_list_from_process(Arena* arena, DMN_LNX_Entity* process)
 {
   Arch arch = process.arch;
   B32 is_32bit = (arch == Arch_x86 || arch == Arch_arm32);
@@ -441,7 +441,7 @@ dmn_lnx_module_info_list_from_process(Arena *arena, DMN_LNX_Entity *process)
 //~ rjf: Entity Functions
 
 internal DMN_LNX_Entity *
-dmn_lnx_entity_alloc(DMN_LNX_Entity *parent, DMN_LNX_EntityKind kind)
+dmn_lnx_entity_alloc(DMN_LNX_Entity* parent, DMN_LNX_EntityKind kind)
 {
   DMN_LNX_Entity *entity = dmn_lnx_state.free_entity;
   if (entity != 0)
@@ -466,7 +466,7 @@ dmn_lnx_entity_alloc(DMN_LNX_Entity *parent, DMN_LNX_EntityKind kind)
 }
 
 internal void
-dmn_lnx_entity_release(DMN_LNX_Entity *entity)
+dmn_lnx_entity_release(DMN_LNX_Entity* entity)
 {
   if (entity.parent != &dmn_lnx_nil_entity)
   {
@@ -493,7 +493,7 @@ dmn_lnx_entity_release(DMN_LNX_Entity *entity)
 }
 
 internal DMN_Handle
-dmn_lnx_handle_from_entity(DMN_LNX_Entity *entity)
+dmn_lnx_handle_from_entity(DMN_LNX_Entity* entity)
 {
   DMN_Handle handle = {0};
   U64 index = (U64)(entity - dmn_lnx_state.entities_base);
@@ -537,7 +537,7 @@ dmn_lnx_thread_from_pid(pid_t pid)
 }
 
 internal B32
-dmn_lnx_thread_read_reg_block(DMN_LNX_Entity *thread, void *reg_block)
+dmn_lnx_thread_read_reg_block(DMN_LNX_Entity* thread, void* reg_block)
 {
   B32 result = 0;
   switch (thread.arch)
@@ -743,7 +743,7 @@ dmn_lnx_thread_read_reg_block(DMN_LNX_Entity *thread, void *reg_block)
 }
 
 internal B32
-dmn_lnx_thread_write_reg_block(DMN_LNX_Entity *thread, void *reg_block)
+dmn_lnx_thread_write_reg_block(DMN_LNX_Entity* thread, void* reg_block)
 {
   B32 result = 0;
   switch (thread.arch)
@@ -938,7 +938,7 @@ dmn_ctrl_exclusive_access_end(void)
 }
 
 internal U32
-dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
+dmn_ctrl_launch(DMN_CtrlCtx* ctx, OS_ProcessLaunchParams* params)
 {
   Temp scratch = scratch_begin(0, 0);
   
@@ -1151,13 +1151,13 @@ dmn_ctrl_launch(DMN_CtrlCtx *ctx, OS_ProcessLaunchParams *params)
 }
 
 internal B32
-dmn_ctrl_attach(DMN_CtrlCtx *ctx, U32 pid)
+dmn_ctrl_attach(DMN_CtrlCtx* ctx, U32 pid)
 {
   return 0;
 }
 
 internal B32
-dmn_ctrl_kill(DMN_CtrlCtx *ctx, DMN_Handle process, U32 exit_code)
+dmn_ctrl_kill(DMN_CtrlCtx* ctx, DMN_Handle process, U32 exit_code)
 {
   B32 result = 0;
   DMN_LNX_Entity *process_entity = dmn_lnx_entity_from_handle(process);
@@ -1170,7 +1170,7 @@ dmn_ctrl_kill(DMN_CtrlCtx *ctx, DMN_Handle process, U32 exit_code)
 }
 
 internal B32
-dmn_ctrl_detach(DMN_CtrlCtx *ctx, DMN_Handle process)
+dmn_ctrl_detach(DMN_CtrlCtx* ctx, DMN_Handle process)
 {
   B32 result = 0;
   DMN_LNX_Entity *process_entity = dmn_lnx_entity_from_handle(process);
@@ -1183,7 +1183,7 @@ dmn_ctrl_detach(DMN_CtrlCtx *ctx, DMN_Handle process)
 }
 
 internal DMN_EventList
-dmn_ctrl_run(Arena *arena, DMN_CtrlCtx *ctx, DMN_RunCtrls *ctrls)
+dmn_ctrl_run(Arena* arena, DMN_CtrlCtx* ctx, DMN_RunCtrls* ctrls)
 {
   DMN_EventList evts = {0};
   {
@@ -1693,7 +1693,7 @@ dmn_process_memory_protect(DMN_Handle process, U64 vaddr, U64 size, OS_AccessFla
 }
 
 internal U64
-dmn_process_read(DMN_Handle process, Rng1U64 range, void *dst)
+dmn_process_read(DMN_Handle process, Rng1U64 range, void* dst)
 {
   DMN_LNX_Entity *entity = dmn_lnx_entity_from_handle(process);
   U64 result = dmn_lnx_read(entity.fd, range, dst);
@@ -1701,7 +1701,7 @@ dmn_process_read(DMN_Handle process, Rng1U64 range, void *dst)
 }
 
 internal B32
-dmn_process_write(DMN_Handle process, Rng1U64 range, void *src)
+dmn_process_write(DMN_Handle process, Rng1U64 range, void* src)
 {
   DMN_LNX_Entity *entity = dmn_lnx_entity_from_handle(process);
   B32 result = dmn_lnx_write(entity.fd, range, src);
@@ -1730,7 +1730,7 @@ dmn_tls_root_vaddr_from_thread(DMN_Handle handle)
 }
 
 internal B32
-dmn_thread_read_reg_block(DMN_Handle handle, void *reg_block)
+dmn_thread_read_reg_block(DMN_Handle handle, void* reg_block)
 {
   B32 result = 0;
   DMN_AccessScope
@@ -1742,7 +1742,7 @@ dmn_thread_read_reg_block(DMN_Handle handle, void *reg_block)
 }
 
 internal B32
-dmn_thread_write_reg_block(DMN_Handle handle, void *reg_block)
+dmn_thread_write_reg_block(DMN_Handle handle, void* reg_block)
 {
   B32 result = 0;
   DMN_AccessScope
@@ -1756,7 +1756,7 @@ dmn_thread_write_reg_block(DMN_Handle handle, void *reg_block)
 //- rjf: system process listing
 
 internal void
-dmn_process_iter_begin(DMN_ProcessIter *iter)
+dmn_process_iter_begin(DMN_ProcessIter* iter)
 {
   DIR *dir = opendir("/proc");
   MemoryZeroStruct(iter);
@@ -1764,7 +1764,7 @@ dmn_process_iter_begin(DMN_ProcessIter *iter)
 }
 
 internal B32
-dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info_out)
+dmn_process_iter_next(Arena* arena, DMN_ProcessIter* iter, DMN_ProcessInfo* info_out)
 {
   // rjf: scan for the next process ID in the directory
   B32 got_pid = 0;
@@ -1816,7 +1816,7 @@ dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info
 }
 
 internal void
-dmn_process_iter_end(DMN_ProcessIter *iter)
+dmn_process_iter_end(DMN_ProcessIter* iter)
 {
   DIR *dir = (DIR*)PtrFromInt(iter.v[0]);
   if (dir != 0)

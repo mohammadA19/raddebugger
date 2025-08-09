@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal COFF_LibWriterSymbolNode *
-coff_lib_writer_symbol_list_push(Arena *arena, COFF_LibWriterSymbolList *list, COFF_LibWriterSymbol symbol)
+coff_lib_writer_symbol_list_push(Arena* arena, COFF_LibWriterSymbolList* list, COFF_LibWriterSymbol symbol)
 {
   COFF_LibWriterSymbolNode *node = push_array_no_zero(arena, COFF_LibWriterSymbolNode, 1);
   node.next = 0;
@@ -13,7 +13,7 @@ coff_lib_writer_symbol_list_push(Arena *arena, COFF_LibWriterSymbolList *list, C
 }
 
 internal COFF_LibWriterMemberNode *
-coff_lib_writer_member_list_push(Arena *arena, COFF_LibWriterMemberList *list, COFF_LibWriterMember member)
+coff_lib_writer_member_list_push(Arena* arena, COFF_LibWriterMemberList* list, COFF_LibWriterMember member)
 {
   COFF_LibWriterMemberNode *node = push_array_no_zero(arena, COFF_LibWriterMemberNode, 1);
   node.next = 0;
@@ -24,7 +24,7 @@ coff_lib_writer_member_list_push(Arena *arena, COFF_LibWriterMemberList *list, C
 }
 
 internal COFF_LibWriterSymbol *
-coff_lib_writer_symbol_array_from_list(Arena *arena, COFF_LibWriterSymbolList list)
+coff_lib_writer_symbol_array_from_list(Arena* arena, COFF_LibWriterSymbolList list)
 {
   COFF_LibWriterSymbol *arr = push_array_no_zero(arena, COFF_LibWriterSymbol, list.count + 2);
   COFF_LibWriterSymbol *ptr = arr + 1;
@@ -38,7 +38,7 @@ coff_lib_writer_symbol_array_from_list(Arena *arena, COFF_LibWriterSymbolList li
 }
 
 internal COFF_LibWriterMember *
-coff_lib_writer_member_array_from_list(Arena *arena, COFF_LibWriterMemberList list)
+coff_lib_writer_member_array_from_list(Arena* arena, COFF_LibWriterMemberList list)
 {
   COFF_LibWriterMember *arr = push_array_no_zero(arena, COFF_LibWriterMember, list.count);
   COFF_LibWriterMember *ptr = arr;
@@ -50,7 +50,7 @@ coff_lib_writer_member_array_from_list(Arena *arena, COFF_LibWriterMemberList li
 }
 
 internal int
-coff_lib_writer_symbol_name_compar(const void *raw_a, const void *raw_b)
+coff_lib_writer_symbol_name_compar(const void* raw_a, const void* raw_b)
 {
   const COFF_LibWriterSymbol *sa = raw_a;
   const COFF_LibWriterSymbol *sb = raw_b;
@@ -58,14 +58,14 @@ coff_lib_writer_symbol_name_compar(const void *raw_a, const void *raw_b)
 }
 
 internal int
-coff_lib_writer_symbol_is_before(void *raw_a, void *raw_b)
+coff_lib_writer_symbol_is_before(void* raw_a, void* raw_b)
 {
   int compar = coff_lib_writer_symbol_name_compar(raw_a, raw_b);
   return compar < 0;
 }
 
 internal void
-coff_lib_writer_symbol_array_sort(COFF_LibWriterSymbol *arr, U64 count)
+coff_lib_writer_symbol_array_sort(COFF_LibWriterSymbol* arr, U64 count)
 {
   Assert(count >= 2);
   radsort(arr + 1, count - 2, coff_lib_writer_symbol_is_before);
@@ -81,14 +81,14 @@ coff_lib_writer_alloc(void)
 }
 
 internal void
-coff_lib_writer_release(COFF_LibWriter **writer_ptr)
+coff_lib_writer_release(COFF_LibWriter** writer_ptr)
 {
   arena_release((*writer_ptr)->arena);
   *writer_ptr = 0;
 }
 
 internal U64
-coff_lib_writer_push_obj(COFF_LibWriter *writer, string obj_path, string obj_data)
+coff_lib_writer_push_obj(COFF_LibWriter* writer, string obj_path, string obj_data)
 {
   U64 member_idx = writer.member_list.count;
   
@@ -131,7 +131,7 @@ coff_lib_writer_push_obj(COFF_LibWriter *writer, string obj_path, string obj_dat
 }
 
 internal void
-coff_lib_writer_push_import(COFF_LibWriter *lib_writer, COFF_MachineType machine, COFF_TimeStamp time_stamp, string dll_name, COFF_ImportByType import_by, string name, U16 hint_or_ordinal, COFF_ImportType import_type)
+coff_lib_writer_push_import(COFF_LibWriter* lib_writer, COFF_MachineType machine, COFF_TimeStamp time_stamp, string dll_name, COFF_ImportByType import_by, string name, U16 hint_or_ordinal, COFF_ImportType import_type)
 {
   // push import member
   U64 member_idx = lib_writer.member_list.count;
@@ -166,7 +166,7 @@ coff_lib_writer_push_import(COFF_LibWriter *lib_writer, COFF_MachineType machine
 }
 
 internal String8List
-coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeStamp time_stamp, U16 mode, B32 emit_second_member)
+coff_lib_writer_serialize(Arena* arena, COFF_LibWriter* lib_writer, COFF_TimeStamp time_stamp, U16 mode, B32 emit_second_member)
 {
   Temp scratch = scratch_begin(&arena, 1);
 

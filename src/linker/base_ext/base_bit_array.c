@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal U32Array
-bit_array_init32(Arena *arena, U64 word_count)
+bit_array_init32(Arena* arena, U64 word_count)
 {
   U32Array result;
   result.count = CeilIntegerDiv(word_count, 32);

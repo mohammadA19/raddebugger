@@ -35,7 +35,7 @@
 internal B32 frame(void) { return 0; }
 
 internal void
-entry_point(CmdLine *cmdline)
+entry_point(CmdLine* cmdline)
 {
   Arena *arena = arena_alloc();
   E_Cache *eval_cache = e_cache_alloc();

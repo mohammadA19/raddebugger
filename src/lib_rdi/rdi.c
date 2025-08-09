@@ -175,7 +175,7 @@ struct {RDI_U8 *str; RDI_U64 size;} rdi_eval_conversion_kind_message_string_tabl
 };
 
 RDI_PROC RDI_U64
-rdi_hash(RDI_U8 *ptr, RDI_U64 size)
+rdi_hash(RDI_U8* ptr, RDI_U64 size)
 {
   RDI_U64 result = 5381;
   RDI_U8 *opl = ptr + size;
@@ -187,7 +187,7 @@ rdi_hash(RDI_U8 *ptr, RDI_U64 size)
 }
 
 RDI_PROC RDI_U8 *
-rdi_string_from_type_kind(RDI_TypeKind kind, RDI_U64 *size_out)
+rdi_string_from_type_kind(RDI_TypeKind kind, RDI_U64* size_out)
 {
 RDI_U8 *result = 0;
 *size_out = 0;
@@ -351,7 +351,7 @@ rdi_eval_op_typegroup_are_compatible(RDI_EvalOp op, RDI_EvalTypeGroup group)
 }
 
 RDI_PROC RDI_U8 *
-rdi_explanation_string_from_eval_conversion_kind(RDI_EvalConversionKind kind, RDI_U64 *size_out)
+rdi_explanation_string_from_eval_conversion_kind(RDI_EvalConversionKind kind, RDI_U64* size_out)
 {
   *size_out = rdi_eval_conversion_kind_message_string_table[kind].size;
   return rdi_eval_conversion_kind_message_string_table[kind].str;

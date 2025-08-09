@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal String8List
-lnk_arg_list_parse_windows_rules(Arena *arena, string string)
+lnk_arg_list_parse_windows_rules(Arena* arena, string string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -82,14 +82,14 @@ lnk_arg_list_parse_windows_rules(Arena *arena, string string)
 }
 
 internal void
-lnk_cmd_line_push_option_node(LNK_CmdLine *cmd_line, LNK_CmdOption *opt)
+lnk_cmd_line_push_option_node(LNK_CmdLine* cmd_line, LNK_CmdOption* opt)
 {
   SLLQueuePush(cmd_line.first_option, cmd_line.last_option, opt);
   cmd_line.option_count += 1;
 }
 
 internal LNK_CmdOption *
-lnk_cmd_line_push_option_list(Arena *arena, LNK_CmdLine *cmd_line, string string, String8List value_strings)
+lnk_cmd_line_push_option_list(Arena* arena, LNK_CmdLine* cmd_line, string string, String8List value_strings)
 {
   // fill out node
   LNK_CmdOption *opt = push_array_no_zero(arena, LNK_CmdOption, 1);
@@ -104,7 +104,7 @@ lnk_cmd_line_push_option_list(Arena *arena, LNK_CmdLine *cmd_line, string string
 }
 
 internal LNK_CmdOption *
-lnk_cmd_line_push_option_string(Arena *arena, LNK_CmdLine *cmd_line, string string, string value)
+lnk_cmd_line_push_option_string(Arena* arena, LNK_CmdLine* cmd_line, string string, string value)
 {
   String8List value_list = str8_split_by_string_chars(arena, value, (","), StringSplitFlag_KeepEmpties);
   LNK_CmdOption *opt = lnk_cmd_line_push_option_list(arena, cmd_line, string, value_list);
@@ -112,13 +112,13 @@ lnk_cmd_line_push_option_string(Arena *arena, LNK_CmdLine *cmd_line, string stri
 }
 
 internal LNK_CmdOption *
-lnk_cmd_line_push_option(Arena *arena, LNK_CmdLine *cmd_line, char *string, char *value)
+lnk_cmd_line_push_option(Arena* arena, LNK_CmdLine* cmd_line, char* string, char* value)
 {
   return lnk_cmd_line_push_option_string(arena, cmd_line, str8_cstring(string), str8_cstring(value));
 }
 
 internal LNK_CmdOption *
-lnk_cmd_line_push_option_if_not_present(Arena *arena, LNK_CmdLine *cmd_line, char *string, char *value)
+lnk_cmd_line_push_option_if_not_present(Arena* arena, LNK_CmdLine* cmd_line, char* string, char* value)
 {
   if (!lnk_cmd_line_has_option(*cmd_line, string)) {
     return lnk_cmd_line_push_option(arena, cmd_line, string, value);
@@ -127,7 +127,7 @@ lnk_cmd_line_push_option_if_not_present(Arena *arena, LNK_CmdLine *cmd_line, cha
 }
 
 internal LNK_CmdLine
-lnk_cmd_line_parse_windows_rules(Arena *arena, String8List arg_list)
+lnk_cmd_line_parse_windows_rules(Arena* arena, String8List arg_list)
 {
   LNK_CmdLine cmd_line = {0};
   cmd_line.raw_cmd_line = str8_list_copy(arena, &arg_list);
@@ -179,13 +179,13 @@ lnk_cmd_line_has_option_string(LNK_CmdLine cmd_line, string string)
 }
 
 internal B32
-lnk_cmd_line_has_option(LNK_CmdLine cmd_line, char *string)
+lnk_cmd_line_has_option(LNK_CmdLine cmd_line, char* string)
 {
   return lnk_cmd_line_has_option_string(cmd_line, str8_cstring(string));
 }
 
 internal String8List
-lnk_data_from_cmd_line(Arena *arena, LNK_CmdLine cmd_line)
+lnk_data_from_cmd_line(Arena* arena, LNK_CmdLine cmd_line)
 {
   String8List result = {0};
 

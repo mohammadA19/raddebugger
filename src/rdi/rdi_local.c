@@ -8,7 +8,7 @@
 //~ rjf: Lookup Helpers
 
 internal string
-str8_from_rdi_string_idx(RDI_Parsed *rdi, U32 idx)
+str8_from_rdi_string_idx(RDI_Parsed* rdi, U32 idx)
 {
   string result = {0};
   result.str = rdi_string_from_idx(rdi, idx, &result.size);
@@ -19,7 +19,7 @@ str8_from_rdi_string_idx(RDI_Parsed *rdi, U32 idx)
 //~ rjf: String <=> Enum
 
 internal string
-rdi_string_from_data_section_kind(Arena *arena, RDI_SectionKind v)
+rdi_string_from_data_section_kind(Arena* arena, RDI_SectionKind v)
 {
   string result = {0};
   switch (v)
@@ -33,7 +33,7 @@ rdi_string_from_data_section_kind(Arena *arena, RDI_SectionKind v)
 }
 
 internal string
-rdi_string_from_arch(Arena *arena, RDI_Arch v)
+rdi_string_from_arch(Arena* arena, RDI_Arch v)
 {
   string result = {0};
   switch (v)
@@ -47,7 +47,7 @@ rdi_string_from_arch(Arena *arena, RDI_Arch v)
 }
 
 internal string
-rdi_string_from_language(Arena *arena, RDI_Language v)
+rdi_string_from_language(Arena* arena, RDI_Language v)
 {
   string result = {0};
   switch (v)
@@ -61,7 +61,7 @@ rdi_string_from_language(Arena *arena, RDI_Language v)
 }
 
 internal string
-rdi_string_from_local_kind(Arena *arena, RDI_LocalKind v)
+rdi_string_from_local_kind(Arena* arena, RDI_LocalKind v)
 {
   string result = {0};
   switch (v)
@@ -76,7 +76,7 @@ rdi_string_from_local_kind(Arena *arena, RDI_LocalKind v)
 
 #if 0
 internal string
-rdi_string_from_type_kind(Arena *arena, RDI_TypeKind v)
+rdi_string_from_type_kind(Arena* arena, RDI_TypeKind v)
 {
   string result = {0};
   switch (v)
@@ -91,7 +91,7 @@ rdi_string_from_type_kind(Arena *arena, RDI_TypeKind v)
 #endif
 
 internal string
-rdi_string_from_member_kind(Arena *arena, RDI_MemberKind v)
+rdi_string_from_member_kind(Arena* arena, RDI_MemberKind v)
 {
   string result = {0};
   switch (v)
@@ -147,7 +147,7 @@ rdi_string_from_reg_code_x64(U64 reg_code)
 }
 
 internal string
-rdi_string_from_reg_code(Arena *arena, RDI_Arch arch, U64 reg_code)
+rdi_string_from_reg_code(Arena* arena, RDI_Arch arch, U64 reg_code)
 {
   string result = {0};
   switch (arch)
@@ -161,7 +161,7 @@ rdi_string_from_reg_code(Arena *arena, RDI_Arch arch, U64 reg_code)
 }
 
 internal string
-rdi_string_from_eval_op(Arena *arena, RDI_EvalOp op)
+rdi_string_from_eval_op(Arena* arena, RDI_EvalOp op)
 {
   string result = {0};
   switch (op)
@@ -175,7 +175,7 @@ rdi_string_from_eval_op(Arena *arena, RDI_EvalOp op)
 }
 
 internal string
-rdi_string_from_eval_type_group(Arena *arena, RDI_EvalTypeGroup eval_type_group)
+rdi_string_from_eval_type_group(Arena* arena, RDI_EvalTypeGroup eval_type_group)
 {
   string result = {0};
   switch (eval_type_group)
@@ -189,7 +189,7 @@ rdi_string_from_eval_type_group(Arena *arena, RDI_EvalTypeGroup eval_type_group)
 }
 
 internal string
-rdi_string_from_binary_section_flags(Arena *arena, RDI_BinarySectionFlags flags)
+rdi_string_from_binary_section_flags(Arena* arena, RDI_BinarySectionFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -204,7 +204,7 @@ rdi_string_from_binary_section_flags(Arena *arena, RDI_BinarySectionFlags flags)
 }
 
 internal string
-rdi_string_from_type_modifier_flags(Arena *arena, RDI_TypeModifierFlags flags)
+rdi_string_from_type_modifier_flags(Arena* arena, RDI_TypeModifierFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -219,7 +219,7 @@ rdi_string_from_type_modifier_flags(Arena *arena, RDI_TypeModifierFlags flags)
 }
 
 internal string
-rdi_string_from_udt_flags(Arena *arena, RDI_UDTFlags flags)
+rdi_string_from_udt_flags(Arena* arena, RDI_UDTFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -234,7 +234,7 @@ rdi_string_from_udt_flags(Arena *arena, RDI_UDTFlags flags)
 }
 
 internal string
-rdi_string_from_link_flags(Arena *arena, RDI_LinkFlags flags)
+rdi_string_from_link_flags(Arena* arena, RDI_LinkFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List list = {0};
@@ -249,7 +249,7 @@ rdi_string_from_link_flags(Arena *arena, RDI_LinkFlags flags)
 }
 
 internal string
-rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, string bc)
+rdi_string_from_bytecode(Arena* arena, RDI_Arch arch, string bc)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List fmt = {0};
@@ -410,7 +410,7 @@ rdi_string_from_bytecode(Arena *arena, RDI_Arch arch, string bc)
 }
 
 internal String8List
-rdi_strings_from_locations(Arena *arena, RDI_Parsed *rdi, RDI_Arch arch, Rng1U64 location_block_range)
+rdi_strings_from_locations(Arena* arena, RDI_Parsed* rdi, RDI_Arch arch, Rng1U64 location_block_range)
 {
   String8List strings = {0};
   Temp scratch = scratch_begin(&arena, 1);
@@ -510,7 +510,7 @@ rdi_strings_from_locations(Arena *arena, RDI_Parsed *rdi, RDI_Arch arch, Rng1U64
 //~ rjf: RDI Dumping
 
 internal String8List
-rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags flags)
+rdi_dump_list_from_parsed(Arena* arena, RDI_Parsed* rdi, RDI_DumpSubsetFlags flags)
 {
   String8List strings = {0};
   string indent = ("                                                                                                                                ");

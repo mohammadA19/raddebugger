@@ -3,7 +3,7 @@
 
 #if PROFILE_SPALL
 internal inline void
-spall_begin(char *fmt, ...)
+spall_begin(char* fmt, ...)
 {
   if (spall_buffer.data == 0)
   {

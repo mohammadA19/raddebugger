@@ -345,7 +345,7 @@ global OS_Handle ipc_s2m_ring_cv = {0};
 //~ rjf: IPC Signaler Thread
 
 internal void
-ipc_signaler_thread__entry_point(void *p)
+ipc_signaler_thread__entry_point(void* p)
 {
   ThreadNameF("[rd] ipc signaler thread");
   for (;;)
@@ -400,7 +400,7 @@ frame(void)
 //~ rjf: Entry Point
 
 internal void
-entry_point(CmdLine *cmd_line)
+entry_point(CmdLine* cmd_line)
 {
   Temp scratch = scratch_begin(0, 0);
   

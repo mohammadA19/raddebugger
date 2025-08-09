@@ -268,7 +268,7 @@ p2r_rdi_type_kind_from_cv_basic_type(CV_BasicType basic_type)
 //~ rjf: Location Info Building Helpers
 
 internal RDIM_Location *
-p2r_location_from_addr_reg_off(Arena *arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 extra_indirection)
+p2r_location_from_addr_reg_off(Arena* arena, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 extra_indirection)
 {
   RDIM_Location *result = 0;
   if (0 <= offset && offset <= (S64)max_U16)
@@ -347,7 +347,7 @@ p2r_reg_code_from_arch_encoded_fp_reg(RDI_Arch arch, CV_EncodedFramePtrReg encod
 }
 
 internal void
-p2r_location_over_lvar_addr_range(Arena *arena, RDIM_ScopeChunkList *scopes, RDIM_LocationSet *locset, RDIM_Location *location, CV_LvarAddrRange *range, COFF_SectionHeader *section, CV_LvarAddrGap *gaps, U64 gap_count)
+p2r_location_over_lvar_addr_range(Arena* arena, RDIM_ScopeChunkList* scopes, RDIM_LocationSet* locset, RDIM_Location* location, CV_LvarAddrRange* range, COFF_SectionHeader* section, CV_LvarAddrGap* gaps, U64 gap_count)
 {
   //- rjf: extract range info
   U64 voff_first = 0;
@@ -3158,7 +3158,7 @@ ASYNC_WORK_DEF(p2r_symbol_stream_convert_work)
 //~ rjf: Top-Level Conversion Entry Point
 
 internal RDIM_BakeParams
-p2r_convert(Arena *arena, ASYNC_Root *async_root, P2R_ConvertParams *in)
+p2r_convert(Arena* arena, ASYNC_Root* async_root, P2R_ConvertParams* in)
 {
   Temp scratch = scratch_begin(&arena, 1);
   p2r_async_root = async_root;

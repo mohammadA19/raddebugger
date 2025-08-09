@@ -142,7 +142,7 @@ print_inline_binary_annotations(string binary_annots)
 }
 
 internal void
-entry_point(CmdLine *cmdl)
+entry_point(CmdLine* cmdl)
 {
   Arena *arena = arena_alloc();
   

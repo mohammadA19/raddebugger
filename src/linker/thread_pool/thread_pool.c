@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal void
-tp_run_tasks(TP_Context *pool, TP_Worker *worker)
+tp_run_tasks(TP_Context* pool, TP_Worker* worker)
 {
   for (;;) {
     S64 task_left = ins_atomic_u64_dec_eval(&pool.task_left);
@@ -29,7 +29,7 @@ tp_run_tasks(TP_Context *pool, TP_Worker *worker)
 }
 
 internal void
-tp_worker_main(void *raw_worker)
+tp_worker_main(void* raw_worker)
 {
   TP_Worker  *worker = raw_worker;
   TP_Context *pool   = worker.pool;
@@ -41,7 +41,7 @@ tp_worker_main(void *raw_worker)
 }
 
 internal void
-tp_worker_main_shared(void *raw_worker)
+tp_worker_main_shared(void* raw_worker)
 {
   TP_Worker  *worker = raw_worker;
   TP_Context *pool   = worker.pool;
@@ -55,7 +55,7 @@ tp_worker_main_shared(void *raw_worker)
 }
 
 internal TP_Context * 
-tp_alloc(Arena *arena, U32 worker_count, U32 max_worker_count, string name)
+tp_alloc(Arena* arena, U32 worker_count, U32 max_worker_count, string name)
 {
   ProfBeginDynamic("Alloc Thread Pool [Worker Count: %u]", worker_count);
   AssertAlways(worker_count > 0);
@@ -107,7 +107,7 @@ tp_alloc(Arena *arena, U32 worker_count, U32 max_worker_count, string name)
 }
 
 internal void
-tp_release(TP_Context *pool)
+tp_release(TP_Context* pool)
 {
   pool.is_live = 0;
 
@@ -133,7 +133,7 @@ tp_release(TP_Context *pool)
 }
 
 internal TP_Arena *
-tp_arena_alloc(TP_Context *pool)
+tp_arena_alloc(TP_Context* pool)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -152,7 +152,7 @@ tp_arena_alloc(TP_Context *pool)
 }
 
 internal void
-tp_arena_release(TP_Arena **arena_ptr)
+tp_arena_release(TP_Arena** arena_ptr)
 {
   ProfBeginFunction();
   for (U64 i = 1; i < (*arena_ptr)->count; ++i) {
@@ -164,7 +164,7 @@ tp_arena_release(TP_Arena **arena_ptr)
 }
 
 internal TP_Temp
-tp_temp_begin(TP_Arena *arena)
+tp_temp_begin(TP_Arena* arena)
 {
   ProfBeginFunction();
 
@@ -195,7 +195,7 @@ tp_temp_end(TP_Temp temp)
 }
 
 internal void
-tp_for_parallel(TP_Context *pool, TP_Arena *task_arena, U64 task_count, TP_TaskFunc *task_func, void *task_data)
+tp_for_parallel(TP_Context* pool, TP_Arena* task_arena, U64 task_count, TP_TaskFunc* task_func, void* task_data)
 {
   if (task_count > 0) {
     // init run
@@ -229,7 +229,7 @@ tp_for_parallel(TP_Context *pool, TP_Arena *task_arena, U64 task_count, TP_TaskF
 }
 
 internal Rng1U64 *
-tp_divide_work(Arena *arena, U64 item_count, U32 worker_count)
+tp_divide_work(Arena* arena, U64 item_count, U32 worker_count)
 {
   U64      per_count = CeilIntegerDiv(item_count, worker_count);
   Rng1U64 *range_arr = push_array_no_zero(arena, Rng1U64, worker_count + 1);

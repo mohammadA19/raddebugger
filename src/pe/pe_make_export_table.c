@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal string
-pe_name_from_export_parse(PE_ExportParse *exp)
+pe_name_from_export_parse(PE_ExportParse* exp)
 {
   string name;
   if (exp.is_forwarder) {
@@ -16,7 +16,7 @@ pe_name_from_export_parse(PE_ExportParse *exp)
 }
 
 internal U16
-pe_hint_or_ordinal_from_export_parse(PE_ExportParse *exp)
+pe_hint_or_ordinal_from_export_parse(PE_ExportParse* exp)
 {
   U16 hint_or_ordinal = max_U16;
   if (exp.import_by == COFF_ImportBy_Ordinal) {
@@ -30,7 +30,7 @@ pe_hint_or_ordinal_from_export_parse(PE_ExportParse *exp)
 }
 
 internal PE_ExportParsePtrArray
-pe_array_from_export_list(Arena *arena, PE_ExportParseList list)
+pe_array_from_export_list(Arena* arena, PE_ExportParseList list)
 {
   PE_ExportParsePtrArray result = {0};
   result.v = push_array_no_zero(arena, PE_ExportParse *, list.count);
@@ -41,14 +41,14 @@ pe_array_from_export_list(Arena *arena, PE_ExportParseList list)
 }
 
 internal void
-pe_export_parse_list_push_node(PE_ExportParseList *list, PE_ExportParseNode *node)
+pe_export_parse_list_push_node(PE_ExportParseList* list, PE_ExportParseNode* node)
 {
   SLLQueuePush(list.first, list.last, node);
   list.count += 1;
 }
 
 internal PE_ExportParseNode *
-pe_export_parse_list_push(Arena *arena, PE_ExportParseList *list, PE_ExportParse data)
+pe_export_parse_list_push(Arena* arena, PE_ExportParseList* list, PE_ExportParse data)
 {
   PE_ExportParseNode *node = push_array(arena, PE_ExportParseNode, 1);
   node.data = data;
@@ -57,7 +57,7 @@ pe_export_parse_list_push(Arena *arena, PE_ExportParseList *list, PE_ExportParse
 }
 
 internal void
-pe_export_parse_list_concat_in_place(PE_ExportParseList *list, PE_ExportParseList *to_concat)
+pe_export_parse_list_concat_in_place(PE_ExportParseList* list, PE_ExportParseList* to_concat)
 {
   if (to_concat.count) {
     if (list.count) {
@@ -73,7 +73,7 @@ pe_export_parse_list_concat_in_place(PE_ExportParseList *list, PE_ExportParseLis
 }
 
 internal int
-pe_named_export_is_before(void *raw_a, void *raw_b)
+pe_named_export_is_before(void* raw_a, void* raw_b)
 {
   PE_ExportParse *a = *(PE_ExportParse **)raw_a;
   PE_ExportParse *b = *(PE_ExportParse **)raw_b;
@@ -82,7 +82,7 @@ pe_named_export_is_before(void *raw_a, void *raw_b)
 }
 
 internal int
-pe_ordinal_export_is_before(void *raw_a, void *raw_b)
+pe_ordinal_export_is_before(void* raw_a, void* raw_b)
 {
   PE_ExportParse *a = raw_a;
   PE_ExportParse *b = raw_b;
@@ -90,7 +90,7 @@ pe_ordinal_export_is_before(void *raw_a, void *raw_b)
 }
 
 internal PE_FinalizedExports
-pe_finalize_export_list(Arena *arena, PE_ExportParseList export_list)
+pe_finalize_export_list(Arena* arena, PE_ExportParseList export_list)
 {
   PE_ExportParsePtrArray named_exports = {0};
   PE_ExportParsePtrArray ordinal_exports = {0};
@@ -325,7 +325,7 @@ pe_make_edata_obj(Arena               *arena,
 }
 
 internal String8List
-pe_make_import_lib(Arena *arena, COFF_MachineType machine, COFF_TimeStamp time_stamp, string dll_name, string debug_symbols, PE_ExportParseList export_list)
+pe_make_import_lib(Arena* arena, COFF_MachineType machine, COFF_TimeStamp time_stamp, string dll_name, string debug_symbols, PE_ExportParseList export_list)
 {
   ProfBeginFunction();
 

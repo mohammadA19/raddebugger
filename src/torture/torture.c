@@ -160,7 +160,7 @@ t_invoke_linker(string cmdline)
 }
 
 internal int
-t_invoke_linkerf(char *fmt, ...)
+t_invoke_linkerf(char* fmt, ...)
 {
   Temp scratch = scratch_begin(0,0);
   va_list args;
@@ -173,7 +173,7 @@ t_invoke_linkerf(char *fmt, ...)
 }
 
 internal int
-t_invoke_linker_with_time_outf(U64 time_out, char *fmt, ...)
+t_invoke_linker_with_time_outf(U64 time_out, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0,0);
   va_list args;
@@ -186,7 +186,7 @@ t_invoke_linker_with_time_outf(U64 time_out, char *fmt, ...)
 }
 
 internal string
-t_make_file_path(Arena *arena, string name)
+t_make_file_path(Arena* arena, string name)
 {
   return push_str8f(arena, "%S\\%S", g_wdir, name);
 }
@@ -214,7 +214,7 @@ t_write_file(string name, string data)
 }
 
 internal string
-t_read_file(Arena *arena, string name)
+t_read_file(Arena* arena, string name)
 {
   Temp scratch = scratch_begin(&arena,1);
   string path = t_make_file_path(scratch.arena, name);
@@ -230,14 +230,14 @@ typedef struct
 } T_RunCtx;
 
 internal void
-t_run_caller(void *raw_ctx)
+t_run_caller(void* raw_ctx)
 {
   T_RunCtx *ctx = raw_ctx;
   ctx.result = ctx.run();
 }
 
 internal void
-t_run_fail_handler(void *raw_ctx)
+t_run_fail_handler(void* raw_ctx)
 {
   T_RunCtx *ctx = raw_ctx;
   ctx.result = T_Result_Crash;
@@ -253,7 +253,7 @@ t_run(T_Run run)
 }
 
 internal COFF_SectionHeader *
-t_coff_section_header_from_name(string string_table, COFF_SectionHeader *section_table, U64 section_count, string name)
+t_coff_section_header_from_name(string string_table, COFF_SectionHeader* section_table, U64 section_count, string name)
 {
   for (U64 sect_idx = 0; sect_idx < section_count; sect_idx += 1) {
     COFF_SectionHeader *section_header = &section_table[sect_idx];
@@ -266,7 +266,7 @@ t_coff_section_header_from_name(string string_table, COFF_SectionHeader *section
 }
 
 internal COFF_SectionHeaderArray
-t_coff_section_header_array_from_name(Arena *arena, string string_table, COFF_SectionHeader *section_table, U64 section_count, string name)
+t_coff_section_header_array_from_name(Arena* arena, string string_table, COFF_SectionHeader* section_table, U64 section_count, string name)
 {
   U64 match_count = 0;
   for (U64 sect_idx = 0; sect_idx < section_count; sect_idx += 1) {
@@ -303,19 +303,19 @@ typedef enum
 } T_MsvcLinkExitCode;
 
 internal COFF_ObjSection *
-t_push_text_section(COFF_ObjWriter *obj_writer, string data)
+t_push_text_section(COFF_ObjWriter* obj_writer, string data)
 {
   return coff_obj_writer_push_section(obj_writer, (".text"), PE_TEXT_SECTION_FLAGS | COFF_SectionFlag_Align1Bytes, data);
 }
 
 internal COFF_ObjSection *
-t_push_data_section(COFF_ObjWriter *obj_writer, string data)
+t_push_data_section(COFF_ObjWriter* obj_writer, string data)
 {
   return coff_obj_writer_push_section(obj_writer, (".data"), PE_DATA_SECTION_FLAGS, data);
 }
 
 internal COFF_ObjSection *
-t_push_rdata_section(COFF_ObjWriter *obj_writer, string data)
+t_push_rdata_section(COFF_ObjWriter* obj_writer, string data)
 {
   return coff_obj_writer_push_section(obj_writer, (".rdata"), PE_RDATA_SECTION_FLAGS, data);
 }
@@ -1292,7 +1292,7 @@ exit:;
 }
 
 internal string
-t_make_sec_defn_obj(Arena *arena, string payload)
+t_make_sec_defn_obj(Arena* arena, string payload)
 {
   COFF_ObjWriter *obj_writer = coff_obj_writer_alloc(0, COFF_MachineType_X64);
   COFF_ObjSection *mysect_section = coff_obj_writer_push_section(obj_writer, (".mysect"), COFF_SectionFlag_CntInitializedData|COFF_SectionFlag_MemRead|COFF_SectionFlag_Align1Bytes, payload);
@@ -3894,7 +3894,7 @@ exit:;
 ////////////////////////////////////////////////////////////////
 
 internal void
-entry_point(CmdLine *cmdline)
+entry_point(CmdLine* cmdline)
 {
   Temp scratch = scratch_begin(0,0);
 

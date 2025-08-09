@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal void
-lnk_error_input_obj(LNK_ErrorCode code, LNK_InputObj *input, char *fmt, ...)
+lnk_error_input_obj(LNK_ErrorCode code, LNK_InputObj* input, char* fmt, ...)
 {
   va_list args; va_start(args, fmt);
   lnk_error_with_loc_fv(code, input.path, input.lib ? input.lib.path : str8_zero(), fmt, args);
@@ -23,14 +23,14 @@ lnk_string_from_input_source(LNK_InputSourceType input_source)
 }
 
 internal void
-lnk_input_obj_list_push_node(LNK_InputObjList *list, LNK_InputObj *node)
+lnk_input_obj_list_push_node(LNK_InputObjList* list, LNK_InputObj* node)
 {
   SLLQueuePush(list.first, list.last, node);
   ++list.count;
 }
 
 internal LNK_InputObj *
-lnk_input_obj_list_push(Arena *arena, LNK_InputObjList *list)
+lnk_input_obj_list_push(Arena* arena, LNK_InputObjList* list)
 {
   LNK_InputObj *node = push_array(arena, LNK_InputObj, 1);
   lnk_input_obj_list_push_node(list, node);
@@ -38,13 +38,13 @@ lnk_input_obj_list_push(Arena *arena, LNK_InputObjList *list)
 }
 
 internal void
-lnk_input_obj_list_concat_in_place(LNK_InputObjList *list, LNK_InputObjList *to_concat)
+lnk_input_obj_list_concat_in_place(LNK_InputObjList* list, LNK_InputObjList* to_concat)
 {
   SLLConcatInPlace(list, to_concat);
 }
 
 internal LNK_InputObj **
-lnk_array_from_input_obj_list(Arena *arena, LNK_InputObjList list)
+lnk_array_from_input_obj_list(Arena* arena, LNK_InputObjList list)
 {
   LNK_InputObj **result = push_array_no_zero(arena, LNK_InputObj *, list.count);
   U64 i = 0;
@@ -56,7 +56,7 @@ lnk_array_from_input_obj_list(Arena *arena, LNK_InputObjList list)
 }
 
 internal LNK_InputObj **
-lnk_thin_array_from_input_obj_list(Arena *arena, LNK_InputObjList list, U64 *count_out)
+lnk_thin_array_from_input_obj_list(Arena* arena, LNK_InputObjList list, U64* count_out)
 {
   for (LNK_InputObj *input = list.first; input != 0; input = input.next) {
     if (input.is_thin) { *count_out += 1; }
@@ -70,7 +70,7 @@ lnk_thin_array_from_input_obj_list(Arena *arena, LNK_InputObjList list, U64 *cou
 }
 
 internal String8Array
-lnk_path_array_from_input_obj_array(Arena *arena, LNK_InputObj **arr, U64 count)
+lnk_path_array_from_input_obj_array(Arena* arena, LNK_InputObj** arr, U64 count)
 {
   String8Array paths = {0};
   paths.count = count;
@@ -82,7 +82,7 @@ lnk_path_array_from_input_obj_array(Arena *arena, LNK_InputObj **arr, U64 count)
 }
 
 internal int
-lnk_input_obj_compar(const void *raw_a, const void *raw_b)
+lnk_input_obj_compar(const void* raw_a, const void* raw_b)
 {
   const LNK_InputObj **a = (const LNK_InputObj **) raw_a;
   const LNK_InputObj **b = (const LNK_InputObj **) raw_b;
@@ -91,7 +91,7 @@ lnk_input_obj_compar(const void *raw_a, const void *raw_b)
 }
 
 internal int
-lnk_input_obj_compar_is_before(void *raw_a, void *raw_b)
+lnk_input_obj_compar_is_before(void* raw_a, void* raw_b)
 {
   LNK_InputObj **a = raw_a;
   LNK_InputObj **b = raw_b;
@@ -101,7 +101,7 @@ lnk_input_obj_compar_is_before(void *raw_a, void *raw_b)
 }
 
 internal LNK_InputObjList
-lnk_list_from_input_obj_arr(LNK_InputObj **arr, U64 count)
+lnk_list_from_input_obj_arr(LNK_InputObj** arr, U64 count)
 {
   LNK_InputObjList list = {0};
   for (U64 i = 0; i < count; ++i) {
@@ -112,7 +112,7 @@ lnk_list_from_input_obj_arr(LNK_InputObj **arr, U64 count)
 }
 
 internal LNK_InputObjList
-lnk_input_obj_list_from_string_list(Arena *arena, String8List list)
+lnk_input_obj_list_from_string_list(Arena* arena, String8List list)
 {
   LNK_InputObjList input_list = {0};
   for (String8Node *path = list.first; path != 0; path = path.next) {
@@ -125,7 +125,7 @@ lnk_input_obj_list_from_string_list(Arena *arena, String8List list)
 }
 
 internal LNK_InputImportNode *
-lnk_input_import_list_push(Arena *arena, LNK_InputImportList *list)
+lnk_input_import_list_push(Arena* arena, LNK_InputImportList* list)
 {
   LNK_InputImportNode *node = push_array(arena, LNK_InputImportNode, 1);
   SLLQueuePush(list.first, list.last, node);
@@ -134,13 +134,13 @@ lnk_input_import_list_push(Arena *arena, LNK_InputImportList *list)
 }
 
 internal void
-lnk_input_import_list_concat_in_place(LNK_InputImportList *list, LNK_InputImportList *to_concat)
+lnk_input_import_list_concat_in_place(LNK_InputImportList* list, LNK_InputImportList* to_concat)
 {
   SLLConcatInPlace(list, to_concat);
 }
 
 internal LNK_InputImportNode **
-lnk_input_import_arr_from_list(Arena *arena, LNK_InputImportList list)
+lnk_input_import_arr_from_list(Arena* arena, LNK_InputImportList list)
 {
   LNK_InputImportNode **result = push_array_no_zero(arena, LNK_InputImportNode *, list.count);
   U64 idx = 0;
@@ -152,7 +152,7 @@ lnk_input_import_arr_from_list(Arena *arena, LNK_InputImportList list)
 }
 
 internal LNK_InputImportList
-lnk_list_from_input_import_arr(LNK_InputImportNode **arr, U64 count)
+lnk_list_from_input_import_arr(LNK_InputImportNode** arr, U64 count)
 {
   LNK_InputImportList list = {0};
   for (U64 i = 0; i < count; i += 1) {
@@ -163,7 +163,7 @@ lnk_list_from_input_import_arr(LNK_InputImportNode **arr, U64 count)
 }
 
 int
-lnk_input_import_is_before(void *raw_a, void *raw_b)
+lnk_input_import_is_before(void* raw_a, void* raw_b)
 {
   LNK_InputImport *a = *(LNK_InputImport **)raw_a;
   LNK_InputImport *b = *(LNK_InputImport **)raw_b;
@@ -171,7 +171,7 @@ lnk_input_import_is_before(void *raw_a, void *raw_b)
 }
 
 int
-lnk_input_import_node_compar(const void *raw_a, const void *raw_b)
+lnk_input_import_node_compar(const void* raw_a, const void* raw_b)
 {
   LNK_InputImportNode * const *a = raw_a;
   LNK_InputImportNode * const *b = raw_b;

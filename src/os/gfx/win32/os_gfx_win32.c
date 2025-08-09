@@ -8,7 +8,7 @@
 
 typedef BOOL w32_SetProcessDpiAwarenessContext_Type(void* value);
 typedef UINT w32_GetDpiForWindow_Type(HWND hwnd);
-typedef HRESULT w32_GetDpiForMonitor_Type(HMONITOR hmonitor, MONITOR_DPI_TYPE dpiType, UINT *dpiX, UINT *dpiY);
+typedef HRESULT w32_GetDpiForMonitor_Type(HMONITOR hmonitor, MONITOR_DPI_TYPE dpiType, UINT* dpiX, UINT* dpiY);
 typedef int w32_GetSystemMetricsForDpi_Type(int nIndex, UINT dpi);
 #define w32_DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 ((void*)-4)
 global w32_GetDpiForWindow_Type *w32_GetDpiForWindow_func = 0;
@@ -33,7 +33,7 @@ os_w32_rng2f32_from_rect(RECT rect)
 //~ rjf: Windows
 
 internal OS_Handle
-os_w32_handle_from_window(OS_W32_Window *window)
+os_w32_handle_from_window(OS_W32_Window* window)
 {
   OS_Handle handle = {(U64)window};
   return handle;
@@ -62,7 +62,7 @@ os_w32_window_from_hwnd(HWND hwnd)
 }
 
 internal HWND
-os_w32_hwnd_from_window(OS_W32_Window *window)
+os_w32_hwnd_from_window(OS_W32_Window* window)
 {
   return window.hwnd;
 }
@@ -89,7 +89,7 @@ os_w32_window_alloc(void)
 }
 
 internal void
-os_w32_window_release(OS_W32_Window *window)
+os_w32_window_release(OS_W32_Window* window)
 {
   if (window.paint_arena != 0)
   {
@@ -102,7 +102,7 @@ os_w32_window_release(OS_W32_Window *window)
 }
 
 internal OS_Event *
-os_w32_push_event(OS_EventKind kind, OS_W32_Window *window)
+os_w32_push_event(OS_EventKind kind, OS_W32_Window* window)
 {
   OS_Event *result = os_event_list_push_new(os_w32_event_arena, &os_w32_event_list, kind);
   result.window = os_w32_handle_from_window(window);
@@ -1016,7 +1016,7 @@ os_set_clipboard_text(string string)
 }
 
 internal string
-os_get_clipboard_text(Arena *arena)
+os_get_clipboard_text(Arena* arena)
 {
   string result = {0};
   if (IsClipboardFormatAvailable(CF_UNICODETEXT) &&
@@ -1371,7 +1371,7 @@ os_dpi_from_window(OS_Handle handle)
 //~ rjf: @os_hooks Monitors (Implemented Per-OS)
 
 internal OS_HandleArray
-os_push_monitors_array(Arena *arena)
+os_push_monitors_array(Arena* arena)
 {
   Temp scratch = scratch_begin(&arena, 1);
   OS_HandleList list = {0};
@@ -1403,7 +1403,7 @@ os_monitor_from_window(OS_Handle window)
 }
 
 internal string
-os_name_from_monitor(Arena *arena, OS_Handle monitor)
+os_name_from_monitor(Arena* arena, OS_Handle monitor)
 {
   string result = {0};
   HMONITOR monitor_handle = (HMONITOR)monitor.u64[0];
@@ -1457,7 +1457,7 @@ os_send_wakeup_event(void)
 }
 
 internal OS_EventList
-os_get_events(Arena *arena, B32 wait)
+os_get_events(Arena* arena, B32 wait)
 {
   os_w32_event_arena = arena;
   MemoryZeroStruct(&os_w32_event_list);
@@ -1582,7 +1582,7 @@ os_graphical_message(B32 error, string title, string message)
 }
 
 internal string
-os_graphical_pick_file(Arena *arena, string initial_path)
+os_graphical_pick_file(Arena* arena, string initial_path)
 {
   string result = {0};
   {

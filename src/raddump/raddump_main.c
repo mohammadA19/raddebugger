@@ -174,7 +174,7 @@ global read_only struct
 };
 
 internal void
-entry_point(CmdLine *cmdline)
+entry_point(CmdLine* cmdline)
 {
   Arena *arena = arena_alloc();
   

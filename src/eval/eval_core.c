@@ -97,7 +97,7 @@ e_key_zero(void)
 //~ rjf: Type Key Type Functions
 
 internal void
-e_type_key_list_push(Arena *arena, E_TypeKeyList *list, E_TypeKey key)
+e_type_key_list_push(Arena* arena, E_TypeKeyList* list, E_TypeKey key)
 {
   E_TypeKeyNode *n = push_array(arena, E_TypeKeyNode, 1);
   n.v = key;
@@ -106,7 +106,7 @@ e_type_key_list_push(Arena *arena, E_TypeKeyList *list, E_TypeKey key)
 }
 
 internal void
-e_type_key_list_push_front(Arena *arena, E_TypeKeyList *list, E_TypeKey key)
+e_type_key_list_push_front(Arena* arena, E_TypeKeyList* list, E_TypeKey key)
 {
   E_TypeKeyNode *n = push_array(arena, E_TypeKeyNode, 1);
   n.v = key;
@@ -115,7 +115,7 @@ e_type_key_list_push_front(Arena *arena, E_TypeKeyList *list, E_TypeKey key)
 }
 
 internal E_TypeKeyList
-e_type_key_list_copy(Arena *arena, E_TypeKeyList *src)
+e_type_key_list_copy(Arena* arena, E_TypeKeyList* src)
 {
   E_TypeKeyList dst = {0};
   for (E_TypeKeyNode *n = src.first; n != 0; n = n.next)
@@ -129,7 +129,7 @@ e_type_key_list_copy(Arena *arena, E_TypeKeyList *src)
 //~ rjf: Message Functions
 
 internal void
-e_msg(Arena *arena, E_MsgList *msgs, E_MsgKind kind, Rng1U64 range, string text)
+e_msg(Arena* arena, E_MsgList* msgs, E_MsgKind kind, Rng1U64 range, string text)
 {
   E_Msg *msg = push_array(arena, E_Msg, 1);
   SLLQueuePush(msgs.first, msgs.last, msg);
@@ -141,7 +141,7 @@ e_msg(Arena *arena, E_MsgList *msgs, E_MsgKind kind, Rng1U64 range, string text)
 }
 
 internal void
-e_msgf(Arena *arena, E_MsgList *msgs, E_MsgKind kind, Rng1U64 range, char *fmt, ...)
+e_msgf(Arena* arena, E_MsgList* msgs, E_MsgKind kind, Rng1U64 range, char* fmt, ...)
 {
   va_list args;
   va_start(args, fmt);
@@ -151,7 +151,7 @@ e_msgf(Arena *arena, E_MsgList *msgs, E_MsgKind kind, Rng1U64 range, char *fmt, 
 }
 
 internal void
-e_msg_list_concat_in_place(E_MsgList *dst, E_MsgList *to_push)
+e_msg_list_concat_in_place(E_MsgList* dst, E_MsgList* to_push)
 {
   if (dst.last != 0 && to_push.first != 0)
   {
@@ -168,7 +168,7 @@ e_msg_list_concat_in_place(E_MsgList *dst, E_MsgList *to_push)
 }
 
 internal E_MsgList
-e_msg_list_copy(Arena *arena, E_MsgList *src)
+e_msg_list_copy(Arena* arena, E_MsgList* src)
 {
   E_MsgList dst = {0};
   for (E_Msg *msg = src.first; msg != 0; msg = msg.next)
@@ -202,7 +202,7 @@ e_space_match(E_Space a, E_Space b)
 //- rjf: string -> num
 
 internal E_String2NumMap
-e_string2num_map_make(Arena *arena, U64 slot_count)
+e_string2num_map_make(Arena* arena, U64 slot_count)
 {
   E_String2NumMap map = {0};
   map.slots_count = slot_count;
@@ -211,7 +211,7 @@ e_string2num_map_make(Arena *arena, U64 slot_count)
 }
 
 internal void
-e_string2num_map_insert(Arena *arena, E_String2NumMap *map, string string, U64 num)
+e_string2num_map_insert(Arena* arena, E_String2NumMap* map, string string, U64 num)
 {
   U64 hash = e_hash_from_string(5381, string);
   U64 slot_idx = hash%map.slots_count;
@@ -236,7 +236,7 @@ e_string2num_map_insert(Arena *arena, E_String2NumMap *map, string string, U64 n
 }
 
 internal U64
-e_num_from_string(E_String2NumMap *map, string string)
+e_num_from_string(E_String2NumMap* map, string string)
 {
   U64 num = 0;
   if (map.slots_count != 0)
@@ -261,7 +261,7 @@ e_num_from_string(E_String2NumMap *map, string string)
 }
 
 internal E_String2NumMapNodeArray
-e_string2num_map_node_array_from_map(Arena *arena, E_String2NumMap *map)
+e_string2num_map_node_array_from_map(Arena* arena, E_String2NumMap* map)
 {
   E_String2NumMapNodeArray result = {0};
   result.count = map.node_count;
@@ -275,7 +275,7 @@ e_string2num_map_node_array_from_map(Arena *arena, E_String2NumMap *map)
 }
 
 internal int
-e_string2num_map_node_qsort_compare__num_ascending(E_String2NumMapNode **a, E_String2NumMapNode **b)
+e_string2num_map_node_qsort_compare__num_ascending(E_String2NumMapNode** a, E_String2NumMapNode** b)
 {
   int result = 0;
   if (a[0]->num < b[0]->num)
@@ -290,7 +290,7 @@ e_string2num_map_node_qsort_compare__num_ascending(E_String2NumMapNode **a, E_St
 }
 
 internal void
-e_string2num_map_node_array_sort__in_place(E_String2NumMapNodeArray *array)
+e_string2num_map_node_array_sort__in_place(E_String2NumMapNodeArray* array)
 {
   quick_sort(array.v, array.count, sizeof(array.v[0]), e_string2num_map_node_qsort_compare__num_ascending);
 }
@@ -298,7 +298,7 @@ e_string2num_map_node_array_sort__in_place(E_String2NumMapNodeArray *array)
 //- rjf: string -> expr
 
 internal E_String2ExprMap
-e_string2expr_map_make(Arena *arena, U64 slot_count)
+e_string2expr_map_make(Arena* arena, U64 slot_count)
 {
   E_String2ExprMap map = {0};
   map.slots_count = slot_count;
@@ -307,7 +307,7 @@ e_string2expr_map_make(Arena *arena, U64 slot_count)
 }
 
 internal void
-e_string2expr_map_insert(Arena *arena, E_String2ExprMap *map, string string, E_Expr *expr)
+e_string2expr_map_insert(Arena* arena, E_String2ExprMap* map, string string, E_Expr* expr)
 {
   U64 hash = e_hash_from_string(5381, string);
   U64 slot_idx = hash%map.slots_count;
@@ -333,7 +333,7 @@ e_string2expr_map_insert(Arena *arena, E_String2ExprMap *map, string string, E_E
 }
 
 internal void
-e_string2expr_map_inc_poison(E_String2ExprMap *map, string string)
+e_string2expr_map_inc_poison(E_String2ExprMap* map, string string)
 {
   U64 hash = e_hash_from_string(5381, string);
   U64 slot_idx = hash%map.slots_count;
@@ -350,7 +350,7 @@ e_string2expr_map_inc_poison(E_String2ExprMap *map, string string)
 }
 
 internal void
-e_string2expr_map_dec_poison(E_String2ExprMap *map, string string)
+e_string2expr_map_dec_poison(E_String2ExprMap* map, string string)
 {
   U64 hash = e_hash_from_string(5381, string);
   U64 slot_idx = hash%map.slots_count;
@@ -367,7 +367,7 @@ e_string2expr_map_dec_poison(E_String2ExprMap *map, string string)
 }
 
 internal E_Expr *
-e_string2expr_map_lookup(E_String2ExprMap *map, string string)
+e_string2expr_map_lookup(E_String2ExprMap* map, string string)
 {
   E_Expr *expr = &e_expr_nil;
   if (map.slots_count != 0)
@@ -394,7 +394,7 @@ e_string2expr_map_lookup(E_String2ExprMap *map, string string)
 //- rjf: string -> type-key
 
 internal E_String2TypeKeyMap
-e_string2typekey_map_make(Arena *arena, U64 slots_count)
+e_string2typekey_map_make(Arena* arena, U64 slots_count)
 {
   E_String2TypeKeyMap map = {0};
   map.slots_count = slots_count;
@@ -403,7 +403,7 @@ e_string2typekey_map_make(Arena *arena, U64 slots_count)
 }
 
 internal void
-e_string2typekey_map_insert(Arena *arena, E_String2TypeKeyMap *map, string string, E_TypeKey key)
+e_string2typekey_map_insert(Arena* arena, E_String2TypeKeyMap* map, string string, E_TypeKey key)
 {
   E_String2TypeKeyNode *n = push_array(arena, E_String2TypeKeyNode, 1);
   U64 hash = e_hash_from_string(5381, string);
@@ -414,7 +414,7 @@ e_string2typekey_map_insert(Arena *arena, E_String2TypeKeyMap *map, string strin
 }
 
 internal E_TypeKey
-e_string2typekey_map_lookup(E_String2TypeKeyMap *map, string string)
+e_string2typekey_map_lookup(E_String2TypeKeyMap* map, string string)
 {
   E_TypeKey key = zero_struct;
   U64 hash = e_hash_from_string(5381, string);
@@ -433,7 +433,7 @@ e_string2typekey_map_lookup(E_String2TypeKeyMap *map, string string)
 //- rjf: auto hooks
 
 internal E_AutoHookMap
-e_auto_hook_map_make(Arena *arena, U64 slots_count)
+e_auto_hook_map_make(Arena* arena, U64 slots_count)
 {
   E_AutoHookMap map = {0};
   map.slots_count = slots_count;
@@ -442,7 +442,7 @@ e_auto_hook_map_make(Arena *arena, U64 slots_count)
 }
 
 internal void
-e_auto_hook_map_insert_new_(Arena *arena, E_AutoHookMap *map, E_AutoHookParams *params)
+e_auto_hook_map_insert_new_(Arena* arena, E_AutoHookMap* map, E_AutoHookParams* params)
 {
   // rjf: get type key
   E_TypeKey type_key = params.type_key;
@@ -525,7 +525,7 @@ e_auto_hook_map_insert_new_(Arena *arena, E_AutoHookMap *map, E_AutoHookParams *
 //~ rjf: Debug-Info-Driven Map Building Functions
 
 internal E_String2NumMap *
-e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
+e_push_locals_map_from_rdi_voff(Arena* arena, RDI_Parsed* rdi, U64 voff)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -604,7 +604,7 @@ e_push_locals_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
 }
 
 internal E_String2NumMap *
-e_push_member_map_from_rdi_voff(Arena *arena, RDI_Parsed *rdi, U64 voff)
+e_push_member_map_from_rdi_voff(Arena* arena, RDI_Parsed* rdi, U64 voff)
 {
   //- rjf: voff -> tightest scope
   U64 scope_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff);
@@ -658,13 +658,13 @@ e_cache_alloc(void)
 }
 
 internal void
-e_cache_release(E_Cache *cache)
+e_cache_release(E_Cache* cache)
 {
   arena_release(cache.arena);
 }
 
 internal void
-e_select_cache(E_Cache *cache)
+e_select_cache(E_Cache* cache)
 {
   e_cache = cache;
 }
@@ -673,7 +673,7 @@ e_select_cache(E_Cache *cache)
 //~ rjf: Evaluation Phase Markers
 
 internal void
-e_select_base_ctx(E_BaseCtx *ctx)
+e_select_base_ctx(E_BaseCtx* ctx)
 {
   //- rjf: select base context
   if (ctx.modules == 0)        { ctx.modules = &e_module_nil; }
@@ -734,7 +734,7 @@ e_select_base_ctx(E_BaseCtx *ctx)
 }
 
 internal void
-e_select_ir_ctx(E_IRCtx *ctx)
+e_select_ir_ctx(E_IRCtx* ctx)
 {
   if (ctx.regs_map == 0)       { ctx.regs_map = &e_string2num_map_nil; }
   if (ctx.reg_alias_map == 0)  { ctx.reg_alias_map = &e_string2num_map_nil; }
@@ -824,7 +824,7 @@ e_key_from_string(string string)
 }
 
 internal E_Key
-e_key_from_stringf(char *fmt, ...)
+e_key_from_stringf(char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -837,7 +837,7 @@ e_key_from_stringf(char *fmt, ...)
 }
 
 internal E_Key
-e_key_from_expr(E_Expr *expr)
+e_key_from_expr(E_Expr* expr)
 {
   Temp scratch = scratch_begin(0, 0);
   string string = e_string_from_expr(scratch.arena, expr, str8_zero());
@@ -874,7 +874,7 @@ e_cache_bundle_from_key(E_Key key)
 //- rjf: bundle -> pipeline stage outputs
 
 internal E_Parse
-e_parse_from_bundle(E_CacheBundle *bundle)
+e_parse_from_bundle(E_CacheBundle* bundle)
 {
   if (bundle != &e_cache_bundle_nil && !(bundle.flags & E_CacheBundleFlag_Parse))
   {
@@ -888,7 +888,7 @@ e_parse_from_bundle(E_CacheBundle *bundle)
 }
 
 internal E_IRTreeAndType
-e_irtree_from_bundle(E_CacheBundle *bundle)
+e_irtree_from_bundle(E_CacheBundle* bundle)
 {
   if (bundle != &e_cache_bundle_nil && !(bundle.flags & E_CacheBundleFlag_IRTree))
   {
@@ -907,7 +907,7 @@ e_irtree_from_bundle(E_CacheBundle *bundle)
 }
 
 internal string
-e_bytecode_from_bundle(E_CacheBundle *bundle)
+e_bytecode_from_bundle(E_CacheBundle* bundle)
 {
   if (bundle != &e_cache_bundle_nil && !(bundle.flags & E_CacheBundleFlag_Bytecode))
   {
@@ -923,7 +923,7 @@ e_bytecode_from_bundle(E_CacheBundle *bundle)
 }
 
 internal E_Interpretation
-e_interpretation_from_bundle(E_CacheBundle *bundle)
+e_interpretation_from_bundle(E_CacheBundle* bundle)
 {
   if (bundle != &e_cache_bundle_nil && !(bundle.flags & E_CacheBundleFlag_Interpret))
   {
@@ -944,7 +944,7 @@ e_interpretation_from_bundle(E_CacheBundle *bundle)
 //- rjf: key -> full expression string
 
 internal string
-e_full_expr_string_from_key(Arena *arena, E_Key key)
+e_full_expr_string_from_key(Arena* arena, E_Key key)
 {
   E_CacheBundle *bundle = e_cache_bundle_from_key(key);
   string result = push_str8_copy(arena, bundle.string);
@@ -1007,7 +1007,7 @@ e_full_expr_string_from_key(Arena *arena, E_Key key)
 //- rjf: comprehensive bundle
 
 internal E_Eval
-e_eval_from_bundle(E_CacheBundle *bundle)
+e_eval_from_bundle(E_CacheBundle* bundle)
 {
   E_Eval eval =
   {
@@ -1084,7 +1084,7 @@ e_value_eval_from_eval(E_Eval eval)
 //- rjf: type key -> auto hooks
 
 internal E_AutoHookMatchList
-e_push_auto_hook_matches_from_type_key(Arena *arena, E_TypeKey type_key)
+e_push_auto_hook_matches_from_type_key(Arena* arena, E_TypeKey type_key)
 {
   ProfBeginFunction();
   E_AutoHookMatchList matches = {0};
@@ -1335,7 +1335,7 @@ e_key_wrap(E_Key key, string string)
 }
 
 internal E_Key
-e_key_wrapf(E_Key key, char *fmt, ...)
+e_key_wrapf(E_Key key, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -1392,7 +1392,7 @@ e_range_from_eval(E_Eval eval)
 //~ rjf: Debug Functions
 
 internal string
-e_debug_log_from_expr_string(Arena *arena, string string)
+e_debug_log_from_expr_string(Arena* arena, string string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   char *indent_spaces = "                                                                                                                                ";

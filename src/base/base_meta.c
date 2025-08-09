@@ -5,7 +5,7 @@
 //~ rjf: Type Info Lookups
 
 internal Member *
-member_from_name(Type *type, string name)
+member_from_name(Type* type, string name)
 {
   Member *member = &member_nil;
   if (type.members != 0 && name.size != 0)
@@ -26,7 +26,7 @@ member_from_name(Type *type, string name)
 //~ rjf: Type Info * Instance Operations
 
 internal void
-typed_data_rebase_ptrs(Type *type, string data, void *base_ptr)
+typed_data_rebase_ptrs(Type* type, string data, void* base_ptr)
 {
   Temp scratch = scratch_begin(0, 0);
   typedef struct RebaseTypeTask RebaseTypeTask;
@@ -75,7 +75,7 @@ typed_data_rebase_ptrs(Type *type, string data, void *base_ptr)
 }
 
 internal string
-serialized_from_typed_data(Arena *arena, Type *type, string data, TypeSerializeParams *params)
+serialized_from_typed_data(Arena* arena, Type* type, string data, TypeSerializeParams* params)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List strings = {0};
@@ -236,7 +236,7 @@ serialized_from_typed_data(Arena *arena, Type *type, string data, TypeSerializeP
 }
 
 internal string
-deserialized_from_typed_data(Arena *arena, Type *type, string data, TypeSerializeParams *params)
+deserialized_from_typed_data(Arena* arena, Type* type, string data, TypeSerializeParams* params)
 {
   string result = {0};
   result.size = type.size;
@@ -411,7 +411,7 @@ deserialized_from_typed_data(Arena *arena, Type *type, string data, TypeSerializ
 }
 
 internal string
-deep_copy_from_typed_data(Arena *arena, Type *type, string data, TypeSerializeParams *params)
+deep_copy_from_typed_data(Arena* arena, Type* type, string data, TypeSerializeParams* params)
 {
   Temp scratch = scratch_begin(&arena, 1);
   string data_srlz = serialized_from_typed_data(scratch.arena, type, data, params);

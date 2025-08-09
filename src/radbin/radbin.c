@@ -10,7 +10,7 @@
 //~ rjf: Top-Level Entry Point
 
 internal void
-rb_entry_point(CmdLine *cmdline)
+rb_entry_point(CmdLine* cmdline)
 {
   Arena *arena = arena_alloc();
   ASYNC_Root *async_root = async_root_alloc();

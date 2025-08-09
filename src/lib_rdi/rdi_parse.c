@@ -157,7 +157,7 @@ SINTa rr_lzb_simple_decode(const void * comp, SINTa compLen, void * raw, SINTa r
 //~ Top-Level Parsing API
 
 RDI_PROC RDI_ParseStatus
-rdi_parse(RDI_U8 *data, RDI_U64 size, RDI_Parsed *out)
+rdi_parse(RDI_U8* data, RDI_U64 size, RDI_Parsed* out)
 {
   RDI_ParseStatus result = RDI_ParseStatus_Good;
   
@@ -243,7 +243,7 @@ rdi_parse(RDI_U8 *data, RDI_U64 size, RDI_Parsed *out)
 //- section table/element raw data extraction
 
 RDI_PROC void *
-rdi_section_raw_data_from_kind(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_SectionEncoding *encoding_out, RDI_U64 *size_out)
+rdi_section_raw_data_from_kind(RDI_Parsed* rdi, RDI_SectionKind kind, RDI_SectionEncoding* encoding_out, RDI_U64* size_out)
 {
   void *result = 0;
 #if !defined(RDI_DISABLE_NILS)
@@ -261,7 +261,7 @@ rdi_section_raw_data_from_kind(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_Sectio
 }
 
 RDI_PROC void *
-rdi_section_raw_table_from_kind(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_U64 *count_out)
+rdi_section_raw_table_from_kind(RDI_Parsed* rdi, RDI_SectionKind kind, RDI_U64* count_out)
 {
   void *result = 0;
   RDI_U64 all_elements_size = 0;
@@ -278,7 +278,7 @@ rdi_section_raw_table_from_kind(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_U64 *
 }
 
 RDI_PROC void *
-rdi_section_raw_element_from_kind_idx(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_U64 idx)
+rdi_section_raw_element_from_kind_idx(RDI_Parsed* rdi, RDI_SectionKind kind, RDI_U64 idx)
 {
   RDI_U64 count = 0;
   void *table = rdi_section_raw_table_from_kind(rdi, kind, &count);
@@ -294,7 +294,7 @@ rdi_section_raw_element_from_kind_idx(RDI_Parsed *rdi, RDI_SectionKind kind, RDI
 //- info about whole parse
 
 RDI_PROC RDI_U64
-rdi_decompressed_size_from_parsed(RDI_Parsed *rdi)
+rdi_decompressed_size_from_parsed(RDI_Parsed* rdi)
 {
   RDI_U64 decompressed_size = rdi.raw_data_size;
   for (RDI_U64 section_idx = 0; section_idx < rdi.sections_count; section_idx += 1)
@@ -307,7 +307,7 @@ rdi_decompressed_size_from_parsed(RDI_Parsed *rdi)
 //- decompression
 
 internal void
-rdi_decompress_parsed(U8 *decompressed_data, U64 decompressed_size, RDI_Parsed *og_rdi)
+rdi_decompress_parsed(U8* decompressed_data, U64 decompressed_size, RDI_Parsed* og_rdi)
 {
   // rjf: copy header
   RDI_Header *src_header = (RDI_Header *)og_rdi.raw_data;
@@ -355,7 +355,7 @@ rdi_decompress_parsed(U8 *decompressed_data, U64 decompressed_size, RDI_Parsed *
 //- strings
 
 RDI_PROC RDI_U8 *
-rdi_string_from_idx(RDI_Parsed *rdi, RDI_U32 idx, RDI_U64 *len_out)
+rdi_string_from_idx(RDI_Parsed* rdi, RDI_U32 idx, RDI_U64* len_out)
 {
   RDI_U8 *result_base = 0;
   RDI_U64 result_size = 0;
@@ -381,7 +381,7 @@ rdi_string_from_idx(RDI_Parsed *rdi, RDI_U32 idx, RDI_U64 *len_out)
 //- index runs
 
 RDI_PROC RDI_U32*
-rdi_idx_run_from_first_count(RDI_Parsed *rdi, RDI_U32 raw_first, RDI_U32 raw_count, RDI_U32 *n_out)
+rdi_idx_run_from_first_count(RDI_Parsed* rdi, RDI_U32 raw_first, RDI_U32 raw_count, RDI_U32* n_out)
 {
   RDI_U64 idx_run_count = 0;
   RDI_U32 *idx_run_data = rdi_table_from_name(rdi, IndexRuns, &idx_run_count);
@@ -400,7 +400,7 @@ rdi_idx_run_from_first_count(RDI_Parsed *rdi, RDI_U32 raw_first, RDI_U32 raw_cou
 //- line info
 
 RDI_PROC void
-rdi_parsed_from_line_table(RDI_Parsed *rdi, RDI_LineTable *line_table, RDI_ParsedLineTable *out)
+rdi_parsed_from_line_table(RDI_Parsed* rdi, RDI_LineTable* line_table, RDI_ParsedLineTable* out)
 {
   //- rjf: extract top-level line info tables
   RDI_U64 all_voffs_count = 0;
@@ -432,7 +432,7 @@ rdi_parsed_from_line_table(RDI_Parsed *rdi, RDI_LineTable *line_table, RDI_Parse
 }
 
 RDI_PROC RDI_U64
-rdi_line_info_idx_range_from_voff(RDI_ParsedLineTable *line_info, RDI_U64 voff, RDI_U64 *n_out)
+rdi_line_info_idx_range_from_voff(RDI_ParsedLineTable* line_info, RDI_U64 voff, RDI_U64* n_out)
 {
   RDI_U64 result = 0;
   RDI_U64 n = 0;
@@ -499,7 +499,7 @@ rdi_line_info_idx_range_from_voff(RDI_ParsedLineTable *line_info, RDI_U64 voff, 
 }
 
 RDI_PROC RDI_U64
-rdi_line_info_idx_from_voff(RDI_ParsedLineTable *line_info, RDI_U64 voff)
+rdi_line_info_idx_from_voff(RDI_ParsedLineTable* line_info, RDI_U64 voff)
 {
   RDI_U64 count = 0;
   RDI_U64 result = rdi_line_info_idx_range_from_voff(line_info, voff, &count);
@@ -515,7 +515,7 @@ rdi_line_info_idx_from_voff(RDI_ParsedLineTable *line_info, RDI_U64 voff)
 }
 
 RDI_PROC void
-rdi_parsed_from_source_line_map(RDI_Parsed *rdi, RDI_SourceLineMap *map, RDI_ParsedSourceLineMap *out)
+rdi_parsed_from_source_line_map(RDI_Parsed* rdi, RDI_SourceLineMap* map, RDI_ParsedSourceLineMap* out)
 {
   //- rjf: extract top-level line info tables
   RDI_U64 all_nums_count = 0;
@@ -547,7 +547,7 @@ rdi_parsed_from_source_line_map(RDI_Parsed *rdi, RDI_SourceLineMap *map, RDI_Par
 }
 
 RDI_PROC RDI_U64 *
-rdi_line_voffs_from_num(RDI_ParsedSourceLineMap *map, RDI_U32 linenum, RDI_U32 *n_out)
+rdi_line_voffs_from_num(RDI_ParsedSourceLineMap* map, RDI_U32 linenum, RDI_U32* n_out)
 {
   RDI_U64 *result = 0;
   *n_out = 0;
@@ -607,7 +607,7 @@ rdi_line_voffs_from_num(RDI_ParsedSourceLineMap *map, RDI_U32 linenum, RDI_U32 *
 //- vmap lookups
 
 RDI_PROC RDI_U64
-rdi_vmap_idx_from_voff(RDI_VMapEntry *vmap, RDI_U64 vmap_count, RDI_U64 voff)
+rdi_vmap_idx_from_voff(RDI_VMapEntry* vmap, RDI_U64 vmap_count, RDI_U64 voff)
 {
   RDI_U64 result = 0;
   if (vmap_count > 0 && vmap[0].voff <= voff && voff < vmap[vmap_count - 1].voff)
@@ -643,7 +643,7 @@ rdi_vmap_idx_from_voff(RDI_VMapEntry *vmap, RDI_U64 vmap_count, RDI_U64 voff)
 }
 
 RDI_PROC RDI_U64
-rdi_vmap_idx_from_section_kind_voff(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_U64 voff)
+rdi_vmap_idx_from_section_kind_voff(RDI_Parsed* rdi, RDI_SectionKind kind, RDI_U64 voff)
 {
   RDI_U64 vmaps_count = 0;
   RDI_VMapEntry *vmaps = rdi_section_raw_table_from_kind(rdi, kind, &vmaps_count);
@@ -654,7 +654,7 @@ rdi_vmap_idx_from_section_kind_voff(RDI_Parsed *rdi, RDI_SectionKind kind, RDI_U
 //- name maps
 
 RDI_PROC void
-rdi_parsed_from_name_map(RDI_Parsed *rdi, RDI_NameMap *mapptr, RDI_ParsedNameMap *out)
+rdi_parsed_from_name_map(RDI_Parsed* rdi, RDI_NameMap* mapptr, RDI_ParsedNameMap* out)
 {
   out.buckets = 0;
   out.bucket_count = 0;
@@ -682,7 +682,7 @@ rdi_parsed_from_name_map(RDI_Parsed *rdi, RDI_NameMap *mapptr, RDI_ParsedNameMap
 }
 
 RDI_PROC RDI_NameMapNode*
-rdi_name_map_lookup(RDI_Parsed *p, RDI_ParsedNameMap *map, RDI_U8 *str, RDI_U64 len)
+rdi_name_map_lookup(RDI_Parsed* p, RDI_ParsedNameMap* map, RDI_U8* str, RDI_U64 len)
 {
   RDI_NameMapNode *result = 0;
   if (map.bucket_count > 0)
@@ -724,7 +724,7 @@ rdi_name_map_lookup(RDI_Parsed *p, RDI_ParsedNameMap *map, RDI_U8 *str, RDI_U64 
 }
 
 RDI_PROC RDI_U32*
-rdi_matches_from_map_node(RDI_Parsed *p, RDI_NameMapNode *node, RDI_U32 *n_out)
+rdi_matches_from_map_node(RDI_Parsed* p, RDI_NameMapNode* node, RDI_U32* n_out)
 {
   RDI_U32 *result = 0;
   *n_out = 0;
@@ -749,7 +749,7 @@ rdi_matches_from_map_node(RDI_Parsed *p, RDI_NameMapNode *node, RDI_U32 *n_out)
 //- procedures
 
 RDI_PROC RDI_Procedure *
-rdi_procedure_from_name(RDI_Parsed *rdi, RDI_U8 *name, RDI_U64 name_size)
+rdi_procedure_from_name(RDI_Parsed* rdi, RDI_U8* name, RDI_U64 name_size)
 {
   RDI_NameMap *map = rdi_element_from_name_idx(rdi, NameMaps, RDI_NameMapKind_Procedures);
   RDI_ParsedNameMap map_parsed = {0};
@@ -767,27 +767,27 @@ rdi_procedure_from_name(RDI_Parsed *rdi, RDI_U8 *name, RDI_U64 name_size)
 }
 
 RDI_PROC RDI_Procedure *
-rdi_procedure_from_name_cstr(RDI_Parsed *rdi, char *cstr)
+rdi_procedure_from_name_cstr(RDI_Parsed* rdi, char* cstr)
 {
   RDI_Procedure *result = rdi_procedure_from_name(rdi, (RDI_U8 *)cstr, rdi_cstring_length(cstr));
   return result;
 }
 
 RDI_PROC RDI_U8 *
-rdi_name_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure, RDI_U64 *len_out)
+rdi_name_from_procedure(RDI_Parsed* rdi, RDI_Procedure* procedure, RDI_U64* len_out)
 {
   return rdi_string_from_idx(rdi, procedure.name_string_idx, len_out);
 }
 
 RDI_PROC RDI_Scope *
-rdi_root_scope_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
+rdi_root_scope_from_procedure(RDI_Parsed* rdi, RDI_Procedure* procedure)
 {
   RDI_Scope *scope = rdi_element_from_name_idx(rdi, Scopes, procedure.root_scope_idx);
   return scope;
 }
 
 RDI_PROC RDI_UDT *
-rdi_container_udt_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
+rdi_container_udt_from_procedure(RDI_Parsed* rdi, RDI_Procedure* procedure)
 {
   RDI_U64 idx = 0;
   if (procedure.link_flags & RDI_LinkFlag_TypeScoped)
@@ -799,7 +799,7 @@ rdi_container_udt_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
 }
 
 RDI_PROC RDI_Procedure *
-rdi_container_procedure_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
+rdi_container_procedure_from_procedure(RDI_Parsed* rdi, RDI_Procedure* procedure)
 {
   RDI_U64 idx = 0;
   if (procedure.link_flags & RDI_LinkFlag_ProcScoped)
@@ -811,7 +811,7 @@ rdi_container_procedure_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure
 }
 
 RDI_PROC RDI_U64
-rdi_first_voff_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
+rdi_first_voff_from_procedure(RDI_Parsed* rdi, RDI_Procedure* procedure)
 {
   RDI_Scope *scope = rdi_root_scope_from_procedure(rdi, procedure);
   RDI_U64 result = rdi_first_voff_from_scope(rdi, scope);
@@ -819,7 +819,7 @@ rdi_first_voff_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
 }
 
 RDI_PROC RDI_U64
-rdi_opl_voff_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
+rdi_opl_voff_from_procedure(RDI_Parsed* rdi, RDI_Procedure* procedure)
 {
   RDI_Scope *scope = rdi_root_scope_from_procedure(rdi, procedure);
   RDI_U64 result = rdi_opl_voff_from_scope(rdi, scope);
@@ -827,7 +827,7 @@ rdi_opl_voff_from_procedure(RDI_Parsed *rdi, RDI_Procedure *procedure)
 }
 
 RDI_PROC RDI_Procedure *
-rdi_procedure_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
+rdi_procedure_from_voff(RDI_Parsed* rdi, RDI_U64 voff)
 {
   RDI_Scope *scope = rdi_scope_from_voff(rdi, voff);
   RDI_Procedure *procedure = rdi_procedure_from_scope(rdi, scope);
@@ -837,7 +837,7 @@ rdi_procedure_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
 //- scopes
 
 RDI_PROC RDI_U64
-rdi_first_voff_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
+rdi_first_voff_from_scope(RDI_Parsed* rdi, RDI_Scope* scope)
 {
   RDI_U64 *voffs = rdi_element_from_name_idx(rdi, ScopeVOffData, scope.voff_range_first);
   RDI_U64 result = *voffs;
@@ -845,7 +845,7 @@ rdi_first_voff_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
 }
 
 RDI_PROC RDI_U64
-rdi_opl_voff_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
+rdi_opl_voff_from_scope(RDI_Parsed* rdi, RDI_Scope* scope)
 {
   RDI_U64 result = 0;
   if (scope.voff_range_opl != 0)
@@ -857,7 +857,7 @@ rdi_opl_voff_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
 }
 
 RDI_PROC RDI_Scope *
-rdi_scope_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
+rdi_scope_from_voff(RDI_Parsed* rdi, RDI_U64 voff)
 {
   RDI_U32 idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_ScopeVMap, voff);
   RDI_Scope *scope = rdi_element_from_name_idx(rdi, Scopes, idx);
@@ -865,21 +865,21 @@ rdi_scope_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
 }
 
 RDI_PROC RDI_Scope *
-rdi_parent_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
+rdi_parent_from_scope(RDI_Parsed* rdi, RDI_Scope* scope)
 {
   RDI_Scope *parent = rdi_element_from_name_idx(rdi, Scopes, scope.parent_scope_idx);
   return parent;
 }
 
 RDI_PROC RDI_Procedure *
-rdi_procedure_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
+rdi_procedure_from_scope(RDI_Parsed* rdi, RDI_Scope* scope)
 {
   RDI_Procedure *procedure = rdi_element_from_name_idx(rdi, Procedures, scope.proc_idx);
   return procedure;
 }
 
 RDI_PROC RDI_InlineSite *
-rdi_inline_site_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
+rdi_inline_site_from_scope(RDI_Parsed* rdi, RDI_Scope* scope)
 {
   RDI_InlineSite *inline_site = rdi_element_from_name_idx(rdi, InlineSites, scope.inline_site_idx);
   return inline_site;
@@ -888,7 +888,7 @@ rdi_inline_site_from_scope(RDI_Parsed *rdi, RDI_Scope *scope)
 //- global variables
 
 RDI_PROC RDI_GlobalVariable *
-rdi_global_variable_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
+rdi_global_variable_from_voff(RDI_Parsed* rdi, RDI_U64 voff)
 {
   RDI_U32 idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_GlobalVMap, voff);
   RDI_GlobalVariable *gvar = rdi_element_from_name_idx(rdi, GlobalVariables, idx);
@@ -898,7 +898,7 @@ rdi_global_variable_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
 //- units
 
 RDI_PROC RDI_Unit *
-rdi_unit_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
+rdi_unit_from_voff(RDI_Parsed* rdi, RDI_U64 voff)
 {
   RDI_U32 unit_idx = rdi_vmap_idx_from_section_kind_voff(rdi, RDI_SectionKind_UnitVMap, voff);
   RDI_Unit *unit = rdi_element_from_name_idx(rdi, Units, unit_idx);
@@ -906,7 +906,7 @@ rdi_unit_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
 }
 
 RDI_PROC RDI_LineTable *
-rdi_line_table_from_unit(RDI_Parsed *rdi, RDI_Unit *unit)
+rdi_line_table_from_unit(RDI_Parsed* rdi, RDI_Unit* unit)
 {
   RDI_LineTable *line_table = rdi_element_from_name_idx(rdi, LineTables, unit.line_table_idx);
   return line_table;
@@ -915,7 +915,7 @@ rdi_line_table_from_unit(RDI_Parsed *rdi, RDI_Unit *unit)
 //- line info
 
 RDI_PROC RDI_Line
-rdi_line_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
+rdi_line_from_voff(RDI_Parsed* rdi, RDI_U64 voff)
 {
   RDI_Unit *unit = rdi_unit_from_voff(rdi, voff);
   RDI_LineTable *line_table = rdi_line_table_from_unit(rdi, unit);
@@ -924,7 +924,7 @@ rdi_line_from_voff(RDI_Parsed *rdi, RDI_U64 voff)
 }
 
 RDI_PROC RDI_Line
-rdi_line_from_line_table_voff(RDI_Parsed *rdi, RDI_LineTable *line_table, RDI_U64 voff)
+rdi_line_from_line_table_voff(RDI_Parsed* rdi, RDI_LineTable* line_table, RDI_U64 voff)
 {
   RDI_ParsedLineTable parsed = {0};
   rdi_parsed_from_line_table(rdi, line_table, &parsed);
@@ -938,7 +938,7 @@ rdi_line_from_line_table_voff(RDI_Parsed *rdi, RDI_LineTable *line_table, RDI_U6
 }
 
 RDI_PROC RDI_SourceFile *
-rdi_source_file_from_line(RDI_Parsed *rdi, RDI_Line *line)
+rdi_source_file_from_line(RDI_Parsed* rdi, RDI_Line* line)
 {
   RDI_SourceFile *result = rdi_element_from_name_idx(rdi, SourceFiles, line.file_idx);
   return result;
@@ -947,7 +947,7 @@ rdi_source_file_from_line(RDI_Parsed *rdi, RDI_Line *line)
 //- source files
 
 RDI_PROC RDI_SourceFile *
-rdi_source_file_from_normal_path(RDI_Parsed *rdi, RDI_U8 *name, RDI_U64 name_size)
+rdi_source_file_from_normal_path(RDI_Parsed* rdi, RDI_U8* name, RDI_U64 name_size)
 {
   RDI_NameMap *map = rdi_element_from_name_idx(rdi, NameMaps, RDI_NameMapKind_NormalSourcePaths);
   RDI_ParsedNameMap map_parsed = {0};
@@ -965,34 +965,34 @@ rdi_source_file_from_normal_path(RDI_Parsed *rdi, RDI_U8 *name, RDI_U64 name_siz
 }
 
 RDI_PROC RDI_SourceFile *
-rdi_source_file_from_normal_path_cstr(RDI_Parsed *rdi, char *cstr)
+rdi_source_file_from_normal_path_cstr(RDI_Parsed* rdi, char* cstr)
 {
   RDI_SourceFile *result = rdi_source_file_from_normal_path(rdi, (RDI_U8 *)cstr, rdi_cstring_length(cstr));
   return result;
 }
 
 RDI_PROC RDI_U8 *
-rdi_normal_path_from_source_file(RDI_Parsed *rdi, RDI_SourceFile *src_file, RDI_U64 *len_out)
+rdi_normal_path_from_source_file(RDI_Parsed* rdi, RDI_SourceFile* src_file, RDI_U64* len_out)
 {
   return rdi_string_from_idx(rdi, src_file.normal_full_path_string_idx, len_out);
 }
 
 RDI_PROC RDI_FilePathNode *
-rdi_file_path_node_from_source_file(RDI_Parsed *rdi, RDI_SourceFile *src_file)
+rdi_file_path_node_from_source_file(RDI_Parsed* rdi, RDI_SourceFile* src_file)
 {
   RDI_FilePathNode *result = rdi_element_from_name_idx(rdi, FilePathNodes, src_file.file_path_node_idx);
   return result;
 }
 
 RDI_PROC RDI_SourceLineMap *
-rdi_source_line_map_from_source_file(RDI_Parsed *rdi, RDI_SourceFile *src_file)
+rdi_source_line_map_from_source_file(RDI_Parsed* rdi, RDI_SourceFile* src_file)
 {
   RDI_SourceLineMap *result = rdi_element_from_name_idx(rdi, SourceLineMaps, src_file.source_line_map_idx);
   return result;
 }
 
 RDI_PROC RDI_U64
-rdi_first_voff_from_source_file_line_num(RDI_Parsed *rdi, RDI_SourceFile *src_file, RDI_U32 line_num)
+rdi_first_voff_from_source_file_line_num(RDI_Parsed* rdi, RDI_SourceFile* src_file, RDI_U32 line_num)
 {
   RDI_SourceLineMap *source_line_map = rdi_source_line_map_from_source_file(rdi, src_file);
   RDI_U64 voff = rdi_first_voff_from_source_line_map_num(rdi, source_line_map, line_num);
@@ -1002,7 +1002,7 @@ rdi_first_voff_from_source_file_line_num(RDI_Parsed *rdi, RDI_SourceFile *src_fi
 //- source line maps
 
 RDI_PROC RDI_U64
-rdi_first_voff_from_source_line_map_num(RDI_Parsed *rdi, RDI_SourceLineMap *map, RDI_U32 line_num)
+rdi_first_voff_from_source_line_map_num(RDI_Parsed* rdi, RDI_SourceLineMap* map, RDI_U32 line_num)
 {
   RDI_ParsedSourceLineMap parsed = {0};
   rdi_parsed_from_source_line_map(rdi, map, &parsed);
@@ -1019,14 +1019,14 @@ rdi_first_voff_from_source_line_map_num(RDI_Parsed *rdi, RDI_SourceLineMap *map,
 //- file path nodes
 
 RDI_PROC RDI_FilePathNode *
-rdi_parent_from_file_path_node(RDI_Parsed *rdi, RDI_FilePathNode *node)
+rdi_parent_from_file_path_node(RDI_Parsed* rdi, RDI_FilePathNode* node)
 {
   RDI_FilePathNode *result = rdi_element_from_name_idx(rdi, FilePathNodes, node.parent_path_node);
   return result;
 }
 
 RDI_PROC RDI_U8 *
-rdi_name_from_file_path_node(RDI_Parsed *rdi, RDI_FilePathNode *node, RDI_U64 *len_out)
+rdi_name_from_file_path_node(RDI_Parsed* rdi, RDI_FilePathNode* node, RDI_U64* len_out)
 {
   return rdi_string_from_idx(rdi, node.name_string_idx, len_out);
 }
@@ -1035,7 +1035,7 @@ rdi_name_from_file_path_node(RDI_Parsed *rdi, RDI_FilePathNode *node, RDI_U64 *l
 //~ Parser Helpers
 
 RDI_PROC RDI_U64
-rdi_cstring_length(char *cstr)
+rdi_cstring_length(char* cstr)
 {
   RDI_U64 result = 0;
   for (;cstr[result] != 0; result += 1){}
@@ -1043,7 +1043,7 @@ rdi_cstring_length(char *cstr)
 }
 
 RDI_PROC RDI_U64
-rdi_size_from_bytecode_stream(RDI_U8 *ptr, RDI_U8 *opl)
+rdi_size_from_bytecode_stream(RDI_U8* ptr, RDI_U8* opl)
 {
   RDI_U64 bytecode_size = 0;
   RDI_U8 *off_first = ptr + sizeof(RDI_LocationKind);
@@ -1116,26 +1116,26 @@ typedef union
 	U64 u64; 
 } __attribute__((packed)) unaligned_type;
 
-static inline U16 read16(const void *ptr) 		{ return ((const unaligned_type *)ptr)->u16; }
-static inline void write16(void *ptr, U16 x) 	{ ((unaligned_type *)ptr)->u16 = x; }
+static inline U16 read16(const void* ptr) 		{ return ((const unaligned_type *)ptr)->u16; }
+static inline void write16(void* ptr, U16 x) 	{ ((unaligned_type *)ptr)->u16 = x; }
 
-static inline U32 read32(const void *ptr) 		{ return ((const unaligned_type *)ptr)->u32; }
-static inline void write32(void *ptr, U32 x) 	{ ((unaligned_type *)ptr)->u32 = x; }
+static inline U32 read32(const void* ptr) 		{ return ((const unaligned_type *)ptr)->u32; }
+static inline void write32(void* ptr, U32 x) 	{ ((unaligned_type *)ptr)->u32 = x; }
 
-static inline U64 read64(const void *ptr) 		{ return ((const unaligned_type *)ptr)->u64; }
-static inline void write64(void *ptr, U64 x) 	{ ((unaligned_type *)ptr)->u64 = x; }
+static inline U64 read64(const void* ptr) 		{ return ((const unaligned_type *)ptr)->u64; }
+static inline void write64(void* ptr, U64 x) 	{ ((unaligned_type *)ptr)->u64 = x; }
 
 #else
 
 // most C compilers we target are smart enough to turn this into single loads/stores
-static inline U16 read16(const void *ptr) 		{ U16 x; memcpy(&x, ptr, sizeof(x)); return x; }
-static inline void write16(void *ptr, U16 x) 	{ memcpy(ptr, &x, sizeof(x)); }
+static inline U16 read16(const void* ptr) 		{ U16 x; memcpy(&x, ptr, sizeof(x)); return x; }
+static inline void write16(void* ptr, U16 x) 	{ memcpy(ptr, &x, sizeof(x)); }
 
-static inline U32 read32(const void *ptr) 		{ U32 x; memcpy(&x, ptr, sizeof(x)); return x; }
-static inline void write32(void *ptr, U32 x) 	{ memcpy(ptr, &x, sizeof(x)); }
+static inline U32 read32(const void* ptr) 		{ U32 x; memcpy(&x, ptr, sizeof(x)); return x; }
+static inline void write32(void* ptr, U32 x) 	{ memcpy(ptr, &x, sizeof(x)); }
 
-static inline U64 read64(const void *ptr) 		{ U64 x; memcpy(&x, ptr, sizeof(x)); return x; }
-static inline void write64(void *ptr, U64 x) 	{ memcpy(ptr, &x, sizeof(x)); }
+static inline U64 read64(const void* ptr) 		{ U64 x; memcpy(&x, ptr, sizeof(x)); return x; }
+static inline void write64(void* ptr, U64 x) 	{ memcpy(ptr, &x, sizeof(x)); }
 
 #endif
 
@@ -1144,7 +1144,7 @@ static inline void write64(void *ptr, U64 x) 	{ memcpy(ptr, &x, sizeof(x)); }
 
 //===========================================================================
 
-static RADINLINE SINTa rrPtrDiffV(void * end, void *start) { return (SINTa)( ((char *)(end)) - ((char *)(start)) ); }
+static RADINLINE SINTa rrPtrDiffV(void * end, void* start) { return (SINTa)( ((char *)(end)) - ((char *)(start)) ); }
 
 // helper function to show I really am intending to put a pointer difference in an int :
 static RADINLINE SINTa rrPtrDiff(SINTa val) { return val; }

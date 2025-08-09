@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal U32
-update_crc32(U32 crc, U8 *ptr, U64 size)
+update_crc32(U32 crc, U8* ptr, U64 size)
 {
   // CRC-32 algo borrowed from stb.h
 

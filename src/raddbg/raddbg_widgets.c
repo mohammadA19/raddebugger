@@ -5,7 +5,7 @@
 //~ rjf: UI Widgets: Fancy Title Strings
 
 internal DR_FStrList
-rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
+rd_title_fstrs_from_cfg(Arena* arena, RD_Cfg* cfg, B32 include_extras)
 {
   DR_FStrList result = {0};
   {
@@ -445,7 +445,7 @@ rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras)
 }
 
 internal DR_FStrList
-rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, B32 include_extras)
+rd_title_fstrs_from_ctrl_entity(Arena* arena, CTRL_Entity* entity, B32 include_extras)
 {
   DR_FStrList result = {0};
   
@@ -613,7 +613,7 @@ rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, B32 include_e
 }
 
 internal DR_FStrList
-rd_title_fstrs_from_code_name(Arena *arena, string code_name)
+rd_title_fstrs_from_code_name(Arena* arena, string code_name)
 {
   DR_FStrList result = {0};
   {
@@ -651,7 +651,7 @@ rd_title_fstrs_from_code_name(Arena *arena, string code_name)
 }
 
 internal DR_FStrList
-rd_title_fstrs_from_file_path(Arena *arena, string file_path)
+rd_title_fstrs_from_file_path(Arena* arena, string file_path)
 {
   DR_FStrList fstrs = {0};
   string file_name = str8_skip_last_slash(file_path);
@@ -963,7 +963,7 @@ rd_cmd_spec_button(string name)
 }
 
 internal void
-rd_cmd_list_menu_buttons(U64 count, string *cmd_names, U32 *fastpath_codepoints)
+rd_cmd_list_menu_buttons(U64 count, string* cmd_names, U32* fastpath_codepoints)
 {
   Temp scratch = scratch_begin(0, 0);
   for (U64 idx = 0; idx < count; idx += 1)
@@ -983,7 +983,7 @@ rd_cmd_list_menu_buttons(U64 count, string *cmd_names, U32 *fastpath_codepoints)
 }
 
 internal UI_Signal
-rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList *matches, string string)
+rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList* matches, string string)
 {
   string display_string = ui_display_part_from_key_string(string);
   ui_set_next_child_layout_axis(Axis2_X);
@@ -1035,7 +1035,7 @@ rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList *matches, string string)
 }
 
 internal UI_Signal
-rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList *matches, char *fmt, ...)
+rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList* matches, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -1242,7 +1242,7 @@ internal UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions)
 }
 
 internal RD_CodeSliceSignal
-rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, string string)
+rd_code_slice(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, S64* preferred_column, string string)
 {
   RD_CodeSliceSignal result = {0};
   ProfBeginFunction();
@@ -2749,7 +2749,7 @@ rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *prefe
 }
 
 internal RD_CodeSliceSignal
-rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, char *fmt, ...)
+rd_code_slicef(RD_CodeSliceParams* params, TxtPt* cursor, TxtPt* mark, S64* preferred_column, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;
@@ -2762,7 +2762,7 @@ rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *pref
 }
 
 internal B32
-rd_do_txt_controls(TXT_TextInfo *info, string data, U64 line_count_per_page, TxtPt *cursor, TxtPt *mark, S64 *preferred_column)
+rd_do_txt_controls(TXT_TextInfo* info, string data, U64 line_count_per_page, TxtPt* cursor, TxtPt* mark, S64* preferred_column)
 {
   Temp scratch = scratch_begin(0, 0);
   B32 change = 0;
@@ -2944,7 +2944,7 @@ rd_do_txt_controls(TXT_TextInfo *info, string data, U64 line_count_per_page, Txt
 //~ rjf: UI Widgets: Fancy Labels
 
 internal DR_FStrList
-rd_fstrs_from_rich_string(Arena *arena, string string)
+rd_fstrs_from_rich_string(Arena* arena, string string)
 {
   Temp scratch = scratch_begin(&arena, 1);
   typedef U32 StringPartFlags;
@@ -3062,7 +3062,7 @@ rd_help_label(string string)
 }
 
 internal DR_FStrList
-rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, string string)
+rd_fstrs_from_code_string(Arena* arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, string string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -3251,7 +3251,7 @@ rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, string
 //~ rjf: UI Widgets: Line Edit
 
 internal UI_Signal
-rd_cell(RD_CellParams *params, string string)
+rd_cell(RD_CellParams* params, string string)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -4088,7 +4088,7 @@ rd_cell(RD_CellParams *params, string string)
 }
 
 internal UI_Signal
-rd_cellf(RD_CellParams *params, char *fmt, ...)
+rd_cellf(RD_CellParams* params, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;

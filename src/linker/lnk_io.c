@@ -1,5 +1,5 @@
 shared_function int
-lnk_open_file_read(char *path, uint64_t path_size, void *handle_buffer, uint64_t handle_buffer_max)
+lnk_open_file_read(char* path, uint64_t path_size, void* handle_buffer, uint64_t handle_buffer_max)
 {
   OS_Handle handle = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, str8((U8*)path, path_size));
   Assert(sizeof(handle) <= handle_buffer_max);
@@ -8,7 +8,7 @@ lnk_open_file_read(char *path, uint64_t path_size, void *handle_buffer, uint64_t
 }
 
 shared_function int
-lnk_open_file_write(char *path, uint64_t path_size, void *handle_buffer, uint64_t handle_buffer_max)
+lnk_open_file_write(char* path, uint64_t path_size, void* handle_buffer, uint64_t handle_buffer_max)
 {
   OS_Handle handle = os_file_open(OS_AccessFlag_Write, str8((U8*)path, path_size));
   Assert(sizeof(handle) <= handle_buffer_max);
@@ -17,14 +17,14 @@ lnk_open_file_write(char *path, uint64_t path_size, void *handle_buffer, uint64_
 }
 
 shared_function void
-lnk_close_file(void *raw_handle)
+lnk_close_file(void* raw_handle)
 {
   OS_Handle handle = *(OS_Handle *)raw_handle;
   os_file_close(handle);
 }
 
 shared_function uint64_t
-lnk_size_from_file(void *raw_handle)
+lnk_size_from_file(void* raw_handle)
 {
   OS_Handle handle = *(OS_Handle *)raw_handle;
   FileProperties props  = os_properties_from_file(handle);
@@ -32,7 +32,7 @@ lnk_size_from_file(void *raw_handle)
 }
 
 shared_function uint64_t
-lnk_read_file(void *raw_handle, void *buffer, uint64_t buffer_max)
+lnk_read_file(void* raw_handle, void* buffer, uint64_t buffer_max)
 {
   OS_Handle handle = *(OS_Handle *)raw_handle;
   U64 read_size = os_file_read(handle, rng_1u64(0, buffer_max), buffer);
@@ -41,7 +41,7 @@ lnk_read_file(void *raw_handle, void *buffer, uint64_t buffer_max)
 }
 
 shared_function uint64_t
-lnk_write_file(void *raw_handle, uint64_t offset, void *buffer, uint64_t buffer_size)
+lnk_write_file(void* raw_handle, uint64_t offset, void* buffer, uint64_t buffer_size)
 {
   OS_Handle handle = *(OS_Handle*)raw_handle;
   U64 write_size = os_file_write(handle, r1u64(offset, offset + buffer_size), buffer);
@@ -49,7 +49,7 @@ lnk_write_file(void *raw_handle, uint64_t offset, void *buffer, uint64_t buffer_
 }
 
 internal String8List
-lnk_file_search(Arena *arena, String8List dir_list, string file_path)
+lnk_file_search(Arena* arena, String8List dir_list, string file_path)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -167,7 +167,7 @@ lnk_log_read(string path, U64 size)
 }
 
 internal string
-lnk_read_data_from_file_path(Arena *arena, LNK_IO_Flags io_flags, string path)
+lnk_read_data_from_file_path(Arena* arena, LNK_IO_Flags io_flags, string path)
 {
   Temp scratch = scratch_begin(&arena, 1);
   TP_Context *single_thread_ctx = tp_alloc(scratch.arena, 1, 1, str8_zero());
@@ -239,7 +239,7 @@ THREAD_POOL_TASK_FUNC(lnk_memory_map_file_task)
 }
 
 internal String8Array
-lnk_read_data_from_file_path_parallel(TP_Context *tp, Arena *arena, LNK_IO_Flags io_flags, String8Array path_arr)
+lnk_read_data_from_file_path_parallel(TP_Context* tp, Arena* arena, LNK_IO_Flags io_flags, String8Array path_arr)
 {
   LNK_DiskReader reader = {0};
 

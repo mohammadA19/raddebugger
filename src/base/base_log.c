@@ -22,13 +22,13 @@ log_alloc(void)
 }
 
 internal void
-log_release(Log *log)
+log_release(Log* log)
 {
   arena_release(log.arena);
 }
 
 internal void
-log_select(Log *log)
+log_select(Log* log)
 {
   log_active = log;
 }
@@ -47,7 +47,7 @@ log_msg(LogMsgKind kind, string string)
 }
 
 internal void
-log_msgf(LogMsgKind kind, char *fmt, ...)
+log_msgf(LogMsgKind kind, char* fmt, ...)
 {
   if (log_active != 0)
   {
@@ -77,7 +77,7 @@ log_scope_begin(void)
 }
 
 internal LogScopeResult
-log_scope_end(Arena *arena)
+log_scope_end(Arena* arena)
 {
   LogScopeResult result = {0};
   if (log_active != 0)

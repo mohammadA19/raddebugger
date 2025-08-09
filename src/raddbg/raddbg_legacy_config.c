@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal RD_CfgList
-rd_cfg_tree_list_from_string__pre_0_9_16(Arena *arena, string file_path, string data)
+rd_cfg_tree_list_from_string__pre_0_9_16(Arena* arena, string file_path, string data)
 {
   RD_CfgList result = {0};
   {

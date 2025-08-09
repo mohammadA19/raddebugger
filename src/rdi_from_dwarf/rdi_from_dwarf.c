@@ -83,14 +83,14 @@ d2r_rdi_reg_code_from_dw_reg(Arch arch, DW_Reg v)
 //~ rjf: Type Conversion Helpers
 
 internal RDIM_Type *
-d2r_create_type(Arena *arena, D2R_TypeTable *type_table)
+d2r_create_type(Arena* arena, D2R_TypeTable* type_table)
 {
   RDIM_Type *type = rdim_type_chunk_list_push(arena, type_table.types, type_table.type_chunk_cap);
   return type;
 }
 
 internal RDIM_Type *
-d2r_find_or_create_type_from_offset(Arena *arena, D2R_TypeTable *type_table, U64 info_off)
+d2r_find_or_create_type_from_offset(Arena* arena, D2R_TypeTable* type_table, U64 info_off)
 {
   RDIM_Type *type = 0;
   KeyValuePair *is_type_present = hash_table_search_u64(type_table.ht, info_off);
@@ -104,7 +104,7 @@ d2r_find_or_create_type_from_offset(Arena *arena, D2R_TypeTable *type_table, U64
 }
 
 internal RDIM_Type *
-d2r_type_from_attrib(Arena *arena, D2R_TypeTable *type_table, DW_Input *input, DW_CompUnit *cu, DW_Tag tag, DW_AttribKind kind)
+d2r_type_from_attrib(Arena* arena, D2R_TypeTable* type_table, DW_Input* input, DW_CompUnit* cu, DW_Tag tag, DW_AttribKind kind)
 {
   RDIM_Type *type = 0;
   
@@ -136,7 +136,7 @@ d2r_type_from_attrib(Arena *arena, D2R_TypeTable *type_table, DW_Input *input, D
 }
 
 internal Rng1U64List
-d2r_range_list_from_tag(Arena *arena, DW_Input *input, DW_CompUnit *cu, U64 image_base, DW_Tag tag)
+d2r_range_list_from_tag(Arena* arena, DW_Input* input, DW_CompUnit* cu, U64 image_base, DW_Tag tag)
 {
   // collect non-contiguous range
   Rng1U64List ranges = dw_rnglist_from_tag_attrib_kind(arena, input, cu, tag, DW_AttribKind_Ranges);
@@ -181,7 +181,7 @@ d2r_range_list_from_tag(Arena *arena, DW_Input *input, DW_CompUnit *cu, U64 imag
 }
 
 internal RDIM_Type **
-d2r_collect_proc_params(Arena *arena, D2R_TypeTable *type_table, DW_Input *input, DW_CompUnit *cu, DW_TagNode *cur_node, U64 *param_count_out)
+d2r_collect_proc_params(Arena* arena, D2R_TypeTable* type_table, DW_Input* input, DW_CompUnit* cu, DW_TagNode* cur_node, U64* param_count_out)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -287,9 +287,9 @@ d2r_bytecode_from_expression(Arena       *arena,
                              U64          image_base,
                              U64          address_size,
                              Arch         arch,
-                             DW_ListUnit *addr_lu,
+                             DW_ListUnit* addr_lu,
                              string      expr,
-                             DW_CompUnit *cu,
+                             DW_CompUnit* cu,
                              B32         *is_addr_out)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -864,7 +864,7 @@ SLLStackPush(stack, f);                                       \
 }
 
 internal RDIM_Location *
-d2r_transpile_expression(Arena *arena, DW_Input *input, U64 image_base, U64 address_size, Arch arch, DW_ListUnit *addr_lu, DW_CompUnit *cu, string expr)
+d2r_transpile_expression(Arena* arena, DW_Input* input, U64 image_base, U64 address_size, Arch arch, DW_ListUnit* addr_lu, DW_CompUnit* cu, string expr)
 {
   RDIM_Location *loc = 0;
   if (expr.size) {
@@ -879,7 +879,7 @@ d2r_transpile_expression(Arena *arena, DW_Input *input, U64 image_base, U64 addr
 }
 
 internal RDIM_Location *
-d2r_location_from_attrib(Arena *arena, DW_Input *input, DW_CompUnit *cu, U64 image_base, Arch arch, DW_Tag tag, DW_AttribKind kind)
+d2r_location_from_attrib(Arena* arena, DW_Input* input, DW_CompUnit* cu, U64 image_base, Arch arch, DW_Tag tag, DW_AttribKind kind)
 {
   string expr = dw_exprloc_from_tag_attrib_kind(input, cu, tag, kind);
   RDIM_Location *location = d2r_transpile_expression(arena, input, image_base, cu.address_size, arch, cu.addr_lu, cu, expr);
@@ -890,7 +890,7 @@ internal RDIM_LocationSet
 d2r_locset_from_attrib(Arena               *arena,
                        DW_Input            *input,
                        DW_CompUnit         *cu,
-                       RDIM_ScopeChunkList *scopes,
+                       RDIM_ScopeChunkList* scopes,
                        RDIM_Scope          *curr_scope,
                        U64                  image_base,
                        Arch                 arch,
@@ -937,7 +937,7 @@ internal RDIM_LocationSet
 d2r_var_locset_from_tag(Arena               *arena,
                         DW_Input            *input,
                         DW_CompUnit         *cu,
-                        RDIM_ScopeChunkList *scopes,
+                        RDIM_ScopeChunkList* scopes,
                         RDIM_Scope          *curr_scope,
                         U64                  image_base,
                         Arch                 arch,
@@ -978,7 +978,7 @@ d2r_var_locset_from_tag(Arena               *arena,
 }
 
 internal D2R_CompUnitContribMap
-d2r_cu_contrib_map_from_aranges(Arena *arena, DW_Input *input, U64 image_base)
+d2r_cu_contrib_map_from_aranges(Arena* arena, DW_Input* input, U64 image_base)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -1089,7 +1089,7 @@ d2r_voff_ranges_from_cu_info_off(D2R_CompUnitContribMap map, U64 info_off)
 }
 
 internal RDIM_Scope *
-d2r_push_scope(Arena *arena, RDIM_ScopeChunkList *scopes, U64 scope_chunk_cap, D2R_TagNode *tag_stack, Rng1U64List ranges)
+d2r_push_scope(Arena* arena, RDIM_ScopeChunkList* scopes, U64 scope_chunk_cap, D2R_TagNode* tag_stack, Rng1U64List ranges)
 {
   // fill out scope
   RDIM_Scope *scope = rdim_scope_chunk_list_push(arena, scopes, scope_chunk_cap);
@@ -1123,7 +1123,7 @@ d2r_push_scope(Arena *arena, RDIM_ScopeChunkList *scopes, U64 scope_chunk_cap, D
 //~ rjf: Main Conversion Entry Point
 
 internal RDIM_BakeParams
-d2r_convert(Arena *arena, ASYNC_Root *async_root, D2R_ConvertParams *params)
+d2r_convert(Arena* arena, ASYNC_Root* async_root, D2R_ConvertParams* params)
 {
   Temp scratch = scratch_begin(&arena, 1);
   

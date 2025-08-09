@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal VoidProc *
-r_ogl_os_load_procedure(char *name)
+r_ogl_os_load_procedure(char* name)
 {
   VoidProc *p = (VoidProc*)wglGetProcAddress(name);
   if (p == (VoidProc*)1 || p == (VoidProc*)2 || p == (VoidProc*)3 || p == (VoidProc*)-1)
@@ -13,7 +13,7 @@ r_ogl_os_load_procedure(char *name)
 }
 
 internal void
-r_ogl_os_init(CmdLine *cmdline)
+r_ogl_os_init(CmdLine* cmdline)
 {
   //- rjf: create bootstrapping window
   HWND bootstrap_hwnd = 0;

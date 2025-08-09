@@ -5,7 +5,7 @@
 //~ rjf: Stringification Helpers
 
 internal string
-dw_string_from_reg_off(Arena *arena, Arch arch, U64 reg_idx, S64 reg_off)
+dw_string_from_reg_off(Arena* arena, Arch arch, U64 reg_idx, S64 reg_off)
 {
   Temp scratch = scratch_begin(&arena, 1);
   string reg_str = dw_string_from_register(scratch.arena, arch, reg_idx);
@@ -15,7 +15,7 @@ dw_string_from_reg_off(Arena *arena, Arch arch, U64 reg_idx, S64 reg_off)
 }
 
 internal String8List
-dw_string_list_from_expression(Arena *arena, string raw_data, U64 cu_base, U64 address_size, Arch arch, DW_Version ver, DW_Ext ext, DW_Format format)
+dw_string_list_from_expression(Arena* arena, string raw_data, U64 cu_base, U64 address_size, Arch arch, DW_Version ver, DW_Ext ext, DW_Format format)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List result = {0};
@@ -316,7 +316,7 @@ dw_string_list_from_expression(Arena *arena, string raw_data, U64 cu_base, U64 a
 }
 
 internal string
-dw_single_line_string_from_expression(Arena *arena, string raw_data, U64 cu_base, U64 address_size, Arch arch, DW_Version ver, DW_Ext ext, DW_Format format)
+dw_single_line_string_from_expression(Arena* arena, string raw_data, U64 cu_base, U64 address_size, Arch arch, DW_Version ver, DW_Ext ext, DW_Format format)
 {
   Temp        scratch    = scratch_begin(&arena, 1);
   String8List list       = dw_string_list_from_expression(scratch.arena, raw_data, cu_base, address_size, arch, ver, ext, format);
@@ -328,7 +328,7 @@ dw_single_line_string_from_expression(Arena *arena, string raw_data, U64 cu_base
 #if 0
 
 internal void
-dw_string_from_cfi_program(Arena *arena, String8List *out, string indent, string raw_data, DW_CIEUnpacked *cie, DW_EhPtrCtx *ptr_ctx, Arch arch, DW_Version ver, DW_Ext ext, DW_Format format)
+dw_string_from_cfi_program(Arena* arena, String8List* out, string indent, string raw_data, DW_CIEUnpacked* cie, DW_EhPtrCtx* ptr_ctx, Arch arch, DW_Version ver, DW_Ext ext, DW_Format format)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -519,7 +519,7 @@ dw_string_from_cfi_program(Arena *arena, String8List *out, string indent, string
 }
 
 internal string
-dw_string_from_eh_ptr_enc(Arena *arena, DW_EhPtrEnc enc)
+dw_string_from_eh_ptr_enc(Arena* arena, DW_EhPtrEnc enc)
 {
   U8 type = enc & DW_EhPtrEnc_TypeMask;
   string type_str = ("NULL");
@@ -551,7 +551,7 @@ dw_string_from_eh_ptr_enc(Arena *arena, DW_EhPtrEnc enc)
 }
 
 internal void
-dw_print_eh_frame(Arena *arena, String8List *out, string indent, string raw_eh_frame, Arch arch, DW_Version ver, DW_Ext ext, DW_EhPtrCtx *ptr_ctx)
+dw_print_eh_frame(Arena* arena, String8List* out, string indent, string raw_eh_frame, Arch arch, DW_Version ver, DW_Ext ext, DW_EhPtrCtx* ptr_ctx)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DW_CIEUnpacked cie = {0};
@@ -631,7 +631,7 @@ dw_print_eh_frame(Arena *arena, String8List *out, string indent, string raw_eh_f
 }
 
 internal void
-dw_print_debug_loc(Arena *arena, String8List *out, string indent, DW_Input *input, Arch arch, ExecutableImageKind image_type, B32 relaxed)
+dw_print_debug_loc(Arena* arena, String8List* out, string indent, DW_Input* input, Arch arch, ExecutableImageKind image_type, B32 relaxed)
 {
 #if 0
   DW_Section info = input.sec[DW_Section_Info];
@@ -778,7 +778,7 @@ dw_print_debug_loc(Arena *arena, String8List *out, string indent, DW_Input *inpu
 }
 
 internal void
-dw_print_debug_ranges(Arena *arena, String8List *out, string indent, DW_Input *input, Arch arch, ExecutableImageKind image_type, B32 relaxed)
+dw_print_debug_ranges(Arena* arena, String8List* out, string indent, DW_Input* input, Arch arch, ExecutableImageKind image_type, B32 relaxed)
 {
   NotImplemented;
 #if 0
@@ -884,7 +884,7 @@ dw_print_debug_ranges(Arena *arena, String8List *out, string indent, DW_Input *i
 }
 
 internal void
-dw_print_debug_aranges(Arena *arena, String8List *out, string indent, DW_Input *input)
+dw_print_debug_aranges(Arena* arena, String8List* out, string indent, DW_Input* input)
 {
   NotImplemented;
 #if 0
@@ -973,7 +973,7 @@ dw_print_debug_aranges(Arena *arena, String8List *out, string indent, DW_Input *
 }
 
 internal void
-dw_print_debug_addr(Arena *arena, String8List *out, string indent, DW_Input *input)
+dw_print_debug_addr(Arena* arena, String8List* out, string indent, DW_Input* input)
 {
   NotImplemented;
 #if 0
@@ -1055,7 +1055,7 @@ dw_print_debug_addr(Arena *arena, String8List *out, string indent, DW_Input *inp
 }
 
 internal U64
-dw_based_range_read_address(void *base, Rng1U64 range, U64 offset, Rng1U64Array segment_ranges, U8 segment_selector_size, U8 address_size, U64 *address_out)
+dw_based_range_read_address(void* base, Rng1U64 range, U64 offset, Rng1U64Array segment_ranges, U8 segment_selector_size, U8 address_size, U64* address_out)
 {
   U64 read_offset = offset;
   
@@ -1082,7 +1082,7 @@ dw_based_range_read_address(void *base, Rng1U64 range, U64 offset, Rng1U64Array 
 }
 
 internal void
-dw_print_debug_loclists(Arena *arena, String8List *out, string indent, DW_Input *input, Rng1U64Array segment_virtual_ranges, Arch arch)
+dw_print_debug_loclists(Arena* arena, String8List* out, string indent, DW_Input* input, Rng1U64Array segment_virtual_ranges, Arch arch)
 {
   NotImplemented;
 #if 0
@@ -1235,7 +1235,7 @@ dw_print_debug_loclists(Arena *arena, String8List *out, string indent, DW_Input 
 }
 
 internal void
-dw_print_debug_rnglists(Arena *arena, String8List *out, string indent, DW_Input *input, Rng1U64Array segment_ranges)
+dw_print_debug_rnglists(Arena* arena, String8List* out, string indent, DW_Input* input, Rng1U64Array segment_ranges)
 {
   NotImplemented;
 #if 0
@@ -1374,7 +1374,7 @@ dw_print_debug_rnglists(Arena *arena, String8List *out, string indent, DW_Input 
 }
 
 internal void
-dw_format_string_table(Arena *arena, String8List *out, string indent, DW_Input *input, DW_SectionKind sec)
+dw_format_string_table(Arena* arena, String8List* out, string indent, DW_Input* input, DW_SectionKind sec)
 {
   NotImplemented;
 #if 0
@@ -1436,19 +1436,19 @@ dw_format_string_table(Arena *arena, String8List *out, string indent, DW_Input *
 }
 
 internal void
-dw_print_debug_pubnames(Arena *arena, String8List *out, string indent, DW_Input *input)
+dw_print_debug_pubnames(Arena* arena, String8List* out, string indent, DW_Input* input)
 {
   dw_format_string_table(arena, out, indent, input, DW_Section_PubNames);
 }
 
 internal void
-dw_print_debug_pubtypes(Arena *arena, String8List *out, string indent, DW_Input *input)
+dw_print_debug_pubtypes(Arena* arena, String8List* out, string indent, DW_Input* input)
 {
   dw_format_string_table(arena, out, indent, input, DW_Section_PubTypes);
 }
 
 internal void
-dw_print_debug_line_str(Arena *arena, String8List *out, string indent, DW_Input *input)
+dw_print_debug_line_str(Arena* arena, String8List* out, string indent, DW_Input* input)
 {
   NotImplemented;
 #if 0
@@ -1478,7 +1478,7 @@ dw_print_debug_line_str(Arena *arena, String8List *out, string indent, DW_Input 
 }
 
 internal void
-dw_print_debug_str_offsets(Arena *arena, String8List *out, string indent, DW_Input *input)
+dw_print_debug_str_offsets(Arena* arena, String8List* out, string indent, DW_Input* input)
 {
   NotImplemented;
 #if 0
@@ -1549,7 +1549,7 @@ dw_print_debug_str_offsets(Arena *arena, String8List *out, string indent, DW_Inp
 //~ rjf: Dump Entry Point
 
 internal String8List
-dw_dump_list_from_sections(Arena *arena, DW_Input *input, Arch arch, DW_DumpSubsetFlags subset_flags)
+dw_dump_list_from_sections(Arena* arena, DW_Input* input, Arch arch, DW_DumpSubsetFlags subset_flags)
 {
   String8List strings = {0};
   string indent = ("                                                                                                                                ");

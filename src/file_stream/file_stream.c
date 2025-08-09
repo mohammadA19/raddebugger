@@ -277,7 +277,7 @@ fs_u2s_enqueue_req(HS_Key key, Rng1U64 range, string path, U64 endt_us)
 }
 
 internal void
-fs_u2s_dequeue_req(Arena *arena, HS_Key *key_out, Rng1U64 *range_out, string *path_out)
+fs_u2s_dequeue_req(Arena* arena, HS_Key* key_out, Rng1U64* range_out, string* path_out)
 {
   OS_MutexScope(fs_shared.u2s_ring_mutex) for (;;)
   {
@@ -391,7 +391,7 @@ ASYNC_WORK_DEF(fs_stream_work)
 //~ rjf: Change Detector Thread
 
 internal void
-fs_detector_thread__entry_point(void *p)
+fs_detector_thread__entry_point(void* p)
 {
   ThreadNameF("[fs] detector thread");
   for (;;)

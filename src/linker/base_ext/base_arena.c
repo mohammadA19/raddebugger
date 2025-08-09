@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal U32 *
-push_u32(Arena *arena, U32 value)
+push_u32(Arena* arena, U32 value)
 {
   U32 *result = push_array_no_zero(arena, U32, 1);
   *result = value;
@@ -10,7 +10,7 @@ push_u32(Arena *arena, U32 value)
 }
 
 internal U64 *
-push_u64(Arena *arena, U64 value)
+push_u64(Arena* arena, U64 value)
 {
   U64 *result = push_array_no_zero(arena, U64, 1);
   *result = value;
@@ -18,7 +18,7 @@ push_u64(Arena *arena, U64 value)
 }
 
 internal U32 *
-push_array_copy_u32(Arena *arena, U32 *v, U64 count)
+push_array_copy_u32(Arena* arena, U32* v, U64 count)
 {
   U32 *result = push_array_no_zero(arena, U32, count);
   MemoryCopyTyped(result, v, count);
@@ -26,7 +26,7 @@ push_array_copy_u32(Arena *arena, U32 *v, U64 count)
 }
 
 internal U64 *
-push_array_copy_u64(Arena *arena, U64 *v, U64 count)
+push_array_copy_u64(Arena* arena, U64* v, U64 count)
 {
   U64 *result = push_array_no_zero(arena, U64, count);
   MemoryCopyTyped(result, v, count);
@@ -34,7 +34,7 @@ push_array_copy_u64(Arena *arena, U64 *v, U64 count)
 }
 
 internal U64 **
-push_matrix_u64(Arena *arena, U64 rows, U64 columns)
+push_matrix_u64(Arena* arena, U64 rows, U64 columns)
 {
   U64 **result = push_array_no_zero(arena, U64 *, rows);
   for (U64 row_idx = 0; row_idx < rows; row_idx += 1) {
@@ -44,7 +44,7 @@ push_matrix_u64(Arena *arena, U64 rows, U64 columns)
 }
 
 internal Arena **
-alloc_fixed_size_arena_array(Arena *arena, U64 count, U64 res, U64 cmt)
+alloc_fixed_size_arena_array(Arena* arena, U64 count, U64 res, U64 cmt)
 {
   U64 data_size = sizeof(count) + sizeof(Arena *) * count;
   U8 *data = push_array_no_zero(arena, U8, data_size);
@@ -65,7 +65,7 @@ alloc_fixed_size_arena_array(Arena *arena, U64 count, U64 res, U64 cmt)
 }
 
 internal void
-release_arena_array(Arena **arr)
+release_arena_array(Arena** arr)
 {
   U64 *count_ptr = (U64 *)arr - 1;
   U64 count = *count_ptr;

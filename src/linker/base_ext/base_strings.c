@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal String8Node *
-str8_list_push_raw(Arena *arena, String8List *list, void *data_ptr, U64 data_size)
+str8_list_push_raw(Arena* arena, String8List* list, void* data_ptr, U64 data_size)
 {
   string data = str8((U8 *)data_ptr, data_size);
   String8Node *node = str8_list_push(arena, list, data);
@@ -10,7 +10,7 @@ str8_list_push_raw(Arena *arena, String8List *list, void *data_ptr, U64 data_siz
 }
 
 internal U64
-str8_list_push_pad(Arena *arena, String8List *list, U64 offset, U64 align)
+str8_list_push_pad(Arena* arena, String8List* list, U64 offset, U64 align)
 {
   U64 pad_size = AlignPow2(offset, align) - offset;
   U8 *pad = push_array(arena, U8, pad_size);
@@ -20,7 +20,7 @@ str8_list_push_pad(Arena *arena, String8List *list, U64 offset, U64 align)
 }
 
 internal U64
-str8_list_push_pad_front(Arena *arena, String8List *list, U64 offset, U64 align)
+str8_list_push_pad_front(Arena* arena, String8List* list, U64 offset, U64 align)
 {
   U64 pad_size = AlignPow2(offset, align) - offset;
   U8 *pad = push_array(arena, U8, pad_size);
@@ -30,7 +30,7 @@ str8_list_push_pad_front(Arena *arena, String8List *list, U64 offset, U64 align)
 }
 
 internal String8List
-str8_list_arr_concat(String8List *v, U64 count)
+str8_list_arr_concat(String8List* v, U64 count)
 {
   String8List result = {0};
   for (U64 i = 0; i < count; i += 1) {
@@ -40,7 +40,7 @@ str8_list_arr_concat(String8List *v, U64 count)
 }
 
 internal String8Node *
-str8_list_push_many(Arena *arena, String8List *list, U64 count)
+str8_list_push_many(Arena* arena, String8List* list, U64 count)
 {
   String8Node *arr = push_array(arena, String8Node, count);
   for (U64 i = 0; i < count; ++i) {
@@ -50,7 +50,7 @@ str8_list_push_many(Arena *arena, String8List *list, U64 count)
 }
 
 internal String8Node *
-str8_list_pop_front(String8List *list)
+str8_list_pop_front(String8List* list)
 {
   String8Node *node = 0;
   if (list.node_count) {

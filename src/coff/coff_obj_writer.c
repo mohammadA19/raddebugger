@@ -10,14 +10,14 @@ coff_obj_writer_alloc(COFF_TimeStamp time_stamp, COFF_MachineType machine)
 }
 
 internal void
-coff_obj_writer_release(COFF_ObjWriter **obj_writer)
+coff_obj_writer_release(COFF_ObjWriter** obj_writer)
 {
   arena_release((*obj_writer)->arena);
   *obj_writer = 0;
 }
 
 internal string
-coff_obj_writer_serialize(Arena *arena, COFF_ObjWriter *obj_writer)
+coff_obj_writer_serialize(Arena* arena, COFF_ObjWriter* obj_writer)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -239,7 +239,7 @@ coff_obj_writer_serialize(Arena *arena, COFF_ObjWriter *obj_writer)
 }
 
 internal COFF_ObjSection *
-coff_obj_writer_push_section(COFF_ObjWriter *obj_writer, string name, COFF_SectionFlags flags, string data)
+coff_obj_writer_push_section(COFF_ObjWriter* obj_writer, string name, COFF_SectionFlags flags, string data)
 {
   COFF_ObjSectionNode *sect_n = push_array(obj_writer.arena, COFF_ObjSectionNode, 1);
   SLLQueuePush(obj_writer.sect_first, obj_writer.sect_last, sect_n);
@@ -257,7 +257,7 @@ coff_obj_writer_push_section(COFF_ObjWriter *obj_writer, string name, COFF_Secti
 }
 
 internal COFF_ObjSymbol *
-coff_obj_writer_push_symbol(COFF_ObjWriter *obj_writer, string name, U32 value, COFF_SymbolLocation loc, COFF_SymbolType type, COFF_SymStorageClass storage_class)
+coff_obj_writer_push_symbol(COFF_ObjWriter* obj_writer, string name, U32 value, COFF_SymbolLocation loc, COFF_SymbolType type, COFF_SymStorageClass storage_class)
 {
   COFF_ObjSymbolNode *n = push_array(obj_writer.arena, COFF_ObjSymbolNode, 1);
   SLLQueuePush(obj_writer.symbol_first, obj_writer.symbol_last, n);
@@ -274,7 +274,7 @@ coff_obj_writer_push_symbol(COFF_ObjWriter *obj_writer, string name, U32 value, 
 }
 
 internal COFF_ObjSymbol *
-coff_obj_writer_push_symbol_extern(COFF_ObjWriter *obj_writer, string name, U32 value, COFF_ObjSection *section)
+coff_obj_writer_push_symbol_extern(COFF_ObjWriter* obj_writer, string name, U32 value, COFF_ObjSection* section)
 {
   COFF_SymbolLocation loc = {0};
   loc.type                = COFF_SymbolLocation_Section;
@@ -284,7 +284,7 @@ coff_obj_writer_push_symbol_extern(COFF_ObjWriter *obj_writer, string name, U32 
 }
 
 internal COFF_ObjSymbol *
-coff_obj_writer_push_symbol_extern_func(COFF_ObjWriter *obj_writer, string name, U32 value, COFF_ObjSection *section)
+coff_obj_writer_push_symbol_extern_func(COFF_ObjWriter* obj_writer, string name, U32 value, COFF_ObjSection* section)
 {
   COFF_SymbolType      type = { .u.msb = COFF_SymDType_Func };
   COFF_SymbolLocation  loc  = { .type = COFF_SymbolLocation_Section, .u.section = section };
@@ -293,7 +293,7 @@ coff_obj_writer_push_symbol_extern_func(COFF_ObjWriter *obj_writer, string name,
 }
 
 internal COFF_ObjSymbol *
-coff_obj_writer_push_symbol_static(COFF_ObjWriter *obj_writer, string name, U32 off, COFF_ObjSection *section)
+coff_obj_writer_push_symbol_static(COFF_ObjWriter* obj_writer, string name, U32 off, COFF_ObjSection* section)
 {
   COFF_SymbolLocation loc = {0};
   loc.type                = COFF_SymbolLocation_Section;
@@ -306,7 +306,7 @@ coff_obj_writer_push_symbol_static(COFF_ObjWriter *obj_writer, string name, U32 
 }
 
 internal COFF_ObjSymbol *
-coff_obj_writer_push_symbol_secdef(COFF_ObjWriter *obj_writer, COFF_ObjSection *section, COFF_ComdatSelectType selection)
+coff_obj_writer_push_symbol_secdef(COFF_ObjWriter* obj_writer, COFF_ObjSection* section, COFF_ComdatSelectType selection)
 {
   COFF_ObjSymbol *s = coff_obj_writer_push_symbol_static(obj_writer, section.name, 0, section);
   COFF_ObjSymbolSecDef *sd = push_array(obj_writer.arena, COFF_ObjSymbolSecDef, 1);
@@ -316,7 +316,7 @@ coff_obj_writer_push_symbol_secdef(COFF_ObjWriter *obj_writer, COFF_ObjSection *
 }
 
 internal COFF_ObjSymbol *
-coff_obj_writer_push_symbol_associative(COFF_ObjWriter *obj_writer, COFF_ObjSection *head, COFF_ObjSection *associate)
+coff_obj_writer_push_symbol_associative(COFF_ObjWriter* obj_writer, COFF_ObjSection* head, COFF_ObjSection* associate)
 {
   COFF_ObjSymbol *s = coff_obj_writer_push_symbol_static(obj_writer, head.name, 0, head);
   COFF_ObjSymbolSecDef *sd = push_array(obj_writer.arena, COFF_ObjSymbolSecDef, 1);
@@ -327,7 +327,7 @@ coff_obj_writer_push_symbol_associative(COFF_ObjWriter *obj_writer, COFF_ObjSect
 }
 
 internal COFF_ObjSymbol *
-coff_obj_writer_push_symbol_weak(COFF_ObjWriter *obj_writer, string name, COFF_WeakExtType characteristics, COFF_ObjSymbol *tag)
+coff_obj_writer_push_symbol_weak(COFF_ObjWriter* obj_writer, string name, COFF_WeakExtType characteristics, COFF_ObjSymbol* tag)
 {
   COFF_SymbolLocation loc     = {0};
   COFF_SymbolType     symtype = {0};
@@ -343,7 +343,7 @@ coff_obj_writer_push_symbol_weak(COFF_ObjWriter *obj_writer, string name, COFF_W
 }
 
 internal COFF_ObjSymbol *
-coff_obj_writer_push_symbol_abs(COFF_ObjWriter *obj_writer, string name, U32 value, COFF_SymStorageClass storage_class)
+coff_obj_writer_push_symbol_abs(COFF_ObjWriter* obj_writer, string name, U32 value, COFF_SymStorageClass storage_class)
 {
   COFF_SymbolLocation loc = {0};
   loc.type = COFF_SymbolLocation_Abs;
@@ -352,7 +352,7 @@ coff_obj_writer_push_symbol_abs(COFF_ObjWriter *obj_writer, string name, U32 val
 }
 
 internal COFF_ObjSymbol *
-coff_obj_writer_push_symbol_undef(COFF_ObjWriter *obj_writer, string name)
+coff_obj_writer_push_symbol_undef(COFF_ObjWriter* obj_writer, string name)
 {
   COFF_SymbolType type = {0};
   COFF_SymbolLocation loc = {0};
@@ -362,7 +362,7 @@ coff_obj_writer_push_symbol_undef(COFF_ObjWriter *obj_writer, string name)
 }
 
 internal COFF_ObjSymbol *
-coff_obj_writer_push_symbol_undef_func(COFF_ObjWriter *obj_writer, string name)
+coff_obj_writer_push_symbol_undef_func(COFF_ObjWriter* obj_writer, string name)
 {
   COFF_SymbolType type = {0};
   type.u.msb = COFF_SymDType_Func;
@@ -373,7 +373,7 @@ coff_obj_writer_push_symbol_undef_func(COFF_ObjWriter *obj_writer, string name)
 }
 
 internal COFF_ObjSymbol *
-coff_obj_writer_push_symbol_undef_sect(COFF_ObjWriter *obj_writer, string name, U32 value)
+coff_obj_writer_push_symbol_undef_sect(COFF_ObjWriter* obj_writer, string name, U32 value)
 {
   COFF_SymbolType type = {0};
   COFF_SymbolLocation loc = {0};
@@ -383,7 +383,7 @@ coff_obj_writer_push_symbol_undef_sect(COFF_ObjWriter *obj_writer, string name, 
 }
 
 internal COFF_ObjSymbol *
-coff_obj_writer_push_symbol_sect(COFF_ObjWriter *obj_writer, string name, COFF_ObjSection *sect)
+coff_obj_writer_push_symbol_sect(COFF_ObjWriter* obj_writer, string name, COFF_ObjSection* sect)
 {
   COFF_SymbolType type = {0};
   COFF_SymbolLocation loc = {0};
@@ -398,7 +398,7 @@ coff_obj_writer_push_symbol_sect(COFF_ObjWriter *obj_writer, string name, COFF_O
 }
 
 internal COFF_ObjSymbol *
-coff_obj_writer_push_symbol_common(COFF_ObjWriter *obj_writer, string name, U32 size)
+coff_obj_writer_push_symbol_common(COFF_ObjWriter* obj_writer, string name, U32 size)
 {
   COFF_SymbolType type = {0};
   COFF_SymbolLocation loc = {0};
@@ -408,7 +408,7 @@ coff_obj_writer_push_symbol_common(COFF_ObjWriter *obj_writer, string name, U32 
 }
 
 internal COFF_ObjReloc*
-coff_obj_writer_section_push_reloc(COFF_ObjWriter *obj_writer, COFF_ObjSection *sect, U32 apply_off, COFF_ObjSymbol *symbol, COFF_RelocType type)
+coff_obj_writer_section_push_reloc(COFF_ObjWriter* obj_writer, COFF_ObjSection* sect, U32 apply_off, COFF_ObjSymbol* symbol, COFF_RelocType type)
 {
   COFF_ObjRelocNode *reloc_n = push_array(obj_writer.arena, COFF_ObjRelocNode, 1);
   SLLQueuePush(sect.reloc_first, sect.reloc_last, reloc_n);
@@ -423,7 +423,7 @@ coff_obj_writer_section_push_reloc(COFF_ObjWriter *obj_writer, COFF_ObjSection *
 }
 
 internal COFF_ObjReloc *
-coff_obj_writer_section_push_reloc_addr(COFF_ObjWriter *obj_writer, COFF_ObjSection *sect, U32 apply_off, COFF_ObjSymbol *symbol)
+coff_obj_writer_section_push_reloc_addr(COFF_ObjWriter* obj_writer, COFF_ObjSection* sect, U32 apply_off, COFF_ObjSymbol* symbol)
 {
   COFF_RelocType reloc_type = 0;
   switch (obj_writer.machine) {
@@ -435,7 +435,7 @@ coff_obj_writer_section_push_reloc_addr(COFF_ObjWriter *obj_writer, COFF_ObjSect
 }
 
 internal COFF_ObjReloc *
-coff_obj_writer_section_push_reloc_voff(COFF_ObjWriter *obj_writer, COFF_ObjSection *sect, U32 apply_off, COFF_ObjSymbol *symbol)
+coff_obj_writer_section_push_reloc_voff(COFF_ObjWriter* obj_writer, COFF_ObjSection* sect, U32 apply_off, COFF_ObjSymbol* symbol)
 {
   COFF_RelocType reloc_type = 0;
   switch (obj_writer.machine) {
@@ -447,7 +447,7 @@ coff_obj_writer_section_push_reloc_voff(COFF_ObjWriter *obj_writer, COFF_ObjSect
 }
 
 internal void
-coff_obj_writer_push_directive(COFF_ObjWriter *obj_writer, string directive)
+coff_obj_writer_push_directive(COFF_ObjWriter* obj_writer, string directive)
 {
   if (obj_writer.drectve_sect == 0) {
     local_persist const U8 bom_sig[]  = { ' ', ' ', ' ' };
@@ -459,7 +459,7 @@ coff_obj_writer_push_directive(COFF_ObjWriter *obj_writer, string directive)
 }
 
 internal int
-coff_obj_section_is_before(void *raw_a, void *raw_b)
+coff_obj_section_is_before(void* raw_a, void* raw_b)
 {
   COFF_ObjSection **a = raw_a;
   COFF_ObjSection **b = raw_b;

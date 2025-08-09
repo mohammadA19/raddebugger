@@ -24,7 +24,7 @@ os_w32_file_property_flags_from_dwFileAttributes(DWORD dwFileAttributes)
 }
 
 internal void
-os_w32_file_properties_from_attribute_data(FileProperties *properties, WIN32_FILE_ATTRIBUTE_DATA *attributes)
+os_w32_file_properties_from_attribute_data(FileProperties* properties, WIN32_FILE_ATTRIBUTE_DATA* attributes)
 {
   properties.size = Compose64Bit(attributes.nFileSizeHigh, attributes.nFileSizeLow);
   os_w32_dense_time_from_file_time(&properties.created, &attributes.ftCreationTime);
@@ -36,7 +36,7 @@ os_w32_file_properties_from_attribute_data(FileProperties *properties, WIN32_FIL
 //~ rjf: Time Conversion Helpers
 
 internal void
-os_w32_date_time_from_system_time(DateTime *out, SYSTEMTIME *in)
+os_w32_date_time_from_system_time(DateTime* out, SYSTEMTIME* in)
 {
   out.year    = in.wYear;
   out.mon     = in.wMonth - 1;
@@ -49,7 +49,7 @@ os_w32_date_time_from_system_time(DateTime *out, SYSTEMTIME *in)
 }
 
 internal void
-os_w32_system_time_from_date_time(SYSTEMTIME *out, DateTime *in)
+os_w32_system_time_from_date_time(SYSTEMTIME* out, DateTime* in)
 {
   out.wYear         = (WORD)(in.year);
   out.wMonth        = in.mon + 1;
@@ -61,7 +61,7 @@ os_w32_system_time_from_date_time(SYSTEMTIME *out, DateTime *in)
 }
 
 internal void
-os_w32_dense_time_from_file_time(DenseTime *out, FILETIME *in)
+os_w32_dense_time_from_file_time(DenseTime* out, FILETIME* in)
 {
   SYSTEMTIME systime = {0};
   FileTimeToSystemTime(in, &systime);
@@ -128,7 +128,7 @@ os_w32_entity_alloc(OS_W32_EntityKind kind)
 }
 
 internal void
-os_w32_entity_release(OS_W32_Entity *entity)
+os_w32_entity_release(OS_W32_Entity* entity)
 {
   entity.kind = OS_W32_EntityKind_Null;
   EnterCriticalSection(&os_w32_state.entity_mutex);
@@ -140,7 +140,7 @@ os_w32_entity_release(OS_W32_Entity *entity)
 //~ rjf: Thread Entry Point
 
 internal DWORD
-os_w32_thread_entry_point(void *ptr)
+os_w32_thread_entry_point(void* ptr)
 {
   OS_W32_Entity *entity = (OS_W32_Entity *)ptr;
   OS_ThreadFunctionType *func = entity.thread.func;
@@ -168,7 +168,7 @@ os_get_process_info(void)
 }
 
 internal string
-os_get_current_path(Arena *arena)
+os_get_current_path(Arena* arena)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DWORD length = GetCurrentDirectoryW(0, 0);
@@ -207,20 +207,20 @@ os_reserve(U64 size)
 }
 
 internal B32
-os_commit(void *ptr, U64 size)
+os_commit(void* ptr, U64 size)
 {
   B32 result = (VirtualAlloc(ptr, size, MEM_COMMIT, PAGE_READWRITE) != 0);
   return result;
 }
 
 internal void
-os_decommit(void *ptr, U64 size)
+os_decommit(void* ptr, U64 size)
 {
   VirtualFree(ptr, size, MEM_DECOMMIT);
 }
 
 internal void
-os_release(void *ptr, U64 size)
+os_release(void* ptr, U64 size)
 {
   // NOTE(rjf): size not used - not necessary on Windows, but necessary for other OSes.
   VirtualFree(ptr, 0, MEM_RELEASE);
@@ -237,7 +237,7 @@ os_reserve_large(U64 size)
 }
 
 internal B32
-os_commit_large(void *ptr, U64 size)
+os_commit_large(void* ptr, U64 size)
 {
   return 1;
 }
@@ -351,7 +351,7 @@ os_file_close(OS_Handle file)
 }
 
 internal U64
-os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
+os_file_read(OS_Handle file, Rng1U64 rng, void* out_data)
 {
   if (os_handle_match(file, os_handle_zero())) { return 0; }
   HANDLE handle = (HANDLE)file.u64[0];
@@ -387,7 +387,7 @@ os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
 }
 
 internal U64
-os_file_write(OS_Handle file, Rng1U64 rng, void *data)
+os_file_write(OS_Handle file, Rng1U64 rng, void* data)
 {
   if (os_handle_match(file, os_handle_zero())) { return 0; }
   HANDLE win_handle = (HANDLE)file.u64[0];
@@ -515,7 +515,7 @@ os_move_file_path(string dst, string src)
 }
 
 internal string
-os_full_path_from_path(Arena *arena, string path)
+os_full_path_from_path(Arena* arena, string path)
 {
   Temp scratch = scratch_begin(&arena, 1);
   DWORD     buffer_size = Max(MAX_PATH, path.size * 2) + 1;
@@ -676,7 +676,7 @@ os_file_map_view_open(OS_Handle map, OS_AccessFlags flags, Rng1U64 range)
 }
 
 internal void
-os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range)
+os_file_map_view_close(OS_Handle map, void* ptr, Rng1U64 range)
 {
   BOOL result = UnmapViewOfFile(ptr);
   (void)result;
@@ -685,7 +685,7 @@ os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range)
 //- rjf: directory iteration
 
 internal OS_FileIter *
-os_file_iter_begin(Arena *arena, string path, OS_FileIterFlags flags)
+os_file_iter_begin(Arena* arena, string path, OS_FileIterFlags flags)
 {
   Temp scratch = scratch_begin(&arena, 1);
   string path_with_wildcard = push_str8_cat(scratch.arena, path, ("\\*"));
@@ -719,7 +719,7 @@ os_file_iter_begin(Arena *arena, string path, OS_FileIterFlags flags)
 }
 
 internal B32
-os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
+os_file_iter_next(Arena* arena, OS_FileIter* iter, OS_FileInfo* info_out)
 {
   B32 result = 0;
   OS_FileIterFlags flags = iter.flags;
@@ -799,7 +799,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
 }
 
 internal void
-os_file_iter_end(OS_FileIter *iter)
+os_file_iter_end(OS_FileIter* iter)
 {
   OS_W32_FileIter *w32_iter = (OS_W32_FileIter*)iter.memory;
   HANDLE zero_handle;
@@ -883,7 +883,7 @@ os_shared_memory_view_open(OS_Handle handle, Rng1U64 range)
 }
 
 internal void
-os_shared_memory_view_close(OS_Handle handle, void *ptr, Rng1U64 range)
+os_shared_memory_view_close(OS_Handle handle, void* ptr, Rng1U64 range)
 {
   UnmapViewOfFile(ptr);
 }
@@ -923,7 +923,7 @@ os_now_universal_time(void)
 }
 
 internal DateTime
-os_universal_time_from_local(DateTime *date_time)
+os_universal_time_from_local(DateTime* date_time)
 {
   SYSTEMTIME systime = {0};
   os_w32_system_time_from_date_time(&systime, date_time);
@@ -938,7 +938,7 @@ os_universal_time_from_local(DateTime *date_time)
 }
 
 internal DateTime
-os_local_time_from_universal(DateTime *date_time)
+os_local_time_from_universal(DateTime* date_time)
 {
   SYSTEMTIME systime = {0};
   os_w32_system_time_from_date_time(&systime, date_time);
@@ -962,7 +962,7 @@ os_sleep_milliseconds(U32 msec)
 //~ rjf: @os_hooks Child Processes (Implemented Per-OS)
 
 internal OS_Handle
-os_process_launch(OS_ProcessLaunchParams *params)
+os_process_launch(OS_ProcessLaunchParams* params)
 {
   OS_Handle result = {0};
   Temp scratch = scratch_begin(0, 0);
@@ -1071,7 +1071,7 @@ os_process_join(OS_Handle handle, U64 endt_us)
 }
 
 internal B32
-os_process_join_exit_code(OS_Handle handle, U64 endt_us, int *exit_code_out)
+os_process_join_exit_code(OS_Handle handle, U64 endt_us, int* exit_code_out)
 {
   B32 result = 0;
   if (os_process_join(handle, endt_us))
@@ -1105,7 +1105,7 @@ os_process_detach(OS_Handle handle)
 //~ rjf: @os_hooks Threads (Implemented Per-OS)
 
 internal OS_Handle
-os_thread_launch(OS_ThreadFunctionType *func, void *ptr, void *params)
+os_thread_launch(OS_ThreadFunctionType* func, void* ptr, void* params)
 {
   OS_W32_Entity *entity = os_w32_entity_alloc(OS_W32_EntityKind_Thread);
   entity.thread.func = func;
@@ -1388,7 +1388,7 @@ os_library_close(OS_Handle lib)
 //~ rjf: @os_hooks Safe Calls (Implemented Per-OS)
 
 internal void
-os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, void *ptr)
+os_safe_call(OS_ThreadFunctionType* func, OS_ThreadFunctionType* fail_handler, void* ptr)
 {
   __try
   {
@@ -1465,21 +1465,21 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
   buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L"A fatal exception (code 0x%x) occurred. The process is terminating.\n", exception_code);
   
   // load dbghelp dynamically just in case if it is missing
-  BOOL (WINAPI *dbg_MiniDumpWriteDump)(HANDLE hProcess, DWORD ProcessId, HANDLE hFile, MINIDUMP_TYPE DumpType, PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam, PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam, PMINIDUMP_CALLBACK_INFORMATION CallbackParam) = 0;
+  BOOL (WINAPI* dbg_MiniDumpWriteDump)(HANDLE hProcess, DWORD ProcessId, HANDLE hFile, MINIDUMP_TYPE DumpType, PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam, PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam, PMINIDUMP_CALLBACK_INFORMATION CallbackParam) = 0;
   HMODULE dbghelp = LoadLibraryA("dbghelp.dll");
   if (dbghelp)
   {
-    DWORD (WINAPI *dbg_SymSetOptions)(DWORD SymOptions);
-    BOOL (WINAPI *dbg_SymInitializeW)(HANDLE hProcess, PCWSTR UserSearchPath, BOOL fInvadeProcess);
-    BOOL (WINAPI *dbg_StackWalk64)(DWORD MachineType, HANDLE hProcess, HANDLE hThread,
+    DWORD (WINAPI* dbg_SymSetOptions)(DWORD SymOptions);
+    BOOL (WINAPI* dbg_SymInitializeW)(HANDLE hProcess, PCWSTR UserSearchPath, BOOL fInvadeProcess);
+    BOOL (WINAPI* dbg_StackWalk64)(DWORD MachineType, HANDLE hProcess, HANDLE hThread,
                                    LPSTACKFRAME64 StackFrame, PVOID ContextRecord, PREAD_PROCESS_MEMORY_ROUTINE64 ReadMemoryRoutine,
                                    PFUNCTION_TABLE_ACCESS_ROUTINE64 FunctionTableAccessRoutine, PGET_MODULE_BASE_ROUTINE64 GetModuleBaseRoutine,
                                    PTRANSLATE_ADDRESS_ROUTINE64 TranslateAddress);
-    PVOID (WINAPI *dbg_SymFunctionTableAccess64)(HANDLE hProcess, DWORD64 AddrBase);
-    DWORD64 (WINAPI *dbg_SymGetModuleBase64)(HANDLE hProcess, DWORD64 qwAddr);
-    BOOL (WINAPI *dbg_SymFromAddrW)(HANDLE hProcess, DWORD64 Address, PDWORD64 Displacement, PSYMBOL_INFOW Symbol);
-    BOOL (WINAPI *dbg_SymGetLineFromAddrW64)(HANDLE hProcess, DWORD64 dwAddr, PDWORD pdwDisplacement, PIMAGEHLP_LINEW64 Line);
-    BOOL (WINAPI *dbg_SymGetModuleInfoW64)(HANDLE hProcess, DWORD64 qwAddr, PIMAGEHLP_MODULEW64 ModuleInfo);
+    PVOID (WINAPI* dbg_SymFunctionTableAccess64)(HANDLE hProcess, DWORD64 AddrBase);
+    DWORD64 (WINAPI* dbg_SymGetModuleBase64)(HANDLE hProcess, DWORD64 qwAddr);
+    BOOL (WINAPI* dbg_SymFromAddrW)(HANDLE hProcess, DWORD64 Address, PDWORD64 Displacement, PSYMBOL_INFOW Symbol);
+    BOOL (WINAPI* dbg_SymGetLineFromAddrW64)(HANDLE hProcess, DWORD64 dwAddr, PDWORD pdwDisplacement, PIMAGEHLP_LINEW64 Line);
+    BOOL (WINAPI* dbg_SymGetModuleInfoW64)(HANDLE hProcess, DWORD64 qwAddr, PIMAGEHLP_MODULEW64 ModuleInfo);
     
     *(FARPROC*)&dbg_SymSetOptions            = GetProcAddress(dbghelp, "SymSetOptions");
     *(FARPROC*)&dbg_SymInitializeW           = GetProcAddress(dbghelp, "SymInitializeW");
@@ -1660,7 +1660,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
 #define OS_WINDOWS 1
 
 internal void
-w32_entry_point_caller(int argc, WCHAR **wargv)
+w32_entry_point_caller(int argc, WCHAR** wargv)
 {
   SetUnhandledExceptionFilter(&win32_exception_filter);
   
@@ -1820,7 +1820,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
 }
 
 #if BUILD_CONSOLE_INTERFACE
-int wmain(int argc, WCHAR **argv)
+int wmain(int argc, WCHAR** argv)
 {
   w32_entry_point_caller(argc, argv);
   return 0;

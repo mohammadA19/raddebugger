@@ -5,7 +5,7 @@
 //~ rjf: Code Views
 
 internal void
-rd_code_view_init(RD_CodeViewState *cv)
+rd_code_view_init(RD_CodeViewState* cv)
 {
   ProfBeginFunction();
   if (cv.initialized == 0)
@@ -20,7 +20,7 @@ rd_code_view_init(RD_CodeViewState *cv)
 }
 
 internal RD_CodeViewBuildResult
-rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, string text_data, TXT_TextInfo *text_info, DASM_LineArray *dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key)
+rd_code_view_build(Arena* arena, RD_CodeViewState* cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, string text_data, TXT_TextInfo* text_info, DASM_LineArray* dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -821,7 +821,7 @@ rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags fla
 //- rjf: cell list building
 
 internal U64
-rd_id_from_watch_cell(RD_WatchCell *cell)
+rd_id_from_watch_cell(RD_WatchCell* cell)
 {
   U64 result = 5381;
   result = e_hash_from_string(result, str8_struct(&cell.kind));
@@ -834,7 +834,7 @@ rd_id_from_watch_cell(RD_WatchCell *cell)
 }
 
 internal RD_WatchCell *
-rd_watch_cell_list_push(Arena *arena, RD_WatchCellList *list)
+rd_watch_cell_list_push(Arena* arena, RD_WatchCellList* list)
 {
   RD_WatchCell *cell = push_array(arena, RD_WatchCell, 1);
   cell.index = list.count;
@@ -844,7 +844,7 @@ rd_watch_cell_list_push(Arena *arena, RD_WatchCellList *list)
 }
 
 internal RD_WatchCell *
-rd_watch_cell_list_push_new_(Arena *arena, RD_WatchCellList *list, RD_WatchCell *params)
+rd_watch_cell_list_push_new_(Arena* arena, RD_WatchCellList* list, RD_WatchCell* params)
 {
   RD_WatchCell *cell = rd_watch_cell_list_push(arena, list);
   U64 index = cell.index;
@@ -869,7 +869,7 @@ rd_watch_pt_match(RD_WatchPt a, RD_WatchPt b)
 }
 
 internal RD_WatchPt
-rd_watch_pt_from_tbl(EV_BlockRangeList *block_ranges, Vec2S64 tbl)
+rd_watch_pt_from_tbl(EV_BlockRangeList* block_ranges, Vec2S64 tbl)
 {
   RD_WatchPt pt = zero_struct;
   {
@@ -895,7 +895,7 @@ rd_watch_pt_from_tbl(EV_BlockRangeList *block_ranges, Vec2S64 tbl)
 }
 
 internal Vec2S64
-rd_tbl_from_watch_pt(EV_BlockRangeList *block_ranges, RD_WatchPt pt)
+rd_tbl_from_watch_pt(EV_BlockRangeList* block_ranges, RD_WatchPt pt)
 {
   Vec2S64 tbl = {0};
   {
@@ -925,7 +925,7 @@ rd_tbl_from_watch_pt(EV_BlockRangeList *block_ranges, RD_WatchPt pt)
 //- rjf: row -> info
 
 internal RD_WatchRowInfo
-rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
+rd_watch_row_info_from_row(Arena* arena, EV_Row* row)
 {
   RD_WatchRowInfo info =
   {
@@ -1540,7 +1540,7 @@ rd_watch_row_info_from_row(Arena *arena, EV_Row *row)
 //- rjf: row * cell -> string
 
 internal RD_WatchRowCellInfo
-rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_flags, RD_WatchRowInfo *row_info, RD_WatchCell *cell, FNT_Tag font, F32 font_size, F32 max_size_px)
+rd_info_from_watch_row_cell(Arena* arena, EV_Row* row, EV_StringFlags string_flags, RD_WatchRowInfo* row_info, RD_WatchCell* cell, FNT_Tag font, F32 font_size, F32 max_size_px)
 {
   Temp scratch = scratch_begin(&arena ,1);
   RD_WatchRowCellInfo result =
@@ -1969,7 +1969,7 @@ rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_fla
 //- rjf: table coordinates -> text edit state
 
 internal RD_WatchViewTextEditState *
-rd_watch_view_text_edit_state_from_pt(RD_WatchViewState *wv, RD_WatchPt pt)
+rd_watch_view_text_edit_state_from_pt(RD_WatchViewState* wv, RD_WatchPt pt)
 {
   RD_WatchViewTextEditState *result = &wv.dummy_text_edit_state;
   if (wv.text_edit_state_slots_count != 0 && wv.text_editing != 0)

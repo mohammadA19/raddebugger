@@ -10,7 +10,7 @@ msf_get_data_node_size(MSF_UInt page_size)
 }
 
 internal void
-msf_page_data_list_push(Arena *arena, MSF_PageDataList *list, MSF_UInt page_size, MSF_UInt count)
+msf_page_data_list_push(Arena* arena, MSF_PageDataList* list, MSF_UInt page_size, MSF_UInt count)
 {
   U64 data_size = msf_get_data_node_size(page_size);
   for (MSF_UInt i = 0; i < count; i += 1) {
@@ -36,7 +36,7 @@ msf_page_data_list_push(Arena *arena, MSF_PageDataList *list, MSF_UInt page_size
 }
 
 internal MSF_PageDataList
-msf_page_data_list_pop(MSF_PageDataList *list, MSF_UInt count)
+msf_page_data_list_pop(MSF_PageDataList* list, MSF_UInt count)
 {
   MSF_PageDataList result = {0};
   
@@ -57,13 +57,13 @@ msf_page_data_list_pop(MSF_PageDataList *list, MSF_UInt count)
 }
 
 internal void
-msf_page_data_list_concat_in_place(MSF_PageDataList *list, MSF_PageDataList *to_concat)
+msf_page_data_list_concat_in_place(MSF_PageDataList* list, MSF_PageDataList* to_concat)
 {
   DLLConcatInPlace(list, to_concat);
 }
 
 internal void
-msf_set_page_data_list(Arena *arena, MSF_PageDataList *list, MSF_UInt page_size, string data)
+msf_set_page_data_list(Arena* arena, MSF_PageDataList* list, MSF_UInt page_size, string data)
 {
   ProfBeginFunction();
 
@@ -117,7 +117,7 @@ msf_data_from_pn(MSF_PageDataList list, MSF_UInt page_size, MSF_PageNumber pn)
 ////////////////////////////////
 
 internal MSF_StreamNode *
-msf_stream_list_push(Arena *arena, MSF_StreamList *list)
+msf_stream_list_push(Arena* arena, MSF_StreamList* list)
 {
   MSF_StreamNode *n = push_array(arena, MSF_StreamNode, 1);
   DLLPushBack(list.first, list.last, n);
@@ -126,7 +126,7 @@ msf_stream_list_push(Arena *arena, MSF_StreamList *list)
 }
 
 internal void
-msf_stream_list_remove(MSF_StreamList *list, MSF_StreamNode *node)
+msf_stream_list_remove(MSF_StreamList* list, MSF_StreamNode* node)
 {
   Assert(list.count > 0);
   DLLRemove(list.first, list.last, node);
@@ -136,14 +136,14 @@ msf_stream_list_remove(MSF_StreamList *list, MSF_StreamNode *node)
 ////////////////////////////////
 
 internal void
-msf_page_list_push_node(MSF_PageList *list, MSF_PageNode *node)
+msf_page_list_push_node(MSF_PageList* list, MSF_PageNode* node)
 {
   DLLPushBack(list.first, list.last, node);
   list.count += 1;
 }
 
 internal MSF_PageNode *
-msf_page_list_push(Arena *arena, MSF_PageList *list)
+msf_page_list_push(Arena* arena, MSF_PageList* list)
 {
   MSF_PageNode *node = push_array(arena, MSF_PageNode, 1);
   msf_page_list_push_node(list, node);
@@ -151,7 +151,7 @@ msf_page_list_push(Arena *arena, MSF_PageList *list)
 }
 
 internal MSF_PageNode *
-msf_page_list_pop_last(MSF_PageList *list)
+msf_page_list_pop_last(MSF_PageList* list)
 {
   MSF_PageNode *node = NULL;
   if (list.count) {
@@ -163,13 +163,13 @@ msf_page_list_pop_last(MSF_PageList *list)
 }
 
 internal void
-msf_page_list_concat_in_place(MSF_PageList *list, MSF_PageList *to_concat)
+msf_page_list_concat_in_place(MSF_PageList* list, MSF_PageList* to_concat)
 {
   DLLConcatInPlace(list, to_concat);
 }
 
 internal MSF_PageNumber *
-msf_page_list_to_arr(Arena *arena, MSF_PageList list)
+msf_page_list_to_arr(Arena* arena, MSF_PageList list)
 {
   MSF_PageNumber *arr = push_array(arena, MSF_PageNumber, list.count);
   MSF_UInt i = 0;
@@ -208,9 +208,9 @@ msf_page_from_index(MSF_PageList page_list, MSF_UInt index)
 }
 
 internal void
-msf_page_list_push_extant_page_arr(Arena *arena, MSF_PageList *list,
+msf_page_list_push_extant_page_arr(Arena* arena, MSF_PageList* list,
                                    MSF_PageDataList page_data_list, MSF_UInt page_size,
-                                   MSF_PageNumber *pn_arr, MSF_UInt pn_count)
+                                   MSF_PageNumber* pn_arr, MSF_UInt pn_count)
 {
   U64 node_size = msf_get_data_node_size(page_size);
   U64 data_max = page_data_list.count * node_size;
@@ -225,7 +225,7 @@ msf_page_list_push_extant_page_arr(Arena *arena, MSF_PageList *list,
 }
 
 internal void
-msf_page_list_push_extant_page(Arena *arena, MSF_PageList *list, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNumber pn)
+msf_page_list_push_extant_page(Arena* arena, MSF_PageList* list, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNumber pn)
 {
   msf_page_list_push_extant_page_arr(arena, list, page_data_list, page_size, &pn, 1);
 }
@@ -304,7 +304,7 @@ msf_get_fpm_page_count(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_
 }
 
 internal MSF_PageNumberArray
-msf_get_fpm_page_arr(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_UInt active_fpm)
+msf_get_fpm_page_arr(Arena* arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_UInt active_fpm)
 {
   Assert(active_fpm == MSF_FPM0 || active_fpm == MSF_FPM1);
   MSF_UInt fpm_interval_correct = msf_get_fpm_interval_correct(page_size);
@@ -365,7 +365,7 @@ msf_set_fpm_bit(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNum
 }
 
 internal B32
-msf_grow(MSF_Context *msf, MSF_PageNumber new_page_count)
+msf_grow(MSF_Context* msf, MSF_PageNumber new_page_count)
 {
   MSF_UInt fpm_interval_correct = msf_get_fpm_interval_correct(msf.page_size);
   MSF_UInt fpm_interval_wrong = msf_get_fpm_interval_wrong(msf.page_size);
@@ -442,7 +442,7 @@ msf_grow(MSF_Context *msf, MSF_PageNumber new_page_count)
 
 #if 0
 internal B32
-msf_shrink(MSF_Context *msf, MSF_PageNumber new_page_count)
+msf_shrink(MSF_Context* msf, MSF_PageNumber new_page_count)
 {
   MSF_UInt fpm_interval_wrong = msf_get_fpm_interval_wrong(msf.page_size);
   MSF_UInt fpm_interval_correct = msf_get_fpm_interval_correct(msf.page_size);
@@ -486,7 +486,7 @@ msf_shrink(MSF_Context *msf, MSF_PageNumber new_page_count)
 #endif
 
 internal MSF_PageNumber *
-msf_alloc_pn_arr(Arena *arena, MSF_Context *msf, MSF_UInt alloc_count)
+msf_alloc_pn_arr(Arena* arena, MSF_Context* msf, MSF_UInt alloc_count)
 {
   // make sure FPM has enough space for new page numbers
   // 
@@ -557,7 +557,7 @@ msf_alloc_pn_arr(Arena *arena, MSF_Context *msf, MSF_UInt alloc_count)
 }
 
 internal void
-msf_free_pn_arr(MSF_Context *msf, MSF_PageNumber *pn_arr, MSF_UInt pn_count)
+msf_free_pn_arr(MSF_Context* msf, MSF_PageNumber* pn_arr, MSF_UInt pn_count)
 {
   // set FPM bits
   for (MSF_UInt i = 0; i < pn_count; i += 1) {
@@ -574,7 +574,7 @@ msf_free_pn_arr(MSF_Context *msf, MSF_PageNumber *pn_arr, MSF_UInt pn_count)
 }
 
 internal MSF_PageList
-msf_alloc_pages(MSF_Context *msf, MSF_UInt alloc_count)
+msf_alloc_pages(MSF_Context* msf, MSF_UInt alloc_count)
 {
   Temp scratch = scratch_begin(0, 0);
   
@@ -601,7 +601,7 @@ msf_alloc_pages(MSF_Context *msf, MSF_UInt alloc_count)
 }
 
 internal void
-msf_free_pages(MSF_Context *msf, MSF_PageList *page_list)
+msf_free_pages(MSF_Context* msf, MSF_PageList* page_list)
 {
   Temp scratch = scratch_begin(0, 0);
   
@@ -673,7 +673,7 @@ msf_find_max_pn(MSF_PageDataList page_data_list, MSF_UInt page_size)
 ////////////////////////////////
 
 internal B32
-msf_write__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode **page_ptr, MSF_UInt *pos_ptr, void *buffer, MSF_UInt buffer_size)
+msf_write__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode** page_ptr, MSF_UInt* pos_ptr, void* buffer, MSF_UInt buffer_size)
 {
   MSF_PageNode *start_page = *page_ptr;
   MSF_UInt start_pos = *pos_ptr;
@@ -723,7 +723,7 @@ msf_write__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode **
 }
 
 internal MSF_UInt
-msf_read__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode **page_ptr, MSF_UInt *pos_ptr, void *buffer, MSF_UInt buffer_size)
+msf_read__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode** page_ptr, MSF_UInt* pos_ptr, void* buffer, MSF_UInt buffer_size)
 {
   MSF_UInt buffer_pos = 0;
   while (*page_ptr) {
@@ -765,7 +765,7 @@ msf_read__(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNode **p
 }
 
 internal B32
-msf_write(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList page_list, MSF_UInt offset, void *buffer, MSF_UInt buffer_size)
+msf_write(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList page_list, MSF_UInt offset, void* buffer, MSF_UInt buffer_size)
 {
   MSF_UInt page_idx = offset / page_size;
   MSF_PageNode *page = msf_page_from_index(page_list, page_idx);
@@ -774,7 +774,7 @@ msf_write(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList page
 }
 
 internal MSF_UInt
-msf_read(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList page_list, MSF_UInt offset, void *buffer, MSF_UInt buffer_size)
+msf_read(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList page_list, MSF_UInt offset, void* buffer, MSF_UInt buffer_size)
 {
   MSF_UInt page_idx = offset / page_size;
   MSF_PageNode *page = msf_page_from_index(page_list, page_idx);
@@ -785,7 +785,7 @@ msf_read(MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList page_
 ////////////////////////////////
 
 internal MSF_StreamNode * 
-msf_stream_alloc_(Arena *arena, MSF_StreamList *list)
+msf_stream_alloc_(Arena* arena, MSF_StreamList* list)
 {
   Assert(list.count < MSF_STREAM_NUMBER_MAX);
   MSF_UInt sn = list.count;
@@ -796,7 +796,7 @@ msf_stream_alloc_(Arena *arena, MSF_StreamList *list)
 }
 
 internal MSF_StreamNumber
-msf_stream_alloc_ex(MSF_Context *msf, MSF_UInt size)
+msf_stream_alloc_ex(MSF_Context* msf, MSF_UInt size)
 {
   MSF_StreamNode *node = msf_stream_alloc_(msf.arena, &msf.sectab);
   MSF_Stream *stream = &node.data;
@@ -805,13 +805,13 @@ msf_stream_alloc_ex(MSF_Context *msf, MSF_UInt size)
 }
 
 internal MSF_StreamNumber
-msf_stream_alloc(MSF_Context *msf)
+msf_stream_alloc(MSF_Context* msf)
 {
   return msf_stream_alloc_ex(msf, 0);
 }
 
 internal B32
-msf_stream_resize_ex(MSF_Context *msf, MSF_Stream *stream, MSF_UInt size)
+msf_stream_resize_ex(MSF_Context* msf, MSF_Stream* stream, MSF_UInt size)
 {
   MSF_UInt new_page_count = msf_count_pages(msf.page_size, size);
   MSF_UInt cur_page_count = stream.page_list.count;
@@ -838,7 +838,7 @@ msf_stream_resize_ex(MSF_Context *msf, MSF_Stream *stream, MSF_UInt size)
 }
 
 internal B32
-msf_stream_resize(MSF_Context *msf, MSF_StreamNumber sn, MSF_UInt new_size)
+msf_stream_resize(MSF_Context* msf, MSF_StreamNumber sn, MSF_UInt new_size)
 {
   MSF_Stream *stream = msf_find_stream(msf, sn);
   B32 is_resized = 0;
@@ -849,7 +849,7 @@ msf_stream_resize(MSF_Context *msf, MSF_StreamNumber sn, MSF_UInt new_size)
 }
 
 internal B32
-msf_stream_free(MSF_Context *msf, MSF_StreamNumber sn)
+msf_stream_free(MSF_Context* msf, MSF_StreamNumber sn)
 {
   B32 is_free_ok = 0;
   MSF_StreamNode *stream_node = msf_find_stream_node(msf, sn);
@@ -863,7 +863,7 @@ msf_stream_free(MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal void
-msf_stream_set_size(MSF_Context *msf, MSF_StreamNumber sn, MSF_UInt size)
+msf_stream_set_size(MSF_Context* msf, MSF_StreamNumber sn, MSF_UInt size)
 {
   MSF_Stream *stream = msf_find_stream(msf, sn);
   if (stream) {
@@ -874,7 +874,7 @@ msf_stream_set_size(MSF_Context *msf, MSF_StreamNumber sn, MSF_UInt size)
 }
 
 internal MSF_UInt
-msf_stream_get_size(MSF_Context *msf, MSF_StreamNumber sn)
+msf_stream_get_size(MSF_Context* msf, MSF_StreamNumber sn)
 {
   MSF_UInt size = MSF_UINT_MAX;
   MSF_Stream *stream = msf_find_stream(msf, sn);
@@ -885,13 +885,13 @@ msf_stream_get_size(MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal MSF_UInt
-msf_stream_get_cap__(MSF_Context *msf, MSF_Stream *stream)
+msf_stream_get_cap__(MSF_Context* msf, MSF_Stream* stream)
 {
   return stream.page_list.count * msf.page_size;
 }
 
 internal MSF_UInt
-msf_stream_get_cap(MSF_Context *msf, MSF_StreamNumber sn)
+msf_stream_get_cap(MSF_Context* msf, MSF_StreamNumber sn)
 {
   MSF_Stream *stream = msf_find_stream(msf, sn);
   MSF_UInt cap = 0;
@@ -902,13 +902,13 @@ msf_stream_get_cap(MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal MSF_UInt
-msf_stream_get_pos__(MSF_Context *msf, MSF_Stream *stream)
+msf_stream_get_pos__(MSF_Context* msf, MSF_Stream* stream)
 {
   return stream.pos;
 }
 
 internal MSF_UInt
-msf_stream_get_pos(MSF_Context *msf, MSF_StreamNumber sn)
+msf_stream_get_pos(MSF_Context* msf, MSF_StreamNumber sn)
 {
   MSF_Stream *stream = msf_find_stream(msf, sn);
   MSF_UInt pos = MSF_UINT_MAX;
@@ -919,7 +919,7 @@ msf_stream_get_pos(MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal B32
-msf_stream_seek__(MSF_Context *msf, MSF_Stream *stream, MSF_UInt new_pos) 
+msf_stream_seek__(MSF_Context* msf, MSF_Stream* stream, MSF_UInt new_pos) 
 { (void)msf;
   stream.pos = Min(new_pos, stream.size);
   stream.pos_page = 0;
@@ -927,7 +927,7 @@ msf_stream_seek__(MSF_Context *msf, MSF_Stream *stream, MSF_UInt new_pos)
 }
 
 internal B32 
-msf_stream_seek(MSF_Context *msf, MSF_StreamNumber sn, MSF_UInt new_pos)
+msf_stream_seek(MSF_Context* msf, MSF_StreamNumber sn, MSF_UInt new_pos)
 {
   B32 is_seek_ok = 0;
   MSF_Stream *stream = msf_find_stream(msf, sn);
@@ -940,13 +940,13 @@ msf_stream_seek(MSF_Context *msf, MSF_StreamNumber sn, MSF_UInt new_pos)
 }
 
 internal B32
-msf_stream_seek_start(MSF_Context *msf, MSF_StreamNumber sn)
+msf_stream_seek_start(MSF_Context* msf, MSF_StreamNumber sn)
 {
   return msf_stream_seek(msf, sn, 0);
 }
 
 internal B32
-msf_stream_seek_end(MSF_Context *msf, MSF_StreamNumber sn)
+msf_stream_seek_end(MSF_Context* msf, MSF_StreamNumber sn)
 {
   MSF_UInt end = msf_stream_get_size(msf, sn);
   return msf_stream_seek(msf, sn, end);
@@ -954,7 +954,7 @@ msf_stream_seek_end(MSF_Context *msf, MSF_StreamNumber sn)
 
 
 internal B32 
-msf_stream_write__(MSF_Context *msf, MSF_Stream *stream, void *buffer, MSF_UInt buffer_size)
+msf_stream_write__(MSF_Context* msf, MSF_Stream* stream, void* buffer, MSF_UInt buffer_size)
 {
   B32 is_write_ok = 0;
 
@@ -996,7 +996,7 @@ exit:;
 }
 
 internal MSF_UInt
-msf_stream_reserve__(MSF_Context *msf, MSF_Stream *stream, MSF_UInt res)
+msf_stream_reserve__(MSF_Context* msf, MSF_Stream* stream, MSF_UInt res)
 {
   ProfBeginV("MSF Reserve %m", res);
   
@@ -1019,7 +1019,7 @@ msf_stream_reserve__(MSF_Context *msf, MSF_Stream *stream, MSF_UInt res)
 } 
 
 internal B32
-msf_stream_reserve(MSF_Context *msf, MSF_StreamNumber sn, MSF_UInt res)
+msf_stream_reserve(MSF_Context* msf, MSF_StreamNumber sn, MSF_UInt res)
 {
   MSF_Stream *stream = msf_find_stream(msf, sn);
   B32 is_res_ok = 0;
@@ -1030,7 +1030,7 @@ msf_stream_reserve(MSF_Context *msf, MSF_StreamNumber sn, MSF_UInt res)
 }
 
 internal B32 
-msf_stream_write(MSF_Context *msf, MSF_StreamNumber sn, void *buffer, MSF_UInt buffer_size)
+msf_stream_write(MSF_Context* msf, MSF_StreamNumber sn, void* buffer, MSF_UInt buffer_size)
 {
   B32 is_write_ok = 0;
   MSF_Stream *stream = msf_find_stream(msf, sn);
@@ -1041,13 +1041,13 @@ msf_stream_write(MSF_Context *msf, MSF_StreamNumber sn, void *buffer, MSF_UInt b
 }
 
 internal B32
-msf_stream_write_string(MSF_Context *msf, MSF_StreamNumber sn, string string)
+msf_stream_write_string(MSF_Context* msf, MSF_StreamNumber sn, string string)
 {
   return msf_stream_write(msf, sn, string.str, string.size);
 }
 
 internal B32
-msf_stream_write_list(MSF_Context *msf, MSF_StreamNumber sn, String8List list)
+msf_stream_write_list(MSF_Context* msf, MSF_StreamNumber sn, String8List list)
 {
   B32 is_write_ok = 0;
   MSF_Stream *stream = msf_find_stream(msf, sn);
@@ -1063,13 +1063,13 @@ msf_stream_write_list(MSF_Context *msf, MSF_StreamNumber sn, String8List list)
 }
 
 internal B32 
-msf_stream_write_uint(MSF_Context *msf, MSF_StreamNumber sn, MSF_UInt value)
+msf_stream_write_uint(MSF_Context* msf, MSF_StreamNumber sn, MSF_UInt value)
 {
   return msf_stream_write_struct(msf, sn, &value);
 }
 
 internal B32
-msf_stream_write_cstr(MSF_Context *msf, MSF_StreamNumber sn, string string)
+msf_stream_write_cstr(MSF_Context* msf, MSF_StreamNumber sn, string string)
 {
   B32 is_string_written = msf_stream_write_string(msf, sn, string);
   B32 is_null_written = msf_stream_write(msf, sn, 0, 1);
@@ -1077,49 +1077,49 @@ msf_stream_write_cstr(MSF_Context *msf, MSF_StreamNumber sn, string string)
 }
 
 internal B32
-msf_stream_write_u8(MSF_Context *msf, MSF_StreamNumber sn, U8 value)
+msf_stream_write_u8(MSF_Context* msf, MSF_StreamNumber sn, U8 value)
 {
   return msf_stream_write(msf, sn, &value, sizeof(value));
 }
 
 internal B32
-msf_stream_write_u16(MSF_Context *msf, MSF_StreamNumber sn, U16 value)
+msf_stream_write_u16(MSF_Context* msf, MSF_StreamNumber sn, U16 value)
 {
   return msf_stream_write(msf, sn, &value, sizeof(value));
 }
 
 internal B32
-msf_stream_write_u32(MSF_Context *msf, MSF_StreamNumber sn, U32 value)
+msf_stream_write_u32(MSF_Context* msf, MSF_StreamNumber sn, U32 value)
 {
   return msf_stream_write(msf, sn, &value, sizeof(value));
 }
 
 internal B32
-msf_stream_write_u64(MSF_Context *msf, MSF_StreamNumber sn, U64 value)
+msf_stream_write_u64(MSF_Context* msf, MSF_StreamNumber sn, U64 value)
 {
   return msf_stream_write(msf, sn, &value, sizeof(value));
 }
 
 internal B32
-msf_stream_write_s8(MSF_Context *msf, MSF_StreamNumber sn, S8 value)
+msf_stream_write_s8(MSF_Context* msf, MSF_StreamNumber sn, S8 value)
 {
   return msf_stream_write(msf, sn, &value, sizeof(value));
 }
 
 internal B32
-msf_stream_write_s16(MSF_Context *msf, MSF_StreamNumber sn, S16 value)
+msf_stream_write_s16(MSF_Context* msf, MSF_StreamNumber sn, S16 value)
 {
   return msf_stream_write(msf, sn, &value, sizeof(value));
 }
 
 internal B32
-msf_stream_write_s32(MSF_Context *msf, MSF_StreamNumber sn, S32 value)
+msf_stream_write_s32(MSF_Context* msf, MSF_StreamNumber sn, S32 value)
 {
   return msf_stream_write(msf, sn, &value, sizeof(value));
 }
 
 internal B32
-msf_stream_write_s64(MSF_Context *msf, MSF_StreamNumber sn, S64 value)
+msf_stream_write_s64(MSF_Context* msf, MSF_StreamNumber sn, S64 value)
 {
   return msf_stream_write(msf, sn, &value, sizeof(value));
 }
@@ -1144,7 +1144,7 @@ THREAD_POOL_TASK_FUNC(msf_write_task)
 }
 
 internal B32
-msf_stream_write_parallel(TP_Context *tp, MSF_Context *msf, MSF_StreamNumber sn, void *buffer, MSF_UInt buffer_size)
+msf_stream_write_parallel(TP_Context* tp, MSF_Context* msf, MSF_StreamNumber sn, void* buffer, MSF_UInt buffer_size)
 {
   ProfBeginV("MSF Write Parallel %m", buffer_size);
 
@@ -1206,7 +1206,7 @@ msf_stream_write_parallel(TP_Context *tp, MSF_Context *msf, MSF_StreamNumber sn,
 }
 
 internal B32
-msf_stream_write_string_parallel(TP_Context *tp, MSF_Context *msf, MSF_StreamNumber sn, string string)
+msf_stream_write_string_parallel(TP_Context* tp, MSF_Context* msf, MSF_StreamNumber sn, string string)
 {
   return msf_stream_write_parallel(tp, msf, sn, string.str, string.size);
 }
@@ -1214,7 +1214,7 @@ msf_stream_write_string_parallel(TP_Context *tp, MSF_Context *msf, MSF_StreamNum
 ////////////////////////////////
 
 internal MSF_UInt
-msf_stream_read__(MSF_Context *msf, MSF_Stream *stream, void *buffer, MSF_UInt buffer_size)
+msf_stream_read__(MSF_Context* msf, MSF_Stream* stream, void* buffer, MSF_UInt buffer_size)
 {
   // are we reading over limit?
   Assert((U64)stream.pos + (U64)buffer_size <= (U64)MSF_UINT_MAX);
@@ -1230,7 +1230,7 @@ msf_stream_read__(MSF_Context *msf, MSF_Stream *stream, void *buffer, MSF_UInt b
 }
 
 internal MSF_UInt
-msf_stream_read(MSF_Context *msf, MSF_StreamNumber sn, void *buffer, MSF_UInt buffer_size)
+msf_stream_read(MSF_Context* msf, MSF_StreamNumber sn, void* buffer, MSF_UInt buffer_size)
 {
   MSF_Stream *stream = msf_find_stream(msf, sn);
   if (stream) {
@@ -1240,7 +1240,7 @@ msf_stream_read(MSF_Context *msf, MSF_StreamNumber sn, void *buffer, MSF_UInt bu
 }
 
 internal S8
-msf_stream_read_s8(MSF_Context *msf, MSF_StreamNumber sn)
+msf_stream_read_s8(MSF_Context* msf, MSF_StreamNumber sn)
 {
   S8 result = 0;
   msf_stream_read_struct(msf, sn, &result);
@@ -1248,7 +1248,7 @@ msf_stream_read_s8(MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal S16
-msf_stream_read_s16(MSF_Context *msf, MSF_StreamNumber sn)
+msf_stream_read_s16(MSF_Context* msf, MSF_StreamNumber sn)
 {
   S16 result = 0;
   msf_stream_read_struct(msf, sn, &result);
@@ -1256,7 +1256,7 @@ msf_stream_read_s16(MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal S32
-msf_stream_read_s32(MSF_Context *msf, MSF_StreamNumber sn)
+msf_stream_read_s32(MSF_Context* msf, MSF_StreamNumber sn)
 {
   S32 result = 0;
   msf_stream_read_struct(msf, sn, &result);
@@ -1264,7 +1264,7 @@ msf_stream_read_s32(MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal S64
-msf_stream_read_s64(MSF_Context *msf, MSF_StreamNumber sn)
+msf_stream_read_s64(MSF_Context* msf, MSF_StreamNumber sn)
 {
   S64 result = 0;
   msf_stream_read_struct(msf, sn, &result);
@@ -1272,7 +1272,7 @@ msf_stream_read_s64(MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal U8
-msf_stream_read_u8(MSF_Context *msf, MSF_StreamNumber sn)
+msf_stream_read_u8(MSF_Context* msf, MSF_StreamNumber sn)
 {
   U8 result = 0;
   msf_stream_read_struct(msf, sn, &result);
@@ -1280,7 +1280,7 @@ msf_stream_read_u8(MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal U16
-msf_stream_read_u16(MSF_Context *msf, MSF_StreamNumber sn)
+msf_stream_read_u16(MSF_Context* msf, MSF_StreamNumber sn)
 {
   U16 result = 0;
   msf_stream_read_struct(msf, sn, &result);
@@ -1288,7 +1288,7 @@ msf_stream_read_u16(MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal U32
-msf_stream_read_u32(MSF_Context *msf, MSF_StreamNumber sn)
+msf_stream_read_u32(MSF_Context* msf, MSF_StreamNumber sn)
 {
   U32 result = 0;
   msf_stream_read_struct(msf, sn, &result);
@@ -1296,7 +1296,7 @@ msf_stream_read_u32(MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal U64
-msf_stream_read_u64(MSF_Context *msf, MSF_StreamNumber sn)
+msf_stream_read_u64(MSF_Context* msf, MSF_StreamNumber sn)
 {
   U64 result = 0;
   msf_stream_read_struct(msf, sn, &result);
@@ -1304,7 +1304,7 @@ msf_stream_read_u64(MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal string
-msf_stream_read_block(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U64 block_size)
+msf_stream_read_block(Arena* arena, MSF_Context* msf, MSF_StreamNumber sn, U64 block_size)
 {
   U8 *block_buffer = push_array(arena, U8, block_size);
   MSF_UInt block_read = msf_stream_read(msf, sn, block_buffer, block_size);
@@ -1314,7 +1314,7 @@ msf_stream_read_block(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn, U64 b
 }
 
 internal string
-msf_stream_read_string(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn)
+msf_stream_read_string(Arena* arena, MSF_Context* msf, MSF_StreamNumber sn)
 {
   MSF_UInt start_pos = msf_stream_get_pos(msf, sn);
   U64 size = 0;
@@ -1333,7 +1333,7 @@ msf_stream_read_string(Arena *arena, MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal void 
-msf_stream_align(MSF_Context *msf, MSF_StreamNumber sn, MSF_UInt align)
+msf_stream_align(MSF_Context* msf, MSF_StreamNumber sn, MSF_UInt align)
 {
   MSF_UInt pos = msf_stream_get_pos(msf, sn);
   MSF_UInt pos_aligned = AlignPow2(pos, align);
@@ -1379,7 +1379,7 @@ msf_alloc(MSF_UInt page_size, MSF_UInt active_fpm)
 }
 
 internal MSF_StreamNode * 
-msf_find_stream_node(MSF_Context *msf, MSF_StreamNumber sn)
+msf_find_stream_node(MSF_Context* msf, MSF_StreamNumber sn)
 {
   MSF_StreamNode *node;
   for (node = msf.sectab.first; node != 0; node = node.next) {
@@ -1391,7 +1391,7 @@ msf_find_stream_node(MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal MSF_Stream *
-msf_find_stream(MSF_Context *msf, MSF_StreamNumber sn)
+msf_find_stream(MSF_Context* msf, MSF_StreamNumber sn)
 {
   MSF_StreamNode *node = msf_find_stream_node(msf, sn);
   MSF_Stream *data = 0;
@@ -1402,7 +1402,7 @@ msf_find_stream(MSF_Context *msf, MSF_StreamNumber sn)
 }
 
 internal MSF_Error
-msf_open_header(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList *page_list)
+msf_open_header(Arena* arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList* page_list)
 {
   ProfBeginFunction();
   msf_page_list_push_extant_page(arena, page_list, page_data_list, page_size, 0);
@@ -1411,7 +1411,7 @@ msf_open_header(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt page_siz
 }
 
 internal MSF_Error
-msf_open_root(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNumber root_pn, MSF_UInt stream_table_size, MSF_PageList *page_list)
+msf_open_root(Arena* arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageNumber root_pn, MSF_UInt stream_table_size, MSF_PageList* page_list)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -1429,7 +1429,7 @@ msf_open_root(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt page_size,
 }
 
 internal MSF_Error
-msf_open_stream_table_page_list(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList root_page_list, MSF_UInt stream_table_size, MSF_PageList *page_list)
+msf_open_stream_table_page_list(Arena* arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList root_page_list, MSF_UInt stream_table_size, MSF_PageList* page_list)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -1449,7 +1449,7 @@ msf_open_stream_table_page_list(Arena *arena, MSF_PageDataList page_data_list, M
 }
 
 internal MSF_Error
-msf_open_stream_table(Arena *arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList st_page_list, MSF_UInt stream_table_size, MSF_StreamList *stream_list)
+msf_open_stream_table(Arena* arena, MSF_PageDataList page_data_list, MSF_UInt page_size, MSF_PageList st_page_list, MSF_UInt stream_table_size, MSF_StreamList* stream_list)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -1535,7 +1535,7 @@ exit:;
 }
 
 internal MSF_Error
-msf_open(string data, MSF_Context **msf_out)
+msf_open(string data, MSF_Context** msf_out)
 {
   ProfBeginFunction();
 
@@ -1671,14 +1671,14 @@ exit:;
 }
 
 internal void
-msf_release(MSF_Context **msf_ptr)
+msf_release(MSF_Context** msf_ptr)
 {
   arena_release((*msf_ptr)->arena);
   *msf_ptr = 0;
 }
 
 internal String8List
-msf_build_stream_table_data(Arena *arena, MSF_StreamList *sectab, MSF_UInt page_size, MSF_UInt page_count)
+msf_build_stream_table_data(Arena* arena, MSF_StreamList* sectab, MSF_UInt page_size, MSF_UInt page_count)
 {
   ProfBeginFunction();
   
@@ -1740,7 +1740,7 @@ msf_build_stream_table_data(Arena *arena, MSF_StreamList *sectab, MSF_UInt page_
 }
 
 internal MSF_Error
-msf_build_stream_table(MSF_Context *msf, MSF_UInt *stream_table_size_out)
+msf_build_stream_table(MSF_Context* msf, MSF_UInt* stream_table_size_out)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -1772,7 +1772,7 @@ msf_build_stream_table(MSF_Context *msf, MSF_UInt *stream_table_size_out)
 }
 
 internal MSF_Error
-msf_build_root_directory(MSF_Context *msf)
+msf_build_root_directory(MSF_Context* msf)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
@@ -1811,7 +1811,7 @@ exit:;
 }
 
 internal MSF_Error
-msf_build_header(MSF_Context *msf, MSF_UInt stream_table_size)
+msf_build_header(MSF_Context* msf, MSF_UInt stream_table_size)
 {
   ProfBeginFunction();
   MSF_Error error = MSF_Error_OK;
@@ -1837,7 +1837,7 @@ msf_build_header(MSF_Context *msf, MSF_UInt stream_table_size)
 }
 
 internal MSF_Error 
-msf_build(MSF_Context *msf)
+msf_build(MSF_Context* msf)
 {
   ProfBeginFunction();
   
@@ -1865,7 +1865,7 @@ msf_build(MSF_Context *msf)
 }
 
 internal String8List
-msf_get_page_data_nodes(Arena *arena, MSF_Context *msf)
+msf_get_page_data_nodes(Arena* arena, MSF_Context* msf)
 {
   String8List list; MemoryZeroStruct(&list);
 
@@ -1885,7 +1885,7 @@ msf_get_page_data_nodes(Arena *arena, MSF_Context *msf)
 }
 
 internal U64
-msf_get_save_size(MSF_Context *msf)
+msf_get_save_size(MSF_Context* msf)
 {
 #if 0
   MSF_PageNumber max_pn = msf_find_max_pn(msf.page_data_list, msf.page_size);
@@ -1898,7 +1898,7 @@ msf_get_save_size(MSF_Context *msf)
 }
 
 internal B32
-msf_save(MSF_Context *msf, void *buffer, U64 buffer_size)
+msf_save(MSF_Context* msf, void* buffer, U64 buffer_size)
 {
   ProfBeginFunction();
 
@@ -1932,7 +1932,7 @@ msf_save(MSF_Context *msf, void *buffer, U64 buffer_size)
 }
 
 internal MSF_Error
-msf_save_arena(Arena *arena, MSF_Context *msf, string *data_out)
+msf_save_arena(Arena* arena, MSF_Context* msf, string* data_out)
 {
   ProfBeginFunction();
   MSF_Error err = msf_build(msf);
@@ -2023,7 +2023,7 @@ TODO: explain stream table
 #if 0
 
 internal void
-msf_bytedump_stream(char *file_name, MSF_Context *msf, MSF_StreamNumber sn, U64 start, U64 byte_count)
+msf_bytedump_stream(char* file_name, MSF_Context* msf, MSF_StreamNumber sn, U64 start, U64 byte_count)
 {
   Temp scratch = scratch_begin(0, 0);
   U64 pos = msf_stream_get_pos(msf, sn);
@@ -2037,7 +2037,7 @@ msf_bytedump_stream(char *file_name, MSF_Context *msf, MSF_StreamNumber sn, U64 
 }
 
 internal void
-msf_hexdump_stream(FILE *file, MSF_Context *msf, MSF_StreamNumber sn, U64 start, U64 byte_count, U64 stride)
+msf_hexdump_stream(FILE* file, MSF_Context* msf, MSF_StreamNumber sn, U64 start, U64 byte_count, U64 stride)
 {
   Temp scratch = scratch_begin(0, 0);
   U8 *row_buffer = push_array(scratch.arena, U8, stride);
@@ -2079,7 +2079,7 @@ msf_hexdump_stream(FILE *file, MSF_Context *msf, MSF_StreamNumber sn, U64 start,
 }
 
 internal void
-msf_hexdump_stream_to_file(char *name, MSF_Context *msf, MSF_StreamNumber sn, U64 start, U64 byte_count, U64 stride)
+msf_hexdump_stream_to_file(char* name, MSF_Context* msf, MSF_StreamNumber sn, U64 start, U64 byte_count, U64 stride)
 {
   FILE *f = fopen(name, "w");
   msf_hexdump_stream(f, msf, sn, start, byte_count, stride);

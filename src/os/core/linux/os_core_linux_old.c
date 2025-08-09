@@ -56,7 +56,7 @@ lnx_write_list_to_file_descriptor(int fd, String8List list){
 }
 
 internal void
-lnx_date_time_from_tm(DateTime *out, struct tm *in, U32 msec){
+lnx_date_time_from_tm(DateTime* out, struct tm* in, U32 msec){
   out.msec = msec;
   out.sec  = in.tm_sec;
   out.min  = in.tm_min;
@@ -68,7 +68,7 @@ lnx_date_time_from_tm(DateTime *out, struct tm *in, U32 msec){
 }
 
 internal void
-lnx_tm_from_date_time(struct tm *out, DateTime *in){
+lnx_tm_from_date_time(struct tm* out, DateTime* in){
   out.tm_sec  = in.sec;
   out.tm_min  = in.min;
   out.tm_hour = in.hour;
@@ -78,7 +78,7 @@ lnx_tm_from_date_time(struct tm *out, DateTime *in){
 }
 
 internal void
-lnx_dense_time_from_timespec(DenseTime *out, struct timespec *in){
+lnx_dense_time_from_timespec(DenseTime* out, struct timespec* in){
   struct tm tm_time = {0};
   gmtime_r(&in.tv_sec, &tm_time);
   DateTime date_time = {0};
@@ -87,7 +87,7 @@ lnx_dense_time_from_timespec(DenseTime *out, struct timespec *in){
 }
 
 internal void
-lnx_file_properties_from_stat(FileProperties *out, struct stat *in){
+lnx_file_properties_from_stat(FileProperties* out, struct stat* in){
   MemoryZeroStruct(out);
   out.size = in.st_size;
   lnx_dense_time_from_timespec(&out.created, &in.st_ctim);
@@ -773,7 +773,7 @@ lnx_alloc_entity(LNX_EntityKind kind){
 }
 
 internal void
-lnx_free_entity(LNX_Entity *entity){
+lnx_free_entity(LNX_Entity* entity){
   entity.kind = LNX_EntityKind_Null;
   pthread_mutex_lock(&lnx_mutex);
   SLLStackPush(lnx_entity_free, entity);
@@ -781,7 +781,7 @@ lnx_free_entity(LNX_Entity *entity){
 }
 
 internal void*
-lnx_thread_base(void *ptr){
+lnx_thread_base(void* ptr){
   LNX_Entity *entity = (LNX_Entity*)ptr;
   OS_ThreadFunctionType *func = entity.thread.func;
   void *thread_ptr = entity.thread.ptr;
@@ -856,7 +856,7 @@ os_reserve(U64 size){
 }
 
 internal B32
-os_commit(void *ptr, U64 size){
+os_commit(void* ptr, U64 size){
   mprotect(ptr, size, PROT_READ|PROT_WRITE);
   // TODO(allen): can we test this?
   return(true);
@@ -869,19 +869,19 @@ os_reserve_large(U64 size){
 }
 
 internal B32
-os_commit_large(void *ptr, U64 size){
+os_commit_large(void* ptr, U64 size){
   NotImplemented;
   return 0;
 }
 
 internal void
-os_decommit(void *ptr, U64 size){
+os_decommit(void* ptr, U64 size){
   madvise(ptr, size, MADV_DONTNEED);
   mprotect(ptr, size, PROT_NONE);
 }
 
 internal void
-os_release(void *ptr, U64 size){
+os_release(void* ptr, U64 size){
   munmap(ptr, size);
 }
 
@@ -1005,7 +1005,7 @@ os_environment(void)
 }
 
 internal U64
-os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *out){
+os_string_list_from_system_path(Arena* arena, OS_SystemPath path, String8List* out){
   U64 result = 0;
   
   switch (path){
@@ -1114,14 +1114,14 @@ os_file_close(OS_Handle file)
 }
 
 internal U64
-os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
+os_file_read(OS_Handle file, Rng1U64 rng, void* out_data)
 {
   NotImplemented;
   return 0;
 }
 
 internal U64
-os_file_write(OS_Handle file, Rng1U64 rng, void *data)
+os_file_write(OS_Handle file, Rng1U64 rng, void* data)
 {
   NotImplemented;
 }
@@ -1170,7 +1170,7 @@ os_copy_file_path(string dst, string src)
 }
 
 internal string
-os_full_path_from_path(Arena *arena, string path)
+os_full_path_from_path(Arena* arena, string path)
 {
   // TODO: realpath can be used to resolve full path
   string result = {0};
@@ -1217,7 +1217,7 @@ os_file_map_view_open(OS_Handle map, OS_AccessFlags flags, Rng1U64 range)
 }
 
 internal void
-os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range)
+os_file_map_view_close(OS_Handle map, void* ptr, Rng1U64 range)
 {
   NotImplemented;
 }
@@ -1225,21 +1225,21 @@ os_file_map_view_close(OS_Handle map, void *ptr, Rng1U64 range)
 //- rjf: directory iteration
 
 internal OS_FileIter *
-os_file_iter_begin(Arena *arena, string path, OS_FileIterFlags flags)
+os_file_iter_begin(Arena* arena, string path, OS_FileIterFlags flags)
 {
   NotImplemented;
   return 0;
 }
 
 internal B32
-os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
+os_file_iter_next(Arena* arena, OS_FileIter* iter, OS_FileInfo* info_out)
 {
   NotImplemented;
   return 0;
 }
 
 internal void
-os_file_iter_end(OS_FileIter *iter)
+os_file_iter_end(OS_FileIter* iter)
 {
   NotImplemented;
 }
@@ -1292,7 +1292,7 @@ os_shared_memory_view_open(OS_Handle handle, Rng1U64 range)
 }
 
 internal void
-os_shared_memory_view_close(OS_Handle handle, void *ptr, Rng1U64 range)
+os_shared_memory_view_close(OS_Handle handle, void* ptr, Rng1U64 range)
 {
   NotImplemented;
 }
@@ -1319,7 +1319,7 @@ os_now_universal_time(void){
 }
 
 internal DateTime
-os_universal_time_from_local(DateTime *local_time){
+os_universal_time_from_local(DateTime* local_time){
   // local time -> universal time (using whatever types it takes)
   struct tm local_tm = {0};
   lnx_tm_from_date_time(&local_tm, local_time);
@@ -1335,7 +1335,7 @@ os_universal_time_from_local(DateTime *local_time){
 }
 
 internal DateTime
-os_local_time_from_universal(DateTime *universal_time){
+os_local_time_from_universal(DateTime* universal_time){
   // universal time -> local time (using whatever types it takes)
   struct tm universal_tm = {0};
   lnx_tm_from_date_time(&universal_tm, universal_time);
@@ -1367,7 +1367,7 @@ os_sleep_milliseconds(U32 msec){
 //~ rjf: @os_hooks Child Processes (Implemented Per-OS)
 
 internal B32
-os_launch_process(OS_LaunchOptions *options){
+os_launch_process(OS_LaunchOptions* options){
   // TODO(allen): I want to redo this API before I bother implementing it here
   NotImplemented;
   return(false);
@@ -1377,7 +1377,7 @@ os_launch_process(OS_LaunchOptions *options){
 //~ rjf: @os_hooks Threads (Implemented Per-OS)
 
 internal OS_Handle
-os_thread_launch(OS_ThreadFunctionType *func, void *ptr, void *params){
+os_thread_launch(OS_ThreadFunctionType* func, void* ptr, void* params){
   // entity
   LNX_Entity *entity = lnx_alloc_entity(LNX_EntityKind_Thread);
   entity.reference_mask = 0x3;
@@ -1642,7 +1642,7 @@ os_library_close(OS_Handle lib)
 //~ rjf: @os_hooks Dynamically-Loaded Libraries (Implemented Per-OS)
 
 internal void
-os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, void *ptr){
+os_safe_call(OS_ThreadFunctionType* func, OS_ThreadFunctionType* fail_handler, void* ptr){
   LNX_SafeCallChain chain = {0};
   SLLStackPush(lnx_safe_call_chain, &chain);
   chain.fail_handler = fail_handler;

@@ -4,7 +4,7 @@
 //- rjf: top-level binary parsing
 
 internal ELF_Bin
-elf_bin_from_data(Arena *arena, string data)
+elf_bin_from_data(Arena* arena, string data)
 {
   ELF_Bin bin = {0};
   if (str8_match(str8_prefix(data, elf_magic_string.size), elf_magic_string, 0) &&
@@ -113,7 +113,7 @@ elf_bin_from_data(Arena *arena, string data)
 //- rjf: extra bin info extraction
 
 internal string
-elf_name_from_shdr64(string data, ELF_Bin *bin, ELF_Shdr64 *shdr)
+elf_name_from_shdr64(string data, ELF_Bin* bin, ELF_Shdr64* shdr)
 {
   string sh_names = str8_substr(data, bin.sh_name_range);
   string name = {0};
@@ -122,7 +122,7 @@ elf_name_from_shdr64(string data, ELF_Bin *bin, ELF_Shdr64 *shdr)
 }
 
 internal U64
-elf_base_addr_from_bin(ELF_Bin *bin)
+elf_base_addr_from_bin(ELF_Bin* bin)
 {
   U64 base_vaddr = 0;
   for EachIndex(phdr_idx, bin.phdrs.count)
@@ -138,7 +138,7 @@ elf_base_addr_from_bin(ELF_Bin *bin)
 }
 
 internal ELF_GnuDebugLink
-elf_gnu_debug_link_from_bin(string raw_data, ELF_Bin *bin)
+elf_gnu_debug_link_from_bin(string raw_data, ELF_Bin* bin)
 {
   ELF_GnuDebugLink result = {0};
   for EachIndex(idx, bin.shdrs.count)

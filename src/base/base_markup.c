@@ -9,7 +9,7 @@ set_thread_name(string string)
 }
 
 internal void
-set_thread_namef(char *fmt, ...)
+set_thread_namef(char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;

@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal LNK_LibNode *
-lnk_lib_list_pop_node_atomic(LNK_LibList *list)
+lnk_lib_list_pop_node_atomic(LNK_LibList* list)
 {
   for (;;) {
     LNK_LibNode *expected = list.first;
@@ -15,7 +15,7 @@ lnk_lib_list_pop_node_atomic(LNK_LibList *list)
 }
 
 internal void
-lnk_lib_list_push_node_atomic(LNK_LibList *list, LNK_LibNode *node)
+lnk_lib_list_push_node_atomic(LNK_LibList* list, LNK_LibNode* node)
 {
   for (;;) {
     LNK_LibNode *expected = list.first;
@@ -29,14 +29,14 @@ lnk_lib_list_push_node_atomic(LNK_LibList *list, LNK_LibNode *node)
 }
 
 internal void
-lnk_lib_list_push_node(LNK_LibList *list, LNK_LibNode *node)
+lnk_lib_list_push_node(LNK_LibList* list, LNK_LibNode* node)
 {
   SLLStackPush(list.first, node);
   list.count += 1;
 }
 
 internal LNK_LibList
-lnk_lib_list_reserve(Arena *arena, U64 count)
+lnk_lib_list_reserve(Arena* arena, U64 count)
 {
   LNK_LibList result = {0};
   LNK_LibNode *nodes = push_array(arena, LNK_LibNode, count);
@@ -45,7 +45,7 @@ lnk_lib_list_reserve(Arena *arena, U64 count)
 }
 
 internal LNK_LibNodeArray
-lnk_array_from_lib_list(Arena *arena, LNK_LibList list)
+lnk_array_from_lib_list(Arena* arena, LNK_LibList list)
 {
   LNK_LibNodeArray result = {0};
   result.v = push_array(arena, LNK_LibNode, list.count);
@@ -54,7 +54,7 @@ lnk_array_from_lib_list(Arena *arena, LNK_LibList list)
 }
 
 internal B32
-lnk_lib_from_data(Arena *arena, string data, string path, LNK_Lib *lib_out)
+lnk_lib_from_data(Arena* arena, string data, string path, LNK_Lib* lib_out)
 {
   ProfBeginFunction();
 
@@ -149,13 +149,13 @@ THREAD_POOL_TASK_FUNC(lnk_lib_initer)
 }
 
 internal int
-lnk_lib_node_is_before(void *a, void *b)
+lnk_lib_node_is_before(void* a, void* b)
 {
   return ((LNK_LibNode*)a)->data.input_idx < ((LNK_LibNode*)b)->data.input_idx;
 }
 
 internal LNK_LibNodeArray
-lnk_lib_list_push_parallel(TP_Context *tp, TP_Arena *arena, LNK_LibList *list, String8Array data_arr, String8Array path_arr)
+lnk_lib_list_push_parallel(TP_Context* tp, TP_Arena* arena, LNK_LibList* list, String8Array data_arr, String8Array path_arr)
 {
   Temp scratch = scratch_begin(arena.v, arena.count);
 
@@ -204,7 +204,7 @@ THREAD_POOL_TASK_FUNC(lnk_push_lib_symbols_task)
 }
 
 internal void
-lnk_input_lib_symbols(TP_Context *tp, LNK_SymbolTable *symtab, LNK_LibNodeArray libs)
+lnk_input_lib_symbols(TP_Context* tp, LNK_SymbolTable* symtab, LNK_LibNodeArray libs)
 {
   ProfBeginFunction();
   LNK_SymbolPusher task = {0};

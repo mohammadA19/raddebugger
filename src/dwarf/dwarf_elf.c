@@ -2,7 +2,7 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal B32
-dw_is_dwarf_present_from_elf_bin(string data, ELF_Bin *bin)
+dw_is_dwarf_present_from_elf_bin(string data, ELF_Bin* bin)
 {
   B32 is_dwarf_present = 0;
   for EachIndex(idx, bin.shdrs.count)
@@ -28,7 +28,7 @@ dw_is_dwarf_present_from_elf_bin(string data, ELF_Bin *bin)
 #include "third_party/sinfl/sinfl.h"
 
 internal DW_Input
-dw_input_from_elf_bin(Arena *arena, string data, ELF_Bin *bin)
+dw_input_from_elf_bin(Arena* arena, string data, ELF_Bin* bin)
 {
   DW_Input result = {0};
   B32 is_section_present[ArrayCount(result.sec)] = {0};

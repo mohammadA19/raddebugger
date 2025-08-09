@@ -18,7 +18,7 @@ os_handle_match(OS_Handle a, OS_Handle b)
 }
 
 internal void
-os_handle_list_push(Arena *arena, OS_HandleList *handles, OS_Handle handle)
+os_handle_list_push(Arena* arena, OS_HandleList* handles, OS_Handle handle)
 {
   OS_HandleNode *n = push_array(arena, OS_HandleNode, 1);
   n.v = handle;
@@ -27,7 +27,7 @@ os_handle_list_push(Arena *arena, OS_HandleList *handles, OS_Handle handle)
 }
 
 internal OS_HandleArray
-os_handle_array_from_list(Arena *arena, OS_HandleList *list)
+os_handle_array_from_list(Arena* arena, OS_HandleList* list)
 {
   OS_HandleArray result = {0};
   result.count = list.count;
@@ -44,7 +44,7 @@ os_handle_array_from_list(Arena *arena, OS_HandleList *list)
 //~ rjf: Command Line Argc/Argv Helper (Helper, Implemented Once)
 
 internal String8List
-os_string_list_from_argcv(Arena *arena, int argc, char **argv)
+os_string_list_from_argcv(Arena* arena, int argc, char** argv)
 {
   String8List result = {0};
   for (int i = 0; i < argc; i += 1)
@@ -59,7 +59,7 @@ os_string_list_from_argcv(Arena *arena, int argc, char **argv)
 //~ rjf: Filesystem Helpers (Helpers, Implemented Once)
 
 internal string
-os_data_from_file_path(Arena *arena, string path)
+os_data_from_file_path(Arena* arena, string path)
 {
   OS_Handle file = os_file_open(OS_AccessFlag_Read|OS_AccessFlag_ShareRead, path);
   FileProperties props = os_properties_from_file(file);
@@ -164,7 +164,7 @@ os_file_id_compare(OS_FileID a, OS_FileID b)
 }
 
 internal string
-os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
+os_string_from_file_range(Arena* arena, OS_Handle file, Rng1U64 range)
 {
   U64 pre_pos = arena_pos(arena);
   string result;
@@ -180,7 +180,7 @@ os_string_from_file_range(Arena *arena, OS_Handle file, Rng1U64 range)
 }
 
 internal string
-os_file_read_cstring(Arena *arena, OS_Handle file, U64 off)
+os_file_read_cstring(Arena* arena, OS_Handle file, U64 off)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List block_list = {0};
@@ -275,7 +275,7 @@ os_cmd_line_launch(string string)
 }
 
 internal OS_Handle
-os_cmd_line_launchf(char *fmt, ...)
+os_cmd_line_launchf(char* fmt, ...)
 {
   Temp scratch = scratch_begin(0, 0);
   va_list args;

@@ -38,7 +38,7 @@ lnk_string_from_error_mode(LNK_ErrorMode mode)
 }
 
 internal void
-lnk_errorfv(LNK_ErrorCode code, char *fmt, va_list args)
+lnk_errorfv(LNK_ErrorCode code, char* fmt, va_list args)
 {
   if (g_error_mode_arr[code] == LNK_ErrorMode_Ignore) {
     return;
@@ -59,7 +59,7 @@ lnk_errorfv(LNK_ErrorCode code, char *fmt, va_list args)
 }
 
 internal void
-lnk_error(LNK_ErrorCode code, char *fmt, ...)
+lnk_error(LNK_ErrorCode code, char* fmt, ...)
 {
   va_list args;
   va_start(args, fmt);
@@ -68,7 +68,7 @@ lnk_error(LNK_ErrorCode code, char *fmt, ...)
 }
 
 internal void
-lnk_error_with_loc_fv(LNK_ErrorCode code, string obj_path, string lib_path, char *fmt, va_list args)
+lnk_error_with_loc_fv(LNK_ErrorCode code, string obj_path, string lib_path, char* fmt, va_list args)
 {
   Temp scratch = scratch_begin(0, 0);
   string text = push_str8fv(scratch.arena, fmt, args);
@@ -85,7 +85,7 @@ lnk_error_with_loc_fv(LNK_ErrorCode code, string obj_path, string lib_path, char
 }
 
 internal void
-lnk_error_with_loc(LNK_ErrorCode code, string obj_path, string lib_path, char *fmt, ...)
+lnk_error_with_loc(LNK_ErrorCode code, string obj_path, string lib_path, char* fmt, ...)
 {
   va_list args; va_start(args, fmt);
   lnk_error_with_loc_fv(code, obj_path, lib_path, fmt, args);
@@ -93,7 +93,7 @@ lnk_error_with_loc(LNK_ErrorCode code, string obj_path, string lib_path, char *f
 }
 
 internal void
-lnk_supplement_error(char *fmt, ...)
+lnk_supplement_error(char* fmt, ...)
 {
   va_list args;
   va_start(args, fmt);
@@ -130,7 +130,7 @@ lnk_get_error_code_status(LNK_ErrorCode code)
 }
 
 internal void
-lnk_internal_error(LNK_InternalError code, char *file, int line, char *fmt, ...)
+lnk_internal_error(LNK_InternalError code, char* file, int line, char* fmt, ...)
 {
   Temp scratch = scratch_begin(0,0);
   va_list args;

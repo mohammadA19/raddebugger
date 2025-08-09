@@ -18,7 +18,7 @@ internal U64
 mscrt_parse_func_info(Arena              *arena,
                       string             raw_data,
                       U64                 section_count,
-                      COFF_SectionHeader *sections,
+                      COFF_SectionHeader* sections,
                       U64                 off,
                       MSCRT_FuncInfo     *func_info)
 {
@@ -100,7 +100,7 @@ mscrt_parse_func_info(Arena              *arena,
 ////////////////////////////////
 
 internal U64
-mscrt_v4_parse_u32(string raw_data, U64 offset, U32 *uint_out)
+mscrt_v4_parse_u32(string raw_data, U64 offset, U32* uint_out)
 {
   U64 cursor = offset;
   
@@ -138,13 +138,13 @@ mscrt_v4_parse_u32(string raw_data, U64 offset, U32 *uint_out)
 }
 
 internal U64
-mscrt_v4_parse_s32(string raw_data, U64 offset, S32 *int_out)
+mscrt_v4_parse_s32(string raw_data, U64 offset, S32* int_out)
 {
   return str8_deserial_read_struct(raw_data, offset, int_out);
 }
 
 internal U64
-mscrt_parse_handler_type_v4(string raw_data, U64 offset, U64 func_voff, MSCRT_EhHandlerTypeV4 *handler)
+mscrt_parse_handler_type_v4(string raw_data, U64 offset, U64 func_voff, MSCRT_EhHandlerTypeV4* handler)
 {
   U64 cursor = offset;
   
@@ -209,7 +209,7 @@ mscrt_parse_handler_type_v4_array(Arena                      *arena,
                                   string                     raw_data,
                                   U64                         offset,
                                   U64                         func_voff,
-                                  MSCRT_EhHandlerTypeV4Array *array_out)
+                                  MSCRT_EhHandlerTypeV4Array* array_out)
 {
   U64 cursor = offset;
   U32 count  = 0;
@@ -231,7 +231,7 @@ mscrt_parse_handler_type_v4_array(Arena                      *arena,
 }
 
 internal U64
-mscrt_parse_unwind_v4_entry(string raw_data, U64 offset, MSCRT_UnwindEntryV4 *entry_out)
+mscrt_parse_unwind_v4_entry(string raw_data, U64 offset, MSCRT_UnwindEntryV4* entry_out)
 {
   U64 cursor = offset;
   
@@ -263,7 +263,7 @@ mscrt_parse_unwind_v4_entry(string raw_data, U64 offset, MSCRT_UnwindEntryV4 *en
 }
 
 internal U64
-mscrt_parse_unwind_map_v4(Arena *arena, string raw_data, U64 off, MSCRT_UnwindMapV4 *map_out)
+mscrt_parse_unwind_map_v4(Arena* arena, string raw_data, U64 off, MSCRT_UnwindMapV4* map_out)
 {
   U64 cursor = off;
   cursor += mscrt_v4_parse_u32(raw_data, cursor, &map_out.count);
@@ -282,7 +282,7 @@ mscrt_parse_try_block_map_array_v4(Arena                   *arena,
                                    U64                      section_count,
                                    COFF_SectionHeader      *sections,
                                    U64                      func_voff,
-                                   MSCRT_TryBlockMapV4Array *map_out)
+                                   MSCRT_TryBlockMapV4Array* map_out)
 {
   U64 cursor = off;
   
@@ -315,7 +315,7 @@ mscrt_parse_ip2state_map_v4(Arena              *arena,
                             string             raw_data,
                             U64                 off,
                             U64                 func_voff,
-                            MSCRT_IP2State32V4 *ip2state_map_out)
+                            MSCRT_IP2State32V4* ip2state_map_out)
 {
   U64 cursor = off;
   
@@ -353,7 +353,7 @@ mscrt_parse_func_info_v4(Arena                     *arena,
                          COFF_SectionHeader     *sections,
                          U64                     off,
                          U64                     func_voff,
-                         MSCRT_ParsedFuncInfoV4 *func_info_out)
+                         MSCRT_ParsedFuncInfoV4* func_info_out)
 {
   U64 cursor = off;
   
@@ -414,7 +414,7 @@ internal Rng1U64List
 mscrt_catch_blocks_from_data_x8664(Arena              *arena,
                                    string             raw_data,
                                    U64                 section_count,
-                                   COFF_SectionHeader *sections,
+                                   COFF_SectionHeader* sections,
                                    Rng1U64             except_frange)
 {
   Temp scratch = scratch_begin(&arena, 1);
@@ -503,7 +503,7 @@ mscrt_catch_blocks_from_data_x8664(Arena              *arena,
 //~ rjf: Enum -> String
 
 internal string
-mscrt_string_from_eh_adjectives(Arena *arena, MSCRT_EhHandlerTypeFlags adjectives)
+mscrt_string_from_eh_adjectives(Arena* arena, MSCRT_EhHandlerTypeFlags adjectives)
 {
   Temp scratch = scratch_begin(&arena, 1);
   String8List adj_list = {0};

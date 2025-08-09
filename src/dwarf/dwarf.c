@@ -390,7 +390,7 @@ dw_pick_default_lower_bound(DW_Language lang)
 //~ rjf: String <=> Enum
 
 internal string
-dw_string_from_expr_op(Arena *arena, DW_Version ver, DW_Ext ext, DW_ExprOp op)
+dw_string_from_expr_op(Arena* arena, DW_Version ver, DW_Ext ext, DW_ExprOp op)
 {
   string result = {0};
   
@@ -431,7 +431,7 @@ dw_string_from_expr_op(Arena *arena, DW_Version ver, DW_Ext ext, DW_ExprOp op)
 }
 
 internal string
-dw_string_from_tag_kind(Arena *arena, DW_TagKind kind)
+dw_string_from_tag_kind(Arena* arena, DW_TagKind kind)
 {
   switch (kind) {
     case DW_TagKind_Null: return ("Null");
@@ -445,7 +445,7 @@ dw_string_from_tag_kind(Arena *arena, DW_TagKind kind)
 }
 
 internal string
-dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKind kind)
+dw_string_from_attrib_kind(Arena* arena, DW_Version ver, DW_Ext ext, DW_AttribKind kind)
 {
 #define X(_N,...) case DW_AttribKind_##_N:{result = (Stringify(_N));}break;
   string result = {0};
@@ -504,7 +504,7 @@ dw_string_from_attrib_kind(Arena *arena, DW_Version ver, DW_Ext ext, DW_AttribKi
 }
 
 internal string
-dw_string_from_form_kind(Arena *arena, DW_Version ver, DW_FormKind kind)
+dw_string_from_form_kind(Arena* arena, DW_Version ver, DW_FormKind kind)
 {
 #define X(_N,...) case DW_Form_##_N: return (Stringify(_N));
   switch (ver) {
@@ -532,7 +532,7 @@ dw_string_from_form_kind(Arena *arena, DW_Version ver, DW_FormKind kind)
 }
 
 internal string
-dw_string_from_language(Arena *arena, DW_Language kind)
+dw_string_from_language(Arena* arena, DW_Language kind)
 {
   switch (kind) {
 #define X(_N,_ID) case DW_Language_##_N: return (Stringify(_N));
@@ -543,7 +543,7 @@ dw_string_from_language(Arena *arena, DW_Language kind)
 }
 
 internal string
-dw_string_from_inl(Arena *arena, DW_InlKind kind)
+dw_string_from_inl(Arena* arena, DW_InlKind kind)
 {
   switch (kind) {
 #define X(_N,_ID) case _ID: return (Stringify(_N));
@@ -554,7 +554,7 @@ dw_string_from_inl(Arena *arena, DW_InlKind kind)
 }
 
 internal string
-dw_string_from_access_kind(Arena *arena, DW_AccessKind kind)
+dw_string_from_access_kind(Arena* arena, DW_AccessKind kind)
 {
   switch (kind) {
 #define X(_N,_ID) case _ID: return (Stringify(_N));
@@ -565,7 +565,7 @@ dw_string_from_access_kind(Arena *arena, DW_AccessKind kind)
 }
 
 internal string
-dw_string_from_calling_convetion(Arena *arena, DW_CallingConventionKind kind)
+dw_string_from_calling_convetion(Arena* arena, DW_CallingConventionKind kind)
 {
   switch (kind) {
 #define X(_N,_ID) case _ID: return (Stringify(_N));
@@ -576,7 +576,7 @@ dw_string_from_calling_convetion(Arena *arena, DW_CallingConventionKind kind)
 }
 
 internal string
-dw_string_from_attrib_type_encoding(Arena *arena, DW_ATE kind)
+dw_string_from_attrib_type_encoding(Arena* arena, DW_ATE kind)
 {
   switch (kind) {
 #define X(_N,_ID) case _ID: return (Stringify(_N));
@@ -587,7 +587,7 @@ dw_string_from_attrib_type_encoding(Arena *arena, DW_ATE kind)
 }
 
 internal string
-dw_string_from_std_opcode(Arena *arena, DW_StdOpcode kind)
+dw_string_from_std_opcode(Arena* arena, DW_StdOpcode kind)
 {
   switch (kind) {
 #define X(_N,_ID) case DW_StdOpcode_##_N: return (Stringify(_N));
@@ -598,7 +598,7 @@ dw_string_from_std_opcode(Arena *arena, DW_StdOpcode kind)
 }
 
 internal string
-dw_string_from_ext_opcode(Arena *arena, DW_ExtOpcode kind)
+dw_string_from_ext_opcode(Arena* arena, DW_ExtOpcode kind)
 {
   switch (kind) {
 #define X(_N,_ID) case DW_ExtOpcode_##_N: return (Stringify(_N));
@@ -610,28 +610,28 @@ dw_string_from_ext_opcode(Arena *arena, DW_ExtOpcode kind)
 }
 
 internal string
-dw_string_from_loc_list_entry_kind(Arena *arena, DW_LLE kind)
+dw_string_from_loc_list_entry_kind(Arena* arena, DW_LLE kind)
 {
   NotImplemented;
   return str8_zero();
 }
 
 internal string
-dw_string_from_section_kind(Arena *arena, DW_SectionKind kind)
+dw_string_from_section_kind(Arena* arena, DW_SectionKind kind)
 {
   NotImplemented;
   return str8_zero();
 }
 
 internal string
-dw_string_from_rng_list_entry_kind(Arena *arena, DW_RLE kind)
+dw_string_from_rng_list_entry_kind(Arena* arena, DW_RLE kind)
 {
   NotImplemented;
   return str8_zero();
 }
 
 internal string
-dw_string_from_register(Arena *arena, Arch arch, U64 reg_id)
+dw_string_from_register(Arena* arena, Arch arch, U64 reg_id)
 {
   string reg_str = str8_zero();
   switch (arch) {

@@ -2,14 +2,14 @@
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
 internal VoidProc *
-r_ogl_os_load_procedure(char *name)
+r_ogl_os_load_procedure(char* name)
 {
   VoidProc *result = (VoidProc *)glXGetProcAddressARB((U8 *)name);
   return result;
 }
 
 internal void
-r_ogl_os_init(CmdLine *cmdln)
+r_ogl_os_init(CmdLine* cmdln)
 {
   //- rjf: require GLX 1.3+
   int glx_version_major = 0;

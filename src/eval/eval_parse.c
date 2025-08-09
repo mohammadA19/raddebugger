@@ -31,7 +31,7 @@ e_token_zero(void)
 }
 
 internal void
-e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_Token *token)
+e_token_chunk_list_push(Arena* arena, E_TokenChunkList* list, U64 chunk_size, E_Token* token)
 {
   E_TokenChunkNode *node = list.last;
   if (node == 0 || node.count >= node.cap)
@@ -48,7 +48,7 @@ e_token_chunk_list_push(Arena *arena, E_TokenChunkList *list, U64 chunk_size, E_
 }
 
 internal E_TokenArray
-e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list)
+e_token_array_from_chunk_list(Arena* arena, E_TokenChunkList* list)
 {
   E_TokenArray array = {0};
   array.count = list.total_count;
@@ -63,7 +63,7 @@ e_token_array_from_chunk_list(Arena *arena, E_TokenChunkList *list)
 }
 
 internal E_TokenArray
-e_token_array_from_text(Arena *arena, string text)
+e_token_array_from_text(Arena* arena, string text)
 {
   Temp scratch = scratch_begin(&arena, 1);
   
@@ -290,7 +290,7 @@ e_token_array_from_text(Arena *arena, string text)
 }
 
 internal E_TokenArray
-e_token_array_make_first_opl(E_Token *first, E_Token *opl)
+e_token_array_make_first_opl(E_Token* first, E_Token* opl)
 {
   E_TokenArray array = {first, (U64)(opl-first)};
   return array;
@@ -300,7 +300,7 @@ e_token_array_make_first_opl(E_Token *first, E_Token *opl)
 //~ rjf: Expression Tree Building Functions
 
 internal E_Expr *
-e_push_expr(Arena *arena, E_ExprKind kind, Rng1U64 range)
+e_push_expr(Arena* arena, E_ExprKind kind, Rng1U64 range)
 {
   E_Expr *e = push_array(arena, E_Expr, 1);
   e.first = e.last = e.next = e.prev = e.ref = &e_expr_nil;
@@ -310,25 +310,25 @@ e_push_expr(Arena *arena, E_ExprKind kind, Rng1U64 range)
 }
 
 internal void
-e_expr_insert_child(E_Expr *parent, E_Expr *prev, E_Expr *child)
+e_expr_insert_child(E_Expr* parent, E_Expr* prev, E_Expr* child)
 {
   DLLInsert_NPZ(&e_expr_nil, parent.first, parent.last, prev, child, next, prev);
 }
 
 internal void
-e_expr_push_child(E_Expr *parent, E_Expr *child)
+e_expr_push_child(E_Expr* parent, E_Expr* child)
 {
   DLLPushBack_NPZ(&e_expr_nil, parent.first, parent.last, child, next, prev);
 }
 
 internal void
-e_expr_remove_child(E_Expr *parent, E_Expr *child)
+e_expr_remove_child(E_Expr* parent, E_Expr* child)
 {
   DLLRemove_NPZ(&e_expr_nil, parent.first, parent.last, child, next, prev);
 }
 
 internal E_Expr *
-e_expr_ref(Arena *arena, E_Expr *ref)
+e_expr_ref(Arena* arena, E_Expr* ref)
 {
   E_Expr *expr = e_push_expr(arena, E_ExprKind_Ref, ref.range);
   expr.ref = ref;
@@ -336,7 +336,7 @@ e_expr_ref(Arena *arena, E_Expr *ref)
 }
 
 internal E_Expr *
-e_expr_copy(Arena *arena, E_Expr *src)
+e_expr_copy(Arena* arena, E_Expr* src)
 {
   E_Expr *result = &e_expr_nil;
   Temp scratch = scratch_begin(&arena, 1);
@@ -411,7 +411,7 @@ e_expr_copy(Arena *arena, E_Expr *src)
 }
 
 internal void
-e_expr_list_push(Arena *arena, E_ExprList *list, E_Expr *expr)
+e_expr_list_push(Arena* arena, E_ExprList* list, E_Expr* expr)
 {
   E_ExprNode *n = push_array(arena, E_ExprNode, 1);
   n.v = expr;
@@ -423,7 +423,7 @@ e_expr_list_push(Arena *arena, E_ExprList *list, E_Expr *expr)
 //~ rjf: Expression Tree -> String Conversions
 
 internal void
-e_append_strings_from_expr(Arena *arena, E_Expr *expr, string parent_expr_string, String8List *out)
+e_append_strings_from_expr(Arena* arena, E_Expr* expr, string parent_expr_string, String8List* out)
 {
   switch (expr.kind)
   {
@@ -514,7 +514,7 @@ e_append_strings_from_expr(Arena *arena, E_Expr *expr, string parent_expr_string
 }
 
 internal string
-e_string_from_expr(Arena *arena, E_Expr *expr, string parent_expr_string)
+e_string_from_expr(Arena* arena, E_Expr* expr, string parent_expr_string)
 {
   String8List strings = {0};
   e_append_strings_from_expr(arena, expr, parent_expr_string, &strings);
@@ -599,7 +599,7 @@ e_leaf_type_key_from_name(string name)
 }
 
 internal E_TypeKey
-e_type_key_from_expr(E_Expr *expr)
+e_type_key_from_expr(E_Expr* expr)
 {
   E_TypeKey result = zero_struct;
   E_ExprKind kind = expr.kind;
@@ -631,7 +631,7 @@ e_type_key_from_expr(E_Expr *expr)
 }
 
 internal E_Parse
-e_push_type_parse_from_text_tokens(Arena *arena, string text, E_TokenArray tokens)
+e_push_type_parse_from_text_tokens(Arena* arena, string text, E_TokenArray tokens)
 {
   E_Parse parse = {tokens, 0, &e_expr_nil, &e_expr_nil};
   E_Token *token_it = tokens.v;
@@ -722,7 +722,7 @@ e_push_type_parse_from_text_tokens(Arena *arena, string text, E_TokenArray token
 }
 
 internal E_Parse
-e_push_parse_from_string_tokens__prec(Arena *arena, string text, E_TokenArray tokens, S64 max_precedence, U64 max_chain_count)
+e_push_parse_from_string_tokens__prec(Arena* arena, string text, E_TokenArray tokens, S64 max_precedence, U64 max_chain_count)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -1487,7 +1487,7 @@ e_push_parse_from_string_tokens__prec(Arena *arena, string text, E_TokenArray to
 }
 
 internal E_Parse
-e_push_parse_from_string(Arena *arena, string text)
+e_push_parse_from_string(Arena* arena, string text)
 {
   Temp scratch = scratch_begin(&arena, 1);
   E_TokenArray tokens = e_token_array_from_text(scratch.arena, text);

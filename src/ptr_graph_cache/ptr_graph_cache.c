@@ -74,7 +74,7 @@ ptg_scope_open(void)
 }
 
 internal void
-ptg_scope_close(PTG_Scope *scope)
+ptg_scope_close(PTG_Scope* scope)
 {
   for (PTG_Touch *touch = scope.top_touch, *next = 0; touch != 0; touch = next)
   {
@@ -86,7 +86,7 @@ ptg_scope_close(PTG_Scope *scope)
 }
 
 internal void
-ptg_scope_touch_node__stripe_r_guarded(PTG_Scope *scope, PTG_GraphNode *node)
+ptg_scope_touch_node__stripe_r_guarded(PTG_Scope* scope, PTG_GraphNode* node)
 {
   PTG_Touch *touch = ptg_tctx.free_touch;
   ins_atomic_u64_inc_eval(&node.scope_ref_count);
@@ -109,7 +109,7 @@ ptg_scope_touch_node__stripe_r_guarded(PTG_Scope *scope, PTG_GraphNode *node)
 //~ rjf: Cache Lookups
 
 internal PTG_Graph *
-ptg_graph_from_key(PTG_Scope *scope, PTG_Key *key)
+ptg_graph_from_key(PTG_Scope* scope, PTG_Key* key)
 {
   PTG_Graph *g = 0;
   return g;
@@ -119,7 +119,7 @@ ptg_graph_from_key(PTG_Scope *scope, PTG_Key *key)
 //~ rjf: Transfer Threads
 
 internal B32
-ptg_u2b_enqueue_req(PTG_Key *key, U64 endt_us)
+ptg_u2b_enqueue_req(PTG_Key* key, U64 endt_us)
 {
   B32 good = 0;
   OS_MutexScope(ptg_shared.u2b_ring_mutex) for (;;)
@@ -146,7 +146,7 @@ ptg_u2b_enqueue_req(PTG_Key *key, U64 endt_us)
 }
 
 internal void
-ptg_u2b_dequeue_req(PTG_Key *key_out)
+ptg_u2b_dequeue_req(PTG_Key* key_out)
 {
   OS_MutexScope(ptg_shared.u2b_ring_mutex) for (;;)
   {
@@ -162,7 +162,7 @@ ptg_u2b_dequeue_req(PTG_Key *key_out)
 }
 
 internal void
-ptg_builder_thread__entry_point(void *p)
+ptg_builder_thread__entry_point(void* p)
 {
   for (;;)
   {
@@ -222,7 +222,7 @@ ptg_builder_thread__entry_point(void *p)
 //~ rjf: Evictor Threads
 
 internal void
-ptg_evictor_thread__entry_point(void *p)
+ptg_evictor_thread__entry_point(void* p)
 {
   for (;;)
   {

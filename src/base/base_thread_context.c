@@ -10,7 +10,7 @@ C_LINKAGE thread_static TCTX* tctx_thread_local = 0;
 #endif
 
 internal void
-tctx_init_and_equip(TCTX *tctx)
+tctx_init_and_equip(TCTX* tctx)
 {
   MemoryZeroStruct(tctx);
   Arena **arena_ptr = tctx.arenas;
@@ -37,7 +37,7 @@ tctx_get_equipped(void)
 }
 
 internal Arena *
-tctx_get_scratch(Arena **conflicts, U64 count)
+tctx_get_scratch(Arena** conflicts, U64 count)
 {
   TCTX *tctx = tctx_get_equipped();
   Arena *result = 0;
@@ -81,7 +81,7 @@ tctx_get_thread_name(void)
 }
 
 internal void
-tctx_write_srcloc(char *file_name, U64 line_number)
+tctx_write_srcloc(char* file_name, U64 line_number)
 {
   TCTX *tctx = tctx_get_equipped();
   tctx.file_name = file_name;
@@ -89,7 +89,7 @@ tctx_write_srcloc(char *file_name, U64 line_number)
 }
 
 internal void
-tctx_read_srcloc(char **file_name, U64 *line_number)
+tctx_read_srcloc(char** file_name, U64* line_number)
 {
   TCTX *tctx = tctx_get_equipped();
   *file_name = tctx.file_name;

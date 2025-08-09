@@ -45,7 +45,7 @@ dr_hash_from_string(string string)
 //~ rjf: Fancy String Type Functions
 
 internal void
-dr_fstrs_push(Arena *arena, DR_FStrList *list, DR_FStr *str)
+dr_fstrs_push(Arena* arena, DR_FStrList* list, DR_FStr* str)
 {
   DR_FStrNode *n = push_array_no_zero(arena, DR_FStrNode, 1);
   MemoryCopyStruct(&n.v, str);
@@ -55,7 +55,7 @@ dr_fstrs_push(Arena *arena, DR_FStrList *list, DR_FStr *str)
 }
 
 internal void
-dr_fstrs_push_new_(Arena *arena, DR_FStrList *list, DR_FStrParams *params, DR_FStrParams *overrides, string string)
+dr_fstrs_push_new_(Arena* arena, DR_FStrList* list, DR_FStrParams* params, DR_FStrParams* overrides, string string)
 {
   DR_FStr fstr = {string, *params};
   if (!fnt_tag_match(fnt_tag_zero(), overrides.font))
@@ -86,7 +86,7 @@ dr_fstrs_push_new_(Arena *arena, DR_FStrList *list, DR_FStrParams *params, DR_FS
 }
 
 internal void
-dr_fstrs_concat_in_place(DR_FStrList *dst, DR_FStrList *to_push)
+dr_fstrs_concat_in_place(DR_FStrList* dst, DR_FStrList* to_push)
 {
   if (dst.last != 0 && to_push.first != 0)
   {
@@ -103,7 +103,7 @@ dr_fstrs_concat_in_place(DR_FStrList *dst, DR_FStrList *to_push)
 }
 
 internal DR_FStrList
-dr_fstrs_copy(Arena *arena, DR_FStrList *src)
+dr_fstrs_copy(Arena* arena, DR_FStrList* src)
 {
   DR_FStrList dst = {0};
   for (DR_FStrNode *src_n = src.first; src_n != 0; src_n = src_n.next)
@@ -116,7 +116,7 @@ dr_fstrs_copy(Arena *arena, DR_FStrList *src)
 }
 
 internal string
-dr_string_from_fstrs(Arena *arena, DR_FStrList *list)
+dr_string_from_fstrs(Arena* arena, DR_FStrList* list)
 {
   string result = {0};
   {
@@ -137,7 +137,7 @@ dr_string_from_fstrs(Arena *arena, DR_FStrList *list)
 }
 
 internal FuzzyMatchRangeList
-dr_fuzzy_match_find_from_fstrs(Arena *arena, DR_FStrList *fstrs, string needle)
+dr_fuzzy_match_find_from_fstrs(Arena* arena, DR_FStrList* fstrs, string needle)
 {
   Temp scratch = scratch_begin(&arena, 1);
   string fstrs_string = {0};
@@ -163,7 +163,7 @@ dr_fuzzy_match_find_from_fstrs(Arena *arena, DR_FStrList *fstrs, string needle)
 }
 
 internal DR_FRunList
-dr_fruns_from_fstrs(Arena *arena, F32 tab_size_px, DR_FStrList *strs)
+dr_fruns_from_fstrs(Arena* arena, F32 tab_size_px, DR_FStrList* strs)
 {
   ProfBeginFunction();
   DR_FRunList run_list = {0};
@@ -187,7 +187,7 @@ dr_fruns_from_fstrs(Arena *arena, F32 tab_size_px, DR_FStrList *strs)
 }
 
 internal Vec2F32
-dr_dim_from_fstrs(F32 tab_size_px, DR_FStrList *fstrs)
+dr_dim_from_fstrs(F32 tab_size_px, DR_FStrList* fstrs)
 {
   Temp scratch = scratch_begin(0, 0);
   DR_FRunList fruns = dr_fruns_from_fstrs(scratch.arena, tab_size_px, fstrs);
@@ -218,7 +218,7 @@ dr_begin_frame(FNT_Tag icon_font)
 }
 
 internal void
-dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket *bucket)
+dr_submit_bucket(OS_Handle os_window, R_Handle r_window, DR_Bucket* bucket)
 {
   r_window_submit(os_window, r_window, &bucket.passes);
 }
@@ -237,7 +237,7 @@ dr_bucket_make(void)
 }
 
 internal void
-dr_push_bucket(DR_Bucket *bucket)
+dr_push_bucket(DR_Bucket* bucket)
 {
   DR_BucketSelectionNode *node = dr_thread_ctx.free_bucket_selection;
   if (node)
@@ -478,7 +478,7 @@ dr_mesh(R_Handle mesh_vertices, R_Handle mesh_indices, R_GeoTopologyKind mesh_ge
 //- rjf: collating one pre-prepped bucket into parent bucket
 
 internal void
-dr_sub_bucket(DR_Bucket *bucket)
+dr_sub_bucket(DR_Bucket* bucket)
 {
   Arena *arena = dr_thread_ctx.arena;
   DR_Bucket *src = bucket;
@@ -527,7 +527,7 @@ dr_sub_bucket(DR_Bucket *bucket)
 //- rjf: text
 
 internal void
-dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run trailer_run)
+dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList* list, F32 max_x, FNT_Run trailer_run)
 {
   ProfBeginFunction();
   
@@ -630,7 +630,7 @@ dr_truncated_fancy_run_list(Vec2F32 p, DR_FRunList *list, F32 max_x, FNT_Run tra
 }
 
 internal void
-dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FRunList *list, F32 max_x, FuzzyMatchRangeList *ranges, Vec4F32 color)
+dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FRunList* list, F32 max_x, FuzzyMatchRangeList* ranges, Vec4F32 color)
 {
   for (FuzzyMatchRangeNode *match_n = ranges.first; match_n != 0; match_n = match_n.next)
   {

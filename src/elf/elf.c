@@ -115,7 +115,7 @@ elf_chdr64_from_chdr32(ELF_Chdr32 chdr32)
 ////////////////////////////////
 
 internal string
-elf_string_from_class(Arena *arena, ELF_Class v)
+elf_string_from_class(Arena* arena, ELF_Class v)
 {
   switch (v) {
   case ELF_Class_None: return ("None");

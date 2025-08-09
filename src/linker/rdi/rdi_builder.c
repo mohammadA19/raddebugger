@@ -171,26 +171,26 @@ rdib_pointer_size_t_type_from_data_model(RDIB_DataModel data_model)
 ////////////////////////////////
 
 internal void
-rdib_udt_member_list_push_node(RDIB_UDTMemberList *list, RDIB_UDTMember *node)
+rdib_udt_member_list_push_node(RDIB_UDTMemberList* list, RDIB_UDTMember* node)
 {
   SLLQueuePushCount(list, node);
 }
 
 internal void
-rdib_udt_member_list_concat_in_place(RDIB_UDTMemberList *list, RDIB_UDTMemberList *to_concat)
+rdib_udt_member_list_concat_in_place(RDIB_UDTMemberList* list, RDIB_UDTMemberList* to_concat)
 {
   SLLConcatInPlace(list, to_concat);
 }
 
 internal void
-rdib_line_table_push_fragment_node(RDIB_LineTable *list, RDIB_LineTableFragment *n)
+rdib_line_table_push_fragment_node(RDIB_LineTable* list, RDIB_LineTableFragment* n)
 {
   SLLQueuePush_N(list.first, list.last, n, next_line_table);
   ++list.count;
 }
 
 internal RDIB_LineTableFragment *
-rdib_line_table_push(Arena *arena, RDIB_LineTable *list)
+rdib_line_table_push(Arena* arena, RDIB_LineTable* list)
 {
   RDIB_LineTableFragment *n = push_array(arena, RDIB_LineTableFragment, 1);
   rdib_line_table_push_fragment_node(list, n);
@@ -200,49 +200,49 @@ rdib_line_table_push(Arena *arena, RDIB_LineTable *list)
 ////////////////////////////////
 
 internal RDIB_LineTableFragment *
-rdib_line_table_fragment_chunk_list_push(Arena *arena, RDIB_LineTableFragmentChunkList *list, U64 cap)
+rdib_line_table_fragment_chunk_list_push(Arena* arena, RDIB_LineTableFragmentChunkList* list, U64 cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_LineTableFragment);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_Unit *
-rdib_unit_chunk_list_push(Arena *arena, RDIB_UnitChunkList *list, U64 cap)
+rdib_unit_chunk_list_push(Arena* arena, RDIB_UnitChunkList* list, U64 cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_Unit);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_Scope *
-rdib_scope_chunk_list_push(Arena *arena, RDIB_ScopeChunkList *list, U64 cap)
+rdib_scope_chunk_list_push(Arena* arena, RDIB_ScopeChunkList* list, U64 cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_Scope);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_Procedure *
-rdib_procedure_chunk_list_push(Arena *arena, RDIB_ProcedureChunkList *list, U64 cap)
+rdib_procedure_chunk_list_push(Arena* arena, RDIB_ProcedureChunkList* list, U64 cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_Procedure);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_Variable *
-rdib_variable_chunk_list_push(Arena *arena, RDIB_VariableChunkList *list, U64 cap)
+rdib_variable_chunk_list_push(Arena* arena, RDIB_VariableChunkList* list, U64 cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_Variable);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_LineTable *
-rdib_line_table_chunk_list_push(Arena *arena, RDIB_LineTableChunkList *list, U64 cap)
+rdib_line_table_chunk_list_push(Arena* arena, RDIB_LineTableChunkList* list, U64 cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_LineTable);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_Type *
-rdib_type_chunk_list_push(Arena *arena, RDIB_TypeChunkList *list, U64 cap)
+rdib_type_chunk_list_push(Arena* arena, RDIB_TypeChunkList* list, U64 cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_Type);
   RDIB_Type *type = SLLChunkListLastItem(list);
@@ -251,91 +251,91 @@ rdib_type_chunk_list_push(Arena *arena, RDIB_TypeChunkList *list, U64 cap)
 }
 
 internal RDIB_UDTMember *
-rdib_udt_member_chunk_list_push(Arena *arena, RDIB_UDTMemberChunkList *list, U64 cap)
+rdib_udt_member_chunk_list_push(Arena* arena, RDIB_UDTMemberChunkList* list, U64 cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_UDTMember);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_SourceFile *
-rdib_source_file_chunk_list_push(Arena *arena, RDIB_SourceFileChunkList *list, U64 cap)
+rdib_source_file_chunk_list_push(Arena* arena, RDIB_SourceFileChunkList* list, U64 cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_SourceFile);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_InlineSite *
-rdib_inline_site_chunk_list_push(Arena *arena, RDIB_InlineSiteChunkList *list, U64 cap)
+rdib_inline_site_chunk_list_push(Arena* arena, RDIB_InlineSiteChunkList* list, U64 cap)
 {
   SLLChunkListPush(arena, list, cap, RDIB_InlineSite);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_Unit *
-rdib_unit_chunk_list_push_zero(Arena *arena, RDIB_UnitChunkList *list, U64 cap)
+rdib_unit_chunk_list_push_zero(Arena* arena, RDIB_UnitChunkList* list, U64 cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_Unit);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_Scope *
-rdib_scope_chunk_list_push_zero(Arena *arena, RDIB_ScopeChunkList *list, U64 cap)
+rdib_scope_chunk_list_push_zero(Arena* arena, RDIB_ScopeChunkList* list, U64 cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_Scope);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_Procedure *
-rdib_procedure_chunk_list_push_zero(Arena *arena, RDIB_ProcedureChunkList *list, U64 cap)
+rdib_procedure_chunk_list_push_zero(Arena* arena, RDIB_ProcedureChunkList* list, U64 cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_Procedure);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_Variable *
-rdib_variable_chunk_list_push_zero(Arena *arena, RDIB_VariableChunkList *list, U64 cap)
+rdib_variable_chunk_list_push_zero(Arena* arena, RDIB_VariableChunkList* list, U64 cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_Variable);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_LineTable *
-rdib_line_table_chunk_list_push_zero(Arena *arena, RDIB_LineTableChunkList *list, U64 cap)
+rdib_line_table_chunk_list_push_zero(Arena* arena, RDIB_LineTableChunkList* list, U64 cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_LineTable);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_Type *
-rdib_type_chunk_list_push_zero(Arena *arena, RDIB_TypeChunkList *list, U64 cap)
+rdib_type_chunk_list_push_zero(Arena* arena, RDIB_TypeChunkList* list, U64 cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_Type);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_UDTMember *
-rdib_udt_member_chunk_list_push_zero(Arena *arena, RDIB_UDTMemberChunkList *list, U64 cap)
+rdib_udt_member_chunk_list_push_zero(Arena* arena, RDIB_UDTMemberChunkList* list, U64 cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_UDTMember);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_SourceFile *
-rdib_source_file_chunk_list_push_zero(Arena *arena, RDIB_SourceFileChunkList *list, U64 cap)
+rdib_source_file_chunk_list_push_zero(Arena* arena, RDIB_SourceFileChunkList* list, U64 cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_SourceFile);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_InlineSite *
-rdib_inline_site_chunk_list_push_zero(Arena *arena, RDIB_InlineSiteChunkList *list, U64 cap)
+rdib_inline_site_chunk_list_push_zero(Arena* arena, RDIB_InlineSiteChunkList* list, U64 cap)
 {
   SLLChunkListPushZero(arena, list, cap, RDIB_InlineSite);
   return SLLChunkListLastItem(list);
 }
 
 internal RDIB_UnitChunk *
-rdib_unit_chunk_list_reserve_ex(Arena *arena, RDIB_UnitChunkList *list, U64 count_per_chunk, U64 item_count)
+rdib_unit_chunk_list_reserve_ex(Arena* arena, RDIB_UnitChunkList* list, U64 count_per_chunk, U64 item_count)
 {
   U64             chunk_count = CeilIntegerDiv(item_count, count_per_chunk);
   RDIB_UnitChunk *chunks      = push_array(arena, RDIB_UnitChunk, chunk_count);
@@ -368,7 +368,7 @@ rdib_unit_chunk_list_reserve_ex(Arena *arena, RDIB_UnitChunkList *list, U64 coun
 }
 
 internal void
-rdib_unit_chunk_list_reserve(Arena *arena, RDIB_UnitChunkList *list, U64 cap)
+rdib_unit_chunk_list_reserve(Arena* arena, RDIB_UnitChunkList* list, U64 cap)
 {
   // fill out node
   RDIB_UnitChunk *chunk = push_array(arena, RDIB_UnitChunk, 1);
@@ -381,7 +381,7 @@ rdib_unit_chunk_list_reserve(Arena *arena, RDIB_UnitChunkList *list, U64 cap)
 }
 
 internal void
-rdib_type_chunk_list_reserve(Arena *arena, RDIB_TypeChunkList *list, U64 cap)
+rdib_type_chunk_list_reserve(Arena* arena, RDIB_TypeChunkList* list, U64 cap)
 {
   // fill out node
   RDIB_TypeChunk *chunk = push_array(arena, RDIB_TypeChunk, 1);
@@ -394,7 +394,7 @@ rdib_type_chunk_list_reserve(Arena *arena, RDIB_TypeChunkList *list, U64 cap)
 }
 
 internal void
-rdib_source_file_list_reserve(Arena *arena, RDIB_SourceFileChunkList *list, U64 cap)
+rdib_source_file_list_reserve(Arena* arena, RDIB_SourceFileChunkList* list, U64 cap)
 {
   // fill out node
   RDIB_SourceFileChunk *chunk = push_array(arena, RDIB_SourceFileChunk, 1);
@@ -407,103 +407,103 @@ rdib_source_file_list_reserve(Arena *arena, RDIB_SourceFileChunkList *list, U64 
 }
 
 internal void
-rdib_unit_chunk_list_concat_in_place(RDIB_UnitChunkList *list, RDIB_UnitChunkList *to_concat)
+rdib_unit_chunk_list_concat_in_place(RDIB_UnitChunkList* list, RDIB_UnitChunkList* to_concat)
 {
   SLLConcatInPlaceChunkList(list, to_concat, RDIB_UnitChunk);
 }
 
 internal void
-rdib_scope_chunk_list_concat_in_place(RDIB_ScopeChunkList *list, RDIB_ScopeChunkList *to_concat)
+rdib_scope_chunk_list_concat_in_place(RDIB_ScopeChunkList* list, RDIB_ScopeChunkList* to_concat)
 {
   SLLConcatInPlaceChunkList(list, to_concat, RDIB_ScopeChunk);
 }
 
 internal void
-rdib_udt_member_chunk_list_concat_in_place(RDIB_UDTMemberChunkList *list, RDIB_UDTMemberChunkList *to_concat)
+rdib_udt_member_chunk_list_concat_in_place(RDIB_UDTMemberChunkList* list, RDIB_UDTMemberChunkList* to_concat)
 {
   SLLConcatInPlaceChunkList(list, to_concat, RDIB_UDTMemberChunk);
 }
 
 internal void
-rdib_procedure_chunk_list_concat_in_place(RDIB_ProcedureChunkList *list, RDIB_ProcedureChunkList *to_concat)
+rdib_procedure_chunk_list_concat_in_place(RDIB_ProcedureChunkList* list, RDIB_ProcedureChunkList* to_concat)
 {
   SLLConcatInPlaceChunkList(list, to_concat, RDIB_ProcedureChunk);
 }
 
 internal void
-rdib_variable_chunk_list_concat_in_place(RDIB_VariableChunkList *list, RDIB_VariableChunkList *to_concat)
+rdib_variable_chunk_list_concat_in_place(RDIB_VariableChunkList* list, RDIB_VariableChunkList* to_concat)
 {
   SLLConcatInPlaceChunkList(list, to_concat, RDIB_VariableChunk);
 }
 
 internal void
-rdib_line_table_chunk_list_concat_in_place(RDIB_LineTableChunkList *list, RDIB_LineTableChunkList *to_concat)
+rdib_line_table_chunk_list_concat_in_place(RDIB_LineTableChunkList* list, RDIB_LineTableChunkList* to_concat)
 {
   SLLConcatInPlaceChunkList(list, to_concat, RDIB_LineTableChunk);
 }
 
 internal void
-rdib_inline_site_chunk_list_concat_in_place(RDIB_InlineSiteChunkList *list, RDIB_InlineSiteChunkList *to_concat)
+rdib_inline_site_chunk_list_concat_in_place(RDIB_InlineSiteChunkList* list, RDIB_InlineSiteChunkList* to_concat)
 {
   SLLConcatInPlaceChunkList(list, to_concat, RDIB_InlineSiteChunk);
 }
 
 internal void
-rdib_type_chunk_list_concat_in_place(RDIB_TypeChunkList *list, RDIB_TypeChunkList *to_concat)
+rdib_type_chunk_list_concat_in_place(RDIB_TypeChunkList* list, RDIB_TypeChunkList* to_concat)
 {
   SLLConcatInPlaceChunkList(list, to_concat, RDIB_TypeChunk);
 }
 
 internal void
-rdib_source_file_chunk_list_concat_in_place(RDIB_SourceFileChunkList *list, RDIB_SourceFileChunkList *to_concat)
+rdib_source_file_chunk_list_concat_in_place(RDIB_SourceFileChunkList* list, RDIB_SourceFileChunkList* to_concat)
 {
   SLLConcatInPlaceChunkList(list, to_concat, RDIB_SourceFileChunk);
 }
 
 internal void
-rdib_line_table_chunk_list_concat_in_place_many(RDIB_LineTableChunkList *list, RDIB_LineTableChunkList *to_concat, U64 count)
+rdib_line_table_chunk_list_concat_in_place_many(RDIB_LineTableChunkList* list, RDIB_LineTableChunkList* to_concat, U64 count)
 {
   SLLConcatInPlaceChunkListArray(list, to_concat, RDIB_LineTableChunk, count);
 }
 
 internal void
-rdib_scope_chunk_list_concat_in_place_many(RDIB_ScopeChunkList *list, RDIB_ScopeChunkList *to_concat, U64 count)
+rdib_scope_chunk_list_concat_in_place_many(RDIB_ScopeChunkList* list, RDIB_ScopeChunkList* to_concat, U64 count)
 {
   SLLConcatInPlaceChunkListArray(list, to_concat, RDIB_ScopeChunk, count);
 }
 
 internal void
-rdib_variable_chunk_list_concat_in_place_many(RDIB_VariableChunkList *list, RDIB_VariableChunkList *to_concat, U64 count)
+rdib_variable_chunk_list_concat_in_place_many(RDIB_VariableChunkList* list, RDIB_VariableChunkList* to_concat, U64 count)
 {
   SLLConcatInPlaceChunkListArray(list, to_concat, RDIB_VariableChunk, count);
 }
 
 internal void
-rdib_procedure_chunk_list_concat_in_place_many(RDIB_ProcedureChunkList *list, RDIB_ProcedureChunkList *to_concat, U64 count)
+rdib_procedure_chunk_list_concat_in_place_many(RDIB_ProcedureChunkList* list, RDIB_ProcedureChunkList* to_concat, U64 count)
 {
   SLLConcatInPlaceChunkListArray(list, to_concat, RDIB_ProcedureChunk, count);
 }
 
 internal void
-rdib_inline_site_chunk_list_concat_in_place_many(RDIB_InlineSiteChunkList *list, RDIB_InlineSiteChunkList *to_concat, U64 count)
+rdib_inline_site_chunk_list_concat_in_place_many(RDIB_InlineSiteChunkList* list, RDIB_InlineSiteChunkList* to_concat, U64 count)
 {
   SLLConcatInPlaceChunkListArray(list, to_concat, RDIB_InlineSiteChunk, count);
 }
 
 internal void
-rdib_type_chunk_list_concat_in_place_many(RDIB_TypeChunkList *list, RDIB_TypeChunkList *to_concat, U64 count)
+rdib_type_chunk_list_concat_in_place_many(RDIB_TypeChunkList* list, RDIB_TypeChunkList* to_concat, U64 count)
 {
   SLLConcatInPlaceChunkListArray(list, to_concat, RDIB_TypeChunk, count);
 }
 
 internal void
-rdib_udt_member_chunk_list_concat_in_place_many(RDIB_UDTMemberChunkList *list, RDIB_UDTMemberChunkList *to_concat, U64 count)
+rdib_udt_member_chunk_list_concat_in_place_many(RDIB_UDTMemberChunkList* list, RDIB_UDTMemberChunkList* to_concat, U64 count)
 {
   SLLConcatInPlaceChunkListArray(list, to_concat, RDIB_UDTMemberChunk, count);
 }
 
 internal RDIB_UnitChunk **
-rdib_array_from_unit_chunk_list(Arena *arena, RDIB_UnitChunkList list)
+rdib_array_from_unit_chunk_list(Arena* arena, RDIB_UnitChunkList list)
 {
   ProfBeginFunction();
   RDIB_UnitChunk **result = push_array_no_zero(arena, RDIB_UnitChunk *, list.count);
@@ -516,7 +516,7 @@ rdib_array_from_unit_chunk_list(Arena *arena, RDIB_UnitChunkList list)
 }
 
 internal RDIB_ScopeChunk **
-rdib_array_from_scope_chunk_list(Arena *arena, RDIB_ScopeChunkList list)
+rdib_array_from_scope_chunk_list(Arena* arena, RDIB_ScopeChunkList list)
 {
   ProfBeginFunction();
   RDIB_ScopeChunk **result = push_array_no_zero(arena, RDIB_ScopeChunk *, list.count);
@@ -529,7 +529,7 @@ rdib_array_from_scope_chunk_list(Arena *arena, RDIB_ScopeChunkList list)
 }
 
 internal RDIB_VariableChunk **
-rdib_array_from_variable_chunk_list(Arena *arena, RDIB_VariableChunkList list)
+rdib_array_from_variable_chunk_list(Arena* arena, RDIB_VariableChunkList list)
 {
   ProfBeginFunction();
   RDIB_VariableChunk **result = push_array_no_zero(arena, RDIB_VariableChunk *, list.count);
@@ -542,7 +542,7 @@ rdib_array_from_variable_chunk_list(Arena *arena, RDIB_VariableChunkList list)
 }
 
 internal RDIB_LineTableChunk **
-rdib_array_from_line_table_chunk_list(Arena *arena, RDIB_LineTableChunkList list)
+rdib_array_from_line_table_chunk_list(Arena* arena, RDIB_LineTableChunkList list)
 {
   ProfBeginFunction();
   RDIB_LineTableChunk **result = push_array_no_zero(arena, RDIB_LineTableChunk *, list.count);
@@ -555,7 +555,7 @@ rdib_array_from_line_table_chunk_list(Arena *arena, RDIB_LineTableChunkList list
 }
 
 internal RDIB_ProcedureChunk **
-rdib_array_from_procedure_chunk_list(Arena *arena, RDIB_ProcedureChunkList list)
+rdib_array_from_procedure_chunk_list(Arena* arena, RDIB_ProcedureChunkList list)
 {
   ProfBeginFunction();
   RDIB_ProcedureChunk **result = push_array_no_zero(arena, RDIB_ProcedureChunk *, list.count);
@@ -568,7 +568,7 @@ rdib_array_from_procedure_chunk_list(Arena *arena, RDIB_ProcedureChunkList list)
 }
 
 internal RDIB_InlineSiteChunk **
-rdib_array_from_inline_site_chunk_list(Arena *arena, RDIB_InlineSiteChunkList list)
+rdib_array_from_inline_site_chunk_list(Arena* arena, RDIB_InlineSiteChunkList list)
 {
   ProfBeginFunction();
   RDIB_InlineSiteChunk **result = push_array_no_zero(arena, RDIB_InlineSiteChunk *, list.count);
@@ -581,7 +581,7 @@ rdib_array_from_inline_site_chunk_list(Arena *arena, RDIB_InlineSiteChunkList li
 }
 
 internal RDIB_UDTMemberChunk **
-rdib_array_from_udt_member_chunk_list(Arena *arena, RDIB_UDTMemberChunkList list)
+rdib_array_from_udt_member_chunk_list(Arena* arena, RDIB_UDTMemberChunkList list)
 {
   ProfBeginFunction();
   RDIB_UDTMemberChunk **result = push_array_no_zero(arena, RDIB_UDTMemberChunk *, list.count);
@@ -594,7 +594,7 @@ rdib_array_from_udt_member_chunk_list(Arena *arena, RDIB_UDTMemberChunkList list
 }
 
 internal RDIB_TypeChunk **
-rdib_array_from_type_chunk_list(Arena *arena, RDIB_TypeChunkList list)
+rdib_array_from_type_chunk_list(Arena* arena, RDIB_TypeChunkList list)
 {
   ProfBeginFunction();
   RDIB_TypeChunk **result = push_array_no_zero(arena, RDIB_TypeChunk *, list.count);
@@ -607,7 +607,7 @@ rdib_array_from_type_chunk_list(Arena *arena, RDIB_TypeChunkList list)
 }
 
 internal RDIB_SourceFileChunk **
-rdib_array_from_source_file_chunk_list(Arena *arena, RDIB_SourceFileChunkList list)
+rdib_array_from_source_file_chunk_list(Arena* arena, RDIB_SourceFileChunkList list)
 {
   ProfBeginFunction();
   RDIB_SourceFileChunk **result = push_array_no_zero(arena, RDIB_SourceFileChunk *, list.count);
@@ -710,7 +710,7 @@ rdib_source_file_chunk_list_total_count(RDIB_SourceFileChunkList list)
 }
 
 internal U32
-rdib_idx_from_unit(RDIB_Unit *n)
+rdib_idx_from_unit(RDIB_Unit* n)
 {
   U32 idx = 0;
   if (n) {
@@ -722,7 +722,7 @@ rdib_idx_from_unit(RDIB_Unit *n)
 }
 
 internal U32
-rdib_idx_from_scope(RDIB_Scope *n)
+rdib_idx_from_scope(RDIB_Scope* n)
 {
   U32 idx = 0;
   if (n) {
@@ -734,7 +734,7 @@ rdib_idx_from_scope(RDIB_Scope *n)
 }
 
 internal U32
-rdib_idx_from_inline_site(RDIB_InlineSite *n)
+rdib_idx_from_inline_site(RDIB_InlineSite* n)
 {
   U32 idx = 0;
   if (n) {
@@ -746,7 +746,7 @@ rdib_idx_from_inline_site(RDIB_InlineSite *n)
 }
 
 internal U32
-rdib_idx_from_variable(RDIB_Variable *n)
+rdib_idx_from_variable(RDIB_Variable* n)
 {
   U32 idx = 0;
   if (n) {
@@ -758,7 +758,7 @@ rdib_idx_from_variable(RDIB_Variable *n)
 }
 
 internal U32
-rdib_idx_from_procedure(RDIB_Procedure *n)
+rdib_idx_from_procedure(RDIB_Procedure* n)
 {
   U32 idx = 0;
   if (n) {
@@ -770,7 +770,7 @@ rdib_idx_from_procedure(RDIB_Procedure *n)
 }
 
 internal U32
-rdib_idx_from_source_file(RDIB_SourceFile *n)
+rdib_idx_from_source_file(RDIB_SourceFile* n)
 {
   U32 idx = 0;
   if (n) {
@@ -782,7 +782,7 @@ rdib_idx_from_source_file(RDIB_SourceFile *n)
 }
 
 internal U32
-rdib_idx_from_line_table(RDIB_LineTable *n)
+rdib_idx_from_line_table(RDIB_LineTable* n)
 {
   U32 idx = 0;
   if (n) {
@@ -794,7 +794,7 @@ rdib_idx_from_line_table(RDIB_LineTable *n)
 }
 
 internal U32
-rdib_idx_from_type(RDIB_Type *n)
+rdib_idx_from_type(RDIB_Type* n)
 {
   U32 idx = 0;
   if (n) {
@@ -804,7 +804,7 @@ rdib_idx_from_type(RDIB_Type *n)
 }
 
 internal U32
-rdib_idx_from_udt_type(RDIB_Type *n)
+rdib_idx_from_udt_type(RDIB_Type* n)
 {
   U32 idx = 0;
   if (n && RDI_IsUserDefinedType(n.kind)) {
@@ -817,7 +817,7 @@ rdib_idx_from_udt_type(RDIB_Type *n)
 // Source File
 
 internal B32
-rdib_source_file_match(RDIB_SourceFile *a, RDIB_SourceFile *b, OperatingSystem os)
+rdib_source_file_match(RDIB_SourceFile* a, RDIB_SourceFile* b, OperatingSystem os)
 {
   StringMatchFlags match_flags = path_match_flags_from_os(os);
   if (str8_match(a.normal_full_path, b.normal_full_path, match_flags)) {
@@ -834,7 +834,7 @@ rdib_source_file_match(RDIB_SourceFile *a, RDIB_SourceFile *b, OperatingSystem o
 // Eval Ops
 
 internal RDIB_EvalBytecodeOp *
-rdib_bytecode_push_op(Arena *arena, RDIB_EvalBytecode *bytecode, RDI_EvalOp op, RDI_U64 p)
+rdib_bytecode_push_op(Arena* arena, RDIB_EvalBytecode* bytecode, RDI_EvalOp op, RDI_U64 p)
 {
   RDIB_EvalBytecodeOp *node = push_array(arena, RDIB_EvalBytecodeOp, 1);
   node.op                  = op;
@@ -849,7 +849,7 @@ rdib_bytecode_push_op(Arena *arena, RDIB_EvalBytecode *bytecode, RDI_EvalOp op, 
 }
 
 internal void
-rdib_bytecode_push_ucsont(Arena *arena, RDIB_EvalBytecode *bytecode, RDI_U64 uconst)
+rdib_bytecode_push_ucsont(Arena* arena, RDIB_EvalBytecode* bytecode, RDI_U64 uconst)
 {
   if (uconst <= max_U8) {
     rdib_bytecode_push_op(arena, bytecode, RDI_EvalOp_ConstU8, uconst);
@@ -863,7 +863,7 @@ rdib_bytecode_push_ucsont(Arena *arena, RDIB_EvalBytecode *bytecode, RDI_U64 uco
 }
 
 internal void
-rdib_bytecode_push_sconst(Arena *arena, RDIB_EvalBytecode *bytecode, RDI_S64 sconst)
+rdib_bytecode_push_sconst(Arena* arena, RDIB_EvalBytecode* bytecode, RDI_S64 sconst)
 {
   if (min_S8 <= sconst && sconst <= max_S8) {
     rdib_bytecode_push_op(arena, bytecode, RDI_EvalOp_ConstU8, (RDI_U64)sconst);
@@ -944,7 +944,7 @@ rdib_make_location_val_reg(Rng1U64List ranges, RDI_RegCode reg_code)
 }
 
 internal RDIB_LocationNode *
-rdib_location_list_push(Arena *arena, RDIB_LocationList *list, RDIB_Location v)
+rdib_location_list_push(Arena* arena, RDIB_LocationList* list, RDIB_Location v)
 {
   RDIB_LocationNode *node = push_array(arena, RDIB_LocationNode, 1);
   node.v = v;
@@ -954,7 +954,7 @@ rdib_location_list_push(Arena *arena, RDIB_LocationList *list, RDIB_Location v)
 }
 
 internal RDIB_LocationNode *
-rdib_push_location_addr_reg_off(Arena *arena, RDIB_LocationList *list, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 is_reference, Rng1U64List ranges)
+rdib_push_location_addr_reg_off(Arena* arena, RDIB_LocationList* list, RDI_Arch arch, RDI_RegCode reg_code, U32 reg_byte_size, U32 reg_byte_pos, S64 offset, B32 is_reference, Rng1U64List ranges)
 {
   RDIB_Location loc;
 
@@ -987,14 +987,14 @@ rdib_push_location_addr_reg_off(Arena *arena, RDIB_LocationList *list, RDI_Arch 
 }
 
 internal void
-rdib_variable_list_push_node(RDIB_VariableList *list, RDIB_VariableNode *node)
+rdib_variable_list_push_node(RDIB_VariableList* list, RDIB_VariableNode* node)
 {
   SLLQueuePush(list.first, list.last, node);
   ++list.count;
 }
 
 internal RDIB_VariableNode *
-rdib_variable_list_push(Arena *arena, RDIB_VariableList *list)
+rdib_variable_list_push(Arena* arena, RDIB_VariableList* list)
 {
   RDIB_VariableNode *node = push_array(arena, RDIB_VariableNode, 1);
   rdib_variable_list_push_node(list, node);
@@ -1005,7 +1005,7 @@ rdib_variable_list_push(Arena *arena, RDIB_VariableList *list)
 // Types
 
 internal U64
-rdib_size_from_type(RDIB_Type *type)
+rdib_size_from_type(RDIB_Type* type)
 {
   if (type) {
     switch (type.kind) {
@@ -1088,7 +1088,7 @@ rdib_size_from_type(RDIB_Type *type)
 }
 
 internal RDIB_TypeRef
-rdib_make_type_ref(Arena *arena, RDIB_Type *type)
+rdib_make_type_ref(Arena* arena, RDIB_Type* type)
 {
   RDIB_Type **ref = push_array(arena, RDIB_Type *, 1);
   ref[0] = type;
@@ -1096,7 +1096,7 @@ rdib_make_type_ref(Arena *arena, RDIB_Type *type)
 }
 
 internal void
-rdib_deref_type_refs(TP_Context *tp, RDIB_TypeChunkList *list)
+rdib_deref_type_refs(TP_Context* tp, RDIB_TypeChunkList* list)
 {
   for (RDIB_TypeChunk *chunk = list.first; chunk != 0; chunk = chunk.next) {
     for (U64 i = 0; i < chunk.count; ++i) {
@@ -1174,7 +1174,7 @@ rdib_deref_type_refs(TP_Context *tp, RDIB_TypeChunkList *list)
 }
 
 internal U64
-rdib_sizeof_type(RDIB_Type *type)
+rdib_sizeof_type(RDIB_Type* type)
 {
   U64 size = 0;
   if (RDI_TypeKind_FirstBuiltIn <= type.kind && type.kind < RDI_TypeKind_LastBuiltIn) {
@@ -1201,7 +1201,7 @@ rdib_sizeof_type(RDIB_Type *type)
 }
 
 internal U64
-rdib_count_members_deep(RDIB_Type *type)
+rdib_count_members_deep(RDIB_Type* type)
 {
   U64 member_count = 0;
   for (RDIB_UDTMember *member = type.members.list.first; member != 0; member = member.next) {
@@ -1700,7 +1700,7 @@ rdib_data_sections_from_types(TP_Context            *tp,
 ////////////////////////////////
 
 internal RDIB_PathTree *
-rdib_path_tree_init(Arena *arena, U64 list_count)
+rdib_path_tree_init(Arena* arena, U64 list_count)
 {
   RDIB_PathTree *tree = push_array(arena, RDIB_PathTree, 1);
   tree.root          = push_array(arena, RDIB_PathTreeNode, 1);
@@ -1710,7 +1710,7 @@ rdib_path_tree_init(Arena *arena, U64 list_count)
 }
 
 internal void
-rdib_path_tree_insert(Arena *arena, RDIB_PathTree *tree, string path, RDIB_SourceFile *src_file)
+rdib_path_tree_insert(Arena* arena, RDIB_PathTree* tree, string path, RDIB_SourceFile* src_file)
 {
   Temp scratch = scratch_begin(&arena, 1);
 
@@ -1757,7 +1757,7 @@ rdib_path_tree_insert(Arena *arena, RDIB_PathTree *tree, string path, RDIB_Sourc
 }
 
 internal U32
-rdib_idx_from_path_tree(RDIB_PathTree *tree, string path)
+rdib_idx_from_path_tree(RDIB_PathTree* tree, string path)
 {
   Temp scratch = scratch_begin(0,0);
 
@@ -1814,7 +1814,7 @@ rdib_string_map_hash(string string)
 }
 
 internal RDIB_StringMap *
-rdib_init_string_map(Arena *arena, U64 cap)
+rdib_init_string_map(Arena* arena, U64 cap)
 {
   RDIB_StringMap *string_map = push_array(arena, RDIB_StringMap, 1);
   string_map.cap            = (U64)((F64)cap * 1.3);
@@ -1823,7 +1823,7 @@ rdib_init_string_map(Arena *arena, U64 cap)
 }
 
 internal U32
-rdib_idx_from_string_map(RDIB_StringMap *string_map, string string)
+rdib_idx_from_string_map(RDIB_StringMap* string_map, string string)
 {
   U64 hash     = rdib_string_map_hash(string);
   U64 best_idx = hash % string_map.cap;
@@ -1848,7 +1848,7 @@ rdib_idx_from_string_map(RDIB_StringMap *string_map, string string)
 }
 
 internal RDIB_StringMapBucket *
-rdib_string_map_insert_or_update(RDIB_StringMapBucket **buckets, U64 cap, U64 hash, RDIB_StringMapBucket *new_bucket, RDIB_StringMapUpdateFunc *update_func)
+rdib_string_map_insert_or_update(RDIB_StringMapBucket** buckets, U64 cap, U64 hash, RDIB_StringMapBucket* new_bucket, RDIB_StringMapUpdateFunc* update_func)
 {
   RDIB_StringMapBucket *result                         = 0;
   B32                   was_bucket_inserted_or_updated = 0;
@@ -1922,7 +1922,7 @@ rdib_string_map_insert_or_update(RDIB_StringMapBucket **buckets, U64 cap, U64 ha
 }
 
 internal void
-rdib_string_map_insert_item(Arena *arena, RDIB_CollectStringsTask *task, U64 task_id, string string, void *value)
+rdib_string_map_insert_item(Arena* arena, RDIB_CollectStringsTask* task, U64 task_id, string string, void* value)
 {
   // do we have a free bucket?
   RDIB_StringMapBucket **bucket = &task.free_buckets[task_id];
@@ -1978,7 +1978,7 @@ THREAD_POOL_TASK_FUNC(rdib_get_extant_buckets_string_map_task)
 }
 
 internal RDIB_StringMapBucket **
-rdib_extant_buckets_from_string_map(TP_Context *tp, Arena *arena, RDIB_StringMap *string_map, U64 *bucket_count_out)
+rdib_extant_buckets_from_string_map(TP_Context* tp, Arena* arena, RDIB_StringMap* string_map, U64* bucket_count_out)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -2115,7 +2115,7 @@ THREAD_POOL_TASK_FUNC(rdib_string_map_radix_sort_element_idx_task)
 }
 
 internal void
-rdib_string_map_sort_buckets(TP_Context *tp, RDIB_StringMapBucket **buckets, U64 bucket_count, U64 chunk_idx_opl)
+rdib_string_map_sort_buckets(TP_Context* tp, RDIB_StringMapBucket** buckets, U64 bucket_count, U64 chunk_idx_opl)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -2178,7 +2178,7 @@ rdib_string_map_sort_buckets(TP_Context *tp, RDIB_StringMapBucket **buckets, U64
 }
 
 internal void
-rdib_string_map_assign_indices(RDIB_StringMapBucket **buckets, U64 bucket_count)
+rdib_string_map_assign_indices(RDIB_StringMapBucket** buckets, U64 bucket_count)
 {
   ProfBeginFunction();
   for (U64 idx = 0; idx < bucket_count; ++idx) {
@@ -2190,13 +2190,13 @@ rdib_string_map_assign_indices(RDIB_StringMapBucket **buckets, U64 bucket_count)
 // Specialized Inserts
 
 internal void
-rdib_string_map_insert_string_table_item(Arena *arena, RDIB_CollectStringsTask *task, U64 task_id, string string)
+rdib_string_map_insert_string_table_item(Arena* arena, RDIB_CollectStringsTask* task, U64 task_id, string string)
 {
   rdib_string_map_insert_item(arena, task, task_id, string, 0);
 }
 
 internal void
-rdib_string_map_insert_name_map_item(Arena *arena, RDIB_CollectStringsTask *task, U64 task_id, string string, VoidNode *node)
+rdib_string_map_insert_name_map_item(Arena* arena, RDIB_CollectStringsTask* task, U64 task_id, string string, VoidNode* node)
 {
   rdib_string_map_insert_item(arena, task, task_id, string, node);
 }
@@ -2486,14 +2486,14 @@ THREAD_POOL_TASK_FUNC(rdib_name_map_normal_paths_task)
 // Index Run Map
 
 internal U64
-rdib_index_run_hash(U32 count, U32 *idxs)
+rdib_index_run_hash(U32 count, U32* idxs)
 {
   XXH64_hash_t hash64 = XXH3_64bits(idxs, count * sizeof(idxs[0]));
   return hash64;
 }
 
 internal RDIB_IndexRunMap *
-rdib_init_index_run_map(Arena *arena, U64 cap)
+rdib_init_index_run_map(Arena* arena, U64 cap)
 {
   ProfBeginFunction();
   RDIB_IndexRunMap *map = push_array(arena, RDIB_IndexRunMap, 1);
@@ -2504,7 +2504,7 @@ rdib_init_index_run_map(Arena *arena, U64 cap)
 }
 
 internal RDIB_IndexRunBucket *
-rdib_index_run_map_insert_or_update(Arena *arena, RDIB_IndexRunBucket **buckets, U64 cap, U64 hash, RDIB_IndexRunBucket *new_bucket, U64 *bucket_idx_out)
+rdib_index_run_map_insert_or_update(Arena* arena, RDIB_IndexRunBucket** buckets, U64 cap, U64 hash, RDIB_IndexRunBucket* new_bucket, U64* bucket_idx_out)
 {
   B32 was_bucket_inserted_or_updated = 0;
 
@@ -2566,7 +2566,7 @@ rdib_index_run_map_insert_or_update(Arena *arena, RDIB_IndexRunBucket **buckets,
 }
 
 internal U32
-rdib_idx_run_from_bucket_idx(RDIB_IndexRunMap *map, U64 bucket_idx)
+rdib_idx_run_from_bucket_idx(RDIB_IndexRunMap* map, U64 bucket_idx)
 {
   RDIB_IndexRunBucket *bucket = map.buckets[bucket_idx];
   U32 idx_run32 = safe_cast_u32(bucket.index_in_output_array);
@@ -2602,7 +2602,7 @@ THREAD_POOL_TASK_FUNC(rdib_get_extant_buckets_index_run_map_task)
 }
 
 internal RDIB_IndexRunBucket **
-rdib_extant_buckets_from_index_run_map(TP_Context *tp, Arena *arena, RDIB_IndexRunMap *idx_run_map, U64 *bucket_count_out)
+rdib_extant_buckets_from_index_run_map(TP_Context* tp, Arena* arena, RDIB_IndexRunMap* idx_run_map, U64* bucket_count_out)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -2739,7 +2739,7 @@ THREAD_POOL_TASK_FUNC(rdib_index_run_map_radix_sort_element_idx_task)
 }
 
 internal void
-rdib_index_run_map_sort_buckets(TP_Context *tp, RDIB_IndexRunBucket **buckets, U64 bucket_count, U64 chunk_idx_opl)
+rdib_index_run_map_sort_buckets(TP_Context* tp, RDIB_IndexRunBucket** buckets, U64 bucket_count, U64 chunk_idx_opl)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -2802,7 +2802,7 @@ rdib_index_run_map_sort_buckets(TP_Context *tp, RDIB_IndexRunBucket **buckets, U
 }
 
 internal void
-rdib_index_run_map_assign_indices(RDIB_IndexRunBucket **buckets, U64 bucket_count)
+rdib_index_run_map_assign_indices(RDIB_IndexRunBucket** buckets, U64 bucket_count)
 {
   ProfBeginFunction();
   for (U64 bucket_idx = 0, cursor = 0; bucket_idx < bucket_count; ++bucket_idx) {
@@ -2815,7 +2815,7 @@ rdib_index_run_map_assign_indices(RDIB_IndexRunBucket **buckets, U64 bucket_coun
 // index run map specialization
 
 internal U64
-rdib_index_run_map_insert_item(Arena *arena, RDIB_BuildIndexRunsTask *task, U64 worker_id, U64 item_idx, U64 count, U32 *idxs)
+rdib_index_run_map_insert_item(Arena* arena, RDIB_BuildIndexRunsTask* task, U64 worker_id, U64 item_idx, U64 count, U32* idxs)
 {
   Assert(item_idx < max_U32);
 
@@ -2912,7 +2912,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_idx_runs_params_task)
 }
 
 internal U32
-rdib_idx_from_name_map_void_node(RDIB_BuildIndexRunsTask *task, VoidNode *node)
+rdib_idx_from_name_map_void_node(RDIB_BuildIndexRunsTask* task, VoidNode* node)
 {
   U64 idx = 0;
   switch (task.name_map_kind) {
@@ -2975,7 +2975,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_idx_runs_name_map_buckets_task)
 
 #if 0
 internal U32
-rdib_idx_from_params(RDIB_IndexRunMap *map, RDIB_Type *params)
+rdib_idx_from_params(RDIB_IndexRunMap* map, RDIB_Type* params)
 {
   Assert(params.kind == RDI_TypeKindExt_Params);
   U32 idx = params.params.idx_run_bucket.index_in_output_array;
@@ -2987,13 +2987,13 @@ rdib_idx_from_params(RDIB_IndexRunMap *map, RDIB_Type *params)
 // Data Sections
 
 internal void
-rdib_data_section_list_push_node(RDIB_DataSectionList *list, RDIB_DataSectionNode *node)
+rdib_data_section_list_push_node(RDIB_DataSectionList* list, RDIB_DataSectionNode* node)
 {
   SLLQueuePushCount(list, node);
 }
 
 internal RDIB_DataSectionNode *
-rdib_data_section_list_push(Arena *arena, RDIB_DataSectionList *list, RDIB_DataSection v)
+rdib_data_section_list_push(Arena* arena, RDIB_DataSectionList* list, RDIB_DataSection v)
 {
   RDIB_DataSectionNode *node = push_array(arena, RDIB_DataSectionNode, 1);
   node.v                    = v;
@@ -3002,13 +3002,13 @@ rdib_data_section_list_push(Arena *arena, RDIB_DataSectionList *list, RDIB_DataS
 }
 
 internal void
-rdib_data_section_list_concat_in_place(RDIB_DataSectionList *list, RDIB_DataSectionList *to_concat)
+rdib_data_section_list_concat_in_place(RDIB_DataSectionList* list, RDIB_DataSectionList* to_concat)
 {
   SLLConcatInPlace(list, to_concat);
 }
 
 internal void
-rdib_data_sections_from_top_level_info(Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMap *string_map, RDIB_TopLevelInfo *src)
+rdib_data_sections_from_top_level_info(Arena* arena, RDIB_DataSectionList* sect_list, RDIB_StringMap* string_map, RDIB_TopLevelInfo* src)
 {
   ProfBeginFunction();
 
@@ -3027,7 +3027,7 @@ rdib_data_sections_from_top_level_info(Arena *arena, RDIB_DataSectionList *sect_
 }
 
 internal void
-rdib_data_sections_from_binary_sections(Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMap *string_map, RDIB_BinarySection *binary_sects, U64 binary_sects_count)
+rdib_data_sections_from_binary_sections(Arena* arena, RDIB_DataSectionList* sect_list, RDIB_StringMap* string_map, RDIB_BinarySection* binary_sects, U64 binary_sects_count)
 {
   ProfBeginFunction();
 
@@ -3054,7 +3054,7 @@ rdib_data_sections_from_binary_sections(Arena *arena, RDIB_DataSectionList *sect
 
 internal void
 rdib_data_sections_from_units(Arena                *arena,
-                              RDIB_DataSectionList *sect_list,
+                              RDIB_DataSectionList* sect_list,
                               RDIB_StringMap       *string_map,
                               RDIB_PathTree        *path_tree,
                               U64                   total_unit_count,
@@ -3224,7 +3224,7 @@ THREAD_POOL_TASK_FUNC(rdib_fill_vmap_entries_scope_task)
 }
 
 internal void
-rdib_sort_procs_radix_32(RDIB_Procedure **v, U64 count)
+rdib_sort_procs_radix_32(RDIB_Procedure** v, U64 count)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0,0);
@@ -3290,7 +3290,7 @@ rdib_sort_procs_radix_32(RDIB_Procedure **v, U64 count)
 }
 
 internal String8List
-rdib_data_from_vmap(Arena *arena, U64 range_count, RDIB_VMapRange *ranges)
+rdib_data_from_vmap(Arena* arena, U64 range_count, RDIB_VMapRange* ranges)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -3560,9 +3560,9 @@ THREAD_POOL_TASK_FUNC(rdib_fill_scope_vmaps_task)
 internal void
 rdib_data_sections_from_unit_gvar_scope_vmaps(TP_Context           *tp,
                                               TP_Arena             *arena,
-                                              RDIB_DataSectionList *sect_list,
+                                              RDIB_DataSectionList* sect_list,
                                               U64 unit_chunk_count,  RDIB_UnitChunk     **unit_chunks,
-                                              U64 gvar_chunk_count,  RDIB_VariableChunk **gvar_chunks,
+                                              U64 gvar_chunk_count,  RDIB_VariableChunk** gvar_chunks,
                                               U64 scope_chunk_count, RDIB_ScopeChunk    **scope_chunks)
 {
   ProfBeginFunction();
@@ -3683,7 +3683,7 @@ THREAD_POOL_TASK_FUNC(rdib_copy_string_data_task)
 }
 
 internal void
-rdib_data_sections_from_string_map(TP_Context *tp, Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMapBucket **buckets, U64 bucket_count)
+rdib_data_sections_from_string_map(TP_Context* tp, Arena* arena, RDIB_DataSectionList* sect_list, RDIB_StringMapBucket** buckets, U64 bucket_count)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -3733,7 +3733,7 @@ THREAD_POOL_TASK_FUNC(rdib_idx_run_copy_task)
 }
 
 internal void
-rdib_data_sections_from_index_runs(TP_Context *tp, Arena *arena, RDIB_DataSectionList *sect_list, RDIB_IndexRunBucket **buckets, U64 bucket_count)
+rdib_data_sections_from_index_runs(TP_Context* tp, Arena* arena, RDIB_DataSectionList* sect_list, RDIB_IndexRunBucket** buckets, U64 bucket_count)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -3796,7 +3796,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_file_path_nodes_task)
 }
 
 internal void
-rdib_data_sections_from_path_tree(TP_Context *tp, Arena *arena, RDIB_DataSectionList *sect_list, RDIB_StringMap *string_map, RDIB_PathTree *path_tree)
+rdib_data_sections_from_path_tree(TP_Context* tp, Arena* arena, RDIB_DataSectionList* sect_list, RDIB_StringMap* string_map, RDIB_PathTree* path_tree)
 {
   ProfBeginFunction();
   RDI_FilePathNode *nodes_dst = push_array_no_zero(arena, RDI_FilePathNode, path_tree.node_count);
@@ -3822,7 +3822,7 @@ rdib_build_path_tree(Arena                 *arena,
                      U64                    unit_chunk_count,
                      RDIB_UnitChunk       **unit_chunks,
                      U64                    src_file_chunk_count,
-                     RDIB_SourceFileChunk **src_file_chunks)
+                     RDIB_SourceFileChunk** src_file_chunks)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(&arena, 1);
@@ -3906,7 +3906,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_var_section_task)
 internal void
 rdib_data_sections_from_global_variables(TP_Context           *tp,
                                          TP_Arena             *arena,
-                                         RDIB_DataSectionList *sect_list,
+                                         RDIB_DataSectionList* sect_list,
                                          RDIB_StringMap       *string_map,
                                          U64                   total_count,
                                          U64                   chunk_count,
@@ -3978,7 +3978,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_tvar_section_task)
 internal void
 rdib_data_sections_from_thread_variables(TP_Context           *tp,
                                          TP_Arena             *arena,
-                                         RDIB_DataSectionList *sect_list,
+                                         RDIB_DataSectionList* sect_list,
                                          RDIB_StringMap       *string_map,
                                          U64                   total_count,
                                          U64                   chunk_count,
@@ -4046,7 +4046,7 @@ THREAD_POOL_TASK_FUNC(rdib_build_procs_section_task)
 internal void
 rdib_data_sections_from_procedures(TP_Context           *tp,
                                    TP_Arena             *arena,
-                                   RDIB_DataSectionList *sect_list,
+                                   RDIB_DataSectionList* sect_list,
                                    RDIB_StringMap       *string_map,
                                    U64                   total_count,
                                    U64                   chunk_count,
@@ -4572,7 +4572,7 @@ rdib_data_sections_from_source_line_maps(TP_Context            *tp,
                                          RDIB_DataSectionList  *sect_list,
                                          U64                    total_src_file_count,
                                          U64                    src_file_chunk_count,
-                                         RDIB_SourceFileChunk **src_file_chunks)
+                                         RDIB_SourceFileChunk** src_file_chunks)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(arena.v, arena.count);
@@ -4873,7 +4873,7 @@ rdib_data_sections_from_source_files(TP_Context            *tp,
                                      RDIB_PathTree         *path_tree,
                                      U64                    total_src_file_count,
                                      U64                    src_file_chunk_count,
-                                     RDIB_SourceFileChunk **src_file_chunks)
+                                     RDIB_SourceFileChunk** src_file_chunks)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(arena.v, arena.count);
@@ -4895,13 +4895,13 @@ rdib_data_sections_from_source_files(TP_Context            *tp,
 }
 
 internal void
-rdib_data_sections_from_inline_sites(TP_Context *tp,
-                                     Arena *arena,
-                                     RDIB_DataSectionList *sect_list,
-                                     RDIB_StringMap *string_map,
+rdib_data_sections_from_inline_sites(TP_Context* tp,
+                                     Arena* arena,
+                                     RDIB_DataSectionList* sect_list,
+                                     RDIB_StringMap* string_map,
                                      U64 total_inline_site_count,
                                      U64 inline_site_chunk_count,
-                                     RDIB_InlineSiteChunk **inline_site_chunks)
+                                     RDIB_InlineSiteChunk** inline_site_chunks)
 {
   ProfBeginFunction();
 
@@ -4929,7 +4929,7 @@ rdib_data_sections_from_inline_sites(TP_Context *tp,
 }
 
 internal void
-rdib_data_sections_from_checksums(TP_Context *tp, Arena *arena, RDIB_DataSectionList *sect_list)
+rdib_data_sections_from_checksums(TP_Context* tp, Arena* arena, RDIB_DataSectionList* sect_list)
 {
   NotImplemented;
 }
@@ -4937,7 +4937,7 @@ rdib_data_sections_from_checksums(TP_Context *tp, Arena *arena, RDIB_DataSection
 ////////////////////////////////
 
 internal RDIB_Input
-rdib_init_input(Arena *arena)
+rdib_init_input(Arena* arena)
 {
   ProfBeginFunction();
 
@@ -5039,7 +5039,7 @@ rdib_init_input(Arena *arena)
 }
 
 internal String8List
-rdib_finish(TP_Context *tp, TP_Arena *arena, RDIB_Input *input)
+rdib_finish(TP_Context* tp, TP_Arena* arena, RDIB_Input* input)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(arena.v, arena.count);
