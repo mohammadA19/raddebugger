@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef PTR_GRAPH_CACHE_H
-#define PTR_GRAPH_CACHE_H
 
 ////////////////////////////////
 //~ rjf: Graph Search Key
@@ -228,4 +226,3 @@ internal void ptg_builder_thread__entry_point(void *p);
 
 internal void ptg_evictor_thread__entry_point(void *p);
 
-#endif // PTR_GRAPH_CACHE_H

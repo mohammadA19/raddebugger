@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DEMON_CORE_LINUX_H
-#define DEMON_CORE_LINUX_H
 
 ////////////////////////////////
 //~ rjf: Includes
@@ -334,4 +332,3 @@ internal DMN_LNX_Entity *dmn_lnx_thread_from_pid(pid_t pid);
 internal B32 dmn_lnx_thread_read_reg_block(DMN_LNX_Entity *thread, void *reg_block);
 internal B32 dmn_lnx_thread_write_reg_block(DMN_LNX_Entity *thread, void *reg_block);
 
-#endif // DEMON_CORE_LINUX_H

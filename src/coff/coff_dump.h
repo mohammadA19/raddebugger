@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef COFF_DUMP_H
-#define COFF_DUMP_H
 
 #if 0
 internal void coff_print_archive_member_header(Arena *arena, String8List *out, string indent, COFF_ParsedArchiveMemberHeader header, string long_names);
@@ -19,4 +17,3 @@ internal void coff_print_obj                  (Arena *arena, String8List *out, s
 internal void coff_print_archive              (Arena *arena, String8List *out, string indent, string raw_archive, RD_Option opts);
 #endif
 
-#endif // COFF_DUMP_H

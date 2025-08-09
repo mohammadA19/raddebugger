@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef CODEVIEW_PARSE_H
-#define CODEVIEW_PARSE_H
 
 ////////////////////////////////
 //~ CodeView Common Parser Types
@@ -297,5 +295,4 @@ internal CV_SymParsed * cv_sym_from_data(Arena *arena, string sym_data, U64 sym_
 internal CV_LeafParsed * cv_leaf_from_data(Arena *arena, string leaf_data, CV_TypeId first);
 internal CV_C13Parsed  * cv_c13_parsed_from_data(Arena *arena, string c13_data, string strtbl, COFF_SectionHeaderArray sections);
 
-#endif // CODEVIEW_PARSE_H
 

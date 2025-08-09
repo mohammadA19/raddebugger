@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef COFF_PARSE_H
-#define COFF_PARSE_H
 
 typedef struct COFF_FileHeaderInfo
 {
@@ -324,4 +322,3 @@ internal COFF_ArchiveParse coff_thin_archive_parse_from_data          (string ra
 internal COFF_ArchiveParse coff_regular_archive_parse_from_data       (string raw_archive);
 internal COFF_ArchiveParse coff_archive_parse_from_data               (string raw_archive);
 
-#endif // COFF_PARSE_H

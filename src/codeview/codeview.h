@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef CODEVIEW_H
-#define CODEVIEW_H
 
 // https://github.com/microsoft/microsoft-pdb/blob/master/include/cvinfo.h
 
@@ -3017,5 +3015,4 @@ internal string cv_string_from_symbol_kind(Arena *arena, CV_SymKind kind);
 internal string cv_string_from_leaf_name(Arena *arena, U32 leaf_type);
 internal string cv_string_sec_off(Arena *arena, U32 sec, U32 off);
 
-#endif // CODEVIEW_H
 

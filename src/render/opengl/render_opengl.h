@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RENDER_OPENGL_H
-#define RENDER_OPENGL_H
 
 ////////////////////////////////
 //~ rjf: Defines
@@ -229,4 +227,3 @@ internal void r_ogl_os_window_unequip(OS_Handle os, R_Handle r);
 internal void r_ogl_os_select_window(OS_Handle os, R_Handle r);
 internal void r_ogl_os_window_swap(OS_Handle os, R_Handle r);
 
-#endif // RENDER_OPENGL_H

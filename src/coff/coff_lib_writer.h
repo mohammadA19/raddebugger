@@ -1,8 +1,6 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef COFF_LIB_WRITER_H
-#define COFF_LIB_WRITER_H
 
 typedef struct COFF_LibWriterMember
 {
@@ -65,5 +63,4 @@ internal U64              coff_lib_writer_push_obj(COFF_LibWriter *writer, strin
 internal void             coff_lib_writer_push_import(COFF_LibWriter *lib_writer, COFF_MachineType machine, COFF_TimeStamp time_stamp, string dll_name, COFF_ImportByType import_by, string name, U16 hint_or_ordinal, COFF_ImportType import_type);
 internal String8List      coff_lib_writer_serialize(Arena *arena, COFF_LibWriter *lib_writer, COFF_TimeStamp time_stamp, U16 mode, B32 emit_second_member);
 
-#endif // COFF_LIB_WRITER_H
 

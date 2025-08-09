@@ -3,8 +3,6 @@
 
 //- GENERATED CODE
 
-#ifndef RENDER_OPENGL_META_H
-#define RENDER_OPENGL_META_H
 
 typedef enum R_OGL_ShaderKind
 {
@@ -273,4 +271,3 @@ read_only global string r_ogl_blur_pshad_src =
 
 C_LINKAGE_END
 
-#endif // RENDER_OPENGL_META_H

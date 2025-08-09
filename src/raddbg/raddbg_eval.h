@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RADDBG_EVAL_H
-#define RADDBG_EVAL_H
 
 ////////////////////////////////
 //~ rjf: `commands` Type Hooks
@@ -108,4 +106,3 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(debug_info_table);
 E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(debug_info_table);
 E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(debug_info_table);
 
-#endif // RADDBG_EVAL_H

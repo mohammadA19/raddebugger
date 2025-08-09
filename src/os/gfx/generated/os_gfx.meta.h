@@ -3,8 +3,6 @@
 
 //- GENERATED CODE
 
-#ifndef OS_GFX_META_H
-#define OS_GFX_META_H
 
 typedef enum OS_Key
 {
@@ -160,4 +158,3 @@ extern string os_g_key_cfg_string_table[143];
 
 C_LINKAGE_END
 
-#endif // OS_GFX_META_H

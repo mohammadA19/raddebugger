@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef EVAL_PARSE_H
-#define EVAL_PARSE_H
 
 ////////////////////////////////
 //~ rjf: Tokenization Functions
@@ -41,4 +39,3 @@ internal E_Parse e_push_type_parse_from_text_tokens(Arena *arena, string text, E
 internal E_Parse e_push_parse_from_string_tokens__prec(Arena *arena, string text, E_TokenArray tokens, S64 max_precedence, U64 max_chain_count);
 internal E_Parse e_push_parse_from_string(Arena *arena, string text);
 
-#endif // EVAL_PARSE_H

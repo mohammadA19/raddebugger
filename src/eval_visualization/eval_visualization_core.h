@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef EVAL_VISUALIZATION_CORE_H
-#define EVAL_VISUALIZATION_CORE_H
 
 ////////////////////////////////
 //~ rjf: Key Type (Uniquely Refers To One Tree Node)
@@ -381,4 +379,3 @@ internal string ev_escaped_from_raw_string(Arena *arena, string raw);
 internal EV_StringIter *ev_string_iter_begin(Arena *arena, E_Eval eval, EV_StringParams *params);
 internal B32 ev_string_iter_next(Arena *arena, EV_StringIter *it, string *out_string);
 
-#endif // EVAL_VISUALIZATION_CORE_H

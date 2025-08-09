@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef EVAL_IR_H
-#define EVAL_IR_H
 
 ////////////////////////////////
 //~ rjf: Identifier Resolution Rule Types
@@ -167,4 +165,3 @@ internal string e_bytecode_from_oplist(Arena *arena, E_OpList *oplist);
 //- rjf: leaf-bytecode expression extensions
 internal E_Expr *e_expr_irext_member_access(Arena *arena, E_Expr *lhs, E_IRTreeAndType *lhs_irtree, string member_name);
 
-#endif // EVAL_IR_H

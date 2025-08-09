@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RENDER_D3D11_H
-#define RENDER_D3D11_H
 
 #include <combaseapi.h>
 #include <dcommon.h>
@@ -188,4 +186,3 @@ internal R_Handle r_d3d11_handle_from_buffer(R_D3D11_Buffer *buffer);
 internal ID3D11Buffer *r_d3d11_instance_buffer_from_size(U64 size);
 internal void r_usage_access_flags_from_resource_kind(R_ResourceKind kind, D3D11_USAGE *out_d3d11_usage, UINT *out_cpu_access_flags);
 
-#endif // RENDER_D3D11_H

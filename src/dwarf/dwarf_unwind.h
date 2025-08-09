@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DWARF_UNWIND_H
-#define DWARF_UNWIND_H
 
 typedef struct DW_UnwindResult
 {
@@ -220,5 +218,4 @@ internal void       dw_unwind_row_copy_x64(DW_CFIRow *dst, DW_CFIRow *src, U64 c
 
 internal B32 dw_unwind_machine_run_to_ip_x64(void *base, Rng1U64 range, DW_CFIMachine *machine, U64 target_ip, DW_CFIRow *row_out);
 
-#endif // DWARF_UNWIND_H
 

@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RADBIN_H
-#define RADBIN_H
 
 ////////////////////////////////
 //~ rjf: Generated Code

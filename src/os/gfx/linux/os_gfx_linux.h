@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef OS_GFX_LINUX_H
-#define OS_GFX_LINUX_H
 
 ////////////////////////////////
 //~ rjf: Includes
@@ -58,4 +56,3 @@ global OS_LNX_GfxState *os_lnx_gfx_state = 0;
 
 internal OS_LNX_Window *os_lnx_window_from_x11window(Window window);
 
-#endif // OS_GFX_LINUX_H

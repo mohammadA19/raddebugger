@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef ASYNC_H
-#define ASYNC_H
 
 ////////////////////////////////
 //~ rjf: Work Function Type
@@ -159,4 +157,3 @@ internal Arena *async_root_thread_arena(ASYNC_Root *root);
 
 internal void async_work_thread__entry_point(void *p);
 
-#endif // ASYNC_H

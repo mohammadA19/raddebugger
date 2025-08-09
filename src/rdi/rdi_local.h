@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RDI_FORMAT_LOCAL_H
-#define RDI_FORMAT_LOCAL_H
 
 #include "lib_rdi/rdi.h"
 #include "lib_rdi/rdi_parse.h"
@@ -94,4 +92,3 @@ internal String8List rdi_strings_from_locations(Arena *arena, RDI_Parsed *rdi, R
 
 internal String8List rdi_dump_list_from_parsed(Arena *arena, RDI_Parsed *rdi, RDI_DumpSubsetFlags flags);
 
-#endif // RDI_FORMAT_LOCAL_H

@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_STRINGS_H
-#define BASE_STRINGS_H
 
 ////////////////////////////////
 //~ rjf: Third Party Includes
@@ -465,4 +463,3 @@ internal U64    str8_deserial_read_block(string string, U64 off, U64 size, strin
 internal U64 u64_hash_from_seed_str8(U64 seed, string string);
 internal U64 u64_hash_from_str8(string string);
 
-#endif // BASE_STRINGS_H

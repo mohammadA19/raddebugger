@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DRAW_H
-#define DRAW_H
 
 ////////////////////////////////
 //~ rjf: Fancy String Types
@@ -201,4 +199,3 @@ internal void dr_truncated_fancy_run_fuzzy_matches(Vec2F32 p, DR_FRunList *list,
 internal void dr_text_run(Vec2F32 p, Vec4F32 color, FNT_Run run);
 internal void dr_text(FNT_Tag font, F32 size, F32 base_align_px, F32 tab_size_px, FNT_RasterFlags flags, Vec2F32 p, Vec4F32 color, string string);
 
-#endif // DRAW_H

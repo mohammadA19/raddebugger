@@ -1,8 +1,6 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef ELF_PARSE_H
-#define ELF_PARSE_H
 
 ////////////////////////////////
 //~ rjf: Parsed Structure Types
@@ -49,4 +47,3 @@ internal string elf_name_from_shdr64(string raw_data, ELF_Bin *bin, ELF_Shdr64 *
 internal U64 elf_base_addr_from_bin(ELF_Bin *bin);
 internal ELF_GnuDebugLink elf_gnu_debug_link_from_bin(string raw_data, ELF_Bin *bin);
 
-#endif // ELF_PARSE_H
