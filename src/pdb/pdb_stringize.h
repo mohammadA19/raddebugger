@@ -5,5 +5,4 @@
 ////////////////////////////////
 //~ PDB Stringize Functions
 
-internal void pdb_stringize_tpi_hash(Arena *arena, String8List *out, PDB_TpiHashParsed *hash);
 

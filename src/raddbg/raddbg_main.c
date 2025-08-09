@@ -318,7 +318,6 @@ typedef enum ExecMode
 }
 ExecMode;
 
-typedef struct IPCInfo IPCInfo;
 struct IPCInfo
 {
   U64 msg_size;

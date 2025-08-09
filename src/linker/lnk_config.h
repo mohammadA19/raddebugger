@@ -526,65 +526,25 @@ typedef enum
 
 // --- Enum <-> String ---------------------------------------------------------
 
-internal string              lnk_string_cmd_switch_type(LNK_CmdSwitchType type);
-internal LNK_CmdSwitchType    lnk_cmd_switch_type_from_string(string string);
-internal LNK_CmdSwitch *      lnk_cmd_switch_from_string(string string);
-internal LNK_InputType        lnk_input_type_from_string(string string);
-internal LNK_DebugMode        lnk_debug_mode_from_string(string string);
-internal LNK_TypeNameHashMode lnk_type_name_hash_mode_from_string(string string);
 
 // --- Command Line Helpers ----------------------------------------------------
 
-internal LNK_CmdOption * lnk_cmd_line_push_option_if_not_presentf(Arena *arena, LNK_CmdLine *cmd_line, LNK_CmdSwitchType cmd_switch_type, char *param_fmt, ...);
-internal LNK_CmdOption * lnk_cmd_line_push_optionf               (Arena *arena, LNK_CmdLine *cmd_line, LNK_CmdSwitchType cmd_switch_type, char *param_fmt, ...);
 
-internal B32 lnk_cmd_line_has_switch(LNK_CmdLine cmd_line, LNK_CmdSwitchType cmd_switch_type);
 
 // --- Errors ------------------------------------------------------------------
 
-internal void lnk_error_cmd_switch                    (LNK_ErrorCode code, struct LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, char *fmt, ...);
-internal void lnk_error_cmd_switch_invalid_param_count(LNK_ErrorCode code, struct LNK_Obj *obj, LNK_CmdSwitchType cmd_switch);
-internal void lnk_error_cmd_switch_invalid_param      (LNK_ErrorCode code, struct LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, string param);
 
 // --- Specialized Parsers ------------------------------------------------------
 
-internal B32  lnk_cmd_switch_parse_version  (struct LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8List value_strings, Version *ver_out);
-internal B32  lnk_cmd_switch_parse_tuple    (struct LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8List value_strings, Rng1U64 *tuple_out);
-internal B32  lnk_cmd_switch_parse_u64      (struct LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8List value_strings, U64 *value_out, LNK_ParseU64Flags flags);
-internal B32  lnk_cmd_switch_parse_u32      (struct LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8List value_strings, U32 *value_out, LNK_ParseU64Flags flags);
-internal B32  lnk_cmd_switch_parse_flag     (struct LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8List value_strings, LNK_SwitchState *value_out);
-internal void lnk_cmd_switch_set_flag_inv_16(struct LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8List value_strings, U16 *flags, U16 bits);
-internal void lnk_cmd_switch_set_flag_inv_64(struct LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8List value_strings, U64 *flags, U64 bits);
-internal void lnk_cmd_switch_set_flag_16    (struct LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8List value_strings, U16 *flags, U16 bits);
-internal void lnk_cmd_switch_set_flag_32    (struct LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8List value_strings, U32 *flags, U32 bits);
-internal void lnk_cmd_switch_set_flag_64    (struct LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8List value_strings, U64 *flags, U64 bits);
-internal B32  lnk_cmd_switch_parse_string   (struct LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8List value_strings, string *string_out);
-internal void lnk_cmd_switch_parse_string_copy(Arena *arena, struct LNK_Obj *obj, LNK_CmdSwitchType cmd_switch, String8List value_strings, string *string_out);
 
-internal B32 lnk_parse_alt_name_directive (string string, struct LNK_Obj *obj, LNK_AltName *alt_out);
-internal B32 lnk_parse_merge_directive    (string string, struct LNK_Obj *obj, LNK_MergeDirective *parse_out);
-internal B32 lnk_parse_export_directive   (Arena *arena, string directive, struct LNK_Obj *obj, PE_ExportParse *export_out);
-internal B32 lnk_parse_export_directive_ex(Arena *arena, String8List directive, struct LNK_Obj *obj, PE_ExportParse *export_out);
 
-internal LNK_AltNameNode *        lnk_alt_name_list_push(Arena *arena, LNK_AltNameList *list, LNK_AltName data);
-internal LNK_MergeDirectiveNode * lnk_merge_directive_list_push(Arena *arena, LNK_MergeDirectiveList *list, LNK_MergeDirective data);
 
 // --- Getters -----------------------------------------------------------------
 
-internal string lnk_get_image_name(LNK_Config *config);
-internal U64     lnk_get_default_function_pad_min(COFF_MachineType machine);
-internal U64     lnk_get_base_addr(LNK_Config *config);
-internal Version lnk_get_default_subsystem_version(PE_WindowsSubsystem subsystem, COFF_MachineType machine);
-internal Version lnk_get_min_subsystem_version(PE_WindowsSubsystem subsystem, COFF_MachineType machine);
 
-internal B32 lnk_do_debug_info        (LNK_Config *config);
-internal B32 lnk_is_thread_pool_shared(LNK_Config *config);
 
-internal B32 lnk_is_section_removed(LNK_Config *config, string section_name);
 
 // --- Config ------------------------------------------------------------------
 
-internal void lnk_apply_cmd_option_to_config(Arena *arena, LNK_Config *config, string name, String8List value_list, struct LNK_Obj *obj);
 
-internal LNK_Config * lnk_config_from_cmd_line(Arena *arena, String8List raw_cmd_line, LNK_CmdLine cmd_line);
 

@@ -3,5 +3,3 @@
 
 #pragma once
 
-internal U32 pdb_hash_udt(CV_UDTInfo udt_info, string data);
-internal U32 pdb_crc32_from_string(string string);

@@ -11,14 +11,12 @@
 #undef glTexSubImage3D
 #undef glActiveTexture
 
-typedef struct R_OGL_LNX_Window R_OGL_LNX_Window;
 struct R_OGL_LNX_Window
 {
   R_OGL_LNX_Window *next;
   EGLSurface *surface;
 };
 
-typedef struct R_OGL_LNX_State R_OGL_LNX_State;
 struct R_OGL_LNX_State
 {
   Arena *arena;

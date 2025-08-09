@@ -584,68 +584,29 @@ typedef struct COFF_RelocValue
 ////////////////////////////////
 // Section
 
-internal U64               coff_align_size_from_section_flags(COFF_SectionFlags flags);
-internal COFF_SectionFlags coff_section_flag_from_align_size (U64 align);
 
-internal string coff_name_from_section_header(string string_table, COFF_SectionHeader *header);
-internal void    coff_parse_section_name      (string full_name, string *name_out, string *postfix_out);
 
 ////////////////////////////////
 // Symbol
 
-internal string coff_read_symbol_name(string string_table, COFF_SymbolName *name);
 
 ////////////////////////////////
 // Reloc
 
-internal U64 coff_apply_size_from_reloc_x64(COFF_Reloc_X64 x);
-internal U64 coff_apply_size_from_reloc_x86(COFF_Reloc_X86 x);
 
-internal COFF_RelocValue coff_pick_reloc_value_x64(COFF_Reloc_X64 type, U64 image_base, U64 reloc_virtual_offset, U32 symbol_section_number, U32 symbol_section_offset, S64 symbol_virtual_offset);
 
 ////////////////////////////////
 // Import
 
-internal U32 coff_make_ordinal32(U16 hint);
-internal U64 coff_make_ordinal64(U16 hint);
-internal string coff_ordinal_data_from_hint(Arena *arena, COFF_MachineType machine, U16 hint);
 
-internal string coff_make_lib_member_header(Arena *arena, string name, COFF_TimeStamp time_stamp, U16 user_id, U16 group_id, U16 mode, U32 size);
-internal string coff_make_import_lookup(Arena *arena, U16 hint, string name);
-internal string coff_make_import_header(Arena *arena, COFF_MachineType machine, COFF_TimeStamp time_stamp, string dll_name, COFF_ImportByType import_by, string name, U16 hint_or_ordinal, COFF_ImportType type);
 
 ////////////////////////////////
 // Misc
 
-internal U16 coff_default_align_from_machine   (COFF_MachineType machine);
-internal U8  coff_code_align_byte_from_machine (COFF_MachineType machine);
-internal U64 coff_word_size_from_machine       (COFF_MachineType machine);
-internal U64 coff_default_exe_base_from_machine(COFF_MachineType machine);
-internal U64 coff_default_dll_base_from_machine(COFF_MachineType machine);
 
-internal Arch arch_from_coff_machine(COFF_MachineType machine);
-internal U64  coff_foff_from_voff(COFF_SectionHeader *sections, U64 section_count, U64 voff);
 
 ////////////////////////////////
 //~ rjf: Enum <=> String
 
-internal string coff_string_from_time_stamp(Arena *arena, COFF_TimeStamp time_stamp);
-internal string coff_string_from_comdat_select_type(COFF_ComdatSelectType type);
-internal string coff_string_from_machine_type(COFF_MachineType machine);
-internal string coff_string_from_flags(Arena *arena, COFF_FileHeaderFlags flags);
-internal string coff_string_from_section_flags(Arena *arena, COFF_SectionFlags flags);
-internal string coff_string_from_resource_memory_flags(Arena *arena, COFF_ResourceMemoryFlags flags);
-internal string coff_string_from_import_header_type(COFF_ImportType type);
-internal string coff_string_from_sym_dtype(COFF_SymDType x);
-internal string coff_string_from_sym_type(COFF_SymType x);
-internal string coff_string_from_sym_storage_class(COFF_SymStorageClass x);
-internal string coff_string_from_weak_ext_type(COFF_WeakExtType x);
-internal string coff_string_from_reloc_x86(COFF_Reloc_X86 x);
-internal string coff_string_from_reloc_x64(COFF_Reloc_X64 x);
-internal string coff_string_from_reloc_arm(COFF_Reloc_Arm x);
-internal string coff_string_from_reloc_arm64(COFF_Reloc_Arm64 x);
-internal string coff_string_from_reloc(COFF_MachineType machine, COFF_RelocType x);
 
-internal COFF_MachineType coff_machine_from_string(string string);
-internal COFF_ImportType  coff_import_header_type_from_string(string name);
 

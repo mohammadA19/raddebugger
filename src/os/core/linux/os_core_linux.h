@@ -30,13 +30,10 @@ pid_t gettid(void);
 int pthread_setname_np(pthread_t thread, const char *name);
 int pthread_getname_np(pthread_t thread, char *name, size_t size);
 
-typedef struct tm tm;
-typedef struct timespec timespec;
 
 ////////////////////////////////
 //~ rjf: File Iterator
 
-typedef struct OS_LNX_FileIter OS_LNX_FileIter;
 struct OS_LNX_FileIter
 {
   DIR *dir;
@@ -48,7 +45,6 @@ StaticAssert(sizeof(Member(OS_FileIter, memory)) >= sizeof(OS_LNX_FileIter), os_
 ////////////////////////////////
 //~ rjf: Safe Call Handler Chain
 
-typedef struct OS_LNX_SafeCallChain OS_LNX_SafeCallChain;
 struct OS_LNX_SafeCallChain
 {
   OS_LNX_SafeCallChain *next;
@@ -68,7 +64,6 @@ typedef enum OS_LNX_EntityKind
 }
 OS_LNX_EntityKind;
 
-typedef struct OS_LNX_Entity OS_LNX_Entity;
 struct OS_LNX_Entity
 {
   OS_LNX_Entity *next;
@@ -94,7 +89,6 @@ struct OS_LNX_Entity
 ////////////////////////////////
 //~ rjf: State
 
-typedef struct OS_LNX_State OS_LNX_State;
 struct OS_LNX_State
 {
   Arena *arena;
@@ -114,21 +108,12 @@ thread_static OS_LNX_SafeCallChain *os_lnx_safe_call_chain = 0;
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal DateTime os_lnx_date_time_from_tm(tm in, U32 msec);
-internal tm os_lnx_tm_from_date_time(DateTime dt);
-internal timespec os_lnx_timespec_from_date_time(DateTime dt);
-internal DenseTime os_lnx_dense_time_from_timespec(timespec in);
-internal FileProperties os_lnx_file_properties_from_stat(struct stat *s);
-internal void os_lnx_safe_call_sig_handler(int x);
 
 ////////////////////////////////
 //~ rjf: Entities
 
-internal OS_LNX_Entity *os_lnx_entity_alloc(OS_LNX_EntityKind kind);
-internal void os_lnx_entity_release(OS_LNX_Entity *entity);
 
 ////////////////////////////////
 //~ rjf: Thread Entry Point
 
-internal void *os_lnx_thread_entry_point(void *ptr);
 

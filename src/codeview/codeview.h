@@ -1068,7 +1068,6 @@ typedef U16 CV_LeafSize;
 #define CV_SymSize_Max max_U16
 typedef U16 CV_SymSize;
 
-typedef struct CV_RecHeader CV_RecHeader;
 struct CV_RecHeader
 {
   U16 size;
@@ -1110,7 +1109,6 @@ enum
   CV_LocalFlag_Static          = (1 << 10),
 };
 
-typedef struct CV_LocalVarAttr CV_LocalVarAttr;
 struct CV_LocalVarAttr
 {
   U32           off;
@@ -1128,7 +1126,6 @@ typedef U32 CV_CompileFlags;
 #define CV_CompileFlags_Extract_AmbientCode(f) (((f)>>15)&0x07)
 #define CV_CompileFlags_Extract_Mode(f)        (((f)>>18)&0x01)
 
-typedef struct CV_SymCompile CV_SymCompile;
 struct CV_SymCompile
 {
   U8              machine;
@@ -1138,7 +1135,6 @@ struct CV_SymCompile
 
 //- (SymKind: SSEARCH)
 
-typedef struct CV_SymStartSearch CV_SymStartSearch;
 struct CV_SymStartSearch
 {
   U32 start_symbol;
@@ -1169,7 +1165,6 @@ enum
   CV_GenericFlags_RSCLEAN = (1 << 1), //  "returnee stack cleanup"
 };
 
-typedef struct CV_SymReturn CV_SymReturn;
 struct CV_SymReturn
 {
   CV_GenericFlags flags;
@@ -1178,7 +1173,6 @@ struct CV_SymReturn
 
 //- (SymKind: SLINK32)
 
-typedef struct CV_SymSLink32 CV_SymSLink32;
 struct CV_SymSLink32
 {
   U32 frame_size;
@@ -1188,7 +1182,6 @@ struct CV_SymSLink32
 
 //- (SymKind: OEM)
 
-typedef struct CV_SymOEM CV_SymOEM;
 struct CV_SymOEM
 {
   Guid      id;
@@ -1198,7 +1191,6 @@ struct CV_SymOEM
 
 //- (SymKind: VFTABLE32)
 
-typedef struct CV_SymVPath32 CV_SymVPath32;
 struct CV_SymVPath32
 {
   CV_TypeId root;
@@ -1247,7 +1239,6 @@ enum
 #define CV_FrameprocFlags_Extract_LocalBasePointer(f) (((f) >> 14)&3)
 #define CV_FrameprocFlags_Extract_ParamBasePointer(f) (((f) >> 16)&3)
 
-typedef struct CV_SymFrameproc CV_SymFrameproc;
 struct CV_SymFrameproc
 {
   U32               frame_size;
@@ -1261,7 +1252,6 @@ struct CV_SymFrameproc
 
 //- (SymKind: ANNOTATION)
 
-typedef struct CV_SymAnnotation CV_SymAnnotation;
 struct CV_SymAnnotation
 {
   U32 off;
@@ -1272,7 +1262,6 @@ struct CV_SymAnnotation
 
 //- (SymKind: OBJNAME)
 
-typedef struct CV_SymObjName CV_SymObjName;
 struct CV_SymObjName
 {
   U32 sig;
@@ -1294,7 +1283,6 @@ typedef enum CV_ThunkOrdinalEnum
 }
 CV_ThunkOrdinalEnum;
 
-typedef struct CV_SymThunk32 CV_SymThunk32;
 struct CV_SymThunk32
 {
   U32             parent;
@@ -1310,7 +1298,6 @@ struct CV_SymThunk32
 
 //- (SymKind: BLOCK32)
 
-typedef struct CV_SymBlock32 CV_SymBlock32;
 struct CV_SymBlock32
 {
   U32 parent;
@@ -1323,7 +1310,6 @@ struct CV_SymBlock32
 
 //- (SymKind: LABEL32)
 
-typedef struct CV_SymLabel32 CV_SymLabel32;
 struct CV_SymLabel32
 {
   U32          off;
@@ -1334,7 +1320,6 @@ struct CV_SymLabel32
 
 //- (SymKind: REGISTER)
 
-typedef struct CV_SymRegister CV_SymRegister;
 struct CV_SymRegister
 {
   CV_TypeId itype;
@@ -1344,7 +1329,6 @@ struct CV_SymRegister
 
 //- (SymKind: CONSTANT)
 
-typedef struct CV_SymConstant CV_SymConstant;
 struct CV_SymConstant
 {
   CV_TypeId itype;
@@ -1354,7 +1338,6 @@ struct CV_SymConstant
 
 //- (SymKind: UDT)
 
-typedef struct CV_SymUDT CV_SymUDT;
 struct CV_SymUDT
 {
   CV_TypeId itype;
@@ -1363,7 +1346,6 @@ struct CV_SymUDT
 
 //- (SymKind: MANYREG)
 
-typedef struct CV_SymManyreg CV_SymManyreg;
 struct CV_SymManyreg
 {
   CV_TypeId itype;
@@ -1373,7 +1355,6 @@ struct CV_SymManyreg
 
 //- (SymKind: BPREL32)
 
-typedef struct CV_SymBPRel32 CV_SymBPRel32;
 struct CV_SymBPRel32
 {
   U32       off;
@@ -1383,7 +1364,6 @@ struct CV_SymBPRel32
 
 //- (SymKind: LDATA32, GDATA32)
 
-typedef struct CV_SymData32 CV_SymData32;
 struct CV_SymData32
 {
   CV_TypeId       itype;
@@ -1403,7 +1383,6 @@ enum
   CV_Pub32Flag_MSIL        = (1 << 3),
 };
 
-typedef struct CV_SymPub32 CV_SymPub32;
 struct CV_SymPub32
 {
   CV_Pub32Flags   flags;
@@ -1414,7 +1393,6 @@ struct CV_SymPub32
 
 //- (SymKind: LPROC32, GPROC32)
 
-typedef struct CV_SymProc32 CV_SymProc32;
 struct CV_SymProc32
 {
   U32          parent;
@@ -1432,7 +1410,6 @@ struct CV_SymProc32
 
 //- (SymKind: REGREL32)
 
-typedef struct CV_SymRegrel32 CV_SymRegrel32;
 struct CV_SymRegrel32
 {
   U32       reg_off;
@@ -1443,7 +1420,6 @@ struct CV_SymRegrel32
 
 //- (SymKind: LTHREAD32, GTHREAD32)
 
-typedef struct CV_SymThread32 CV_SymThread32;
 struct CV_SymThread32
 {
   CV_TypeId itype;
@@ -1466,7 +1442,6 @@ typedef U32 CV_Compile2Flags;
 #define CV_Compile2Flags_Extract_CVTCIL(f)          (((f)>>15)&0x01)
 #define CV_Compile2Flags_Extract_MSILModule(f)      (((f)>>16)&0x01)
 
-typedef struct CV_SymCompile2 CV_SymCompile2;
 struct CV_SymCompile2
 {
   CV_Compile2Flags flags;
@@ -1482,7 +1457,6 @@ struct CV_SymCompile2
 
 //- (SymKind: MANYREG2)
 
-typedef struct CV_SymManyreg2 CV_SymManyreg2;
 struct CV_SymManyreg2
 {
   CV_TypeId itype;
@@ -1492,7 +1466,6 @@ struct CV_SymManyreg2
 
 //- (SymKind: LOCALSLOT)
 
-typedef struct CV_SymSlot CV_SymSlot;
 struct CV_SymSlot
 {
   U32       slot_index;
@@ -1502,7 +1475,6 @@ struct CV_SymSlot
 
 //- (SymKind: MANFRAMEREL, ATTR_FRAMEREL)
 
-typedef struct CV_SymAttrFrameRel CV_SymAttrFrameRel;
 struct CV_SymAttrFrameRel
 {
   U32             off;
@@ -1513,7 +1485,6 @@ struct CV_SymAttrFrameRel
 
 //- (SymKind: MANREGISTER, ATTR_REGISTER)
 
-typedef struct CV_SymAttrReg CV_SymAttrReg;
 struct CV_SymAttrReg
 {
   CV_TypeId       itype;
@@ -1525,7 +1496,6 @@ struct CV_SymAttrReg
 //- (SymKind: MANMANYREG, ATTR_MANYREG)
 
 
-typedef struct CV_SymAttrManyReg CV_SymAttrManyReg;
 struct CV_SymAttrManyReg
 {
   CV_TypeId       itype;
@@ -1537,7 +1507,6 @@ struct CV_SymAttrManyReg
 
 //- (SymKind: MANREGREL, ATTR_REGREL)
 
-typedef struct CV_SymAttrRegRel CV_SymAttrRegRel;
 struct CV_SymAttrRegRel
 {
   U32             off;
@@ -1549,7 +1518,6 @@ struct CV_SymAttrRegRel
 
 //- (SymKind: UNAMESPACE)
 
-typedef struct CV_SymUNamespace CV_SymUNamespace;
 struct CV_SymUNamespace
 {
   // *** "dummy" is the first character of name - it should not be skipped!
@@ -1563,7 +1531,6 @@ struct CV_SymUNamespace
 
 //- (SymKind: PROCREF, DATAREF, LPROCREF)
 
-typedef struct CV_SymRef2 CV_SymRef2;
 struct CV_SymRef2
 {
   U32         suc_name;
@@ -1582,7 +1549,6 @@ typedef enum CV_TrampolineKindEnum
 }
 CV_TrampolineKindEnum;
 
-typedef struct CV_SymTrampoline CV_SymTrampoline;
 struct CV_SymTrampoline
 {
   CV_TrampolineKind kind;
@@ -1602,7 +1568,6 @@ enum
   CV_SepcodeFlag_ReturnsToParent = (1 << 1),
 };
 
-typedef struct CV_SymSepcode CV_SymSepcode;
 struct CV_SymSepcode
 {
   U32             parent;
@@ -1617,7 +1582,6 @@ struct CV_SymSepcode
 
 //- (SymKind: SECTION)
 
-typedef struct CV_SymSection CV_SymSection;
 struct CV_SymSection
 {
   U16 sec_index;
@@ -1631,7 +1595,6 @@ struct CV_SymSection
 
 //- (SymKind: COFFGROUP)
 
-typedef struct CV_SymCoffGroup CV_SymCoffGroup;
 struct CV_SymCoffGroup
 {
   U32 size;
@@ -1654,7 +1617,6 @@ enum
   CV_ExportFlag_Forwarder = (1 << 5),
 };
 
-typedef struct CV_SymExport CV_SymExport;
 struct CV_SymExport
 {
   U16            ordinal;
@@ -1664,7 +1626,6 @@ struct CV_SymExport
 
 //- (SymKind: CALLSITEINFO)
 
-typedef struct CV_SymCallSiteInfo CV_SymCallSiteInfo;
 struct CV_SymCallSiteInfo
 {
   U32       off;
@@ -1685,7 +1646,6 @@ typedef enum CV_FrameCookieKindEnum
 }
 CV_FrameCookieKindEnum;
 
-typedef struct CV_SymFrameCookie CV_SymFrameCookie;
 struct CV_SymFrameCookie
 {
   U32                off;
@@ -1705,7 +1665,6 @@ typedef enum CV_DiscardedKindEnum
 }
 CV_DiscardedKindEnum;
 
-typedef struct CV_SymDiscarded CV_SymDiscarded;
 struct CV_SymDiscarded
 {
   CV_DiscardedKind kind;
@@ -1749,7 +1708,6 @@ typedef U32 CV_Compile3Flags;
 #define CV_Compile3Flags_Extract_PGO(f)             (((f)>>19)&0x01)
 #define CV_Compile3Flags_Extract_EXP(f)             (((f)>>20)&0x01)
 
-typedef struct CV_SymCompile3 CV_SymCompile3;
 struct CV_SymCompile3
 {
   CV_Compile3Flags flags;
@@ -1767,7 +1725,6 @@ struct CV_SymCompile3
 
 //- (SymKind: ENVBLOCK)
 
-typedef struct CV_SymEnvBlock CV_SymEnvBlock;
 struct CV_SymEnvBlock
 {
   U8 flags;
@@ -1776,7 +1733,6 @@ struct CV_SymEnvBlock
 
 //- (SymKind: LOCAL)
 
-typedef struct CV_SymLocal CV_SymLocal;
 struct CV_SymLocal
 {
   CV_TypeId     itype;
@@ -1786,7 +1742,6 @@ struct CV_SymLocal
 
 //- DEFRANGE
 
-typedef struct CV_LvarAddrRange CV_LvarAddrRange;
 struct CV_LvarAddrRange
 {
   U32 off;
@@ -1794,7 +1749,6 @@ struct CV_LvarAddrRange
   U16 len;
 };
 
-typedef struct CV_LvarAddrGap CV_LvarAddrGap;
 struct CV_LvarAddrGap
 {
   U16 off;
@@ -1809,7 +1763,6 @@ enum
 
 //- (SymKind: DEFRANGE)
 
-typedef struct CV_SymDefrange CV_SymDefrange;
 struct CV_SymDefrange
 {
   U32              program;
@@ -1819,7 +1772,6 @@ struct CV_SymDefrange
 
 //- (SymKind: DEFRANGE_SUBFIELD)
 
-typedef struct CV_SymDefrangeSubfield CV_SymDefrangeSubfield;
 struct CV_SymDefrangeSubfield
 {
   U32              program;
@@ -1830,7 +1782,6 @@ struct CV_SymDefrangeSubfield
 
 //- (SymKind: DEFRANGE_REGISTER)
 
-typedef struct CV_SymDefrangeRegister CV_SymDefrangeRegister;
 struct CV_SymDefrangeRegister
 {
   CV_Reg           reg;
@@ -1841,7 +1792,6 @@ struct CV_SymDefrangeRegister
 
 //- (SymKind: DEFRANGE_FRAMEPOINTER_REL)
 
-typedef struct CV_SymDefrangeFramepointerRel CV_SymDefrangeFramepointerRel;
 struct CV_SymDefrangeFramepointerRel
 {
   S32              off;
@@ -1853,7 +1803,6 @@ struct CV_SymDefrangeFramepointerRel
 
 #define CV_DefrangeSubfieldRegister_Extract_ParentOffset(x) ((x) & 0x1FFF)
 
-typedef struct CV_SymDefrangeSubfieldRegister CV_SymDefrangeSubfieldRegister;
 struct CV_SymDefrangeSubfieldRegister
 {
   CV_Reg           reg;
@@ -1865,7 +1814,6 @@ struct CV_SymDefrangeSubfieldRegister
 
 //- (SymKind: DEFRANGE_FRAMEPOINTER_REL_FULL_SCOPE)
 
-typedef struct CV_SymDefrangeFramepointerRelFullScope CV_SymDefrangeFramepointerRelFullScope;
 struct CV_SymDefrangeFramepointerRelFullScope
 {
   S32 off;
@@ -1880,7 +1828,6 @@ enum
 };
 #define CV_DefrangeRegisterRelFlag_Extract_OffsetParent(f) (((f)>>4)&0xFFF)
 
-typedef struct CV_SymDefrangeRegisterRel CV_SymDefrangeRegisterRel;
 struct CV_SymDefrangeRegisterRel
 {
   CV_Reg                      reg;
@@ -1892,7 +1839,6 @@ struct CV_SymDefrangeRegisterRel
 
 //- (SymKind: BUILDINFO)
 
-typedef struct CV_SymBuildInfo CV_SymBuildInfo;
 struct CV_SymBuildInfo
 {
   CV_ItemId id;
@@ -1928,7 +1874,6 @@ typedef enum CV_InlineRangeKindEnum
 }
 CV_InlineRangeKindEnum;
 
-typedef struct CV_SymInlineSite CV_SymInlineSite;
 struct CV_SymInlineSite
 {
   U32       parent;
@@ -1939,7 +1884,6 @@ struct CV_SymInlineSite
 
 //- (SymKind: INLINESITE2)
 
-typedef struct CV_SymInlineSite2 CV_SymInlineSite2;
 struct CV_SymInlineSite2
 {
   U32       parent_off;
@@ -1953,7 +1897,6 @@ struct CV_SymInlineSite2
 
 //- (SymKind: FILESTATIC)
 
-typedef struct CV_SymFileStatic CV_SymFileStatic;
 struct CV_SymFileStatic
 {
   CV_TypeId     itype;
@@ -1981,7 +1924,6 @@ typedef enum CV_ArmSwitchKindEnum
 }
 CV_ArmSwitchKindEnum;
 
-typedef struct CV_SymArmSwitchTable CV_SymArmSwitchTable;
 struct CV_SymArmSwitchTable
 {
   U32              off_base;
@@ -1996,7 +1938,6 @@ struct CV_SymArmSwitchTable
 
 //- (SymKind: CALLEES, CALLERS)
 
-typedef struct CV_SymFunctionList CV_SymFunctionList;
 struct CV_SymFunctionList
 {
   U32 count;
@@ -2006,7 +1947,6 @@ struct CV_SymFunctionList
 
 //- (SymKind: POGODATA)
 
-typedef struct CV_SymPogoInfo CV_SymPogoInfo;
 struct CV_SymPogoInfo
 {
   U32 invocations;
@@ -2017,7 +1957,6 @@ struct CV_SymPogoInfo
 
 //- (SymKind: HEAPALLOCSITE)
 
-typedef struct CV_SymHeapAllocSite CV_SymHeapAllocSite;
 struct CV_SymHeapAllocSite
 {
   U32       off;
@@ -2039,7 +1978,6 @@ enum
   CV_ModTypeRefFlag_RefTM    = (1 << 5),
 };
 
-typedef struct CV_SymModTypeRef CV_SymModTypeRef;
 struct CV_SymModTypeRef
 {
   CV_ModTypeRefFlags flags;
@@ -2060,7 +1998,6 @@ enum
   CV_RefMiniPdbFlag_Const = (1 << 4),
 };
 
-typedef struct CV_SymRefMiniPdb CV_SymRefMiniPdb;
 struct CV_SymRefMiniPdb
 {
   U32                data;
@@ -2083,7 +2020,6 @@ enum
   CV_FastLinkFlag_IsNamespace  = (1 << 6),
 };
 
-typedef struct CV_SymFastLink CV_SymFastLink;
 struct CV_SymFastLink
 {
   CV_TypeId        itype;
@@ -2093,7 +2029,6 @@ struct CV_SymFastLink
 
 //- (SymKind: INLINEES)
 
-typedef struct CV_SymInlinees CV_SymInlinees;
 struct CV_SymInlinees
 {
   U32 count;
@@ -2310,7 +2245,6 @@ CV_CallKindEnum;
 
 //- (LeafKind: PRECOMP)
 
-typedef struct CV_LeafPreComp CV_LeafPreComp;
 struct CV_LeafPreComp
 {
   U32 start_index;
@@ -2321,7 +2255,6 @@ struct CV_LeafPreComp
 
 //- (LeafKind; END_PRECOMP)
 
-typedef struct CV_LeafEndPreComp CV_LeafEndPreComp;
 struct CV_LeafEndPreComp
 {
   U32 sig;
@@ -2329,7 +2262,6 @@ struct CV_LeafEndPreComp
 
 //- (LeafKind: TYPESERVER)
 
-typedef struct CV_LeafTypeServer CV_LeafTypeServer;
 struct CV_LeafTypeServer
 {
   U32 sig;
@@ -2339,7 +2271,6 @@ struct CV_LeafTypeServer
 
 //- (LeafKind: TYPESERVER2)
 
-typedef struct CV_LeafTypeServer2 CV_LeafTypeServer2;
 struct CV_LeafTypeServer2
 {
   Guid sig70;
@@ -2349,7 +2280,6 @@ struct CV_LeafTypeServer2
 
 //- (LeafKind: SKIP)
 
-typedef struct CV_LeafSkip CV_LeafSkip;
 struct CV_LeafSkip
 {
   CV_TypeId itype;
@@ -2357,7 +2287,6 @@ struct CV_LeafSkip
 
 //- (LeafKind: VTSHAPE)
 
-typedef struct CV_LeafVTShape CV_LeafVTShape;
 struct CV_LeafVTShape
 {
   U16 count;
@@ -2366,7 +2295,6 @@ struct CV_LeafVTShape
 
 //- (LeafKind: LABEL)
 
-typedef struct CV_LeafLabel CV_LeafLabel;
 struct CV_LeafLabel
 {
   CV_LabelKind kind;
@@ -2382,7 +2310,6 @@ enum
   CV_ModifierFlag_Unaligned = (1 << 2),
 };
 
-typedef struct CV_LeafModifier CV_LeafModifier;
 struct CV_LeafModifier
 {
   CV_TypeId        itype;
@@ -2411,7 +2338,6 @@ enum
 #define CV_PointerAttribs_Extract_Mode(a) (((a)>>5)&0x7)
 #define CV_PointerAttribs_Extract_Size(a) (((a)>>13)&0x3F)
 
-typedef struct CV_LeafPointer CV_LeafPointer;
 struct CV_LeafPointer
 {
   CV_TypeId         itype;
@@ -2420,7 +2346,6 @@ struct CV_LeafPointer
 
 //- (LeafKind: PROCEDURE)
 
-typedef struct CV_LeafProcedure CV_LeafProcedure;
 struct CV_LeafProcedure
 {
   CV_TypeId          ret_itype;
@@ -2432,7 +2357,6 @@ struct CV_LeafProcedure
 
 //- (LeafKind: MFUNCTION)
 
-typedef struct CV_LeafMFunction CV_LeafMFunction;
 struct CV_LeafMFunction
 {
   CV_TypeId          ret_itype;
@@ -2447,7 +2371,6 @@ struct CV_LeafMFunction
 
 //- (LeafKind: ARGLIST)
 
-typedef struct CV_LeafArgList CV_LeafArgList;
 struct CV_LeafArgList
 {
   U32 count;
@@ -2456,7 +2379,6 @@ struct CV_LeafArgList
 
 //- (LeafKind: BITFIELD)
 
-typedef struct CV_LeafBitField CV_LeafBitField;
 struct CV_LeafBitField
 {
   CV_TypeId itype;
@@ -2467,7 +2389,6 @@ struct CV_LeafBitField
 //- (LeafKind: METHODLIST)
 
 //   ("jagged" array of these vvvvvvvv)
-typedef struct CV_LeafMethodListMember CV_LeafMethodListMember;
 struct CV_LeafMethodListMember
 {
   CV_FieldAttribs attribs;
@@ -2478,7 +2399,6 @@ struct CV_LeafMethodListMember
 
 //- (LeafKind: INDEX)
 
-typedef struct CV_LeafIndex CV_LeafIndex;
 struct CV_LeafIndex
 {
   U16       pad;
@@ -2487,7 +2407,6 @@ struct CV_LeafIndex
 
 //- (LeafKind: ARRAY)
 
-typedef struct CV_LeafArray CV_LeafArray;
 struct CV_LeafArray
 {
   CV_TypeId entry_itype;
@@ -2497,7 +2416,6 @@ struct CV_LeafArray
 
 //- (LeafKind: CLASS, STRUCTURE, INTERFACE)
 
-typedef struct CV_LeafStruct CV_LeafStruct;
 struct CV_LeafStruct
 {
   U16          count;
@@ -2512,7 +2430,6 @@ struct CV_LeafStruct
 
 //- (LeafKind: UNION)
 
-typedef struct CV_LeafUnion CV_LeafUnion;
 struct CV_LeafUnion
 {
   U16          count;
@@ -2525,7 +2442,6 @@ struct CV_LeafUnion
 
 //- (LeafKind: ENUM)
 
-typedef struct CV_LeafEnum CV_LeafEnum;
 struct CV_LeafEnum
 {
   U16          count;
@@ -2538,7 +2454,6 @@ struct CV_LeafEnum
 
 //- (LeafKind: ALIAS)
 
-typedef struct CV_LeafAlias CV_LeafAlias;
 struct CV_LeafAlias
 {
   CV_TypeId itype;
@@ -2547,7 +2462,6 @@ struct CV_LeafAlias
 
 //- (LeafKind: MEMBER)
 
-typedef struct CV_LeafMember CV_LeafMember;
 struct CV_LeafMember
 {
   CV_FieldAttribs attribs;
@@ -2558,7 +2472,6 @@ struct CV_LeafMember
 
 //- (LeafKind: STMEMBER)
 
-typedef struct CV_LeafStMember CV_LeafStMember;
 struct CV_LeafStMember
 {
   CV_FieldAttribs attribs;
@@ -2568,7 +2481,6 @@ struct CV_LeafStMember
 
 //- (LeafKind: METHOD)
 
-typedef struct CV_LeafMethod CV_LeafMethod;
 struct CV_LeafMethod
 {
   U16       count;
@@ -2578,7 +2490,6 @@ struct CV_LeafMethod
 
 //- (LeafKind: ONEMETHOD)
 
-typedef struct CV_LeafOneMethod CV_LeafOneMethod;
 struct CV_LeafOneMethod
 {
   CV_FieldAttribs attribs;
@@ -2589,7 +2500,6 @@ struct CV_LeafOneMethod
 
 //- (LeafKind: ENUMERATE)
 
-typedef struct CV_LeafEnumerate CV_LeafEnumerate;
 struct CV_LeafEnumerate
 {
   CV_FieldAttribs attribs;
@@ -2599,7 +2509,6 @@ struct CV_LeafEnumerate
 
 //- (LeafKind: NESTTYPE)
 
-typedef struct CV_LeafNestType CV_LeafNestType;
 struct CV_LeafNestType
 {
   U16       pad;
@@ -2609,7 +2518,6 @@ struct CV_LeafNestType
 
 //- (LeafKind: NESTTYPEEX)
 
-typedef struct CV_LeafNestTypeEx CV_LeafNestTypeEx;
 struct CV_LeafNestTypeEx
 {
   CV_FieldAttribs attribs;
@@ -2619,7 +2527,6 @@ struct CV_LeafNestTypeEx
 
 //- (LeafKind: BCLASS)
 
-typedef struct CV_LeafBClass CV_LeafBClass;
 struct CV_LeafBClass
 {
   CV_FieldAttribs attribs;
@@ -2629,7 +2536,6 @@ struct CV_LeafBClass
 
 //- (LeafKind: VBCLASS, IVBCLASS)
 
-typedef struct CV_LeafVBClass CV_LeafVBClass;
 struct CV_LeafVBClass
 {
   CV_FieldAttribs attribs;
@@ -2641,7 +2547,6 @@ struct CV_LeafVBClass
 
 //- (LeafKind: VFUNCTAB)
 
-typedef struct CV_LeafVFuncTab CV_LeafVFuncTab;
 struct CV_LeafVFuncTab
 {
   U16       pad;
@@ -2650,7 +2555,6 @@ struct CV_LeafVFuncTab
 
 //- (LeafKind: VFUNCOFF)
 
-typedef struct CV_LeafVFuncOff CV_LeafVFuncOff;
 struct CV_LeafVFuncOff
 {
   U16       pad;
@@ -2660,7 +2564,6 @@ struct CV_LeafVFuncOff
 
 //- (LeafKind: VFTABLE)
 
-typedef struct CV_LeafVFTable CV_LeafVFTable;
 struct CV_LeafVFTable
 {
   CV_TypeId owner_itype;
@@ -2672,7 +2575,6 @@ struct CV_LeafVFTable
 
 //- (LeafKind: VFTPATH)
 
-typedef struct CV_LeafVFPath CV_LeafVFPath;
 struct CV_LeafVFPath
 {
   U32 count;
@@ -2681,7 +2583,6 @@ struct CV_LeafVFPath
 
 //- (LeafKind: CLASS2, STRUCT2)
 
-typedef struct CV_LeafStruct2 CV_LeafStruct2;
 struct CV_LeafStruct2
 {
   // NOTE: still reverse engineering this - if you find docs please help!
@@ -2697,7 +2598,6 @@ struct CV_LeafStruct2
 
 //- (LeafIDKind: FUNC_ID)
 
-typedef struct CV_LeafFuncId CV_LeafFuncId;
 struct CV_LeafFuncId
 {
   CV_ItemId scope_string_id;
@@ -2707,7 +2607,6 @@ struct CV_LeafFuncId
 
 //- (LeafIDKind: MFUNC_ID)
 
-typedef struct CV_LeafMFuncId CV_LeafMFuncId;
 struct CV_LeafMFuncId
 {
   CV_TypeId owner_itype;
@@ -2717,7 +2616,6 @@ struct CV_LeafMFuncId
 
 //- (LeafIDKind: STRING_ID)
 
-typedef struct CV_LeafStringId CV_LeafStringId;
 struct CV_LeafStringId
 {
   CV_ItemId substr_list_id;
@@ -2736,7 +2634,6 @@ typedef enum CV_BuildInfoIndexEnum
 }
 CV_BuildInfoIndexEnum;
 
-typedef struct CV_LeafBuildInfo CV_LeafBuildInfo;
 struct CV_LeafBuildInfo
 {
   U16 count;
@@ -2745,7 +2642,6 @@ struct CV_LeafBuildInfo
 
 //- (LeafIDKind: SUBSTR_LIST)
 
-typedef struct CV_LeafSubstrList CV_LeafSubstrList;
 struct CV_LeafSubstrList
 {
   U32 count;
@@ -2754,7 +2650,6 @@ struct CV_LeafSubstrList
 
 //- (LeafIDKind: UDT_SRC_LINE)
 
-typedef struct CV_LeafUDTSrcLine CV_LeafUDTSrcLine;
 struct CV_LeafUDTSrcLine
 {
   CV_TypeId udt_itype;
@@ -2764,7 +2659,6 @@ struct CV_LeafUDTSrcLine
 
 //- (LeafIDKind: UDT_MOD_SRC_LINE)
 
-typedef struct CV_LeafUDTModSrcLine CV_LeafUDTModSrcLine;
 struct CV_LeafUDTModSrcLine
 {
   CV_TypeId   udt_itype;
@@ -2804,7 +2698,6 @@ typedef enum CV_C13SubSectionKindEnum
 }
 CV_C13SubSectionKindEnum;
 
-typedef struct CV_C13SubSectionHeader CV_C13SubSectionHeader;
 struct CV_C13SubSectionHeader
 {
   CV_C13SubSectionKind kind;
@@ -2823,7 +2716,6 @@ typedef enum CV_C13ChecksumKindEnum
 }
 CV_C13ChecksumKindEnum;
 
-typedef struct CV_C13Checksum CV_C13Checksum;
 struct CV_C13Checksum
 {
   U32                name_off;
@@ -2839,7 +2731,6 @@ enum
   CV_C13SubSecLinesFlag_HasColumns = (1 << 0)
 };
 
-typedef struct CV_C13SubSecLinesHeader CV_C13SubSecLinesHeader;
 struct CV_C13SubSecLinesHeader
 {
   U32                    sec_off;
@@ -2848,7 +2739,6 @@ struct CV_C13SubSecLinesHeader
   U32                    len;
 };
 
-typedef struct CV_C13File CV_C13File;
 struct CV_C13File
 {
   U32 file_off;
@@ -2863,14 +2753,12 @@ typedef U32 CV_C13LineFlags;
 #define CV_C13LineFlags_Extract_DeltaToEnd(f) (((f)>>24)&0x7F)
 #define CV_C13LineFlags_Extract_Statement(f)  (((f)>>31)&0x1)
 
-typedef struct CV_C13Line CV_C13Line;
 struct CV_C13Line
 {
   U32             off;
   CV_C13LineFlags flags;
 };
 
-typedef struct CV_C13Column CV_C13Column;
 struct CV_C13Column
 {
   U16 start;
@@ -2887,7 +2775,6 @@ enum
   CV_C13FrameDataFlag_HasIsFuncStart                 = (1 << 2),
 };
 
-typedef struct CV_C13FrameData CV_C13FrameData;
 struct CV_C13FrameData
 {
   U32                  start_voff;
@@ -2910,7 +2797,6 @@ enum
   CV_C13InlineeLinesSig_EXTRA_FILES,
 };
 
-typedef struct CV_C13InlineeSourceLineHeader CV_C13InlineeSourceLineHeader;
 struct CV_C13InlineeSourceLineHeader
 {
   CV_ItemId inlinee;          // LF_FUNC_ID or LF_MFUNC_ID
@@ -2935,7 +2821,6 @@ enum CV_TypeIndexSource
 };
 typedef enum CV_TypeIndexSource CV_TypeIndexSource;
 
-typedef struct CV_TypeIndexInfo CV_TypeIndexInfo;
 struct CV_TypeIndexInfo
 {
   struct CV_TypeIndexInfo *next;
@@ -2943,7 +2828,6 @@ struct CV_TypeIndexInfo
   CV_TypeIndexSource       source;
 };
 
-typedef struct CV_TypeIndexInfoList CV_TypeIndexInfoList;
 struct CV_TypeIndexInfoList
 {
   U64               count;
@@ -2951,7 +2835,6 @@ struct CV_TypeIndexInfoList
   CV_TypeIndexInfo *last;
 };
 
-typedef struct CV_TypeIndexArray CV_TypeIndexArray;
 struct CV_TypeIndexArray
 {
   U32           count;
@@ -2960,59 +2843,10 @@ struct CV_TypeIndexArray
 
 ////////////////////////////////
 
-internal CV_Arch               cv_arch_from_coff_machine(COFF_MachineType machine);
-internal U64                   cv_size_from_reg_x86(CV_Reg reg);
-internal U64                   cv_size_from_reg_x64(CV_Reg reg);
-internal U64                   cv_size_from_reg(CV_Arch arch, CV_Reg reg);
-internal B32                   cv_is_reg_sp(CV_Arch arch, CV_Reg reg);
-internal CV_EncodedFramePtrReg cv_pick_fp_encoding(CV_SymFrameproc *frameproc, B32 is_local_param);
-internal CV_Reg                cv_decode_fp_reg(CV_Arch arch, CV_EncodedFramePtrReg encoded_reg);
-internal U32                   cv_map_encoded_base_pointer(CV_Arch arch, U32 encoded_frame_reg);
 
 
 ////////////////////////////////
 //~ rjf: Enum -> String
 
-internal string cv_string_from_inline_range_kind(CV_InlineRangeKind kind);
-internal string cv_string_from_type_index_source(CV_TypeIndexSource ti_source);
-internal string cv_string_from_language(CV_Language x);
-internal string cv_string_from_reg_id(Arena *arena, CV_Arch arch, U32 id);
-internal string cv_string_from_member_access(CV_MemberAccess x);
-internal string cv_string_from_method_prop(CV_MethodProp x);
-internal string cv_string_from_hfa(CV_HFAKind x);
-internal string cv_string_from_mcom(CV_MoComUDTKind x);
-internal string cv_string_from_binary_opcode(CV_InlineBinaryAnnotation x);
-internal string cv_string_from_thunk_ordinal(CV_ThunkOrdinal x);
-internal string cv_string_from_frame_cookie_kind(CV_FrameCookieKind x);
-internal string cv_string_from_generic_style(CV_GenericStyle x);
-internal string cv_string_from_trampoline_kind(CV_TrampolineKind x);
-internal string cv_string_from_virtual_table_shape_kind(CV_VirtualTableShape x);
-internal string cv_string_from_call_kind(CV_CallKind x);
-internal string cv_string_from_member_pointer_kind(CV_MemberPointerKind x);
-internal string cv_string_from_pointer_kind(CV_PointerKind x);
-internal string cv_string_from_pointer_mode(CV_PointerMode x);
-internal string cv_string_from_c13_checksum_kind(CV_C13ChecksumKind x);
-internal string cv_string_from_label_kind(Arena *arena, CV_LabelKind x);
-internal string cv_string_from_c13_subsection_kind(CV_C13SubSectionKind x);
-internal string cv_string_from_modifier_flags(Arena *arena, CV_ModifierFlags x);
-internal string cv_string_from_pointer_attribs(Arena *arena, CV_PointerAttribs x);
-internal string cv_string_from_function_attribs(Arena *arena, CV_FunctionAttribs x);
-internal string cv_string_from_export_flags(Arena *arena, CV_ExportFlags x);
-internal string cv_string_from_sepcode(Arena *arena, CV_SepcodeFlags x);
-internal string cv_string_from_pub32_flags(Arena *arena, CV_Pub32Flags x);
-internal string cv_string_from_generic_flags(Arena *arena, CV_GenericFlags x);
-internal string cv_string_from_frame_proc_flags(Arena *arena, CV_FrameprocFlags x);
-internal string cv_string_from_type_props(Arena *arena, CV_TypeProps32 x);
-internal string cv_string_from_local_flags(Arena *arena, CV_LocalFlags x);
-internal string cv_string_from_proc_flags(Arena *arena, CV_ProcFlags x);
-internal string cv_string_from_range_attribs(Arena *arena, CV_RangeAttribs x);
-internal string cv_string_from_defrange_register_rel_flags(Arena *arena, CV_DefrangeRegisterRelFlags x);
-internal string cv_string_from_field_attribs(Arena *arena, CV_FieldAttribs attribs);
-internal string cv_string_from_itype(Arena *arena, CV_TypeIndex min_itype, CV_TypeIndex itype);
-internal string cv_string_from_itemid(Arena *arena, CV_ItemId itemid);
-internal string cv_string_from_symbol_type(Arena *arena, CV_SymKind symbol_type);
-internal string cv_string_from_symbol_kind(Arena *arena, CV_SymKind kind);
-internal string cv_string_from_leaf_name(Arena *arena, U32 leaf_type);
-internal string cv_string_sec_off(Arena *arena, U32 sec, U32 off);
 
 

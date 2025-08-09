@@ -7,7 +7,6 @@
 
 #pragma pack(push,1)
 
-typedef struct PE_DosHeader PE_DosHeader;
 struct PE_DosHeader
 {
   U16 magic;
@@ -88,7 +87,6 @@ enum
   PE_DllCharacteristic_TERMINAL_SERVER_AWARE = (1 << 15),
 };
 
-typedef struct PE_OptionalHeader32 PE_OptionalHeader32;
 struct PE_OptionalHeader32
 {
   U16                   magic;
@@ -123,7 +121,6 @@ struct PE_OptionalHeader32
   U32                   data_dir_count;
 };
 
-typedef struct PE_OptionalHeader32Plus PE_OptionalHeader32Plus;
 struct PE_OptionalHeader32Plus
 {
   U16                   magic;
@@ -179,7 +176,6 @@ typedef enum PE_DataDirectoryIndex
 }
 PE_DataDirectoryIndex;
 
-typedef struct PE_DataDirectory PE_DataDirectory;
 struct PE_DataDirectory
 {
   U32 virt_off;
@@ -243,7 +239,6 @@ enum
 };
 
 // winnt.h: FPO_DATA
-typedef struct PE_DebugFPO PE_DebugFPO;
 struct PE_DebugFPO
 {
   U32 func_code_off;
@@ -262,7 +257,6 @@ enum
 };
 
 // winnt.h: IMAGE_DEBUG_MISC
-typedef struct PE_DebugMisc PE_DebugMisc;
 struct PE_DebugMisc
 {
   PE_DebugMiscType data_type;
@@ -273,7 +267,6 @@ struct PE_DebugMisc
 };
 
 // winnt.h: IMAGE_COFF_SYMBOLS_HEADER
-typedef struct PE_DebugCoff PE_DebugCoff;
 struct PE_DebugCoff
 {
   U32 symbol_count;
@@ -286,7 +279,6 @@ struct PE_DebugCoff
   U32 virt_off_to_last_byte_of_data;
 };
 
-typedef struct PE_DebugDirectory PE_DebugDirectory;
 struct PE_DebugDirectory
 {
   U32                   characteristics;
@@ -352,7 +344,6 @@ enum
 };
 #define PE_LoadConfigGuardFlags_Extract_CF_FUNCTION_TABLE_SIZE(f) (U32)(((f) >> PE_LoadConfigGuardFlags_CF_FUNCTION_TABLE_SIZE_SHIFT) & PE_LoadConfigGuardFlags_CF_FUNCTION_TABLE_SIZE_MASK)
 
-typedef struct PE_LoadConfigCodeIntegrity PE_LoadConfigCodeIntegrity;
 struct PE_LoadConfigCodeIntegrity
 {
   U16 flags;
@@ -361,7 +352,6 @@ struct PE_LoadConfigCodeIntegrity
   U32 reserved;
 };
 
-typedef struct PE_LoadConfig32 PE_LoadConfig32;
 struct PE_LoadConfig32
 {
   U32            size;
@@ -420,7 +410,6 @@ struct PE_LoadConfig32
   U32 cast_guard_os_determined_failure_mode;
 };
 
-typedef struct PE_LoadConfig64 PE_LoadConfig64;
 struct PE_LoadConfig64
 {
   U32            size;
@@ -485,7 +474,6 @@ struct PE_LoadConfig64
 #define PE_PE32_MAGIC     0x010bu
 #define PE_PE32PLUS_MAGIC 0x020bu
 
-typedef struct PE_MipsPdata PE_MipsPdata;
 struct PE_MipsPdata
 {
   U32 voff_first;
@@ -495,7 +483,6 @@ struct PE_MipsPdata
   U32 voff_one_past_prolog;
 };
 
-typedef struct PE_ArmPdata PE_ArmPdata;
 struct PE_ArmPdata
 {
   U32 voff_first;
@@ -508,7 +495,6 @@ struct PE_ArmPdata
   U32 combined;
 };
 
-typedef struct PE_IntelPdata PE_IntelPdata;
 struct PE_IntelPdata
 {
   U32 voff_first;
@@ -520,7 +506,6 @@ struct PE_IntelPdata
 #define PE_CODEVIEW_PDB70_MAGIC 0x53445352
 #define PE_CODEVIEW_RDI_MAGIC   '0IDR' 
 
-typedef struct PE_CvHeaderPDB20 PE_CvHeaderPDB20;
 struct PE_CvHeaderPDB20
 {
   U32            magic;
@@ -530,7 +515,6 @@ struct PE_CvHeaderPDB20
   // file name packed after struct
 };
 
-typedef struct PE_CvHeaderPDB70 PE_CvHeaderPDB70;
 struct PE_CvHeaderPDB70
 {
   U32  magic;
@@ -539,7 +523,6 @@ struct PE_CvHeaderPDB70
   // file name packed after struct
 };
 
-typedef struct PE_CvHeaderRDI PE_CvHeaderRDI;
 struct PE_CvHeaderRDI
 {
   U32  magic;
@@ -547,7 +530,6 @@ struct PE_CvHeaderRDI
   // file name packed after struct
 };
 
-typedef struct PE_ImportEntry PE_ImportEntry;
 struct PE_ImportEntry
 {
   U32            lookup_table_voff;
@@ -557,7 +539,6 @@ struct PE_ImportEntry
   U32            import_addr_table_voff;
 };
 
-typedef struct PE_DelayedImportEntry PE_DelayedImportEntry;
 struct PE_DelayedImportEntry
 {
   // According to COFF/PE spec this field is unused and should be set zero,
@@ -575,7 +556,6 @@ struct PE_DelayedImportEntry
   COFF_TimeStamp time_stamp;
 };
 
-typedef struct PE_ExportTableHeader PE_ExportTableHeader;
 struct PE_ExportTableHeader
 {
   U32            flags;                       // must be zero
@@ -591,7 +571,6 @@ struct PE_ExportTableHeader
   U32            ordinal_table_voff;
 };
 
-typedef struct PE_TLSHeader32 PE_TLSHeader32;
 struct PE_TLSHeader32
 {
   U32               raw_data_start;    // Range of initialized data that is copied for each thread from the image.
@@ -602,7 +581,6 @@ struct PE_TLSHeader32
   COFF_SectionFlags characteristics;   // COFF_SectionFlags but only align flags are used.
 };
 
-typedef struct PE_TLSHeader64 PE_TLSHeader64;
 struct PE_TLSHeader64
 {
   U64               raw_data_start;    // Range of initialized data that is copied for each thread from the image.
@@ -663,7 +641,6 @@ typedef enum PE_ResDataKind
 }
 PE_ResDataKind;
 
-typedef struct PE_ResourceHeader PE_ResourceHeader;
 struct PE_ResourceHeader
 {
   COFF_ResourceHeaderPrefix prefix;
@@ -751,7 +728,6 @@ enum
 #define PE_UNWIND_OPCODE_FROM_FLAGS(f) ((f)&0xF)
 #define PE_UNWIND_INFO_FROM_FLAGS(f) (((f) >> 4)&0xF)
 
-typedef union PE_UnwindCode PE_UnwindCode;
 union PE_UnwindCode
 {
   struct
@@ -768,7 +744,6 @@ union PE_UnwindCode
 #define PE_UNWIND_INFO_OFF_FROM_FRAME(x)   (((x) >> 4)&0xF)
 #define PE_UNWIND_INFO_GET_CODE_COUNT(x)   (((x)+1) & ~1)
 
-typedef struct PE_UnwindInfo PE_UnwindInfo;
 struct PE_UnwindInfo
 {
   U8 header;
@@ -797,7 +772,6 @@ read_only global string pe_dos_program = {pe_dos_program_data, sizeof(pe_dos_pro
 
 //- rjf: relocation blocks
 
-typedef struct PE_BaseRelocBlock PE_BaseRelocBlock;
 struct PE_BaseRelocBlock
 {
   U64  page_virt_off;
@@ -805,14 +779,12 @@ struct PE_BaseRelocBlock
   U16 *entries;
 };
 
-typedef struct PE_BaseRelocBlockNode PE_BaseRelocBlockNode;
 struct PE_BaseRelocBlockNode
 {
   PE_BaseRelocBlockNode *next;
   PE_BaseRelocBlock      v;
 };
 
-typedef struct PE_BaseRelocBlockList PE_BaseRelocBlockList;
 struct PE_BaseRelocBlockList
 {
   PE_BaseRelocBlockNode *first;
@@ -822,7 +794,6 @@ struct PE_BaseRelocBlockList
 
 //- rjf: resources
 
-typedef struct PE_Resource PE_Resource;
 struct PE_Resource
 {
   COFF_ResourceID id;
@@ -842,14 +813,12 @@ struct PE_Resource
   } u;
 };
 
-typedef struct PE_ResourceNode PE_ResourceNode;
 struct PE_ResourceNode
 {
   PE_ResourceNode *next;
   PE_Resource      data;
 };
 
-typedef struct PE_ResourceList PE_ResourceList;
 struct PE_ResourceList
 {
   PE_ResourceNode *first;
@@ -857,14 +826,12 @@ struct PE_ResourceList
   U64              count;
 };
 
-typedef struct PE_ResourceArray PE_ResourceArray;
 struct PE_ResourceArray
 {
   PE_Resource *v;
   U64          count;
 };
 
-typedef struct PE_ResourceDir PE_ResourceDir;
 struct PE_ResourceDir
 {
   U32             characteristics;
@@ -877,7 +844,6 @@ struct PE_ResourceDir
 
 //- exports & imports
 
-typedef struct PE_ParsedExport PE_ParsedExport;
 struct PE_ParsedExport
 {
   string forwarder;
@@ -886,7 +852,6 @@ struct PE_ParsedExport
   U64     ordinal;
 };
 
-typedef struct PE_ParsedExportTable PE_ParsedExportTable;
 struct PE_ParsedExportTable
 {
   U32              flags;
@@ -906,7 +871,6 @@ enum PE_ParsedImportTypeEnum
   PE_ParsedImport_Name,
 };
 
-typedef struct PE_ParsedImport PE_ParsedImport;
 struct PE_ParsedImport
 {
   PE_ParsedImportType type;
@@ -921,7 +885,6 @@ struct PE_ParsedImport
   } u;
 };
 
-typedef struct PE_ParsedStaticDLLImport PE_ParsedStaticDLLImport;
 struct PE_ParsedStaticDLLImport
 {
   string          name;
@@ -933,14 +896,12 @@ struct PE_ParsedStaticDLLImport
   PE_ParsedImport *imports;
 };
 
-typedef struct PE_ParsedStaticImportTable PE_ParsedStaticImportTable;
 struct PE_ParsedStaticImportTable
 {
   U64                       count;
   PE_ParsedStaticDLLImport *v;
 };
 
-typedef struct PE_ParsedDelayDLLImport PE_ParsedDelayDLLImport;
 struct PE_ParsedDelayDLLImport
 {
   U32              attributes;
@@ -959,14 +920,12 @@ struct PE_ParsedDelayDLLImport
   PE_ParsedImport *imports;
 };
 
-typedef struct PE_ParsedDelayImportTable PE_ParsedDelayImportTable;
 struct PE_ParsedDelayImportTable
 {
   U64                      count;
   PE_ParsedDelayDLLImport *v;
 };
 
-typedef struct PE_ParsedTLS PE_ParsedTLS;
 struct PE_ParsedTLS
 {
   PE_TLSHeader64 header;
@@ -977,7 +936,6 @@ struct PE_ParsedTLS
 ////////////////////////////////
 // SEH Scope Table
 
-typedef struct PE_HandlerScope PE_HandlerScope;
 struct PE_HandlerScope
 {
   U32 begin;
@@ -988,7 +946,6 @@ struct PE_HandlerScope
 
 //- rjf: bundle
 
-typedef struct PE_BinInfo PE_BinInfo;
 struct PE_BinInfo
 {
   Arch                 arch;
@@ -1039,73 +996,31 @@ typedef struct PE_DebugInfoList
 ////////////////////////////////
 //~ rjf: Basic Enum Functions
 
-internal U32                 pe_slot_count_from_unwind_op_code(PE_UnwindOpCode opcode);
-internal PE_WindowsSubsystem pe_subsystem_from_string(string string);
 
-internal string pe_string_from_subsystem(PE_WindowsSubsystem x);
-internal string pe_string_from_unwind_gpr_x64(PE_UnwindGprRegX64 x);
-internal string pe_string_from_data_directory_index(PE_DataDirectoryIndex x);
-internal string pe_string_from_debug_directory_type(PE_DebugDirectoryType x);
-internal string pe_string_from_fpo_type(PE_FPOType x);
-internal string pe_string_from_misc_type(PE_DebugMiscType x);
-internal string pe_resource_kind_to_string(PE_ResourceKind x);
 
-internal string pe_string_from_fpo_flags(Arena *arena, PE_FPOFlags flags);
-internal string pe_string_from_global_flags(Arena *arena, PE_GlobalFlags flags);
-internal string pe_string_from_load_config_guard_flags(Arena *arena, PE_LoadConfigGuardFlags flags);
-internal string pe_string_from_dll_characteristics(Arena *arena, PE_DllCharacteristics dll_chars);
 
 ////////////////////////////////
 //~ rjf: Parser Functions
 
-internal B32        pe_check_magic(string data);
-internal PE_BinInfo pe_bin_info_from_data(Arena *arena, string data);
 
-internal PE_DataDirectory *         pe_data_directory_from_idx(string file_data, PE_BinInfo pe, PE_DataDirectoryIndex dir_idx);
-internal PE_DebugInfoList           pe_parse_debug_directory(Arena *arena, string raw_image, string raw_debug_dir);
-internal PE_DebugInfoList           pe_debug_info_list_from_raw_debug_dir(Arena *arena, string raw_image, string raw_debug_dir);
-internal PE_ParsedStaticImportTable pe_static_imports_from_data(Arena *arena, B32 is_pe32, U64 section_count, COFF_SectionHeader *sections, string raw_data, Rng1U64 dir_file_range);
-internal PE_ParsedDelayImportTable  pe_delay_imports_from_data(Arena *arena, B32 is_pe32, U64 section_count, COFF_SectionHeader *sections, string raw_data, Rng1U64 dir_file_range);
-internal PE_ParsedExportTable       pe_exports_from_data(Arena *arena, U64 section_count, COFF_SectionHeader *sections, string raw_data, Rng1U64 dir_file_range, Rng1U64 dir_virt_range);
-internal PE_ParsedTLS               pe_tls_from_data(Arena *arena, COFF_MachineType machine, U64 image_base, U64 section_count, COFF_SectionHeader *sections, string raw_data, Rng1U64 tls_frange);
 
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal U64                   pe_pdata_off_from_voff__binary_search_x8664(string raw_data, U64 voff);
-internal U64                   pe_foff_from_voff(string data, PE_BinInfo *bin, U64 voff);
-internal PE_BaseRelocBlockList pe_base_reloc_block_list_from_data(Arena *arena, string raw_relocs);
-internal Rng1U64               pe_tls_rng_from_bin_base_vaddr(string data, PE_BinInfo *bin, U64 base_vaddr);
-internal String8Array          pe_get_entry_point_names(COFF_MachineType machine, PE_WindowsSubsystem subsystem, PE_ImageFileCharacteristics file_characteristics);
 
 ////////////////////////////////
 //~ Resource Helpers
 
-internal B32               pe_is_res(string data);
-internal void              pe_resource_dir_push_res_file(Arena *arena, PE_ResourceDir *root_dir, string res_file);
-internal PE_ResourceNode * pe_resource_dir_push_dir_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version);
-internal PE_ResourceNode * pe_resource_dir_push_entry_node(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, string data);
-internal PE_Resource *     pe_resource_dir_push_entry(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, COFF_ResourceID type, U32 data_version, U32 version, COFF_ResourceMemoryFlags memory_flags, string data);
-internal PE_Resource *     pe_resource_dir_push_dir(Arena *arena, PE_ResourceDir *dir, COFF_ResourceID id, U32 characteristics, COFF_TimeStamp time_stamp, U16 major_version, U16 minor_version);
-internal PE_ResourceNode * pe_resource_dir_search_node(PE_ResourceDir *dir, COFF_ResourceID id);
-internal PE_Resource *     pe_resource_dir_search(PE_ResourceDir *dir, COFF_ResourceID id);
-internal PE_ResourceArray  pe_resource_list_to_array(Arena *arena, PE_ResourceList *list);
-internal PE_ResourceDir *  pe_resource_table_from_directory_data(Arena *arena, string data);
 
-internal string pe_make_manifest_resource(Arena *arena, U32 resource_id, string manifest_data);
 
 ////////////////////////////////
 //~ Debug Directory
 
-internal string pe_make_debug_header_pdb70(Arena *arena, Guid guid, U32 age, string pdb_path);
-internal string pe_make_debug_header_rdi(Arena *arena, Guid guid, string rdi_path);
 
 ////////////////////////////////
 //~ Image Checksum
 
-internal U32 pe_compute_checksum(U8 *buffer, U64 buffer_size);
 
 ////////////////////////////////
 
-internal void pe_pdata_sort(COFF_MachineType machine, string raw_pdata);
 

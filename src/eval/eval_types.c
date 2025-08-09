@@ -2415,7 +2415,6 @@ E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(identity)
 ////////////////////////////////
 //~ rjf: (Built-In Type Hooks) `rows` lens
 
-typedef struct E_RowsAccel E_RowsAccel;
 struct E_RowsAccel
 {
   E_Eval *root_evals;
@@ -2564,7 +2563,6 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(array)
 ////////////////////////////////
 //~ rjf: (Built-In Type Hooks) `slice` lens
 
-typedef struct E_SliceIRExt E_SliceIRExt;
 struct E_SliceIRExt
 {
   E_Member *base_ptr_member;
@@ -2572,7 +2570,6 @@ struct E_SliceIRExt
   E_Member *count_member;
 };
 
-typedef struct E_SliceAccel E_SliceAccel;
 struct E_SliceAccel
 {
   Arch arch;
@@ -2728,7 +2725,6 @@ E_TYPE_EXPAND_RANGE_FUNCTION_DEF(slice)
 ////////////////////////////////
 //~ rjf: (Built-In Type Hooks) `folder` type
 
-typedef struct E_FolderAccel E_FolderAccel;
 struct E_FolderAccel
 {
   string folder_path;
@@ -2866,7 +2862,6 @@ E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(folder)
 ////////////////////////////////
 //~ rjf: (Built-In Type Hooks) `file` type
 
-typedef struct E_FileAccel E_FileAccel;
 struct E_FileAccel
 {
   string file_path;

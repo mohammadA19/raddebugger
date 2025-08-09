@@ -3,6 +3,4 @@
 
 #pragma once
 
-internal string lnk_make_linker_compile3(Arena *arena, COFF_MachineType machine);
-internal string lnk_make_debug_s(Arena *arena, CV_SymbolList symbol_list);
 

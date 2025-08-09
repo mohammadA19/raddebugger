@@ -12,7 +12,6 @@ enum
   RD_CodeViewBuildFlag_All         = 0xffffffff,
 };
 
-typedef struct RD_CodeViewState RD_CodeViewState;
 struct RD_CodeViewState
 {
   // rjf: stable state
@@ -32,7 +31,6 @@ struct RD_CodeViewState
   string find_text_bwd;
 };
 
-typedef struct RD_CodeViewBuildResult RD_CodeViewBuildResult;
 struct RD_CodeViewBuildResult
 {
   DI_KeyList dbgi_keys;
@@ -63,7 +61,6 @@ enum
   RD_WatchCellFlag_Indented                = (1<<8),
 };
 
-typedef struct RD_WatchCell RD_WatchCell;
 struct RD_WatchCell
 {
   RD_WatchCell *next;
@@ -76,7 +73,6 @@ struct RD_WatchCell
   F32 px;
 };
 
-typedef struct RD_WatchCellList RD_WatchCellList;
 struct RD_WatchCellList
 {
   RD_WatchCell *first;
@@ -84,7 +80,6 @@ struct RD_WatchCellList
   U64 count;
 };
 
-typedef struct RD_WatchRowInfo RD_WatchRowInfo;
 struct RD_WatchRowInfo
 {
   CTRL_Entity *module;
@@ -103,7 +98,6 @@ struct RD_WatchRowInfo
   RD_ViewUIRule *view_ui_rule;
 };
 
-typedef struct RD_WatchRowCellInfo RD_WatchRowCellInfo;
 struct RD_WatchRowCellInfo
 {
   RD_WatchCellFlags flags;
@@ -119,7 +113,6 @@ struct RD_WatchRowCellInfo
   RD_ViewUIRule *view_ui_rule;
 };
 
-typedef struct RD_WatchPt RD_WatchPt;
 struct RD_WatchPt
 {
   EV_Key parent_key;
@@ -127,7 +120,6 @@ struct RD_WatchPt
   U64 cell_id;
 };
 
-typedef struct RD_WatchViewTextEditState RD_WatchViewTextEditState;
 struct RD_WatchViewTextEditState
 {
   RD_WatchViewTextEditState *pt_hash_next;
@@ -140,7 +132,6 @@ struct RD_WatchViewTextEditState
   U64 initial_size;
 };
 
-typedef struct RD_WatchViewState RD_WatchViewState;
 struct RD_WatchViewState
 {
   B32 initialized;
@@ -166,31 +157,20 @@ struct RD_WatchViewState
 ////////////////////////////////
 //~ rjf: Code View Functions
 
-internal void rd_code_view_init(RD_CodeViewState *cv);
-internal RD_CodeViewBuildResult rd_code_view_build(Arena *arena, RD_CodeViewState *cv, RD_CodeViewBuildFlags flags, Rng2F32 rect, string text_data, TXT_TextInfo *text_info, DASM_LineArray *dasm_lines, Rng1U64 dasm_vaddr_range, DI_Key dasm_dbgi_key);
 
 ////////////////////////////////
 //~ rjf: Watch View Functions
 
 //- rjf: cell list building
-internal U64 rd_id_from_watch_cell(RD_WatchCell *cell);
-internal RD_WatchCell *rd_watch_cell_list_push(Arena *arena, RD_WatchCellList *list);
-internal RD_WatchCell *rd_watch_cell_list_push_new_(Arena *arena, RD_WatchCellList *list, RD_WatchCell *params);
 #define rd_watch_cell_list_push_new(arena, list, kind_, eval_, ...) rd_watch_cell_list_push_new_((arena), (list), &(RD_WatchCell){.kind = (kind_), .eval = (eval_), __VA_ARGS__})
 
 //- rjf: watch view points <-> table coordinates
-internal B32 rd_watch_pt_match(RD_WatchPt a, RD_WatchPt b);
-internal RD_WatchPt rd_watch_pt_from_tbl(EV_BlockRangeList *block_ranges, Vec2S64 tbl);
-internal Vec2S64 rd_tbl_from_watch_pt(EV_BlockRangeList *block_ranges, RD_WatchPt pt);
 
 //- rjf: row -> info
-internal RD_WatchRowInfo rd_watch_row_info_from_row(Arena *arena, EV_Row *row);
 
 //- rjf: row * cell -> info
-internal RD_WatchRowCellInfo rd_info_from_watch_row_cell(Arena *arena, EV_Row *row, EV_StringFlags string_flags, RD_WatchRowInfo *row_info, RD_WatchCell *cell, FNT_Tag font, F32 font_size, F32 max_size_px);
 
 //- rjf: table coordinates -> text edit state
-internal RD_WatchViewTextEditState *rd_watch_view_text_edit_state_from_pt(RD_WatchViewState *wv, RD_WatchPt pt);
 
 ////////////////////////////////
 //~ rjf: View Hooks

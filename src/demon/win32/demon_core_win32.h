@@ -95,7 +95,6 @@ typedef enum DMN_W32_EntityKind
 }
 DMN_W32_EntityKind;
 
-typedef struct DMN_W32_Entity DMN_W32_Entity;
 struct DMN_W32_Entity
 {
   DMN_W32_Entity *first;
@@ -134,14 +133,12 @@ struct DMN_W32_Entity
   };
 };
 
-typedef struct DMN_W32_EntityNode DMN_W32_EntityNode;
 struct DMN_W32_EntityNode
 {
   DMN_W32_EntityNode *next;
   DMN_W32_Entity *v;
 };
 
-typedef struct DMN_W32_EntityIDHashNode DMN_W32_EntityIDHashNode;
 struct DMN_W32_EntityIDHashNode
 {
   DMN_W32_EntityIDHashNode *next;
@@ -150,7 +147,6 @@ struct DMN_W32_EntityIDHashNode
   DMN_W32_Entity *entity;
 };
 
-typedef struct DMN_W32_EntityIDHashSlot DMN_W32_EntityIDHashSlot;
 struct DMN_W32_EntityIDHashSlot
 {
   DMN_W32_EntityIDHashNode *first;
@@ -160,7 +156,6 @@ struct DMN_W32_EntityIDHashSlot
 ////////////////////////////////
 //~ rjf: Injection Types
 
-typedef struct DMN_W32_InjectedBreak DMN_W32_InjectedBreak;
 struct DMN_W32_InjectedBreak
 {
   U64 code;
@@ -172,7 +167,6 @@ struct DMN_W32_InjectedBreak
 ////////////////////////////////
 //~ rjf: Image Info Types
 
-typedef struct DMN_W32_ImageInfo DMN_W32_ImageInfo;
 struct DMN_W32_ImageInfo
 {
   Arch arch;
@@ -187,7 +181,6 @@ typedef HRESULT DMN_W32_GetThreadDescriptionFunctionType(HANDLE hThread, WCHAR *
 ////////////////////////////////
 //~ rjf: Shared State Bundle
 
-typedef struct DMN_W32_Shared DMN_W32_Shared;
 struct DMN_W32_Shared
 {
   // rjf: top-level info
@@ -236,46 +229,28 @@ thread_static B32 dmn_w32_ctrl_thread = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 dmn_w32_hash_from_string(string string);
-internal U64 dmn_w32_hash_from_id(U64 id);
 
 ////////////////////////////////
 //~ rjf: Entity Helpers
 
 //- rjf: entity <-> handle
-internal DMN_Handle dmn_w32_handle_from_entity(DMN_W32_Entity *entity);
-internal DMN_W32_Entity *dmn_w32_entity_from_handle(DMN_Handle handle);
 
 //- rjf: entity allocation/deallocation
-internal DMN_W32_Entity *dmn_w32_entity_alloc(DMN_W32_Entity *parent, DMN_W32_EntityKind kind, U64 id);
-internal void dmn_w32_entity_release(DMN_W32_Entity *entity);
 
 //- rjf: kind*id -> entity
-internal DMN_W32_Entity *dmn_w32_entity_from_kind_id(DMN_W32_EntityKind kind, U64 id);
 
 ////////////////////////////////
 //~ rjf: Module Info Extraction
 
-internal string dmn_w32_full_path_from_module(Arena *arena, DMN_W32_Entity *module);
 
 ////////////////////////////////
 //~ rjf: Win32-Level Process/Thread Reads/Writes
 
 //- rjf: processes
-internal U64 dmn_w32_process_read(HANDLE process, Rng1U64 range, void *dst);
-internal B32 dmn_w32_process_write(HANDLE process, Rng1U64 range, void *src);
-internal string dmn_w32_read_memory_str(Arena *arena, HANDLE process_handle, U64 address);
-internal String16 dmn_w32_read_memory_str16(Arena *arena, HANDLE process_handle, U64 address);
 #define dmn_w32_process_read_struct(process, vaddr, ptr) dmn_w32_process_read((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)
 #define dmn_w32_process_write_struct(process, vaddr, ptr) dmn_w32_process_write((process), r1u64((vaddr), (vaddr)+(sizeof(*ptr))), ptr)
-internal DMN_W32_ImageInfo dmn_w32_image_info_from_process_base_vaddr(HANDLE process, U64 base_vaddr);
 
 //- rjf: threads
-internal U16 dmn_w32_real_tag_word_from_xsave(XSAVE_FORMAT *fxsave);
-internal U16 dmn_w32_xsave_tag_word_from_real_tag_word(U16 ftw);
-internal B32 dmn_w32_thread_read_reg_block(Arch arch, HANDLE thread, void *reg_block);
-internal B32 dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_block);
 
 //- rjf: remote thread injection
-internal DWORD dmn_w32_inject_thread(HANDLE process, U64 start_address);
 

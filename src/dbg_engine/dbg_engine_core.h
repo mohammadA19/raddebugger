@@ -5,7 +5,6 @@
 ////////////////////////////////
 //~ rjf: Tick Input Types
 
-typedef struct D_Target D_Target;
 struct D_Target
 {
   string exe;
@@ -19,7 +18,6 @@ struct D_Target
   String8List env;
 };
 
-typedef struct D_TargetArray D_TargetArray;
 struct D_TargetArray
 {
   D_Target *v;
@@ -34,7 +32,6 @@ enum
   D_BreakpointFlag_BreakOnExecute = (1<<2),
 };
 
-typedef struct D_Breakpoint D_Breakpoint;
 struct D_Breakpoint
 {
   D_BreakpointFlags flags;
@@ -46,21 +43,18 @@ struct D_Breakpoint
   U64 size;
 };
 
-typedef struct D_BreakpointArray D_BreakpointArray;
 struct D_BreakpointArray
 {
   D_Breakpoint *v;
   U64 count;
 };
 
-typedef struct D_PathMap D_PathMap;
 struct D_PathMap
 {
   string src;
   string dst;
 };
 
-typedef struct D_PathMapArray D_PathMapArray;
 struct D_PathMapArray
 {
   D_PathMap *v;
@@ -89,7 +83,6 @@ typedef enum D_EventCause
 }
 D_EventCause;
 
-typedef struct D_Event D_Event;
 struct D_Event
 {
   D_EventKind kind;
@@ -100,14 +93,12 @@ struct D_Event
   U64 id;
 };
 
-typedef struct D_EventNode D_EventNode;
 struct D_EventNode
 {
   D_EventNode *next;
   D_Event v;
 };
 
-typedef struct D_EventList D_EventList;
 struct D_EventList
 {
   D_EventNode *first;
@@ -118,7 +109,6 @@ struct D_EventList
 ////////////////////////////////
 //~ rjf: Line Info Types
 
-typedef struct D_Line D_Line;
 struct D_Line
 {
   string file_path;
@@ -127,14 +117,12 @@ struct D_Line
   DI_Key dbgi_key;
 };
 
-typedef struct D_LineNode D_LineNode;
 struct D_LineNode
 {
   D_LineNode *next;
   D_Line v;
 };
 
-typedef struct D_LineList D_LineList;
 struct D_LineList
 {
   D_LineNode *first;
@@ -142,7 +130,6 @@ struct D_LineList
   U64 count;
 };
 
-typedef struct D_LineListArray D_LineListArray;
 struct D_LineListArray
 {
   D_LineList *v;
@@ -170,7 +157,6 @@ D_RunKind;
 ////////////////////////////////
 //~ rjf: Command Types
 
-typedef struct D_CmdParams D_CmdParams;
 struct D_CmdParams
 {
   CTRL_Handle machine;
@@ -187,14 +173,12 @@ struct D_CmdParams
   D_TargetArray targets;
 };
 
-typedef struct D_Cmd D_Cmd;
 struct D_Cmd
 {
   D_CmdKind kind;
   D_CmdParams params;
 };
 
-typedef struct D_CmdNode D_CmdNode;
 struct D_CmdNode
 {
   D_CmdNode *next;
@@ -202,7 +186,6 @@ struct D_CmdNode
   D_Cmd cmd;
 };
 
-typedef struct D_CmdList D_CmdList;
 struct D_CmdList
 {
   D_CmdNode *first;
@@ -215,7 +198,6 @@ struct D_CmdList
 
 //- rjf: per-run tls-base-vaddr cache
 
-typedef struct D_RunTLSBaseCacheNode D_RunTLSBaseCacheNode;
 struct D_RunTLSBaseCacheNode
 {
   D_RunTLSBaseCacheNode *hash_next;
@@ -225,14 +207,12 @@ struct D_RunTLSBaseCacheNode
   U64 tls_base_vaddr;
 };
 
-typedef struct D_RunTLSBaseCacheSlot D_RunTLSBaseCacheSlot;
 struct D_RunTLSBaseCacheSlot
 {
   D_RunTLSBaseCacheNode *first;
   D_RunTLSBaseCacheNode *last;
 };
 
-typedef struct D_RunTLSBaseCache D_RunTLSBaseCache;
 struct D_RunTLSBaseCache
 {
   Arena *arena;
@@ -242,7 +222,6 @@ struct D_RunTLSBaseCache
 
 //- rjf: per-run locals cache
 
-typedef struct D_RunLocalsCacheNode D_RunLocalsCacheNode;
 struct D_RunLocalsCacheNode
 {
   D_RunLocalsCacheNode *hash_next;
@@ -251,14 +230,12 @@ struct D_RunLocalsCacheNode
   E_String2NumMap *locals_map;
 };
 
-typedef struct D_RunLocalsCacheSlot D_RunLocalsCacheSlot;
 struct D_RunLocalsCacheSlot
 {
   D_RunLocalsCacheNode *first;
   D_RunLocalsCacheNode *last;
 };
 
-typedef struct D_RunLocalsCache D_RunLocalsCache;
 struct D_RunLocalsCache
 {
   Arena *arena;
@@ -269,7 +246,6 @@ struct D_RunLocalsCache
 ////////////////////////////////
 //~ rjf: Main State Types
 
-typedef struct D_State D_State;
 struct D_State
 {
   // rjf: top-level state
@@ -324,101 +300,67 @@ global D_State *d_state = 0;
 ////////////////////////////////
 //~ rjf: Basic Helpers
 
-internal U64 d_hash_from_seed_string(U64 seed, string string);
-internal U64 d_hash_from_string(string string);
-internal U64 d_hash_from_seed_string__case_insensitive(U64 seed, string string);
-internal U64 d_hash_from_string__case_insensitive(string string);
 
 ////////////////////////////////
 //~ rjf: Breakpoints
 
-internal D_BreakpointArray d_breakpoint_array_copy(Arena *arena, D_BreakpointArray *src);
 
 ////////////////////////////////
 //~ rjf: Path Map Application
 
-internal String8List d_possible_path_overrides_from_maps_path(Arena *arena, D_PathMapArray *path_maps, string file_path);
 
 ////////////////////////////////
 //~ rjf: Debug Info Extraction Type Pure Functions
 
-internal D_LineList d_line_list_copy(Arena *arena, D_LineList *list);
 
 ////////////////////////////////
 //~ rjf: Command Type Functions
 
 //- rjf: command parameters
-internal D_CmdParams d_cmd_params_copy(Arena *arena, D_CmdParams *src);
 
 //- rjf: command lists
-internal void d_cmd_list_push_new(Arena *arena, D_CmdList *cmds, D_CmdKind kind, D_CmdParams *params);
 
 ////////////////////////////////
 //~ rjf: Stepping "Trap Net" Builders
 
-internal CTRL_TrapList d_trap_net_from_thread__step_over_inst(Arena *arena, CTRL_Entity *thread);
-internal CTRL_TrapList d_trap_net_from_thread__step_over_line(Arena *arena, CTRL_Entity *thread);
-internal CTRL_TrapList d_trap_net_from_thread__step_into_line(Arena *arena, CTRL_Entity *thread);
 
 ////////////////////////////////
 //~ rjf: Debug Info Lookups
 
 //- rjf: symbol -> voff lookups
-internal U64 d_voff_from_dbgi_key_symbol_name(DI_Key *dbgi_key, string symbol_name);
 
 //- rjf: voff -> line info
-internal D_LineList d_lines_from_dbgi_key_voff(Arena *arena, DI_Key *dbgi_key, U64 voff);
 
 //- rjf: file:line -> line info
 // TODO(rjf): this depends on file path maps, needs to move
 // TODO(rjf): need to clean this up & dedup
-internal D_LineListArray d_lines_array_from_dbgi_key_file_path_line_range(Arena *arena, DI_Key dbgi_key, string file_path, Rng1S64 line_num_range);
-internal D_LineListArray d_lines_array_from_file_path_line_range(Arena *arena, string file_path, Rng1S64 line_num_range);
-internal D_LineList d_lines_from_dbgi_key_file_path_line_num(Arena *arena, DI_Key dbgi_key, string file_path, S64 line_num);
-internal D_LineList d_lines_from_file_path_line_num(Arena *arena, string file_path, S64 line_num);
 
 ////////////////////////////////
 //~ rjf: Process/Thread/Module Info Lookups
 
-internal U64 d_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, U64 root_vaddr, U64 rip_vaddr);
 
 ////////////////////////////////
 //~ rjf: Target Controls
 
 //- rjf: stopped info from the control thread
-internal CTRL_Event d_ctrl_last_stop_event(void);
 
 ////////////////////////////////
 //~ rjf: Main State Accessors/Mutators
 
 //- rjf: frame data
-internal U64 d_frame_index(void);
 
 //- rjf: control state
-internal D_RunKind d_ctrl_last_run_kind(void);
-internal U64 d_ctrl_last_run_frame_idx(void);
-internal B32 d_ctrl_targets_running(void);
 
 //- rjf: active entity based queries
-internal DI_KeyList d_push_active_dbgi_key_list(Arena *arena);
 
 //- rjf: per-run caches
-internal U64 d_query_cached_rip_from_thread(CTRL_Entity *thread);
-internal U64 d_query_cached_rip_from_thread_unwind(CTRL_Entity *thread, U64 unwind_count);
-internal U64 d_query_cached_tls_base_vaddr_from_process_root_rip(CTRL_Entity *process, U64 root_vaddr, U64 rip_vaddr);
-internal E_String2NumMap *d_query_cached_locals_map_from_dbgi_key_voff(DI_Key *dbgi_key, U64 voff);
-internal E_String2NumMap *d_query_cached_member_map_from_dbgi_key_voff(DI_Key *dbgi_key, U64 voff);
 
 //- rjf: top-level command dispatch
-internal void d_push_cmd(D_CmdKind kind, D_CmdParams *params);
 #define d_cmd(kind, ...) d_push_cmd((kind), &(D_CmdParams){.thread = {0}, __VA_ARGS__})
 
 //- rjf: command iteration
-internal B32 d_next_cmd(D_Cmd **cmd);
 
 ////////////////////////////////
 //~ rjf: Main Layer Top-Level Calls
 
-internal void d_init(void);
-internal D_EventList d_tick(Arena *arena, D_TargetArray *targets, D_BreakpointArray *breakpoints, D_PathMapArray *path_maps, U64 exception_code_filters[(CTRL_ExceptionCodeKind_COUNT+63)/64]);
 

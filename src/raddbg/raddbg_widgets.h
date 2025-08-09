@@ -40,7 +40,6 @@ enum
   RD_CellFlag_Button              = (1<<14),
 };
 
-typedef struct RD_CellParams RD_CellParams;
 struct RD_CellParams
 {
   //- rjf: catchall parameters
@@ -88,7 +87,6 @@ enum
   RD_CodeSliceFlag_LineNums          = (1<<3),
 };
 
-typedef struct RD_CodeSliceParams RD_CodeSliceParams;
 struct RD_CodeSliceParams
 {
   // rjf: content
@@ -118,7 +116,6 @@ struct RD_CodeSliceParams
   F32 margin_float_off_px;
 };
 
-typedef struct RD_CodeSliceSignal RD_CodeSliceSignal;
 struct RD_CodeSliceSignal
 {
   UI_Signal base;
@@ -134,50 +131,25 @@ struct RD_CodeSliceSignal
 ////////////////////////////////
 //~ rjf: UI Widgets: Fancy Title Strings
 
-internal DR_FStrList rd_title_fstrs_from_cfg(Arena *arena, RD_Cfg *cfg, B32 include_extras);
-internal DR_FStrList rd_title_fstrs_from_ctrl_entity(Arena *arena, CTRL_Entity *entity, B32 include_extras);
-internal DR_FStrList rd_title_fstrs_from_code_name(Arena *arena, string code_name);
-internal DR_FStrList rd_title_fstrs_from_file_path(Arena *arena, string file_path);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Loading Overlay
 
-internal void rd_loading_overlay(Rng2F32 rect, F32 loading_t, U64 progress_v, U64 progress_v_target);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Fancy Buttons
 
-internal void rd_cmd_binding_buttons(string name, string filter, B32 add_new);
-internal UI_Signal rd_menu_bar_button(string string);
-internal UI_Signal rd_cmd_spec_button(string name);
-internal void rd_cmd_list_menu_buttons(U64 count, string *cmd_names, U32 *fastpath_codepoints);
-internal UI_Signal rd_icon_button(RD_IconKind kind, FuzzyMatchRangeList *matches, string string);
-internal UI_Signal rd_icon_buttonf(RD_IconKind kind, FuzzyMatchRangeList *matches, char *fmt, ...);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Text View
 
-internal UI_BOX_CUSTOM_DRAW(rd_code_slice_text_draw_extensions);
-internal UI_BOX_CUSTOM_DRAW(rd_thread_box_draw_extensions);
-internal UI_BOX_CUSTOM_DRAW(rd_bp_box_draw_extensions);
-internal RD_CodeSliceSignal rd_code_slice(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, string string);
-internal RD_CodeSliceSignal rd_code_slicef(RD_CodeSliceParams *params, TxtPt *cursor, TxtPt *mark, S64 *preferred_column, char *fmt, ...);
 
-internal B32 rd_do_txt_controls(TXT_TextInfo *info, string data, U64 line_count_per_page, TxtPt *cursor, TxtPt *mark, S64 *preferred_column);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Fancy Labels
 
-internal DR_FStrList rd_fstrs_from_rich_string(Arena *arena, string string);
-internal UI_Signal rd_label(string string);
-internal UI_Signal rd_error_label(string string);
-internal B32 rd_help_label(string string);
-internal DR_FStrList rd_fstrs_from_code_string(Arena *arena, F32 alpha, B32 indirection_size_change, Vec4F32 base_color, string string);
-internal UI_Box *rd_code_label(F32 alpha, B32 indirection_size_change, Vec4F32 base_color, string string);
 
 ////////////////////////////////
 //~ rjf: UI Widgets: Line Edit
 
-internal UI_Signal rd_cell(RD_CellParams *params, string string);
-internal UI_Signal rd_cellf(RD_CellParams *params, char *fmt, ...);
 

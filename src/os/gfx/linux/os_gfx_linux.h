@@ -15,7 +15,6 @@
 ////////////////////////////////
 //~ rjf: Window State
 
-typedef struct OS_LNX_Window OS_LNX_Window;
 struct OS_LNX_Window
 {
   OS_LNX_Window *next;
@@ -29,7 +28,6 @@ struct OS_LNX_Window
 ////////////////////////////////
 //~ rjf: State Bundle
 
-typedef struct OS_LNX_GfxState OS_LNX_GfxState;
 struct OS_LNX_GfxState
 {
   Arena *arena;
@@ -54,5 +52,4 @@ global OS_LNX_GfxState *os_lnx_gfx_state = 0;
 ////////////////////////////////
 //~ rjf: Helpers
 
-internal OS_LNX_Window *os_lnx_window_from_x11window(Window window);
 

@@ -515,11 +515,3 @@ CV_LeafKind_CLASS2 = 0x1608,
 CV_LeafKind_STRUCT2 = 0x1609,
 } CV_LeafKindEnum;
 
-internal string cv_string_from_numeric_kind(CV_NumericKind v);
-internal string cv_string_from_arch(CV_Arch v);
-internal string cv_string_from_sym_kind(CV_SymKind v);
-internal string cv_string_from_basic_type(CV_BasicType v);
-internal string cv_type_name_from_basic_type(CV_BasicType v);
-internal string cv_string_from_leaf_kind(CV_LeafKind v);
-internal U64 cv_header_struct_size_from_sym_kind(CV_SymKind v);
-internal U64 cv_header_struct_size_from_leaf_kind(CV_LeafKind v);
