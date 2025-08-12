@@ -28,7 +28,7 @@ main_thread_base_entry_point(int arguments_count, char **arguments)
   
   //- rjf: begin captures
   B32 capture = cmd_line_has_flag(&cmdline, str8_lit("capture"));
-  if(capture)
+  if (capture)
   {
     ProfBeginCapture(arguments[0]);
   }
@@ -94,7 +94,7 @@ main_thread_base_entry_point(int arguments_count, char **arguments)
   entry_point(&cmdline);
   
   //- rjf: end captures
-  if(capture)
+  if (capture)
   {
     ProfEndCapture();
   }

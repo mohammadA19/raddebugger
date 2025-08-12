@@ -86,7 +86,7 @@ internal U64
 mg_hash_from_string(String8 string)
 {
   U64 result = 5381;
-  for(U64 i = 0; i < string.size; i += 1)
+  for (U64 i = 0; i < string.size; i += 1)
   {
     result = ((result << 5) + result) + string.str[i];
   }
@@ -97,9 +97,9 @@ internal TxtPt
 mg_txt_pt_from_string_off(String8 string, U64 off)
 {
   TxtPt pt = txt_pt(1, 1);
-  for(U64 idx = 0; idx < string.size && idx < off; idx += 1)
+  for (U64 idx = 0; idx < string.size && idx < off; idx += 1)
   {
-    if(string.str[idx] == '\n')
+    if (string.str[idx] == '\n')
     {
       pt.line += 1;
       pt.column = 1;
@@ -135,18 +135,18 @@ mg_escaped_from_str8(Arena *arena, String8 string)
   Temp scratch = scratch_begin(&arena, 1);
   String8List strs = {0};
   U64 start = 0;
-  for(U64 idx = 0; idx <= string.size; idx += 1)
+  for (U64 idx = 0; idx <= string.size; idx += 1)
   {
-    if(idx == string.size || string.str[idx] == '\\' || string.str[idx] == '\r')
+    if (idx == string.size || string.str[idx] == '\\' || string.str[idx] == '\r')
     {
       String8 str = str8_substr(string, r1u64(start, idx));
-      if(str.size != 0)
+      if (str.size != 0)
       {
         str8_list_push(scratch.arena, &strs, str);
       }
       start = idx+1;
     }
-    if(idx < string.size && string.str[idx] == '\\')
+    if (idx < string.size && string.str[idx] == '\\')
     {
       U8 next_char = string.str[idx+1];
       U8 replace_byte = 0;
@@ -168,7 +168,7 @@ mg_escaped_from_str8(Arena *arena, String8 string)
       }
       String8 replace_string = push_str8_copy(scratch.arena, str8(&replace_byte, 1));
       str8_list_push(scratch.arena, &strs, replace_string);
-      if(replace_byte == '\\' || replace_byte == '"' || replace_byte == '\'')
+      if (replace_byte == '\\' || replace_byte == '"' || replace_byte == '\'')
       {
         idx += 1;
         start += 1;
@@ -248,16 +248,16 @@ mg_c_string_literal_from_multiline_string(String8 string)
   {
     str8_list_push(mg_arena, &strings, str8_lit("\"\"\n"));
     U64 active_line_start_off = 0;
-    for(U64 off = 0; off <= string.size; off += 1)
+    for (U64 off = 0; off <= string.size; off += 1)
     {
       B32 is_newline = (off < string.size && (string.str[off] == '\n' || string.str[off] == '\r'));
       B32 is_ender = (off >= string.size || is_newline);
-      if(is_ender)
+      if (is_ender)
       {
         String8 line = str8_substr(string, r1u64(active_line_start_off, off));
         str8_list_push(mg_arena, &strings, str8_lit("\""));
         str8_list_push(mg_arena, &strings, line);
-        if(is_newline)
+        if (is_newline)
         {
           str8_list_push(mg_arena, &strings, str8_lit("\\n\"\n"));
         }
@@ -267,7 +267,7 @@ mg_c_string_literal_from_multiline_string(String8 string)
         }
         active_line_start_off = off+1;
       }
-      if(is_newline && string.str[off] == '\r')
+      if (is_newline && string.str[off] == '\r')
       {
         active_line_start_off += 1;
         off += 1;
@@ -284,14 +284,14 @@ mg_c_array_literal_contents_from_data(String8 data)
   Temp scratch = scratch_begin(0, 0);
   String8List strings = {0};
   {
-    for(U64 off = 0; off < data.size;)
+    for (U64 off = 0; off < data.size;)
     {
       U64 chunk_size = Min(data.size-off, 64);
       U8 *chunk_bytes = data.str+off;
       String8 chunk_text_string = {0};
       chunk_text_string.size = chunk_size*5;
       chunk_text_string.str = push_array(mg_arena, U8, chunk_text_string.size);
-      for(U64 byte_idx = 0; byte_idx < chunk_size; byte_idx += 1)
+      for (U64 byte_idx = 0; byte_idx < chunk_size; byte_idx += 1)
       {
         String8 byte_str = push_str8f(scratch.arena, "0x%02x,", chunk_bytes[byte_idx]);
         MemoryCopy(chunk_text_string.str+byte_idx*5, byte_str.str, byte_str.size);
@@ -326,9 +326,9 @@ mg_map_ptr_from_string(MG_Map *map, String8 string)
     U64 hash = mg_hash_from_string(string);
     U64 slot_idx = hash%map->slots_count;
     MG_MapSlot *slot = &map->slots[slot_idx];
-    for(MG_MapNode *n = slot->first; n != 0; n = n->next)
+    for (MG_MapNode *n = slot->first; n != 0; n = n->next)
     {
-      if(str8_match(n->key, string, 0))
+      if (str8_match(n->key, string, 0))
       {
         result = n->val;
         break;
@@ -372,14 +372,14 @@ mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node
     
     //- rjf: consume prefix operators
     MG_StrExpr *leafmost_op = &mg_str_expr_nil;
-    for(;it != opl && !md_node_is_nil(it);)
+    for (;it != opl && !md_node_is_nil(it);)
     {
       MG_StrExprOp found_op = MG_StrExprOp_Null;
-      for(MG_StrExprOp op = (MG_StrExprOp)(MG_StrExprOp_Null+1);
+      for (MG_StrExprOp op = (MG_StrExprOp)(MG_StrExprOp_Null+1);
           op < MG_StrExprOp_COUNT;
           op = (MG_StrExprOp)(op+1))
       {
-        if(mg_str_expr_op_kind_table[op] == MG_StrExprOpKind_Prefix &&
+        if (mg_str_expr_op_kind_table[op] == MG_StrExprOpKind_Prefix &&
            str8_match(it->string, mg_str_expr_op_symbol_string_table[op], 0) &&
            mg_str_expr_op_precedence_table[op] >= min_prec)
         {
@@ -387,10 +387,10 @@ mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node
           break;
         }
       }
-      if(found_op != MG_StrExprOp_Null)
+      if (found_op != MG_StrExprOp_Null)
       {
         MG_StrExpr *op_expr = mg_push_str_expr(arena, found_op, it);
-        if(leafmost_op == &mg_str_expr_nil)
+        if (leafmost_op == &mg_str_expr_nil)
         {
           leafmost_op = op_expr;
         }
@@ -407,20 +407,20 @@ mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node
     //- rjf: parse atom
     {
       MG_StrExpr *atom = &mg_str_expr_nil;
-      if(it->flags & (MD_NodeFlag_Identifier|MD_NodeFlag_Numeric|MD_NodeFlag_StringLiteral) &&
+      if (it->flags & (MD_NodeFlag_Identifier|MD_NodeFlag_Numeric|MD_NodeFlag_StringLiteral) &&
          md_node_is_nil(it->first))
       {
         atom = mg_push_str_expr(arena, MG_StrExprOp_Null, it);
         it = it->next;
       }
-      else if(!md_node_is_nil(it->first))
+      else if (!md_node_is_nil(it->first))
       {
         MG_StrExprParseResult subparse = mg_str_expr_parse_from_first_opl__min_prec(arena, it->first, &md_nil_node, 0);
         atom = subparse.root;
         md_msg_list_concat_in_place(&parse.msgs, &subparse.msgs);
         it = it->next;
       }
-      if(leafmost_op != &mg_str_expr_nil)
+      if (leafmost_op != &mg_str_expr_nil)
       {
         leafmost_op->left = atom;
       }
@@ -431,15 +431,15 @@ mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node
     }
     
     //- rjf: parse binary operator extensions at this precedence level
-    for(;it != opl && !md_node_is_nil(it);)
+    for (;it != opl && !md_node_is_nil(it);)
     {
       // rjf: find binary op kind of `it`
       MG_StrExprOp found_op = MG_StrExprOp_Null;
-      for(MG_StrExprOp op = (MG_StrExprOp)(MG_StrExprOp_Null+1);
+      for (MG_StrExprOp op = (MG_StrExprOp)(MG_StrExprOp_Null+1);
           op < MG_StrExprOp_COUNT;
           op = (MG_StrExprOp)(op+1))
       {
-        if(mg_str_expr_op_kind_table[op] == MG_StrExprOpKind_Binary &&
+        if (mg_str_expr_op_kind_table[op] == MG_StrExprOpKind_Binary &&
            str8_match(it->string, mg_str_expr_op_symbol_string_table[op], 0) &&
            mg_str_expr_op_precedence_table[op] >= min_prec)
         {
@@ -449,10 +449,10 @@ mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node
       }
       
       // rjf: good found_op -> build binary expr
-      if(found_op != MG_StrExprOp_Null)
+      if (found_op != MG_StrExprOp_Null)
       {
         MG_StrExpr *op_expr = mg_push_str_expr(arena, found_op, it);
-        if(leafmost_op == &mg_str_expr_nil)
+        if (leafmost_op == &mg_str_expr_nil)
         {
           leafmost_op = op_expr;
         }
@@ -469,7 +469,7 @@ mg_str_expr_parse_from_first_opl__min_prec(Arena *arena, MD_Node *first, MD_Node
       MG_StrExprParseResult subparse = mg_str_expr_parse_from_first_opl__min_prec(arena, it, opl, mg_str_expr_op_precedence_table[found_op]+1);
       parse.root->right = subparse.root;
       md_msg_list_concat_in_place(&parse.msgs, &subparse.msgs);
-      if(subparse.root == &mg_str_expr_nil)
+      if (subparse.root == &mg_str_expr_nil)
       {
         md_msg_list_pushf(arena, &parse.msgs, it, MD_MsgKind_Error, "Missing right-hand-side of '%S'.", mg_str_expr_op_symbol_string_table[found_op]);
       }
@@ -505,7 +505,7 @@ mg_node_array_make(Arena *arena, U64 count)
   MG_NodeArray result = {0};
   result.count = count;
   result.v = push_array(arena, MD_Node *, result.count);
-  for(U64 idx = 0; idx < result.count; idx += 1)
+  for (U64 idx = 0; idx < result.count; idx += 1)
   {
     result.v[idx] = &md_nil_node;
   }
@@ -568,7 +568,7 @@ internal MG_NodeArray
 mg_row_from_index(MG_NodeGrid grid, U64 index)
 {
   MG_NodeArray result = {0};
-  if(0 <= index && index < grid.cells.count / grid.x_stride)
+  if (0 <= index && index < grid.cells.count / grid.x_stride)
   {
     result.count = grid.y_stride;
     result.v = &grid.cells.v[index*grid.y_stride];
@@ -580,12 +580,12 @@ internal MG_NodeArray
 mg_column_from_index(Arena *arena, MG_NodeGrid grid, U64 index)
 {
   MG_NodeArray result = {0};
-  if(0 <= index && index < grid.y_stride)
+  if (0 <= index && index < grid.y_stride)
   {
     U64 row_count = grid.cells.count / grid.y_stride;
     result = mg_node_array_make(arena, row_count);
     U64 idx = 0;
-    for(U64 row_idx = 0; row_idx < row_count; row_idx += 1, idx += 1)
+    for (U64 row_idx = 0; row_idx < row_count; row_idx += 1, idx += 1)
     {
       result.v[idx] = grid.cells.v[index*grid.x_stride + row_idx*grid.y_stride];
     }
@@ -598,7 +598,7 @@ mg_node_from_grid_xy(MG_NodeGrid grid, U64 x, U64 y)
 {
   MD_Node *result = &md_nil_node;
   U64 idx = x*grid.x_stride + y*grid.y_stride;
-  if(0 <= idx && idx < grid.cells.count)
+  if (0 <= idx && idx < grid.cells.count)
   {
     result = grid.cells.v[idx];
   }
@@ -626,11 +626,11 @@ mg_column_desc_array_from_tag(Arena *arena, MD_Node *tag)
   {
     result.v[idx].name = push_str8_copy(arena, hdr->string);
     result.v[idx].kind = MG_ColumnKind_DirectCell;
-    if(md_node_has_tag(hdr, str8_lit("tag_check"), 0))
+    if (md_node_has_tag(hdr, str8_lit("tag_check"), 0))
     {
       result.v[idx].kind = MG_ColumnKind_CheckForTag;
     }
-    if(md_node_has_tag(hdr, str8_lit("tag_child"), 0))
+    if (md_node_has_tag(hdr, str8_lit("tag_child"), 0))
     {
       String8 tag_name = md_tag_from_string(hdr, str8_lit("tag_child"), 0)->first->string;
       result.v[idx].kind = MG_ColumnKind_TagChild;
@@ -645,9 +645,9 @@ internal U64
 mg_column_index_from_name(MG_ColumnDescArray descs, String8 name)
 {
   U64 result = 0;
-  for(U64 idx = 0; idx < descs.count; idx += 1)
+  for (U64 idx = 0; idx < descs.count; idx += 1)
   {
-    if(str8_match(descs.v[idx].name, name, 0))
+    if (str8_match(descs.v[idx].name, name, 0))
     {
       result = idx;
       break;
@@ -663,13 +663,13 @@ mg_string_from_row_desc_idx(MD_Node *row_parent, MG_ColumnDescArray descs, U64 i
   
   // rjf: grab relevant column description
   MG_ColumnDesc *desc = 0;
-  if(0 <= idx && idx < descs.count)
+  if (0 <= idx && idx < descs.count)
   {
     desc = descs.v + idx;
   }
   
   // rjf: grab node
-  if(desc != 0)
+  if (desc != 0)
   {
     switch(desc->kind)
     {
@@ -679,9 +679,9 @@ mg_string_from_row_desc_idx(MD_Node *row_parent, MG_ColumnDescArray descs, U64 i
       {
         // rjf: determine grid idx (shifted by synthetic columns)
         U64 cell_idx = idx;
-        for(U64 col_idx = 0; col_idx < descs.count && col_idx < idx; col_idx += 1)
+        for (U64 col_idx = 0; col_idx < descs.count && col_idx < idx; col_idx += 1)
         {
-          if(descs.v[col_idx].kind != MG_ColumnKind_DirectCell)
+          if (descs.v[col_idx].kind != MG_ColumnKind_DirectCell)
           {
             cell_idx -= 1;
           }
@@ -719,7 +719,7 @@ mg_eval_table_expand_expr__numeric(MG_StrExpr *expr, MG_TableExpandInfo *info)
   {
     default:
     {
-      if(MG_StrExprOp_FirstString <= op && op <= MG_StrExprOp_LastString)
+      if (MG_StrExprOp_FirstString <= op && op <= MG_StrExprOp_LastString)
       {
         Temp scratch = scratch_begin(0, 0);
         String8List result_strs = {0};
@@ -811,11 +811,11 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
   {
     default:
     {
-      if(MG_StrExprOp_FirstNumeric <= op && op <= MG_StrExprOp_LastNumeric)
+      if (MG_StrExprOp_FirstNumeric <= op && op <= MG_StrExprOp_LastNumeric)
       {
         S64 numeric_eval = mg_eval_table_expand_expr__numeric(expr, info);
         String8 numeric_eval_stringized = {0};
-        if(md_node_has_tag(md_root_from_node(expr->node), str8_lit("hex"), 0))
+        if (md_node_has_tag(md_root_from_node(expr->node), str8_lit("hex"), 0))
         {
           numeric_eval_stringized = push_str8f(arena, "0x%I64x", numeric_eval);
         }
@@ -849,9 +849,9 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
       MG_NodeGrid *grid = 0;
       MG_ColumnDescArray column_descs = {0};
       {
-        for(MG_TableExpandTask *task = info->first_expand_task; task != 0; task = task->next)
+        for (MG_TableExpandTask *task = info->first_expand_task; task != 0; task = task->next)
         {
-          if(str8_match(expand_label, task->expansion_label, 0))
+          if (str8_match(expand_label, task->expansion_label, 0))
           {
             row_idx = task->idx;
             grid = task->grid;
@@ -863,7 +863,7 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
       
       // rjf: grab row parent
       MD_Node *row_parent = &md_nil_node;
-      if(grid && (0 <= row_idx && row_idx < grid->row_parents.count))
+      if (grid && (0 <= row_idx && row_idx < grid->row_parents.count))
       {
         row_parent = grid->row_parents.v[row_idx];
       }
@@ -873,26 +873,26 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
       {
         U64 column_idx = 0;
         
-        if(str8_match(column_lookup, str8_lit("_it"), 0))
+        if (str8_match(column_lookup, str8_lit("_it"), 0))
         {
           lookup_string = push_str8f(arena, "%I64u", row_idx);
         }
         else
         {
           // NOTE(rjf): numeric column lookup (column index)
-          if(right_node->flags & MD_NodeFlag_Numeric)
+          if (right_node->flags & MD_NodeFlag_Numeric)
           {
             try_u64_from_str8_c_rules(column_lookup, &column_idx);
           }
           
           // NOTE(rjf): string column lookup (column name)
-          if(right_node->flags & (MD_NodeFlag_Identifier|MD_NodeFlag_StringLiteral))
+          if (right_node->flags & (MD_NodeFlag_Identifier|MD_NodeFlag_StringLiteral))
           {
             column_idx = mg_column_index_from_name(column_descs, column_lookup);
           }
           
           lookup_string = mg_string_from_row_desc_idx(row_parent, column_descs, column_idx);
-          if(str8_match(lookup_string, str8_lit("--"), 0))
+          if (str8_match(lookup_string, str8_lit("--"), 0))
           {
             lookup_string = info->missing_value_fallback;
           }
@@ -902,7 +902,7 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
       // rjf: push lookup string
       {
         B32 is_multiline = (str8_find_needle(lookup_string, 0, str8_lit("\n"), 0) < lookup_string.size);
-        if(is_multiline)
+        if (is_multiline)
         {
           lookup_string = indented_from_string(mg_arena, lookup_string);
           lookup_string = escaped_from_raw_str8(mg_arena, lookup_string);
@@ -915,7 +915,7 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
     case MG_StrExprOp_ExpandIfTrue:
     {
       S64 bool_value = mg_eval_table_expand_expr__numeric(expr->left, info);
-      if(bool_value)
+      if (bool_value)
       {
         mg_eval_table_expand_expr__string(arena, expr->right, info, out);
       }
@@ -932,12 +932,12 @@ mg_eval_table_expand_expr__string(Arena *arena, MG_StrExpr *expr, MG_TableExpand
       S64 column = mg_eval_table_expand_expr__numeric(expr->left, info);
       S64 current_column = out->total_size;
       S64 spaces_to_push = column - current_column;
-      if(spaces_to_push > 0)
+      if (spaces_to_push > 0)
       {
         String8 str = {0};
         str.size = spaces_to_push;
         str.str = push_array(arena, U8, spaces_to_push);
-        for(S64 idx = 0; idx < spaces_to_push; idx += 1)
+        for (S64 idx = 0; idx < spaces_to_push; idx += 1)
         {
           str.str[idx] = ' ';
         }
@@ -951,12 +951,12 @@ internal void
 mg_loop_table_column_expansion(Arena *arena, String8 strexpr, MG_TableExpandInfo *info, MG_TableExpandTask *task, String8List *out)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  for(U64 it_idx = 0; it_idx < task->count; it_idx += 1)
+  for (U64 it_idx = 0; it_idx < task->count; it_idx += 1)
   {
     task->idx = it_idx;
     
     //- rjf: iterate all further dimensions, if there's left in the chain
-    if(task->next)
+    if (task->next)
     {
       mg_loop_table_column_expansion(arena, strexpr, info, task->next, out);
     }
@@ -966,39 +966,39 @@ mg_loop_table_column_expansion(Arena *arena, String8 strexpr, MG_TableExpandInfo
     {
       String8List expansion_strs = {0};
       U64 start = 0;
-      for(U64 char_idx = 0; char_idx <= strexpr.size;)
+      for (U64 char_idx = 0; char_idx <= strexpr.size;)
       {
         // rjf: push plain text parts of strexpr
-        if(char_idx == strexpr.size || strexpr.str[char_idx] == '$')
+        if (char_idx == strexpr.size || strexpr.str[char_idx] == '$')
         {
           String8 plain_text_substr = str8_substr(strexpr, r1u64(start, char_idx));
           start = char_idx;
-          if(plain_text_substr.size != 0)
+          if (plain_text_substr.size != 0)
           {
             str8_list_push(arena, &expansion_strs, plain_text_substr);
           }
         }
         
         // rjf: handle expansion expression
-        if(strexpr.str[char_idx] == '$')
+        if (strexpr.str[char_idx] == '$')
         {
           String8 string = str8_skip(strexpr, char_idx+1);
           Rng1U64 expr_range = {0};
           S64 paren_nest = 0;
-          for(U64 idx = 0; idx < string.size; idx += 1)
+          for (U64 idx = 0; idx < string.size; idx += 1)
           {
-            if(string.str[idx] == '(')
+            if (string.str[idx] == '(')
             {
               paren_nest += 1;
-              if(paren_nest == 1)
+              if (paren_nest == 1)
               {
                 expr_range.min = idx;
               }
             }
-            if(string.str[idx] == ')')
+            if (string.str[idx] == ')')
             {
               paren_nest -= 1;
-              if(paren_nest == 0)
+              if (paren_nest == 0)
               {
                 expr_range.max = idx+1;
                 break;
@@ -1018,7 +1018,7 @@ mg_loop_table_column_expansion(Arena *arena, String8 strexpr, MG_TableExpandInfo
         }
       }
       String8 expansion_str = str8_list_join(arena, &expansion_strs, 0);
-      if(expansion_str.size != 0)
+      if (expansion_str.size != 0)
       {
         expansion_str = raw_from_escaped_str8(mg_arena, expansion_str);
         str8_list_push(arena, out, expansion_str);
@@ -1034,7 +1034,7 @@ mg_string_list_from_table_gen(Arena *arena, MG_Map grid_name_map, MG_Map grid_co
 {
   String8List result = {0};
   Temp scratch = scratch_begin(&arena, 1);
-  if(md_node_is_nil(gen->first) && gen->string.size != 0)
+  if (md_node_is_nil(gen->first) && gen->string.size != 0)
   {
     str8_list_push(arena, &result, raw_from_escaped_str8(arena, gen->string));
     str8_list_push(arena, &result, str8_lit("\n"));
@@ -1046,7 +1046,7 @@ mg_string_list_from_table_gen(Arena *arena, MG_Map grid_name_map, MG_Map grid_co
     MG_TableExpandTask *last_task = 0;
     for MD_EachNode(tag, strexpr_node->first_tag)
     {
-      if(str8_match(tag->string, str8_lit("expand"), 0))
+      if (str8_match(tag->string, str8_lit("expand"), 0))
       {
         // rjf: grab args for this expansion
         MD_Node *table_name_node = md_child_from_index(tag, 0);
@@ -1060,13 +1060,13 @@ mg_string_list_from_table_gen(Arena *arena, MG_Map grid_name_map, MG_Map grid_co
         
         // rjf: figure out row count
         U64 grid_row_count = 0;
-        if(grid != 0)
+        if (grid != 0)
         {
           grid_row_count = grid->cells.count / grid->y_stride;
         }
         
         // rjf: push task for this expansion
-        if(grid != 0)
+        if (grid != 0)
         {
           MG_TableExpandTask *task = push_array(scratch.arena, MG_TableExpandTask, 1);
           task->expansion_label = expand_label;
@@ -1082,7 +1082,7 @@ mg_string_list_from_table_gen(Arena *arena, MG_Map grid_name_map, MG_Map grid_co
     // rjf: do expansion generation, OR just push this string if we have no expansions
     {
       MG_TableExpandInfo info = {first_task, fallback};
-      if(first_task != 0)
+      if (first_task != 0)
       {
         mg_loop_table_column_expansion(arena, strexpr_node->string, &info, first_task, &result);
       }
@@ -1104,7 +1104,7 @@ mg_layer_key_from_path(String8 path)
 {
   Temp scratch = scratch_begin(0, 0);
   U64 src_folder_pos = 0;
-  for(U64 next_src_folder_pos = 0;
+  for (U64 next_src_folder_pos = 0;
       next_src_folder_pos < path.size;
       next_src_folder_pos = str8_find_needle(path, next_src_folder_pos+1, str8_lit("src"), 0))
   {
@@ -1125,15 +1125,15 @@ mg_layer_from_key(String8 key)
   U64 slot_idx = hash%mg_state->slots_count;
   MG_LayerSlot *slot = &mg_state->slots[slot_idx];
   MG_Layer *layer = 0;
-  for(MG_LayerNode *n = slot->first; n != 0; n = n->next)
+  for (MG_LayerNode *n = slot->first; n != 0; n = n->next)
   {
-    if(str8_match(n->v.key, key, 0))
+    if (str8_match(n->v.key, key, 0))
     {
       layer = &n->v;
       break;
     }
   }
-  if(layer == 0)
+  if (layer == 0)
   {
     MG_LayerNode *n = push_array(mg_arena, MG_LayerNode, 1);
     SLLQueuePush(slot->first, slot->last, n);

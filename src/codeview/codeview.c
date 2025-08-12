@@ -94,7 +94,7 @@ internal CV_EncodedFramePtrReg
 cv_pick_fp_encoding(CV_SymFrameproc *frameproc, B32 is_local_param)
 {
   CV_EncodedFramePtrReg fp_reg = 0;
-  if(is_local_param)
+  if (is_local_param)
   {
     fp_reg = CV_FrameprocFlags_Extract_ParamBasePointer(frameproc->flags);
   }

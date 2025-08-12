@@ -54,27 +54,27 @@ read_only global U8 base64_reverse[128] = {
 
 internal B32
 char_is_space(U8 c){
-  return(c == ' ' || c == '\n' || c == '\t' || c == '\r' || c == '\f' || c == '\v');
+  return (c == ' ' || c == '\n' || c == '\t' || c == '\r' || c == '\f' || c == '\v');
 }
 
 internal B32
 char_is_upper(U8 c){
-  return('A' <= c && c <= 'Z');
+  return ('A' <= c && c <= 'Z');
 }
 
 internal B32
 char_is_lower(U8 c){
-  return('a' <= c && c <= 'z');
+  return ('a' <= c && c <= 'z');
 }
 
 internal B32
 char_is_alpha(U8 c){
-  return(char_is_upper(c) || char_is_lower(c));
+  return (char_is_upper(c) || char_is_lower(c));
 }
 
 internal B32
 char_is_slash(U8 c){
-  return(c == '/' || c == '\\');
+  return (c == '/' || c == '\\');
 }
 
 internal B32
@@ -86,7 +86,7 @@ char_is_digit(U8 c, U32 base){
       result = 1;
     }
   }
-  return(result);
+  return (result);
 }
 
 internal U8
@@ -94,7 +94,7 @@ char_to_lower(U8 c){
   if (char_is_upper(c)){
     c += ('a' - 'A');
   }
-  return(c);
+  return (c);
 }
 
 internal U8
@@ -102,15 +102,15 @@ char_to_upper(U8 c){
   if (char_is_lower(c)){
     c += ('A' - 'a');
   }
-  return(c);
+  return (c);
 }
 
 internal U8
 char_to_correct_slash(U8 c){
-  if(char_is_slash(c)){
+  if (char_is_slash(c)){
     c = '/';
   }
-  return(c);
+  return (c);
 }
 
 ////////////////////////////////
@@ -120,21 +120,21 @@ internal U64
 cstring8_length(U8 *c){
   U8 *p = c;
   for (;*p != 0; p += 1);
-  return(p - c);
+  return (p - c);
 }
 
 internal U64
 cstring16_length(U16 *c){
   U16 *p = c;
   for (;*p != 0; p += 1);
-  return(p - c);
+  return (p - c);
 }
 
 internal U64
 cstring32_length(U32 *c){
   U32 *p = c;
   for (;*p != 0; p += 1);
-  return(p - c);
+  return (p - c);
 }
 
 ////////////////////////////////
@@ -143,73 +143,73 @@ cstring32_length(U32 *c){
 internal String8
 str8(U8 *str, U64 size){
   String8 result = {str, size};
-  return(result);
+  return (result);
 }
 
 internal String8
 str8_range(U8 *first, U8 *one_past_last){
   String8 result = {first, (U64)(one_past_last - first)};
-  return(result);
+  return (result);
 }
 
 internal String8
 str8_zero(void){
   String8 result = {0};
-  return(result);
+  return (result);
 }
 
 internal String16
 str16(U16 *str, U64 size){
   String16 result = {str, size};
-  return(result);
+  return (result);
 }
 
 internal String16
 str16_range(U16 *first, U16 *one_past_last){
   String16 result = {first, (U64)(one_past_last - first)};
-  return(result);
+  return (result);
 }
 
 internal String16
 str16_zero(void){
   String16 result = {0};
-  return(result);
+  return (result);
 }
 
 internal String32
 str32(U32 *str, U64 size){
   String32 result = {str, size};
-  return(result);
+  return (result);
 }
 
 internal String32
 str32_range(U32 *first, U32 *one_past_last){
   String32 result = {first, (U64)(one_past_last - first)};
-  return(result);
+  return (result);
 }
 
 internal String32
 str32_zero(void){
   String32 result = {0};
-  return(result);
+  return (result);
 }
 
 internal String8
 str8_cstring(char *c){
   String8 result = {(U8*)c, cstring8_length((U8*)c)};
-  return(result);
+  return (result);
 }
 
 internal String16
 str16_cstring(U16 *c){
   String16 result = {(U16*)c, cstring16_length((U16*)c)};
-  return(result);
+  return (result);
 }
 
 internal String32
 str32_cstring(U32 *c){
   String32 result = {(U32*)c, cstring32_length((U32*)c)};
-  return(result);
+  return (result);
 }
 
 internal String8
@@ -239,7 +239,7 @@ str8_cstring_capped_reverse(void *raw_start, void *raw_cap)
 {
   U8 *start = raw_start;
   U8 *ptr   = raw_cap;
-  for(; ptr > start; )
+  for (; ptr > start; )
   {
     ptr -= 1;
 
@@ -260,7 +260,7 @@ internal String8
 upper_from_str8(Arena *arena, String8 string)
 {
   string = push_str8_copy(arena, string);
-  for(U64 idx = 0; idx < string.size; idx += 1)
+  for (U64 idx = 0; idx < string.size; idx += 1)
   {
     string.str[idx] = char_to_upper(string.str[idx]);
   }
@@ -271,7 +271,7 @@ internal String8
 lower_from_str8(Arena *arena, String8 string)
 {
   string = push_str8_copy(arena, string);
-  for(U64 idx = 0; idx < string.size; idx += 1)
+  for (U64 idx = 0; idx < string.size; idx += 1)
   {
     string.str[idx] = char_to_lower(string.str[idx]);
   }
@@ -282,7 +282,7 @@ internal String8
 backslashed_from_str8(Arena *arena, String8 string)
 {
   string = push_str8_copy(arena, string);
-  for(U64 idx = 0; idx < string.size; idx += 1)
+  for (U64 idx = 0; idx < string.size; idx += 1)
   {
     string.str[idx] = char_is_slash(string.str[idx]) ? '\\' : string.str[idx];
   }
@@ -296,31 +296,31 @@ internal B32
 str8_match(String8 a, String8 b, StringMatchFlags flags)
 {
   B32 result = 0;
-  if(a.size == b.size && flags == 0)
+  if (a.size == b.size && flags == 0)
   {
     result = MemoryMatch(a.str, b.str, b.size);
   }
-  else if(a.size == b.size || (flags & StringMatchFlag_RightSideSloppy))
+  else if (a.size == b.size || (flags & StringMatchFlag_RightSideSloppy))
   {
     B32 case_insensitive  = (flags & StringMatchFlag_CaseInsensitive);
     B32 slash_insensitive = (flags & StringMatchFlag_SlashInsensitive);
     U64 size              = Min(a.size, b.size);
     result = 1;
-    for(U64 i = 0; i < size; i += 1)
+    for (U64 i = 0; i < size; i += 1)
     {
       U8 at = a.str[i];
       U8 bt = b.str[i];
-      if(case_insensitive)
+      if (case_insensitive)
       {
         at = char_to_upper(at);
         bt = char_to_upper(bt);
       }
-      if(slash_insensitive)
+      if (slash_insensitive)
       {
         at = char_to_correct_slash(at);
         bt = char_to_correct_slash(bt);
       }
-      if(at != bt)
+      if (at != bt)
       {
         result = 0;
         break;
@@ -340,12 +340,12 @@ str8_find_needle(String8 string, U64 start_pos, String8 needle, StringMatchFlags
     String8 needle_tail = str8_skip(needle, 1);
     StringMatchFlags adjusted_flags = flags | StringMatchFlag_RightSideSloppy;
     U8 needle_first_char_adjusted = needle.str[0];
-    if(adjusted_flags & StringMatchFlag_CaseInsensitive){
+    if (adjusted_flags & StringMatchFlag_CaseInsensitive){
       needle_first_char_adjusted = char_to_upper(needle_first_char_adjusted);
     }
     for (;p < stop_p; p += 1){
       U8 haystack_char_adjusted = *p;
-      if(adjusted_flags & StringMatchFlag_CaseInsensitive){
+      if (adjusted_flags & StringMatchFlag_CaseInsensitive){
         haystack_char_adjusted = char_to_upper(haystack_char_adjusted);
       }
       if (haystack_char_adjusted == needle_first_char_adjusted){
@@ -359,17 +359,17 @@ str8_find_needle(String8 string, U64 start_pos, String8 needle, StringMatchFlags
   if (p < stop_p){
     result = (U64)(p - string.str);
   }
-  return(result);
+  return (result);
 }
 
 internal U64
 str8_find_needle_reverse(String8 string, U64 start_pos, String8 needle, StringMatchFlags flags)
 {
   U64 result = 0;
-  for(S64 i = string.size - start_pos - needle.size; i >= 0; --i)
+  for (S64 i = string.size - start_pos - needle.size; i >= 0; --i)
   {
     String8 haystack = str8_substr(string, rng_1u64(i, i + needle.size));
-    if(str8_match(haystack, needle, flags))
+    if (str8_match(haystack, needle, flags))
     {
       result = (U64)i + needle.size;
       break;
@@ -394,13 +394,13 @@ str8_substr(String8 str, Rng1U64 range){
   range.max = ClampTop(range.max, str.size);
   str.str += range.min;
   str.size = dim_1u64(range);
-  return(str);
+  return (str);
 }
 
 internal String8
 str8_prefix(String8 str, U64 size){
   str.size = ClampTop(size, str.size);
-  return(str);
+  return (str);
 }
 
 internal String8
@@ -408,7 +408,7 @@ str8_skip(String8 str, U64 amt){
   amt = ClampTop(amt, str.size);
   str.str += amt;
   str.size -= amt;
-  return(str);
+  return (str);
 }
 
 internal String8
@@ -416,14 +416,14 @@ str8_postfix(String8 str, U64 size){
   size = ClampTop(size, str.size);
   str.str = (str.str + str.size) - size;
   str.size = size;
-  return(str);
+  return (str);
 }
 
 internal String8
 str8_chop(String8 str, U64 amt){
   amt = ClampTop(amt, str.size);
   str.size -= amt;
-  return(str);
+  return (str);
 }
 
 internal String8
@@ -443,7 +443,7 @@ str8_skip_chop_whitespace(String8 string){
     }
   }
   String8 result = str8_range(first, opl);
-  return(result);
+  return (result);
 }
 
 ////////////////////////////////
@@ -457,7 +457,7 @@ push_str8_cat(Arena *arena, String8 s1, String8 s2){
   MemoryCopy(str.str, s1.str, s1.size);
   MemoryCopy(str.str + s1.size, s2.str, s2.size);
   str.str[str.size] = 0;
-  return(str);
+  return (str);
 }
 
 internal String8
@@ -467,7 +467,7 @@ push_str8_copy(Arena *arena, String8 s){
   str.str = push_array_no_zero(arena, U8, str.size + 1);
   MemoryCopy(str.str, s.str, s.size);
   str.str[str.size] = 0;
-  return(str);
+  return (str);
 }
 
 internal String8
@@ -480,7 +480,7 @@ push_str8fv(Arena *arena, char *fmt, va_list args){
   result.size = raddbg_vsnprintf((char*)result.str, needed_bytes, fmt, args2);
   result.str[result.size] = 0;
   va_end(args2);
-  return(result);
+  return (result);
 }
 
 internal String8
@@ -489,7 +489,7 @@ push_str8f(Arena *arena, char *fmt, ...){
   va_start(args, fmt);
   String8 result = push_str8fv(arena, fmt, args);
   va_end(args);
-  return(result);
+  return (result);
 }
 
 ////////////////////////////////
@@ -516,7 +516,7 @@ sign_from_str8(String8 string, String8 *string_tail){
   
   // output integer sign
   S64 sign = (neg_count & 1)?-1:+1;
-  return(sign);
+  return (sign);
 }
 
 internal B32
@@ -534,7 +534,7 @@ str8_is_integer(String8 string, U32 radix){
       }
     }
   }
-  return(result);
+  return (result);
 }
 
 internal U64
@@ -546,14 +546,14 @@ u64_from_str8(String8 string, U32 radix){
       x += integer_symbol_reverse[string.str[i]&0x7F];
     }
   }
-  return(x);
+  return (x);
 }
 
 internal S64
 s64_from_str8(String8 string, U32 radix){
   S64 sign = sign_from_str8(string, &string);
   S64 x = (S64)u64_from_str8(string, radix) * sign;
-  return(x);
+  return (x);
 }
 
 internal U32
@@ -600,7 +600,7 @@ try_u64_from_str8_c_rules(String8 string, U64 *x){
       }
     }
   }
-  return(is_integer);
+  return (is_integer);
 }
 
 internal B32
@@ -610,7 +610,7 @@ try_s64_from_str8_c_rules(String8 string, S64 *x){
   U64 x_u64 = 0;
   B32 is_integer = try_u64_from_str8_c_rules(string_tail, &x_u64);
   *x = x_u64*sign;
-  return(is_integer);
+  return (is_integer);
 }
 
 //- rjf: integer -> string
@@ -620,19 +620,19 @@ str8_from_memory_size(Arena *arena, U64 size)
 {
   String8 result;
 
-  if(size < KB(1))
+  if (size < KB(1))
   {
     result = push_str8f(arena, "%llu Bytes", size);
   }
-  else if(size < MB(1))
+  else if (size < MB(1))
   {
     result = push_str8f(arena, "%llu.%02llu KiB", size / KB(1), ((size * 100) / KB(1)) % 100);
   }
-  else if(size < GB(1))
+  else if (size < GB(1))
   {
     result = push_str8f(arena, "%llu.%02llu MiB", size / MB(1), ((size * 100) / MB(1)) % 100);
   }
-  else if(size < TB(1))
+  else if (size < TB(1))
   {
     result = push_str8f(arena, "%llu.%02llu GiB", size / GB(1), ((size * 100) / GB(1)) % 100);
   }
@@ -649,14 +649,14 @@ str8_from_count(Arena *arena, U64 count)
 {
   String8 result;
 
-  if(count < 1 * 1000)
+  if (count < 1 * 1000)
   {
     result = push_str8f(arena, "%llu", count);
   }
-  else if(count < 1000000)
+  else if (count < 1000000)
   {
     U64 frac = ((count * 100) / 1000) % 100;
-    if(frac > 0)
+    if (frac > 0)
     {
       result = push_str8f(arena, "%llu.%02lluK", count / 1000, frac);
     }
@@ -665,10 +665,10 @@ str8_from_count(Arena *arena, U64 count)
       result = push_str8f(arena, "%lluK", count / 1000);
     }
   }
-  else if(count < 1000000000)
+  else if (count < 1000000000)
   {
     U64 frac = ((count * 100) / 1000000) % 100;
-    if(frac > 0)
+    if (frac > 0)
     {
       result = push_str8f(arena, "%llu.%02lluM", count / 1000000, frac);
     }
@@ -680,7 +680,7 @@ str8_from_count(Arena *arena, U64 count)
   else
   {
     U64 frac = ((count * 100) * 1000000000) % 100;
-    if(frac > 0)
+    if (frac > 0)
     {
       result = push_str8f(arena, "%llu.%02lluB", count / 1000000000, frac);
     }
@@ -764,10 +764,10 @@ str8_from_u64(Arena *arena, U64 u64, U32 radix, U8 min_digits, U8 digit_group_se
       U64 needed_digits = 1;
       {
         U64 u64_reduce = u64;
-        for(;;)
+        for (;;)
         {
           u64_reduce /= radix;
-          if(u64_reduce == 0)
+          if (u64_reduce == 0)
           {
             break;
           }
@@ -776,10 +776,10 @@ str8_from_u64(Arena *arena, U64 u64, U32 radix, U8 min_digits, U8 digit_group_se
       }
       needed_leading_0s = (min_digits > needed_digits) ? min_digits - needed_digits : 0;
       U64 needed_separators = 0;
-      if(digit_group_separator != 0)
+      if (digit_group_separator != 0)
       {
         needed_separators = (needed_digits+needed_leading_0s)/digit_group_size;
-        if(needed_separators > 0 && (needed_digits+needed_leading_0s)%digit_group_size == 0)
+        if (needed_separators > 0 && (needed_digits+needed_leading_0s)%digit_group_size == 0)
         {
           needed_separators -= 1;
         }
@@ -793,9 +793,9 @@ str8_from_u64(Arena *arena, U64 u64, U32 radix, U8 min_digits, U8 digit_group_se
     {
       U64 u64_reduce = u64;
       U64 digits_until_separator = digit_group_size;
-      for(U64 idx = 0; idx < result.size; idx += 1)
+      for (U64 idx = 0; idx < result.size; idx += 1)
       {
-        if(digits_until_separator == 0 && digit_group_separator != 0)
+        if (digits_until_separator == 0 && digit_group_separator != 0)
         {
           result.str[result.size - idx - 1] = digit_group_separator;
           digits_until_separator = digit_group_size+1;
@@ -806,19 +806,19 @@ str8_from_u64(Arena *arena, U64 u64, U32 radix, U8 min_digits, U8 digit_group_se
           u64_reduce /= radix;
         }
         digits_until_separator -= 1;
-        if(u64_reduce == 0)
+        if (u64_reduce == 0)
         {
           break;
         }
       }
-      for(U64 leading_0_idx = 0; leading_0_idx < needed_leading_0s; leading_0_idx += 1)
+      for (U64 leading_0_idx = 0; leading_0_idx < needed_leading_0s; leading_0_idx += 1)
       {
         result.str[prefix.size + leading_0_idx] = '0';
       }
     }
     
     // rjf: fill prefix
-    if(prefix.size != 0)
+    if (prefix.size != 0)
     {
       MemoryCopy(result.str, prefix.str, prefix.size);
     }
@@ -831,7 +831,7 @@ str8_from_s64(Arena *arena, S64 s64, U32 radix, U8 min_digits, U8 digit_group_se
 {
   String8 result = {0};
   // TODO(rjf): preeeeetty sloppy...
-  if(s64 < 0)
+  if (s64 < 0)
   {
     Temp scratch = scratch_begin(&arena, 1);
     String8 numeric_part = str8_from_u64(scratch.arena, (U64)(-s64), radix, min_digits, digit_group_separator);
@@ -853,15 +853,15 @@ f64_from_str8(String8 string)
 {
   // TODO(rjf): crappy implementation for now that just uses atof.
   F64 result = 0;
-  if(string.size > 0)
+  if (string.size > 0)
   {
     // rjf: find starting pos of numeric string, as well as sign
     F64 sign = +1.0;
-    if(string.str[0] == '-')
+    if (string.str[0] == '-')
     {
       sign = -1.0;
     }
-    else if(string.str[0] == '+')
+    else if (string.str[0] == '+')
     {
       sign = 1.0;
     }
@@ -870,9 +870,9 @@ f64_from_str8(String8 string)
     U64 num_valid_chars = 0;
     char buffer[64];
     B32 exp = 0;
-    for(U64 idx = 0; idx < string.size && num_valid_chars < sizeof(buffer)-1; idx += 1)
+    for (U64 idx = 0; idx < string.size && num_valid_chars < sizeof(buffer)-1; idx += 1)
     {
-      if(char_is_digit(string.str[idx], 10) || string.str[idx] == '.' || string.str[idx] == 'e' ||
+      if (char_is_digit(string.str[idx], 10) || string.str[idx] == '.' || string.str[idx] == 'e' ||
          (exp && (string.str[idx] == '+' || string.str[idx] == '-')))
       {
         buffer[num_valid_chars] = string.str[idx];
@@ -899,7 +899,7 @@ str8_list_push_node(String8List *list, String8Node *node){
   SLLQueuePush(list->first, list->last, node);
   list->node_count += 1;
   list->total_size += node->string.size;
-  return(node);
+  return (node);
 }
 
 internal String8Node*
@@ -908,7 +908,7 @@ str8_list_push_node_set_string(String8List *list, String8Node *node, String8 str
   list->node_count += 1;
   list->total_size += string.size;
   node->string = string;
-  return(node);
+  return (node);
 }
 
 internal String8Node*
@@ -916,7 +916,7 @@ str8_list_push_node_front(String8List *list, String8Node *node){
   SLLQueuePushFront(list->first, list->last, node);
   list->node_count += 1;
   list->total_size += node->string.size;
-  return(node);
+  return (node);
 }
 
 internal String8Node*
@@ -925,26 +925,26 @@ str8_list_push_node_front_set_string(String8List *list, String8Node *node, Strin
   list->node_count += 1;
   list->total_size += string.size;
   node->string = string;
-  return(node);
+  return (node);
 }
 
 internal String8Node*
 str8_list_push(Arena *arena, String8List *list, String8 string){
   String8Node *node = push_array_no_zero(arena, String8Node, 1);
   str8_list_push_node_set_string(list, node, string);
-  return(node);
+  return (node);
 }
 
 internal String8Node*
 str8_list_push_front(Arena *arena, String8List *list, String8 string){
   String8Node *node = push_array_no_zero(arena, String8Node, 1);
   str8_list_push_node_front_set_string(list, node, string);
-  return(node);
+  return (node);
 }
 
 internal void
 str8_list_concat_in_place(String8List *list, String8List *to_push){
-  if(to_push->node_count != 0){
+  if (to_push->node_count != 0){
     if (list->last){
       list->node_count += to_push->node_count;
       list->total_size += to_push->total_size;
@@ -978,7 +978,7 @@ str8_list_push_aligner(Arena *arena, String8List *list, U64 min, U64 align){
   list->total_size = new_size;
   node->string.str = (U8*)zeroes_buffer;
   node->string.size = increase_size;
-  return(node);
+  return (node);
 }
 
 internal String8Node*
@@ -988,7 +988,7 @@ str8_list_pushf(Arena *arena, String8List *list, char *fmt, ...){
   String8 string = push_str8fv(arena, fmt, args);
   String8Node *result = str8_list_push(arena, list, string);
   va_end(args);
-  return(result);
+  return (result);
 }
 
 internal String8Node*
@@ -998,7 +998,7 @@ str8_list_push_frontf(Arena *arena, String8List *list, char *fmt, ...){
   String8 string = push_str8fv(arena, fmt, args);
   String8Node *result = str8_list_push_front(arena, list, string);
   va_end(args);
-  return(result);
+  return (result);
 }
 
 internal String8List
@@ -1011,7 +1011,7 @@ str8_list_copy(Arena *arena, String8List *list){
     String8 new_string = push_str8_copy(arena, node->string);
     str8_list_push_node_set_string(&result, new_node, new_string);
   }
-  return(result);
+  return (result);
 }
 
 internal String8List
@@ -1045,7 +1045,7 @@ str8_split(Arena *arena, String8 string, U8 *split_chars, U64 split_char_count, 
     ptr += 1;
   }
   
-  return(list);
+  return (list);
 }
 
 internal String8List
@@ -1097,7 +1097,7 @@ str8_list_join(Arena *arena, String8List *list, StringJoin *optional_params){
   
   *ptr = 0;
   
-  return(result);
+  return (result);
 }
 
 internal void
@@ -1121,7 +1121,7 @@ str8_array_from_list(Arena *arena, String8List *list)
   array.count   = list->node_count;
   array.v = push_array_no_zero(arena, String8, array.count);
   U64 idx = 0;
-  for(String8Node *n = list->first; n != 0; n = n->next, idx += 1)
+  for (String8Node *n = list->first; n != 0; n = n->next, idx += 1)
   {
     array.v[idx] = n->string;
   }
@@ -1156,7 +1156,7 @@ str8_chop_last_slash(String8 string){
       string.size = 0;
     }
   }
-  return(string);
+  return (string);
 }
 
 internal String8
@@ -1174,7 +1174,7 @@ str8_skip_last_slash(String8 string){
       string.str = ptr;
     }
   }
-  return(string);
+  return (string);
 }
 
 internal String8
@@ -1189,7 +1189,7 @@ str8_chop_last_dot(String8 string)
       break;
     }
   }
-  return(result);
+  return (result);
 }
 
 internal String8
@@ -1203,7 +1203,7 @@ str8_skip_last_dot(String8 string){
       break;
     }
   }
-  return(result);
+  return (result);
 }
 
 internal PathStyle
@@ -1220,13 +1220,13 @@ path_style_from_str8(String8 string){
       result = PathStyle_WindowsAbsolute;
     }
   }
-  return(result);
+  return (result);
 }
 
 internal String8List
 str8_split_path(Arena *arena, String8 string){
   String8List result = str8_split(arena, string, (U8*)"/\\", 2, 0);
-  return(result);
+  return (result);
 }
 
 internal void
@@ -1340,17 +1340,17 @@ str8_txt_pt_pair_from_string(String8 string)
     String8 col_part = {0};
     
     // rjf: grab file part
-    for(U64 idx = 0; idx <= string.size; idx += 1)
+    for (U64 idx = 0; idx <= string.size; idx += 1)
     {
       U8 byte = (idx < string.size) ? (string.str[idx]) : 0;
       U8 next_byte = ((idx+1 < string.size) ? (string.str[idx+1]) : 0);
-      if(byte == ':' && next_byte != '/' && next_byte != '\\')
+      if (byte == ':' && next_byte != '/' && next_byte != '\\')
       {
         file_part = str8_prefix(string, idx);
         line_part = str8_skip(string, idx+1);
         break;
       }
-      else if(byte == 0)
+      else if (byte == 0)
       {
         file_part = string;
         break;
@@ -1360,7 +1360,7 @@ str8_txt_pt_pair_from_string(String8 string)
     // rjf: grab line/column
     {
       U64 colon_pos = str8_find_needle(line_part, 0, str8_lit(":"), 0);
-      if(colon_pos < line_part.size)
+      if (colon_pos < line_part.size)
       {
         col_part = str8_skip(line_part, colon_pos+1);
         line_part = str8_prefix(line_part, colon_pos);
@@ -1376,8 +1376,8 @@ str8_txt_pt_pair_from_string(String8 string)
     // rjf: fill
     pair.string = file_part;
     pair.pt = txt_pt((S64)line, (S64)column);
-    if(pair.pt.line == 0) { pair.pt.line = 1; }
-    if(pair.pt.column == 0) { pair.pt.column = 1; }
+    if (pair.pt.line == 0) { pair.pt.line = 1; }
+    if (pair.pt.column == 0) { pair.pt.column = 1; }
   }
   return pair;
 }
@@ -1446,7 +1446,7 @@ utf8_decode(U8 *str, U64 max){
       }
     }
   }
-  return(result);
+  return (result);
 }
 
 internal UnicodeDecode
@@ -1458,7 +1458,7 @@ utf16_decode(U16 *str, U64 max){
     result.codepoint = ((str[0] - 0xD800) << 10) | ((str[1] - 0xDC00) + 0x10000);
     result.inc = 2;
   }
-  return(result);
+  return (result);
 }
 
 internal U32
@@ -1490,7 +1490,7 @@ utf8_encode(U8 *str, U32 codepoint){
     str[0] = '?';
     inc = 1;
   }
-  return(inc);
+  return (inc);
 }
 
 internal U32
@@ -1508,12 +1508,12 @@ utf16_encode(U16 *str, U32 codepoint){
     str[1] = safe_cast_u16(0xDC00 + (v & bitmask10));
     inc = 2;
   }
-  return(inc);
+  return (inc);
 }
 
 internal U32
 utf8_from_utf32_single(U8 *buffer, U32 character){
-  return(utf8_encode(buffer, character));
+  return (utf8_encode(buffer, character));
 }
 
 ////////////////////////////////
@@ -1523,7 +1523,7 @@ internal String8
 str8_from_16(Arena *arena, String16 in)
 {
   String8 result = str8_zero();
-  if(in.size)
+  if (in.size)
   {
     U64 cap = in.size*3;
     U8 *str = push_array_no_zero(arena, U8, cap + 1);
@@ -1531,7 +1531,7 @@ str8_from_16(Arena *arena, String16 in)
     U16 *opl = ptr + in.size;
     U64 size = 0;
     UnicodeDecode consume;
-    for(;ptr < opl; ptr += consume.inc)
+    for (;ptr < opl; ptr += consume.inc)
     {
       consume = utf16_decode(ptr, opl - ptr);
       size += utf8_encode(str + size, consume.codepoint);
@@ -1547,7 +1547,7 @@ internal String16
 str16_from_8(Arena *arena, String8 in)
 {
   String16 result = str16_zero();
-  if(in.size)
+  if (in.size)
   {
     U64 cap = in.size*2;
     U16 *str = push_array_no_zero(arena, U16, cap + 1);
@@ -1555,7 +1555,7 @@ str16_from_8(Arena *arena, String8 in)
     U8 *opl = ptr + in.size;
     U64 size = 0;
     UnicodeDecode consume;
-    for(;ptr < opl; ptr += consume.inc)
+    for (;ptr < opl; ptr += consume.inc)
     {
       consume = utf8_decode(ptr, opl - ptr);
       size += utf16_encode(str + size, consume.codepoint);
@@ -1571,14 +1571,14 @@ internal String8
 str8_from_32(Arena *arena, String32 in)
 {
   String8 result = str8_zero();
-  if(in.size)
+  if (in.size)
   {
     U64 cap = in.size*4;
     U8 *str = push_array_no_zero(arena, U8, cap + 1);
     U32 *ptr = in.str;
     U32 *opl = ptr + in.size;
     U64 size = 0;
-    for(;ptr < opl; ptr += 1)
+    for (;ptr < opl; ptr += 1)
     {
       size += utf8_encode(str + size, *ptr);
     }
@@ -1593,7 +1593,7 @@ internal String32
 str32_from_8(Arena *arena, String8 in)
 {
   String32 result = str32_zero(); 
-  if(in.size)
+  if (in.size)
   {
     U64 cap = in.size;
     U32 *str = push_array_no_zero(arena, U32, cap + 1);
@@ -1601,7 +1601,7 @@ str32_from_8(Arena *arena, String8 in)
     U8 *opl = ptr + in.size;
     U64 size = 0;
     UnicodeDecode consume;
-    for(;ptr < opl; ptr += consume.inc)
+    for (;ptr < opl; ptr += consume.inc)
     {
       consume = utf8_decode(ptr, opl - ptr);
       str[size] = consume.codepoint;
@@ -1633,9 +1633,9 @@ StaticAssert(ArrayCount(g_os_enum_map) == OperatingSystem_COUNT, g_os_enum_map_c
 internal OperatingSystem
 operating_system_from_string(String8 string)
 {
-  for(U64 i = 0; i < ArrayCount(g_os_enum_map); ++i)
+  for (U64 i = 0; i < ArrayCount(g_os_enum_map); ++i)
   {
-    if(str8_match(g_os_enum_map[i].string, string, StringMatchFlag_CaseInsensitive))
+    if (str8_match(g_os_enum_map[i].string, string, StringMatchFlag_CaseInsensitive))
     {
       return g_os_enum_map[i].os;
     }
@@ -1658,7 +1658,7 @@ string_from_dimension(Dimension dimension){
   if ((U32)dimension < 4){
     result = strings[dimension];
   }
-  return(result);
+  return (result);
 }
 
 internal String8
@@ -1671,14 +1671,14 @@ string_from_side(Side side){
   if ((U32)side < 2){
     result = strings[side];
   }
-  return(result);
+  return (result);
 }
 
 internal String8
 string_from_operating_system(OperatingSystem os)
 {
   String8 result = g_os_enum_map[OperatingSystem_Null].string;
-  if(os < ArrayCount(g_os_enum_map))
+  if (os < ArrayCount(g_os_enum_map))
   {
     result = g_os_enum_map[os].string;
   }
@@ -1698,7 +1698,7 @@ string_from_arch(Arch arch){
   if (arch < Arch_COUNT){
     result = strings[arch];
   }
-  return(result);
+  return (result);
 }
 
 ////////////////////////////////
@@ -1719,7 +1719,7 @@ string_from_week_day(WeekDay week_day){
   if ((U32)week_day < WeekDay_COUNT){
     result = strings[week_day];
   }
-  return(result);
+  return (result);
 }
 
 internal String8
@@ -1742,7 +1742,7 @@ string_from_month(Month month){
   if ((U32)month < Month_COUNT){
     result = strings[month];
   }
-  return(result);
+  return (result);
 }
 
 internal String8
@@ -1759,7 +1759,7 @@ push_date_time_string(Arena *arena, DateTime *date_time){
   String8 result = push_str8f(arena, "%d %s %d, %02d:%02d:%02d %s",
                               date_time->day, mon_str, date_time->year,
                               adjusted_hour, date_time->min, date_time->sec, ampm);
-  return(result);
+  return (result);
 }
 
 internal String8
@@ -1768,7 +1768,7 @@ push_file_name_date_time_string(Arena *arena, DateTime *date_time){
   String8 result = push_str8f(arena, "%d-%s-%0d--%02d-%02d-%02d",
                               date_time->year, mon_str, date_time->day,
                               date_time->hour, date_time->min, date_time->sec);
-  return(result);
+  return (result);
 }
 
 internal String8
@@ -1789,7 +1789,7 @@ string_from_elapsed_time(Arena *arena, DateTime dt){
   StringJoin join = { str8_lit_comp(""), str8_lit_comp(" "), str8_lit_comp("") };
   String8 result = str8_list_join(arena, &list, &join);
   scratch_end(scratch);
-  return(result);
+  return (result);
 }
 
 ////////////////////////////////
@@ -1819,14 +1819,14 @@ try_guid_from_string(String8 string, Guid *guid_out)
   Temp scratch = scratch_begin(0,0);
   B32 is_parsed = 0;
   String8List list = str8_split_by_string_chars(scratch.arena, string, str8_lit("-"), StringSplitFlag_KeepEmpties);
-  if(list.node_count == 5)
+  if (list.node_count == 5)
   {
     String8 data1_str    = list.first->string;
     String8 data2_str    = list.first->next->string;
     String8 data3_str    = list.first->next->next->string;
     String8 data4_hi_str = list.first->next->next->next->string;
     String8 data4_lo_str = list.first->next->next->next->next->string;
-    if(str8_is_integer(data1_str, 16) && 
+    if (str8_is_integer(data1_str, 16) && 
         str8_is_integer(data2_str, 16) &&
         str8_is_integer(data3_str, 16) &&
         str8_is_integer(data4_hi_str, 16) &&
@@ -1837,7 +1837,7 @@ try_guid_from_string(String8 string, Guid *guid_out)
       U64 data3    = u64_from_str8(data3_str, 16);
       U64 data4_hi = u64_from_str8(data4_hi_str, 16);
       U64 data4_lo = u64_from_str8(data4_lo_str, 16);
-      if(data1 <= max_U32 &&
+      if (data1 <= max_U32 &&
           data2 <= max_U16 &&
           data3 <= max_U16 &&
           data4_hi <= max_U16 &&
@@ -1876,7 +1876,7 @@ indented_from_string(Arena *arena, String8 string)
   S64 depth = 0;
   S64 next_depth = 0;
   U64 line_begin_off = 0;
-  for(U64 off = 0; off <= string.size; off += 1)
+  for (U64 off = 0; off <= string.size; off += 1)
   {
     U8 byte = off<string.size ? string.str[off] : 0;
     switch(byte)
@@ -1888,11 +1888,11 @@ indented_from_string(Arena *arena, String8 string)
       case 0:
       {
         String8 line = str8_skip_chop_whitespace(str8_substr(string, r1u64(line_begin_off, off)));
-        if(line.size != 0)
+        if (line.size != 0)
         {
           str8_list_pushf(scratch.arena, &indented_strings, "%.*s%S\n", (int)depth*2, indentation_bytes, line);
         }
-        if(line.size == 0 && indented_strings.node_count != 0 && off < string.size)
+        if (line.size == 0 && indented_strings.node_count != 0 && off < string.size)
         {
           str8_list_pushf(scratch.arena, &indented_strings, "\n");
         }
@@ -1915,7 +1915,7 @@ escaped_from_raw_str8(Arena *arena, String8 string)
   Temp scratch = scratch_begin(&arena, 1);
   String8List parts = {0};
   U64 start_split_idx = 0;
-  for(U64 idx = 0; idx <= string.size; idx += 1)
+  for (U64 idx = 0; idx <= string.size; idx += 1)
   {
     U8 byte = (idx < string.size) ? string.str[idx] : 0;
     B32 split = 1;
@@ -1935,12 +1935,12 @@ escaped_from_raw_str8(Arena *arena, String8 string)
       case '"':  {separator_replace = str8_lit("\\\"");}break;
       case '?':  {separator_replace = str8_lit("\\?");}break;
     }
-    if(split)
+    if (split)
     {
       String8 substr = str8_substr(string, r1u64(start_split_idx, idx));
       start_split_idx = idx+1;
       str8_list_push(scratch.arena, &parts, substr);
-      if(separator_replace.size != 0)
+      if (separator_replace.size != 0)
       {
         str8_list_push(scratch.arena, &parts, separator_replace);
       }
@@ -1958,18 +1958,18 @@ raw_from_escaped_str8(Arena *arena, String8 string)
   Temp scratch = scratch_begin(&arena, 1);
   String8List strs = {0};
   U64 start = 0;
-  for(U64 idx = 0; idx <= string.size; idx += 1)
+  for (U64 idx = 0; idx <= string.size; idx += 1)
   {
-    if(idx == string.size || string.str[idx] == '\\' || string.str[idx] == '\r')
+    if (idx == string.size || string.str[idx] == '\\' || string.str[idx] == '\r')
     {
       String8 str = str8_substr(string, r1u64(start, idx));
-      if(str.size != 0)
+      if (str.size != 0)
       {
         str8_list_push(scratch.arena, &strs, str);
       }
       start = idx+1;
     }
-    if(idx < string.size && string.str[idx] == '\\')
+    if (idx < string.size && string.str[idx] == '\\')
     {
       U8 next_char = string.str[idx+1];
       U8 replace_byte = 0;
@@ -2073,16 +2073,16 @@ rgba_from_hex_string_4f32(String8 hex_string)
 {
   U8 byte_text[8] = {0};
   U64 byte_text_idx = 0;
-  for(U64 idx = 0; idx < hex_string.size && byte_text_idx < ArrayCount(byte_text); idx += 1)
+  for (U64 idx = 0; idx < hex_string.size && byte_text_idx < ArrayCount(byte_text); idx += 1)
   {
-    if(char_is_digit(hex_string.str[idx], 16))
+    if (char_is_digit(hex_string.str[idx], 16))
     {
       byte_text[byte_text_idx] = char_to_lower(hex_string.str[idx]);
       byte_text_idx += 1;
     }
   }
   U8 byte_vals[4] = {0};
-  for(U64 idx = 0; idx < 4; idx += 1)
+  for (U64 idx = 0; idx < 4; idx += 1)
   {
     byte_vals[idx] = (U8)u64_from_str8(str8(&byte_text[idx*2], 2), 16);
   }
@@ -2100,28 +2100,28 @@ fuzzy_match_find(Arena *arena, String8 needle, String8 haystack)
   Temp scratch = scratch_begin(&arena, 1);
   String8List needles = str8_split(scratch.arena, needle, (U8*)" ", 1, 0);
   result.needle_part_count = needles.node_count;
-  for(String8Node *needle_n = needles.first; needle_n != 0; needle_n = needle_n->next)
+  for (String8Node *needle_n = needles.first; needle_n != 0; needle_n = needle_n->next)
   {
     U64 find_pos = 0;
-    for(;find_pos < haystack.size;)
+    for (;find_pos < haystack.size;)
     {
       find_pos = str8_find_needle(haystack, find_pos, needle_n->string, StringMatchFlag_CaseInsensitive);
       B32 is_in_gathered_ranges = 0;
-      for(FuzzyMatchRangeNode *n = result.first; n != 0; n = n->next)
+      for (FuzzyMatchRangeNode *n = result.first; n != 0; n = n->next)
       {
-        if(n->range.min <= find_pos && find_pos < n->range.max)
+        if (n->range.min <= find_pos && find_pos < n->range.max)
         {
           is_in_gathered_ranges = 1;
           find_pos = n->range.max;
           break;
         }
       }
-      if(!is_in_gathered_ranges)
+      if (!is_in_gathered_ranges)
       {
         break;
       }
     }
-    if(find_pos < haystack.size)
+    if (find_pos < haystack.size)
     {
       Rng1U64 range = r1u64(find_pos, find_pos+needle_n->string.size);
       FuzzyMatchRangeNode *n = push_array(arena, FuzzyMatchRangeNode, 1);
@@ -2139,7 +2139,7 @@ internal FuzzyMatchRangeList
 fuzzy_match_range_list_copy(Arena *arena, FuzzyMatchRangeList *src)
 {
   FuzzyMatchRangeList dst = {0};
-  for(FuzzyMatchRangeNode *src_n = src->first; src_n != 0; src_n = src_n->next)
+  for (FuzzyMatchRangeNode *src_n = src->first; src_n != 0; src_n = src_n->next)
   {
     FuzzyMatchRangeNode *dst_n = push_array(arena, FuzzyMatchRangeNode, 1);
     SLLQueuePush(dst.first, dst.last, dst_n);
@@ -2192,7 +2192,7 @@ str8_serial_push_align(Arena *arena, String8List *srl, U64 align){
   U64 new_pos = AlignPow2(pos, align);
   U64 size = (new_pos - pos);
   
-  if(size != 0)
+  if (size != 0)
   {
     U8 *buf = push_array(arena, U8, size);
     
@@ -2212,7 +2212,7 @@ internal void *
 str8_serial_push_size(Arena *arena, String8List *srl, U64 size)
 {
   void *result = 0;
-  if(size != 0)
+  if (size != 0)
   {
     U8 *buf = push_array_no_zero(arena, U8, size);
     String8 *str = &srl->last->string;
@@ -2231,7 +2231,7 @@ str8_serial_push_size(Arena *arena, String8List *srl, U64 size)
 internal void *
 str8_serial_push_data(Arena *arena, String8List *srl, void *data, U64 size){
   void *result = str8_serial_push_size(arena, srl, size);
-  if(result != 0)
+  if (result != 0)
   {
     MemoryCopy(result, data, size);
   }
@@ -2305,7 +2305,7 @@ str8_deserial_read(String8 string, U64 off, void *read_dst, U64 read_size, U64 g
   U64 bytes_left = string.size-Min(off, string.size);
   U64 actually_readable_size = Min(bytes_left, read_size);
   U64 legally_readable_size = actually_readable_size - actually_readable_size%granularity;
-  if(legally_readable_size > 0)
+  if (legally_readable_size > 0)
   {
     MemoryCopy(read_dst, string.str+off, legally_readable_size);
   }
@@ -2377,12 +2377,12 @@ str8_deserial_read_uleb128(String8 string, U64 off, U64 *value_out)
   U64 value  = 0;
   U64 shift  = 0;
   U64 cursor = off;
-  for(;;)
+  for (;;)
   {
     U8  byte       = 0;
     U64 bytes_read = str8_deserial_read_struct(string, cursor, &byte);
 
-    if(bytes_read != sizeof(byte))
+    if (bytes_read != sizeof(byte))
     {
       break;
     }
@@ -2393,12 +2393,12 @@ str8_deserial_read_uleb128(String8 string, U64 off, U64 *value_out)
     cursor += bytes_read;
     shift += 7u;
 
-    if((byte & 0x80u) == 0)
+    if ((byte & 0x80u) == 0)
     {
       break;
     }
   }
-  if(value_out != 0)
+  if (value_out != 0)
   {
     *value_out = value;
   }
@@ -2412,11 +2412,11 @@ str8_deserial_read_sleb128(String8 string, U64 off, S64 *value_out)
   U64 value  = 0;
   U64 shift  = 0;
   U64 cursor = off;
-  for(;;)
+  for (;;)
   {
     U8 byte;
     U64 bytes_read = str8_deserial_read_struct(string, cursor, &byte);
-    if(bytes_read != sizeof(byte))
+    if (bytes_read != sizeof(byte))
     {
       break;
     }
@@ -2427,16 +2427,16 @@ str8_deserial_read_sleb128(String8 string, U64 off, S64 *value_out)
     cursor += bytes_read;
     shift += 7u;
 
-    if((byte & 0x80u) == 0)
+    if ((byte & 0x80u) == 0)
     {
-      if(shift < sizeof(value) * 8 && (byte & 0x40u) != 0)
+      if (shift < sizeof(value) * 8 && (byte & 0x40u) != 0)
       {
         value |= -(S64)(1ull << shift);
       }
       break;
     }
   }
-  if(value_out != 0)
+  if (value_out != 0)
   {
     *value_out = value;
   }

@@ -16,7 +16,7 @@ internal FilePropertyFlags
 os_w32_file_property_flags_from_dwFileAttributes(DWORD dwFileAttributes)
 {
   FilePropertyFlags flags = 0;
-  if(dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+  if (dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
   {
     flags |= FilePropertyFlag_IsFolder;
   }
@@ -74,14 +74,14 @@ internal U32
 os_w32_sleep_ms_from_endt_us(U64 endt_us)
 {
   U32 sleep_ms = 0;
-  if(endt_us == max_U64)
+  if (endt_us == max_U64)
   {
     sleep_ms = INFINITE;
   }
   else
   {
     U64 begint = os_now_microseconds();
-    if(begint < endt_us)
+    if (begint < endt_us)
     {
       U64 sleep_us = endt_us - begint;
       sleep_ms = (U32)((sleep_us + 999)/1000);
@@ -112,7 +112,7 @@ os_w32_entity_alloc(OS_W32_EntityKind kind)
   EnterCriticalSection(&os_w32_state.entity_mutex);
   {
     result = os_w32_state.entity_free;
-    if(result)
+    if (result)
     {
       SLLStackPop(os_w32_state.entity_free);
     }
@@ -187,7 +187,7 @@ os_get_process_start_time_unix(void)
   FILETIME exit_time;
   FILETIME kernel_time;
   FILETIME user_time;
-  if(GetProcessTimes(handle, &start_time, &exit_time, &kernel_time, &user_time))
+  if (GetProcessTimes(handle, &start_time, &exit_time, &kernel_time, &user_time))
   {
     return os_w32_unix_time_from_file_time(start_time);
   }
@@ -258,7 +258,7 @@ os_set_thread_name(String8 name)
   Temp scratch = scratch_begin(0, 0);
   
   // rjf: windows 10 style
-  if(w32_SetThreadDescription_func)
+  if (w32_SetThreadDescription_func)
   {
     String16 name16 = str16_from_8(scratch.arena, name);
     HRESULT hr = w32_SetThreadDescription_func(GetCurrentThread(), (WCHAR*)name16.str);
@@ -321,19 +321,19 @@ os_file_open(OS_AccessFlags flags, String8 path)
   DWORD share_mode = 0;
   DWORD creation_disposition = OPEN_EXISTING;
   SECURITY_ATTRIBUTES security_attributes = {sizeof(security_attributes), 0, 0};
-  if(flags & OS_AccessFlag_Read)        {access_flags |= GENERIC_READ;}
-  if(flags & OS_AccessFlag_Write)       {access_flags |= GENERIC_WRITE;}
-  if(flags & OS_AccessFlag_Execute)     {access_flags |= GENERIC_EXECUTE;}
-  if(flags & OS_AccessFlag_ShareRead)   {share_mode |= FILE_SHARE_READ;}
-  if(flags & OS_AccessFlag_ShareWrite)  {share_mode |= FILE_SHARE_WRITE|FILE_SHARE_DELETE;}
-  if(flags & OS_AccessFlag_Write)       {creation_disposition = CREATE_ALWAYS;}
-  if(flags & OS_AccessFlag_Append)      {creation_disposition = OPEN_ALWAYS; access_flags |= FILE_APPEND_DATA; }
-  if(flags & OS_AccessFlag_Inherited)
+  if (flags & OS_AccessFlag_Read)        {access_flags |= GENERIC_READ;}
+  if (flags & OS_AccessFlag_Write)       {access_flags |= GENERIC_WRITE;}
+  if (flags & OS_AccessFlag_Execute)     {access_flags |= GENERIC_EXECUTE;}
+  if (flags & OS_AccessFlag_ShareRead)   {share_mode |= FILE_SHARE_READ;}
+  if (flags & OS_AccessFlag_ShareWrite)  {share_mode |= FILE_SHARE_WRITE|FILE_SHARE_DELETE;}
+  if (flags & OS_AccessFlag_Write)       {creation_disposition = CREATE_ALWAYS;}
+  if (flags & OS_AccessFlag_Append)      {creation_disposition = OPEN_ALWAYS; access_flags |= FILE_APPEND_DATA; }
+  if (flags & OS_AccessFlag_Inherited)
   {
     security_attributes.bInheritHandle = 1;
   }
   HANDLE file = CreateFileW((WCHAR *)path16.str, access_flags, share_mode, &security_attributes, creation_disposition, FILE_ATTRIBUTE_NORMAL, 0);
-  if(file != INVALID_HANDLE_VALUE)
+  if (file != INVALID_HANDLE_VALUE)
   {
     result.u64[0] = (U64)file;
   }
@@ -344,7 +344,7 @@ os_file_open(OS_AccessFlags flags, String8 path)
 internal void
 os_file_close(OS_Handle file)
 {
-  if(os_handle_match(file, os_handle_zero())) { return; }
+  if (os_handle_match(file, os_handle_zero())) { return; }
   HANDLE handle = (HANDLE)file.u64[0];
   BOOL result = CloseHandle(handle);
   (void)result;
@@ -353,7 +353,7 @@ os_file_close(OS_Handle file)
 internal U64
 os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
 {
-  if(os_handle_match(file, os_handle_zero())) { return 0; }
+  if (os_handle_match(file, os_handle_zero())) { return 0; }
   HANDLE handle = (HANDLE)file.u64[0];
   
   // rjf: clamp range by file size
@@ -365,7 +365,7 @@ os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
   // rjf: read loop
   {
     U64 to_read = dim_1u64(rng_clamped);
-    for(U64 off = rng.min; total_read_size < to_read;)
+    for (U64 off = rng.min; total_read_size < to_read;)
     {
       U64 amt64 = to_read - total_read_size;
       U32 amt32 = u32_from_u64_saturate(amt64);
@@ -376,7 +376,7 @@ os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
       ReadFile(handle, (U8 *)out_data + total_read_size, amt32, &read_size, &overlapped);
       off += read_size;
       total_read_size += read_size;
-      if(read_size != amt32)
+      if (read_size != amt32)
       {
         break;
       }
@@ -389,12 +389,12 @@ os_file_read(OS_Handle file, Rng1U64 rng, void *out_data)
 internal U64
 os_file_write(OS_Handle file, Rng1U64 rng, void *data)
 {
-  if(os_handle_match(file, os_handle_zero())) { return 0; }
+  if (os_handle_match(file, os_handle_zero())) { return 0; }
   HANDLE win_handle = (HANDLE)file.u64[0];
   U64 src_off = 0;
   U64 dst_off = rng.min;
   U64 total_write_size = dim_1u64(rng);
-  for(;;)
+  for (;;)
   {
     void *bytes_src = (U8 *)data + src_off;
     U64 bytes_left = total_write_size - src_off;
@@ -404,13 +404,13 @@ os_file_write(OS_Handle file, Rng1U64 rng, void *data)
     overlapped.Offset = (dst_off&0x00000000ffffffffull);
     overlapped.OffsetHigh = (dst_off&0xffffffff00000000ull) >> 32;
     BOOL success = WriteFile(win_handle, bytes_src, write_size, &bytes_written, &overlapped);
-    if(success == 0)
+    if (success == 0)
     {
       break;
     }
     src_off += bytes_written;
     dst_off += bytes_written;
-    if(bytes_left == 0)
+    if (bytes_left == 0)
     {
       break;
     }
@@ -421,7 +421,7 @@ os_file_write(OS_Handle file, Rng1U64 rng, void *data)
 internal B32
 os_file_set_time(OS_Handle file, DateTime time)
 {
-  if(os_handle_match(file, os_handle_zero())) { return 0; }
+  if (os_handle_match(file, os_handle_zero())) { return 0; }
   B32 result = 0;
   HANDLE handle = (HANDLE)file.u64[0];
   SYSTEMTIME system_time = {0};
@@ -435,12 +435,12 @@ os_file_set_time(OS_Handle file, DateTime time)
 internal FileProperties
 os_properties_from_file(OS_Handle file)
 {
-  if(os_handle_match(file, os_handle_zero())) { FileProperties r = {0}; return r; }
+  if (os_handle_match(file, os_handle_zero())) { FileProperties r = {0}; return r; }
   FileProperties props = {0};
   HANDLE handle = (HANDLE)file.u64[0];
   BY_HANDLE_FILE_INFORMATION info;
   BOOL info_good = GetFileInformationByHandle(handle, &info);
-  if(info_good)
+  if (info_good)
   {
     U32 size_lo = info.nFileSizeLow;
     U32 size_hi = info.nFileSizeHigh;
@@ -455,12 +455,12 @@ os_properties_from_file(OS_Handle file)
 internal OS_FileID
 os_id_from_file(OS_Handle file)
 {
-  if(os_handle_match(file, os_handle_zero())) { OS_FileID r = {0}; return r; }
+  if (os_handle_match(file, os_handle_zero())) { OS_FileID r = {0}; return r; }
   OS_FileID result = {0};
   HANDLE handle = (HANDLE)file.u64[0];
   BY_HANDLE_FILE_INFORMATION info;
   BOOL is_ok = GetFileInformationByHandle(handle, &info);
-  if(is_ok)
+  if (is_ok)
   {
     result.v[0] = info.dwVolumeSerialNumber;
     result.v[1] = info.nFileIndexLow;
@@ -522,7 +522,7 @@ os_full_path_from_path(Arena *arena, String8 path)
   String16  path16      = str16_from_8(scratch.arena, path);
   WCHAR    *buffer      = push_array_no_zero(scratch.arena, WCHAR, buffer_size);
   DWORD     path16_size = GetFullPathNameW((WCHAR*)path16.str, buffer_size, buffer, NULL);
-  if(path16_size > buffer_size)
+  if (path16_size > buffer_size)
   {
     arena_pop(scratch.arena, buffer_size);
     buffer_size = path16_size + 1;
@@ -564,7 +564,7 @@ os_properties_from_file_path(String8 path)
   String16 path16 = str16_from_8(scratch.arena, path);
   HANDLE handle = FindFirstFileW((WCHAR *)path16.str, &find_data);
   FileProperties props = {0};
-  if(handle != INVALID_HANDLE_VALUE)
+  if (handle != INVALID_HANDLE_VALUE)
   {
     props.size = Compose64Bit(find_data.nFileSizeHigh, find_data.nFileSizeLow);
     os_w32_dense_time_from_file_time(&props.created, &find_data.ftCreationTime);
@@ -577,15 +577,15 @@ os_properties_from_file_path(String8 path)
     WCHAR buffer[512] = {0};
     DWORD length = GetLogicalDriveStringsW(sizeof(buffer), buffer);
     U64 last_slash_pos = 0;
-    for(;last_slash_pos < path.size; last_slash_pos = str8_find_needle(path, last_slash_pos+1, str8_lit("/"), StringMatchFlag_SlashInsensitive));
+    for (;last_slash_pos < path.size; last_slash_pos = str8_find_needle(path, last_slash_pos+1, str8_lit("/"), StringMatchFlag_SlashInsensitive));
     String8 path_trimmed = str8_prefix(path, last_slash_pos);
-    for(U64 off = 0; off < (U64)length;)
+    for (U64 off = 0; off < (U64)length;)
     {
       String16 next_drive_string_16 = str16_cstring((U16 *)buffer+off);
       off += next_drive_string_16.size+1;
       String8 next_drive_string = str8_from_16(scratch.arena, next_drive_string_16);
       next_drive_string = str8_chop_last_slash(next_drive_string);
-      if(str8_match(path_trimmed, next_drive_string, StringMatchFlag_CaseInsensitive))
+      if (str8_match(path_trimmed, next_drive_string, StringMatchFlag_CaseInsensitive))
       {
         props.flags |= FilePropertyFlag_IsFolder;
         break;
@@ -693,13 +693,13 @@ os_file_iter_begin(Arena *arena, String8 path, OS_FileIterFlags flags)
   OS_FileIter *iter = push_array(arena, OS_FileIter, 1);
   iter->flags = flags;
   OS_W32_FileIter *w32_iter = (OS_W32_FileIter*)iter->memory;
-  if(path.size == 0)
+  if (path.size == 0)
   {
     w32_iter->is_volume_iter = 1;
     WCHAR buffer[512] = {0};
     DWORD length = GetLogicalDriveStringsW(sizeof(buffer), buffer);
     String8List drive_strings = {0};
-    for(U64 off = 0; off < (U64)length;)
+    for (U64 off = 0; off < (U64)length;)
     {
       String16 next_drive_string_16 = str16_cstring((U16 *)buffer+off);
       off += next_drive_string_16.size+1;
@@ -774,7 +774,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
             }
             break;
           }
-        }while(FindNextFileW(w32_iter->handle, &w32_iter->find_data));
+        }while (FindNextFileW(w32_iter->handle, &w32_iter->find_data));
       }
     }break;
     
@@ -782,7 +782,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
     case 1:
     {
       result = w32_iter->drive_strings_iter_idx < w32_iter->drive_strings.count;
-      if(result != 0)
+      if (result != 0)
       {
         MemoryZeroStruct(info_out);
         info_out->name = w32_iter->drive_strings.v[w32_iter->drive_strings_iter_idx];
@@ -791,7 +791,7 @@ os_file_iter_next(Arena *arena, OS_FileIter *iter, OS_FileInfo *info_out)
       }
     }break;
   }
-  if(!result)
+  if (!result)
   {
     iter->flags |= OS_FileIterFlag_Done;
   }
@@ -804,7 +804,7 @@ os_file_iter_end(OS_FileIter *iter)
   OS_W32_FileIter *w32_iter = (OS_W32_FileIter*)iter->memory;
   HANDLE zero_handle;
   MemoryZeroStruct(&zero_handle);
-  if(!MemoryMatchStruct(&zero_handle, &w32_iter->handle))
+  if (!MemoryMatchStruct(&zero_handle, &w32_iter->handle))
   {
     FindClose(w32_iter->handle);
   }
@@ -820,16 +820,16 @@ os_make_directory(String8 path)
   String16 name16 = str16_from_8(scratch.arena, path);
   WIN32_FILE_ATTRIBUTE_DATA attributes = {0};
   GetFileAttributesExW((WCHAR*)name16.str, GetFileExInfoStandard, &attributes);
-  if(attributes.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+  if (attributes.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
   {
     result = 1;
   }
-  else if(CreateDirectoryW((WCHAR*)name16.str, 0))
+  else if (CreateDirectoryW((WCHAR*)name16.str, 0))
   {
     result = 1;
   }
   scratch_end(scratch);
-  return(result);
+  return (result);
 }
 
 ////////////////////////////////
@@ -896,7 +896,7 @@ os_now_microseconds(void)
 {
   U64 result = 0;
   LARGE_INTEGER large_int_counter;
-  if(QueryPerformanceCounter(&large_int_counter))
+  if (QueryPerformanceCounter(&large_int_counter))
   {
     result = (large_int_counter.QuadPart*Million(1))/os_w32_state.microsecond_resolution;
   }
@@ -985,16 +985,16 @@ os_process_launch(OS_ProcessLaunchParams *params)
     join_params2.sep = str8_lit("\0");
     join_params2.post = str8_lit("\0");
     String8List all_opts = params->env;
-    if(params->inherit_env != 0)
+    if (params->inherit_env != 0)
     {
-      if(all_opts.node_count != 0)
+      if (all_opts.node_count != 0)
       {
         MemoryZeroStruct(&all_opts);
-        for(String8Node *n = params->env.first; n != 0; n = n->next)
+        for (String8Node *n = params->env.first; n != 0; n = n->next)
         {
           str8_list_push(scratch.arena, &all_opts, n->string);
         }
-        for(String8Node *n = os_w32_state.process_info.environment.first; n != 0; n = n->next)
+        for (String8Node *n = os_w32_state.process_info.environment.first; n != 0; n = n->next)
         {
           str8_list_push(scratch.arena, &all_opts, n->string);
         }
@@ -1004,7 +1004,7 @@ os_process_launch(OS_ProcessLaunchParams *params)
         use_null_env_arg = 1;
       }
     }
-    if(use_null_env_arg == 0)
+    if (use_null_env_arg == 0)
     {
       env = str8_list_join(scratch.arena, &all_opts, &join_params2);
     }
@@ -1014,14 +1014,14 @@ os_process_launch(OS_ProcessLaunchParams *params)
   String16 cmd16 = str16_from_8(scratch.arena, cmd);
   String16 dir16 = str16_from_8(scratch.arena, params->path);
   String16 env16 = {0};
-  if(use_null_env_arg == 0)
+  if (use_null_env_arg == 0)
   {
     env16 = str16_from_8(scratch.arena, env);
   }
   
   //- rjf: determine creation flags
   DWORD creation_flags = CREATE_UNICODE_ENVIRONMENT;
-  if(params->consoleless)
+  if (params->consoleless)
   {
     creation_flags |= CREATE_NO_WINDOW;
   }
@@ -1029,21 +1029,21 @@ os_process_launch(OS_ProcessLaunchParams *params)
   //- rjf: launch
   BOOL inherit_handles = 0;
   STARTUPINFOW startup_info = {sizeof(startup_info)};
-  if(!os_handle_match(params->stdout_file, os_handle_zero()))
+  if (!os_handle_match(params->stdout_file, os_handle_zero()))
   {
     HANDLE stdout_handle = (HANDLE)params->stdout_file.u64[0];
     startup_info.hStdOutput = stdout_handle;
     startup_info.dwFlags |= STARTF_USESTDHANDLES;
     inherit_handles = 1;
   }
-  if(!os_handle_match(params->stderr_file, os_handle_zero()))
+  if (!os_handle_match(params->stderr_file, os_handle_zero()))
   {
     HANDLE stderr_handle = (HANDLE)params->stderr_file.u64[0];
     startup_info.hStdError = stderr_handle;
     startup_info.dwFlags |= STARTF_USESTDHANDLES;
     inherit_handles = 1;
   }
-  if(!os_handle_match(params->stdin_file, os_handle_zero()))
+  if (!os_handle_match(params->stdin_file, os_handle_zero()))
   {
     HANDLE stdin_handle = (HANDLE)params->stdin_file.u64[0];
     startup_info.hStdInput = stdin_handle;
@@ -1051,7 +1051,7 @@ os_process_launch(OS_ProcessLaunchParams *params)
     inherit_handles = 1;
   }
   PROCESS_INFORMATION process_info = {0};
-  if(CreateProcessW(0, (WCHAR*)cmd16.str, 0, 0, inherit_handles, creation_flags, use_null_env_arg ? 0 : (WCHAR*)env16.str, (WCHAR*)dir16.str, &startup_info, &process_info))
+  if (CreateProcessW(0, (WCHAR*)cmd16.str, 0, 0, inherit_handles, creation_flags, use_null_env_arg ? 0 : (WCHAR*)env16.str, (WCHAR*)dir16.str, &startup_info, &process_info))
   {
     result.u64[0] = (U64)process_info.hProcess;
     CloseHandle(process_info.hThread);
@@ -1074,10 +1074,10 @@ internal B32
 os_process_join_exit_code(OS_Handle handle, U64 endt_us, int *exit_code_out)
 {
   B32 result = 0;
-  if(os_process_join(handle, endt_us))
+  if (os_process_join(handle, endt_us))
   {
     DWORD exit_code;
-    if(GetExitCodeProcess((HANDLE)handle.u64[0], &exit_code))
+    if (GetExitCodeProcess((HANDLE)handle.u64[0], &exit_code))
     {
       *exit_code_out = exit_code;
       result = 1;
@@ -1121,7 +1121,7 @@ os_thread_join(OS_Handle handle, U64 endt_us)
   DWORD sleep_ms = os_w32_sleep_ms_from_endt_us(endt_us);
   OS_W32_Entity *entity = (OS_W32_Entity *)PtrFromInt(handle.u64[0]);
   DWORD wait_result = WAIT_OBJECT_0;
-  if(entity != 0)
+  if (entity != 0)
   {
     wait_result = WaitForSingleObject(entity->thread.handle, sleep_ms);
     CloseHandle(entity->thread.handle);
@@ -1134,7 +1134,7 @@ internal void
 os_thread_detach(OS_Handle thread)
 {
   OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(thread.u64[0]);
-  if(entity != 0)
+  if (entity != 0)
   {
     CloseHandle(entity->thread.handle);
     os_w32_entity_release(entity);
@@ -1245,7 +1245,7 @@ os_condition_variable_wait(OS_Handle cv, OS_Handle mutex, U64 endt_us)
 {
   U32 sleep_ms = os_w32_sleep_ms_from_endt_us(endt_us);
   BOOL result = 0;
-  if(sleep_ms > 0)
+  if (sleep_ms > 0)
   {
     OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
     OS_W32_Entity *mutex_entity = (OS_W32_Entity*)PtrFromInt(mutex.u64[0]);
@@ -1259,7 +1259,7 @@ os_condition_variable_wait_rw_r(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
 {
   U32 sleep_ms = os_w32_sleep_ms_from_endt_us(endt_us);
   BOOL result = 0;
-  if(sleep_ms > 0)
+  if (sleep_ms > 0)
   {
     OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
     OS_W32_Entity *mutex_entity = (OS_W32_Entity*)PtrFromInt(mutex_rw.u64[0]);
@@ -1274,7 +1274,7 @@ os_condition_variable_wait_rw_w(OS_Handle cv, OS_Handle mutex_rw, U64 endt_us)
 {
   U32 sleep_ms = os_w32_sleep_ms_from_endt_us(endt_us);
   BOOL result = 0;
-  if(sleep_ms > 0)
+  if (sleep_ms > 0)
   {
     OS_W32_Entity *entity = (OS_W32_Entity*)PtrFromInt(cv.u64[0]);
     OS_W32_Entity *mutex_entity = (OS_W32_Entity*)PtrFromInt(mutex_rw.u64[0]);
@@ -1396,7 +1396,7 @@ os_safe_call(OS_ThreadFunctionType *func, OS_ThreadFunctionType *fail_handler, v
   }
   __except (EXCEPTION_EXECUTE_HANDLER)
   {
-    if(fail_handler != 0)
+    if (fail_handler != 0)
     {
       fail_handler(ptr);
     }
@@ -1413,7 +1413,7 @@ os_make_guid(void)
   Guid result; MemoryZeroStruct(&result);
   UUID uuid;
   RPC_STATUS rpc_status = UuidCreate(&uuid);
-  if(rpc_status == RPC_S_OK)
+  if (rpc_status == RPC_S_OK)
   {
     result.data1 = uuid.Data1;
     result.data2 = uuid.Data2;
@@ -1434,7 +1434,7 @@ os_make_guid(void)
 internal HRESULT WINAPI
 win32_dialog_callback(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, LONG_PTR data)
 {
-  if(msg == TDN_HYPERLINK_CLICKED)
+  if (msg == TDN_HYPERLINK_CLICKED)
   {
     ShellExecuteW(NULL, L"open", (LPWSTR)lparam, NULL, NULL, SW_SHOWNORMAL);
   }
@@ -1444,13 +1444,13 @@ win32_dialog_callback(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam, LONG_PT
 internal LONG WINAPI
 win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
 {
-  if(win32_g_is_quiet)
+  if (win32_g_is_quiet)
   {
     ExitProcess(1);
   }
   
   static volatile LONG first = 0;
-  if(InterlockedCompareExchange(&first, 1, 0) != 0)
+  if (InterlockedCompareExchange(&first, 1, 0) != 0)
   {
     // prevent failures in other threads to popup same message box
     // this handler just shows first thread that crashes
@@ -1467,7 +1467,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
   // load dbghelp dynamically just in case if it is missing
   BOOL (WINAPI *dbg_MiniDumpWriteDump)(HANDLE hProcess, DWORD ProcessId, HANDLE hFile, MINIDUMP_TYPE DumpType, PMINIDUMP_EXCEPTION_INFORMATION ExceptionParam, PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam, PMINIDUMP_CALLBACK_INFORMATION CallbackParam) = 0;
   HMODULE dbghelp = LoadLibraryA("dbghelp.dll");
-  if(dbghelp)
+  if (dbghelp)
   {
     DWORD (WINAPI *dbg_SymSetOptions)(DWORD SymOptions);
     BOOL (WINAPI *dbg_SymInitializeW)(HANDLE hProcess, PCWSTR UserSearchPath, BOOL fInvadeProcess);
@@ -1491,7 +1491,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
     *(FARPROC*)&dbg_SymGetModuleInfoW64      = GetProcAddress(dbghelp, "SymGetModuleInfoW64");
     *(FARPROC*)&dbg_MiniDumpWriteDump        = GetProcAddress(dbghelp, "MiniDumpWriteDump");
     
-    if(dbg_SymSetOptions && dbg_SymInitializeW && dbg_StackWalk64 && dbg_SymFunctionTableAccess64 && dbg_SymGetModuleBase64 && dbg_SymFromAddrW && dbg_SymGetLineFromAddrW64 && dbg_SymGetModuleInfoW64)
+    if (dbg_SymSetOptions && dbg_SymInitializeW && dbg_StackWalk64 && dbg_SymFunctionTableAccess64 && dbg_SymGetModuleBase64 && dbg_SymFromAddrW && dbg_SymGetLineFromAddrW64 && dbg_SymGetModuleInfoW64)
     {
       HANDLE process = GetCurrentProcess();
       HANDLE thread = GetCurrentThread();
@@ -1502,20 +1502,20 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
       PathRemoveFileSpecW(module_path);
       
       dbg_SymSetOptions(SYMOPT_EXACT_SYMBOLS | SYMOPT_FAIL_CRITICAL_ERRORS | SYMOPT_LOAD_LINES | SYMOPT_UNDNAME);
-      if(dbg_SymInitializeW(process, module_path, TRUE))
+      if (dbg_SymInitializeW(process, module_path, TRUE))
       {
         // check that raddbg.pdb file is good
         B32 raddbg_pdb_valid = 0;
         {
           IMAGEHLP_MODULEW64 module = {0};
           module.SizeOfStruct = sizeof(module);
-          if(dbg_SymGetModuleInfoW64(process, (DWORD64)&win32_exception_filter, &module))
+          if (dbg_SymGetModuleInfoW64(process, (DWORD64)&win32_exception_filter, &module))
           {
             raddbg_pdb_valid = (module.SymType == SymPdb);
           }
         }
         
-        if(!raddbg_pdb_valid)
+        if (!raddbg_pdb_valid)
         {
           buflen += wnsprintfW(buffer + buflen, sizeof(buffer) - buflen,
                                L"\nThe PDB debug information file for this executable is not valid or was not found. Please rebuild binary to get the call stack.\n");
@@ -1544,27 +1544,27 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
 #  error Arch not supported!
 #endif
           
-          for(U32 idx=0; ;idx++)
+          for (U32 idx=0; ;idx++)
           {
             const U32 max_frames = 32;
-            if(idx == max_frames)
+            if (idx == max_frames)
             {
               buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L"...");
               break;
             }
             
-            if(!dbg_StackWalk64(image_type, process, thread, &frame, context, 0, dbg_SymFunctionTableAccess64, dbg_SymGetModuleBase64, 0))
+            if (!dbg_StackWalk64(image_type, process, thread, &frame, context, 0, dbg_SymFunctionTableAccess64, dbg_SymGetModuleBase64, 0))
             {
               break;
             }
             
             U64 address = frame.AddrPC.Offset;
-            if(address == 0)
+            if (address == 0)
             {
               break;
             }
             
-            if(idx==0)
+            if (idx==0)
             {
 #if BUILD_CONSOLE_INTERFACE
               buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L"\nCreate a new issue with this report at %S.\n\n", BUILD_ISSUES_LINK_STRING_LITERAL);
@@ -1587,7 +1587,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
             symbol.info.MaxNameLen = MAX_SYM_NAME;
             
             DWORD64 displacement = 0;
-            if(dbg_SymFromAddrW(process, address, &displacement, &symbol.info))
+            if (dbg_SymFromAddrW(process, address, &displacement, &symbol.info))
             {
               buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L" %s +%u", symbol.info.Name, (DWORD)displacement);
               
@@ -1595,7 +1595,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
               line.SizeOfStruct = sizeof(line);
               
               DWORD line_displacement = 0;
-              if(dbg_SymGetLineFromAddrW64(process, address, &line_displacement, &line))
+              if (dbg_SymGetLineFromAddrW64(process, address, &line_displacement, &line))
               {
                 buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L", %s line %u", PathFindFileNameW(line.FileName), line.LineNumber);
               }
@@ -1604,7 +1604,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
             {
               IMAGEHLP_MODULEW64 module = {0};
               module.SizeOfStruct = sizeof(module);
-              if(dbg_SymGetModuleInfoW64(process, address, &module))
+              if (dbg_SymGetModuleInfoW64(process, address, &module))
               {
                 buflen += wnsprintfW(buffer + buflen, ArrayCount(buffer) - buflen, L" %s", module.ModuleName);
               }
@@ -1640,7 +1640,7 @@ win32_exception_filter(EXCEPTION_POINTERS* exception_ptrs)
   generate_crash_dump = (selected_button == generate_dump.nButtonID);
 #endif
   
-  if(dbg_MiniDumpWriteDump && generate_crash_dump)
+  if (dbg_MiniDumpWriteDump && generate_crash_dump)
   {
     WCHAR desktop_path[512] = {0};
     SHGetFolderPathW(0, CSIDL_DESKTOP, 0, 0, desktop_path);
@@ -1676,10 +1676,10 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
   B32 large_pages_allowed = 0;
   {
     HANDLE token;
-    if(OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token))
+    if (OpenProcessToken(GetCurrentProcess(), TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, &token))
     {
       LUID luid;
-      if(LookupPrivilegeValue(0, SE_LOCK_MEMORY_NAME, &luid))
+      if (LookupPrivilegeValue(0, SE_LOCK_MEMORY_NAME, &luid))
       {
         TOKEN_PRIVILEGES priv;
         priv.PrivilegeCount           = 1;
@@ -1702,7 +1702,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
   {
     os_w32_state.microsecond_resolution  = 1;
     LARGE_INTEGER large_int_resolution;
-    if(QueryPerformanceFrequency(&large_int_resolution))
+    if (QueryPerformanceFrequency(&large_int_resolution))
     {
       os_w32_state.microsecond_resolution = large_int_resolution.QuadPart;
     }
@@ -1723,23 +1723,23 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
   //- rjf: extract arguments
   Arena *args_arena = arena_alloc(.reserve_size = MB(1), .commit_size = KB(32));
   char **argv = push_array(args_arena, char *, argc);
-  for(int i = 0; i < argc; i += 1)
+  for (int i = 0; i < argc; i += 1)
   {
     String16 arg16 = str16_cstring((U16 *)wargv[i]);
     String8 arg8 = str8_from_16(args_arena, arg16);
-    if(str8_match(arg8, str8_lit("--quiet"), StringMatchFlag_CaseInsensitive) ||
+    if (str8_match(arg8, str8_lit("--quiet"), StringMatchFlag_CaseInsensitive) ||
        str8_match(arg8, str8_lit("-quiet"), StringMatchFlag_CaseInsensitive))
     {
       win32_g_is_quiet = 1;
     }
-    if(str8_match(arg8, str8_lit("--large_pages"), StringMatchFlag_CaseInsensitive) ||
+    if (str8_match(arg8, str8_lit("--large_pages"), StringMatchFlag_CaseInsensitive) ||
        str8_match(arg8, str8_lit("-large_pages"), StringMatchFlag_CaseInsensitive))
     {
       arena_default_flags        = ArenaFlag_LargePages;
       arena_default_reserve_size = Max(MB(64), os_w32_state.system_info.large_page_size);
       arena_default_commit_size  = arena_default_reserve_size;
     }
-    if(str8_match(arg8, str8_lit("--gen_crash_dump"), StringMatchFlag_CaseInsensitive) ||
+    if (str8_match(arg8, str8_lit("--gen_crash_dump"), StringMatchFlag_CaseInsensitive) ||
        str8_match(arg8, str8_lit("-gen_crash_dump"), StringMatchFlag_CaseInsensitive))
     {
       win32_g_gen_dump = 1;
@@ -1759,7 +1759,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
       OS_SystemInfo *info = &os_w32_state.system_info;
       U8 buffer[MAX_COMPUTERNAME_LENGTH + 1] = {0};
       DWORD size = MAX_COMPUTERNAME_LENGTH + 1;
-      if(GetComputerNameA((char*)buffer, &size))
+      if (GetComputerNameA((char*)buffer, &size))
       {
         info->machine_name = push_str8_copy(arena, str8(buffer, size));
       }
@@ -1782,7 +1782,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
       Temp scratch = scratch_begin(0, 0);
       U64 size = KB(32);
       U16 *buffer = push_array_no_zero(scratch.arena, U16, size);
-      if(SUCCEEDED(SHGetFolderPathW(0, CSIDL_APPDATA, 0, 0, (WCHAR*)buffer)))
+      if (SUCCEEDED(SHGetFolderPathW(0, CSIDL_APPDATA, 0, 0, (WCHAR*)buffer)))
       {
         info->user_program_data_path = str8_from_16(arena, str16_cstring(buffer));
       }
@@ -1791,11 +1791,11 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
     {
       WCHAR *this_proc_env = GetEnvironmentStringsW();
       U64 start_idx = 0;
-      for(U64 idx = 0;; idx += 1)
+      for (U64 idx = 0;; idx += 1)
       {
-        if(this_proc_env[idx] == 0)
+        if (this_proc_env[idx] == 0)
         {
-          if(start_idx == idx)
+          if (start_idx == idx)
           {
             break;
           }

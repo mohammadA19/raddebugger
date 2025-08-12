@@ -25,7 +25,7 @@ rb_entry_point(CmdLine *cmdline)
   ProfScope("analyze & load command line input files")
   {
     String8List input_file_path_tasks = str8_list_copy(arena, &cmdline->inputs);
-    for(String8Node *n = input_file_path_tasks.first; n != 0; n = n->next)
+    for (String8Node *n = input_file_path_tasks.first; n != 0; n = n->next)
     {
       //////////////////////////
       //- rjf: do thin analysis of file
@@ -38,35 +38,35 @@ rb_entry_point(CmdLine *cmdline)
         FileProperties props = os_properties_from_file(file);
         
         //- rjf: PDB magic -> PDB input
-        if(file_format == RB_FileFormat_Null)
+        if (file_format == RB_FileFormat_Null)
         {
           U8 msf20_magic_maybe[sizeof(msf_msf20_magic)] = {0};
           os_file_read(file, r1u64(0, sizeof(msf20_magic_maybe)), msf20_magic_maybe);
-          if(MemoryMatch(msf20_magic_maybe, msf_msf20_magic, sizeof(msf20_magic_maybe)))
+          if (MemoryMatch(msf20_magic_maybe, msf_msf20_magic, sizeof(msf20_magic_maybe)))
           {
             file_format = RB_FileFormat_PDB;
           }
         }
-        if(file_format == RB_FileFormat_Null)
+        if (file_format == RB_FileFormat_Null)
         {
           U8 msf70_magic_maybe[sizeof(msf_msf70_magic)] = {0};
           os_file_read(file, r1u64(0, sizeof(msf70_magic_maybe)), msf70_magic_maybe);
-          if(MemoryMatch(msf70_magic_maybe, msf_msf70_magic, sizeof(msf70_magic_maybe)))
+          if (MemoryMatch(msf70_magic_maybe, msf_msf70_magic, sizeof(msf70_magic_maybe)))
           {
             file_format = RB_FileFormat_PDB;
           }
         }
         
         //- rjf: PE magic -> PE input
-        if(file_format == RB_FileFormat_Null)
+        if (file_format == RB_FileFormat_Null)
         {
           PE_DosHeader dos_header_maybe = {0};
           os_file_read_struct(file, 0, &dos_header_maybe);
-          if(dos_header_maybe.magic == PE_DOS_MAGIC)
+          if (dos_header_maybe.magic == PE_DOS_MAGIC)
           {
             U32 pe_magic_maybe = 0;
             os_file_read_struct(file, dos_header_maybe.coff_file_offset, &pe_magic_maybe);
-            if(pe_magic_maybe == PE_MAGIC)
+            if (pe_magic_maybe == PE_MAGIC)
             {
               file_format = RB_FileFormat_PE;
             }
@@ -74,31 +74,31 @@ rb_entry_point(CmdLine *cmdline)
         }
         
         //- rjf: COFF archive magic -> COFF archive input
-        if(file_format == RB_FileFormat_Null)
+        if (file_format == RB_FileFormat_Null)
         {
           U8 coff_archive_sig_maybe[sizeof(g_coff_archive_sig)] = {0};
           os_file_read(file, r1u64(0, sizeof(coff_archive_sig_maybe)), coff_archive_sig_maybe);
-          if(MemoryMatch(coff_archive_sig_maybe, g_coff_archive_sig, sizeof(g_coff_archive_sig)))
+          if (MemoryMatch(coff_archive_sig_maybe, g_coff_archive_sig, sizeof(g_coff_archive_sig)))
           {
             file_format = RB_FileFormat_COFF_Archive;
           }
         }
-        if(file_format == RB_FileFormat_Null)
+        if (file_format == RB_FileFormat_Null)
         {
           U8 coff_thin_archive_sig_maybe[sizeof(g_coff_thin_archive_sig)] = {0};
           os_file_read(file, r1u64(0, sizeof(coff_thin_archive_sig_maybe)), coff_thin_archive_sig_maybe);
-          if(MemoryMatch(coff_thin_archive_sig_maybe, g_coff_thin_archive_sig, sizeof(g_coff_thin_archive_sig)))
+          if (MemoryMatch(coff_thin_archive_sig_maybe, g_coff_thin_archive_sig, sizeof(g_coff_thin_archive_sig)))
           {
             file_format = RB_FileFormat_COFF_ThinArchive;
           }
         }
         
         //- rjf: COFF obj magic -> COFF obj input
-        if(file_format == RB_FileFormat_Null)
+        if (file_format == RB_FileFormat_Null)
         {
           COFF_BigObjHeader header_maybe = {0};
           os_file_read_struct(file, 0, &header_maybe);
-          if(header_maybe.sig1 == COFF_MachineType_Unknown &&
+          if (header_maybe.sig1 == COFF_MachineType_Unknown &&
              header_maybe.sig2 == max_U16 &&
              header_maybe.version >= 2 &&
              MemoryMatch(header_maybe.magic, g_coff_big_header_magic, sizeof(header_maybe.magic)))
@@ -106,7 +106,7 @@ rb_entry_point(CmdLine *cmdline)
             file_format = RB_FileFormat_COFF_BigOBJ;
           }
         }
-        if(file_format == RB_FileFormat_Null)
+        if (file_format == RB_FileFormat_Null)
         {
           Temp scratch = scratch_begin(&arena, 1);
           COFF_FileHeader header_maybe = {0};
@@ -138,9 +138,9 @@ rb_entry_point(CmdLine *cmdline)
           
           // rjf: check if sections are valid
           B32 sections_are_valid = 0;
-          if(machine_type_is_valid)
+          if (machine_type_is_valid)
           {
-            if(props.size >= section_hdr_opl_off)
+            if (props.size >= section_hdr_opl_off)
             {
               COFF_SectionHeader *section_hdrs = push_array(scratch.arena, COFF_SectionHeader, section_count);
               os_file_read(file, r1u64(sizeof(header_maybe), sizeof(header_maybe) + section_count*sizeof(COFF_SectionHeader)), section_hdrs);
@@ -148,11 +148,11 @@ rb_entry_point(CmdLine *cmdline)
               for EachIndex(section_hdr_idx, section_count)
               {
                 COFF_SectionHeader *hdr = &section_hdrs[section_hdr_idx];
-                if(!(hdr->flags & COFF_SectionFlag_CntUninitializedData))
+                if (!(hdr->flags & COFF_SectionFlag_CntUninitializedData))
                 {
                   U64 min = hdr->foff;
                   U64 max = min + hdr->fsize;
-                  if(hdr->fsize > 0 && !(section_hdr_opl_off <= min && min <= max && max <= props.size))
+                  if (hdr->fsize > 0 && !(section_hdr_opl_off <= min && min <= max && max <= props.size))
                   {
                     section_ranges_valid = 0;
                     break;
@@ -165,12 +165,12 @@ rb_entry_point(CmdLine *cmdline)
           
           // rjf: check if symbol table is valid
           B32 symbol_table_is_valid = 0;
-          if(sections_are_valid)
+          if (sections_are_valid)
           {
             U64 symbol_table_off = header_maybe.symbol_table_foff;
             U64 symbol_table_size = sizeof(COFF_Symbol16)*header_maybe.symbol_count;
             U64 symbol_table_opl_off = symbol_table_off+symbol_table_size;
-            if(symbol_table_off == 0 && symbol_table_size == 0)
+            if (symbol_table_off == 0 && symbol_table_size == 0)
             {
               symbol_table_off = section_hdr_opl_off;
               symbol_table_opl_off = section_hdr_opl_off;
@@ -181,7 +181,7 @@ rb_entry_point(CmdLine *cmdline)
           }
           
           // rjf: symbol table is valid -> is COFF OBJ
-          if(symbol_table_is_valid)
+          if (symbol_table_is_valid)
           {
             file_format = RB_FileFormat_COFF_OBJ;
           }
@@ -190,7 +190,7 @@ rb_entry_point(CmdLine *cmdline)
         }
         
         //- rjf: ELF magic -> ELF input
-        if(file_format == RB_FileFormat_Null)
+        if (file_format == RB_FileFormat_Null)
         {
           U8 identifier_maybe[ELF_Identifier_Max] = {0};
           os_file_read(file, r1u64(0, sizeof(identifier_maybe)), identifier_maybe);
@@ -198,18 +198,18 @@ rb_entry_point(CmdLine *cmdline)
                               identifier_maybe[ELF_Identifier_Mag1] == 'E'  &&
                               identifier_maybe[ELF_Identifier_Mag2] == 'L'  &&
                               identifier_maybe[ELF_Identifier_Mag3] == 'F');
-          if(is_elf_magic)
+          if (is_elf_magic)
           {
             file_format = ELF_HdrIs64Bit(identifier_maybe) ? RB_FileFormat_ELF64 : RB_FileFormat_ELF32;
           }
         }
         
         //- rjf: RDI magic -> RDI input
-        if(file_format == RB_FileFormat_Null)
+        if (file_format == RB_FileFormat_Null)
         {
           RDI_Header rdi_header_maybe = {0};
           os_file_read_struct(file, 0, &rdi_header_maybe);
-          if(rdi_header_maybe.magic == RDI_MAGIC_CONSTANT)
+          if (rdi_header_maybe.magic == RDI_MAGIC_CONSTANT)
           {
             file_format = RB_FileFormat_RDI;
           }
@@ -221,7 +221,7 @@ rb_entry_point(CmdLine *cmdline)
       //////////////////////////
       //- rjf: log file recognition
       //
-      if(file_format != RB_FileFormat_Null)
+      if (file_format != RB_FileFormat_Null)
       {
         log_infof("%S recognized as %S\n", n->string, rb_file_format_display_name_table[file_format]);
       }
@@ -234,7 +234,7 @@ rb_entry_point(CmdLine *cmdline)
       //- rjf: load recognized files
       //
       String8 file_data = {0};
-      if(file_format != RB_FileFormat_Null) ProfScope("load recognized file")
+      if (file_format != RB_FileFormat_Null) ProfScope("load recognized file")
       {
         file_data = os_data_from_file_path(arena, n->string);
       }
@@ -242,15 +242,15 @@ rb_entry_point(CmdLine *cmdline)
       //////////////////////////
       //- rjf: PE format => generate new implicit path tasks for PDBs
       //
-      if(file_format == RB_FileFormat_PE) ProfScope("PE file => generate task for PDB")
+      if (file_format == RB_FileFormat_PE) ProfScope("PE file => generate task for PDB")
       {
         Temp scratch = scratch_begin(&arena, 1);
         PE_BinInfo pe_bin_info = pe_bin_info_from_data(scratch.arena, file_data);
         String8 raw_debug_dir = str8_substr(file_data, pe_bin_info.data_dir_franges[PE_DataDirectoryIndex_DEBUG]);
         PE_DebugInfoList debug_dir = pe_debug_info_list_from_raw_debug_dir(scratch.arena, file_data, raw_debug_dir);
-        for(PE_DebugInfoNode *n = debug_dir.first; n != 0; n = n->next)
+        for (PE_DebugInfoNode *n = debug_dir.first; n != 0; n = n->next)
         {
-          if(n->v.path.size != 0)
+          if (n->v.path.size != 0)
           {
             str8_list_push(arena, &input_file_path_tasks, n->v.path);
           }
@@ -261,13 +261,13 @@ rb_entry_point(CmdLine *cmdline)
       //////////////////////////
       //- rjf: ELF format => generate new implicit path tasks for debug files
       //
-      if(file_format == RB_FileFormat_ELF32 ||
+      if (file_format == RB_FileFormat_ELF32 ||
          file_format == RB_FileFormat_ELF64)
       {
         Temp scratch = scratch_begin(&arena, 1);
         ELF_Bin bin = elf_bin_from_data(scratch.arena, file_data);
         ELF_GnuDebugLink debug_link = elf_gnu_debug_link_from_bin(file_data, &bin);
-        if(debug_link.path.size != 0)
+        if (debug_link.path.size != 0)
         {
           str8_list_push(arena, &input_file_path_tasks, debug_link.path);
         }
@@ -277,7 +277,7 @@ rb_entry_point(CmdLine *cmdline)
       //////////////////////////
       //- rjf: PE => check if contains DWARF
       //
-      if(file_format == RB_FileFormat_PE)
+      if (file_format == RB_FileFormat_PE)
       {
         Temp scratch = scratch_begin(&arena, 1);
         PE_BinInfo pe_bin_info = pe_bin_info_from_data(scratch.arena, file_data);
@@ -285,7 +285,7 @@ rb_entry_point(CmdLine *cmdline)
         String8 string_table = str8_substr(file_data, pe_bin_info.string_table_range);
         U64 section_count = raw_section_table.size / sizeof(COFF_SectionHeader);
         COFF_SectionHeader *section_table = (COFF_SectionHeader *)raw_section_table.str;
-        if(dw_is_dwarf_present_coff_section_table(file_data, string_table, section_count, section_table))
+        if (dw_is_dwarf_present_coff_section_table(file_data, string_table, section_count, section_table))
         {
           file_format_flags |= RB_FileFormatFlag_HasDWARF;
         }
@@ -295,12 +295,12 @@ rb_entry_point(CmdLine *cmdline)
       //////////////////////////
       //- rjf: ELF => check if contains DWARF
       //
-      if(file_format == RB_FileFormat_ELF32 ||
+      if (file_format == RB_FileFormat_ELF32 ||
          file_format == RB_FileFormat_ELF64)
       {
         Temp scratch = scratch_begin(&arena, 1);
         ELF_Bin elf_bin = elf_bin_from_data(scratch.arena, file_data);
-        if(dw_is_dwarf_present_from_elf_bin(file_data, &elf_bin))
+        if (dw_is_dwarf_present_from_elf_bin(file_data, &elf_bin))
         {
           file_format_flags |= RB_FileFormatFlag_HasDWARF;
         }
@@ -328,7 +328,7 @@ rb_entry_point(CmdLine *cmdline)
   //- rjf: bucket input files by format
   //
   RB_FileList input_files_from_format_table[RB_FileFormat_COUNT] = {0};
-  for(RB_FileNode *n = input_files.first; n != 0; n = n->next)
+  for (RB_FileNode *n = input_files.first; n != 0; n = n->next)
   {
     RB_FileNode *file_n = push_array(arena, RB_FileNode, 1);
     file_n->v = n->v;
@@ -364,11 +364,11 @@ rb_entry_point(CmdLine *cmdline)
   String8 output_path = cmd_line_string(cmdline, str8_lit("out"));
   {
     //- rjf: user manually specified output kind
-    if(output_kind == OutputKind_Null)
+    if (output_kind == OutputKind_Null)
     {
       for EachNonZeroEnumVal(OutputKind, k)
       {
-        if(cmd_line_has_flag(cmdline, output_kind_info[k].arg))
+        if (cmd_line_has_flag(cmdline, output_kind_info[k].arg))
         {
           log_infof("User specified --%S; performing `%S`\n", output_kind_info[k].arg, output_kind_info[k].title);
           output_kind = k;
@@ -378,18 +378,18 @@ rb_entry_point(CmdLine *cmdline)
     }
     
     //- rjf: we can infer from the user-specified output path
-    if(str8_match(str8_skip_last_dot(output_path), str8_lit("rdi"), StringMatchFlag_CaseInsensitive))
+    if (str8_match(str8_skip_last_dot(output_path), str8_lit("rdi"), StringMatchFlag_CaseInsensitive))
     {
       output_kind = OutputKind_RDI;
       log_infof("Output path has .rdi extension; performing `%S`\n", output_kind_info[output_kind].title);
     }
-    else if(str8_match(str8_skip_last_dot(output_path), str8_lit("dump"), StringMatchFlag_CaseInsensitive) ||
+    else if (str8_match(str8_skip_last_dot(output_path), str8_lit("dump"), StringMatchFlag_CaseInsensitive) ||
             str8_match(str8_skip_last_dot(output_path), str8_lit("txt"), StringMatchFlag_CaseInsensitive))
     {
       output_kind = OutputKind_Dump;
       log_infof("Output path has .dump or .txt extension; performing `%S`\n", output_kind_info[output_kind].title);
     }
-    else if(str8_match(str8_skip_last_dot(output_path), str8_lit("psym"), StringMatchFlag_CaseInsensitive) ||
+    else if (str8_match(str8_skip_last_dot(output_path), str8_lit("psym"), StringMatchFlag_CaseInsensitive) ||
             str8_match(str8_skip_last_dot(output_path), str8_lit("psyms"), StringMatchFlag_CaseInsensitive))
     {
       output_kind = OutputKind_Breakpad;
@@ -400,11 +400,11 @@ rb_entry_point(CmdLine *cmdline)
   //////////////////////////////
   //- rjf: print help preamble
   //
-  if(output_kind == OutputKind_Null || cmdline->inputs.node_count == 0)
+  if (output_kind == OutputKind_Null || cmdline->inputs.node_count == 0)
   {
     fprintf(stderr, "%s\n", BUILD_TITLE);
     fprintf(stderr, "%s\n\n", BUILD_VERSION_STRING_LITERAL);
-    if(output_kind != OutputKind_Null)
+    if (output_kind != OutputKind_Null)
     {
       fprintf(stderr, "%.*s Help\n", str8_varg(output_kind_info[output_kind].title));
       fprintf(stderr, "To see top-level options for radbin, run the binary with no arguments.\n\n");
@@ -479,7 +479,7 @@ rb_entry_point(CmdLine *cmdline)
     case OutputKind_Breakpad:
     {
       //- rjf: no inputs => help
-      if(cmdline->inputs.node_count == 0) switch(output_kind)
+      if (cmdline->inputs.node_count == 0) switch(output_kind)
       {
         default:
         case OutputKind_RDI:
@@ -519,22 +519,22 @@ rb_entry_point(CmdLine *cmdline)
         case OutputKind_RDI:
         {
           String8List only_names = cmd_line_strings(cmdline, str8_lit("only"));
-          if(only_names.node_count != 0)
+          if (only_names.node_count != 0)
           {
             subset_flags = 0;
           }
-          for(String8Node *n = only_names.first; n != 0; n = n->next)
+          for (String8Node *n = only_names.first; n != 0; n = n->next)
           {
-            if(0){}
-#define X(name, name_lower) else if(str8_match(n->string, str8_lit(#name_lower), 0)) { subset_flags |= RDIM_SubsetFlag_##name; }
+            if (0){}
+#define X(name, name_lower) else if (str8_match(n->string, str8_lit(#name_lower), 0)) { subset_flags |= RDIM_SubsetFlag_##name; }
             RDIM_Subset_XList
 #undef X
           }
           String8List omit_names = cmd_line_strings(cmdline, str8_lit("omit"));
-          for(String8Node *n = omit_names.first; n != 0; n = n->next)
+          for (String8Node *n = omit_names.first; n != 0; n = n->next)
           {
-            if(0){}
-#define X(name, name_lower) else if(str8_match(n->string, str8_lit(#name_lower), 0)) { subset_flags &= ~RDIM_SubsetFlag_##name; }
+            if (0){}
+#define X(name, name_lower) else if (str8_match(n->string, str8_lit(#name_lower), 0)) { subset_flags &= ~RDIM_SubsetFlag_##name; }
             RDIM_Subset_XList
 #undef X
           }
@@ -550,7 +550,7 @@ rb_entry_point(CmdLine *cmdline)
       RDIM_BakeParams bake_params = {0};
       {
         //- rjf: PE inputs w/ DWARF, or ELF inputs => DWARF -> RDI conversion
-        if(!convert_done &&
+        if (!convert_done &&
            ((input_files_from_format_table[RB_FileFormat_PE].count != 0 &&
              input_files_from_format_table[RB_FileFormat_PE].first->v->format_flags & RB_FileFormatFlag_HasDWARF) ||
             (input_files_from_format_table[RB_FileFormat_ELF32].count != 0 ||
@@ -564,11 +564,11 @@ rb_entry_point(CmdLine *cmdline)
           {
             B32 got_exe = 0;
             B32 got_dbg = 0;
-            if(!got_exe && !got_dbg)
+            if (!got_exe && !got_dbg)
             {
-              for(RB_FileNode *n = input_files_from_format_table[RB_FileFormat_PE].first; n != 0; n = n->next)
+              for (RB_FileNode *n = input_files_from_format_table[RB_FileFormat_PE].first; n != 0; n = n->next)
               {
-                if(n->v->format_flags & RB_FileFormatFlag_HasDWARF)
+                if (n->v->format_flags & RB_FileFormatFlag_HasDWARF)
                 {
                   got_exe = 1;
                   got_dbg = 1;
@@ -581,39 +581,39 @@ rb_entry_point(CmdLine *cmdline)
                 }
               }
             }
-            if(!got_exe)
+            if (!got_exe)
             {
-              for(RB_FileNode *n = input_files_from_format_table[RB_FileFormat_ELF32].first; n != 0; n = n->next)
+              for (RB_FileNode *n = input_files_from_format_table[RB_FileFormat_ELF32].first; n != 0; n = n->next)
               {
                 got_exe = 1;
                 convert_params.exe_name = n->v->path;
                 convert_params.exe_data = n->v->data;
                 convert_params.exe_kind = ExecutableImageKind_Elf32;
-                if(!(n->v->format_flags & RB_FileFormatFlag_HasDWARF))
+                if (!(n->v->format_flags & RB_FileFormatFlag_HasDWARF))
                 {
                   break;
                 }
               }
             }
-            if(!got_exe)
+            if (!got_exe)
             {
-              for(RB_FileNode *n = input_files_from_format_table[RB_FileFormat_ELF64].first; n != 0; n = n->next)
+              for (RB_FileNode *n = input_files_from_format_table[RB_FileFormat_ELF64].first; n != 0; n = n->next)
               {
                 got_exe = 1;
                 convert_params.exe_name = n->v->path;
                 convert_params.exe_data = n->v->data;
                 convert_params.exe_kind = ExecutableImageKind_Elf64;
-                if(!(n->v->format_flags & RB_FileFormatFlag_HasDWARF))
+                if (!(n->v->format_flags & RB_FileFormatFlag_HasDWARF))
                 {
                   break;
                 }
               }
             }
-            if(!got_dbg)
+            if (!got_dbg)
             {
-              for(RB_FileNode *n = input_files_from_format_table[RB_FileFormat_ELF32].first; n != 0; n = n->next)
+              for (RB_FileNode *n = input_files_from_format_table[RB_FileFormat_ELF32].first; n != 0; n = n->next)
               {
-                if(n->v->format_flags & RB_FileFormatFlag_HasDWARF)
+                if (n->v->format_flags & RB_FileFormatFlag_HasDWARF)
                 {
                   got_dbg = 1;
                   convert_params.dbg_name = n->v->path;
@@ -622,11 +622,11 @@ rb_entry_point(CmdLine *cmdline)
                 }
               }
             }
-            if(!got_dbg)
+            if (!got_dbg)
             {
-              for(RB_FileNode *n = input_files_from_format_table[RB_FileFormat_ELF64].first; n != 0; n = n->next)
+              for (RB_FileNode *n = input_files_from_format_table[RB_FileFormat_ELF64].first; n != 0; n = n->next)
               {
-                if(n->v->format_flags & RB_FileFormatFlag_HasDWARF)
+                if (n->v->format_flags & RB_FileFormatFlag_HasDWARF)
                 {
                   got_dbg = 1;
                   convert_params.dbg_name = n->v->path;
@@ -641,14 +641,14 @@ rb_entry_point(CmdLine *cmdline)
           ProfScope("convert") bake_params = d2r_convert(arena, async_root, &convert_params);
           
           // rjf: no output path? -> pick one based on debug
-          if(output_path.size == 0)
+          if (output_path.size == 0)
           {
             output_path = push_str8f(arena, "%S.rdi", str8_chop_last_dot(convert_params.dbg_name));
           }
         }
         
         //- rjf: PDB inputs => PDB -> RDI conversion
-        if(!convert_done &&
+        if (!convert_done &&
            input_files_from_format_table[RB_FileFormat_PDB].count != 0)
         {
           convert_done = 1;
@@ -675,7 +675,7 @@ rb_entry_point(CmdLine *cmdline)
           ProfScope("convert") bake_params = p2r_convert(arena, async_root, &convert_params);
           
           // rjf: no output path? -> pick one based on PDB
-          if(output_path.size == 0) switch(output_kind)
+          if (output_path.size == 0) switch(output_kind)
           {
             default:{}break;
             case OutputKind_RDI:
@@ -691,13 +691,13 @@ rb_entry_point(CmdLine *cmdline)
       }
       
       //- rjf: no viable input paths
-      if(!convert_done && cmdline->inputs.node_count != 0)
+      if (!convert_done && cmdline->inputs.node_count != 0)
       {
         log_user_errorf("Could not load debug info from the specified inputs. You must provide either a valid PDB file or an executable image (PE, ELF) file with DWARF debug info.");
       }
       
       //- rjf: convert done => generate output
-      if(convert_done) switch(output_kind)
+      if (convert_done) switch(output_kind)
       {
         default:{}break;
         
@@ -714,7 +714,7 @@ rb_entry_point(CmdLine *cmdline)
           
           // rjf: compress
           RDIM_SerializedSectionBundle serialized_section_bundle__compressed = serialized_section_bundle;
-          if(cmd_line_has_flag(cmdline, str8_lit("compress"))) ProfScope("compress")
+          if (cmd_line_has_flag(cmdline, str8_lit("compress"))) ProfScope("compress")
           {
             serialized_section_bundle__compressed = rdim_compress(arena, &serialized_section_bundle);
           }
@@ -743,9 +743,9 @@ rb_entry_point(CmdLine *cmdline)
           U32 *unit_line_table_idxs = push_array(arena, U32, unit_count+1);
           {
             U64 dst_idx = 1;
-            for(RDIM_UnitChunkNode *n = bake_params.units.first; n != 0; n = n->next)
+            for (RDIM_UnitChunkNode *n = bake_params.units.first; n != 0; n = n->next)
             {
-              for(U64 n_idx = 0; n_idx < n->count; n_idx += 1, dst_idx += 1)
+              for (U64 n_idx = 0; n_idx < n->count; n_idx += 1, dst_idx += 1)
               {
                 unit_line_table_idxs[dst_idx] = rdim_idx_from_line_table(n->v[n_idx].line_table);
               }
@@ -758,9 +758,9 @@ rb_entry_point(CmdLine *cmdline)
           //- rjf: dump FILE records
           ProfScope("dump FILE records")
           {
-            for(RDIM_SrcFileChunkNode *n = bake_params.src_files.first; n != 0; n = n->next)
+            for (RDIM_SrcFileChunkNode *n = bake_params.src_files.first; n != 0; n = n->next)
             {
-              for(U64 idx = 0; idx < n->count; idx += 1)
+              for (U64 idx = 0; idx < n->count; idx += 1)
               {
                 U64 file_idx = rdim_idx_from_src_file(&n->v[idx]);
                 String8 src_path = n->v[idx].path;
@@ -787,7 +787,7 @@ rb_entry_point(CmdLine *cmdline)
           ProfScope("kick off FUNC & line record dump tasks")
           {
             U64 task_idx = 0;
-            for(RDIM_SymbolChunkNode *n = bake_params.procedures.first; n != 0; n = n->next, task_idx += 1)
+            for (RDIM_SymbolChunkNode *n = bake_params.procedures.first; n != 0; n = n->next, task_idx += 1)
             {
               dump_proc_chunk_in[task_idx].unit_vmap            = unit_vmap;
               dump_proc_chunk_in[task_idx].unit_vmap_count      = unit_vmap_count;
@@ -802,7 +802,7 @@ rb_entry_point(CmdLine *cmdline)
           //- rjf: join FUNC & line record dump tasks
           ProfScope("join FUNC & line record dump tasks")
           {
-            for(U64 idx = 0; idx < bake_params.procedures.chunk_count; idx += 1)
+            for (U64 idx = 0; idx < bake_params.procedures.chunk_count; idx += 1)
             {
               String8List *out = async_task_join_struct(dump_proc_chunk_tasks[idx], String8List);
               str8_list_concat_in_place(&dump, out);
@@ -822,7 +822,7 @@ rb_entry_point(CmdLine *cmdline)
       B32 deterministic = cmd_line_has_flag(cmdline, str8_lit("deterministic"));
       
       //- rjf: no inputs => help
-      if(cmdline->inputs.node_count == 0)
+      if (cmdline->inputs.node_count == 0)
       {
         fprintf(stderr, "All input files specified on the command line will be dumped. Currently, only\n");
         fprintf(stderr, "RDI files are supported.\n\n");
@@ -862,36 +862,36 @@ rb_entry_point(CmdLine *cmdline)
       DW_DumpSubsetFlags dw_dump_subset_flags = DW_DumpSubsetFlag_All;
       {
         String8List only_names = cmd_line_strings(cmdline, str8_lit("only"));
-        if(only_names.node_count != 0)
+        if (only_names.node_count != 0)
         {
           rdi_dump_subset_flags = 0;
           dw_dump_subset_flags = 0;
         }
-        for(String8Node *n = only_names.first; n != 0; n = n->next)
+        for (String8Node *n = only_names.first; n != 0; n = n->next)
         {
-          if(0){}
-#define X(name, name_lower, title) else if(str8_match(n->string, str8_lit(#name_lower), 0)) { rdi_dump_subset_flags |= RDI_DumpSubsetFlag_##name; }
+          if (0){}
+#define X(name, name_lower, title) else if (str8_match(n->string, str8_lit(#name_lower), 0)) { rdi_dump_subset_flags |= RDI_DumpSubsetFlag_##name; }
           RDI_DumpSubset_XList
 #undef X
-#define X(name, name_lower, title) else if(str8_match(n->string, str8_lit(#name_lower), 0)) { dw_dump_subset_flags |= DW_DumpSubsetFlag_##name; }
+#define X(name, name_lower, title) else if (str8_match(n->string, str8_lit(#name_lower), 0)) { dw_dump_subset_flags |= DW_DumpSubsetFlag_##name; }
           DW_DumpSubset_XList
 #undef X
         }
         String8List omit_names = cmd_line_strings(cmdline, str8_lit("omit"));
-        for(String8Node *n = omit_names.first; n != 0; n = n->next)
+        for (String8Node *n = omit_names.first; n != 0; n = n->next)
         {
-          if(0){}
-#define X(name, name_lower, title) else if(str8_match(n->string, str8_lit(#name_lower), 0)) { rdi_dump_subset_flags &= ~RDI_DumpSubsetFlag_##name; }
+          if (0){}
+#define X(name, name_lower, title) else if (str8_match(n->string, str8_lit(#name_lower), 0)) { rdi_dump_subset_flags &= ~RDI_DumpSubsetFlag_##name; }
           RDI_DumpSubset_XList
 #undef X
-#define X(name, name_lower, title) else if(str8_match(n->string, str8_lit(#name_lower), 0)) { dw_dump_subset_flags &= ~DW_DumpSubsetFlag_##name; }
+#define X(name, name_lower, title) else if (str8_match(n->string, str8_lit(#name_lower), 0)) { dw_dump_subset_flags &= ~DW_DumpSubsetFlag_##name; }
           DW_DumpSubset_XList
 #undef X
         }
       }
       
       //- rjf: dump input files in order
-      for(RB_FileNode *n = input_files.first; n != 0; n = n->next)
+      for (RB_FileNode *n = input_files.first; n != 0; n = n->next)
       {
         RB_File *f = n->v;
         str8_list_pushf(arena, &output_blobs, "// %S (%S)\n\n", deterministic ? str8_skip_last_slash(f->path) : f->path, f->format ? rb_file_format_display_name_table[f->format] : str8_lit("Unsupported format"));
@@ -902,20 +902,20 @@ rb_entry_point(CmdLine *cmdline)
         ELF_Bin elf = {0};
         DW_Input dw = {0};
         {
-          if(f->format == RB_FileFormat_PE)
+          if (f->format == RB_FileFormat_PE)
           {
             pe = pe_bin_info_from_data(arena, f->data);
             arch = pe.arch;
           }
-          if(f->format == RB_FileFormat_ELF32 ||
+          if (f->format == RB_FileFormat_ELF32 ||
              f->format == RB_FileFormat_ELF64)
           {
             elf = elf_bin_from_data(arena, f->data);
             arch = arch_from_elf_machine(elf.hdr.e_machine);
           }
-          if(f->format_flags & RB_FileFormatFlag_HasDWARF)
+          if (f->format_flags & RB_FileFormatFlag_HasDWARF)
           {
-            if(f->format == RB_FileFormat_PE)
+            if (f->format == RB_FileFormat_PE)
             {
               String8             raw_sections  = str8_substr(f->data, pe.section_table_range);
               U64                 section_count = raw_sections.size / sizeof(COFF_SectionHeader);
@@ -923,7 +923,7 @@ rb_entry_point(CmdLine *cmdline)
               String8 string_table = str8_substr(f->data, pe.string_table_range);
               dw = dw_input_from_coff_section_table(arena, f->data, string_table, section_count, section_table);
             }
-            else if(f->format == RB_FileFormat_ELF32 ||
+            else if (f->format == RB_FileFormat_ELF32 ||
                     f->format == RB_FileFormat_ELF64)
             {
               dw = dw_input_from_elf_bin(arena, f->data, &elf);
@@ -997,7 +997,7 @@ rb_entry_point(CmdLine *cmdline)
         }
         
         //- rjf: dump file extension info
-        if(f->format_flags & RB_FileFormatFlag_HasDWARF)
+        if (f->format_flags & RB_FileFormatFlag_HasDWARF)
         {
           str8_list_pushf(arena, &output_blobs, "// %S (%S) (DWARF)\n\n", deterministic ? str8_skip_last_slash(f->path) : f->path, f->format ? rb_file_format_display_name_table[f->format] : str8_lit("Unsupported format"));
           {
@@ -1012,16 +1012,16 @@ rb_entry_point(CmdLine *cmdline)
   //////////////////////////////
   //- rjf: write outputs
   //
-  if(output_path.size != 0) ProfScope("write outputs [file]")
+  if (output_path.size != 0) ProfScope("write outputs [file]")
   {
     os_write_data_list_to_file_path(output_path, output_blobs);
     log_infof("Results written to %S", output_path);
   }
   else ProfScope("write outputs [stdout]")
   {
-    for(String8Node *n = output_blobs.first; n != 0; n = n->next)
+    for (String8Node *n = output_blobs.first; n != 0; n = n->next)
     {
-      for(U64 off = 0; off < n->string.size;)
+      for (U64 off = 0; off < n->string.size;)
       {
         U64 size_to_write = Min(n->string.size - off, GB(2));
         fwrite(n->string.str + off, size_to_write, 1, stdout);
@@ -1035,18 +1035,18 @@ rb_entry_point(CmdLine *cmdline)
   //- rjf: write info & errors
   //
   LogScopeResult log_scope = log_scope_end(arena);
-  if(cmd_line_has_flag(cmdline, str8_lit("verbose")) && log_scope.strings[LogMsgKind_Info].size != 0)
+  if (cmd_line_has_flag(cmdline, str8_lit("verbose")) && log_scope.strings[LogMsgKind_Info].size != 0)
   {
     String8List lines = wrapped_lines_from_string(arena, log_scope.strings[LogMsgKind_Info], 80, 80, 0);
-    for(String8Node *n = lines.first; n != 0; n = n->next)
+    for (String8Node *n = lines.first; n != 0; n = n->next)
     {
       fprintf(stderr, "%.*s\n", str8_varg(n->string));
     }
   }
-  if(log_scope.strings[LogMsgKind_UserError].size != 0)
+  if (log_scope.strings[LogMsgKind_UserError].size != 0)
   {
     String8List lines = wrapped_lines_from_string(arena, log_scope.strings[LogMsgKind_UserError], 80, 80, 0);
-    for(String8Node *n = lines.first; n != 0; n = n->next)
+    for (String8Node *n = lines.first; n != 0; n = n->next)
     {
       fprintf(stderr, "%.*s\n", str8_varg(n->string));
     }

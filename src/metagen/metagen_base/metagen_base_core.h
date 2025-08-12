@@ -119,8 +119,8 @@
 ////////////////////////////////
 //~ rjf: For-Loop Construct Macros
 
-#define DeferLoop(begin, end)        for(int _i_ = ((begin), 0); !_i_; _i_ += 1, (end))
-#define DeferLoopChecked(begin, end) for(int _i_ = 2 * !(begin); (_i_ == 2 ? ((end), 0) : !_i_); _i_ += 1, (end))
+#define DeferLoop(begin, end)        for (int _i_ = ((begin), 0); !_i_; _i_ += 1, (end))
+#define DeferLoopChecked(begin, end) for (int _i_ = 2 * !(begin); (_i_ == 2 ? ((end), 0) : !_i_); _i_ += 1, (end))
 
 #define EachIndex(it, count) (U64 it = 0; it < (count); it += 1)
 #define EachElement(it, array) (U64 it = 0; it < ArrayCount(array); it += 1)
@@ -162,7 +162,7 @@
 # error Unknown trap intrinsic for this compiler.
 #endif
 
-#define AssertAlways(x) do{if(!(x)) {Trap();}}while(0)
+#define AssertAlways(x) do{if (!(x)) {Trap();}}while (0)
 #if BUILD_DEBUG
 # define Assert(x) AssertAlways(x)
 #else
@@ -327,7 +327,7 @@ C_LINKAGE void __asan_unpoison_memory_region(void const volatile *addr, size_t s
 
 #define CeilIntegerDiv(a,b) (((a) + (b) - 1)/(b))
 
-#define Swap(T,a,b) do{T t__ = a; a = b; b = t__;}while(0)
+#define Swap(T,a,b) do{T t__ = a; a = b; b = t__;}while (0)
 
 #if ARCH_64BIT
 # define IntFromPtr(ptr) ((U64)(ptr))

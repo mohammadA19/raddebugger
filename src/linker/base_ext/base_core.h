@@ -104,7 +104,7 @@
   SLLChunkListPush(_arena, _list, _cap, _value_type);               \
   MemoryZeroStruct(SLLChunkListLastItem(_list));                    \
   SLLChunkListLastItem(_list)->chunk = (_list)->last;               \
-} while(0)
+} while (0)
 
 #define SLLChunkListLastItem(_list) (&(_list)->last->v[(_list)->last->count - 1])
 

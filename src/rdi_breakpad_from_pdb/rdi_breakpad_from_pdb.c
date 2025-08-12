@@ -44,12 +44,12 @@ ASYNC_WORK_DEF(p2b_dump_proc_chunk_work)
   RDI_U64 line_table_voffs_count = in->line_tables_bake->line_table_voffs_count;
   RDI_Line *line_table_lines = in->line_tables_bake->line_table_lines;
   RDI_U64 line_table_lines_count = in->line_tables_bake->line_table_lines_count;
-  for(U64 idx = 0; idx < in->chunk->count; idx += 1)
+  for (U64 idx = 0; idx < in->chunk->count; idx += 1)
   {
     // NOTE(rjf): breakpad does not support multiple voff ranges per procedure.
     RDIM_Symbol *proc = &in->chunk->v[idx];
     RDIM_Scope *root_scope = proc->root_scope;
-    if(root_scope != 0 && root_scope->voff_ranges.first != 0)
+    if (root_scope != 0 && root_scope->voff_ranges.first != 0)
     {
       // rjf: dump function record
       RDIM_Rng1U64 voff_range = root_scope->voff_ranges.first->v;
@@ -57,10 +57,10 @@ ASYNC_WORK_DEF(p2b_dump_proc_chunk_work)
       
       // rjf: dump function lines
       U64 unit_idx = rdi_vmap_idx_from_voff(in->unit_vmap, in->unit_vmap_count, voff_range.min);
-      if(0 < unit_idx && unit_idx <= in->unit_count)
+      if (0 < unit_idx && unit_idx <= in->unit_count)
       {
         U32 line_table_idx = in->unit_line_table_idxs[unit_idx];
-        if(0 < line_table_idx && line_table_idx <= line_tables_count)
+        if (0 < line_table_idx && line_table_idx <= line_tables_count)
         {
           // rjf: unpack unit line info
           RDI_LineTable *line_table = &line_tables[line_table_idx];
@@ -72,16 +72,16 @@ ASYNC_WORK_DEF(p2b_dump_proc_chunk_work)
             line_table->lines_count,
             0
           };
-          for(U64 voff = voff_range.min, last_voff = 0;
+          for (U64 voff = voff_range.min, last_voff = 0;
               voff < voff_range.max && voff > last_voff;)
           {
             RDI_U64 line_info_idx = rdi_line_info_idx_from_voff(&line_info, voff);
-            if(line_info_idx < line_info.count)
+            if (line_info_idx < line_info.count)
             {
               RDI_Line *line = &line_info.lines[line_info_idx];
               U64 line_voff_min = line_info.voffs[line_info_idx];
               U64 line_voff_opl = line_info.voffs[line_info_idx+1];
-              if(line->file_idx != 0)
+              if (line->file_idx != 0)
               {
                 str8_list_pushf(arena, out, "%I64x %I64x %I64u %I64u\n",
                                 line_voff_min,

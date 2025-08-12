@@ -24,7 +24,7 @@ ui_hash_part_from_key_string(String8 string)
   // rjf: look for ### patterns, which can replace the entirety of the part of
   // the string that is hashed.
   U64 hash_replace_signifier_pos = str8_find_needle(string, 0, str8_lit("###"), 0);
-  if(hash_replace_signifier_pos < string.size)
+  if (hash_replace_signifier_pos < string.size)
   {
     result = str8_skip(string, hash_replace_signifier_pos);
   }
@@ -59,7 +59,7 @@ ui_key_from_string(UI_Key seed_key, String8 string)
 {
   ProfBeginFunction();
   UI_Key result = {0};
-  if(string.size != 0)
+  if (string.size != 0)
   {
     String8 hash_part = ui_hash_part_from_key_string(string);
     result.u64[0] = u64_hash_from_seed_str8(seed_key.u64[0], hash_part);
@@ -125,12 +125,12 @@ ui_scanned_column_from_column(String8 string, S64 start_column, Side side)
   B32 found_text = 0;
   B32 found_non_space = 0;
   S64 start_off = delta < 0 ? delta : 0;
-  for(S64 col = start_column+start_off; 1 <= col && col <= string.size+1; col += delta)
+  for (S64 col = start_column+start_off; 1 <= col && col <= string.size+1; col += delta)
   {
     U8 byte = (col <= string.size) ? string.str[col-1] : 0;
     B32 is_non_space = !char_is_space(byte);
     B32 is_name = ui_char_is_scan_boundary(byte);
-    if(((side == Side_Min) && (col == 1)) || 
+    if (((side == Side_Min) && (col == 1)) || 
        ((side == Side_Max) && (col == string.size+1)) ||
        (found_non_space && !is_non_space) || 
        (found_text && !is_name))
@@ -180,9 +180,9 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
     case UI_EventDeltaUnit_Page:
     {
       S64 first_nonwhitespace_column = 1;
-      for(U64 idx = 0; idx < string.size; idx += 1)
+      for (U64 idx = 0; idx < string.size; idx += 1)
       {
-        if(!char_is_space(string.str[idx]))
+        if (!char_is_space(string.str[idx]))
         {
           first_nonwhitespace_column = (S64)idx + 1;
           break;
@@ -194,40 +194,40 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   }
   
   //- rjf: zero delta
-  if(!txt_pt_match(cursor, mark) && event->flags & UI_EventFlag_ZeroDeltaOnSelect)
+  if (!txt_pt_match(cursor, mark) && event->flags & UI_EventFlag_ZeroDeltaOnSelect)
   {
     delta = v2s32(0, 0);
   }
   
   //- rjf: form next cursor
-  if(txt_pt_match(cursor, mark) || !(event->flags & UI_EventFlag_ZeroDeltaOnSelect))
+  if (txt_pt_match(cursor, mark) || !(event->flags & UI_EventFlag_ZeroDeltaOnSelect))
   {
     next_cursor.column += delta.x;
   }
   
   //- rjf: cap at line
-  if(event->flags & UI_EventFlag_CapAtLine)
+  if (event->flags & UI_EventFlag_CapAtLine)
   {
     next_cursor.column = Clamp(1, next_cursor.column, (S64)(string.size+1));
   }
   
   //- rjf: in some cases, we want to pick a selection side based on the delta
-  if(!txt_pt_match(cursor, mark) && event->flags & UI_EventFlag_PickSelectSide)
+  if (!txt_pt_match(cursor, mark) && event->flags & UI_EventFlag_PickSelectSide)
   {
-    if(original_delta.x < 0 || original_delta.y < 0)
+    if (original_delta.x < 0 || original_delta.y < 0)
     {
       next_cursor = next_mark = txt_pt_min(cursor, mark);
     }
-    else if(original_delta.x > 0 || original_delta.y > 0)
+    else if (original_delta.x > 0 || original_delta.y > 0)
     {
       next_cursor = next_mark = txt_pt_max(cursor, mark);
     }
   }
   
   //- rjf: copying
-  if(event->flags & UI_EventFlag_Copy)
+  if (event->flags & UI_EventFlag_Copy)
   {
-    if(cursor.line == mark.line)
+    if (cursor.line == mark.line)
     {
       copy = str8_substr(string, r1u64(cursor.column-1, mark.column-1));
       flags |= UI_TxtOpFlag_Copy;
@@ -239,7 +239,7 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   }
   
   //- rjf: pasting
-  if(event->flags & UI_EventFlag_Paste)
+  if (event->flags & UI_EventFlag_Paste)
   {
     range = txt_rng(cursor, mark);
     replace = os_get_clipboard_text(arena);
@@ -247,7 +247,7 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   }
   
   //- rjf: deletion
-  if(event->flags & UI_EventFlag_Delete)
+  if (event->flags & UI_EventFlag_Delete)
   {
     TxtPt new_pos = txt_pt_min(next_cursor, next_mark);
     range = txt_rng(next_cursor, next_mark);
@@ -256,13 +256,13 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   }
   
   //- rjf: stick mark to cursor, when we don't want to keep it in the same spot
-  if(!(event->flags & UI_EventFlag_KeepMark))
+  if (!(event->flags & UI_EventFlag_KeepMark))
   {
     next_mark = next_cursor;
   }
   
   //- rjf: insertion
-  if(event->string.size != 0)
+  if (event->string.size != 0)
   {
     range = txt_rng(cursor, mark);
     replace = push_str8_copy(arena, event->string);
@@ -271,7 +271,7 @@ ui_single_line_txt_op_from_event(Arena *arena, UI_Event *event, String8 string, 
   
   //- rjf: determine if this event should be taken, based on bounds of cursor
   {
-    if(next_cursor.column > string.size+1 || 1 > next_cursor.column || event->delta_2s32.y != 0)
+    if (next_cursor.column > string.size+1 || 1 > next_cursor.column || event->delta_2s32.y != 0)
     {
       flags |= UI_TxtOpFlag_Invalid;
     }
@@ -303,11 +303,11 @@ ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 col_range, St
   };
   
   //- rjf: clamp range
-  if(range.min > string.size)
+  if (range.min > string.size)
   {
     range.min = 0;
   }
-  if(range.max > string.size)
+  if (range.max > string.size)
   {
     range.max = string.size;
   }
@@ -321,7 +321,7 @@ ui_push_string_replace_range(Arena *arena, String8 string, Rng1S64 col_range, St
   {
     MemoryCopy(push_base+0, string.str, range.min);
     MemoryCopy(push_base+range.min+replace.size, string.str+range.max, string.size-range.max);
-    if(replace.str != 0)
+    if (replace.str != 0)
     {
       MemoryCopy(push_base+range.min, replace.str, replace.size);
     }
@@ -361,7 +361,7 @@ ui_scroll_pt_target_idx(UI_ScrollPt *v, S64 idx)
 internal void
 ui_scroll_pt_clamp_idx(UI_ScrollPt *v, Rng1S64 range)
 {
-  if(v->idx < range.min || range.max < v->idx)
+  if (v->idx < range.min || range.max < v->idx)
   {
     S64 clamped = range.min;
     ui_scroll_pt_target_idx(v, clamped);
@@ -382,14 +382,14 @@ ui_box_rec_df(UI_Box *box, UI_Box *root, U64 sib_member_off, U64 child_member_of
 {
   UI_BoxRec result = {0};
   result.next = &ui_nil_box;
-  if(!ui_box_is_nil(*MemberFromOffset(UI_Box **, box, child_member_off)))
+  if (!ui_box_is_nil(*MemberFromOffset(UI_Box **, box, child_member_off)))
   {
     result.next = *MemberFromOffset(UI_Box **, box, child_member_off);
     result.push_count = 1;
   }
-  else for(UI_Box *p = box; !ui_box_is_nil(p) && p != root; p = p->parent)
+  else for (UI_Box *p = box; !ui_box_is_nil(p) && p != root; p = p->parent)
   {
-    if(!ui_box_is_nil(*MemberFromOffset(UI_Box **, p, sib_member_off)))
+    if (!ui_box_is_nil(*MemberFromOffset(UI_Box **, p, sib_member_off)))
     {
       result.next = *MemberFromOffset(UI_Box **, p, sib_member_off);
       break;
@@ -437,7 +437,7 @@ ui_state_release(UI_State *state)
 {
   arena_release(state->string_hover_arena);
   arena_release(state->drag_state_arena);
-  for(int i = 0; i < ArrayCount(state->build_arenas); i += 1)
+  for (int i = 0; i < ArrayCount(state->build_arenas); i += 1)
   {
     arena_release(state->build_arenas[i]);
   }
@@ -517,48 +517,48 @@ ui_next_event(UI_Event **ev)
 {
   UI_EventList *events = ui_state->events;
   UI_EventNode *start_node = events->first;
-  if(ev[0] != 0)
+  if (ev[0] != 0)
   {
     start_node = CastFromMember(UI_EventNode, v, ev[0]);
     start_node = start_node->next;
     ev[0] = 0;
   }
-  if(start_node != 0)
+  if (start_node != 0)
   {
     UI_PermissionFlags perms = ui_top_permission_flags();
-    for(UI_EventNode *n = start_node; n != 0; n = n->next)
+    for (UI_EventNode *n = start_node; n != 0; n = n->next)
     {
       B32 good = 1;
-      if(!(perms & UI_PermissionFlag_ClicksLeft) &&
+      if (!(perms & UI_PermissionFlag_ClicksLeft) &&
          (n->v.kind == UI_EventKind_Press ||
           n->v.kind == UI_EventKind_Release) &&
          (n->v.key == OS_Key_LeftMouseButton))
       {
         good = 0;
       }
-      if(!(perms & UI_PermissionFlag_ClicksMiddle) &&
+      if (!(perms & UI_PermissionFlag_ClicksMiddle) &&
          (n->v.kind == UI_EventKind_Press ||
           n->v.kind == UI_EventKind_Release) &&
          (n->v.key == OS_Key_MiddleMouseButton))
       {
         good = 0;
       }
-      if(!(perms & UI_PermissionFlag_ClicksRight) &&
+      if (!(perms & UI_PermissionFlag_ClicksRight) &&
          (n->v.kind == UI_EventKind_Press ||
           n->v.kind == UI_EventKind_Release) &&
          (n->v.key == OS_Key_RightMouseButton))
       {
         good = 0;
       }
-      if(!(perms & UI_PermissionFlag_ScrollX) && (n->v.kind == UI_EventKind_Scroll) && (n->v.delta_2f32.x != 0 || n->v.modifiers == OS_Modifier_Shift))
+      if (!(perms & UI_PermissionFlag_ScrollX) && (n->v.kind == UI_EventKind_Scroll) && (n->v.delta_2f32.x != 0 || n->v.modifiers == OS_Modifier_Shift))
       {
         good = 0;
       }
-      if(!(perms & UI_PermissionFlag_ScrollY) && (n->v.kind == UI_EventKind_Scroll) && n->v.delta_2f32.y != 0 && n->v.modifiers == 0)
+      if (!(perms & UI_PermissionFlag_ScrollY) && (n->v.kind == UI_EventKind_Scroll) && n->v.delta_2f32.y != 0 && n->v.modifiers == 0)
       {
         good = 0;
       }
-      if((n->v.kind == UI_EventKind_Press ||
+      if ((n->v.kind == UI_EventKind_Press ||
           n->v.kind == UI_EventKind_Release ||
           n->v.kind == UI_EventKind_Navigate ||
           n->v.kind == UI_EventKind_Edit) &&
@@ -566,20 +566,20 @@ ui_next_event(UI_Event **ev)
           n->v.key != OS_Key_MiddleMouseButton &&
           n->v.key != OS_Key_RightMouseButton))
       {
-        if((perms & UI_PermissionFlag_Keyboard) == UI_PermissionFlag_KeyboardSecondary)
+        if ((perms & UI_PermissionFlag_Keyboard) == UI_PermissionFlag_KeyboardSecondary)
         {
           good = !!(n->v.flags & UI_EventFlag_Secondary);
         }
-        else if(!(perms & UI_PermissionFlag_Keyboard))
+        else if (!(perms & UI_PermissionFlag_Keyboard))
         {
           good = 0;
         }
       }
-      else if(!(perms & UI_PermissionFlag_Text) && (n->v.kind == UI_EventKind_Text))
+      else if (!(perms & UI_PermissionFlag_Text) && (n->v.kind == UI_EventKind_Text))
       {
         good = 0;
       }
-      if(good)
+      if (good)
       {
         ev[0] = &n->v;
         break;
@@ -593,7 +593,7 @@ ui_next_event(UI_Event **ev)
 internal void
 ui_eat_event(UI_Event *ev)
 {
-  if(ev != 0)
+  if (ev != 0)
   {
     UI_EventNode *n = CastFromMember(UI_EventNode, v, ev);
     ui_eat_event_node(ui_state->events, n);
@@ -606,9 +606,9 @@ internal B32
 ui_key_press(OS_Modifiers mods, OS_Key key)
 {
   B32 result = 0;
-  for(UI_Event *evt = 0; ui_next_event(&evt);)
+  for (UI_Event *evt = 0; ui_next_event(&evt);)
   {
-    if(evt->kind == UI_EventKind_Press && evt->key == key && evt->modifiers == mods)
+    if (evt->kind == UI_EventKind_Press && evt->key == key && evt->modifiers == mods)
     {
       result = 1;
       ui_eat_event(evt);
@@ -622,9 +622,9 @@ internal B32
 ui_key_release(OS_Modifiers mods, OS_Key key)
 {
   B32 result = 0;
-  for(UI_Event *evt = 0; ui_next_event(&evt);)
+  for (UI_Event *evt = 0; ui_next_event(&evt);)
   {
-    if(evt->kind == UI_EventKind_Release && evt->key == key && evt->modifiers == mods)
+    if (evt->kind == UI_EventKind_Release && evt->key == key && evt->modifiers == mods)
     {
       result = 1;
       ui_eat_event(evt);
@@ -640,9 +640,9 @@ ui_text(U32 character)
   B32 result = 0;
   Temp scratch = scratch_begin(0, 0);
   String8 character_text = str8_from_32(scratch.arena, str32(&character, 1));
-  for(UI_Event *evt = 0; ui_next_event(&evt);)
+  for (UI_Event *evt = 0; ui_next_event(&evt);)
   {
-    if(evt->kind == UI_EventKind_Text && str8_match(character_text, evt->string, 0))
+    if (evt->kind == UI_EventKind_Text && str8_match(character_text, evt->string, 0))
     {
       result = 1;
       ui_eat_event(evt);
@@ -657,9 +657,9 @@ internal B32
 ui_slot_press(UI_EventActionSlot slot)
 {
   B32 result = 0;
-  for(UI_Event *evt = 0; ui_next_event(&evt);)
+  for (UI_Event *evt = 0; ui_next_event(&evt);)
   {
-    if(evt->kind == UI_EventKind_Press && evt->slot == slot)
+    if (evt->kind == UI_EventKind_Press && evt->slot == slot)
     {
       result = 1;
       ui_eat_event(evt);
@@ -715,7 +715,7 @@ ui_store_drag_data(String8 string)
 internal String8
 ui_get_drag_data(U64 min_required_size)
 {
-  if(ui_state->drag_state_data.size < min_required_size)
+  if (ui_state->drag_state_data.size < min_required_size)
   {
     Temp scratch = scratch_begin(0, 0);
     String8 str = {push_array(scratch.arena, U8, min_required_size), min_required_size};
@@ -785,12 +785,12 @@ ui_box_from_key(UI_Key key)
 {
   ProfBeginFunction();
   UI_Box *result = &ui_nil_box;
-  if(!ui_key_match(key, ui_key_zero()))
+  if (!ui_key_match(key, ui_key_zero()))
   {
     U64 slot = key.u64[0] % ui_state->box_table_size;
-    for(UI_Box *b = ui_state->box_table[slot].hash_first; !ui_box_is_nil(b); b = b->hash_next)
+    for (UI_Box *b = ui_state->box_table[slot].hash_first; !ui_box_is_nil(b); b = b->hash_next)
     {
-      if(ui_key_match(b->key, key))
+      if (ui_key_match(b->key, key))
       {
         result = b;
         break;
@@ -830,10 +830,10 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
   //- rjf: prune unused animation nodes
   ProfScope("ui prune unused animation nodes")
   {
-    for(UI_AnimNode *n = ui_state->lru_anim_node, *next = &ui_nil_anim_node; n != &ui_nil_anim_node && n != 0; n = next)
+    for (UI_AnimNode *n = ui_state->lru_anim_node, *next = &ui_nil_anim_node; n != &ui_nil_anim_node && n != 0; n = next)
     {
       next = n->lru_next;
-      if(n->last_touched_build_index+2 < ui_state->build_index)
+      if (n->last_touched_build_index+2 < ui_state->build_index)
       {
         U64 slot_idx = n->key.u64[0]%ui_state->anim_slots_count;
         UI_AnimSlot *slot = &ui_state->anim_slots[slot_idx];
@@ -851,10 +851,10 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
   //- rjf: prune unused theme pattern cache nodes
   ProfScope("ui prune unused theme pattern cache")
   {
-    for(UI_ThemePatternCacheNode *n = ui_state->lru_theme_pattern_cache_node, *next = 0; n != 0; n = next)
+    for (UI_ThemePatternCacheNode *n = ui_state->lru_theme_pattern_cache_node, *next = 0; n != 0; n = next)
     {
       next = n->lru_next;
-      if(n->last_build_index_accessed+2 < ui_state->build_index)
+      if (n->last_build_index_accessed+2 < ui_state->build_index)
       {
         U64 slot_idx = n->key.u64[0]%ui_state->theme_pattern_cache_slots_count;
         UI_ThemePatternCacheSlot *slot = &ui_state->theme_pattern_cache_slots[slot_idx];
@@ -870,9 +870,9 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
   }
   
   //- rjf: detect mouse-moves
-  for(UI_EventNode *n = events->first; n != 0; n = n->next)
+  for (UI_EventNode *n = events->first; n != 0; n = n->next)
   {
-    if(n->v.kind == UI_EventKind_MouseMove)
+    if (n->v.kind == UI_EventKind_MouseMove)
     {
       ui_state->last_time_mousemoved_us = os_now_microseconds();
     }
@@ -881,11 +881,11 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
   //- rjf: detect external press & holds
   for EachEnumVal(UI_MouseButtonKind, k)
   {
-    if(ui_key_match(ui_state->active_box_key[k], ui_key_zero()) && os_key_is_down(OS_Key_LeftMouseButton+k))
+    if (ui_key_match(ui_state->active_box_key[k], ui_key_zero()) && os_key_is_down(OS_Key_LeftMouseButton+k))
     {
       ui_state->active_box_key[k] = ui_state->external_key;
     }
-    else if(ui_key_match(ui_state->active_box_key[k], ui_state->external_key) && !os_key_is_down(OS_Key_LeftMouseButton+k))
+    else if (ui_key_match(ui_state->active_box_key[k], ui_state->external_key) && !os_key_is_down(OS_Key_LeftMouseButton+k))
     {
       ui_state->active_box_key[k] = ui_key_zero();
     }
@@ -900,7 +900,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
     ui_state->animation_dt = animation_dt;
     MemoryZeroStruct(&ui_state->icon_info);
     ui_state->icon_info.icon_font = icon_info->icon_font;
-    for(UI_IconKind icon_kind = UI_IconKind_Null;
+    for (UI_IconKind icon_kind = UI_IconKind_Null;
         icon_kind < UI_IconKind_COUNT;
         icon_kind = (UI_IconKind)(icon_kind + 1))
     {
@@ -912,15 +912,15 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
   //- rjf: do default navigation
   {
     Temp scratch = scratch_begin(0, 0);
-    if(!ui_key_match(ui_state->default_nav_root_key, ui_key_zero()))
+    if (!ui_key_match(ui_state->default_nav_root_key, ui_key_zero()))
     {
       UI_Box *nav_root = ui_box_from_key(ui_state->default_nav_root_key);
-      if(!ui_box_is_nil(nav_root))
+      if (!ui_box_is_nil(nav_root))
       {
         //- rjf: no child has the active focus -> do navigation at this layer
-        if(ui_key_match(ui_key_zero(), nav_root->default_nav_focus_active_key))
+        if (ui_key_match(ui_key_zero(), nav_root->default_nav_focus_active_key))
         {
-          for(;;)
+          for (;;)
           {
             B32 moved = 0;
             UI_Box *focus_box = ui_box_from_key(nav_root->default_nav_focus_next_hot_key);
@@ -930,76 +930,76 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
             B32 nav_next = 0;
             B32 nav_prev = 0;
             Axis2 axis_lock = Axis2_Invalid;
-            if(ui_key_press(0, OS_Key_Tab))
+            if (ui_key_press(0, OS_Key_Tab))
             {
               nav_next = 1;
             }
-            if(ui_key_press(OS_Modifier_Shift, OS_Key_Tab))
+            if (ui_key_press(OS_Modifier_Shift, OS_Key_Tab))
             {
               nav_prev = 1;
             }
-            for(UI_EventNode *node = events->first, *next = 0; node != 0; node = next)
+            for (UI_EventNode *node = events->first, *next = 0; node != 0; node = next)
             {
               next = node->next;
               B32 taken = 0;
-              if(node->v.delta_2s32.x == 0 && node->v.delta_2s32.y == 0)
+              if (node->v.delta_2s32.x == 0 && node->v.delta_2s32.y == 0)
               {
                 continue;
               }
-              if(((node->v.delta_2s32.x > 0 && nav_root->flags & UI_BoxFlag_DefaultFocusNavX) || node->v.delta_2s32.x == 0) &&
+              if (((node->v.delta_2s32.x > 0 && nav_root->flags & UI_BoxFlag_DefaultFocusNavX) || node->v.delta_2s32.x == 0) &&
                  ((node->v.delta_2s32.y > 0 && nav_root->flags & UI_BoxFlag_DefaultFocusNavY) || node->v.delta_2s32.y == 0))
               {
                 taken = 1;
                 nav_next = 1;
               }
-              if(((node->v.delta_2s32.x < 0 && nav_root->flags & UI_BoxFlag_DefaultFocusNavX) || node->v.delta_2s32.x == 0) &&
+              if (((node->v.delta_2s32.x < 0 && nav_root->flags & UI_BoxFlag_DefaultFocusNavX) || node->v.delta_2s32.x == 0) &&
                  ((node->v.delta_2s32.y < 0 && nav_root->flags & UI_BoxFlag_DefaultFocusNavY) || node->v.delta_2s32.y == 0))
               {
                 taken = 1;
                 nav_prev = 1;
               }
-              if(node->v.flags & UI_EventFlag_ExplicitDirectional)
+              if (node->v.flags & UI_EventFlag_ExplicitDirectional)
               {
                 axis_lock = node->v.delta_2s32.x != 0 ? Axis2_X : Axis2_Y;
               }
-              if(taken)
+              if (taken)
               {
                 ui_eat_event_node(events, node);
               }
             }
             
             // rjf: [+] directional movement
-            if(nav_next)
+            if (nav_next)
             {
               UI_Box *search_start = ui_box_is_nil(focus_box) ? nav_root : focus_box;
               U64 moved_in_axis[Axis2_COUNT] = {0};
               moved = 1;
-              for(UI_Box *box = search_start;;)
+              for (UI_Box *box = search_start;;)
               {
-                if(box != search_start && !(box->flags & UI_BoxFlag_FocusNavSkip) && (box->flags & UI_BoxFlag_Clickable || ui_box_is_nil(box)) && (axis_lock == Axis2_Invalid || moved_in_axis[axis_lock] > 0))
+                if (box != search_start && !(box->flags & UI_BoxFlag_FocusNavSkip) && (box->flags & UI_BoxFlag_Clickable || ui_box_is_nil(box)) && (axis_lock == Axis2_Invalid || moved_in_axis[axis_lock] > 0))
                 {
                   ui_box_list_push(scratch.arena, &next_focus_box_candidates, box);
-                  if(axis_lock == Axis2_Invalid || moved_in_axis[axis_lock] > 1)
+                  if (axis_lock == Axis2_Invalid || moved_in_axis[axis_lock] > 1)
                   {
                     break;
                   }
                 }
                 UI_Box *last_box = box;
-                if(!ui_box_is_nil(box->first))
+                if (!ui_box_is_nil(box->first))
                 {
                   moved_in_axis[box->child_layout_axis] += 1;
                   box = box->first;
                 }
-                else for(UI_Box *p = box; !ui_box_is_nil(p) && p != nav_root; p = p->parent)
+                else for (UI_Box *p = box; !ui_box_is_nil(p) && p != nav_root; p = p->parent)
                 {
-                  if(!ui_box_is_nil(p->next))
+                  if (!ui_box_is_nil(p->next))
                   {
                     moved_in_axis[p->parent->child_layout_axis] += 1;
                     box = p->next;
                     break;
                   }
                 }
-                if(last_box == box)
+                if (last_box == box)
                 {
                   ui_box_list_push(scratch.arena, &next_focus_box_candidates, &ui_nil_box);
                   break;
@@ -1008,51 +1008,51 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
             }
             
             // rjf: [-] directional movement
-            if(nav_prev)
+            if (nav_prev)
             {
               UI_Box *search_start = ui_box_is_nil(focus_box) ? nav_root : focus_box;
               U64 moved_in_axis[Axis2_COUNT] = {0};
               moved = 1;
-              for(UI_Box *box = search_start;;)
+              for (UI_Box *box = search_start;;)
               {
-                if(box != search_start && !(box->flags & UI_BoxFlag_FocusNavSkip) && (box->flags & UI_BoxFlag_Clickable || ui_box_is_nil(box)) && (axis_lock == Axis2_Invalid || moved_in_axis[axis_lock] > 0))
+                if (box != search_start && !(box->flags & UI_BoxFlag_FocusNavSkip) && (box->flags & UI_BoxFlag_Clickable || ui_box_is_nil(box)) && (axis_lock == Axis2_Invalid || moved_in_axis[axis_lock] > 0))
                 {
                   ui_box_list_push(scratch.arena, &next_focus_box_candidates, box);
-                  if(axis_lock == Axis2_Invalid || moved_in_axis[axis_lock] > 1)
+                  if (axis_lock == Axis2_Invalid || moved_in_axis[axis_lock] > 1)
                   {
                     break;
                   }
                 }
                 UI_Box *last_box = box;
                 UI_Box *root_descendant = &ui_nil_box;
-                if(box == nav_root && box == search_start)
+                if (box == nav_root && box == search_start)
                 {
-                  for(UI_Box *d = box->last; !ui_box_is_nil(d); d = d->last)
+                  for (UI_Box *d = box->last; !ui_box_is_nil(d); d = d->last)
                   {
                     moved_in_axis[d->parent->child_layout_axis] += 1;
                     root_descendant = d;
                   }
                 }
                 UI_Box *prev_descendant = &ui_nil_box;
-                for(UI_Box *d = box->prev; !ui_box_is_nil(d); d = d->last)
+                for (UI_Box *d = box->prev; !ui_box_is_nil(d); d = d->last)
                 {
                   moved_in_axis[d->parent->child_layout_axis] += 1;
                   prev_descendant = d;
                 }
-                if(!ui_box_is_nil(root_descendant))
+                if (!ui_box_is_nil(root_descendant))
                 {
                   box = root_descendant;
                 }
-                else if(!ui_box_is_nil(prev_descendant))
+                else if (!ui_box_is_nil(prev_descendant))
                 {
                   box = prev_descendant;
                 }
-                else if(box->parent != nav_root)
+                else if (box->parent != nav_root)
                 {
                   moved_in_axis[box->parent->child_layout_axis] += 1;
                   box = box->parent;
                 }
-                if(box == last_box)
+                if (box == last_box)
                 {
                   ui_box_list_push(scratch.arena, &next_focus_box_candidates, &ui_nil_box);
                   break;
@@ -1063,15 +1063,15 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
             // rjf: scan candidates and grab next focus box
             UI_Box *next_focus_box = focus_box;
             F32 best_distance_from_start = 1000000;
-            for(UI_BoxNode *n = next_focus_box_candidates.first; n != 0; n = n->next)
+            for (UI_BoxNode *n = next_focus_box_candidates.first; n != 0; n = n->next)
             {
               UI_Box *box = n->box;
               F32 distance_from_start = 0;
-              if(axis_lock != Axis2_Invalid)
+              if (axis_lock != Axis2_Invalid)
               {
                 distance_from_start = abs_f32(center_2f32(box->rect).v[axis2_flip(axis_lock)] - center_2f32(focus_box->rect).v[axis2_flip(axis_lock)]);
               }
-              if(distance_from_start < best_distance_from_start && box != focus_box)
+              if (distance_from_start < best_distance_from_start && box != focus_box)
               {
                 next_focus_box = box;
                 best_distance_from_start = distance_from_start;
@@ -1082,7 +1082,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
             nav_root->default_nav_focus_next_hot_key = next_focus_box->key;
             
             // rjf: no movement -> break
-            if(moved == 0)
+            if (moved == 0)
             {
               break;
             }
@@ -1090,16 +1090,16 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
         }
         
         //- rjf: some child has the active focus -> accept escape keys to pop from the active key stack
-        if(!ui_key_match(ui_key_zero(), nav_root->default_nav_focus_active_key))
+        if (!ui_key_match(ui_key_zero(), nav_root->default_nav_focus_active_key))
         {
-          for(;ui_slot_press(UI_EventActionSlot_Cancel);)
+          for (;ui_slot_press(UI_EventActionSlot_Cancel);)
           {
             UI_Box *prev_focus_root = nav_root;
-            for(UI_Box *focus_root = ui_box_from_key(nav_root->default_nav_focus_active_key);
+            for (UI_Box *focus_root = ui_box_from_key(nav_root->default_nav_focus_active_key);
                 !ui_box_is_nil(focus_root);)
             {
               UI_Box *next_focus_root = ui_box_from_key(focus_root->default_nav_focus_active_key);
-              if(ui_box_is_nil(next_focus_root))
+              if (ui_box_is_nil(next_focus_root))
               {
                 prev_focus_root->default_nav_focus_next_active_key = ui_key_zero();
                 break;
@@ -1119,9 +1119,9 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
   }
   
   //- rjf: next-default-nav-focus keys -> current-default-nav-focus-keys
-  for(U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
+  for (U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
   {
-    for(UI_Box *box = ui_state->box_table[slot_idx].hash_first;
+    for (UI_Box *box = ui_state->box_table[slot_idx].hash_first;
         !ui_box_is_nil(box);
         box = box->hash_next)
     {
@@ -1154,7 +1154,7 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
   ui_state->ctx_menu_anchor_key = ui_state->next_ctx_menu_anchor_key;
   {
     UI_Box *anchor_box = ui_box_from_key(ui_state->ctx_menu_anchor_key);
-    if(!ui_box_is_nil(anchor_box))
+    if (!ui_box_is_nil(anchor_box))
     {
       ui_state->ctx_menu_anchor_box_last_pos = anchor_box->rect.p0;
     }
@@ -1178,12 +1178,12 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
     B32 has_active = 0;
     for EachEnumVal(UI_MouseButtonKind, k)
     {
-      if(!ui_key_match(ui_state->active_box_key[k], ui_key_zero()))
+      if (!ui_key_match(ui_state->active_box_key[k], ui_key_zero()))
       {
         has_active = 1;
       }
     }
-    if(!has_active)
+    if (!has_active)
     {
       ui_state->hot_box_key = ui_key_zero();
     }
@@ -1197,10 +1197,10 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
   //- rjf: reset active if our active box is disabled
   for EachEnumVal(UI_MouseButtonKind, k)
   {
-    if(!ui_key_match(ui_state->active_box_key[k], ui_key_zero()))
+    if (!ui_key_match(ui_state->active_box_key[k], ui_key_zero()))
     {
       UI_Box *box = ui_box_from_key(ui_state->active_box_key[k]);
-      if(!ui_box_is_nil(box) && box->flags & UI_BoxFlag_Disabled)
+      if (!ui_box_is_nil(box) && box->flags & UI_BoxFlag_Disabled)
       {
         ui_state->active_box_key[k] = ui_key_zero();
       }
@@ -1211,14 +1211,14 @@ ui_begin_build(OS_Handle window, UI_EventList *events, UI_IconInfo *icon_info, U
   for EachEnumVal(UI_MouseButtonKind, k)
   {
     UI_Box *box = ui_box_from_key(ui_state->active_box_key[k]);
-    if(ui_box_is_nil(box))
+    if (ui_box_is_nil(box))
     {
       ui_state->active_box_key[k] = ui_key_zero();
     }
   }
   
   //- rjf: escape -> close context menu
-  if(ui_any_ctx_menu_is_open() && ui_slot_press(UI_EventActionSlot_Cancel))
+  if (ui_any_ctx_menu_is_open() && ui_slot_press(UI_EventActionSlot_Cancel))
   {
     ui_ctx_menu_close();
   }
@@ -1232,14 +1232,14 @@ ui_end_build(void)
   //- rjf: prune untouched or transient boxes in the cache
   ProfScope("ui prune unused boxes")
   {
-    for(U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
+    for (U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
     {
-      for(UI_Box *box = ui_state->box_table[slot_idx].hash_first, *next = 0;
+      for (UI_Box *box = ui_state->box_table[slot_idx].hash_first, *next = 0;
           !ui_box_is_nil(box);
           box = next)
       {
         next = box->hash_next;
-        if(box->last_touched_build_index < ui_state->build_index ||
+        if (box->last_touched_build_index < ui_state->build_index ||
            ui_key_match(box->key, ui_key_zero()))
         {
           DLLRemove_NPZ(&ui_nil_box, ui_state->box_table[slot_idx].hash_first, ui_state->box_table[slot_idx].hash_last, box, hash_next, hash_prev);
@@ -1252,23 +1252,23 @@ ui_end_build(void)
   //- rjf: layout box tree
   ProfScope("ui box tree layout")
   {
-    for(Axis2 axis = (Axis2)0; axis < Axis2_COUNT; axis = (Axis2)(axis + 1))
+    for (Axis2 axis = (Axis2)0; axis < Axis2_COUNT; axis = (Axis2)(axis + 1))
     {
       ui_layout_root(ui_state->root, axis);
     }
   }
   
   //- rjf: close ctx menu if untouched
-  if(!ui_state->ctx_menu_touched_this_frame)
+  if (!ui_state->ctx_menu_touched_this_frame)
   {
     ui_ctx_menu_close();
   }
   
   //- rjf: stick ctx menu to anchor
-  if(ui_state->ctx_menu_touched_this_frame && !ui_state->ctx_menu_changed)
+  if (ui_state->ctx_menu_touched_this_frame && !ui_state->ctx_menu_changed)
   {
     UI_Box *anchor_box = ui_box_from_key(ui_state->ctx_menu_anchor_key);
-    if(!ui_box_is_nil(anchor_box))
+    if (!ui_box_is_nil(anchor_box))
     {
       Rng2F32 root_rect = ui_state->ctx_menu_root->rect;
       Vec2F32 pos =
@@ -1285,10 +1285,10 @@ ui_end_build(void)
   }
   
   //- rjf: anchor tooltips
-  if(!ui_key_match(ui_state->tooltip_anchor_key, ui_key_zero()))
+  if (!ui_key_match(ui_state->tooltip_anchor_key, ui_key_zero()))
   {
     UI_Box *anchor_box = ui_box_from_key(ui_state->tooltip_anchor_key);
-    if(!ui_box_is_nil(anchor_box))
+    if (!ui_box_is_nil(anchor_box))
     {
       Vec2F32 dim = dim_2f32(ui_state->tooltip_root->rect);
       ui_state->tooltip_root->fixed_position.x = ui_state->tooltip_root->rect.x0 = anchor_box->rect.x0;
@@ -1310,10 +1310,10 @@ ui_end_build(void)
     !ui_state->tooltip_can_overflow_window,
     1,
   };
-  for(U64 idx = 0; idx < ArrayCount(floating_roots); idx += 1)
+  for (U64 idx = 0; idx < ArrayCount(floating_roots); idx += 1)
   {
     UI_Box *root = floating_roots[idx];
-    if(!ui_box_is_nil(root))
+    if (!ui_box_is_nil(root))
     {
       Rng2F32 window_rect = os_client_rect_from_window(ui_window());
       Vec2F32 window_dim = dim_2f32(window_rect);
@@ -1333,7 +1333,7 @@ ui_end_build(void)
       root->fixed_position = new_root_rect.p0;
       root->fixed_size = dim_2f32(new_root_rect);
       root->rect = new_root_rect;
-      for(Axis2 axis = (Axis2)0; axis < Axis2_COUNT; axis = (Axis2)(axis + 1))
+      for (Axis2 axis = (Axis2)0; axis < Axis2_COUNT; axis = (Axis2)(axis + 1))
       {
         ui_calc_sizes_standalone__in_place(root, axis);
         ui_calc_sizes_upwards_dependent__in_place(root, axis);
@@ -1346,32 +1346,32 @@ ui_end_build(void)
   
   //- rjf: enforce child-rounding
   {
-    for(U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
+    for (U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
     {
-      for(UI_Box *box = ui_state->box_table[slot_idx].hash_first;
+      for (UI_Box *box = ui_state->box_table[slot_idx].hash_first;
           !ui_box_is_nil(box);
           box = box->hash_next)
       {
-        if(box->flags & UI_BoxFlag_RoundChildrenByParent)
+        if (box->flags & UI_BoxFlag_RoundChildrenByParent)
         {
-          for(UI_Box *b = box; !ui_box_is_nil(b); b = ui_box_rec_df_pre(b, box).next)
+          for (UI_Box *b = box; !ui_box_is_nil(b); b = ui_box_rec_df_pre(b, box).next)
           {
-            if(floor_f32(b->rect.x0) <= floor_f32(box->rect.x0) &&
+            if (floor_f32(b->rect.x0) <= floor_f32(box->rect.x0) &&
                floor_f32(b->rect.y0) <= floor_f32(box->rect.y0))
             {
               b->corner_radii[Corner_00] = box->corner_radii[Corner_00];
             }
-            if(floor_f32(b->rect.x1) >= floor_f32(box->rect.x1) &&
+            if (floor_f32(b->rect.x1) >= floor_f32(box->rect.x1) &&
                floor_f32(b->rect.y0) <= floor_f32(box->rect.y0))
             {
               b->corner_radii[Corner_10] = box->corner_radii[Corner_10];
             }
-            if(floor_f32(b->rect.x0) <= floor_f32(box->rect.x0) &&
+            if (floor_f32(b->rect.x0) <= floor_f32(box->rect.x0) &&
                floor_f32(b->rect.y1) >= floor_f32(box->rect.y1))
             {
               b->corner_radii[Corner_01] = box->corner_radii[Corner_01];
             }
-            if(floor_f32(b->rect.x1) >= floor_f32(box->rect.x1) &&
+            if (floor_f32(b->rect.x1) >= floor_f32(box->rect.x1) &&
                floor_f32(b->rect.y1) >= floor_f32(box->rect.y1))
             {
               b->corner_radii[Corner_11] = box->corner_radii[Corner_11];
@@ -1389,9 +1389,9 @@ ui_end_build(void)
   //- rjf: animate
   ProfScope("animate")
   {
-    for(U64 slot_idx = 0; slot_idx < ui_state->anim_slots_count; slot_idx += 1)
+    for (U64 slot_idx = 0; slot_idx < ui_state->anim_slots_count; slot_idx += 1)
     {
-      for(UI_AnimNode *n = ui_state->anim_slots[slot_idx].first;
+      for (UI_AnimNode *n = ui_state->anim_slots[slot_idx].first;
           n != &ui_nil_anim_node && n != 0;
           n = n->slot_next)
       {
@@ -1401,9 +1401,9 @@ ui_end_build(void)
     }
     F32 fast_rate = ui_state->default_animation_rate;
     F32 slow_rate = 1 - pow_f32(2, (-30.f * ui_state->animation_dt));
-    for(U64 slot_idx = 0; slot_idx < ui_state->theme_pattern_cache_slots_count; slot_idx += 1)
+    for (U64 slot_idx = 0; slot_idx < ui_state->theme_pattern_cache_slots_count; slot_idx += 1)
     {
-      for(UI_ThemePatternCacheNode *n = ui_state->theme_pattern_cache_slots[slot_idx].first;
+      for (UI_ThemePatternCacheNode *n = ui_state->theme_pattern_cache_slots[slot_idx].first;
           n != 0;
           n = n->slot_next)
       {
@@ -1416,19 +1416,19 @@ ui_end_build(void)
     }
     ui_state->ctx_menu_open_t += ((F32)!!ui_state->ctx_menu_open - ui_state->ctx_menu_open_t) * ui_state->animation_info.menu_animation_rate;
     ui_state->is_animating = (ui_state->is_animating || abs_f32((F32)!!ui_state->ctx_menu_open - ui_state->ctx_menu_open_t) > 0.01f);
-    if(ui_state->ctx_menu_open_t >= 0.99f && ui_state->ctx_menu_open)
+    if (ui_state->ctx_menu_open_t >= 0.99f && ui_state->ctx_menu_open)
     {
       ui_state->ctx_menu_open_t = 1.f;
     }
     ui_state->tooltip_open_t += ((F32)!!ui_state->tooltip_open - ui_state->tooltip_open_t) * ui_state->animation_info.tooltip_animation_rate;
     ui_state->is_animating = (ui_state->is_animating || abs_f32((F32)!!ui_state->tooltip_open - ui_state->tooltip_open_t) > 0.01f);
-    if(ui_state->tooltip_open_t >= 0.99f && ui_state->tooltip_open)
+    if (ui_state->tooltip_open_t >= 0.99f && ui_state->tooltip_open)
     {
       ui_state->tooltip_open_t = 1.f;
     }
-    for(U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
+    for (U64 slot_idx = 0; slot_idx < ui_state->box_table_size; slot_idx += 1)
     {
-      for(UI_Box *box = ui_state->box_table[slot_idx].hash_first;
+      for (UI_Box *box = ui_state->box_table[slot_idx].hash_first;
           !ui_box_is_nil(box);
           box = box->hash_next)
       {
@@ -1458,17 +1458,17 @@ ui_end_build(void)
         box_is_animating = (box_is_animating || abs_f32((F32)is_focus_active_disabled - box->focus_active_disabled_t) > 0.01f);
         box_is_animating = (box_is_animating || abs_f32(box->view_off_target.x - box->view_off.x) > 0.5f);
         box_is_animating = (box_is_animating || abs_f32(box->view_off_target.y - box->view_off.y) > 0.5f);
-        if(box->flags & UI_BoxFlag_AnimatePosX)
+        if (box->flags & UI_BoxFlag_AnimatePosX)
         {
           box_is_animating = (box_is_animating || abs_f32(box->fixed_position_animated.x - box->fixed_position.x) > 0.5f);
         }
-        if(box->flags & UI_BoxFlag_AnimatePosY)
+        if (box->flags & UI_BoxFlag_AnimatePosY)
         {
           box_is_animating = (box_is_animating || abs_f32(box->fixed_position_animated.y - box->fixed_position.y) > 0.5f);
         }
         ui_state->is_animating = (ui_state->is_animating || box_is_animating);
 #if 0 // NOTE(rjf): enable to debug animation-causing-frames (or not)
-        if(box_is_animating)
+        if (box_is_animating)
         {
           box->overlay_color = v4f32(1, 0, 0, 0.1f);
           box->flags |= UI_BoxFlag_DrawOverlay;
@@ -1487,37 +1487,37 @@ ui_end_build(void)
         {
           box->fixed_position_animated.x += fast_rate * (box->fixed_position.x - box->fixed_position_animated.x);
           box->fixed_position_animated.y += fast_rate * (box->fixed_position.y - box->fixed_position_animated.y);
-          if(abs_f32(box->fixed_position.x - box->fixed_position_animated.x) < 1)
+          if (abs_f32(box->fixed_position.x - box->fixed_position_animated.x) < 1)
           {
             box->fixed_position_animated.x = box->fixed_position.x;
           }
-          if(abs_f32(box->fixed_position.y - box->fixed_position_animated.y) < 1)
+          if (abs_f32(box->fixed_position.y - box->fixed_position_animated.y) < 1)
           {
             box->fixed_position_animated.y = box->fixed_position.y;
           }
         }
         
         // rjf: clamp view
-        if(box->flags & UI_BoxFlag_ViewClamp)
+        if (box->flags & UI_BoxFlag_ViewClamp)
         {
           Vec2F32 max_view_off_target =
           {
             ClampBot(0, box->view_bounds.x - box->fixed_size.x),
             ClampBot(0, box->view_bounds.y - box->fixed_size.y),
           };
-          if(box->flags & UI_BoxFlag_ViewClampX) { box->view_off_target.x = Clamp(0, box->view_off_target.x, max_view_off_target.x); }
-          if(box->flags & UI_BoxFlag_ViewClampY) { box->view_off_target.y = Clamp(0, box->view_off_target.y, max_view_off_target.y); }
+          if (box->flags & UI_BoxFlag_ViewClampX) { box->view_off_target.x = Clamp(0, box->view_off_target.x, max_view_off_target.x); }
+          if (box->flags & UI_BoxFlag_ViewClampY) { box->view_off_target.y = Clamp(0, box->view_off_target.y, max_view_off_target.y); }
         }
         
         // rjf: animate view offset
         {
           box->view_off.x += ui_state->animation_info.scroll_animation_rate * (box->view_off_target.x - box->view_off.x);
           box->view_off.y += ui_state->animation_info.scroll_animation_rate * (box->view_off_target.y - box->view_off.y);
-          if(abs_f32(box->view_off.x - box->view_off_target.x) < 2)
+          if (abs_f32(box->view_off.x - box->view_off_target.x) < 2)
           {
             box->view_off.x = box->view_off_target.x;
           }
-          if(abs_f32(box->view_off.y - box->view_off_target.y) < 2)
+          if (abs_f32(box->view_off.y - box->view_off_target.y) < 2)
           {
             box->view_off.y = box->view_off_target.y;
           }
@@ -1527,9 +1527,9 @@ ui_end_build(void)
   }
   
   //- rjf: use group keys for box animation data if possible
-  for(UI_Box *b = ui_state->root; !ui_box_is_nil(b); b = ui_box_rec_df_pre(b, ui_state->root).next)
+  for (UI_Box *b = ui_state->root; !ui_box_is_nil(b); b = ui_box_rec_df_pre(b, ui_state->root).next)
   {
-    if(ui_key_match(b->key, ui_key_zero()) && !ui_key_match(b->group_key, ui_key_zero()))
+    if (ui_key_match(b->key, ui_key_zero()) && !ui_key_match(b->group_key, ui_key_zero()))
     {
       UI_Box *group_box = ui_box_from_key(b->group_key);
       b->hot_t = group_box->hot_t;
@@ -1537,16 +1537,16 @@ ui_end_build(void)
   }
   
   //- rjf: fall-through interact with context menu
-  if(ui_state->ctx_menu_open)
+  if (ui_state->ctx_menu_open)
   {
     ui_signal_from_box(ui_state->ctx_menu_root);
   }
   
   //- rjf: close ctx menu if unconsumed clicks
   {
-    for(UI_Event *evt = 0; ui_next_event(&evt);)
+    for (UI_Event *evt = 0; ui_next_event(&evt);)
     {
-      if(evt->kind == UI_EventKind_Press &&
+      if (evt->kind == UI_EventKind_Press &&
          (evt->key == OS_Key_LeftMouseButton || evt->key == OS_Key_RightMouseButton))
       {
         ui_ctx_menu_close();
@@ -1555,17 +1555,17 @@ ui_end_build(void)
   }
   
   //- rjf: hover cursor
-  if(!ui_key_match(ui_state->active_box_key[UI_MouseButtonKind_Left], ui_state->external_key))
+  if (!ui_key_match(ui_state->active_box_key[UI_MouseButtonKind_Left], ui_state->external_key))
   {
     UI_Box *hot = ui_box_from_key(ui_state->hot_box_key);
     UI_Box *active = ui_box_from_key(ui_state->active_box_key[UI_MouseButtonKind_Left]);
     UI_Box *box = ui_box_is_nil(active) ? hot : active;
     OS_Cursor cursor = box->hover_cursor;
-    if(box->flags & UI_BoxFlag_Disabled && box->flags & UI_BoxFlag_Clickable)
+    if (box->flags & UI_BoxFlag_Disabled && box->flags & UI_BoxFlag_Clickable)
     {
       cursor = OS_Cursor_Disabled;
     }
-    if(os_window_is_focused(ui_state->window) || !ui_box_is_nil(active))
+    if (os_window_is_focused(ui_state->window) || !ui_box_is_nil(active))
     {
       os_set_cursor(cursor);
     }
@@ -1574,20 +1574,20 @@ ui_end_build(void)
   //- rjf: clipboard commits
   {
     UI_Box *box = ui_box_from_key(ui_state->clipboard_copy_key);
-    if(!ui_box_is_nil(box))
+    if (!ui_box_is_nil(box))
     {
       Temp scratch = scratch_begin(0, 0);
       String8List strs = {0};
       UI_BoxRec rec = {0};
-      for(UI_Box *b = box; !ui_box_is_nil(b); rec = ui_box_rec_df_pre(b, box), b = rec.next)
+      for (UI_Box *b = box; !ui_box_is_nil(b); rec = ui_box_rec_df_pre(b, box), b = rec.next)
       {
-        if(b->flags & UI_BoxFlag_DrawText && b->flags & UI_BoxFlag_HasDisplayString && !fnt_tag_match(b->font, ui_icon_font()))
+        if (b->flags & UI_BoxFlag_DrawText && b->flags & UI_BoxFlag_HasDisplayString && !fnt_tag_match(b->font, ui_icon_font()))
         {
           String8 display_string = ui_box_display_string(b);
           str8_list_push(scratch.arena, &strs, display_string);
         }
       }
-      if(strs.node_count != 0)
+      if (strs.node_count != 0)
       {
         StringJoin join = {0};
         join.sep = str8_lit(" ");
@@ -1603,28 +1603,28 @@ ui_end_build(void)
     B32 inactive = 1;
     for EachEnumVal(UI_MouseButtonKind, k)
     {
-      if(!ui_key_match(ui_key_zero(), ui_state->active_box_key[k]))
+      if (!ui_key_match(ui_key_zero(), ui_state->active_box_key[k]))
       {
         inactive = 0;
         break;
       }
     }
-    if(inactive)
+    if (inactive)
     {
       B32 found = 0;
-      for(UI_Box *box = ui_state->root, *next = 0; !ui_box_is_nil(box); box = next)
+      for (UI_Box *box = ui_state->root, *next = 0; !ui_box_is_nil(box); box = next)
       {
         UI_BoxRec rec = ui_box_rec_df_pre(box, ui_state->root);
         next = rec.next;
         S32 pop_idx = 0;
-        for(UI_Box *b = box; !ui_box_is_nil(b) && pop_idx <= rec.pop_count; b = b->parent, pop_idx += 1)
+        for (UI_Box *b = box; !ui_box_is_nil(b) && pop_idx <= rec.pop_count; b = b->parent, pop_idx += 1)
         {
-          if(b->flags & UI_BoxFlag_DrawText && !(b->flags & UI_BoxFlag_DisableTextTrunc))
+          if (b->flags & UI_BoxFlag_DrawText && !(b->flags & UI_BoxFlag_DisableTextTrunc))
           {
             Rng2F32 rect = b->rect;
-            for(UI_Box *p = b->parent; !ui_box_is_nil(p); p = p->parent)
+            for (UI_Box *p = b->parent; !ui_box_is_nil(p); p = p->parent)
             {
-              if(p->flags & UI_BoxFlag_Clip)
+              if (p->flags & UI_BoxFlag_Clip)
               {
                 rect = intersect_2f32(rect, p->rect);
               }
@@ -1644,9 +1644,9 @@ ui_end_build(void)
                                                          Min(text_pos.x+drawn_text_dim.x, rect.x1),
                                                          rect.y1),
                                                   ui_state->mouse);
-            if(text_is_truncated && mouse_is_hovering && !(b->flags & UI_BoxFlag_DisableTruncatedHover))
+            if (text_is_truncated && mouse_is_hovering && !(b->flags & UI_BoxFlag_DisableTruncatedHover))
             {
-              if(!str8_match(box_display_string, ui_state->string_hover_string, 0) || box->font_size != ui_state->string_hover_size)
+              if (!str8_match(box_display_string, ui_state->string_hover_string, 0) || box->font_size != ui_state->string_hover_size)
               {
                 arena_clear(ui_state->string_hover_arena);
                 ui_state->string_hover_string = push_str8_copy(ui_state->string_hover_arena, box_display_string);
@@ -1659,24 +1659,24 @@ ui_end_build(void)
               goto break_all_hover_string;
             }
           }
-          if(b != box && ui_key_match(b->key, ui_hot_key()))
+          if (b != box && ui_key_match(b->key, ui_hot_key()))
           {
             goto break_all_hover_string;
           }
-          if(b != box && contains_2f32(b->rect, ui_state->mouse) && b->flags & UI_BoxFlag_DrawText)
+          if (b != box && contains_2f32(b->rect, ui_state->mouse) && b->flags & UI_BoxFlag_DrawText)
           {
             goto break_all_hover_string;
           }
         }
       }
       break_all_hover_string:;
-      if(!found)
+      if (!found)
       {
         arena_clear(ui_state->string_hover_arena);
         ui_state->string_hover_build_index = 0;
         MemoryZeroStruct(&ui_state->string_hover_string);
       }
-      if(found && !ui_string_hover_active())
+      if (found && !ui_string_hover_active())
       {
         ui_state->is_animating = 1;
       }
@@ -1692,7 +1692,7 @@ internal void
 ui_calc_sizes_standalone__in_place(UI_Box *root, Axis2 axis)
 {
   ProfBeginFunction();
-  for(UI_Box *b = root; !ui_box_is_nil(b); b = ui_box_rec_df_pre(b, root).next)
+  for (UI_Box *b = root; !ui_box_is_nil(b); b = ui_box_rec_df_pre(b, root).next)
   {
     switch(b->pref_size[axis].kind)
     {
@@ -1716,7 +1716,7 @@ internal void
 ui_calc_sizes_upwards_dependent__in_place(UI_Box *root, Axis2 axis)
 {
   ProfBeginFunction();
-  for(UI_Box *b = root; !ui_box_is_nil(b); b = ui_box_rec_df_pre(b, root).next)
+  for (UI_Box *b = root; !ui_box_is_nil(b); b = ui_box_rec_df_pre(b, root).next)
   {
     switch(b->pref_size[axis].kind)
     {
@@ -1725,9 +1725,9 @@ ui_calc_sizes_upwards_dependent__in_place(UI_Box *root, Axis2 axis)
       {
         // rjf: find parent that has a fixed size
         UI_Box *fixed_parent = &ui_nil_box;
-        for(UI_Box *p = b->parent; !ui_box_is_nil(p); p = p->parent)
+        for (UI_Box *p = b->parent; !ui_box_is_nil(p); p = p->parent)
         {
-          if(p->flags & (UI_BoxFlag_FixedWidth<<axis) ||
+          if (p->flags & (UI_BoxFlag_FixedWidth<<axis) ||
              p->pref_size[axis].kind == UI_SizeKind_Pixels ||
              p->pref_size[axis].kind == UI_SizeKind_TextContent ||
              p->pref_size[axis].kind == UI_SizeKind_ParentPct)
@@ -1753,22 +1753,22 @@ ui_calc_sizes_downwards_dependent__in_place(UI_Box *root, Axis2 axis)
 {
   ProfBeginFunction();
   UI_BoxRec rec = {0};
-  for(UI_Box *box = root; !ui_box_is_nil(box); box = rec.next)
+  for (UI_Box *box = root; !ui_box_is_nil(box); box = rec.next)
   {
     rec = ui_box_rec_df_pre(box, root);
     S32 pop_idx = 0;
-    for(UI_Box *b = box;
+    for (UI_Box *b = box;
         !ui_box_is_nil(b) && pop_idx <= rec.pop_count;
         b = b->parent, pop_idx += 1)
     {
-      if(b->pref_size[axis].kind == UI_SizeKind_ChildrenSum)
+      if (b->pref_size[axis].kind == UI_SizeKind_ChildrenSum)
       {
         F32 sum = 0;
-        for(UI_Box *child = b->first; !ui_box_is_nil(child); child = child->next)
+        for (UI_Box *child = b->first; !ui_box_is_nil(child); child = child->next)
         {
-          if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
+          if (!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
           {
-            if(axis == b->child_layout_axis)
+            if (axis == b->child_layout_axis)
             {
               sum += child->fixed_size.v[axis];
             }
@@ -1790,21 +1790,21 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
 {
   ProfBeginFunction();
   Temp scratch = scratch_begin(0, 0);
-  for(UI_Box *box = root; !ui_box_is_nil(box); box = ui_box_rec_df_pre(box, root).next)
+  for (UI_Box *box = root; !ui_box_is_nil(box); box = ui_box_rec_df_pre(box, root).next)
   {
     //- rjf: fixup children sizes (if we're solving along the *non-layout* axis)
-    if(axis != box->child_layout_axis && !(box->flags & (UI_BoxFlag_AllowOverflowX << axis)))
+    if (axis != box->child_layout_axis && !(box->flags & (UI_BoxFlag_AllowOverflowX << axis)))
     {
       F32 allowed_size = box->fixed_size.v[axis];
-      for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next)
+      for (UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next)
       {
-        if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
+        if (!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
         {
           F32 child_size = child->fixed_size.v[axis];
           F32 violation = child_size - allowed_size;
           F32 max_fixup = child_size;
           F32 fixup = Clamp(0, violation, max_fixup);
-          if(fixup > 0)
+          if (fixup > 0)
           {
             child->fixed_size.v[axis] -= fixup;
           }
@@ -1813,15 +1813,15 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
     }
     
     //- rjf: fixup children sizes (in the direction of the layout axis)
-    if(axis == box->child_layout_axis && !(box->flags & (UI_BoxFlag_AllowOverflowX << axis)))
+    if (axis == box->child_layout_axis && !(box->flags & (UI_BoxFlag_AllowOverflowX << axis)))
     {
       // rjf: figure out total allowed size & total size
       F32 total_allowed_size = box->fixed_size.v[axis];
       F32 total_size = 0;
       F32 total_weighted_size = 0;
-      for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next)
+      for (UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next)
       {
-        if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
+        if (!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
         {
           total_size += child->fixed_size.v[axis];
           total_weighted_size += child->fixed_size.v[axis] * (1-child->pref_size[axis].strictness);
@@ -1830,7 +1830,7 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
       
       // rjf: if we have a violation, we need to subtract some amount from all children
       F32 violation = total_size - total_allowed_size;
-      if(violation > 0 && total_weighted_size > 0)
+      if (violation > 0 && total_weighted_size > 0)
       {
         Temp temp = temp_begin(scratch.arena);
         
@@ -1839,9 +1839,9 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
         F32 *child_fixups = push_array(temp.arena, F32, box->child_count);
         {
           U64 child_idx = 0;
-          for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next, child_idx += 1)
+          for (UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next, child_idx += 1)
           {
-            if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
+            if (!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
             {
               F32 fixup_size_this_child = child->fixed_size.v[axis] * (1-child->pref_size[axis].strictness);
               fixup_size_this_child = ClampBot(0, fixup_size_this_child);
@@ -1854,9 +1854,9 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
         // rjf: fixup child sizes
         {
           U64 child_idx = 0;
-          for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next, child_idx += 1)
+          for (UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next, child_idx += 1)
           {
-            if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
+            if (!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
             {
               F32 fixup_pct = (violation / total_weighted_size);
               fixup_pct = Clamp(0, fixup_pct, 1);
@@ -1870,11 +1870,11 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
     }
     
     //- rjf: fixup upwards-relative sizes
-    if(box->flags & (UI_BoxFlag_AllowOverflowX << axis))
+    if (box->flags & (UI_BoxFlag_AllowOverflowX << axis))
     {
-      for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next)
+      for (UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next)
       {
-        if(child->pref_size[axis].kind == UI_SizeKind_ParentPct)
+        if (child->pref_size[axis].kind == UI_SizeKind_ParentPct)
         {
           child->fixed_size.v[axis] = box->fixed_size.v[axis] * child->pref_size[axis].value;
         }
@@ -1882,7 +1882,7 @@ ui_layout_enforce_constraints__in_place(UI_Box *root, Axis2 axis)
     }
     
     //- rjf: enforce clamps
-    for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next)
+    for (UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next)
     {
       child->fixed_size.v[axis] = Max(child->fixed_size.v[axis], child->min_size.v[axis]);
     }
@@ -1895,22 +1895,22 @@ internal void
 ui_layout_position__in_place(UI_Box *root, Axis2 axis)
 {
   ProfBeginFunction();
-  for(UI_Box *box = root; !ui_box_is_nil(box); box = ui_box_rec_df_pre(box, root).next)
+  for (UI_Box *box = root; !ui_box_is_nil(box); box = ui_box_rec_df_pre(box, root).next)
   {
     F32 layout_position = 0;
     
     //- rjf: lay out children
     F32 bounds = 0;
-    for(UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next)
+    for (UI_Box *child = box->first; !ui_box_is_nil(child); child = child->next)
     {
       // rjf: grab original position
       F32 original_position = Min(child->rect.p0.v[axis], child->rect.p1.v[axis]);
       
       // rjf: calculate fixed position & size
-      if(!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
+      if (!(child->flags & (UI_BoxFlag_FloatingX<<axis)))
       {
         child->fixed_position.v[axis] = layout_position;
-        if(box->child_layout_axis == axis)
+        if (box->child_layout_axis == axis)
         {
           layout_position += child->fixed_size.v[axis];
           bounds += child->fixed_size.v[axis];
@@ -1922,9 +1922,9 @@ ui_layout_position__in_place(UI_Box *root, Axis2 axis)
       }
       
       // rjf: determine final rect for child, given fixed_position & size
-      if(child->flags & (UI_BoxFlag_AnimatePosX<<axis))
+      if (child->flags & (UI_BoxFlag_AnimatePosX<<axis))
       {
-        if(child->first_touched_build_index == child->last_touched_build_index)
+        if (child->first_touched_build_index == child->last_touched_build_index)
         {
           child->fixed_position_animated = child->fixed_position;
         }
@@ -2083,7 +2083,7 @@ ui_begin_ctx_menu(UI_Key key)
   ui_push_focus_active(UI_FocusKind_Root);
   ui_push_tag(str8_lit("."));
   B32 is_open = ui_key_match(key, ui_state->ctx_menu_key) && ui_state->ctx_menu_open;
-  if(is_open != 0) UI_TagF("floating")
+  if (is_open != 0) UI_TagF("floating")
   {
     ui_state->ctx_menu_touched_this_frame = 1;
     ui_state->ctx_menu_root->flags |= UI_BoxFlag_RoundChildrenByParent;
@@ -2107,7 +2107,7 @@ ui_begin_ctx_menu(UI_Key key)
 internal void
 ui_end_ctx_menu(void)
 {
-  if(ui_state->is_in_open_ctx_menu)
+  if (ui_state->is_in_open_ctx_menu)
   {
     ui_state->is_in_open_ctx_menu = 0;
     ui_spacer(ui_em(1.f, 1.f));
@@ -2139,15 +2139,15 @@ internal B32
 ui_is_focus_hot(void)
 {
   B32 result = (ui_state->focus_hot_stack.top->v == UI_FocusKind_On);
-  if(result)
+  if (result)
   {
-    for(UI_FocusHotNode *n = ui_state->focus_hot_stack.top; n != 0; n = n->next)
+    for (UI_FocusHotNode *n = ui_state->focus_hot_stack.top; n != 0; n = n->next)
     {
-      if(n->v == UI_FocusKind_Root)
+      if (n->v == UI_FocusKind_Root)
       {
         break;
       }
-      if(n->v == UI_FocusKind_Off)
+      if (n->v == UI_FocusKind_Off)
       {
         result = 0;
         break;
@@ -2161,15 +2161,15 @@ internal B32
 ui_is_focus_active(void)
 {
   B32 result = (ui_state->focus_active_stack.top->v == UI_FocusKind_On);
-  if(result)
+  if (result)
   {
-    for(UI_FocusActiveNode *n = ui_state->focus_active_stack.top; n != 0; n = n->next)
+    for (UI_FocusActiveNode *n = ui_state->focus_active_stack.top; n != 0; n = n->next)
     {
-      if(n->v == UI_FocusKind_Root)
+      if (n->v == UI_FocusKind_Root)
       {
         break;
       }
-      if(n->v == UI_FocusKind_Off)
+      if (n->v == UI_FocusKind_Off)
       {
         result = 0;
         break;
@@ -2185,11 +2185,11 @@ internal B32
 ui_is_key_auto_focus_active(UI_Key key)
 {
   B32 result = 0;
-  if(!ui_key_match(ui_key_zero(), key))
+  if (!ui_key_match(ui_key_zero(), key))
   {
-    for(UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
+    for (UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
     {
-      if(p->flags & UI_BoxFlag_FocusActive && ui_key_match(key, p->default_nav_focus_active_key))
+      if (p->flags & UI_BoxFlag_FocusActive && ui_key_match(key, p->default_nav_focus_active_key))
       {
         result = 1;
         break;
@@ -2203,11 +2203,11 @@ internal B32
 ui_is_key_auto_focus_hot(UI_Key key)
 {
   B32 result = 0;
-  if(!ui_key_match(ui_key_zero(), key))
+  if (!ui_key_match(ui_key_zero(), key))
   {
-    for(UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
+    for (UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
     {
-      if(p->flags & UI_BoxFlag_FocusHot &&
+      if (p->flags & UI_BoxFlag_FocusHot &&
          ((!(p->flags & UI_BoxFlag_FocusHotDisabled) &&
            ui_key_match(key, p->default_nav_focus_hot_key)) ||
           ui_key_match(key, p->default_nav_focus_active_key)))
@@ -2223,9 +2223,9 @@ ui_is_key_auto_focus_hot(UI_Key key)
 internal void
 ui_set_auto_focus_active_key(UI_Key key)
 {
-  for(UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
+  for (UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
   {
-    if(p->flags & UI_BoxFlag_DefaultFocusNav)
+    if (p->flags & UI_BoxFlag_DefaultFocusNav)
     {
       p->default_nav_focus_next_active_key = key;
       break;
@@ -2236,9 +2236,9 @@ ui_set_auto_focus_active_key(UI_Key key)
 internal void
 ui_set_auto_focus_hot_key(UI_Key key)
 {
-  for(UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
+  for (UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
   {
-    if(p->flags & UI_BoxFlag_DefaultFocusNav)
+    if (p->flags & UI_BoxFlag_DefaultFocusNav)
     {
       p->default_nav_focus_next_hot_key = key;
       break;
@@ -2252,7 +2252,7 @@ internal UI_Key
 ui_top_tags_key(void)
 {
   UI_Key key = ui_key_zero();
-  if(ui_state->tags_key_stack_top != 0)
+  if (ui_state->tags_key_stack_top != 0)
   {
     key = ui_state->tags_key_stack_top->key;
   }
@@ -2272,7 +2272,7 @@ internal Vec4F32
 ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
 {
   Vec4F32 result = {0};
-  if(ui_state->theme_pattern_cache_slots_count && extras.count > 0)
+  if (ui_state->theme_pattern_cache_slots_count && extras.count > 0)
   {
     //- rjf: compute final key, mixing (tags_key, extras)
     UI_Key final_key = key;
@@ -2285,27 +2285,27 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
     U64 slot_idx = final_key.u64[0]%ui_state->theme_pattern_cache_slots_count;
     UI_ThemePatternCacheSlot *slot = &ui_state->theme_pattern_cache_slots[slot_idx];
     UI_ThemePatternCacheNode *node = 0;
-    for(UI_ThemePatternCacheNode *n = slot->first;
+    for (UI_ThemePatternCacheNode *n = slot->first;
         n != 0;
         n = n->slot_next)
     {
-      if(ui_key_match(n->key, final_key))
+      if (ui_key_match(n->key, final_key))
       {
         node = n;
       }
     }
     
     //- rjf: no node, or this node is stale? create and/or update
-    if(node == 0 || node->last_build_index_accessed < ui_state->build_index)
+    if (node == 0 || node->last_build_index_accessed < ui_state->build_index)
     {
       // rjf: map tags_key (without name) -> full list of tags
       String8Array tags = {0};
       {
         U64 tags_cache_slot_idx = key.u64[0]%ui_state->tags_cache_slots_count;
         UI_TagsCacheSlot *tags_cache_slot = &ui_state->tags_cache_slots[tags_cache_slot_idx];
-        for(UI_TagsCacheNode *n = tags_cache_slot->first; n != 0; n = n->next)
+        for (UI_TagsCacheNode *n = tags_cache_slot->first; n != 0; n = n->next)
         {
-          if(ui_key_match(n->key, key))
+          if (ui_key_match(n->key, key))
           {
             tags = n->tags;
             break;
@@ -2317,7 +2317,7 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
       UI_Theme *theme = ui_state->theme;
       UI_ThemePattern *pattern = 0;
       U64 best_match_count = 0;
-      for(U64 idx = 0; idx < theme->patterns_count; idx += 1)
+      for (U64 idx = 0; idx < theme->patterns_count; idx += 1)
       {
         UI_ThemePattern *p = &theme->patterns[idx];
         U64 match_count = 0;
@@ -2329,9 +2329,9 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
           for EachIndex(key_tags_idx, tags.count + extras.count)
           {
             String8 key_string = key_tags_idx < tags.count ? tags.v[key_tags_idx] : extras.v[key_tags_idx - tags.count];
-            if(str8_match(p->tags.v[p_tags_idx], key_string, 0))
+            if (str8_match(p->tags.v[p_tags_idx], key_string, 0))
             {
-              if(key_tags_idx == tags.count + extras.count - 1)
+              if (key_tags_idx == tags.count + extras.count - 1)
               {
                 name_matches = 1;
               }
@@ -2340,18 +2340,18 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
               break;
             }
           }
-          if(!p_tag_in_key)
+          if (!p_tag_in_key)
           {
             all_p_tags_in_key = 0;
             break;
           }
         }
-        if(name_matches && all_p_tags_in_key && match_count > best_match_count)
+        if (name_matches && all_p_tags_in_key && match_count > best_match_count)
         {
           pattern = p;
           best_match_count = match_count;
         }
-        if(match_count == tags.count + extras.count)
+        if (match_count == tags.count + extras.count)
         {
           break;
         }
@@ -2359,11 +2359,11 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
       
       // rjf: store in (key, name) -> (pattern) cache
       B32 node_is_new = 0;
-      if(node == 0)
+      if (node == 0)
       {
         node_is_new = 1;
         node = ui_state->theme_pattern_cache_node_free;
-        if(node != 0)
+        if (node != 0)
         {
           SLLStackPop_N(ui_state->theme_pattern_cache_node_free, slot_next);
         }
@@ -2377,10 +2377,10 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
       }
       
       // rjf: update node's target color
-      if(pattern != 0)
+      if (pattern != 0)
       {
         node->target_rgba = pattern->linear;
-        if(node_is_new)
+        if (node_is_new)
         {
           node->current_rgba = node->target_rgba;
         }
@@ -2388,7 +2388,7 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
     }
     
     //- rjf: mark this node as most-recently-used
-    if(node != 0 && node->last_build_index_accessed < ui_state->build_index)
+    if (node != 0 && node->last_build_index_accessed < ui_state->build_index)
     {
       node->last_build_index_accessed = ui_state->build_index;
       DLLRemove_NP(ui_state->lru_theme_pattern_cache_node, ui_state->mru_theme_pattern_cache_node, node, lru_next, lru_prev);
@@ -2396,7 +2396,7 @@ ui_color_from_tags_key_extras(UI_Key key, String8Array extras)
     }
     
     //- rjf: grab resultant color
-    if(node != 0)
+    if (node != 0)
     {
       result = node->current_rgba;
     }
@@ -2430,7 +2430,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
   last_flags = box->flags;
   
   //- rjf: zero key on duplicate
-  if(!box_first_frame && box->last_touched_build_index == ui_state->build_index)
+  if (!box_first_frame && box->last_touched_build_index == ui_state->build_index)
   {
     box = &ui_nil_box;
     key = ui_key_zero();
@@ -2441,11 +2441,11 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
   B32 box_is_transient = ui_key_match(key, ui_key_zero());
   
   //- rjf: allocate box if it doesn't yet exist
-  if(box_first_frame)
+  if (box_first_frame)
   {
     box = !box_is_transient ? ui_state->first_free_box : 0;
     ui_state->is_animating = ui_state->is_animating || !box_is_transient;
-    if(!ui_box_is_nil(box))
+    if (!ui_box_is_nil(box))
     {
       SLLStackPop(ui_state->first_free_box);
     }
@@ -2467,14 +2467,14 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
   }
   
   //- rjf: hook into persistent state table
-  if(box_first_frame && !box_is_transient)
+  if (box_first_frame && !box_is_transient)
   {
     U64 slot = key.u64[0] % ui_state->box_table_size;
     DLLInsert_NPZ(&ui_nil_box, ui_state->box_table[slot].hash_first, ui_state->box_table[slot].hash_last, ui_state->box_table[slot].hash_last, box, hash_next, hash_prev);
   }
   
   //- rjf: hook into per-frame tree structure
-  if(!ui_box_is_nil(parent))
+  if (!ui_box_is_nil(parent))
   {
     DLLPushBack_NPZ(&ui_nil_box, parent->first, parent->last, box, next, prev);
     parent->child_count += 1;
@@ -2488,34 +2488,34 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     box->fastpath_codepoint = ui_state->fastpath_codepoint_stack.top->v;
     box->group_key = ui_state->group_key_stack.top->v;
     
-    if(ui_is_focus_active() && (box->flags & UI_BoxFlag_DefaultFocusNav) && ui_key_match(ui_state->default_nav_root_key, ui_key_zero()))
+    if (ui_is_focus_active() && (box->flags & UI_BoxFlag_DefaultFocusNav) && ui_key_match(ui_state->default_nav_root_key, ui_key_zero()))
     {
       ui_state->default_nav_root_key = box->key;
     }
     
-    if(box_first_frame)
+    if (box_first_frame)
     {
       box->first_touched_build_index = ui_state->build_index;
       box->disabled_t = (F32)!!(box->flags & UI_BoxFlag_Disabled);
     }
     box->last_touched_build_index = ui_state->build_index;
     
-    if(box->flags & UI_BoxFlag_Disabled && (!(last_flags & UI_BoxFlag_Disabled) || box_first_frame))
+    if (box->flags & UI_BoxFlag_Disabled && (!(last_flags & UI_BoxFlag_Disabled) || box_first_frame))
     {
       box->first_disabled_build_index = ui_state->build_index;
     }
     
-    if(ui_state->fixed_x_stack.top != &ui_state->fixed_x_nil_stack_top)
+    if (ui_state->fixed_x_stack.top != &ui_state->fixed_x_nil_stack_top)
     {
       box->flags |= UI_BoxFlag_FloatingX;
       box->fixed_position.x = ui_state->fixed_x_stack.top->v;
     }
-    if(ui_state->fixed_y_stack.top != &ui_state->fixed_y_nil_stack_top)
+    if (ui_state->fixed_y_stack.top != &ui_state->fixed_y_nil_stack_top)
     {
       box->flags |= UI_BoxFlag_FloatingY;
       box->fixed_position.y = ui_state->fixed_y_stack.top->v;
     }
-    if(ui_state->fixed_width_stack.top != &ui_state->fixed_width_nil_stack_top)
+    if (ui_state->fixed_width_stack.top != &ui_state->fixed_width_nil_stack_top)
     {
       box->flags |= UI_BoxFlag_FixedWidth;
       box->fixed_size.x = ui_state->fixed_width_stack.top->v;
@@ -2524,7 +2524,7 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     {
       box->pref_size[Axis2_X] = ui_state->pref_width_stack.top->v;
     }
-    if(ui_state->fixed_height_stack.top != &ui_state->fixed_height_nil_stack_top)
+    if (ui_state->fixed_height_stack.top != &ui_state->fixed_height_nil_stack_top)
     {
       box->flags |= UI_BoxFlag_FixedHeight;
       box->fixed_size.y = ui_state->fixed_height_stack.top->v;
@@ -2538,21 +2538,21 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     
     B32 is_auto_focus_active = ui_is_key_auto_focus_active(key);
     B32 is_auto_focus_hot    = ui_is_key_auto_focus_hot(key);
-    if(is_auto_focus_active)
+    if (is_auto_focus_active)
     {
       ui_set_next_focus_active(UI_FocusKind_On);
     }
-    if(is_auto_focus_hot)
+    if (is_auto_focus_hot)
     {
       ui_set_next_focus_hot(UI_FocusKind_On);
     }
     box->flags |= UI_BoxFlag_FocusHot    * (ui_state->focus_hot_stack.top->v == UI_FocusKind_On);
     box->flags |= UI_BoxFlag_FocusActive * (ui_state->focus_active_stack.top->v == UI_FocusKind_On);
-    if(box->flags & UI_BoxFlag_FocusHot && !ui_is_focus_hot())
+    if (box->flags & UI_BoxFlag_FocusHot && !ui_is_focus_hot())
     {
       box->flags |= UI_BoxFlag_FocusHotDisabled;
     }
-    if(box->flags & UI_BoxFlag_FocusActive && !ui_is_focus_active())
+    if (box->flags & UI_BoxFlag_FocusActive && !ui_is_focus_active())
     {
       box->flags |= UI_BoxFlag_FocusActiveDisabled;
     }
@@ -2574,13 +2574,13 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
     box->hover_cursor = ui_state->hover_cursor_stack.top->v;
     box->custom_draw = 0;
     box->tags_key = ui_key_zero();
-    if(ui_state->tags_key_stack_top != 0)
+    if (ui_state->tags_key_stack_top != 0)
     {
       box->tags_key = ui_state->tags_key_stack_top->key;
     }
-    if(box->flags & UI_BoxFlag_DrawBackground)
+    if (box->flags & UI_BoxFlag_DrawBackground)
     {
-      if(ui_state->background_color_stack.top != &ui_state->background_color_nil_stack_top)
+      if (ui_state->background_color_stack.top != &ui_state->background_color_nil_stack_top)
       {
         box->background_color = ui_state->background_color_stack.top->v;
       }
@@ -2589,9 +2589,9 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
         box->background_color = ui_color_from_name(str8_lit("background"));
       }
     }
-    if(box->flags & UI_BoxFlag_DrawText)
+    if (box->flags & UI_BoxFlag_DrawText)
     {
-      if(ui_state->text_color_stack.top != &ui_state->text_color_nil_stack_top)
+      if (ui_state->text_color_stack.top != &ui_state->text_color_nil_stack_top)
       {
         box->text_color = ui_state->text_color_stack.top->v;
       }
@@ -2600,13 +2600,13 @@ ui_build_box_from_key(UI_BoxFlags flags, UI_Key key)
         box->text_color = ui_color_from_name(str8_lit("text"));
       }
     }
-    if(box->flags & (UI_BoxFlag_DrawBorder|
+    if (box->flags & (UI_BoxFlag_DrawBorder|
                      UI_BoxFlag_DrawSideRight|
                      UI_BoxFlag_DrawSideLeft|
                      UI_BoxFlag_DrawSideTop|
                      UI_BoxFlag_DrawSideBottom))
     {
-      if(ui_state->border_color_stack.top != &ui_state->border_color_nil_stack_top)
+      if (ui_state->border_color_stack.top != &ui_state->border_color_nil_stack_top)
       {
         box->border_color = ui_state->border_color_stack.top->v;
       }
@@ -2632,9 +2632,9 @@ ui_active_seed_key(void)
 {
   UI_Box *keyed_ancestor = &ui_nil_box;
   {
-    for(UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
+    for (UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
     {
-      if(!ui_key_match(ui_key_zero(), p->key))
+      if (!ui_key_match(ui_key_zero(), p->key))
       {
         keyed_ancestor = p;
         break;
@@ -2657,7 +2657,7 @@ ui_build_box_from_string(UI_BoxFlags flags, String8 string)
   
   //- rjf: build box from key, equip passed string
   UI_Box *box = ui_build_box_from_key(flags, key);
-  if(flags & UI_BoxFlag_DrawText)
+  if (flags & UI_BoxFlag_DrawText)
   {
     ui_box_equip_display_string(box, string);
   }
@@ -2689,7 +2689,7 @@ ui_box_equip_display_string(UI_Box *box, String8 string)
   box->string = push_str8_copy(ui_build_arena(), string);
   box->flags |= UI_BoxFlag_HasDisplayString;
   Vec4F32 text_color = box->text_color;
-  if(box->flags & UI_BoxFlag_DrawText && (box->fastpath_codepoint == 0 || !(box->flags & UI_BoxFlag_DrawTextFastpathCodepoint)))
+  if (box->flags & UI_BoxFlag_DrawText && (box->fastpath_codepoint == 0 || !(box->flags & UI_BoxFlag_DrawTextFastpathCodepoint)))
   {
     String8 display_string = ui_box_display_string(box);
     DR_FStrNode fstr_n = {0, {display_string, {box->font, box->text_raster_flags, text_color, box->font_size, 0, 0}}};
@@ -2697,14 +2697,14 @@ ui_box_equip_display_string(UI_Box *box, String8 string)
     box->display_fstrs = dr_fstrs_copy(ui_build_arena(), &fstrs);
     box->display_fruns = dr_fruns_from_fstrs(ui_build_arena(), box->tab_size, &box->display_fstrs);
   }
-  else if(box->flags & UI_BoxFlag_DrawText && box->flags & UI_BoxFlag_DrawTextFastpathCodepoint && box->fastpath_codepoint != 0)
+  else if (box->flags & UI_BoxFlag_DrawText && box->flags & UI_BoxFlag_DrawTextFastpathCodepoint && box->fastpath_codepoint != 0)
   {
     Temp scratch = scratch_begin(0, 0);
     String8 display_string = ui_box_display_string(box);
     String32 fpcp32 = str32(&box->fastpath_codepoint, 1);
     String8 fpcp = str8_from_32(scratch.arena, fpcp32);
     U64 fpcp_pos = str8_find_needle(display_string, 0, fpcp, StringMatchFlag_CaseInsensitive);
-    if(fpcp_pos < display_string.size)
+    if (fpcp_pos < display_string.size)
     {
       DR_FStrNode pst_fstr_n = {0,                   {str8_skip(display_string, fpcp_pos+fpcp.size), {box->font, box->text_raster_flags, text_color, box->font_size, 0, 0}}};
       DR_FStrNode cdp_fstr_n = {&pst_fstr_n, {str8_substr(display_string, r1u64(fpcp_pos, fpcp_pos+fpcp.size)), {box->font, box->text_raster_flags, text_color, box->font_size, 3.f, 0}}};
@@ -2745,7 +2745,7 @@ internal void
 ui_box_equip_draw_bucket(UI_Box *box, DR_Bucket *bucket)
 {
   box->flags |= UI_BoxFlag_DrawBucket;
-  if(box->draw_bucket != 0)
+  if (box->draw_bucket != 0)
   {
     DR_BucketScope(box->draw_bucket) dr_sub_bucket(bucket);
   }
@@ -2768,7 +2768,7 @@ internal String8
 ui_box_display_string(UI_Box *box)
 {
   String8 result = box->string;
-  if(!(box->flags & UI_BoxFlag_DisableIDString))
+  if (!(box->flags & UI_BoxFlag_DisableIDString))
   {
     result = ui_display_part_from_key_string(result);
   }
@@ -2832,9 +2832,9 @@ ui_signal_from_box(UI_Box *box)
   //- rjf: calculate possibly-clipped box rectangle
   //
   Rng2F32 rect = box->rect;
-  for(UI_Box *b = box->parent; !ui_box_is_nil(b); b = b->parent)
+  for (UI_Box *b = box->parent; !ui_box_is_nil(b); b = b->parent)
   {
-    if(b->flags & UI_BoxFlag_Clip)
+    if (b->flags & UI_BoxFlag_Clip)
     {
       rect = intersect_2f32(rect, b->rect);
     }
@@ -2846,9 +2846,9 @@ ui_signal_from_box(UI_Box *box)
   B32 ctx_menu_is_ancestor = 0;
   ProfScope("check context menu ancestor")
   {
-    for(UI_Box *parent = box; !ui_box_is_nil(parent); parent = parent->parent)
+    for (UI_Box *parent = box; !ui_box_is_nil(parent); parent = parent->parent)
     {
-      if(parent == ui_state->ctx_menu_root)
+      if (parent == ui_state->ctx_menu_root)
       {
         ctx_menu_is_ancestor = 1;
         break;
@@ -2860,7 +2860,7 @@ ui_signal_from_box(UI_Box *box)
   //- rjf: calculate blacklist rectangles
   //
   Rng2F32 blacklist_rect = {0};
-  if(!ctx_menu_is_ancestor && ui_state->ctx_menu_open)
+  if (!ctx_menu_is_ancestor && ui_state->ctx_menu_open)
   {
     blacklist_rect = ui_state->ctx_menu_root->rect;
   }
@@ -2869,7 +2869,7 @@ ui_signal_from_box(UI_Box *box)
   //- rjf: process events related to this box
   //
   B32 view_scrolled = 0;
-  for(UI_Event *evt = 0; ui_next_event(&evt);)
+  for (UI_Event *evt = 0; ui_next_event(&evt);)
   {
     B32 taken = 0;
     
@@ -2886,7 +2886,7 @@ ui_signal_from_box(UI_Box *box)
     sig.event_flags |= evt->modifiers;
     
     //- rjf: mouse presses in box -> set hot/active; mark signal accordingly
-    if(box->flags & UI_BoxFlag_MouseClickable &&
+    if (box->flags & UI_BoxFlag_MouseClickable &&
        evt->kind == UI_EventKind_Press &&
        evt_mouse_in_bounds &&
        evt_key_is_mouse)
@@ -2895,12 +2895,12 @@ ui_signal_from_box(UI_Box *box)
       ui_state->active_box_key[evt_mouse_button_kind] = box->key;
       sig.f |= (UI_SignalFlag_LeftPressed<<evt_mouse_button_kind);
       ui_state->drag_start_mouse = evt->pos;
-      if(ui_key_match(box->key, ui_state->press_key_history[evt_mouse_button_kind][0]) &&
+      if (ui_key_match(box->key, ui_state->press_key_history[evt_mouse_button_kind][0]) &&
          evt->timestamp_us-ui_state->press_timestamp_history_us[evt_mouse_button_kind][0] <= 1000000*os_get_gfx_info()->double_click_time)
       {
         sig.f |= (UI_SignalFlag_LeftDoubleClicked<<evt_mouse_button_kind);
       }
-      if(ui_key_match(box->key, ui_state->press_key_history[evt_mouse_button_kind][0]) &&
+      if (ui_key_match(box->key, ui_state->press_key_history[evt_mouse_button_kind][0]) &&
          ui_key_match(box->key, ui_state->press_key_history[evt_mouse_button_kind][1]) &&
          evt->timestamp_us-ui_state->press_timestamp_history_us[evt_mouse_button_kind][0] <= 1000000*os_get_gfx_info()->double_click_time &&
          ui_state->press_timestamp_history_us[evt_mouse_button_kind][0] - ui_state->press_timestamp_history_us[evt_mouse_button_kind][1] <= 1000000*os_get_gfx_info()->double_click_time)
@@ -2920,7 +2920,7 @@ ui_signal_from_box(UI_Box *box)
     }
     
     //- rjf: mouse releases in active box -> unset active; mark signal accordingly
-    if(box->flags & UI_BoxFlag_MouseClickable &&
+    if (box->flags & UI_BoxFlag_MouseClickable &&
        evt->kind == UI_EventKind_Release &&
        ui_key_match(ui_state->active_box_key[evt_mouse_button_kind], box->key) &&
        evt_mouse_in_bounds &&
@@ -2933,7 +2933,7 @@ ui_signal_from_box(UI_Box *box)
     }
     
     //- rjf: mouse releases outside active box -> unset hot/active
-    if(box->flags & UI_BoxFlag_MouseClickable &&
+    if (box->flags & UI_BoxFlag_MouseClickable &&
        evt->kind == UI_EventKind_Release &&
        ui_key_match(ui_state->active_box_key[evt_mouse_button_kind], box->key) &&
        !evt_mouse_in_bounds &&
@@ -2946,7 +2946,7 @@ ui_signal_from_box(UI_Box *box)
     }
     
     //- rjf: focus is hot & keyboard click -> mark signal
-    if(box->flags & UI_BoxFlag_KeyboardClickable &&
+    if (box->flags & UI_BoxFlag_KeyboardClickable &&
        is_focus_hot &&
        evt->kind == UI_EventKind_Press &&
        evt->slot == UI_EventActionSlot_Accept)
@@ -2956,7 +2956,7 @@ ui_signal_from_box(UI_Box *box)
     }
     
     //- rjf: focus is hot & copy event -> remember to copy this box tree's text content
-    if(is_focus_hot &&
+    if (is_focus_hot &&
        evt->flags & UI_EventFlag_Copy &&
        !(evt->flags & UI_EventFlag_Delete) &&
        !ui_key_match(ui_key_zero(), box->key))
@@ -2966,15 +2966,15 @@ ui_signal_from_box(UI_Box *box)
     }
     
     //- rjf: ancestor is focused & fastpath codepoint pressed -> press
-    if(box->flags & UI_BoxFlag_Clickable && box->fastpath_codepoint != 0 && evt->string.size != 0)
+    if (box->flags & UI_BoxFlag_Clickable && box->fastpath_codepoint != 0 && evt->string.size != 0)
     {
       B32 ancestor_is_focused = 0;
-      for(UI_Box *parent = box->parent; !ui_box_is_nil(parent); parent = parent->parent)
+      for (UI_Box *parent = box->parent; !ui_box_is_nil(parent); parent = parent->parent)
       {
-        if(parent->flags & UI_BoxFlag_FocusActive)
+        if (parent->flags & UI_BoxFlag_FocusActive)
         {
           ancestor_is_focused = 1;
-          if(parent->flags & UI_BoxFlag_FocusActiveDisabled ||
+          if (parent->flags & UI_BoxFlag_FocusActiveDisabled ||
              !ui_key_match(parent->default_nav_focus_active_key, ui_key_zero()))
           {
             ancestor_is_focused = 0;
@@ -2982,11 +2982,11 @@ ui_signal_from_box(UI_Box *box)
           }
         }
       }
-      if(ancestor_is_focused)
+      if (ancestor_is_focused)
       {
         Temp scratch = scratch_begin(0, 0);
         String32 insertion32 = str32_from_8(scratch.arena, evt->string);
-        if(insertion32.size == 1 && insertion32.str[0] == box->fastpath_codepoint)
+        if (insertion32.size == 1 && insertion32.str[0] == box->fastpath_codepoint)
         {
           taken = 1;
           sig.f |= UI_SignalFlag_Clicked|UI_SignalFlag_Pressed;
@@ -2996,48 +2996,48 @@ ui_signal_from_box(UI_Box *box)
     }
     
     //- rjf: scrolling
-    if(box->flags & UI_BoxFlag_Scroll &&
+    if (box->flags & UI_BoxFlag_Scroll &&
        evt->kind == UI_EventKind_Scroll &&
        (evt->modifiers == 0 || evt->modifiers == OS_Modifier_Shift) &&
        evt_mouse_in_bounds)
     {
       Vec2F32 delta = evt->delta_2f32;
-      if(evt->modifiers & OS_Modifier_Shift)
+      if (evt->modifiers & OS_Modifier_Shift)
       {
         Swap(F32, delta.x, delta.y);
       }
       Vec2S16 delta16 = v2s16((S16)(delta.x/30.f), (S16)(delta.y/30.f));
-      if(delta.x > 0 && delta16.x == 0) { delta16.x = +1; }
-      if(delta.x < 0 && delta16.x == 0) { delta16.x = -1; }
-      if(delta.y > 0 && delta16.y == 0) { delta16.y = +1; }
-      if(delta.y < 0 && delta16.y == 0) { delta16.y = -1; }
+      if (delta.x > 0 && delta16.x == 0) { delta16.x = +1; }
+      if (delta.x < 0 && delta16.x == 0) { delta16.x = -1; }
+      if (delta.y > 0 && delta16.y == 0) { delta16.y = +1; }
+      if (delta.y < 0 && delta16.y == 0) { delta16.y = -1; }
       sig.scroll.x += delta16.x;
       sig.scroll.y += delta16.y;
       taken = 1;
     }
     
     //- rjf: view scrolling
-    if(box->flags & UI_BoxFlag_ViewScroll && box->first_touched_build_index != box->last_touched_build_index &&
+    if (box->flags & UI_BoxFlag_ViewScroll && box->first_touched_build_index != box->last_touched_build_index &&
        evt->kind == UI_EventKind_Scroll &&
        (evt->modifiers == 0 || evt->modifiers == OS_Modifier_Shift) &&
        evt_mouse_in_bounds)
     {
       Vec2F32 delta = evt->delta_2f32;
-      if(evt->modifiers & OS_Modifier_Shift)
+      if (evt->modifiers & OS_Modifier_Shift)
       {
         Swap(F32, delta.x, delta.y);
       }
-      if(!(box->flags & UI_BoxFlag_ViewScrollX))
+      if (!(box->flags & UI_BoxFlag_ViewScrollX))
       {
-        if(delta.y == 0)
+        if (delta.y == 0)
         {
           delta.y = delta.x;
         }
         delta.x = 0;
       }
-      if(!(box->flags & UI_BoxFlag_ViewScrollY))
+      if (!(box->flags & UI_BoxFlag_ViewScrollY))
       {
-        if(delta.x == 0)
+        if (delta.x == 0)
         {
           delta.x = delta.y;
         }
@@ -3050,7 +3050,7 @@ ui_signal_from_box(UI_Box *box)
     }
     
     //- rjf: taken -> eat event
-    if(taken)
+    if (taken)
     {
       ui_eat_event(evt);
     }
@@ -3059,25 +3059,25 @@ ui_signal_from_box(UI_Box *box)
   //////////////////////////////
   //- rjf: clamp view scrolling
   //
-  if(view_scrolled && box->flags & UI_BoxFlag_ViewClamp)
+  if (view_scrolled && box->flags & UI_BoxFlag_ViewClamp)
   {
     Vec2F32 max_view_off_target =
     {
       ClampBot(0, box->view_bounds.x - box->fixed_size.x),
       ClampBot(0, box->view_bounds.y - box->fixed_size.y),
     };
-    if(box->flags & UI_BoxFlag_ViewClampX) { box->view_off_target.x = Clamp(0, box->view_off_target.x, max_view_off_target.x); }
-    if(box->flags & UI_BoxFlag_ViewClampY) { box->view_off_target.y = Clamp(0, box->view_off_target.y, max_view_off_target.y); }
+    if (box->flags & UI_BoxFlag_ViewClampX) { box->view_off_target.x = Clamp(0, box->view_off_target.x, max_view_off_target.x); }
+    if (box->flags & UI_BoxFlag_ViewClampY) { box->view_off_target.y = Clamp(0, box->view_off_target.y, max_view_off_target.y); }
   }
   
   //////////////////////////////
   //- rjf: active -> dragging
   //
-  if(box->flags & UI_BoxFlag_MouseClickable)
+  if (box->flags & UI_BoxFlag_MouseClickable)
   {
     for EachEnumVal(UI_MouseButtonKind, k)
     {
-      if(ui_key_match(ui_state->active_box_key[k], box->key) ||
+      if (ui_key_match(ui_state->active_box_key[k], box->key) ||
          sig.f & (UI_SignalFlag_LeftPressed<<k))
       {
         sig.f |= (UI_SignalFlag_LeftDragging<<k);
@@ -3088,11 +3088,11 @@ ui_signal_from_box(UI_Box *box)
   //////////////////////////////
   //- rjf: dragging started via double-click -> double-dragging
   //
-  if(box->flags & UI_BoxFlag_MouseClickable)
+  if (box->flags & UI_BoxFlag_MouseClickable)
   {
     for EachEnumVal(UI_MouseButtonKind, k)
     {
-      if(sig.f & (UI_SignalFlag_LeftDragging<<k) &&
+      if (sig.f & (UI_SignalFlag_LeftDragging<<k) &&
          ui_key_match(ui_state->press_key_history[k][0], box->key) &&
          ui_key_match(ui_state->press_key_history[k][1], box->key) &&
          ui_state->press_timestamp_history_us[k][0] - ui_state->press_timestamp_history_us[k][1] <= 1000000*os_get_gfx_info()->double_click_time &&
@@ -3106,11 +3106,11 @@ ui_signal_from_box(UI_Box *box)
   //////////////////////////////
   //- rjf: dragging started via triple-click -> triple-dragging
   //
-  if(box->flags & UI_BoxFlag_MouseClickable)
+  if (box->flags & UI_BoxFlag_MouseClickable)
   {
     for EachEnumVal(UI_MouseButtonKind, k)
     {
-      if(sig.f & (UI_SignalFlag_LeftDragging<<k) &&
+      if (sig.f & (UI_SignalFlag_LeftDragging<<k) &&
          ui_key_match(ui_state->press_key_history[k][0], box->key) &&
          ui_key_match(ui_state->press_key_history[k][1], box->key) &&
          ui_key_match(ui_state->press_key_history[k][2], box->key) &&
@@ -3128,7 +3128,7 @@ ui_signal_from_box(UI_Box *box)
   //- rjf: mouse is over this box's rect -> always mark mouse-over
   //
   {
-    if(contains_2f32(rect, ui_state->mouse) &&
+    if (contains_2f32(rect, ui_state->mouse) &&
        !contains_2f32(blacklist_rect, ui_state->mouse))
     {
       sig.f |= UI_SignalFlag_MouseOver;
@@ -3139,7 +3139,7 @@ ui_signal_from_box(UI_Box *box)
   //- rjf: mouse is over this box's rect, no other hot key? -> set hot key, mark hovering
   //
   {
-    if(box->flags & UI_BoxFlag_MouseClickable &&
+    if (box->flags & UI_BoxFlag_MouseClickable &&
        contains_2f32(rect, ui_state->mouse) &&
        !contains_2f32(blacklist_rect, ui_state->mouse) &&
        (ui_key_match(ui_state->hot_box_key, ui_key_zero()) || ui_key_match(ui_state->hot_box_key, box->key)) &&
@@ -3155,7 +3155,7 @@ ui_signal_from_box(UI_Box *box)
   //////////////////////////////
   //- rjf: mouse is over this box's rect, currently-active-key has the same group key? -> set hot/active key
   //
-  if(box->flags & UI_BoxFlag_MouseClickable &&
+  if (box->flags & UI_BoxFlag_MouseClickable &&
      contains_2f32(rect, ui_state->mouse) &&
      !contains_2f32(blacklist_rect, ui_state->mouse) &&
      !ui_key_match(ui_key_zero(), box->group_key))
@@ -3163,7 +3163,7 @@ ui_signal_from_box(UI_Box *box)
     for EachEnumVal(UI_MouseButtonKind, k)
     {
       UI_Box *active_box = ui_box_from_key(ui_state->active_box_key[k]);
-      if(ui_key_match(box->group_key, active_box->group_key))
+      if (ui_key_match(box->group_key, active_box->group_key))
       {
         ui_state->hot_box_key = box->key;
         ui_state->active_box_key[k] = box->key;
@@ -3176,7 +3176,7 @@ ui_signal_from_box(UI_Box *box)
   //- rjf: mouse is over this box's rect, drop site, no other drop hot key? -> set drop hot key
   //
   {
-    if(box->flags & UI_BoxFlag_DropSite &&
+    if (box->flags & UI_BoxFlag_DropSite &&
        contains_2f32(rect, ui_state->mouse) &&
        !contains_2f32(blacklist_rect, ui_state->mouse) &&
        (ui_key_match(ui_state->drop_hot_box_key, ui_key_zero()) || ui_key_match(ui_state->drop_hot_box_key, box->key)))
@@ -3189,7 +3189,7 @@ ui_signal_from_box(UI_Box *box)
   //- rjf: mouse is not over this box's rect, but this is the drop hot key? -> zero drop hot key
   //
   {
-    if(box->flags & UI_BoxFlag_DropSite &&
+    if (box->flags & UI_BoxFlag_DropSite &&
        (!contains_2f32(rect, ui_state->mouse) ||
         contains_2f32(blacklist_rect, ui_state->mouse)) &&
        ui_key_match(ui_state->drop_hot_box_key, box->key))
@@ -3201,7 +3201,7 @@ ui_signal_from_box(UI_Box *box)
   //////////////////////////////
   //- rjf: clicking on something outside the context menu kills the context menu
   //
-  if(!ctx_menu_is_ancestor && sig.f & (UI_SignalFlag_LeftPressed|UI_SignalFlag_RightPressed|UI_SignalFlag_MiddlePressed))
+  if (!ctx_menu_is_ancestor && sig.f & (UI_SignalFlag_LeftPressed|UI_SignalFlag_RightPressed|UI_SignalFlag_MiddlePressed))
   {
     ui_ctx_menu_close();
   }
@@ -3210,9 +3210,9 @@ ui_signal_from_box(UI_Box *box)
   //- rjf: get default nav ancestor
   //
   UI_Box *default_nav_parent = &ui_nil_box;
-  for(UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
+  for (UI_Box *p = ui_top_parent(); !ui_box_is_nil(p); p = p->parent)
   {
-    if(p->flags & UI_BoxFlag_DefaultFocusNav)
+    if (p->flags & UI_BoxFlag_DefaultFocusNav)
     {
       default_nav_parent = p;
       break;
@@ -3222,10 +3222,10 @@ ui_signal_from_box(UI_Box *box)
   //////////////////////////////
   //- rjf: clicking in default nav -> set navigation state to this box
   //
-  if(box->flags & UI_BoxFlag_ClickToFocus && sig.f&UI_SignalFlag_Pressed && !ui_box_is_nil(default_nav_parent))
+  if (box->flags & UI_BoxFlag_ClickToFocus && sig.f&UI_SignalFlag_Pressed && !ui_box_is_nil(default_nav_parent))
   {
     default_nav_parent->default_nav_focus_next_hot_key = box->key;
-    if(!ui_key_match(default_nav_parent->default_nav_focus_active_key, box->key))
+    if (!ui_key_match(default_nav_parent->default_nav_focus_active_key, box->key))
     {
       default_nav_parent->default_nav_focus_next_active_key = ui_key_zero();
     }
@@ -3243,22 +3243,22 @@ ui_anim_(UI_Key key, UI_AnimParams *params)
 {
   // rjf: get animation cache node
   UI_AnimNode *node = &ui_nil_anim_node;
-  if(ui_state != 0)
+  if (ui_state != 0)
   {
     U64 slot_idx = key.u64[0]%ui_state->anim_slots_count;
     UI_AnimSlot *slot = &ui_state->anim_slots[slot_idx];
-    for(UI_AnimNode *n = slot->first; n != &ui_nil_anim_node && n != 0; n = n->slot_next)
+    for (UI_AnimNode *n = slot->first; n != &ui_nil_anim_node && n != 0; n = n->slot_next)
     {
-      if(ui_key_match(n->key, key))
+      if (ui_key_match(n->key, key))
       {
         node = n;
         break;
       }
     }
-    if(node == &ui_nil_anim_node)
+    if (node == &ui_nil_anim_node)
     {
       node = ui_state->free_anim_node;
-      if(node != 0)
+      if (node != 0)
       {
         SLLStackPop_N(ui_state->free_anim_node, slot_next);
       }
@@ -3279,20 +3279,20 @@ ui_anim_(UI_Key key, UI_AnimParams *params)
   }
   
   // rjf: touch node & update parameters - grab current
-  if(node != &ui_nil_anim_node)
+  if (node != &ui_nil_anim_node)
   {
     node->last_touched_build_index = ui_state->build_index;
     DLLPushBack_NPZ(&ui_nil_anim_node, ui_state->lru_anim_node, ui_state->mru_anim_node, node, lru_next, lru_prev);
-    if(params->reset)
+    if (params->reset)
     {
       node->current = params->initial;
     }
     MemoryCopyStruct(&node->params, params);
-    if(node->params.epsilon == 0)
+    if (node->params.epsilon == 0)
     {
       node->params.epsilon = 0.005f;
     }
-    if(node->params.rate == 1 || abs_f32(node->current - node->params.target) < abs_f32(node->params.epsilon))
+    if (node->params.rate == 1 || abs_f32(node->current - node->params.target) < abs_f32(node->params.epsilon))
     {
       node->current = node->params.target;
     }
@@ -3311,12 +3311,12 @@ return state->name_lower##_stack.bottom_val;
 
 #define UI_StackPushImpl(state, name_upper, name_lower, type, new_value) \
 UI_##name_upper##Node *node = state->name_lower##_stack.free;\
-if(node != 0) {SLLStackPop(state->name_lower##_stack.free);}\
+if (node != 0) {SLLStackPop(state->name_lower##_stack.free);}\
 else {node = push_array(ui_build_arena(), UI_##name_upper##Node, 1);}\
 type old_value = state->name_lower##_stack.top->v;\
 node->v = new_value;\
 SLLStackPush(state->name_lower##_stack.top, node);\
-if(node->next == &state->name_lower##_nil_stack_top)\
+if (node->next == &state->name_lower##_nil_stack_top)\
 {\
 state->name_lower##_stack.bottom_val = (node->v);\
 }\
@@ -3326,7 +3326,7 @@ return old_value;
 
 #define UI_StackPopImpl(state, name_upper, name_lower) \
 UI_##name_upper##Node *popped = state->name_lower##_stack.top;\
-if(popped != &state->name_lower##_nil_stack_top)\
+if (popped != &state->name_lower##_nil_stack_top)\
 {\
 SLLStackPop(state->name_lower##_stack.top);\
 SLLStackPush(state->name_lower##_stack.free, popped);\
@@ -3337,7 +3337,7 @@ return popped->v;\
 
 #define UI_StackSetNextImpl(state, name_upper, name_lower, type, new_value) \
 UI_##name_upper##Node *node = state->name_lower##_stack.free;\
-if(node != 0) {SLLStackPop(state->name_lower##_stack.free);}\
+if (node != 0) {SLLStackPop(state->name_lower##_stack.free);}\
 else {node = push_array(ui_build_arena(), UI_##name_upper##Node, 1);}\
 type old_value = state->name_lower##_stack.top->v;\
 node->v = new_value;\
@@ -3354,12 +3354,12 @@ ui__push_tags_key_from_appended_string(String8 string)
   // rjf: generate new key, by combining hash of this new string with the top
   // of the tags key stack
   UI_Key seed_key = {0};
-  if(!is_new_root && ui_state->tags_key_stack_top != 0)
+  if (!is_new_root && ui_state->tags_key_stack_top != 0)
   {
     seed_key = ui_state->tags_key_stack_top->key;
   }
   UI_Key key = seed_key;
-  if(!is_new_root && string.size > 0)
+  if (!is_new_root && string.size > 0)
   {
     key = ui_key_from_string(seed_key, string);
   }
@@ -3367,7 +3367,7 @@ ui__push_tags_key_from_appended_string(String8 string)
   // rjf: push this new key onto the stack
   {
     UI_TagsKeyStackNode *node = ui_state->tags_key_stack_free;
-    if(node != 0)
+    if (node != 0)
     {
       SLLStackPop(ui_state->tags_key_stack_free);
     }
@@ -3380,34 +3380,34 @@ ui__push_tags_key_from_appended_string(String8 string)
   }
   
   // rjf: store in tags cache
-  if(!is_new_root)
+  if (!is_new_root)
   {
     U64 slot_idx = key.u64[0] % ui_state->tags_cache_slots_count;
     UI_TagsCacheSlot *slot = &ui_state->tags_cache_slots[slot_idx];
     UI_TagsCacheNode *node = 0;
-    for(UI_TagsCacheNode *n = slot->first; n != 0; n = n->next)
+    for (UI_TagsCacheNode *n = slot->first; n != 0; n = n->next)
     {
-      if(ui_key_match(n->key, key))
+      if (ui_key_match(n->key, key))
       {
         node = n;
         break;
       }
     }
-    if(node == 0)
+    if (node == 0)
     {
       Temp scratch = scratch_begin(0, 0);
       String8List tags = {0};
-      if(string.size != 0)
+      if (string.size != 0)
       {
         str8_list_push(scratch.arena, &tags, push_str8_copy(ui_build_arena(), string));
       }
-      for(UI_TagNode *n = ui_state->tag_stack.top; n != 0; n = n->next)
+      for (UI_TagNode *n = ui_state->tag_stack.top; n != 0; n = n->next)
       {
-        if(n->v.size == 1 && n->v.str[0] == '.')
+        if (n->v.size == 1 && n->v.str[0] == '.')
         {
           break;
         }
-        if(n->v.size != 0)
+        if (n->v.size != 0)
         {
           str8_list_push(scratch.arena, &tags, push_str8_copy(ui_build_arena(), n->v));
         }
@@ -3424,7 +3424,7 @@ ui__push_tags_key_from_appended_string(String8 string)
 internal void
 ui__pop_tags_key(void)
 {
-  if(ui_state->tags_key_stack_top != 0)
+  if (ui_state->tags_key_stack_top != 0)
   {
     UI_TagsKeyStackNode *popped = ui_state->tags_key_stack_top;
     SLLStackPop(ui_state->tags_key_stack_top);
@@ -3568,9 +3568,9 @@ internal F32
 ui_top_px_height(void)
 {
   F32 result = ui_top_font_size();
-  for(UI_PrefHeightNode *n = ui_state->pref_height_stack.top; n != 0; n = n->next)
+  for (UI_PrefHeightNode *n = ui_state->pref_height_stack.top; n != 0; n = n->next)
   {
-    if(n->v.kind == UI_SizeKind_Pixels)
+    if (n->v.kind == UI_SizeKind_Pixels)
     {
       result = n->v.value;
       break;

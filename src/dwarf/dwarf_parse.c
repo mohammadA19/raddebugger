@@ -48,12 +48,12 @@ str8_deserial_read_uleb128(String8 string, U64 off, U64 *value_out)
   U64 value  = 0;
   U64 shift  = 0;
   U64 cursor = off;
-  for(;;)
+  for (;;)
   {
     U8  byte       = 0;
     U64 bytes_read = str8_deserial_read_struct(string, cursor, &byte);
     
-    if(bytes_read != sizeof(byte))
+    if (bytes_read != sizeof(byte))
     {
       break;
     }
@@ -64,12 +64,12 @@ str8_deserial_read_uleb128(String8 string, U64 off, U64 *value_out)
     cursor += bytes_read;
     shift += 7u;
     
-    if((byte & 0x80u) == 0)
+    if ((byte & 0x80u) == 0)
     {
       break;
     }
   }
-  if(value_out != 0)
+  if (value_out != 0)
   {
     *value_out = value;
   }
@@ -83,11 +83,11 @@ str8_deserial_read_sleb128(String8 string, U64 off, S64 *value_out)
   U64 value  = 0;
   U64 shift  = 0;
   U64 cursor = off;
-  for(;;)
+  for (;;)
   {
     U8 byte;
     U64 bytes_read = str8_deserial_read_struct(string, cursor, &byte);
-    if(bytes_read != sizeof(byte))
+    if (bytes_read != sizeof(byte))
     {
       break;
     }
@@ -98,16 +98,16 @@ str8_deserial_read_sleb128(String8 string, U64 off, S64 *value_out)
     cursor += bytes_read;
     shift += 7u;
     
-    if((byte & 0x80u) == 0)
+    if ((byte & 0x80u) == 0)
     {
-      if(shift < sizeof(value) * 8 && (byte & 0x40u) != 0)
+      if (shift < sizeof(value) * 8 && (byte & 0x40u) != 0)
       {
         value |= -(S64)(1ull << shift);
       }
       break;
     }
   }
-  if(value_out != 0)
+  if (value_out != 0)
   {
     *value_out = value;
   }
@@ -455,7 +455,7 @@ dw_read_abbrev_tag(String8 data, U64 offset, DW_Abbrev *out_abbrev)
   //- rjf: parse sub-kind
   U64 sub_kind = 0;
   U64 next_off = sub_kind_off;
-  if(id != 0)
+  if (id != 0)
   {
     U64 bytes_read = str8_deserial_read_uleb128(data, sub_kind_off, &sub_kind);
     next_off         += bytes_read;
@@ -464,19 +464,19 @@ dw_read_abbrev_tag(String8 data, U64 offset, DW_Abbrev *out_abbrev)
   
   //- rjf: parse whether this tag has children
   U8 has_children = 0;
-  if(id != 0)
+  if (id != 0)
   {
     total_bytes_read += str8_deserial_read_struct(data, next_off, &has_children);
   }
   
   //- rjf: fill abbrev
-  if(out_abbrev != 0)
+  if (out_abbrev != 0)
   {
     DW_Abbrev abbrev = {0};
     abbrev.kind      = DW_Abbrev_Tag;
     abbrev.sub_kind  = sub_kind;
     abbrev.id        = id;
-    if(has_children)
+    if (has_children)
     {
       abbrev.flags |= DW_AbbrevFlag_HasChildren;
     }
@@ -512,20 +512,20 @@ dw_read_abbrev_attrib(String8 data, U64 offset, DW_Abbrev *out_abbrev)
   
   //- rjf: parse implicit const
   U64 implicit_const = 0;
-  if(sub_kind == DW_Form_ImplicitConst)
+  if (sub_kind == DW_Form_ImplicitConst)
   {
     U64 bytes_read = str8_deserial_read_uleb128(data, next_off, &implicit_const);
     total_bytes_read += bytes_read;
   }
   
   //- rjf: fill abbrev
-  if(out_abbrev != 0)
+  if (out_abbrev != 0)
   {
     DW_Abbrev abbrev    = {0};
     abbrev.kind         = DW_Abbrev_Attrib;
     abbrev.sub_kind     = sub_kind;
     abbrev.id           = id;
-    if(sub_kind == DW_Form_ImplicitConst)
+    if (sub_kind == DW_Form_ImplicitConst)
     {
       abbrev.flags       |= DW_AbbrevFlag_HasImplicitConst;
       abbrev.const_value  = implicit_const;
@@ -541,23 +541,23 @@ dw_make_abbrev_table(Arena *arena, String8 abbrev_data, U64 abbrev_offset)
 {
   //- rjf: count the tags we have
   U64 tag_count = 0;
-  for(U64 abbrev_read_off = abbrev_offset;;)
+  for (U64 abbrev_read_off = abbrev_offset;;)
   {
     DW_Abbrev tag;
     {
       U64 bytes_read = dw_read_abbrev_tag(abbrev_data, abbrev_read_off, &tag);
       abbrev_read_off += bytes_read;
-      if(bytes_read == 0 || tag.id == 0)
+      if (bytes_read == 0 || tag.id == 0)
       {
         break;
       }
     }
-    for(;;)
+    for (;;)
     {
       DW_Abbrev attrib     = {0};
       U64       bytes_read = dw_read_abbrev_attrib(abbrev_data, abbrev_read_off, &attrib);
       abbrev_read_off += bytes_read;
-      if(bytes_read == 0 || attrib.id == 0)
+      if (bytes_read == 0 || attrib.id == 0)
       {
         break;
       }
@@ -572,7 +572,7 @@ dw_make_abbrev_table(Arena *arena, String8 abbrev_data, U64 abbrev_offset)
   MemorySet(table.entries, 0, sizeof(DW_AbbrevTableEntry)*table.count);
   
   U64 tag_idx = 0;
-  for(U64 abbrev_read_off = abbrev_offset;;)
+  for (U64 abbrev_read_off = abbrev_offset;;)
   {
     U64 tag_abbrev_off = abbrev_read_off;
     
@@ -580,7 +580,7 @@ dw_make_abbrev_table(Arena *arena, String8 abbrev_data, U64 abbrev_offset)
     {
       U64 bytes_read = dw_read_abbrev_tag(abbrev_data, abbrev_read_off, &tag);
       abbrev_read_off += bytes_read;
-      if(bytes_read == 0 || tag.id == 0)
+      if (bytes_read == 0 || tag.id == 0)
       {
         break;
       }
@@ -593,12 +593,12 @@ dw_make_abbrev_table(Arena *arena, String8 abbrev_data, U64 abbrev_offset)
       tag_idx += 1;
     }
     
-    for(;;)
+    for (;;)
     {
       DW_Abbrev attrib = {0};
       U64 bytes_read = dw_read_abbrev_attrib(abbrev_data, abbrev_read_off, &attrib);
       abbrev_read_off += bytes_read;
-      if(bytes_read == 0 || attrib.id == 0)
+      if (bytes_read == 0 || attrib.id == 0)
       {
         break;
       }
@@ -2769,7 +2769,7 @@ internal DW_LineNode *
 dw_push_line(Arena *arena, DW_LineTableParseResult *tbl, DW_LineVMState *vm_state, B32 start_of_sequence)
 {
   DW_LineSeqNode *seq = tbl->last_seq;
-  if(seq == 0 || start_of_sequence)
+  if (seq == 0 || start_of_sequence)
   {
     seq = dw_push_line_seq(arena, tbl);
   }
@@ -2867,7 +2867,7 @@ dw_parsed_line_table_from_data(Arena       *arena,
           vm_state.epilogue_begin  = 0;
           vm_state.discriminator   = 0;
           
-          if(vm_state.is_stmt)
+          if (vm_state.is_stmt)
           {
             dw_push_line(arena, &result, &vm_state, end_of_seq);
           }
@@ -2876,7 +2876,7 @@ dw_parsed_line_table_from_data(Arena       *arena,
 #if 0
           // NOTE(rjf): DWARF has dummy lines at the end of groups of line ranges, where we'd like
           // to break line info into sequences.
-          if(vm_state.line == 0)
+          if (vm_state.line == 0)
           {
             end_of_seq = 1;
           }
@@ -2901,7 +2901,7 @@ dw_parsed_line_table_from_data(Arena       *arena,
       //- Standard opcodes
       
       case DW_StdOpcode_Copy: {
-        if(vm_state.is_stmt)
+        if (vm_state.is_stmt)
         {
           dw_push_line(arena, &result, &vm_state, end_of_seq);
         }
@@ -2982,7 +2982,7 @@ dw_parsed_line_table_from_data(Arena       *arena,
         switch (extended_opcode) {
           case DW_ExtOpcode_EndSequence: {
             vm_state.end_sequence = 1;
-            if(vm_state.is_stmt)
+            if (vm_state.is_stmt)
             {
               dw_push_line(arena, &result, &vm_state, 0);
             }
@@ -3047,7 +3047,7 @@ dw_v4_pub_strings_table_from_section_kind(Arena *arena, DW_Input *input, DW_Sect
   names_table.buckets            = push_array(arena, DW_PubStringsBucket*, names_table.size);
   
   String8 section_data = input->sec[section_kind].data;
-  for(U64 cursor = 0; cursor < section_data.size; ) {
+  for (U64 cursor = 0; cursor < section_data.size; ) {
     
     U64 unit_length      = 0;
     U64 unit_length_size = str8_deserial_read_dwarf_packed_size(section_data, cursor, &unit_length);

@@ -17,14 +17,14 @@ mtx_init(void)
   mtx_shared->stripes_count = Min(mtx_shared->slots_count, os_get_system_info()->logical_processor_count);
   mtx_shared->slots = push_array(arena, MTX_Slot, mtx_shared->slots_count);
   mtx_shared->stripes = push_array(arena, MTX_Stripe, mtx_shared->stripes_count);
-  for(U64 idx = 0; idx < mtx_shared->stripes_count; idx += 1)
+  for (U64 idx = 0; idx < mtx_shared->stripes_count; idx += 1)
   {
     mtx_shared->stripes[idx].arena = arena_alloc();
     mtx_shared->stripes[idx].rw_mutex = os_rw_mutex_alloc();
   }
   mtx_shared->mut_threads_count = Min(os_get_system_info()->logical_processor_count, 4);
   mtx_shared->mut_threads = push_array(arena, MTX_MutThread, mtx_shared->mut_threads_count);
-  for(U64 idx = 0; idx < mtx_shared->mut_threads_count; idx += 1)
+  for (U64 idx = 0; idx < mtx_shared->mut_threads_count; idx += 1)
   {
     mtx_shared->mut_threads[idx].ring_size = KB(64);
     mtx_shared->mut_threads[idx].ring_base = push_array_no_zero(arena, U8, mtx_shared->mut_threads[idx].ring_size);
@@ -52,12 +52,12 @@ internal void
 mtx_enqueue_op(MTX_MutThread *thread, HS_Key buffer_key, MTX_Op op)
 {
   // TODO(rjf): if op.replace is too big, need to split into multiple edits
-  OS_MutexScope(thread->mutex) for(;;)
+  OS_MutexScope(thread->mutex) for (;;)
   {
     U64 unconsumed_size = thread->ring_write_pos - thread->ring_read_pos;
     U64 available_size = thread->ring_size - unconsumed_size;
     U64 needed_size = sizeof(buffer_key) + sizeof(op.range) + sizeof(op.replace.size) + op.replace.size;
-    if(available_size >= needed_size)
+    if (available_size >= needed_size)
     {
       thread->ring_write_pos += ring_write_struct(thread->ring_base, thread->ring_size, thread->ring_write_pos, &buffer_key);
       thread->ring_write_pos += ring_write_struct(thread->ring_base, thread->ring_size, thread->ring_write_pos, &op.range);
@@ -73,10 +73,10 @@ mtx_enqueue_op(MTX_MutThread *thread, HS_Key buffer_key, MTX_Op op)
 internal void
 mtx_dequeue_op(Arena *arena, MTX_MutThread *thread, HS_Key *buffer_key_out, MTX_Op *op_out)
 {
-  OS_MutexScope(thread->mutex) for(;;)
+  OS_MutexScope(thread->mutex) for (;;)
   {
     U64 unconsumed_size = thread->ring_write_pos - thread->ring_read_pos;
-    if(unconsumed_size >= sizeof(*buffer_key_out) + sizeof(op_out->range) + sizeof(op_out->replace.size))
+    if (unconsumed_size >= sizeof(*buffer_key_out) + sizeof(op_out->range) + sizeof(op_out->replace.size))
     {
       thread->ring_read_pos += ring_read_struct(thread->ring_base, thread->ring_size, thread->ring_read_pos, buffer_key_out);
       thread->ring_read_pos += ring_read_struct(thread->ring_base, thread->ring_size, thread->ring_read_pos, &op_out->range);
@@ -95,7 +95,7 @@ mtx_mut_thread__entry_point(void *p)
 {
   MTX_MutThread *mut_thread = (MTX_MutThread *)p;
   ThreadNameF("[mtx] mut thread #%I64u", (U64)(mut_thread - mtx_shared->mut_threads));
-  for(;;)
+  for (;;)
   {
     Temp scratch = scratch_begin(0, 0);
     HS_Scope *hs_scope = hs_scope_open();
@@ -114,22 +114,22 @@ mtx_mut_thread__entry_point(void *p)
     op.range.max = Min(op.range.max, data.size);
     
     //- rjf: construct new buffer
-    if(op.range.max != op.range.min || op.replace.size != 0)
+    if (op.range.max != op.range.min || op.replace.size != 0)
     {
       U64 new_data_size = data.size + op.replace.size - dim_1u64(op.range);
       Arena *arena = arena_alloc(.commit_size = new_data_size + ARENA_HEADER_SIZE, .reserve_size = new_data_size + ARENA_HEADER_SIZE);
       U8 *new_data_base = push_array_no_zero(arena, U8, new_data_size);
       String8 pre_replace_data = str8_substr(data, r1u64(0, op.range.min));
       String8 post_replace_data = str8_substr(data, r1u64(op.range.max, data.size));
-      if(pre_replace_data.size != 0)
+      if (pre_replace_data.size != 0)
       {
         MemoryCopy(new_data_base+0,                                     pre_replace_data.str, pre_replace_data.size);
       }
-      if(op.replace.size != 0)
+      if (op.replace.size != 0)
       {
         MemoryCopy(new_data_base+pre_replace_data.size,                 op.replace.str, op.replace.size);
       }
-      if(post_replace_data.size != 0)
+      if (post_replace_data.size != 0)
       {
         MemoryCopy(new_data_base+pre_replace_data.size+op.replace.size, post_replace_data.str, post_replace_data.size);
       }

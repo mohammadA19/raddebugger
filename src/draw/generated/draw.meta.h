@@ -23,7 +23,7 @@ read_only global DR_TransparencyNode dr_nil_transparency = {0, 0};
 (b)->top_xform2d = &dr_nil_xform2d;\
 (b)->top_clip = &dr_nil_clip;\
 (b)->top_transparency = &dr_nil_transparency;\
-}while(0)
+}while (0)
 #if 0
 #endif
 #if 0

@@ -53,7 +53,7 @@ lnx_write_list_to_file_descriptor(int fd, String8List list){
     }
   }
   
-  return(success);
+  return (success);
 }
 
 internal void
@@ -227,7 +227,7 @@ lnx_string_from_signal(int signum){
       result = str8_lit("SIGWINCH");
     }break;
   }
-  return(result);
+  return (result);
 }
 
 internal String8
@@ -759,7 +759,7 @@ lnx_string_from_errno(int error_number){
       result = str8_lit("EHWPOISON");
     }break;
   }
-  return(result);
+  return (result);
 }
 
 internal LNX_Entity*
@@ -770,7 +770,7 @@ lnx_alloc_entity(LNX_EntityKind kind){
   SLLStackPop(lnx_entity_free);
   pthread_mutex_unlock(&lnx_mutex);
   result->kind = kind;
-  return(result);
+  return (result);
 }
 
 internal void
@@ -798,7 +798,7 @@ lnx_thread_base(void *ptr){
   if ((result & 0x1) == 0){
     lnx_free_entity(entity);
   }
-  return(0);
+  return (0);
 }
 
 internal void
@@ -853,14 +853,14 @@ os_init(void)
 internal void*
 os_reserve(U64 size){
   void *result = mmap(0, size, PROT_NONE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0);
-  return(result);
+  return (result);
 }
 
 internal B32
 os_commit(void *ptr, U64 size){
   mprotect(ptr, size, PROT_READ|PROT_WRITE);
   // TODO(allen): can we test this?
-  return(true);
+  return (true);
 }
 
 internal void*
@@ -948,13 +948,13 @@ os_machine_name(void){
   }
   pthread_mutex_unlock(&lnx_mutex);
   
-  return(name);
+  return (name);
 }
 
 internal U64
 os_page_size(void){
   int size = getpagesize();
-  return((U64)size);
+  return ((U64)size);
 }
 
 internal U64
@@ -983,7 +983,7 @@ os_get_command_line_arguments(void)
 internal S32
 os_pid(void){
   S32 result = getpid();
-  return(result);
+  return (result);
 }
 
 internal S32
@@ -994,7 +994,7 @@ os_tid(void){
 #else
   result = gettid();
 #endif
-  return(result);
+  return (result);
 }
 
 internal String8List
@@ -1084,7 +1084,7 @@ os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *o
     }break;
   }
   
-  return(result);
+  return (result);
 }
 
 ////////////////////////////////
@@ -1160,7 +1160,7 @@ os_delete_file_at_path(String8 path)
     result = true;
   }
   scratch_end(scratch);
-  return(result);
+  return (result);
 }
 
 internal B32
@@ -1257,7 +1257,7 @@ os_make_directory(String8 path)
     result = true;
   }
   scratch_end(scratch);
-  return(result);
+  return (result);
 }
 
 ////////////////////////////////
@@ -1316,7 +1316,7 @@ os_now_universal_time(void){
   gmtime_r(&t, &universal_tm);
   DateTime result = {0};
   lnx_date_time_from_tm(&result, &universal_tm, 0);
-  return(result);
+  return (result);
 }
 
 internal DateTime
@@ -1332,7 +1332,7 @@ os_universal_time_from_local(DateTime *local_time){
   gmtime_r(&universal_t, &universal_tm);
   DateTime result = {0};
   lnx_date_time_from_tm(&result, &universal_tm, 0);
-  return(result);
+  return (result);
 }
 
 internal DateTime
@@ -1348,7 +1348,7 @@ os_local_time_from_universal(DateTime *universal_time){
   // whatever type we ended up with -> DateTime (don't alter the space along the way)
   DateTime result = {0};
   lnx_date_time_from_tm(&result, &local_tm, 0);
-  return(result);
+  return (result);
 }
 
 internal U64
@@ -1356,7 +1356,7 @@ os_now_microseconds(void){
   struct timespec t;
   clock_gettime(CLOCK_MONOTONIC, &t);
   U64 result = t.tv_sec*Million(1) + (t.tv_nsec/Thousand(1));
-  return(result);
+  return (result);
 }
 
 internal void
@@ -1371,7 +1371,7 @@ internal B32
 os_launch_process(OS_LaunchOptions *options){
   // TODO(allen): I want to redo this API before I bother implementing it here
   NotImplemented;
-  return(false);
+  return (false);
 }
 
 ////////////////////////////////
@@ -1397,7 +1397,7 @@ os_thread_launch(OS_ThreadFunctionType *func, void *ptr, void *params){
   
   // cast to opaque handle
   OS_Handle result = {IntFromPtr(entity)};
-  return(result);
+  return (result);
 }
 
 internal void
@@ -1437,7 +1437,7 @@ os_mutex_alloc(void){
   
   // cast to opaque handle
   OS_Handle result = {IntFromPtr(entity)};
-  return(result);
+  return (result);
 }
 
 internal void
@@ -1518,7 +1518,7 @@ os_condition_variable_alloc(void){
   
   // cast to opaque handle
   OS_Handle result = {IntFromPtr(entity)};
-  return(result);
+  return (result);
 }
 
 internal void
@@ -1535,7 +1535,7 @@ os_condition_variable_wait_(OS_Handle cv, OS_Handle mutex, U64 endt_us){
   LNX_Entity *entity_mutex = (LNX_Entity*)PtrFromInt(mutex.id);
   // TODO(allen): implement the time control
   pthread_cond_timedwait(&entity_cond->cond, &entity_mutex->mutex);
-  return(result);
+  return (result);
 }
 
 internal B32

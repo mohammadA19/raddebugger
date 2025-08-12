@@ -9,7 +9,7 @@ internal RDIM_DataModel
 rdim_data_model_from_os_arch(OperatingSystem os, RDI_Arch arch)
 {
   RDIM_DataModel data_model = RDIM_DataModel_Null;
-#define Case(os_name, arch_name, model_name) if(os == OperatingSystem_##os_name && arch == Arch_##arch_name) { data_model = RDIM_DataModel_##model_name; }
+#define Case(os_name, arch_name, model_name) if (os == OperatingSystem_##os_name && arch == Arch_##arch_name) { data_model = RDIM_DataModel_##model_name; }
   Case(Windows, x86, LLP64);
   Case(Windows, x64, LLP64);
   Case(Linux,   x86, ILP32);
@@ -57,7 +57,7 @@ rdim_make_top_level_info(String8 image_name, Arch arch, U64 exe_hash, RDIM_Binar
 
 //- rjf: bake string map building
 
-#define rdim_make_string_map_if_needed() do {if(in->maps[thread_idx] == 0) ProfScope("make map") {in->maps[thread_idx] = rdim_bake_string_map_loose_make(arena, in->top);}} while(0)
+#define rdim_make_string_map_if_needed() do {if (in->maps[thread_idx] == 0) ProfScope("make map") {in->maps[thread_idx] = rdim_bake_string_map_loose_make(arena, in->top);}} while (0)
 
 ASYNC_WORK_DEF(rdim_bake_src_files_strings_work)
 {
@@ -89,7 +89,7 @@ ASYNC_WORK_DEF(rdim_bake_types_strings_work)
   rdim_make_string_map_if_needed();
   ProfScope("bake type strings")
   {
-    for(RDIM_BakeTypesStringsInNode *n = in->first; n != 0; n = n->next)
+    for (RDIM_BakeTypesStringsInNode *n = in->first; n != 0; n = n->next)
     {
       rdim_bake_string_map_loose_push_type_slice(arena, in->top, in->maps[thread_idx], n->v, n->count);
     }
@@ -106,7 +106,7 @@ ASYNC_WORK_DEF(rdim_bake_udts_strings_work)
   rdim_make_string_map_if_needed();
   ProfScope("bake udt strings")
   {
-    for(RDIM_BakeUDTsStringsInNode *n = in->first; n != 0; n = n->next)
+    for (RDIM_BakeUDTsStringsInNode *n = in->first; n != 0; n = n->next)
     {
       rdim_bake_string_map_loose_push_udt_slice(arena, in->top, in->maps[thread_idx], n->v, n->count);
     }
@@ -123,7 +123,7 @@ ASYNC_WORK_DEF(rdim_bake_symbols_strings_work)
   rdim_make_string_map_if_needed();
   ProfScope("bake symbol strings")
   {
-    for(RDIM_BakeSymbolsStringsInNode *n = in->first; n != 0; n = n->next)
+    for (RDIM_BakeSymbolsStringsInNode *n = in->first; n != 0; n = n->next)
     {
       rdim_bake_string_map_loose_push_symbol_slice(arena, in->top, in->maps[thread_idx], n->v, n->count);
     }
@@ -140,7 +140,7 @@ ASYNC_WORK_DEF(rdim_bake_inline_site_strings_work)
   rdim_make_string_map_if_needed();
   ProfScope("bake inline site strings")
   {
-    for(RDIM_BakeInlineSiteStringsInNode *n = in->first; n != 0; n = n->next)
+    for (RDIM_BakeInlineSiteStringsInNode *n = in->first; n != 0; n = n->next)
     {
       rdim_bake_string_map_loose_push_inline_site_slice(arena, in->top, in->maps[thread_idx], n->v, n->count);
     }
@@ -157,7 +157,7 @@ ASYNC_WORK_DEF(rdim_bake_scopes_strings_work)
   rdim_make_string_map_if_needed();
   ProfScope("bake scope strings")
   {
-    for(RDIM_BakeScopesStringsInNode *n = in->first; n != 0; n = n->next)
+    for (RDIM_BakeScopesStringsInNode *n = in->first; n != 0; n = n->next)
     {
       rdim_bake_string_map_loose_push_scope_slice(arena, in->top, in->maps[thread_idx], n->v, n->count);
     }
@@ -188,17 +188,17 @@ ASYNC_WORK_DEF(rdim_bake_string_map_join_work)
   RDIM_JoinBakeStringMapSlotsIn *in = (RDIM_JoinBakeStringMapSlotsIn *)input;
   ProfScope("join bake string maps")
   {
-    for(U64 src_map_idx = 0; src_map_idx < in->src_maps_count; src_map_idx += 1)
+    for (U64 src_map_idx = 0; src_map_idx < in->src_maps_count; src_map_idx += 1)
     {
-      for(U64 slot_idx = in->slot_idx_range.min; slot_idx < in->slot_idx_range.max; slot_idx += 1)
+      for (U64 slot_idx = in->slot_idx_range.min; slot_idx < in->slot_idx_range.max; slot_idx += 1)
       {
         B32 src_slots_good = (in->src_maps[src_map_idx] != 0 && in->src_maps[src_map_idx]->slots != 0);
         B32 dst_slot_is_zero = (in->dst_map->slots[slot_idx] == 0);
-        if(src_slots_good && dst_slot_is_zero)
+        if (src_slots_good && dst_slot_is_zero)
         {
           in->dst_map->slots[slot_idx] = in->src_maps[src_map_idx]->slots[slot_idx];
         }
-        else if(src_slots_good && in->src_maps[src_map_idx]->slots[slot_idx] != 0)
+        else if (src_slots_good && in->src_maps[src_map_idx]->slots[slot_idx] != 0)
         {
           rdim_bake_string_chunk_list_concat_in_place(in->dst_map->slots[slot_idx], in->src_maps[src_map_idx]->slots[slot_idx]);
         }
@@ -218,13 +218,13 @@ ASYNC_WORK_DEF(rdim_bake_string_map_sort_work)
   RDIM_SortBakeStringMapSlotsIn *in = (RDIM_SortBakeStringMapSlotsIn *)input;
   ProfScope("sort bake string chunk list map range")
   {
-    for(U64 slot_idx = in->slot_idx;
+    for (U64 slot_idx = in->slot_idx;
         slot_idx < in->slot_idx+in->slot_count;
         slot_idx += 1)
     {
-      if(in->src_map->slots[slot_idx] != 0)
+      if (in->src_map->slots[slot_idx] != 0)
       {
-        if(in->src_map->slots[slot_idx]->total_count > 1)
+        if (in->src_map->slots[slot_idx]->total_count > 1)
         {
           in->dst_map->slots[slot_idx] = push_array(arena, RDIM_BakeStringChunkList, 1);
           *in->dst_map->slots[slot_idx] = rdim_bake_string_chunk_list_sorted_from_unsorted(arena, in->src_map->slots[slot_idx]);
@@ -467,12 +467,12 @@ rdim_local_resolve_incomplete_types(RDIM_TypeChunkList *types, RDIM_UDTChunkList
   
   ProfBegin("Build Hash Table");
   RDIM_Type **name_ht = rdim_push_array(scratch.arena, RDIM_Type *, total_type_count);
-  for(RDIM_TypeChunkNode *chunk = types->first; chunk != 0; chunk = chunk->next)
+  for (RDIM_TypeChunkNode *chunk = types->first; chunk != 0; chunk = chunk->next)
   {
-    for(RDI_U64 i = 0; i < chunk->count; i += 1)
+    for (RDI_U64 i = 0; i < chunk->count; i += 1)
     {
       RDIM_Type *type = &chunk->v[i];
-      if(RDI_TypeKind_FirstUserDefined <= type->kind && type->kind <= RDI_TypeKind_LastRecord)
+      if (RDI_TypeKind_FirstUserDefined <= type->kind && type->kind <= RDI_TypeKind_LastRecord)
       {
         RDIM_String8 name = type->link_name.size ? type->link_name : type->name;
         RDI_U64      hash = rdim_local_hash(name);
@@ -482,21 +482,21 @@ rdim_local_resolve_incomplete_types(RDIM_TypeChunkList *types, RDIM_UDTChunkList
         do
         {
           RDIM_Type *s = name_ht[slot];
-          if(s == 0)
+          if (s == 0)
           {
             break;
           }
           
-          if(s->link_name.size)
+          if (s->link_name.size)
           {
-            if(str8_match(s->link_name, name, 0))
+            if (str8_match(s->link_name, name, 0))
             {
               break;
             }
           }
-          else if(s->name.size)
+          else if (s->name.size)
           {
-            if(str8_match(s->name, type->name, 0))
+            if (str8_match(s->name, type->name, 0))
             {
               break;
             }
@@ -505,7 +505,7 @@ rdim_local_resolve_incomplete_types(RDIM_TypeChunkList *types, RDIM_UDTChunkList
           slot = (slot + 1) % total_type_count;
         } while (slot != best_slot);
         
-        if(name_ht[slot] == 0)
+        if (name_ht[slot] == 0)
         {
           name_ht[slot] = type;
         }
@@ -516,13 +516,13 @@ rdim_local_resolve_incomplete_types(RDIM_TypeChunkList *types, RDIM_UDTChunkList
   
   ProfBegin("Make Fwd Map");
   RDIM_Type **fwd_map = rdim_push_array(scratch.arena, RDIM_Type *, total_type_count);
-  for(RDIM_TypeChunkNode *chunk = types->first; chunk != 0; chunk = chunk->next)
+  for (RDIM_TypeChunkNode *chunk = types->first; chunk != 0; chunk = chunk->next)
   {
-    for(RDI_U64 i = 0; i < chunk->count; i += 1)
+    for (RDI_U64 i = 0; i < chunk->count; i += 1)
     {
       RDIM_Type *type = &chunk->v[i];
       
-      if(RDI_TypeKind_FirstIncomplete <= type->kind && type->kind <= RDI_TypeKind_LastIncomplete)
+      if (RDI_TypeKind_FirstIncomplete <= type->kind && type->kind <= RDI_TypeKind_LastIncomplete)
       {
         RDIM_String8 name      = type->link_name.size ? type->link_name : type->name;
         RDI_U64      hash      = rdim_local_hash(name);
@@ -532,14 +532,14 @@ rdim_local_resolve_incomplete_types(RDIM_TypeChunkList *types, RDIM_UDTChunkList
         RDIM_Type *match = 0;
         do
         {
-          if(name_ht[slot] == 0)
+          if (name_ht[slot] == 0)
           {
             break;
           }
           RDIM_Type *s = name_ht[slot];
-          if(s->link_name.size)
+          if (s->link_name.size)
           {
-            if(str8_match(s->link_name, type->link_name, 0))
+            if (str8_match(s->link_name, type->link_name, 0))
             {
               match = s;
               break;
@@ -547,7 +547,7 @@ rdim_local_resolve_incomplete_types(RDIM_TypeChunkList *types, RDIM_UDTChunkList
           }
           else
           {
-            if(str8_match(s->name, type->name, 0))
+            if (str8_match(s->name, type->name, 0))
             {
               match = s;
               break;
@@ -555,9 +555,9 @@ rdim_local_resolve_incomplete_types(RDIM_TypeChunkList *types, RDIM_UDTChunkList
           }
           
           slot = (slot + 1) % total_type_count;
-        } while(slot != best_slot);
+        } while (slot != best_slot);
         
-        if(match)
+        if (match)
         {
           type->kind = RDI_TypeKind_NULL;
           
@@ -570,25 +570,25 @@ rdim_local_resolve_incomplete_types(RDIM_TypeChunkList *types, RDIM_UDTChunkList
   ProfEnd();
   
   ProfBegin("Resolve Types");
-  for(RDIM_TypeChunkNode *chunk = types->first; chunk != 0; chunk = chunk->next)
+  for (RDIM_TypeChunkNode *chunk = types->first; chunk != 0; chunk = chunk->next)
   {
-    for(RDI_U64 i = 0; i < chunk->count; ++i)
+    for (RDI_U64 i = 0; i < chunk->count; ++i)
     {
       RDIM_Type *t = &chunk->v[i];
-      if(t->direct_type)
+      if (t->direct_type)
       {
         RDI_U64 direct_idx = rdim_idx_from_type(t->direct_type);
-        if(fwd_map[direct_idx])
+        if (fwd_map[direct_idx])
         {
           t->direct_type = fwd_map[direct_idx];
         }
       }
-      if(t->param_types)
+      if (t->param_types)
       {
-        for(RDI_U64 param_idx = 0; param_idx < t->count; param_idx += 1)
+        for (RDI_U64 param_idx = 0; param_idx < t->count; param_idx += 1)
         {
           RDI_U64 type_idx = rdim_idx_from_type(t->param_types[param_idx]);
-          if(fwd_map[type_idx])
+          if (fwd_map[type_idx])
           {
             t->param_types[param_idx] = fwd_map[type_idx];
           }
@@ -596,21 +596,21 @@ rdim_local_resolve_incomplete_types(RDIM_TypeChunkList *types, RDIM_UDTChunkList
       }
     }
   }
-  for(RDIM_UDTChunkNode *chunk = udts->first; chunk != 0; chunk = chunk->next)
+  for (RDIM_UDTChunkNode *chunk = udts->first; chunk != 0; chunk = chunk->next)
   {
-    for(RDI_U64 i = 0; i < chunk->count; ++i)
+    for (RDI_U64 i = 0; i < chunk->count; ++i)
     {
       RDIM_UDT *udt = &chunk->v[i];
       RDI_U64 self_idx = rdim_idx_from_type(udt->self_type);
-      if(fwd_map[self_idx])
+      if (fwd_map[self_idx])
       {
         udt->self_type = fwd_map[self_idx];
       }
       
-      for(RDIM_UDTMember *member = udt->first_member; member != 0; member = member->next)
+      for (RDIM_UDTMember *member = udt->first_member; member != 0; member = member->next)
       {
         RDI_U64 member_idx = rdim_idx_from_type(member->type);
-        if(fwd_map[member_idx])
+        if (fwd_map[member_idx])
         {
           member->type = fwd_map[member_idx];
         }
@@ -687,13 +687,13 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
       U64 num_tasks = (in_params->types.total_count+items_per_task-1)/items_per_task;
       RDIM_TypeChunkNode *chunk = in_params->types.first;
       U64 chunk_off = 0;
-      for(U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
+      for (U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
       {
         RDIM_BakeTypesStringsIn *in = push_array(scratch.arena, RDIM_BakeTypesStringsIn, 1);
         in->top = &bake_string_map_topology;
         in->maps = bake_string_maps__in_progress;
         U64 items_left = items_per_task;
-        for(;chunk != 0 && items_left > 0;)
+        for (;chunk != 0 && items_left > 0;)
         {
           U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
           RDIM_BakeTypesStringsInNode *n = push_array(scratch.arena, RDIM_BakeTypesStringsInNode, 1);
@@ -702,7 +702,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
           n->count = items_in_this_chunk;
           chunk_off += items_in_this_chunk;
           items_left -= items_in_this_chunk;
-          if(chunk_off >= chunk->count)
+          if (chunk_off >= chunk->count)
           {
             chunk = chunk->next;
             chunk_off = 0;
@@ -719,13 +719,13 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
       U64 num_tasks = (in_params->udts.total_count+items_per_task-1)/items_per_task;
       RDIM_UDTChunkNode *chunk = in_params->udts.first;
       U64 chunk_off = 0;
-      for(U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
+      for (U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
       {
         RDIM_BakeUDTsStringsIn *in = push_array(scratch.arena, RDIM_BakeUDTsStringsIn, 1);
         in->top = &bake_string_map_topology;
         in->maps = bake_string_maps__in_progress;
         U64 items_left = items_per_task;
-        for(;chunk != 0 && items_left > 0;)
+        for (;chunk != 0 && items_left > 0;)
         {
           U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
           RDIM_BakeUDTsStringsInNode *n = push_array(scratch.arena, RDIM_BakeUDTsStringsInNode, 1);
@@ -734,7 +734,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
           n->count = items_in_this_chunk;
           chunk_off += items_in_this_chunk;
           items_left -= items_in_this_chunk;
-          if(chunk_off >= chunk->count)
+          if (chunk_off >= chunk->count)
           {
             chunk = chunk->next;
             chunk_off = 0;
@@ -754,19 +754,19 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
         &in_params->procedures,
         &in_params->constants,
       };
-      for(U64 list_idx = 0; list_idx < ArrayCount(symbol_lists); list_idx += 1)
+      for (U64 list_idx = 0; list_idx < ArrayCount(symbol_lists); list_idx += 1)
       {
         U64 items_per_task = 4096;
         U64 num_tasks = (symbol_lists[list_idx]->total_count+items_per_task-1)/items_per_task;
         RDIM_SymbolChunkNode *chunk = symbol_lists[list_idx]->first;
         U64 chunk_off = 0;
-        for(U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
+        for (U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
         {
           RDIM_BakeSymbolsStringsIn *in = push_array(scratch.arena, RDIM_BakeSymbolsStringsIn, 1);
           in->top = &bake_string_map_topology;
           in->maps = bake_string_maps__in_progress;
           U64 items_left = items_per_task;
-          for(;chunk != 0 && items_left > 0;)
+          for (;chunk != 0 && items_left > 0;)
           {
             U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
             RDIM_BakeSymbolsStringsInNode *n = push_array(scratch.arena, RDIM_BakeSymbolsStringsInNode, 1);
@@ -775,7 +775,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
             n->count = items_in_this_chunk;
             chunk_off += items_in_this_chunk;
             items_left -= items_in_this_chunk;
-            if(chunk_off >= chunk->count)
+            if (chunk_off >= chunk->count)
             {
               chunk = chunk->next;
               chunk_off = 0;
@@ -793,13 +793,13 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
       U64 num_tasks = CeilIntegerDiv(in_params->inline_sites.total_count, items_per_task);
       RDIM_InlineSiteChunkNode *chunk = in_params->inline_sites.first;
       U64 chunk_off = 0;
-      for(U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
+      for (U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
       {
         RDIM_BakeInlineSiteStringsIn *in = push_array(scratch.arena, RDIM_BakeInlineSiteStringsIn, 1);
         in->top = &bake_string_map_topology;
         in->maps = bake_string_maps__in_progress;
         U64 items_left = items_per_task;
-        for(;chunk != 0 && items_left > 0;)
+        for (;chunk != 0 && items_left > 0;)
         {
           U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
           RDIM_BakeInlineSiteStringsInNode *n = push_array(scratch.arena, RDIM_BakeInlineSiteStringsInNode, 1);
@@ -808,7 +808,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
           n->count = items_in_this_chunk;
           chunk_off += items_in_this_chunk;
           items_left -= items_in_this_chunk;
-          if(chunk_off >= chunk->count)
+          if (chunk_off >= chunk->count)
           {
             chunk = chunk->next;
             chunk_off = 0;
@@ -825,13 +825,13 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
       U64 num_tasks = (in_params->scopes.total_count+items_per_task-1)/items_per_task;
       RDIM_ScopeChunkNode *chunk = in_params->scopes.first;
       U64 chunk_off = 0;
-      for(U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
+      for (U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
       {
         RDIM_BakeScopesStringsIn *in = push_array(scratch.arena, RDIM_BakeScopesStringsIn, 1);
         in->top = &bake_string_map_topology;
         in->maps = bake_string_maps__in_progress;
         U64 items_left = items_per_task;
-        for(;chunk != 0 && items_left > 0;)
+        for (;chunk != 0 && items_left > 0;)
         {
           U64 items_in_this_chunk = Min(items_per_task, chunk->count-chunk_off);
           RDIM_BakeScopesStringsInNode *n = push_array(scratch.arena, RDIM_BakeScopesStringsInNode, 1);
@@ -840,7 +840,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
           n->count = items_in_this_chunk;
           chunk_off += items_in_this_chunk;
           items_left -= items_in_this_chunk;
-          if(chunk_off >= chunk->count)
+          if (chunk_off >= chunk->count)
           {
             chunk = chunk->next;
             chunk_off = 0;
@@ -856,7 +856,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
   //
   RDIM_BuildBakeNameMapIn build_bake_name_map_in[RDI_NameMapKind_COUNT] = {0};
   ASYNC_Task *build_bake_name_map_task[RDI_NameMapKind_COUNT] = {0};
-  for(RDI_NameMapKind k = (RDI_NameMapKind)(RDI_NameMapKind_NULL+1);
+  for (RDI_NameMapKind k = (RDI_NameMapKind)(RDI_NameMapKind_NULL+1);
       k < RDI_NameMapKind_COUNT;
       k = (RDI_NameMapKind)(k+1))
   {
@@ -870,7 +870,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
   //
   ProfScope("join string map building tasks")
   {
-    for(ASYNC_TaskNode *n = bake_string_map_build_tasks.first; n != 0; n = n->next)
+    for (ASYNC_TaskNode *n = bake_string_map_build_tasks.first; n != 0; n = n->next)
     {
       async_task_join(n->v);
     }
@@ -887,7 +887,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
     ASYNC_Task **tasks = push_array(scratch.arena, ASYNC_Task *, num_tasks);
     
     // rjf: kickoff tasks
-    for(U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
+    for (U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
     {
       RDIM_JoinBakeStringMapSlotsIn *in = push_array(scratch.arena, RDIM_JoinBakeStringMapSlotsIn, 1);
       in->top = &bake_string_map_topology;
@@ -900,7 +900,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
     }
     
     // rjf: join tasks
-    for(U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
+    for (U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
     {
       async_task_join(tasks[task_idx]);
     }
@@ -919,7 +919,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
   {
     U64 slots_per_task = 256;
     U64 num_tasks = (bake_string_map_topology.slots_count+slots_per_task-1)/slots_per_task;
-    for(U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
+    for (U64 task_idx = 0; task_idx < num_tasks; task_idx += 1)
     {
       RDIM_SortBakeStringMapSlotsIn *in = push_array(scratch.arena, RDIM_SortBakeStringMapSlotsIn, 1);
       {
@@ -928,7 +928,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
         in->dst_map = sorted_bake_string_map__in_progress;
         in->slot_idx = task_idx*slots_per_task;
         in->slot_count = slots_per_task;
-        if(in->slot_idx+in->slot_count > bake_string_map_topology.slots_count)
+        if (in->slot_idx+in->slot_count > bake_string_map_topology.slots_count)
         {
           in->slot_count = bake_string_map_topology.slots_count - in->slot_idx;
         }
@@ -942,7 +942,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
   //
   ProfScope("join string map sorting tasks")
   {
-    for(ASYNC_TaskNode *n = sort_bake_string_map_tasks.first; n != 0; n = n->next)
+    for (ASYNC_TaskNode *n = sort_bake_string_map_tasks.first; n != 0; n = n->next)
     {
       async_task_join(n->v);
     }
@@ -1034,7 +1034,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
   RDIM_BakeNameMap *name_maps[RDI_NameMapKind_COUNT] = {0};
   ProfScope("join name map building tasks")
   {
-    for(RDI_NameMapKind k = (RDI_NameMapKind)(RDI_NameMapKind_NULL+1);
+    for (RDI_NameMapKind k = (RDI_NameMapKind)(RDI_NameMapKind_NULL+1);
         k < RDI_NameMapKind_COUNT;
         k = (RDI_NameMapKind)(k+1))
     {
@@ -1067,7 +1067,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
   {
     for EachNonZeroEnumVal(RDI_NameMapKind, k)
     {
-      if(name_maps[k] == 0 || name_maps[k]->name_count == 0)
+      if (name_maps[k] == 0 || name_maps[k]->name_count == 0)
       {
         continue;
       }
@@ -1108,7 +1108,7 @@ rdim_bake(Arena *arena, ASYNC_Root *async_root, RDIM_BakeParams *in_params)
     for EachNonZeroEnumVal(RDI_NameMapKind, k)
     {
       RDIM_NameMapBakeResult *bake = async_task_join_struct(bake_name_maps_tasks[k], RDIM_NameMapBakeResult);
-      if(bake != 0)
+      if (bake != 0)
       {
         name_map_bakes[k] = *bake;
       }
@@ -1154,7 +1154,7 @@ rdim_compress(Arena *arena, RDIM_SerializedSectionBundle *in)
     B32 should_compress = 1;
     
     // rjf: compress if needed
-    if(should_compress)
+    if (should_compress)
     {
       MemoryZero(ctx.m_hashTable, sizeof(U16)*(1<<ctx.m_tableSizeBits));
       dst->data = push_array_no_zero(arena, U8, src->encoded_size);

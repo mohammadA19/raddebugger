@@ -319,7 +319,7 @@ entry_point(CmdLine *cmdl)
         String8               raw_lines   = raw_lines_node->string;
         CV_C13LinesHeaderList parsed_list = cv_c13_lines_from_sub_sections(arena, raw_lines, rng_1u64(0, raw_lines.size));
         
-        for(CV_C13LinesHeaderNode *header_node = parsed_list.first; header_node != 0; header_node = header_node->next) {
+        for (CV_C13LinesHeaderNode *header_node = parsed_list.first; header_node != 0; header_node = header_node->next) {
           if (0 < header_node->v.sec_idx && header_node->v.sec_idx <= sections.count) {
             Assert(c13_lines_idx < c13_lines_count);
             U64 sec_voff = sections.v[header_node->v.sec_idx - 1].voff;
