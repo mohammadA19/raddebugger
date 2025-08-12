@@ -2550,7 +2550,6 @@ rd_view_state_from_cfg(RD_Cfg *cfg)
   return view_state;
 }
 
-typedef struct RD_WatchRowExtrasDrawData RD_WatchRowExtrasDrawData;
 struct RD_WatchRowExtrasDrawData
 {
   B32 breaks_from_prev;

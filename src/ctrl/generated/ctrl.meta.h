@@ -4,7 +4,7 @@
 //- GENERATED CODE
 
 
-typedef enum CTRL_EntityKind
+enum CTRL_EntityKind
 {
 CTRL_EntityKind_Null,
 CTRL_EntityKind_Root,
@@ -21,7 +21,7 @@ CTRL_EntityKind_AddressRangeAnnotation,
 CTRL_EntityKind_COUNT,
 } CTRL_EntityKind;
 
-typedef enum CTRL_ExceptionCodeKind
+enum CTRL_ExceptionCodeKind
 {
 CTRL_ExceptionCodeKind_Null,
 CTRL_ExceptionCodeKind_Win32CtrlC,

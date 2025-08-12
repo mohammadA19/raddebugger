@@ -309,16 +309,14 @@
 ////////////////////////////////
 //~ rjf: Top-Level Execution Types
 
-typedef enum ExecMode
+enum ExecMode
 {
   ExecMode_Normal,
   ExecMode_IPCSender,
   ExecMode_BinaryUtility,
   ExecMode_Help,
 }
-ExecMode;
 
-typedef struct IPCInfo IPCInfo;
 struct IPCInfo
 {
   U64 msg_size;

@@ -46,14 +46,13 @@ typedef struct DW_AbbrevTableEntry
   U64 off;
 } DW_AbbrevTableEntry;
 
-typedef struct DW_AbbrevTable DW_AbbrevTable;
 struct DW_AbbrevTable
 {
   U64                  count;
   DW_AbbrevTableEntry *entries;
 };
 
-typedef enum DW_AbbrevKind
+enum DW_AbbrevKind
 {
   DW_Abbrev_Null,
   DW_Abbrev_Tag,
@@ -63,8 +62,7 @@ typedef enum DW_AbbrevKind
   DW_Abbrev_DIEEnd,
 } DW_AbbrevKind;
 
-typedef U32 DW_AbbrevFlags;
-enum
+enum DW_AbbrevFlags : U32
 {
   DW_AbbrevFlag_HasImplicitConst = (1 << 0),
   DW_AbbrevFlag_HasChildren      = (1 << 1),

@@ -3,7 +3,7 @@
 
 #pragma once
 
-typedef enum
+enum
 {
   LNK_InputSource_CmdLine, // specified on command line
   LNK_InputSource_Default, // specified through defaultlib switch

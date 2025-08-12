@@ -85,7 +85,6 @@ typedef ptrdiff_t GLintptr;
 ////////////////////////////////
 //~ rjf: Shader Metadata Types
 
-typedef struct R_OGL_Attribute R_OGL_Attribute;
 struct R_OGL_Attribute
 {
   U64 index;
@@ -94,7 +93,6 @@ struct R_OGL_Attribute
   U64 count;
 };
 
-typedef struct R_OGL_AttributeArray R_OGL_AttributeArray;
 struct R_OGL_AttributeArray
 {
   R_OGL_Attribute *v;
@@ -161,7 +159,6 @@ R_OGL_ProcedureXList
 ////////////////////////////////
 //~ rjf: State Types
 
-typedef struct R_OGL_FormatInfo R_OGL_FormatInfo;
 struct R_OGL_FormatInfo
 {
   GLint internal_format;
@@ -169,7 +166,6 @@ struct R_OGL_FormatInfo
   GLenum base_type;
 };
 
-typedef struct R_OGL_Tex2D R_OGL_Tex2D;
 struct R_OGL_Tex2D
 {
   R_OGL_Tex2D *next;
@@ -179,14 +175,12 @@ struct R_OGL_Tex2D
   Vec2S32 size;
 };
 
-typedef struct R_OGL_FlushBuffer R_OGL_FlushBuffer;
 struct R_OGL_FlushBuffer
 {
   R_OGL_FlushBuffer *next;
   GLuint id;
 };
 
-typedef struct R_OGL_State R_OGL_State;
 struct R_OGL_State
 {
   Arena *arena;

@@ -5,21 +5,18 @@
 ////////////////////////////////
 //~ rjf: Parsed Structure Types
 
-typedef struct ELF_Shdr64Array ELF_Shdr64Array;
 struct ELF_Shdr64Array
 {
   ELF_Shdr64 *v;
   U64 count;
 };
 
-typedef struct ELF_Phdr64Array ELF_Phdr64Array;
 struct ELF_Phdr64Array
 {
   ELF_Phdr64 *v;
   U64 count;
 };
 
-typedef struct ELF_Bin ELF_Bin;
 struct ELF_Bin
 {
   ELF_Hdr64 hdr;
@@ -28,7 +25,6 @@ struct ELF_Bin
   ELF_Phdr64Array phdrs;
 };
 
-typedef struct ELF_GnuDebugLink ELF_GnuDebugLink;
 struct ELF_GnuDebugLink
 {
   String8 path;

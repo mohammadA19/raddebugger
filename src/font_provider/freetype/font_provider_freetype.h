@@ -14,13 +14,11 @@
 ////////////////////////////////
 //~ rjf: State Types
 
-typedef struct FP_FT_Font FP_FT_Font;
 struct FP_FT_Font
 {
   FT_Face face;
 };
 
-typedef struct FP_FT_State FP_FT_State;
 struct FP_FT_State
 {
   Arena *arena;

@@ -31,16 +31,14 @@ X(InlineSites,         inline_sites,                "INLINE SITES")\
 X(NameMaps,            name_maps,                   "NAME MAPS")\
 X(Strings,             strings,                     "STRINGS")\
 
-typedef enum RDI_DumpSubset
+enum RDI_DumpSubset
 {
 #define X(name, name_lower, title) RDI_DumpSubset_##name,
   RDI_DumpSubset_XList
 #undef X
 }
-RDI_DumpSubset;
 
-typedef U32 RDI_DumpSubsetFlags;
-enum
+enum RDI_DumpSubsetFlags : U32
 {
 #define X(name, name_lower, title) RDI_DumpSubsetFlag_##name = (1<<RDI_DumpSubset_##name),
   RDI_DumpSubset_XList

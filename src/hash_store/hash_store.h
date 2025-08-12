@@ -41,19 +41,16 @@
 ////////////////////////////////
 //~ rjf: Key Types
 
-typedef struct HS_Root HS_Root;
 struct HS_Root
 {
   U64 u64[1];
 };
 
-typedef struct HS_ID HS_ID;
 struct HS_ID
 {
   U128 u128[1];
 };
 
-typedef struct HS_Key HS_Key;
 struct HS_Key
 {
   HS_Root root;
@@ -64,7 +61,6 @@ struct HS_Key
 ////////////////////////////////
 //~ rjf: Cache Types
 
-typedef struct HS_RootIDChunkNode HS_RootIDChunkNode;
 struct HS_RootIDChunkNode
 {
   HS_RootIDChunkNode *next;
@@ -73,7 +69,6 @@ struct HS_RootIDChunkNode
   U64 cap;
 };
 
-typedef struct HS_RootIDChunkList HS_RootIDChunkList;
 struct HS_RootIDChunkList
 {
   HS_RootIDChunkNode *first;
@@ -82,7 +77,6 @@ struct HS_RootIDChunkList
   U64 total_count;
 };
 
-typedef struct HS_RootNode HS_RootNode;
 struct HS_RootNode
 {
   HS_RootNode *next;
@@ -92,7 +86,6 @@ struct HS_RootNode
   HS_RootIDChunkList ids;
 };
 
-typedef struct HS_RootSlot HS_RootSlot;
 struct HS_RootSlot
 {
   HS_RootNode *first;
@@ -102,7 +95,6 @@ struct HS_RootSlot
 #define HS_KEY_HASH_HISTORY_COUNT 64
 #define HS_KEY_HASH_HISTORY_STRONG_REF_COUNT 2
 
-typedef struct HS_KeyNode HS_KeyNode;
 struct HS_KeyNode
 {
   HS_KeyNode *next;
@@ -112,14 +104,12 @@ struct HS_KeyNode
   U64 hash_history_gen;
 };
 
-typedef struct HS_KeySlot HS_KeySlot;
 struct HS_KeySlot
 {
   HS_KeyNode *first;
   HS_KeyNode *last;
 };
 
-typedef struct HS_Node HS_Node;
 struct HS_Node
 {
   HS_Node *next;
@@ -132,14 +122,12 @@ struct HS_Node
   U64 downstream_ref_count;
 };
 
-typedef struct HS_Slot HS_Slot;
 struct HS_Slot
 {
   HS_Node *first;
   HS_Node *last;
 };
 
-typedef struct HS_Stripe HS_Stripe;
 struct HS_Stripe
 {
   Arena *arena;
@@ -150,14 +138,12 @@ struct HS_Stripe
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-typedef struct HS_Touch HS_Touch;
 struct HS_Touch
 {
   HS_Touch *next;
   U128 hash;
 };
 
-typedef struct HS_Scope HS_Scope;
 struct HS_Scope
 {
   HS_Scope *next;
@@ -167,7 +153,6 @@ struct HS_Scope
 ////////////////////////////////
 //~ rjf: Thread Context
 
-typedef struct HS_TCTX HS_TCTX;
 struct HS_TCTX
 {
   Arena *arena;
@@ -178,7 +163,6 @@ struct HS_TCTX
 ////////////////////////////////
 //~ rjf: Shared State
 
-typedef struct HS_Shared HS_Shared;
 struct HS_Shared
 {
   Arena *arena;

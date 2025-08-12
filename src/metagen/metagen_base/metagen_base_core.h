@@ -377,7 +377,6 @@ typedef S64      B64;
 typedef float    F32;
 typedef double   F64;
 typedef void VoidProc(void);
-typedef struct U128 U128;
 struct U128
 {
   U64 u64[2];
@@ -386,36 +385,33 @@ struct U128
 ////////////////////////////////
 //~ rjf: Basic Types & Spaces
 
-typedef enum Dimension
+enum Dimension
 {
   Dimension_X,
   Dimension_Y,
   Dimension_Z,
   Dimension_W,
 }
-Dimension;
 
-typedef enum Side
+enum Side
 {
   Side_Invalid = -1,
   Side_Min,
   Side_Max,
   Side_COUNT,
 }
-Side;
 #define side_flip(s) ((Side)(!(s)))
 
-typedef enum Axis2
+enum Axis2
 {
   Axis2_Invalid = -1,
   Axis2_X,
   Axis2_Y,
   Axis2_COUNT,
 }
-Axis2;
 #define axis2_flip(a) ((Axis2)(!(a)))
 
-typedef enum Corner
+enum Corner
 {
   Corner_Invalid = -1,
   Corner_00,
@@ -424,9 +420,8 @@ typedef enum Corner
   Corner_11,
   Corner_COUNT
 }
-Corner;
 
-typedef enum Dir2
+enum Dir2
 {
   Dir2_Invalid = -1,
   Dir2_Left,
@@ -435,14 +430,13 @@ typedef enum Dir2
   Dir2_Down,
   Dir2_COUNT
 }
-Dir2;
 #define axis2_from_dir2(d) (((d) & 1) ? Axis2_Y : Axis2_X)
 #define side_from_dir2(d) (((d) < Dir2_Right) ? Side_Min : Side_Max)
 
 ////////////////////////////////
 //~ rjf: Toolchain/Environment Enums
 
-typedef enum OperatingSystem
+enum OperatingSystem
 {
   OperatingSystem_Null,
   OperatingSystem_Windows,
@@ -450,9 +444,8 @@ typedef enum OperatingSystem
   OperatingSystem_Mac,
   OperatingSystem_COUNT,
 }
-OperatingSystem;
 
-typedef enum ImageType
+enum ImageType
 {
   Image_Null,
   Image_CoffPe,
@@ -461,7 +454,7 @@ typedef enum ImageType
   Image_Macho
 } ImageType;
 
-typedef enum Arch
+enum Arch
 {
   Arch_Null,
   Arch_x64,
@@ -470,9 +463,8 @@ typedef enum Arch
   Arch_arm32,
   Arch_COUNT,
 }
-Arch;
 
-typedef enum Compiler
+enum Compiler
 {
   Compiler_Null,
   Compiler_msvc,
@@ -480,19 +472,16 @@ typedef enum Compiler
   Compiler_clang,
   Compiler_COUNT,
 }
-Compiler;
 
 ////////////////////////////////
 //~ rjf: Text 2D Coordinates & Ranges
 
-typedef struct TxtPt TxtPt;
 struct TxtPt
 {
   S64 line;
   S64 column;
 };
 
-typedef struct TxtRng TxtRng;
 struct TxtRng
 {
   TxtPt min;
@@ -502,7 +491,6 @@ struct TxtRng
 ////////////////////////////////
 //~ Globally Unique Ids
 
-typedef union Guid Guid;
 union Guid
 {
   struct
@@ -519,25 +507,21 @@ StaticAssert(sizeof(Guid) == 16, g_guid_size_check);
 ////////////////////////////////
 //~ Arrays
 
-typedef struct U16Array U16Array;
 struct U16Array
 {
   U64  count;
   U16 *v;
 };
-typedef struct U32Array U32Array;
 struct U32Array
 {
   U64  count;
   U32 *v;
 };
-typedef struct U64Array U64Array;
 struct U64Array
 {
   U64  count;
   U64 *v;
 };
-typedef struct U128Array U128Array;
 struct U128Array
 {
   U64   count;
@@ -708,7 +692,7 @@ global const U64 bit64 = (1ull<<63);
 ////////////////////////////////
 //~ allen: Time
 
-typedef enum WeekDay
+enum WeekDay
 {
   WeekDay_Sun,
   WeekDay_Mon,
@@ -719,9 +703,8 @@ typedef enum WeekDay
   WeekDay_Sat,
   WeekDay_COUNT,
 }
-WeekDay;
 
-typedef enum Month
+enum Month
 {
   Month_Jan,
   Month_Feb,
@@ -737,9 +720,7 @@ typedef enum Month
   Month_Dec,
   Month_COUNT,
 }
-Month;
 
-typedef struct DateTime DateTime;
 struct DateTime
 {
   U16 micro_sec; // [0,999]
@@ -766,13 +747,11 @@ typedef U64 DenseTime;
 ////////////////////////////////
 //~ allen: Files
 
-typedef U32 FilePropertyFlags;
-enum
+enum FilePropertyFlags : U32
 {
   FilePropertyFlag_IsFolder = (1 << 0),
 };
 
-typedef struct FileProperties FileProperties;
 struct FileProperties
 {
   U64 size;

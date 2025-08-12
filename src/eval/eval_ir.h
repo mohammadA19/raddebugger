@@ -5,7 +5,7 @@
 ////////////////////////////////
 //~ rjf: Identifier Resolution Rule Types
 
-typedef enum E_IdentifierResolutionPath
+enum E_IdentifierResolutionPath
 {
   E_IdentifierResolutionPath_WildcardInst,
   E_IdentifierResolutionPath_ParentExpr,
@@ -19,9 +19,7 @@ typedef enum E_IdentifierResolutionPath
   E_IdentifierResolutionPath_RegisterAliases,
   E_IdentifierResolutionPath_Macros,
 }
-E_IdentifierResolutionPath;
 
-typedef struct E_IdentifierResolutionRule E_IdentifierResolutionRule;
 struct E_IdentifierResolutionRule
 {
   E_IdentifierResolutionPath *paths;
@@ -31,7 +29,6 @@ struct E_IdentifierResolutionRule
 ////////////////////////////////
 //~ rjf: IR State
 
-typedef struct E_IRCacheNode E_IRCacheNode;
 struct E_IRCacheNode
 {
   E_IRCacheNode *next;
@@ -40,14 +37,12 @@ struct E_IRCacheNode
   E_IRTreeAndType irtree;
 };
 
-typedef struct E_IRCacheSlot E_IRCacheSlot;
 struct E_IRCacheSlot
 {
   E_IRCacheNode *first;
   E_IRCacheNode *last;
 };
 
-typedef struct E_IRState E_IRState;
 struct E_IRState
 {
   Arena *arena;

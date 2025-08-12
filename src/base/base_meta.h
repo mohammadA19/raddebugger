@@ -12,7 +12,6 @@
 ////////////////////////////////
 //~ rjf: Tweak Info Tables
 
-typedef struct TweakB32Info TweakB32Info;
 struct TweakB32Info
 {
   String8 name;
@@ -20,7 +19,6 @@ struct TweakB32Info
   B32 *value_ptr;
 };
 
-typedef struct TweakF32Info TweakF32Info;
 struct TweakF32Info
 {
   String8 name;
@@ -29,21 +27,18 @@ struct TweakF32Info
   F32 *value_ptr;
 };
 
-typedef struct TweakB32InfoTable TweakB32InfoTable;
 struct TweakB32InfoTable
 {
   TweakB32Info *v;
   U64 count;
 };
 
-typedef struct TweakF32InfoTable TweakF32InfoTable;
 struct TweakF32InfoTable
 {
   TweakF32Info *v;
   U64 count;
 };
 
-typedef struct EmbedInfo EmbedInfo;
 struct EmbedInfo
 {
   String8 name;
@@ -51,7 +46,6 @@ struct EmbedInfo
   U128 *hash;
 };
 
-typedef struct EmbedInfoTable EmbedInfoTable;
 struct EmbedInfoTable
 {
   EmbedInfo *v;
@@ -61,7 +55,7 @@ struct EmbedInfoTable
 ////////////////////////////////
 //~ rjf: Type Info Types
 
-typedef enum TypeKind
+enum TypeKind
 {
   TypeKind_Null,
   
@@ -93,24 +87,19 @@ typedef enum TypeKind
   
   TypeKind_COUNT
 }
-TypeKind;
 
-typedef U32 TypeFlags;
-enum
+enum TypeFlags : U32
 {
   TypeFlag_IsPlainText = (1<<0),
   TypeFlag_IsCodeText  = (1<<1),
   TypeFlag_IsPathText  = (1<<2),
 };
 
-typedef U32 MemberFlags;
-enum
+enum MemberFlags : U32
 {
   MemberFlag_DoNotSerialize  = (1<<0),
 };
 
-typedef struct Type Type;
-typedef struct Member Member;
 struct Member
 {
   String8 name;
@@ -120,7 +109,6 @@ struct Member
   MemberFlags flags;
 };
 
-typedef struct Type Type;
 struct Type
 {
   TypeKind kind;
@@ -136,7 +124,6 @@ struct Type
 ////////////////////////////////
 //~ rjf: Type Serialization Parameters
 
-typedef struct TypeSerializePtrRefInfo TypeSerializePtrRefInfo;
 struct TypeSerializePtrRefInfo
 {
   Type *type;           // pointers to this
@@ -145,7 +132,6 @@ struct TypeSerializePtrRefInfo
   void *nil_ptr;        // is terminal if matching 0 or this
 };
 
-typedef struct TypeSerializeParams TypeSerializeParams;
 struct TypeSerializeParams
 {
   U64 *advance_out;

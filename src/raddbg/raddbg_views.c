@@ -2258,7 +2258,6 @@ RD_VIEW_UI_FUNCTION_DEF(text)
 ////////////////////////////////
 //~ rjf: disasm @view_hook_impl
 
-typedef struct RD_DisasmViewState RD_DisasmViewState;
 struct RD_DisasmViewState
 {
   B32 initialized;
@@ -2504,7 +2503,6 @@ RD_VIEW_UI_FUNCTION_DEF(disasm)
 ////////////////////////////////
 //~ rjf: memory @view_hook_impl
 
-typedef struct RD_MemoryViewState RD_MemoryViewState;
 struct RD_MemoryViewState
 {
   Rng1U64 last_view_range;
@@ -3730,7 +3728,6 @@ EV_EXPAND_RULE_INFO_FUNCTION_DEF(graph)
 ////////////////////////////////
 //~ rjf: bitmap @view_hook_impl
 
-typedef struct RD_BitmapBoxDrawData RD_BitmapBoxDrawData;
 struct RD_BitmapBoxDrawData
 {
   Rng2F32 src;
@@ -3741,7 +3738,6 @@ struct RD_BitmapBoxDrawData
   F32 ui_per_bmp_px;
 };
 
-typedef struct RD_BitmapCanvasBoxDrawData RD_BitmapCanvasBoxDrawData;
 struct RD_BitmapCanvasBoxDrawData
 {
   Vec2F32 view_center_pos;
@@ -4039,7 +4035,6 @@ RD_VIEW_UI_FUNCTION_DEF(bitmap)
 ////////////////////////////////
 //~ rjf: rgba @view_hook_impl
 
-typedef struct RD_EvalColor RD_EvalColor;
 struct RD_EvalColor
 {
   Vec4F32 rgba;
@@ -4286,7 +4281,6 @@ RD_VIEW_UI_FUNCTION_DEF(color)
 ////////////////////////////////
 //~ rjf: geo3d @view_hook_impl
 
-typedef struct RD_Geo3DViewState RD_Geo3DViewState;
 struct RD_Geo3DViewState
 {
   F32 yaw;
@@ -4294,7 +4288,6 @@ struct RD_Geo3DViewState
   F32 zoom;
 };
 
-typedef struct RD_Geo3DBoxDrawData RD_Geo3DBoxDrawData;
 struct RD_Geo3DBoxDrawData
 {
   F32 yaw;

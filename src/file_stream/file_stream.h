@@ -5,7 +5,6 @@
 ////////////////////////////////
 //~ rjf: Per-Path Info Cache Types
 
-typedef struct FS_RangeNode FS_RangeNode;
 struct FS_RangeNode
 {
   FS_RangeNode *next;
@@ -13,14 +12,12 @@ struct FS_RangeNode
   U64 working_count;
 };
 
-typedef struct FS_RangeSlot FS_RangeSlot;
 struct FS_RangeSlot
 {
   FS_RangeNode *first;
   FS_RangeNode *last;
 };
 
-typedef struct FS_Node FS_Node;
 struct FS_Node
 {
   FS_Node *next;
@@ -37,14 +34,12 @@ struct FS_Node
   FS_RangeSlot *slots;
 };
 
-typedef struct FS_Slot FS_Slot;
 struct FS_Slot
 {
   FS_Node *first;
   FS_Node *last;
 };
 
-typedef struct FS_Stripe FS_Stripe;
 struct FS_Stripe
 {
   Arena *arena;
@@ -55,7 +50,6 @@ struct FS_Stripe
 ////////////////////////////////
 //~ rjf: Shared State Bundle
 
-typedef struct FS_Shared FS_Shared;
 struct FS_Shared
 {
   Arena *arena;

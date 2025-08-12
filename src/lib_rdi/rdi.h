@@ -56,7 +56,7 @@ typedef int64_t  RDI_S64;
 //~ Format Types & Functions
 
 typedef RDI_U32 RDI_SectionKind;
-typedef enum RDI_SectionKindEnum
+enum RDI_SectionKindEnum
 {
 RDI_SectionKind_NULL                 = 0x0000,
 RDI_SectionKind_TopLevelInfo         = 0x0001,
@@ -101,14 +101,14 @@ RDI_SectionKind_COUNT                = 0x0027,
 } RDI_SectionKindEnum;
 
 typedef RDI_U32 RDI_SectionEncoding;
-typedef enum RDI_SectionEncodingEnum
+enum RDI_SectionEncodingEnum
 {
 RDI_SectionEncoding_Unpacked   = 0,
 RDI_SectionEncoding_LZB        = 1,
 } RDI_SectionEncodingEnum;
 
 typedef RDI_U32 RDI_Arch;
-typedef enum RDI_ArchEnum
+enum RDI_ArchEnum
 {
 RDI_Arch_NULL       = 0,
 RDI_Arch_X86        = 1,
@@ -116,13 +116,13 @@ RDI_Arch_X64        = 2,
 } RDI_ArchEnum;
 
 typedef RDI_U8 RDI_RegCode;
-typedef enum RDI_RegCodeEnum
+enum RDI_RegCodeEnum
 {
 RDI_RegCode_nil,
 } RDI_RegCodeEnum;
 
 typedef RDI_U8 RDI_RegCodeX86;
-typedef enum RDI_RegCodeX86Enum
+enum RDI_RegCodeX86Enum
 {
 RDI_RegCodeX86_nil        = 0,
 RDI_RegCodeX86_eax        = 1,
@@ -188,7 +188,7 @@ RDI_RegCodeX86_ymm7       = 60,
 } RDI_RegCodeX86Enum;
 
 typedef RDI_U8 RDI_RegCodeX64;
-typedef enum RDI_RegCodeX64Enum
+enum RDI_RegCodeX64Enum
 {
 RDI_RegCodeX64_nil        = 0,
 RDI_RegCodeX64_rax        = 1,
@@ -294,7 +294,7 @@ RDI_RegCodeX64_mxcsr_mask = 100,
 } RDI_RegCodeX64Enum;
 
 typedef RDI_U32 RDI_BinarySectionFlags;
-typedef enum RDI_BinarySectionFlagsEnum
+enum RDI_BinarySectionFlagsEnum
 {
 RDI_BinarySectionFlag_Read       = 1<<0,
 RDI_BinarySectionFlag_Write      = 1<<1,
@@ -302,7 +302,7 @@ RDI_BinarySectionFlag_Execute    = 1<<2,
 } RDI_BinarySectionFlagsEnum;
 
 typedef RDI_U32 RDI_Language;
-typedef enum RDI_LanguageEnum
+enum RDI_LanguageEnum
 {
 RDI_Language_NULL       = 0,
 RDI_Language_C          = 1,
@@ -312,7 +312,7 @@ RDI_Language_COUNT      = 4,
 } RDI_LanguageEnum;
 
 typedef RDI_U16 RDI_TypeKind;
-typedef enum RDI_TypeKindEnum
+enum RDI_TypeKindEnum
 {
 RDI_TypeKind_NULL                 = 0x0000,
 RDI_TypeKind_Void                 = 0x0001,
@@ -383,7 +383,7 @@ RDI_TypeKind_LastUserDefined      = RDI_TypeKind_IncompleteEnum,
 } RDI_TypeKindEnum;
 
 typedef RDI_U16 RDI_TypeModifierFlags;
-typedef enum RDI_TypeModifierFlagsEnum
+enum RDI_TypeModifierFlagsEnum
 {
 RDI_TypeModifierFlag_Const                = 1<<0,
 RDI_TypeModifierFlag_Volatile             = 1<<1,
@@ -391,13 +391,13 @@ RDI_TypeModifierFlag_Restrict             = 1<<2,
 } RDI_TypeModifierFlagsEnum;
 
 typedef RDI_U32 RDI_UDTFlags;
-typedef enum RDI_UDTFlagsEnum
+enum RDI_UDTFlagsEnum
 {
 RDI_UDTFlag_EnumMembers          = 1<<0,
 } RDI_UDTFlagsEnum;
 
 typedef RDI_U16 RDI_MemberKind;
-typedef enum RDI_MemberKindEnum
+enum RDI_MemberKindEnum
 {
 RDI_MemberKind_NULL                      = 0x0000,
 RDI_MemberKind_DataField                 = 0x0001,
@@ -412,7 +412,7 @@ RDI_MemberKind_NestedType                = 0x0300,
 } RDI_MemberKindEnum;
 
 typedef RDI_U32 RDI_LinkFlags;
-typedef enum RDI_LinkFlagsEnum
+enum RDI_LinkFlagsEnum
 {
 RDI_LinkFlag_External             = 1<<0,
 RDI_LinkFlag_TypeScoped           = 1<<1,
@@ -420,7 +420,7 @@ RDI_LinkFlag_ProcScoped           = 1<<2,
 } RDI_LinkFlagsEnum;
 
 typedef RDI_U32 RDI_LocalKind;
-typedef enum RDI_LocalKindEnum
+enum RDI_LocalKindEnum
 {
 RDI_LocalKind_NULL                 = 0x0,
 RDI_LocalKind_Parameter            = 0x1,
@@ -428,7 +428,7 @@ RDI_LocalKind_Variable             = 0x2,
 } RDI_LocalKindEnum;
 
 typedef RDI_U8 RDI_LocationKind;
-typedef enum RDI_LocationKindEnum
+enum RDI_LocationKindEnum
 {
 RDI_LocationKind_NULL                 = 0x0,
 RDI_LocationKind_AddrBytecodeStream   = 0x1,
@@ -439,7 +439,7 @@ RDI_LocationKind_ValReg               = 0x5,
 } RDI_LocationKindEnum;
 
 typedef RDI_U8 RDI_EvalOp;
-typedef enum RDI_EvalOpEnum
+enum RDI_EvalOpEnum
 {
 RDI_EvalOp_Stop                 = 0,
 RDI_EvalOp_Noop                 = 1,
@@ -496,7 +496,7 @@ RDI_EvalOp_COUNT                = 51,
 } RDI_EvalOpEnum;
 
 typedef RDI_U8 RDI_EvalTypeGroup;
-typedef enum RDI_EvalTypeGroupEnum
+enum RDI_EvalTypeGroupEnum
 {
 RDI_EvalTypeGroup_Other                = 0,
 RDI_EvalTypeGroup_U                    = 1,
@@ -507,7 +507,7 @@ RDI_EvalTypeGroup_COUNT                = 5,
 } RDI_EvalTypeGroupEnum;
 
 typedef RDI_U8 RDI_EvalConversionKind;
-typedef enum RDI_EvalConversionKindEnum
+enum RDI_EvalConversionKindEnum
 {
 RDI_EvalConversionKind_Noop                 = 0,
 RDI_EvalConversionKind_Legal                = 1,
@@ -518,7 +518,7 @@ RDI_EvalConversionKind_COUNT                = 5,
 } RDI_EvalConversionKindEnum;
 
 typedef RDI_U32 RDI_NameMapKind;
-typedef enum RDI_NameMapKindEnum
+enum RDI_NameMapKindEnum
 {
 RDI_NameMapKind_NULL                 = 0,
 RDI_NameMapKind_GlobalVariables      = 1,
@@ -1195,7 +1195,6 @@ typedef RDI_U32_Table RDI_U32_NameMapNodes;
 #define RDI_PUSHN_FROM_CTRLBITS(ctrlbits)     (((ctrlbits) >> 0) & 0xf)
 #define RDI_EncodeRegReadParam(reg,bytesize,bytepos) ((reg)|((bytesize)<<8)|((bytepos)<<16))
 
-typedef struct RDI_Header RDI_Header;
 struct RDI_Header
 {
 RDI_U64 magic;
@@ -1204,7 +1203,6 @@ RDI_U32 data_section_off;
 RDI_U32 data_section_count;
 };
 
-typedef struct RDI_Section RDI_Section;
 struct RDI_Section
 {
 RDI_SectionEncoding encoding;
@@ -1214,14 +1212,12 @@ RDI_U64 encoded_size;
 RDI_U64 unpacked_size;
 };
 
-typedef struct RDI_VMapEntry RDI_VMapEntry;
 struct RDI_VMapEntry
 {
 RDI_U64 voff;
 RDI_U64 idx;
 };
 
-typedef struct RDI_TopLevelInfo RDI_TopLevelInfo;
 struct RDI_TopLevelInfo
 {
 RDI_Arch arch;
@@ -1231,7 +1227,6 @@ RDI_U64 voff_max;
 RDI_U32 producer_name_string_idx;
 };
 
-typedef struct RDI_BinarySection RDI_BinarySection;
 struct RDI_BinarySection
 {
 RDI_U32 name_string_idx;
@@ -1242,7 +1237,6 @@ RDI_U64 foff_first;
 RDI_U64 foff_opl;
 };
 
-typedef struct RDI_FilePathNode RDI_FilePathNode;
 struct RDI_FilePathNode
 {
 RDI_U32 name_string_idx;
@@ -1252,7 +1246,6 @@ RDI_U32 next_sibling;
 RDI_U32 source_file_idx;
 };
 
-typedef struct RDI_SourceFile RDI_SourceFile;
 struct RDI_SourceFile
 {
 RDI_U32 file_path_node_idx;
@@ -1260,7 +1253,6 @@ RDI_U32 normal_full_path_string_idx;
 RDI_U32 source_line_map_idx;
 };
 
-typedef struct RDI_Unit RDI_Unit;
 struct RDI_Unit
 {
 RDI_U32 unit_name_string_idx;
@@ -1273,7 +1265,6 @@ RDI_Language language;
 RDI_U32 line_table_idx;
 };
 
-typedef struct RDI_LineTable RDI_LineTable;
 struct RDI_LineTable
 {
 RDI_U32 voffs_base_idx;
@@ -1283,21 +1274,18 @@ RDI_U32 lines_count;
 RDI_U32 cols_count;
 };
 
-typedef struct RDI_Line RDI_Line;
 struct RDI_Line
 {
 RDI_U32 file_idx;
 RDI_U32 line_num;
 };
 
-typedef struct RDI_Column RDI_Column;
 struct RDI_Column
 {
 RDI_U16 col_first;
 RDI_U16 col_opl;
 };
 
-typedef struct RDI_SourceLineMap RDI_SourceLineMap;
 struct RDI_SourceLineMap
 {
 RDI_U32 line_count;
@@ -1307,7 +1295,6 @@ RDI_U32 line_map_range_base_idx;
 RDI_U32 line_map_voff_base_idx;
 };
 
-typedef struct RDI_TypeNode RDI_TypeNode;
 struct RDI_TypeNode
 {
 RDI_TypeKind kind;
@@ -1358,7 +1345,6 @@ RDI_U32 byte_size;
   ;
 };
 
-typedef struct RDI_UDT RDI_UDT;
 struct RDI_UDT
 {
 RDI_U32 self_type_idx;
@@ -1370,7 +1356,6 @@ RDI_U32 line;
 RDI_U32 col;
 };
 
-typedef struct RDI_Member RDI_Member;
 struct RDI_Member
 {
 RDI_MemberKind kind;
@@ -1380,7 +1365,6 @@ RDI_U32 type_idx;
 RDI_U32 off;
 };
 
-typedef struct RDI_EnumMember RDI_EnumMember;
 struct RDI_EnumMember
 {
 RDI_U32 name_string_idx;
@@ -1388,7 +1372,6 @@ RDI_U32 pad;
 RDI_U64 val;
 };
 
-typedef struct RDI_GlobalVariable RDI_GlobalVariable;
 struct RDI_GlobalVariable
 {
 RDI_U32 name_string_idx;
@@ -1398,7 +1381,6 @@ RDI_U32 type_idx;
 RDI_U32 container_idx;
 };
 
-typedef struct RDI_ThreadVariable RDI_ThreadVariable;
 struct RDI_ThreadVariable
 {
 RDI_U32 name_string_idx;
@@ -1408,7 +1390,6 @@ RDI_U32 type_idx;
 RDI_U32 container_idx;
 };
 
-typedef struct RDI_Constant RDI_Constant;
 struct RDI_Constant
 {
 RDI_U32 name_string_idx;
@@ -1416,7 +1397,6 @@ RDI_U32 type_idx;
 RDI_U32 constant_value_idx;
 };
 
-typedef struct RDI_Procedure RDI_Procedure;
 struct RDI_Procedure
 {
 RDI_U32 name_string_idx;
@@ -1429,7 +1409,6 @@ RDI_U32 frame_base_location_first;
 RDI_U32 frame_base_location_opl;
 };
 
-typedef struct RDI_Scope RDI_Scope;
 struct RDI_Scope
 {
 RDI_U32 proc_idx;
@@ -1445,7 +1424,6 @@ RDI_U32 static_local_count;
 RDI_U32 inline_site_idx;
 };
 
-typedef struct RDI_InlineSite RDI_InlineSite;
 struct RDI_InlineSite
 {
 RDI_U32 name_string_idx;
@@ -1454,7 +1432,6 @@ RDI_U32 owner_type_idx;
 RDI_U32 line_table_idx;
 };
 
-typedef struct RDI_Local RDI_Local;
 struct RDI_Local
 {
 RDI_LocalKind kind;
@@ -1465,7 +1442,6 @@ RDI_U32 location_first;
 RDI_U32 location_opl;
 };
 
-typedef struct RDI_LocationBlock RDI_LocationBlock;
 struct RDI_LocationBlock
 {
 RDI_U32 scope_off_first;
@@ -1473,13 +1449,11 @@ RDI_U32 scope_off_opl;
 RDI_U32 location_data_off;
 };
 
-typedef struct RDI_LocationBytecodeStream RDI_LocationBytecodeStream;
 struct RDI_LocationBytecodeStream
 {
 RDI_LocationKind kind;
 };
 
-typedef struct RDI_LocationRegPlusU16 RDI_LocationRegPlusU16;
 struct RDI_LocationRegPlusU16
 {
 RDI_LocationKind kind;
@@ -1487,14 +1461,12 @@ RDI_RegCode reg_code;
 RDI_U16 offset;
 };
 
-typedef struct RDI_LocationReg RDI_LocationReg;
 struct RDI_LocationReg
 {
 RDI_LocationKind kind;
 RDI_RegCode reg_code;
 };
 
-typedef struct RDI_NameMap RDI_NameMap;
 struct RDI_NameMap
 {
 RDI_U32 bucket_base_idx;
@@ -1503,14 +1475,12 @@ RDI_U32 bucket_count;
 RDI_U32 node_count;
 };
 
-typedef struct RDI_NameMapBucket RDI_NameMapBucket;
 struct RDI_NameMapBucket
 {
 RDI_U32 first_node;
 RDI_U32 node_count;
 };
 
-typedef struct RDI_NameMapNode RDI_NameMapNode;
 struct RDI_NameMapNode
 {
 RDI_U32 string_idx;

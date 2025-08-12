@@ -4,7 +4,7 @@
 //- GENERATED CODE
 
 
-typedef enum R_Tex2DFormat
+enum R_Tex2DFormat
 {
 R_Tex2DFormat_R8,
 R_Tex2DFormat_RG8,
@@ -18,7 +18,7 @@ R_Tex2DFormat_RGBA32,
 R_Tex2DFormat_COUNT,
 } R_Tex2DFormat;
 
-typedef enum R_ResourceKind
+enum R_ResourceKind
 {
 R_ResourceKind_Static,
 R_ResourceKind_Dynamic,
@@ -26,14 +26,14 @@ R_ResourceKind_Stream,
 R_ResourceKind_COUNT,
 } R_ResourceKind;
 
-typedef enum R_Tex2DSampleKind
+enum R_Tex2DSampleKind
 {
 R_Tex2DSampleKind_Nearest,
 R_Tex2DSampleKind_Linear,
 R_Tex2DSampleKind_COUNT,
 } R_Tex2DSampleKind;
 
-typedef enum R_GeoTopologyKind
+enum R_GeoTopologyKind
 {
 R_GeoTopologyKind_Lines,
 R_GeoTopologyKind_LineStrip,
@@ -42,7 +42,7 @@ R_GeoTopologyKind_TriangleStrip,
 R_GeoTopologyKind_COUNT,
 } R_GeoTopologyKind;
 
-typedef enum R_PassKind
+enum R_PassKind
 {
 R_PassKind_UI,
 R_PassKind_Blur,

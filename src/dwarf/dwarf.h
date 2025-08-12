@@ -3,7 +3,7 @@
 
 
 typedef U16 DW_Version;
-typedef enum DW_VersionEnum
+enum DW_VersionEnum
 {
   DW_Version_Null,
   DW_Version_1,
@@ -15,7 +15,7 @@ typedef enum DW_VersionEnum
 } DW_VersionEnum;
 
 typedef U64 DW_Ext;
-typedef enum DW_ExtEnum
+enum DW_ExtEnum
 {
   DW_Ext_Null,
   
@@ -28,7 +28,7 @@ typedef enum DW_ExtEnum
 } DW_ExtEnum;
 
 #define DW_FormatFromSize(size) ((size) >= max_U32 ? DW_Format_64Bit : DW_Format_32Bit)
-typedef enum DW_Format
+enum DW_Format
 {
   DW_Format_Null,
   DW_Format_32Bit,
@@ -58,7 +58,7 @@ X(LineStr,    ".debug_line_str",    "__debug_line_str",    ".debug_line_str.dwo"
 X(Names,      ".debug_names",       "__debug_names",       ".debug_names.dwo"      )
 
 typedef U64 DW_SectionKind;
-typedef enum DW_SectionKindEnum
+enum DW_SectionKindEnum
 {
 #define X(_N,...) DW_Section_##_N,
   DW_SectionKind_XList(X)
@@ -111,7 +111,7 @@ X(SunAssembler,        0x9001) \
 X(BorlandDelphi,       0xB000)
 
 typedef U32 DW_Language;
-typedef enum DW_LanguageEnum
+enum DW_LanguageEnum
 {
 #define X(_N, _ID) DW_Language_##_N = _ID,
   DW_Language_XList(X)
@@ -127,7 +127,7 @@ X(DeclaredNotInlined, 2) \
 X(DeclaredInlined,    3)
 
 typedef U32 DW_InlKind;
-typedef enum DW_InlKindEnum
+enum DW_InlKindEnum
 {
 #define X(_N,_ID) DW_Inl_##_N = _ID,
   DW_Inl_XList(X)
@@ -149,7 +149,7 @@ X(SetPrologueEnd,   0x0A)   \
 X(SetEpilogueBegin, 0x0B)   \
 X(SetIsa,           0x0C)   \
 
-typedef enum DW_StdOpcode
+enum DW_StdOpcode
 {
 #define X(_N,_ID) DW_StdOpcode_##_N = _ID,
   DW_StdOpcode_XList(X)
@@ -165,7 +165,7 @@ X(SetDiscriminator, 0x04)   \
 X(UserLo,           0x80)   \
 X(UserHi,           0xff)
 
-typedef enum DW_ExtOpcode
+enum DW_ExtOpcode
 {
 #define X(_N,_ID) DW_ExtOpcode_##_N = _ID,
   DW_ExtOpcode_XList(X)
@@ -179,7 +179,7 @@ X(DownCase,        0x02)     \
 X(CaseInsensitive, 0x03)
 
 typedef U64 DW_IDCaseKind;
-typedef enum DW_IDCaseKindEnum
+enum DW_IDCaseKindEnum
 {
 #define X(_N,_ID) DW_IDCase_##_N = _ID,
   DW_IDCaseKind_XList(X)
@@ -263,7 +263,7 @@ X(GNU_CallSite,          0x4109) \
 X(GNU_CallSiteParameter, 0x410a)
 
 typedef U64 DW_TagKind;
-typedef enum DW_TagKindEnum
+enum DW_TagKindEnum
 {
   DW_TagKind_Null,
 #define X(_N,_ID) DW_TagKind_##_N = _ID,
@@ -301,7 +301,7 @@ X(StrOffsetsPtr, 15)             \
 X(AddrPtr,       16)
 
 typedef U32 DW_AttribClass;
-typedef enum DW_AttribClassEnum
+enum DW_AttribClassEnum
 {
 #define X(_N,_ID) DW_AttribClass_##_N = (1 << _ID),
   DW_AttribClass_V3_XList(X)
@@ -476,7 +476,7 @@ X(GNU_RefAlt,    DW_AttribClass_Undefined) \
 X(GNU_StrpAlt,   DW_AttribClass_String)
 
 typedef U64 DW_FormKind;
-typedef enum DW_FormEnum
+enum DW_FormEnum
 {
   DW_Form_Null,
 #define X(_N, _ID) DW_Form_##_N = _ID,
@@ -1155,7 +1155,7 @@ X(MIPS_AssumedShapeDopeType,  DW_AttribClass_Reference) \
 X(MIPS_AssumedSize,           DW_AttribClass_Reference)
 
 typedef U32 DW_AttribKind;
-typedef enum DW_AttribKindEnum
+enum DW_AttribKindEnum
 {
   DW_AttribKind_Null,
 #define X(_N,_ID,...) DW_AttribKind_##_N = _ID,
@@ -1194,7 +1194,7 @@ X(Ucs,            0x11) \
 X(Ascii,          0x12)
 
 typedef U64 DW_ATE;
-typedef enum DW_ATEEnum
+enum DW_ATEEnum
 {
 #define X(_N,_ID) DW_ATE_##_N = _ID,
   DW_ATE_XList(X)
@@ -1209,7 +1209,7 @@ X(PassByValue,     0x4)                 \
 X(PassByReference, 0x5)
 
 typedef U64 DW_CallingConventionKind;
-typedef enum DW_CallingConventionKindEnum
+enum DW_CallingConventionKindEnum
 {
 #define X(_N,_ID) DW_CallingConventionKind_##_N = _ID,
   DW_CallingConventionKind_XList(X)
@@ -1222,7 +1222,7 @@ X(Private,   0x01) \
 X(Protected, 0x02)
 
 typedef U64 DW_AccessKind;
-typedef enum DW_AccessKindEnum
+enum DW_AccessKindEnum
 {
 #define X(_N,_ID) DW_AccessKind_##_N = _ID,
   DW_AccessKind_XList(X)
@@ -1235,7 +1235,7 @@ X(Virtual,     0x01)             \
 X(PureVirtual, 0x02)
 
 typedef U64 DW_VirtualityKind;
-typedef enum DW_VirtualityEnum
+enum DW_VirtualityEnum
 {
 #define X(_N,_ID) DW_VirtualityKind_##_N = _ID,
   DW_VirtualityKind_XList(X)
@@ -1253,7 +1253,7 @@ X(StartEnd,     0x06)        \
 X(StartLength,  0x07)
 
 typedef U8 DW_RLE;
-typedef enum DW_RLE_Enum
+enum DW_RLE_Enum
 {
 #define X(_N,_ID) DW_RLE_##_N = _ID,
   DW_RngListEntryKind(X)
@@ -1275,7 +1275,7 @@ X(StartLength,     0x08)
 X(GNU_ViewPair, 0x9)
 
 typedef U8 DW_LLE;
-typedef enum DW_LLE_Enum
+enum DW_LLE_Enum
 {
 #define X(_N,_ID) DW_LLE_##_N = _ID,
   DW_LocListEntry_XList(X)
@@ -1291,7 +1291,7 @@ X(Near32, 4)                \
 X(Far32,  5)
 
 typedef U64 DW_AddrClass;
-typedef enum DW_AddrClassEnum
+enum DW_AddrClassEnum
 {
 #define X(_N, _ID) DW_AddrClassKind_##_N = _ID,
   DW_AddrClass_XList(X)
@@ -1308,7 +1308,7 @@ X(SplitCompile, 5)             \
 X(SplitType,    6)
 
 typedef U8 DW_CompUnitKind;
-typedef enum DW_CompUnitKindEnum
+enum DW_CompUnitKindEnum
 {
 #define X(_N, _ID) DW_CompUnitKind_##_N = _ID,
   DW_CompUnitKind_XList(X)
@@ -1326,7 +1326,7 @@ X(MD5,            0x5)       \
 X(LLVM_Source,    0x2001)
 
 typedef U64 DW_LNCT;
-typedef enum DW_LNCTEnum
+enum DW_LNCTEnum
 {
 #define X(_N, _ID) DW_LNCT_##_N = _ID,
   DW_LNCT_XList(X)
@@ -1366,7 +1366,7 @@ X(Offset,            0x80)  \
 X(Restore,           0xC0)
 
 typedef U8 DW_CFA;
-typedef enum DW_CFAEnum
+enum DW_CFAEnum
 {
 #define X(_N, _ID) DW_CFA_##_N = _ID,
   DW_CFA_Kind1_XList(X)
@@ -1377,8 +1377,7 @@ typedef enum DW_CFAEnum
   DW_CFA_OplKind2 = DW_CFA_Restore,
 } DW_CFAEnum;
 
-typedef U8 DW_CFAMask;
-enum
+enum DW_CFAMask : U8
 {
   //  kind1:  opcode: [0,5] zeroes:[6,7]; kind2:  operand:[0,5] opcode:[6,7] 
   DW_CFAMask_OpcodeHi = 0xC0,
@@ -1574,7 +1573,7 @@ X(GNU_AddrIndex,       0xfb) \
 X(GNU_ConstIndex,      0xfc)
 
 typedef U64 DW_ExprOp;
-typedef enum DW_ExprOpEnum
+enum DW_ExprOpEnum
 {
 #define X(_N, _ID) DW_ExprOp_##_N = _ID,
   DW_Expr_V3_XList(X)
@@ -1715,7 +1714,7 @@ X(Ldtr,    63, nil,    0, 0)
 typedef U32 DW_Reg;
 
 typedef DW_Reg DW_RegX86;
-typedef enum DW_RegX86Enum
+enum DW_RegX86Enum
 {
 #define X(_N,_ID,...) DW_RegX86_##_N = _ID,
   DW_Regs_X86_XList(X)
@@ -1723,7 +1722,7 @@ typedef enum DW_RegX86Enum
 } DW_RegX86Enum;
 
 typedef DW_Reg DW_RegX64;
-typedef enum DW_RegX64Enum
+enum DW_RegX64Enum
 {
 #define X(_N,_ID,...) DW_RegX64_##_N = _ID,
   DW_Regs_X64_XList(X)

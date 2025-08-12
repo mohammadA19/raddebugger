@@ -5,7 +5,6 @@
 ////////////////////////////////
 //~ rjf: Interpretation Context
 
-typedef struct E_InterpretCtx E_InterpretCtx;
 struct E_InterpretCtx
 {
   void *space_rw_user_data;

@@ -5,7 +5,6 @@
 ////////////////////////////////
 //~ rjf: Cache Types
 
-typedef struct MTX_Node MTX_Node;
 struct MTX_Node
 {
   MTX_Node *next;
@@ -13,14 +12,12 @@ struct MTX_Node
   U128 key;
 };
 
-typedef struct MTX_Slot MTX_Slot;
 struct MTX_Slot
 {
   MTX_Node *first;
   MTX_Node *last;
 };
 
-typedef struct MTX_Stripe MTX_Stripe;
 struct MTX_Stripe
 {
   Arena *arena;
@@ -31,14 +28,12 @@ struct MTX_Stripe
 ////////////////////////////////
 //~ rjf: Mutation Thread Types
 
-typedef struct MTX_Op MTX_Op;
 struct MTX_Op
 {
   Rng1U64 range;
   String8 replace;
 };
 
-typedef struct MTX_MutThread MTX_MutThread;
 struct MTX_MutThread
 {
   U64 ring_size;
@@ -53,7 +48,6 @@ struct MTX_MutThread
 ////////////////////////////////
 //~ rjf: Shared State
 
-typedef struct MTX_Shared MTX_Shared;
 struct MTX_Shared
 {
   Arena *arena;

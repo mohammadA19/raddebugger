@@ -3,7 +3,6 @@
 
 #pragma once
 
-typedef struct D2R_ConvertParams D2R_ConvertParams;
 struct D2R_ConvertParams
 {
   String8 dbg_name;

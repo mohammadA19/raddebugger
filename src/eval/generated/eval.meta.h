@@ -4,7 +4,7 @@
 //- GENERATED CODE
 
 
-typedef enum E_TokenKind
+enum E_TokenKind
 {
 E_TokenKind_Null,
 E_TokenKind_Identifier,
@@ -15,7 +15,7 @@ E_TokenKind_Symbol,
 E_TokenKind_COUNT,
 } E_TokenKind;
 
-typedef enum E_TypeKind
+enum E_TypeKind
 {
 E_TypeKind_Null,
 E_TypeKind_Void,
@@ -94,7 +94,7 @@ E_TypeKind_LastMeta        = E_TypeKind_MetaDescription,
 } E_TypeKind;
 
 typedef U32 E_ExprKind;
-typedef enum E_ExprKindEnum
+enum E_ExprKindEnum
 {
 E_ExprKind_Nil,
 E_ExprKind_Ref,
@@ -149,7 +149,7 @@ E_ExprKind_Define,
 E_ExprKind_COUNT,
 } E_ExprKindEnum;
 
-typedef enum E_InterpretationCode
+enum E_InterpretationCode
 {
 E_InterpretationCode_Good,
 E_InterpretationCode_DivideByZero,

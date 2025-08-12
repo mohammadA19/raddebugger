@@ -1,5 +1,5 @@
 
-typedef enum
+enum
 {
   COFF_SymbolLocation_Null,
   COFF_SymbolLocation_Section,

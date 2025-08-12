@@ -5,16 +5,15 @@
 ////////////////////////////////
 //~ rjf: Value Types
 
-typedef enum TXT_LineEndKind
+enum TXT_LineEndKind
 {
   TXT_LineEndKind_Null,
   TXT_LineEndKind_LF,
   TXT_LineEndKind_CRLF,
   TXT_LineEndKind_COUNT
 }
-TXT_LineEndKind;
 
-typedef enum TXT_TokenKind
+enum TXT_TokenKind
 {
   TXT_TokenKind_Null,
   TXT_TokenKind_Error,
@@ -28,16 +27,13 @@ typedef enum TXT_TokenKind
   TXT_TokenKind_Meta, // preprocessor, etc.
   TXT_TokenKind_COUNT
 }
-TXT_TokenKind;
 
-typedef struct TXT_Token TXT_Token;
 struct TXT_Token
 {
   TXT_TokenKind kind;
   Rng1U64 range;
 };
 
-typedef struct TXT_TokenChunkNode TXT_TokenChunkNode;
 struct TXT_TokenChunkNode
 {
   TXT_TokenChunkNode *next;
@@ -46,7 +42,6 @@ struct TXT_TokenChunkNode
   TXT_Token *v;
 };
 
-typedef struct TXT_TokenChunkList TXT_TokenChunkList;
 struct TXT_TokenChunkList
 {
   TXT_TokenChunkNode *first;
@@ -55,14 +50,12 @@ struct TXT_TokenChunkList
   U64 token_count;
 };
 
-typedef struct TXT_TokenNode TXT_TokenNode;
 struct TXT_TokenNode
 {
   TXT_TokenNode *next;
   TXT_Token v;
 };
 
-typedef struct TXT_TokenList TXT_TokenList;
 struct TXT_TokenList
 {
   TXT_TokenNode *first;
@@ -70,21 +63,18 @@ struct TXT_TokenList
   U64 count;
 };
 
-typedef struct TXT_TokenArray TXT_TokenArray;
 struct TXT_TokenArray
 {
   U64 count;
   TXT_Token *v;
 };
 
-typedef struct TXT_TokenArrayArray TXT_TokenArrayArray;
 struct TXT_TokenArrayArray
 {
   U64 count;
   TXT_TokenArray *v;
 };
 
-typedef struct TXT_ScopeNode TXT_ScopeNode;
 struct TXT_ScopeNode
 {
   U64 first_num;
@@ -94,28 +84,24 @@ struct TXT_ScopeNode
   Rng1U64 token_idx_range;
 };
 
-typedef struct TXT_ScopeNodeArray TXT_ScopeNodeArray;
 struct TXT_ScopeNodeArray
 {
   TXT_ScopeNode *v;
   U64 count;
 };
 
-typedef struct TXT_ScopePt TXT_ScopePt;
 struct TXT_ScopePt
 {
   U64 token_idx;
   U64 scope_idx;
 };
 
-typedef struct TXT_ScopePtArray TXT_ScopePtArray;
 struct TXT_ScopePtArray
 {
   TXT_ScopePt *v;
   U64 count;
 };
 
-typedef struct TXT_TextInfo TXT_TextInfo;
 struct TXT_TextInfo
 {
   U64 lines_count;
@@ -129,7 +115,6 @@ struct TXT_TextInfo
   U64 bytes_to_process;
 };
 
-typedef struct TXT_LineTokensSlice TXT_LineTokensSlice;
 struct TXT_LineTokensSlice
 {
   TXT_TokenArray *line_tokens;
@@ -138,7 +123,7 @@ struct TXT_LineTokensSlice
 ////////////////////////////////
 //~ rjf: Language Kind Types
 
-typedef enum TXT_LangKind
+enum TXT_LangKind
 {
   TXT_LangKind_Null,
   TXT_LangKind_C,
@@ -149,14 +134,12 @@ typedef enum TXT_LangKind
   TXT_LangKind_DisasmX64Intel,
   TXT_LangKind_COUNT
 }
-TXT_LangKind;
 
 typedef TXT_TokenArray TXT_LangLexFunctionType(Arena *arena, U64 *bytes_processed_counter, String8 string);
 
 ////////////////////////////////
 //~ rjf: Cache Types
 
-typedef struct TXT_Node TXT_Node;
 struct TXT_Node
 {
   // rjf: links
@@ -179,14 +162,12 @@ struct TXT_Node
   U64 load_count;
 };
 
-typedef struct TXT_Slot TXT_Slot;
 struct TXT_Slot
 {
   TXT_Node *first;
   TXT_Node *last;
 };
 
-typedef struct TXT_Stripe TXT_Stripe;
 struct TXT_Stripe
 {
   Arena *arena;
@@ -197,7 +178,6 @@ struct TXT_Stripe
 ////////////////////////////////
 //~ rjf: Scoped Access
 
-typedef struct TXT_Touch TXT_Touch;
 struct TXT_Touch
 {
   TXT_Touch *next;
@@ -205,7 +185,6 @@ struct TXT_Touch
   TXT_LangKind lang;
 };
 
-typedef struct TXT_Scope TXT_Scope;
 struct TXT_Scope
 {
   TXT_Scope *next;
@@ -215,7 +194,6 @@ struct TXT_Scope
 ////////////////////////////////
 //~ rjf: Thread Context
 
-typedef struct TXT_TCTX TXT_TCTX;
 struct TXT_TCTX
 {
   Arena *arena;
@@ -226,7 +204,6 @@ struct TXT_TCTX
 ////////////////////////////////
 //~ rjf: Shared State
 
-typedef struct TXT_Shared TXT_Shared;
 struct TXT_Shared
 {
   Arena *arena;

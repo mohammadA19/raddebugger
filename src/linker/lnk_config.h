@@ -13,20 +13,20 @@
 
 #define LNK_DEFAULT_THREAD_POOL_NAME "RADLINK_THREAD_POOL"
 
-typedef enum
+enum
 {
   LNK_ParseU64Flag_CheckUnder32bit = (1 << 0),
   LNK_ParseU64Flag_CheckPow2       = (1 << 1),
 } LNK_ParseU64Flags;
 
-typedef enum
+enum
 {
   LNK_SwitchState_Null,
   LNK_SwitchState_No,
   LNK_SwitchState_Yes
 } LNK_SwitchState;
 
-typedef enum
+enum
 {
   LNK_CmdSwitch_Null,
   LNK_CmdSwitch_NotImplemented,
@@ -200,7 +200,7 @@ typedef struct LNK_CmdSwitch
   char             *desc;
 } LNK_CmdSwitch;
 
-typedef enum 
+enum 
 {
   LNK_Input_Null,
   LNK_Input_Obj,
@@ -222,7 +222,7 @@ enum
 };
 typedef U64 LNK_ConfigFlags;
 
-typedef enum
+enum
 {
   LNK_DebugMode_Null,
   LNK_DebugMode_None,
@@ -241,7 +241,7 @@ enum
 };
 typedef U32 LNK_GuardFlags;
 
-typedef enum
+enum
 {
   LNK_ManifestOpt_Null,
   LNK_ManifestOpt_WriteToFile,
@@ -288,13 +288,13 @@ typedef struct LNK_MergeDirectiveList
   LNK_MergeDirectiveNode *last;
 } LNK_MergeDirectiveList;
 
-typedef enum
+enum
 {
   LNK_DebugInfoGuid_Null,
   Lnk_DebugInfoGuid_ImageBlake3,
 } LNK_DebugInfoGuidType;
 
-typedef enum
+enum
 {
   LNK_TypeNameHashMode_Null,
   LNK_TypeNameHashMode_None,
@@ -399,7 +399,7 @@ typedef struct LNK_Config
 
 // --- MSVC Error Codes --------------------------------------------------------
 
-typedef enum
+enum
 {
   LNK_MsErrorCode_Lnk1000 = 1000,
   LNK_MsErrorCode_Lnk1103 = 1103,

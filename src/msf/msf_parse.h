@@ -5,7 +5,6 @@
 ////////////////////////////////
 //~ rjf: MSF Parser Helper Types
 
-typedef struct MSF_RawStream MSF_RawStream;
 struct MSF_RawStream
 {
   U64 size;
@@ -16,7 +15,6 @@ struct MSF_RawStream
   } u;
 };
 
-typedef struct MSF_RawStreamTable MSF_RawStreamTable;
 struct MSF_RawStreamTable
 {
   U64            total_page_count;
@@ -26,7 +24,6 @@ struct MSF_RawStreamTable
   MSF_RawStream *streams;
 };
 
-typedef struct MSF_Parsed MSF_Parsed;
 struct MSF_Parsed
 {
   String8 *streams;

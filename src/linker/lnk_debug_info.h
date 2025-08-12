@@ -62,7 +62,7 @@ typedef struct LNK_CodeViewInput
 
 // --- Leaf Ref ----------------------------------------------------------------
 
-typedef enum
+enum
 {
   LNK_LeafLocType_Internal,
   LNK_LeafLocType_External,

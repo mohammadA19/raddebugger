@@ -4,7 +4,7 @@
 //- GENERATED CODE
 
 
-typedef enum D_CmdKind
+enum D_CmdKind
 {
 D_CmdKind_Null,
 D_CmdKind_LaunchAndRun,

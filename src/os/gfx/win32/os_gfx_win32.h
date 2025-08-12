@@ -24,14 +24,12 @@
 ////////////////////////////////
 //~ rjf: Windows
 
-typedef struct OS_W32_TitleBarClientArea OS_W32_TitleBarClientArea;
 struct OS_W32_TitleBarClientArea
 {
   OS_W32_TitleBarClientArea *next;
   Rng2F32 rect;
 };
 
-typedef struct OS_W32_Window OS_W32_Window;
 struct OS_W32_Window
 {
   OS_W32_Window *next;
@@ -54,7 +52,6 @@ struct OS_W32_Window
 ////////////////////////////////
 //~ rjf: Monitor Gathering Bundle
 
-typedef struct OS_W32_MonitorGatherBundle OS_W32_MonitorGatherBundle;
 struct OS_W32_MonitorGatherBundle
 {
   Arena *arena;
@@ -64,7 +61,6 @@ struct OS_W32_MonitorGatherBundle
 ////////////////////////////////
 //~ rjf: Global State
 
-typedef struct OS_W32_GfxState OS_W32_GfxState;
 struct OS_W32_GfxState
 {
   Arena *arena;

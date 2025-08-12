@@ -30,7 +30,6 @@ PTRACE_O_TRACECLONE)
 
 #pragma pack(push, 1)
 
-typedef struct DMN_LNX_UserRegsX64 DMN_LNX_UserRegsX64;
 struct DMN_LNX_UserRegsX64
 {
   U64 r15;
@@ -62,7 +61,6 @@ struct DMN_LNX_UserRegsX64
 	U64 gs;
 };
 
-typedef struct DMN_LNX_XSaveLegacy DMN_LNX_XSaveLegacy;
 struct DMN_LNX_XSaveLegacy
 {
   U16 fcw;
@@ -91,7 +89,6 @@ struct DMN_LNX_XSaveLegacy
   U8 padding[96];
 };
 
-typedef struct DMN_LNX_XSaveHeader DMN_LNX_XSaveHeader;
 struct DMN_LNX_XSaveHeader
 {
   U64 xstate_bv;
@@ -105,7 +102,6 @@ struct DMN_LNX_XSaveHeader
 // and there can be more after that. Requires CPUID to be totally compliant to the standard.
 // See intel's manual on the xsave format for more info.
 //
-typedef struct DMN_LNX_XSave DMN_LNX_XSave;
 struct DMN_LNX_XSave
 {
   DMN_LNX_XSaveLegacy legacy;
@@ -113,7 +109,6 @@ struct DMN_LNX_XSave
   U8 ymmh[256];
 };
 
-typedef struct DMN_LNX_UserX64 DMN_LNX_UserX64;
 struct DMN_LNX_UserX64
 {
   DMN_LNX_UserRegsX64 regs;
@@ -128,7 +123,6 @@ struct DMN_LNX_UserX64
   U64 u_debugreg[8];
 };
 
-typedef struct DMN_LNX_UserRegsX86 DMN_LNX_UserRegsX86;
 struct DMN_LNX_UserRegsX86
 {
   U32 ebx;
@@ -151,7 +145,6 @@ struct DMN_LNX_UserRegsX86
 };
 
 // NOTE(rjf): (32-Bit Protected Mode Format)
-typedef struct DMN_LNX_FSave DMN_LNX_FSave;
 struct DMN_LNX_FSave
 {
   // control registers
@@ -172,7 +165,6 @@ struct DMN_LNX_FSave
   U8 st[80];
 };
 
-typedef struct DMN_LNX_UserX86 DMN_LNX_UserX86;
 struct DMN_LNX_UserX86
 {
   DMN_LNX_UserRegsX86 regs;
@@ -191,7 +183,6 @@ struct DMN_LNX_UserX86
 ////////////////////////////////
 //~ rjf: Process Info Extraction Types
 
-typedef struct DMN_LNX_ProcessAux DMN_LNX_ProcessAux;
 struct DMN_LNX_ProcessAux
 {
   B32 filled;
@@ -202,28 +193,24 @@ struct DMN_LNX_ProcessAux
   U64 pagesz;
 };
 
-typedef struct DMN_LNX_PhdrInfo DMN_LNX_PhdrInfo;
 struct DMN_LNX_PhdrInfo
 {
   Rng1U64 range;
   U64 dynamic;
 };
 
-typedef struct DMN_LNX_ModuleInfo DMN_LNX_ModuleInfo;
 struct DMN_LNX_ModuleInfo
 {
   Rng1U64 vaddr_range;
   U64 name;
 };
 
-typedef struct DMN_LNX_ModuleInfoNode DMN_LNX_ModuleInfoNode;
 struct DMN_LNX_ModuleInfoNode
 {
   DMN_LNX_ModuleInfoNode *next;
   DMN_LNX_ModuleInfo v;
 };
 
-typedef struct DMN_LNX_ModuleInfoList DMN_LNX_ModuleInfoList;
 struct DMN_LNX_ModuleInfoList
 {
   DMN_LNX_ModuleInfoNode *first;
@@ -234,7 +221,7 @@ struct DMN_LNX_ModuleInfoList
 ////////////////////////////////
 //~ rjf: Entity Types
 
-typedef enum DMN_LNX_EntityKind
+enum DMN_LNX_EntityKind
 {
   DMN_LNX_EntityKind_Null,
   DMN_LNX_EntityKind_Root,
@@ -243,9 +230,7 @@ typedef enum DMN_LNX_EntityKind
   DMN_LNX_EntityKind_Module,
   DMN_LNX_EntityKind_COUNT
 }
-DMN_LNX_EntityKind;
 
-typedef struct DMN_LNX_Entity DMN_LNX_Entity;
 struct DMN_LNX_Entity
 {
   DMN_LNX_Entity *first;
@@ -261,7 +246,6 @@ struct DMN_LNX_Entity
   B32 expecting_dummy_sigstop;
 };
 
-typedef struct DMN_LNX_EntityNode DMN_LNX_EntityNode;
 struct DMN_LNX_EntityNode
 {
   DMN_LNX_EntityNode *next;
@@ -271,7 +255,6 @@ struct DMN_LNX_EntityNode
 ////////////////////////////////
 //~ rjf: Main State Bundle
 
-typedef struct DMN_LNX_State DMN_LNX_State;
 struct DMN_LNX_State
 {
   Arena *arena;

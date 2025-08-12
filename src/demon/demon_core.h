@@ -10,7 +10,6 @@
 // control thread, which blocks to control & receive events, will take this
 // parameter. All other APIs can be called from any thread.
 
-typedef struct DMN_CtrlCtx DMN_CtrlCtx;
 struct DMN_CtrlCtx
 {
   U64 u64[1];
@@ -19,21 +18,18 @@ struct DMN_CtrlCtx
 ////////////////////////////////
 //~ rjf: Handle Types
 
-typedef union DMN_Handle DMN_Handle;
 union DMN_Handle
 {
   U32 u32[2];
   U64 u64[1];
 };
 
-typedef struct DMN_HandleNode DMN_HandleNode;
 struct DMN_HandleNode
 {
   DMN_HandleNode *next;
   DMN_Handle v;
 };
 
-typedef struct DMN_HandleList DMN_HandleList;
 struct DMN_HandleList
 {
   DMN_HandleNode *first;
@@ -41,7 +37,6 @@ struct DMN_HandleList
   U64 count;
 };
 
-typedef struct DMN_HandleArray DMN_HandleArray;
 struct DMN_HandleArray
 {
   DMN_Handle *handles;
@@ -56,7 +51,6 @@ struct DMN_HandleArray
 ////////////////////////////////
 //~ rjf: Event Types
 
-typedef struct DMN_Event DMN_Event;
 struct DMN_Event
 {
   DMN_EventKind kind;
@@ -80,14 +74,12 @@ struct DMN_Event
   B32 exception_repeated;
 };
 
-typedef struct DMN_EventNode DMN_EventNode;
 struct DMN_EventNode
 {
   DMN_EventNode *next;
   DMN_Event v;
 };
 
-typedef struct DMN_EventList DMN_EventList;
 struct DMN_EventList
 {
   DMN_EventNode *first;
@@ -98,15 +90,13 @@ struct DMN_EventList
 ////////////////////////////////
 //~ rjf: Run Control Types
 
-typedef U32 DMN_TrapFlags;
-enum
+enum DMN_TrapFlags : U32
 {
   DMN_TrapFlag_BreakOnWrite   = (1<<0),
   DMN_TrapFlag_BreakOnRead    = (1<<1),
   DMN_TrapFlag_BreakOnExecute = (1<<2),
 };
 
-typedef struct DMN_Trap DMN_Trap;
 struct DMN_Trap
 {
   DMN_Handle process;
@@ -116,7 +106,6 @@ struct DMN_Trap
   U32 size;
 };
 
-typedef struct DMN_TrapChunkNode DMN_TrapChunkNode;
 struct DMN_TrapChunkNode
 {
   DMN_TrapChunkNode *next;
@@ -125,7 +114,6 @@ struct DMN_TrapChunkNode
   U64 count;
 };
 
-typedef struct DMN_TrapChunkList DMN_TrapChunkList;
 struct DMN_TrapChunkList
 {
   DMN_TrapChunkNode *first;
@@ -134,7 +122,6 @@ struct DMN_TrapChunkList
   U64 trap_count;
 };
 
-typedef struct DMN_RunCtrls DMN_RunCtrls;
 struct DMN_RunCtrls
 {
   DMN_Handle priority_thread;
@@ -150,13 +137,11 @@ struct DMN_RunCtrls
 ////////////////////////////////
 //~ rjf: System Process Listing Types
 
-typedef struct DMN_ProcessIter DMN_ProcessIter;
 struct DMN_ProcessIter
 {
   U64 v[2];
 };
 
-typedef struct DMN_ProcessInfo DMN_ProcessInfo;
 struct DMN_ProcessInfo
 {
   String8 name;

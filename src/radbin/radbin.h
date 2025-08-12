@@ -10,13 +10,11 @@
 ////////////////////////////////
 //~ rjf: File Types
 
-typedef U32 RB_FileFormatFlags;
-enum
+enum RB_FileFormatFlags : U32
 {
   RB_FileFormatFlag_HasDWARF = (1<<0),
 };
 
-typedef struct RB_File RB_File;
 struct RB_File
 {
   RB_FileFormat format;
@@ -25,14 +23,12 @@ struct RB_File
   String8 data;
 };
 
-typedef struct RB_FileNode RB_FileNode;
 struct RB_FileNode
 {
   RB_FileNode *next;
   RB_File *v;
 };
 
-typedef struct RB_FileList RB_FileList;
 struct RB_FileList
 {
   RB_FileNode *first;

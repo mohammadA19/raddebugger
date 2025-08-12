@@ -40,7 +40,7 @@
 
 ////////////////////////////////
 
-typedef enum
+enum
 {
   T_Result_Fail,
   T_Result_Crash,
@@ -70,7 +70,7 @@ global B32     g_redirect_stdout = 1;
 
 #define T_LINKER_TIME_OUT_EXIT_CODE 999999
 
-typedef enum
+enum
 {
   T_Linker_Null,
   T_Linker_RAD,
@@ -295,7 +295,7 @@ t_coff_section_header_array_from_name(Arena *arena, String8 string_table, COFF_S
 
 ////////////////////////////////////////////////////////////////
 
-typedef enum
+enum
 {
   T_MsvcLinkExitCode_UnresolvedExternals                  = 1120,
   T_MsvcLinkExitCode_CorruptOrInvalidSymbolTable          = 1235,

@@ -4,7 +4,7 @@
 //- GENERATED CODE
 
 
-typedef enum RB_FileFormat
+enum RB_FileFormat
 {
 RB_FileFormat_Null,
 RB_FileFormat_PDB,
