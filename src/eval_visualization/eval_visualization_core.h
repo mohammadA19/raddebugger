@@ -299,83 +299,40 @@ global read_only EV_Block ev_nil_block =
 ////////////////////////////////
 //~ rjf: Key Functions
 
-internal EV_Key ev_key_make(U64 parent_hash, U64 child_id);
-internal EV_Key ev_key_zero(void);
-internal EV_Key ev_key_root(void);
-internal B32 ev_key_match(EV_Key a, EV_Key b);
-internal U64 ev_hash_from_seed_string(U64 seed, String8 string);
-internal U64 ev_hash_from_key(EV_Key key);
 
 ////////////////////////////////
 //~ rjf: Type Info Helpers
 
 //- rjf: type info -> expandability/editablity
-internal E_TypeKey ev_expansion_type_from_key(E_TypeKey type_key);
-internal B32 ev_type_key_and_mode_is_expandable(E_TypeKey type_key, E_Mode mode);
-internal B32 ev_type_key_is_editable(E_TypeKey type_key);
 
 ////////////////////////////////
 //~ rjf: View Functions
 
 //- rjf: creation / deletion
-internal EV_View *ev_view_alloc(void);
-internal void ev_view_release(EV_View *view);
 
 //- rjf: lookups / mutations
-internal EV_ExpandNode *ev_expand_node_from_key(EV_View *view, EV_Key key);
-internal B32 ev_expansion_from_key(EV_View *view, EV_Key key);
-internal String8 ev_view_rule_from_key(EV_View *view, EV_Key key);
-internal void ev_key_set_expansion(EV_View *view, EV_Key parent_key, EV_Key key, B32 expanded);
-internal void ev_key_set_view_rule(EV_View *view, EV_Key key, String8 view_rule_string);
 
 ////////////////////////////////
 //~ rjf: View Rule Info Table Building / Selection / Lookups
 
-internal void ev_expand_rule_table_push(Arena *arena, EV_ExpandRuleTable *table, EV_ExpandRule *info);
 #define ev_expand_rule_table_push_new(arena, table, ...) ev_expand_rule_table_push((arena), (table), &(EV_ExpandRule){__VA_ARGS__})
-internal void ev_select_expand_rule_table(EV_ExpandRuleTable *table);
-internal EV_ExpandRule *ev_expand_rule_from_string(String8 string);
-internal EV_ExpandRule *ev_expand_rule_from_type_key(E_TypeKey type_key);
 
 ////////////////////////////////
 //~ rjf: Block Building
 
-internal EV_BlockTree ev_block_tree_from_eval(Arena *arena, EV_View *view, String8 filter, E_Eval root_eval);
-internal U64 ev_depth_from_block(EV_Block *block);
 
 ////////////////////////////////
 //~ rjf: Block Coordinate Spaces
 
-internal U64 ev_block_id_from_num(EV_Block *block, U64 num);
-internal U64 ev_block_num_from_id(EV_Block *block, U64 id);
-internal EV_BlockRangeList ev_block_range_list_from_tree(Arena *arena, EV_BlockTree *block_tree);
-internal EV_BlockRange ev_block_range_from_num(EV_BlockRangeList *block_ranges, U64 num);
-internal EV_Key ev_key_from_num(EV_BlockRangeList *block_ranges, U64 num);
-internal U64    ev_num_from_key(EV_BlockRangeList *block_ranges, EV_Key key);
-internal U64    ev_vnum_from_num(EV_BlockRangeList *block_ranges, U64 num);
-internal U64    ev_num_from_vnum(EV_BlockRangeList *block_ranges, U64 vidx);
 
 ////////////////////////////////
 //~ rjf: Row Building
 
-internal EV_WindowedRowList ev_windowed_row_list_from_block_range_list(Arena *arena, EV_View *view, EV_BlockRangeList *block_ranges, Rng1U64 vnum_range);
-internal EV_Row *ev_row_from_num(Arena *arena, EV_View *view, EV_BlockRangeList *block_ranges, U64 num);
-internal EV_WindowedRowList ev_rows_from_num_range(Arena *arena, EV_View *view, EV_BlockRangeList *block_ranges, Rng1U64 num_range);
-internal B32 ev_eval_is_expandable(E_Eval eval);
-internal B32 ev_row_is_expandable(EV_Row *row);
-internal B32 ev_row_is_editable(EV_Row *row);
 
 ////////////////////////////////
 //~ rjf: Stringification
 
 //- rjf: leaf stringification
-internal String8 ev_string_from_ascii_value(Arena *arena, U8 val);
-internal String8 ev_string_from_hresult_facility_code(U32 code);
-internal String8 ev_string_from_hresult_code(U32 code);
-internal String8 ev_string_from_simple_typed_eval(Arena *arena, EV_StringParams *params, E_Eval eval);
-internal String8 ev_escaped_from_raw_string(Arena *arena, String8 raw);
 
 //- rjf: tree stringification iterator
-internal EV_StringIter *ev_string_iter_begin(Arena *arena, E_Eval eval, EV_StringParams *params);
-internal B32 ev_string_iter_next(Arena *arena, EV_StringIter *it, String8 *out_string);
 

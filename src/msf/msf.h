@@ -52,6 +52,4 @@ struct MSF_Header70
 
 ////////////////////////////////
 
-internal B32 msf_check_magic_20(String8 data);
-internal B32 msf_check_magic_70(String8 data);
 

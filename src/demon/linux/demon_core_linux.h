@@ -304,31 +304,16 @@ thread_static B32 dmn_lnx_ctrl_thread = 0;
 //~ rjf: Helpers
 
 //- rjf: file descriptor memory reading/writing helpers
-internal U64 dmn_lnx_read(int memory_fd, Rng1U64 range, void *dst);
-internal B32 dmn_lnx_write(int memory_fd, Rng1U64 range, void *src);
 #define dmn_lnx_read_struct(fd, vaddr, ptr) dmn_lnx_read((fd), r1u64((vaddr), (vaddr)+sizeof(*(ptr))), (ptr))
 #define dmn_lnx_write_struct(fd, vaddr, ptr) dmn_lnx_write((fd), r1u64((vaddr), (vaddr)+sizeof(*(ptr))), (ptr))
-internal String8 dmn_lnx_read_string(Arena *arena, int memory_fd, U64 base_vaddr);
 
 //- rjf: pid => info extraction
-internal String8 dmn_lnx_exe_path_from_pid(Arena *arena, pid_t pid);
-internal Arch dmn_lnx_arch_from_pid(pid_t pid);
-internal DMN_LNX_ProcessAux dmn_lnx_aux_from_pid(pid_t pid, Arch arch);
 
 //- rjf: phdr info extraction
-internal DMN_LNX_PhdrInfo dmn_lnx_phdr_info_from_memory(int memory_fd, B32 is_32bit, U64 phvaddr, U64 phsize, U64 phcount);
 
 //- rjf: process entity => info extraction
-internal DMN_LNX_ModuleInfoList dmn_lnx_module_info_list_from_process(Arena *arena, DMN_LNX_Entity *process);
 
 ////////////////////////////////
 //~ rjf: Entity Functions
 
-internal DMN_LNX_Entity *dmn_lnx_entity_alloc(DMN_LNX_Entity *parent, DMN_LNX_EntityKind kind);
-internal void dmn_lnx_entity_release(DMN_LNX_Entity *entity);
-internal DMN_Handle dmn_lnx_handle_from_entity(DMN_LNX_Entity *entity);
-internal DMN_LNX_Entity *dmn_lnx_entity_from_handle(DMN_Handle handle);
-internal DMN_LNX_Entity *dmn_lnx_thread_from_pid(pid_t pid);
-internal B32 dmn_lnx_thread_read_reg_block(DMN_LNX_Entity *thread, void *reg_block);
-internal B32 dmn_lnx_thread_write_reg_block(DMN_LNX_Entity *thread, void *reg_block);
 

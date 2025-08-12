@@ -53,7 +53,4 @@ typedef struct PE_FinalizedExports
 
 ////////////////////////////////
 
-internal PE_ExportParsePtrArray pe_array_from_export_list(Arena *arena, PE_ExportParseList list);
-internal PE_ExportParseNode * pe_export_parse_list_push(Arena *arena, PE_ExportParseList *list, PE_ExportParse data);
-internal String8List pe_make_import_lib(Arena *arena, COFF_MachineType machine, COFF_TimeStamp time_stamp, String8 dll_name, String8 debug_symbols, PE_ExportParseList export_list);
 

@@ -55,9 +55,5 @@ typedef struct RC_Context
 
 ////////////////////////////////
 
-internal RC_Context  rc_context_from_cmd_line(Arena *arena, CmdLine *cmdl);
-internal String8List rc_run(Arena *arena, RC_Context *rc);
-internal String8     rc_rdi_from_cmd_line(Arena *arena, CmdLine *cmdl);
-internal void        rc_main(CmdLine *cmdl);
 
 

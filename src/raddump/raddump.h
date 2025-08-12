@@ -161,66 +161,28 @@ typedef struct RD_Line
 
 // raddump
 
-internal B32 rd_is_rdi(String8 raw_data);
 
-internal String8 rd_string_from_flags(Arena *arena, String8List list, U64 remaining_flags);
 
-internal void rd_format_preamble(Arena *arena, String8List *out, String8 indent, String8 input_path, String8 raw_data);
 
 // Markers
 
-internal RD_MarkerArray * rd_section_markers_from_coff_symbol_table(Arena *arena, String8 string_table, U64 section_count, COFF_Symbol32Array symbols);
 
 // Sections
 
-internal RD_SectionArray rd_sections_from_coff_section_table(Arena *arnea, String8 raw_image, U64 string_table_off, U64 section_count, COFF_SectionHeader *sections);
 
 // Disasm
 
-internal RD_DisasmResult rd_disasm_next_instruction(Arena *arena, Arch arch, U64 addr, String8 raw_code);
-internal void            rd_print_disasm           (Arena *arena, String8List *out, String8 indent, Arch arch, U64 image_base, U64 sect_off, U64 marker_count, RD_Marker *markers, String8 raw_code);
 
 // Raw Data
 
-internal String8 rd_format_hex_array(Arena *arena, U8 *ptr, U64 size);
-internal void    rd_print_raw_data  (Arena *arena, String8List *out, String8 indent, U64 bytes_per_row, U64 marker_count, RD_Marker *markers, String8 raw_data);
 
 // CodeView
 
-internal void cv_print_binary_annots  (Arena *arena, String8List *out, String8 indent, CV_Arch arch, String8 raw_data);
-internal void cv_print_lvar_addr_range(Arena *arena, String8List *out, String8 indent, CV_LvarAddrRange range);
-internal void cv_print_lvar_addr_gap  (Arena *arena, String8List *out, String8 indent, String8 raw_data);
-internal void cv_print_lvar_attr      (Arena *arena, String8List *out, String8 indent, CV_LocalVarAttr attr);
-internal void cv_print_symbol         (Arena *arena, String8List *out, String8 indent, CV_Arch arch, CV_TypeIndex min_itype, CV_SymKind type, String8 raw_symbol);
-internal U64  cv_print_leaf           (Arena *arena, String8List *out, String8 indent, CV_TypeIndex min_itype, CV_LeafKind kind, String8 raw_leaf);
-internal void cv_print_debug_t        (Arena *arena, String8List *out, String8 indent, CV_DebugT debug_t);
-internal void cv_print_symbols_c13    (Arena *arena, String8List *out, String8 indent, CV_Arch arch, String8 raw_data);
-internal void cv_print_lines_c13      (Arena *arena, String8List *out, String8 indent, String8 raw_lines);
-internal void cv_print_file_checksums (Arena *arena, String8List *out, String8 indent, String8 raw_chksums);
-internal void cv_print_string_table   (Arena *arena, String8List *out, String8 indent, String8 raw_strtab);
-internal void cv_print_inlinee_lines  (Arena *arena, String8List *out, String8 indent, String8 raw_data);
-internal void cv_print_symbols_section(Arena *arena, String8List *out, String8 indent, CV_Arch arch, String8 raw_ss);
 
 // MSVC CRT
 
-internal void mscrt_print_eh_handler_type32(Arena *arena, String8List *out, String8 indent, RDI_Parsed *rdi, MSCRT_EhHandlerType32 *handler);
 
 // PE
 
-internal void pe_print_data_directory_ranges(Arena *arena, String8List *out, String8 indent, U64 count, PE_DataDirectory *dirs);
-internal void pe_print_optional_header32    (Arena *arena, String8List *out, String8 indent, PE_OptionalHeader32 *opt_header, PE_DataDirectory *dirs);
-internal void pe_print_optional_header32plus(Arena *arena, String8List *out, String8 indent, PE_OptionalHeader32Plus *opt_header, PE_DataDirectory *dirs);
-internal void pe_print_load_config32        (Arena *arena, String8List *out, String8 indent, PE_LoadConfig32 *lc);
-internal void pe_print_load_config64        (Arena *arena, String8List *out, String8 indent, PE_LoadConfig64 *lc);
-internal void pe_print_tls                  (Arena *arena, String8List *out, String8 indent, PE_ParsedTLS tls);
-internal void pe_print_debug_diretory       (Arena *arena, String8List *out, String8 indent, String8 raw_data, String8 raw_dir);
-internal void pe_print_export_table         (Arena *arena, String8List *out, String8 indent, PE_ParsedExportTable exptab);
-internal void pe_print_static_import_table  (Arena *arena, String8List *out, String8 indent, U64 image_base, PE_ParsedStaticImportTable imptab);
-internal void pe_print_delay_import_table   (Arena *arena, String8List *out, String8 indent, U64 image_base, PE_ParsedDelayImportTable imptab);
-internal void pe_print_resources            (Arena *arena, String8List *out, String8 indent, PE_ResourceDir *root);
-internal void pe_print_exceptions_x8664     (Arena *arena, String8List *out, String8 indent, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 except_frange, RDI_Parsed *rdi);
-internal void pe_print_exceptions           (Arena *arena, String8List *out, String8 indent, COFF_MachineType machine, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 except_frange, RDI_Parsed *rdi);
-internal void pe_print_base_relocs          (Arena *arena, String8List *out, String8 indent, COFF_MachineType machine, U64 image_base, U64 section_count, COFF_SectionHeader *sections, String8 raw_data, Rng1U64 base_reloc_franges, RDI_Parsed *rdi);
-internal void pe_print                      (Arena *arena, String8List *out, String8 indent, String8 raw_data, RD_Option opts, RDI_Parsed *rdi);
 
 
