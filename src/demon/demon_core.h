@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DEMON_CORE_H
-#define DEMON_CORE_H
 
 ////////////////////////////////
 //~ rjf: Control-Thread-Only Context
@@ -250,4 +248,3 @@ internal void dmn_process_iter_begin(DMN_ProcessIter *iter);
 internal B32  dmn_process_iter_next(Arena *arena, DMN_ProcessIter *iter, DMN_ProcessInfo *info_out);
 internal void dmn_process_iter_end(DMN_ProcessIter *iter);
 
-#endif // DEMON_CORE_H

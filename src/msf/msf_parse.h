@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef MSF_PARSE_H
-#define MSF_PARSE_H
 
 ////////////////////////////////
 //~ rjf: MSF Parser Helper Types
@@ -45,4 +43,3 @@ internal String8             msf_data_from_stream_number(Arena *arena, String8 m
 internal MSF_Parsed*         msf_parsed_from_data(Arena *arena, String8 msf_data);
 internal String8             msf_data_from_stream(MSF_Parsed *msf, MSF_StreamNumber sn);
 
-#endif // MSF_PARSE_H

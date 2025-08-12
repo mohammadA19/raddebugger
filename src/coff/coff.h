@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef COFF_H
-#define COFF_H
 
 ////////////////////////////////
 //~ rjf: COFF Format Types
@@ -651,4 +649,3 @@ internal String8 coff_string_from_reloc(COFF_MachineType machine, COFF_RelocType
 internal COFF_MachineType coff_machine_from_string(String8 string);
 internal COFF_ImportType  coff_import_header_type_from_string(String8 name);
 
-#endif // COFF_H

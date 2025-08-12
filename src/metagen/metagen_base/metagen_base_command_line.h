@@ -1,8 +1,6 @@
 // Copyright (c) 2024 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_COMMAND_LINE_H
-#define BASE_COMMAND_LINE_H
 
 ////////////////////////////////
 //~ rjf: Parsed Command Line Types
@@ -53,4 +51,3 @@ internal String8          cmd_line_string(CmdLine *cmd_line, String8 name);
 internal B32              cmd_line_has_flag(CmdLine *cmd_line, String8 name);
 internal B32              cmd_line_has_argument(CmdLine *cmd_line, String8 name);
 
-#endif // BASE_COMMAND_LINE_H

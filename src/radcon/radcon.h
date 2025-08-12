@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RADCON_H
-#define RADCON_H
 
 typedef U32 RC_Flags;
 enum
@@ -62,5 +60,4 @@ internal String8List rc_run(Arena *arena, RC_Context *rc);
 internal String8     rc_rdi_from_cmd_line(Arena *arena, CmdLine *cmdl);
 internal void        rc_main(CmdLine *cmdl);
 
-#endif // RADCON_H
 

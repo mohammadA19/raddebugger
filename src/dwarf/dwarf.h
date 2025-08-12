@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DWARF_H
-#define DWARF_H
 
 typedef U16 DW_Version;
 typedef enum DW_VersionEnum
@@ -1798,4 +1796,3 @@ internal String8 dw_string_from_section_kind(Arena *arena, DW_SectionKind kind);
 internal String8 dw_string_from_rng_list_entry_kind(Arena *arena, DW_RLE kind);
 internal String8 dw_string_from_register(Arena *arena, Arch arch, U64 reg_id);
 
-#endif // DWARF_H

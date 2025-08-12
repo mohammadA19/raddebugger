@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef PDB_H
-#define PDB_H
 
 // https://github.com/microsoft/microsoft-pdb/tree/master/PDB
 
@@ -420,4 +418,3 @@ typedef struct PDB_PsiHeader
 
 internal U32 pdb_hash_v1(String8 string);
 
-#endif // PDB_H

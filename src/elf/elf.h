@@ -1,8 +1,6 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef ELF_H
-#define ELF_H
 
 typedef U8 ELF_Class;
 enum
@@ -995,4 +993,3 @@ internal String8 elf_string_from_class(Arena *arena, ELF_Class v);
 
 internal Arch arch_from_elf_machine(ELF_MachineKind machine);
 
-#endif // ELF_H

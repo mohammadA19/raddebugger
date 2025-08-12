@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RADDBG_CORE_H
-#define RADDBG_CORE_H
 
 ////////////////////////////////
 //~ rjf: Config IDs
@@ -1055,4 +1053,3 @@ internal B32 rd_next_view_cmd(RD_Cmd **cmd);
 internal void rd_init(CmdLine *cmdln);
 internal void rd_frame(void);
 
-#endif // RADDBG_CORE_H

@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef MSF_H
-#define MSF_H
 
 ////////////////////////////////
 //~ rjf: MSF Format Types
@@ -57,4 +55,3 @@ struct MSF_Header70
 internal B32 msf_check_magic_20(String8 data);
 internal B32 msf_check_magic_70(String8 data);
 
-#endif // MSF_H

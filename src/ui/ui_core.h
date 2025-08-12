@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef UI_H
-#define UI_H
 
 ////////////////////////////////
 //~ rjf: Icon Info
@@ -1210,4 +1208,3 @@ internal F32      ui_top_px_height(void);
 //- rjf: debug
 #define UI_Debug UI_FlagsAdd(UI_BoxFlag_Debug)
 
-#endif // UI_H

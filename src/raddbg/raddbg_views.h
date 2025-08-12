@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef RADDBG_VIEWS_H
-#define RADDBG_VIEWS_H
 
 ////////////////////////////////
 //~ rjf: Code View Types
@@ -245,4 +243,3 @@ RD_VIEW_UI_FUNCTION_DEF(bitmap);
 RD_VIEW_UI_FUNCTION_DEF(color);
 RD_VIEW_UI_FUNCTION_DEF(geo3d);
 
-#endif // RADDBG_VIEWS_H

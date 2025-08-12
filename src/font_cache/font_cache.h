@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef FONT_CACHE_H
-#define FONT_CACHE_H
 
 ////////////////////////////////
 //~ rjf: Rasterization Flags
@@ -293,4 +291,3 @@ internal void fnt_init(void);
 internal void fnt_reset(void);
 internal void fnt_frame(void);
 
-#endif // FONT_CACHE_H

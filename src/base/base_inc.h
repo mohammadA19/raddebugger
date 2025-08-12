@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_INC_H
-#define BASE_INC_H
 
 ////////////////////////////////
 //~ rjf: Base Includes
@@ -21,4 +19,3 @@
 #include "base_log.h"
 #include "base_entry_point.h"
 
-#endif // BASE_INC_H

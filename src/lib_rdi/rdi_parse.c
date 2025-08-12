@@ -152,7 +152,7 @@ SINTa rr_lzb_simple_decode(const void * comp, SINTa compLen, void * raw, SINTa r
 
 //---------------------
 
-#endif // _RAD_LZB_SIMPLE_H_
+_
 
 ////////////////////////////////
 //~ Top-Level Parsing API

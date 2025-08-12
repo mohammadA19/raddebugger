@@ -1,8 +1,6 @@
 // Copyright (c) 2025 Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef PE_SECTION_FLAGS_H
-#define PE_SECTION_FLAGS_H
 
 #define PE_TEXT_SECTION_FLAGS      (COFF_SectionFlag_CntCode|COFF_SectionFlag_MemExecute|COFF_SectionFlag_MemRead)
 #define PE_DATA_SECTION_FLAGS      (COFF_SectionFlag_CntInitializedData|COFF_SectionFlag_MemRead|COFF_SectionFlag_MemWrite)
@@ -24,5 +22,4 @@
 #define PE_DEBUG_SECTION_FLAGS     (PE_RDATA_SECTION_FLAGS | COFF_SectionFlag_MemDiscardable)
 #define PE_TLS_SECTION_FLAGS       PE_DATA_SECTION_FLAGS
 
-#endif // PE_SECTION_FLAGS_H
 

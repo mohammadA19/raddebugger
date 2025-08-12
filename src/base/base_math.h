@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef BASE_MATH_H
-#define BASE_MATH_H
 
 ////////////////////////////////
 //~ rjf: Vector Types
@@ -691,4 +689,3 @@ internal U64 rng_1u64_array_bsearch(Rng1U64Array arr, U64 value);
 internal void rng1s64_list_push(Arena *arena, Rng1S64List *list, Rng1S64 rng);
 internal Rng1S64Array rng1s64_array_from_list(Arena *arena, Rng1S64List *list);
 
-#endif // BASE_MATH_H

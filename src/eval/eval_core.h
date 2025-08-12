@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef EVAL_CORE_H
-#define EVAL_CORE_H
 
 ////////////////////////////////
 //~ rjf: Evaluation Key Type
@@ -1301,4 +1299,3 @@ internal Rng1U64 e_range_from_eval(E_Eval eval);
 
 internal String8 e_debug_log_from_expr_string(Arena *arena, String8 string);
 
-#endif // EVAL_CORE_H

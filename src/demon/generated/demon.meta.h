@@ -3,8 +3,6 @@
 
 //- GENERATED CODE
 
-#ifndef DEMON_META_H
-#define DEMON_META_H
 
 typedef enum DMN_EventKind
 {
@@ -67,4 +65,3 @@ extern String8 dmn_exception_kind_string_table[5];
 
 C_LINKAGE_END
 
-#endif // DEMON_META_H

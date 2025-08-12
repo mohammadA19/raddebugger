@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef PE_H
-#define PE_H
 
 ////////////////////////////////
 //~ rjf: PE Format-Defined Types/Constants
@@ -1111,4 +1109,3 @@ internal U32 pe_compute_checksum(U8 *buffer, U64 buffer_size);
 
 internal void pe_pdata_sort(COFF_MachineType machine, String8 raw_pdata);
 
-#endif // PE_H

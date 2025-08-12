@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DWARF_PARSE_H
-#define DWARF_PARSE_H
 
 typedef struct DW_Section
 {
@@ -450,4 +448,3 @@ internal DW_LineTableParseResult dw_parsed_line_table_from_data(Arena *arena, St
 
 internal DW_PubStringsTable dw_v4_pub_strings_table_from_section_kind(Arena *arena, DW_Input *input, DW_SectionKind section_kind);
 
-#endif // DWARF_PARSE_H

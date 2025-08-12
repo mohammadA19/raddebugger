@@ -1,8 +1,6 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-#ifndef DEMON_CORE_WIN32_H
-#define DEMON_CORE_WIN32_H
 
 ////////////////////////////////
 //~ rjf: Windows Includes
@@ -281,4 +279,3 @@ internal B32 dmn_w32_thread_write_reg_block(Arch arch, HANDLE thread, void *reg_
 //- rjf: remote thread injection
 internal DWORD dmn_w32_inject_thread(HANDLE process, U64 start_address);
 
-#endif // DEMON_CORE_WIN32_H
