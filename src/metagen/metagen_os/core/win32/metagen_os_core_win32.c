@@ -7,7 +7,7 @@
 // (We must dynamically link to them, since they can be missing in older SDKs)
 
 typedef HRESULT W32_SetThreadDescription_Type(HANDLE hThread, PCWSTR lpThreadDescription);
-global W32_SetThreadDescription_Type *w32_SetThreadDescription_func = 0;
+public static W32_SetThreadDescription_Type *w32_SetThreadDescription_func = 0;
 
 ////////////////////////////////
 //~ rjf: File Info Conversion Helpers
@@ -1698,7 +1698,7 @@ w32_entry_point_caller(int argc, WCHAR **wargv)
   }
   
   //- rjf: set up thread context
-  local_persist TCTX tctx;
+  static TCTX tctx;
   tctx_init_and_equip(&tctx);
   
   //- rjf: set up dynamically-alloc'd state

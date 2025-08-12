@@ -15,7 +15,7 @@
 ////////////////////////////////
 //~ rjf: Attribute Tables
 
-global read_only R_OGL_Attribute r_ogl_rect_input_attributes[] =
+public static readonly R_OGL_Attribute r_ogl_rect_input_attributes[] =
 {
   {0, str8_lit_comp("c2v_dst_rect"),        GL_FLOAT,  4},
   {1, str8_lit_comp("c2v_src_rect"),        GL_FLOAT,  4},
@@ -27,7 +27,7 @@ global read_only R_OGL_Attribute r_ogl_rect_input_attributes[] =
   {7, str8_lit_comp("c2v_style"),           GL_FLOAT,  4},
 };
 
-global read_only R_OGL_Attribute r_ogl_single_color_output_attributes[] =
+public static readonly R_OGL_Attribute r_ogl_single_color_output_attributes[] =
 {
   {0, str8_lit_comp("final_color")},
 };

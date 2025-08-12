@@ -76,7 +76,7 @@ struct FS_Shared
 ////////////////////////////////
 //~ rjf: Globals
 
-global FS_Shared *fs_shared = 0;
+public static FS_Shared *fs_shared = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers

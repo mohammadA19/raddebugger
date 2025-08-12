@@ -29,8 +29,8 @@
 ////////////////////////////////
 //~ rjf: Globals
 
-global OS_Handle window_os = {0};
-global R_Handle window_r = {0};
+public static OS_Handle window_os = {0};
+public static R_Handle window_r = {0};
 
 ////////////////////////////////
 //~ rjf: Entry Points

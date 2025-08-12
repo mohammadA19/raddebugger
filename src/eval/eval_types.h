@@ -21,13 +21,13 @@ enum E_TypeUnwrapFlags : U32
 ////////////////////////////////
 //~ rjf: Globals
 
-global read_only E_Member e_member_nil = {E_MemberKind_Null};
-global read_only E_Type e_type_nil = {E_TypeKind_Null};
+public static readonly E_Member e_member_nil = {E_MemberKind_Null};
+public static readonly E_Type e_type_nil = {E_TypeKind_Null};
 E_TYPE_EXPAND_INFO_FUNCTION_DEF(default);
 E_TYPE_EXPAND_RANGE_FUNCTION_DEF(default);
 E_TYPE_EXPAND_ID_FROM_NUM_FUNCTION_DEF(identity);
 E_TYPE_EXPAND_NUM_FROM_ID_FUNCTION_DEF(identity);
-global read_only E_TypeExpandRule e_type_expand_rule__default =
+public static readonly E_TypeExpandRule e_type_expand_rule__default =
 {
   E_TYPE_EXPAND_INFO_FUNCTION_NAME(default),
   E_TYPE_EXPAND_RANGE_FUNCTION_NAME(default),

@@ -580,7 +580,7 @@ struct PE_TLSHeader64
   COFF_SectionFlags characteristics;   // COFF_SectionFlags but only align flags are used.
 };
 
-global read_only U8 PE_RES_MAGIC[] =
+public static readonly U8 PE_RES_MAGIC[] =
 {
   0x00, 0x00, 0x00, 0x00,
   0x20, 0x00, 0x00, 0x00,

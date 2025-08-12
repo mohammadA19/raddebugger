@@ -988,7 +988,7 @@ internal String8Node *
 str8_list_push_cstr(Arena *arena, String8List *list, String8 string)
 {
   String8Node *node = str8_list_push(arena, list, string);
-  local_persist String8 null = str8_lit_comp("\0");
+  static String8 null = str8_lit_comp("\0");
   str8_list_push(arena, list, null);
   return node;
 }
@@ -1029,7 +1029,7 @@ str8_list_push_aligner(Arena *arena, String8List *list, U64 min, U64 align){
     new_size &= (~mask);
     increase_size = new_size - list->total_size;
   }
-  local_persist const U8 zeroes_buffer[64] = {0};
+  static const U8 zeroes_buffer[64] = {0};
   Assert(increase_size <= ArrayCount(zeroes_buffer));
   SLLQueuePush(list->first, list->last, node);
   list->node_count += 1;
@@ -2035,7 +2035,7 @@ operating_system_from_string(String8 string)
 
 internal String8
 string_from_dimension(Dimension dimension){
-  local_persist String8 strings[] = {
+  static String8 strings[] = {
     str8_lit_comp("X"),
     str8_lit_comp("Y"),
     str8_lit_comp("Z"),
@@ -2050,7 +2050,7 @@ string_from_dimension(Dimension dimension){
 
 internal String8
 string_from_side(Side side){
-  local_persist String8 strings[] = {
+  static String8 strings[] = {
     str8_lit_comp("Min"),
     str8_lit_comp("Max"),
   };
@@ -2074,7 +2074,7 @@ string_from_operating_system(OperatingSystem os)
 
 internal String8
 string_from_arch(Arch arch){
-  local_persist String8 strings[] = {
+  static String8 strings[] = {
     str8_lit_comp("Null"),
     str8_lit_comp("x64"),
     str8_lit_comp("x86"),
@@ -2093,7 +2093,7 @@ string_from_arch(Arch arch){
 
 internal String8
 string_from_week_day(WeekDay week_day){
-  local_persist String8 strings[] = {
+  static String8 strings[] = {
     str8_lit_comp("Sun"),
     str8_lit_comp("Mon"),
     str8_lit_comp("Tue"),
@@ -2111,7 +2111,7 @@ string_from_week_day(WeekDay week_day){
 
 internal String8
 string_from_month(Month month){
-  local_persist String8 strings[] = {
+  static String8 strings[] = {
     str8_lit_comp("Jan"),
     str8_lit_comp("Feb"),
     str8_lit_comp("Mar"),
@@ -2258,7 +2258,7 @@ internal String8
 indented_from_string(Arena *arena, String8 string)
 {
   Temp scratch = scratch_begin(&arena, 1);
-  read_only local_persist U8 indentation_bytes[] = "                                                                                                                                ";
+  readonly static U8 indentation_bytes[] = "                                                                                                                                ";
   String8List indented_strings = {0};
   S64 depth = 0;
   S64 next_depth = 0;

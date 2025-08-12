@@ -27,5 +27,5 @@ FNWGLCHOOSEPIXELFORMATARBPROC *wglChoosePixelFormatARB;
 FNWGLCREATECONTEXTATTRIBSARBPROC *wglCreateContextAttribsARB;
 FNWGLSWAPINTERVALEXTPROC *wglSwapIntervalEXT;
 
-global HGLRC r_ogl_w32_hglrc = 0;
+public static HGLRC r_ogl_w32_hglrc = 0;
 

@@ -234,8 +234,9 @@ struct TXT_Shared
 //~ rjf: Globals
 
 read_only global TXT_ScopeNode txt_scope_node_nil = {0};
-thread_static TXT_TCTX *txt_tctx = 0;
-global TXT_Shared *txt_shared = 0;
+[ThreadStatic]
+public static TXT_TCTX *txt_tctx = 0;
+public static TXT_Shared *txt_shared = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers

@@ -26,5 +26,5 @@ struct R_OGL_LNX_State
   R_OGL_LNX_Window *free_window;
 };
 
-global R_OGL_LNX_State *r_ogl_lnx_state = 0;
+public static R_OGL_LNX_State *r_ogl_lnx_state = 0;
 

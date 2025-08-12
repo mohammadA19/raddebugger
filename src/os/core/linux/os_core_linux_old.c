@@ -6,13 +6,14 @@
 ////////////////////////////////
 //~ rjf: Globals
 
-global pthread_mutex_t lnx_mutex = {0};
-global Arena *lnx_perm_arena = 0;
-global String8List lnx_cmd_line_args = {0};
-global LNX_Entity lnx_entity_buffer[1024];
-global LNX_Entity *lnx_entity_free = 0;
-global String8 lnx_initial_path = {0};
-thread_static LNX_SafeCallChain *lnx_safe_call_chain = 0;
+public static pthread_mutex_t lnx_mutex = {0};
+public static Arena *lnx_perm_arena = 0;
+public static String8List lnx_cmd_line_args = {0};
+public static LNX_Entity lnx_entity_buffer[1024];
+public static LNX_Entity *lnx_entity_free = 0;
+public static String8 lnx_initial_path = {0};
+[ThreadStatic]
+public static LNX_SafeCallChain *lnx_safe_call_chain = 0;
 
 ////////////////////////////////
 //~ rjf: Helpers
@@ -910,8 +911,8 @@ os_large_page_size(void)
 
 internal String8
 os_machine_name(void){
-  local_persist B32 first = true;
-  local_persist String8 name = {0};
+  static B32 first = true;
+  static String8 name = {0};
   
   // TODO(allen): let's just pre-compute this at init and skip the complexity
   pthread_mutex_lock(&lnx_mutex);
@@ -1011,8 +1012,8 @@ os_string_list_from_system_path(Arena *arena, OS_SystemPath path, String8List *o
   switch (path){
     case OS_SystemPath_Binary:
     {
-      local_persist B32 first = true;
-      local_persist String8 name = {0};
+      static B32 first = true;
+      static String8 name = {0};
       
       // TODO(allen): let's just pre-compute this at init and skip the complexity
       pthread_mutex_lock(&lnx_mutex);

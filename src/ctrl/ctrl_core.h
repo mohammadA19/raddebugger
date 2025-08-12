@@ -835,7 +835,7 @@ struct CTRL_State
 ////////////////////////////////
 //~ rjf: Globals
 
-global CTRL_State *ctrl_state = 0;
+public static CTRL_State *ctrl_state = 0;
 read_only global CTRL_Entity ctrl_entity_nil =
 {
   &ctrl_entity_nil,
@@ -852,8 +852,10 @@ read_only global CTRL_CallStackTreeNode ctrl_call_stack_tree_node_nil =
   &ctrl_call_stack_tree_node_nil,
   &ctrl_call_stack_tree_node_nil,
 };
-thread_static CTRL_TCTX *ctrl_tctx = 0;
-thread_static CTRL_EntityCtxLookupAccel *ctrl_entity_ctx_lookup_accel = 0;
+[ThreadStatic]
+public static CTRL_TCTX *ctrl_tctx = 0;
+[ThreadStatic]
+public static CTRL_EntityCtxLookupAccel *ctrl_entity_ctx_lookup_accel = 0;
 
 ////////////////////////////////
 //~ rjf: Logging Markup

@@ -160,10 +160,10 @@ struct R_D3D11_State
 ////////////////////////////////
 //~ rjf: Globals
 
-global R_D3D11_State *r_d3d11_state = 0;
-global read_only R_D3D11_Window r_d3d11_window_nil = {&r_d3d11_window_nil};
-global read_only R_D3D11_Tex2D r_d3d11_tex2d_nil = {&r_d3d11_tex2d_nil};
-global read_only R_D3D11_Buffer r_d3d11_buffer_nil = {&r_d3d11_buffer_nil};
+public static R_D3D11_State *r_d3d11_state = 0;
+public static readonly R_D3D11_Window r_d3d11_window_nil = {&r_d3d11_window_nil};
+public static readonly R_D3D11_Tex2D r_d3d11_tex2d_nil = {&r_d3d11_tex2d_nil};
+public static readonly R_D3D11_Buffer r_d3d11_buffer_nil = {&r_d3d11_buffer_nil};
 
 ////////////////////////////////
 //~ rjf: Helpers

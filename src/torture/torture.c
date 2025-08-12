@@ -60,13 +60,13 @@ t_string_from_result(T_Result v)
   return 0;
 }
 
-global String8 g_stdout_file_name = str8_lit_comp("torture.out");
-global U64     g_linker_time_out;
-global String8 g_linker;
-global String8 g_wdir;
-global String8 g_out = str8_lit_comp("torture");
-global B32     g_verbose;
-global B32     g_redirect_stdout = 1;
+public static String8 g_stdout_file_name = str8_lit_comp("torture.out");
+public static U64     g_linker_time_out;
+public static String8 g_linker;
+public static String8 g_wdir;
+public static String8 g_out = str8_lit_comp("torture");
+public static B32     g_verbose;
+public static B32     g_redirect_stdout = 1;
 
 #define T_LINKER_TIME_OUT_EXIT_CODE 999999
 

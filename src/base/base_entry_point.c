@@ -1,7 +1,7 @@
 // Copyright (c) Epic Games Tools
 // Licensed under the MIT license (https://opensource.org/license/mit/)
 
-global U64 global_update_tick_idx = 0;
+public static U64 global_update_tick_idx = 0;
 
 internal void
 main_thread_base_entry_point(int arguments_count, char **arguments)
@@ -11,7 +11,7 @@ main_thread_base_entry_point(int arguments_count, char **arguments)
   
   //- rjf: set up telemetry
 #if PROFILE_TELEMETRY
-  local_persist char tm_data[MB(64)];
+  static char tm_data[MB(64)];
   tmLoadLibrary(TM_RELEASE);
   tmSetMaxThreadCount(256);
   tmInitialize(sizeof(tm_data), tm_data);

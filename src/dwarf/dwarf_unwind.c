@@ -284,7 +284,7 @@ dw_unwind_x64__apply_frame_rules(String8           raw_eh_frame,
 internal void
 dw_unwind_init_x64(void)
 {
-  local_persist B32 did_init = 0;
+  static B32 did_init = 0;
   
   if (!did_init) {
     did_init = 1;

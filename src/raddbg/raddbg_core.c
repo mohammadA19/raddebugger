@@ -12624,7 +12624,7 @@ rd_frame(void)
     //
     ProfScope("construct default immediate-mode configs based on loaded modules")
     {
-      local_persist read_only struct
+      static read_only struct
       {
         B32 stl;
         B32 ue;

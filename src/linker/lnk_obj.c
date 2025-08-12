@@ -640,8 +640,8 @@ lnk_parse_msvc_linker_directive(Arena *arena, LNK_Obj *obj, LNK_DirectiveInfo *d
 
   String8 to_parse;
   {
-    local_persist const U8 bom_sig[]   = { 0xEF, 0xBB, 0xBF };
-    local_persist const U8 ascii_sig[] = { 0x20, 0x20, 0x20 };
+    static const U8 bom_sig[]   = { 0xEF, 0xBB, 0xBF };
+    static const U8 ascii_sig[] = { 0x20, 0x20, 0x20 };
     if (MemoryMatch(buffer.str, &bom_sig[0], sizeof(bom_sig))) {
       to_parse = str8_zero();
       lnk_error_obj(LNK_Error_IllData, obj, "TODO: support for BOM encoding");

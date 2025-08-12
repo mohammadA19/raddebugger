@@ -26,7 +26,7 @@ r_ogl_os_init(CmdLine *cmdln)
   }
   
   //- rjf: get frame buffer configs
-  local_persist int framebuffer_config_options[] =
+  static int framebuffer_config_options[] =
   {
     GLX_X_RENDERABLE,   1,
     GLX_DRAWABLE_TYPE,  GLX_WINDOW_BIT,

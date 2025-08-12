@@ -42,15 +42,15 @@ D_CmdKind_Attach,
 D_CmdKind_COUNT,
 } D_CmdKind;
 
-global B32 DEV_always_refresh = 0;
-global B32 DEV_simulate_lag = 0;
-global B32 DEV_draw_ui_text_pos = 0;
-global B32 DEV_draw_ui_focus_debug = 0;
-global B32 DEV_draw_ui_box_heatmap = 0;
-global B32 DEV_eval_compiler_tooltips = 0;
-global B32 DEV_eval_watch_key_tooltips = 0;
-global B32 DEV_cmd_context_tooltips = 0;
-global B32 DEV_updating_indicator = 0;
+public static B32 DEV_always_refresh = 0;
+public static B32 DEV_simulate_lag = 0;
+public static B32 DEV_draw_ui_text_pos = 0;
+public static B32 DEV_draw_ui_focus_debug = 0;
+public static B32 DEV_draw_ui_box_heatmap = 0;
+public static B32 DEV_eval_compiler_tooltips = 0;
+public static B32 DEV_eval_watch_key_tooltips = 0;
+public static B32 DEV_cmd_context_tooltips = 0;
+public static B32 DEV_updating_indicator = 0;
 struct {B32 *value_ptr; String8 name;} DEV_toggle_table[] =
 {
 {&DEV_always_refresh, str8_lit_comp("always_refresh")},

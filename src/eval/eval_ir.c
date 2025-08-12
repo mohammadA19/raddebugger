@@ -2281,7 +2281,7 @@ e_push_irtree_and_type_from_expr(Arena *arena, E_IRTreeAndType *root_parent, E_I
     //- rjf: check chained expressions for simple wrappers
     if(!disallow_chained_fastpaths)
     {
-      local_persist struct
+      static struct
       {
         String8 shorthand;
         String8 full_name;

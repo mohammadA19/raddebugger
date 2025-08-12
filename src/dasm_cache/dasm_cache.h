@@ -244,8 +244,9 @@ struct DASM_Shared
 ////////////////////////////////
 //~ rjf: Globals
 
-thread_static DASM_TCTX *dasm_tctx = 0;
-global DASM_Shared *dasm_shared = 0;
+[ThreadStatic]
+public static DASM_TCTX *dasm_tctx = 0;
+public static DASM_Shared *dasm_shared = 0;
 
 ////////////////////////////////
 //~ rjf: Instruction Decoding/Disassembling Type Functions

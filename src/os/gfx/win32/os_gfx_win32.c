@@ -11,9 +11,9 @@ typedef UINT w32_GetDpiForWindow_Type(HWND hwnd);
 typedef HRESULT w32_GetDpiForMonitor_Type(HMONITOR hmonitor, MONITOR_DPI_TYPE dpiType, UINT *dpiX, UINT *dpiY);
 typedef int w32_GetSystemMetricsForDpi_Type(int nIndex, UINT dpi);
 #define w32_DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2 ((void*)-4)
-global w32_GetDpiForWindow_Type *w32_GetDpiForWindow_func = 0;
-global w32_GetDpiForMonitor_Type *w32_GetDpiForMonitor_func = 0;
-global w32_GetSystemMetricsForDpi_Type *w32_GetSystemMetricsForDpi_func = 0;
+public static w32_GetDpiForWindow_Type *w32_GetDpiForWindow_func = 0;
+public static w32_GetDpiForMonitor_Type *w32_GetDpiForMonitor_func = 0;
+public static w32_GetSystemMetricsForDpi_Type *w32_GetSystemMetricsForDpi_func = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers
@@ -113,8 +113,8 @@ os_w32_push_event(OS_EventKind kind, OS_W32_Window *window)
 internal OS_Key
 os_w32_os_key_from_vkey(WPARAM vkey)
 {
-  local_persist B32 first = 1;
-  local_persist OS_Key key_table[256];
+  static B32 first = 1;
+  static OS_Key key_table[256];
   if (first){
     first = 0;
     MemoryZeroArray(key_table);
@@ -227,8 +227,8 @@ os_w32_vkey_from_os_key(OS_Key key)
 {
   WPARAM result = 0;
   {
-    local_persist B32 initialized = 0;
-    local_persist WPARAM vkey_table[OS_Key_COUNT] = {0};
+    static B32 initialized = 0;
+    static WPARAM vkey_table[OS_Key_COUNT] = {0};
     if(initialized == 0)
     {
       initialized = 1;
@@ -1548,7 +1548,7 @@ X(UpDownLeftRight, IDC_SIZEALL) \
 X(HandPoint, IDC_HAND)\
 X(Disabled, IDC_NO)
 #define CursorCase(E,R) case OS_Cursor_##E:{ \
-local_persist HCURSOR curs = 0; \
+static HCURSOR curs = 0; \
 if (curs == 0){ curs = LoadCursor(NULL, R); } \
 hcursor = curs; }break;
     Win32CursorXList(CursorCase)

@@ -280,8 +280,9 @@ struct DMN_LNX_State
 };
 
 read_only global DMN_LNX_Entity dmn_lnx_nil_entity = {&dmn_lnx_nil_entity, &dmn_lnx_nil_entity, &dmn_lnx_nil_entity, &dmn_lnx_nil_entity, &dmn_lnx_nil_entity};
-global DMN_LNX_State *dmn_lnx_state = 0;
-thread_static B32 dmn_lnx_ctrl_thread = 0;
+public static DMN_LNX_State *dmn_lnx_state = 0;
+[ThreadStatic]
+public static B32 dmn_lnx_ctrl_thread = 0;
 
 ////////////////////////////////
 //~ rjf: Helpers

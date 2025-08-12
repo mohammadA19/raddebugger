@@ -213,7 +213,7 @@ internal String8 push_cstr(Arena *arena, String8 str); // TODO(rjf): this is unn
 ////////////////////////////////
 //~ rjf: String Path Helpers
 
-global read_only struct
+public static readonly struct
 {
   String8   string;
   PathStyle path_style;

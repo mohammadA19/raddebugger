@@ -28,7 +28,7 @@ struct FP_FT_State
 ////////////////////////////////
 //~ rjf: Globals
 
-global FP_FT_State *fp_ft_state = 0;
+public static FP_FT_State *fp_ft_state = 0;
 
 ////////////////////////////////
 //~ rjf: Helpers

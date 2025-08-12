@@ -166,8 +166,8 @@ enum DW_CFAControlBits : U16
   DW_CFAControlBits_NewRow   = 0x800,
 };
 
-global read_only DW_CFAControlBits dw_unwind__cfa_control_bits_kind1[DW_CFA_OplKind1 + 1];
-global read_only DW_CFAControlBits dw_unwind__cfa_control_bits_kind2[DW_CFA_OplKind2 + 1];
+public static readonly DW_CFAControlBits dw_unwind__cfa_control_bits_kind1[DW_CFA_OplKind1 + 1];
+public static readonly DW_CFAControlBits dw_unwind__cfa_control_bits_kind2[DW_CFA_OplKind2 + 1];
 
 // register codes for unwinding match the DW_RegX64 register codes
 #define DW_UNWIND_X64__REG_SLOT_COUNT 17

@@ -68,11 +68,14 @@ scratch_end(scratch);                                                          \
 //~ rjf: Spall Profile Defines
 
 #if PROFILE_SPALL
-global U64 spall_capturing = 0;
-global SpallProfile spall_profile = {0};
-thread_static SpallBuffer spall_buffer = {0};
-thread_static U32 spall_tid = 0;
-thread_static U32 spall_pid = 0;
+public static U64 spall_capturing = 0;
+public static SpallProfile spall_profile = {0};
+[ThreadStatic]
+public static SpallBuffer spall_buffer = {0};
+[ThreadStatic]
+public static U32 spall_tid = 0;
+[ThreadStatic]
+public static U32 spall_pid = 0;
 # define ProfBegin(...)           (spall_capturing ? (spall_begin(__VA_ARGS__), 0) : 0)
 # define ProfBeginDynamic(...)    (spall_capturing ? (spall_begin(__VA_ARGS__), 0) : 0)
 # define ProfEnd(...)             (spall_capturing ? (spall_buffer_end_ex(&spall_profile, &spall_buffer, os_now_microseconds(), spall_tid, spall_pid)), 0 : 0)

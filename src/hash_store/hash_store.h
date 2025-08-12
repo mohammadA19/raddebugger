@@ -196,8 +196,9 @@ struct HS_Shared
 ////////////////////////////////
 //~ rjf: Globals
 
-thread_static HS_TCTX *hs_tctx = 0;
-global HS_Shared *hs_shared = 0;
+[ThreadStatic]
+public static HS_TCTX *hs_tctx = 0;
+public static HS_Shared *hs_shared = 0;
 
 ////////////////////////////////
 //~ rjf: Basic Helpers
