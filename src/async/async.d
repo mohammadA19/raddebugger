@@ -11,13 +11,15 @@ public alias ASYNC_WorkFunctionType = void* function(ulong thread_idx, void* inp
 ////////////////////////////////
 //~ rjf: Work Types
 
-enum ASYNC_Priority {
+enum ASYNC_Priority
+{
   Low,
   High,
   COUNT
 }
 
-struct ASYNC_WorkParams {
+struct ASYNC_WorkParams
+{
   void* input;
   void** output;
   Semaphore semaphore;
@@ -27,7 +29,8 @@ struct ASYNC_WorkParams {
   ASYNC_Priority priority;
 }
 
-struct ASYNC_Work {
+struct ASYNC_Work
+{
   ASYNC_WorkFunctionType* work_function;
   void* input;
   void** output;
@@ -39,17 +42,20 @@ struct ASYNC_Work {
 ////////////////////////////////
 //~ rjf: Task-Based Work Types
 
-struct ASYNC_Task {
+struct ASYNC_Task
+{
   Semaphore semaphore;
   void* output;
 }
 
-struct ASYNC_TaskNode {
+struct ASYNC_TaskNode
+{
   ASYNC_TaskNode* next;
   ASYNC_Task* v;
 }
 
-struct ASYNC_TaskList {
+struct ASYNC_TaskList
+{
   ASYNC_TaskNode* first;
   ASYNC_TaskNode* last;
   ulong count;
@@ -58,14 +64,16 @@ struct ASYNC_TaskList {
 ////////////////////////////////
 //~ rjf: Root (Per-Worker-Thread Arena Bundle)
 
-struct ASYNC_Root {
+struct ASYNC_Root
+{
   Arena** arenas;
 }
 
 ////////////////////////////////
 //~ rjf: Shared State Bundle
 
-struct ASYNC_Ring {
+struct ASYNC_Ring
+{
   ulong ring_size;
   ubyte* ring_base;
   ulong ring_write_pos;
@@ -74,7 +82,8 @@ struct ASYNC_Ring {
   CondVar ring_cv;
 }
 
-struct ASYNC_Shared {
+struct ASYNC_Shared
+{
   Arena* arena;
   
   // rjf: user -> work thread ring buffers
@@ -91,17 +100,19 @@ struct ASYNC_Shared {
 ////////////////////////////////
 //~ rjf: Globals
 
-static B32 async_work_thread_depth = 0;
+static int async_work_thread_depth = 0;
 static ulong async_work_thread_idx = 0;
 __gshared ASYNC_Shared* async_shared = null;
 
 ////////////////////////////////
 //~ rjf: Top-Level Layer Initialization
 
-void async_init(CmdLine *cmdline) {
+void async_init(CmdLine *cmdline)
+{
   Arena* arena = arena_alloc();
   async_shared = push_array(arena, ASYNC_Shared, 1);
   async_shared.arena = arena;
+
   for EachEnumVal(ASYNC_Priority, p)
   {
     ASYNC_Ring* ring = &async_shared.rings[p];
@@ -110,15 +121,19 @@ void async_init(CmdLine *cmdline) {
     ring.ring_mutex = mutex_alloc();
     ring.ring_cv    = cond_var_alloc();
   }
+
   async_shared.ring_mutex = mutex_alloc();
   async_shared.ring_cv = cond_var_alloc();
-  String8 work_thread_count_string = cmd_line_string(cmdline, str8_lit("work_threads_count"));
+
+  String8 work_thread_count_string = cmd_line_string(cmdline, "work_threads_count");
   if (work_thread_count_string.size == 0 || !try_u64_from_str8_c_rules(work_thread_count_string, &async_shared.work_threads_count))
   {
     async_shared.work_threads_count = Max(4, os_get_system_info().logical_processor_count-1);
   }
+  
   async_shared.work_threads_count = Max(4, async_shared.work_threads_count);
   async_shared.work_threads = push_array(arena, OS_Handle, async_shared.work_threads_count);
+  
   for EachIndex(idx, async_shared.work_threads_count)
   {
     async_shared.work_threads[idx] = os_thread_launch(async_work_thread__entry_point, (void *)idx, 0);
@@ -128,14 +143,16 @@ void async_init(CmdLine *cmdline) {
 ////////////////////////////////
 //~ rjf: Top-Level Accessors
 
-ulong async_thread_count() {
+ulong async_thread_count()
+{
   return async_shared.work_threads_count;
 }
 
 ////////////////////////////////
 //~ rjf: Work Kickoffs
 
-bool async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *params) {
+bool async_push_work_(ASYNC_WorkFunctionType* work_function, ASYNC_WorkParams* params)
+{
   // rjf: choose ring
   ASYNC_Ring* ring = &async_shared.rings[params.priority];
   
@@ -153,16 +170,20 @@ bool async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *p
   // thread, and skip ring buffer if so.
   bool queued_in_ring_buffer = false;
   bool need_to_execute_on_this_thread = false;
+
   OS_MutexScope(ring.ring_mutex) for (;;)
   {
     ulong num_available_work_threads = (async_shared.work_threads_count - ins_atomic_u64_eval(&async_shared.work_threads_live_count));
+    
     if (num_available_work_threads == 0 && async_work_thread_depth > 0)
     {
       need_to_execute_on_this_thread = true;
       break;
     }
+    
     ulong unconsumed_size = ring.ring_write_pos - ring.ring_read_pos;
     ulong available_size = ring.ring_size - unconsumed_size;
+    
     if (available_size >= sizeof(work))
     {
       queued_in_ring_buffer = true;
@@ -173,10 +194,12 @@ bool async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *p
       ring.ring_write_pos += ring_write_struct(ring.ring_base, ring.ring_size, ring.ring_write_pos, &work);
       break;
     }
+
     if (os_now_microseconds() >= params.endt_us)
     {
       break;
     }
+
     cond_var_wait(ring.ring_cv, ring.ring_mutex, params.endt_us);
   }
   
@@ -204,29 +227,36 @@ bool async_push_work_(ASYNC_WorkFunctionType *work_function, ASYNC_WorkParams *p
 ////////////////////////////////
 //~ rjf: Task-Based Work Helper
 
-void async_task_list_push(Arena* arena, ASYNC_TaskList* list, ASYNC_Task* t) {
+void async_task_list_push(Arena* arena, ASYNC_TaskList* list, ASYNC_Task* t)
+{
   ASYNC_TaskNode* n = push_array(arena, ASYNC_TaskNode, 1);
   SLLQueuePush(list.first, list.last, n);
   n.v = t;
   list.count += 1;
 }
 
-ASYNC_Task* async_task_launch_(Arena* arena, ASYNC_WorkFunctionType* work_function, ASYNC_WorkParams* params) {
+ASYNC_Task* async_task_launch_(Arena* arena, ASYNC_WorkFunctionType* work_function, ASYNC_WorkParams* params)
+{
   ASYNC_Task* task = push_array(arena, ASYNC_Task, 1);
   task.semaphore = os_semaphore_alloc(1, 1, str8_zero());
   ASYNC_WorkParams params_refined;
   MemoryCopyStruct(&params_refined, params);
   params_refined.endt_us = max_ulong;
   params_refined.semaphore = task.semaphore;
+
   if (params_refined.output == null)
   {
     params_refined.output = &task.output;
   }
+  
   async_push_work_(work_function, &params_refined);
   return task;
 }
+
 #define async_task_launch(arena, work_function, ...) async_task_launch_((arena), (work_function), &(ASYNC_WorkParams){.endt_us = max_ulong, __VA_ARGS__})
-void* async_task_join(ASYNC_Task* task) {
+
+void* async_task_join(ASYNC_Task* task)
+{
   void* result = null;
   if (task != null && !MemoryIsZeroStruct(&task.semaphore))
   {
@@ -237,15 +267,18 @@ void* async_task_join(ASYNC_Task* task) {
   }
   return result;
 }
+
 #define async_task_join_struct(task, T) (T *)async_task_join(task)
 
 ////////////////////////////////
 //~ rjf: Work Execution
 
-ASYNC_Work async_pop_work() {
+ASYNC_Work async_pop_work()
+{
   ASYNC_Work work;
   bool done = false;
   ASYNC_Priority taken_priority = ASYNC_Priority.Low;
+
   OS_MutexScope(async_shared.ring_mutex) for (;!done;)
   {
     for (ASYNC_Priority priority = ASYNC_Priority.High;; priority = (ASYNC_Priority)(priority - 1))
@@ -275,12 +308,14 @@ ASYNC_Work async_pop_work() {
       cond_var_wait(async_shared.ring_cv, async_shared.ring_mutex, max_ulong);
     }
   }
+
   cond_var_broadcast(async_shared.ring_cv);
   cond_var_broadcast(async_shared.rings[taken_priority].ring_cv);
   return work;
 }
 
-void async_execute_work(ASYNC_Work work) {
+void async_execute_work(ASYNC_Work work)
+{
   //- rjf: run work
   async_work_thread_depth += 1;
   void* work_out = work.work_function(async_work_thread_idx, work.input);
@@ -314,7 +349,8 @@ void async_execute_work(ASYNC_Work work) {
 ////////////////////////////////
 //~ rjf: Root Allocation/Deallocation
 
-ASYNC_Root* async_root_alloc() {
+ASYNC_Root* async_root_alloc()
+{
   Arena* arena = arena_alloc();
   ASYNC_Root* root = push_array(arena, ASYNC_Root, 1);
   root.arenas = push_array(arena, Arena*, async_thread_count());
@@ -326,7 +362,8 @@ ASYNC_Root* async_root_alloc() {
   return root;
 }
 
-void async_root_release(ASYNC_Root* root) {
+void async_root_release(ASYNC_Root* root)
+{
   for (ulong idx = 1; idx < async_thread_count(); idx += 1)
   {
     arena_release(root.arenas[idx]);
@@ -334,17 +371,20 @@ void async_root_release(ASYNC_Root* root) {
   arena_release(root.arenas[0]);
 }
 
-Arena* async_root_thread_arena(ASYNC_Root* root) {
+Arena* async_root_thread_arena(ASYNC_Root* root)
+{
   return root.arenas[async_work_thread_idx];
 }
 
 ////////////////////////////////
 //~ rjf: Work Thread Entry Point
 
-void async_work_thread__entry_point(void* p) {
+void async_work_thread__entry_point(void* p)
+{
   ulong thread_idx = (ulong)p;
   ThreadNameF("[async] work thread #%I64u", thread_idx);
   async_work_thread_idx = thread_idx;
+  
   for (;;)
   {
     ASYNC_Work work = async_pop_work();
