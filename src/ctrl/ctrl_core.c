@@ -3528,7 +3528,7 @@ ctrl_call_stack_from_thread(CTRL_Scope *scope, CTRL_Handle thread_handle, B32 hi
     {
       if(ctrl_u2csb_enqueue_req(thread_handle, endt_us))
       {
-        async_push_work(ctrl_call_stack_build_work, .priority = high_priority ? ASYNC_Priority_High : ASYNC_Priority_Low);
+        async_push_work(ctrl_call_stack_build_work, .priority = high_priority ? ASYNC_Priority.High : ASYNC_Priority.Low);
       }
       else OS_MutexScopeW(stripe->rw_mutex)
       {

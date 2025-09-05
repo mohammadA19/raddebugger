@@ -627,7 +627,7 @@ di_rdi_from_key(DI_Scope *scope, DI_Key *key, B32 high_priority, U64 endt_us)
           ins_atomic_u64_eval_assign(&node->is_working, 1);
           DeferLoop(rw_mutex_drop_r(stripe->rw_mutex), rw_mutex_take_r(stripe->rw_mutex))
           {
-            async_push_work(di_parse_work, .priority = high_priority ? ASYNC_Priority_High : ASYNC_Priority_Low);
+            async_push_work(di_parse_work, .priority = high_priority ? ASYNC_Priority.High : ASYNC_Priority.Low);
           }
         }
       }
@@ -1761,7 +1761,7 @@ di_match_from_name(DI_MatchStore *store, String8 name, U64 endt_us)
       if(sent)
       {
         cond_var_broadcast(store->u2m_ring_cv);
-        async_push_work(di_match_work, .input = store, .priority = ASYNC_Priority_Low, .completion_counter = &node->cmp_count);
+        async_push_work(di_match_work, .input = store, .priority = ASYNC_Priority.Low, .completion_counter = &node->cmp_count);
         node->req_params_hash = store->params_hash;
         node->req_count += 1;
       }
